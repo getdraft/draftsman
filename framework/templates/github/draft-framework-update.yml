@@ -1,0 +1,370 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# DRAFT Framework — Update workflow template
+#
+# SETUP INSTRUCTIONS
+# ------------------
+# 1. Copy this file to your repo at:  .github/workflows/draft-framework-update.yml
+# 2. Ensure GitHub Actions has permission to create PRs:
+#    Settings → Actions → General → "Allow GitHub Actions to create and approve
+#    pull requests" must be enabled.  The default GITHUB_TOKEN is otherwise
+#    sufficient — no extra secrets required.
+# 3. Run it manually from Actions → DRAFT Framework Update → Run workflow,
+#    or let the Monday 09:17 UTC schedule run it automatically.
+#
+# WHAT IT DOES
+# ------------
+# 1. Reads .draft/framework.lock to find the current synced version/commit.
+# 2. Queries the upstream draftsman repo for the latest release tag (or uses
+#    the tag/branch/commit you supply as target_ref).
+# 3. If the workspace is already current, exits cleanly with no changes.
+# 4. Otherwise, does a full replace of .draft/framework with the new version,
+#    updates framework.lock, runs validate.py against the workspace, refreshes
+#    the browser shell assets, commits everything to a branch, and opens (or
+#    updates) a pull request.
+# 5. If validation fails the PR title is prefixed "Blocked:" and the workflow
+#    exits non-zero — prompting someone to repair the workspace on that branch
+#    before merging.
+# ──────────────────────────────────────────────────────────────────────────────
+
+name: DRAFT Framework Update
+
+on:
+  schedule:
+    - cron: "17 9 * * 1"
+  workflow_dispatch:
+    inputs:
+      target_ref:
+        description: "Optional DRAFT tag, branch, or commit. Leave blank for the latest version tag."
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  statuses: write
+
+env:
+  DRAFT_FRAMEWORK_SOURCE: https://github.com/getdraft/draftsman.git
+
+jobs:
+  update:
+    name: Check and Prepare DRAFT Update
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout workspace
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: python -m pip install pyyaml
+
+      - name: Configure Git author
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Refresh vendored framework
+        id: refresh
+        env:
+          TARGET_REF: ${{ inputs.target_ref }}
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+          import os
+          import re
+          import shutil
+          import subprocess
+          import tempfile
+          from pathlib import Path
+          from typing import Any
+          import yaml
+
+          workspace = Path.cwd()
+          lock_path = workspace / ".draft" / "framework.lock"
+          source = os.environ.get("DRAFT_FRAMEWORK_SOURCE", "https://github.com/getdraft/draftsman.git")
+          target_ref_input = os.environ.get("TARGET_REF", "").strip()
+          output_path = Path(os.environ["GITHUB_OUTPUT"])
+
+          def run(args: list[str], cwd: Path = workspace, check: bool = True) -> subprocess.CompletedProcess[str]:
+              result = subprocess.run(args, cwd=str(cwd), text=True, capture_output=True, check=False)
+              if check and result.returncode != 0:
+                  raise SystemExit(f"Command failed: {' '.join(args)}\n{result.stdout}\n{result.stderr}")
+              return result
+
+          def semver(value: str) -> tuple[int, int, int] | None:
+              cleaned = value.strip().removeprefix("refs/tags/").removeprefix("v")
+              if not re.fullmatch(r"\d+\.\d+\.\d+", cleaned):
+                  return None
+              return tuple(int(part) for part in cleaned.split("."))
+
+          def read_yaml(path: Path) -> dict[str, Any]:
+              if not path.exists():
+                  return {}
+              loaded = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+              return loaded if isinstance(loaded, dict) else {}
+
+          def latest_tag() -> str:
+              result = run(["git", "ls-remote", "--tags", "--refs", source, "v*"], check=False)
+              candidates: list[tuple[tuple[int, int, int], str]] = []
+              for line in result.stdout.splitlines():
+                  parts = line.split()
+                  if len(parts) != 2:
+                      continue
+                  tag = parts[1].removeprefix("refs/tags/")
+                  parsed = semver(tag)
+                  if parsed:
+                      candidates.append((parsed, tag))
+              if not candidates:
+                  return "main"
+              return sorted(candidates)[-1][1]
+
+          def clone_framework(target_ref: str) -> Path:
+              temp_dir = Path(tempfile.mkdtemp(prefix="draft-framework-"))
+              run(["git", "clone", "--no-checkout", source, str(temp_dir)])
+              fetch = run(["git", "fetch", "--depth", "1", "origin", target_ref], cwd=temp_dir, check=False)
+              if fetch.returncode != 0:
+                  run(["git", "fetch", "--depth", "1", "origin", f"refs/tags/{target_ref}:refs/tags/{target_ref}"], cwd=temp_dir)
+                  run(["git", "checkout", target_ref], cwd=temp_dir)
+              else:
+                  run(["git", "checkout", "FETCH_HEAD"], cwd=temp_dir)
+              return temp_dir
+
+          def vendored_text(text: str) -> str:
+              replacements = {
+                  "framework/docs/": "docs/",
+                  "framework/schemas/": "schemas/",
+                  "framework/configurations/": "configurations/",
+                  "framework/tools/": "tools/",
+                  "framework/docs": "docs",
+                  "framework/schemas": "schemas",
+                  "framework/configurations": "configurations",
+                  "framework/tools": "tools",
+              }
+              for old, new in replacements.items():
+                  text = text.replace(old, new)
+              return text
+
+          def release_url_for(source_url: str, version: str) -> str:
+              cleaned = source_url.strip().removesuffix(".git")
+              if cleaned.startswith("git@github.com:"):
+                  cleaned = "https://github.com/" + cleaned.split(":", 1)[1]
+              if cleaned.startswith("https://github.com/"):
+                  return f"{cleaned}/releases/tag/v{version}"
+              return cleaned
+
+          def copy_framework(source_repo: Path) -> None:
+              destination = workspace / ".draft" / "framework"
+              if destination.exists():
+                  shutil.rmtree(destination)
+              destination.mkdir(parents=True, exist_ok=True)
+              framework_root = source_repo / "framework"
+              for relative in ("browser", "configurations", "docs", "schemas", "tools"):
+                  source_dir = framework_root / relative
+                  if source_dir.exists():
+                      shutil.copytree(source_dir, destination / relative, dirs_exist_ok=True, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+              for relative in ("templates", "examples"):
+                  source_dir = source_repo / relative
+                  if source_dir.exists():
+                      shutil.copytree(source_dir, destination / relative, dirs_exist_ok=True, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+              for filename in (
+                  "AGENTS.md",
+                  "AI_INDEX.md",
+                  "CLAUDE.md",
+                  "CHANGELOG.md",
+                  "draft-framework.yaml",
+                  "draft-logo.png",
+                  "draftlogo.png",
+                  "GEMINI.md",
+                  "README.md",
+                  "RELEASE.md",
+                  "VERSIONING.md",
+                  "llms.txt",
+                  "security.md",
+              ):
+                  source_file = source_repo / filename
+                  if not source_file.exists():
+                      continue
+                  target_file = destination / filename
+                  if filename.endswith(".md") or filename in {"AI_INDEX.md", "CLAUDE.md", "GEMINI.md", "llms.txt"}:
+                      target_file.write_text(vendored_text(source_file.read_text(encoding="utf-8")), encoding="utf-8")
+                  else:
+                      shutil.copy2(source_file, target_file)
+
+          lock = read_yaml(lock_path)
+          framework_lock = lock.get("framework") if isinstance(lock.get("framework"), dict) else {}
+          if framework_lock.get("source"):
+              source = str(framework_lock["source"])
+          current_version = str(framework_lock.get("version") or "")
+          current_commit = str(framework_lock.get("syncedCommit") or "")
+
+          target_ref = target_ref_input or latest_tag()
+          source_repo = clone_framework(target_ref)
+          target_commit = run(["git", "rev-parse", "HEAD"], cwd=source_repo).stdout.strip()
+          manifest = read_yaml(source_repo / "draft-framework.yaml")
+          target_version = str(manifest.get("version") or target_ref.removeprefix("v"))
+
+          parsed_current = semver(current_version)
+          parsed_target = semver(target_version)
+          automatic_version_check = not target_ref_input and parsed_current and parsed_target and target_ref != "main"
+          if automatic_version_check and parsed_current >= parsed_target:
+              with output_path.open("a", encoding="utf-8") as output:
+                  output.write("update_needed=false\n")
+                  output.write(f"current_version={current_version}\n")
+                  output.write(f"target_version={target_version}\n")
+              print(f"DRAFT Framework is current at {current_version}.")
+              raise SystemExit(0)
+
+          if current_commit and current_commit == target_commit:
+              with output_path.open("a", encoding="utf-8") as output:
+                  output.write("update_needed=false\n")
+                  output.write(f"current_version={current_version}\n")
+                  output.write(f"target_version={target_version}\n")
+              print(f"DRAFT Framework commit is current at {current_commit}.")
+              raise SystemExit(0)
+
+          branch_version = target_version if parsed_target else target_ref.replace("/", "-")
+          branch_name = f"draft-framework-update-v{branch_version.removeprefix('v')}"
+          existing = run(["git", "ls-remote", "--exit-code", "--heads", "origin", branch_name], check=False)
+          if existing.returncode == 0:
+              run(["git", "fetch", "origin", branch_name])
+              run(["git", "checkout", "-B", branch_name, f"origin/{branch_name}"])
+          else:
+              run(["git", "checkout", "-B", branch_name])
+
+          copy_framework(source_repo)
+
+          lock_path.parent.mkdir(parents=True, exist_ok=True)
+          lock_data: dict[str, Any] = {
+              "schemaVersion": "1.0",
+              "framework": {
+                  "source": source,
+                  "vendoredPath": ".draft/framework",
+                  "updatePolicy": "explicit",
+                  "syncedRef": target_ref,
+                  "syncedCommit": target_commit,
+                  "version": target_version,
+              },
+          }
+          if target_ref.startswith("v") and semver(target_ref):
+              lock_data["framework"]["syncedTag"] = target_ref
+          lock_path.write_text(yaml.safe_dump(lock_data, sort_keys=False), encoding="utf-8")
+
+          release_url = release_url_for(source, target_version)
+          with output_path.open("a", encoding="utf-8") as output:
+              output.write("update_needed=true\n")
+              output.write(f"branch={branch_name}\n")
+              output.write(f"current_version={current_version}\n")
+              output.write(f"target_version={target_version}\n")
+              output.write(f"target_ref={target_ref}\n")
+              output.write(f"target_commit={target_commit}\n")
+              output.write(f"release_url={release_url}\n")
+          PY
+
+      - name: Validate workspace against refreshed framework
+        id: validate
+        if: steps.refresh.outputs.update_needed == 'true'
+        run: |
+          set +e
+          python .draft/framework/tools/validate.py --workspace . > draft-validation-output.txt 2>&1
+          code=$?
+          cat draft-validation-output.txt
+          if [ "$code" -eq 0 ]; then
+            echo "status=success" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=failure" >> "$GITHUB_OUTPUT"
+          fi
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Refresh browser shell assets
+        if: steps.refresh.outputs.update_needed == 'true'
+        run: |
+          python .draft/framework/tools/generate_browser.py --refresh-shell
+        continue-on-error: true
+
+      - name: Commit refreshed framework
+        if: steps.refresh.outputs.update_needed == 'true'
+        run: |
+          git add .draft/framework .draft/framework.lock docs/assets/draft-browser.css docs/assets/draft-browser.js docs/index.html || true
+          if git diff --cached --quiet; then
+            echo "No framework changes to commit."
+          else
+            git commit -m "Update DRAFT framework to v${{ steps.refresh.outputs.target_version }}"
+          fi
+
+      - name: Push update branch
+        if: steps.refresh.outputs.update_needed == 'true'
+        run: git push --force-with-lease origin "${{ steps.refresh.outputs.branch }}"
+
+      - name: Open or update pull request
+        if: steps.refresh.outputs.update_needed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VALIDATION_STATUS: ${{ steps.validate.outputs.status }}
+          VALIDATION_EXIT_CODE: ${{ steps.validate.outputs.exit_code }}
+        run: |
+          branch="${{ steps.refresh.outputs.branch }}"
+          target_version="${{ steps.refresh.outputs.target_version }}"
+          release_url="${{ steps.refresh.outputs.release_url }}"
+
+          if [ "$VALIDATION_STATUS" = "success" ]; then
+            title="Update DRAFT framework to v${target_version}"
+            summary="Validation succeeded."
+          else
+            title="Blocked: Update DRAFT framework to v${target_version}"
+            summary="Validation failed. Repair the workspace on this branch, then rerun validation."
+          fi
+
+          {
+            echo "$summary"
+            echo
+            echo "- Current DRAFT version: ${{ steps.refresh.outputs.current_version }}"
+            echo "- Target DRAFT version: ${target_version}"
+            echo "- Target ref: ${{ steps.refresh.outputs.target_ref }}"
+            echo "- Target commit: ${{ steps.refresh.outputs.target_commit }}"
+            echo "- Release notes: ${release_url}"
+            echo "- Validation exit code: ${VALIDATION_EXIT_CODE}"
+            echo
+            echo "## Validation Output"
+            echo
+            echo '```text'
+            sed -n '1,180p' draft-validation-output.txt
+            echo '```'
+          } > draft-update-pr-body.md
+
+          pr_number="$(gh pr list --head "$branch" --json number --jq '.[0].number')"
+          if [ -n "$pr_number" ]; then
+            gh pr edit "$pr_number" --title "$title" --body-file draft-update-pr-body.md
+          else
+            gh pr create --base "${{ github.event.repository.default_branch }}" --head "$branch" --title "$title" --body-file draft-update-pr-body.md
+          fi
+
+      - name: Record update validation status
+        if: steps.refresh.outputs.update_needed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VALIDATION_STATUS: ${{ steps.validate.outputs.status }}
+        run: |
+          sha="$(git rev-parse HEAD)"
+          if [ "$VALIDATION_STATUS" = "success" ]; then
+            state="success"
+            description="DRAFT framework update validation succeeded."
+          else
+            state="failure"
+            description="DRAFT framework update validation failed."
+          fi
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/statuses/${sha}" \
+            -f state="$state" \
+            -f context="DRAFT framework update validation" \
+            -f description="$description" \
+            -f target_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+      - name: Fail when update validation is blocked
+        if: steps.refresh.outputs.update_needed == 'true' && steps.validate.outputs.status != 'success'
+        run: exit 1
