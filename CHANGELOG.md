@@ -3,6 +3,34 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.13.15 - 2026-05-17
+
+### Compatibility Impact
+
+No migration is required. This patch fixes vendored framework script execution;
+it does not change schemas, validation behavior, or catalog object formats.
+
+### Added
+
+- None.
+
+### Changed
+
+- Changed vendored tool execution so direct script invocation resolves sibling
+  helper modules without requiring a custom `PYTHONPATH`.
+
+### Fixed
+
+- Fixed `framework/tools/validate.py` in vendored workspaces so
+  `python3 .draft/framework/tools/validate.py --workspace .` works normally.
+- Fixed `framework/tools/repair_uids.py` in vendored workspaces so direct
+  execution also resolves `uid_utils` correctly.
+
+### Migration Notes
+
+- Existing workspaces can continue unchanged.
+- Refresh a vendored framework copy to pick up the script fix.
+
 ## 0.13.13 - 2026-05-15
 
 ## 0.13.14 - 2026-05-17

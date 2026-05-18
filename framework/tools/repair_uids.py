@@ -10,6 +10,10 @@ from typing import Any
 
 import yaml
 
+TOOLS_ROOT = Path(__file__).resolve().parent
+if str(TOOLS_ROOT) not in sys.path:
+    sys.path.insert(0, str(TOOLS_ROOT))
+
 from uid_utils import UID_PATTERN_TEXT, generate_uid
 
 
