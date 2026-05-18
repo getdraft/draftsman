@@ -1,0 +1,22 @@
+schemaVersion: '1.0'
+uid: STCK00000F-TC0F
+type: technology_component
+name: OpenStack Bare Metal Standard Compute Platform
+description: 'Generic bare-metal x86_64 compute substrate used by the OpenStack example
+  service-host patterns.
+
+  '
+version: 1.0.0
+catalogStatus: draft
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+tags:
+- technology-component
+- compute-platform
+- bare-metal
+- openstack
+vendor: Example Infrastructure
+productName: Bare Metal x86_64
+productVersion: standard
+classification: compute-platform

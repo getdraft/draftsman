@@ -147,6 +147,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 |---|---|---|---|---|---|
 | 01KQQ4Q025-MQ3F | CrowdStrike Falcon Agent | technology_component | technology-component, agent | Endpoint security agent installed locally on a host that requires communication with the CrowdStrike Falcon platform. | examples/catalog/technology-components/technology-agent-crowdstrike-falcon.yaml |
 | 01KQQ4Q025-9N4R | Amazon EC2 Standard Compute Platform | technology_component | technology-component, compute-platform | Standard Amazon EC2 virtual machine substrate used for general-purpose host patterns. | examples/catalog/technology-components/technology-compute-amazon-ec2-standard.yaml |
+| STCK00000F-TC0F | OpenStack Bare Metal Standard Compute Platform | technology_component | technology-component, compute-platform, bare-metal, openstack | Generic bare-metal x86_64 compute substrate used by the OpenStack example service-host patterns. | examples/catalog/technology-components/technology-compute-openstack-bare-metal-standard.yaml |
 | STCK00000E-TC0E | MariaDB 10.11 | technology_component | technology-component, database, relational, mariadb, iaas | MariaDB 10.11 is the long-term support relational database used as the persistence backend for OpenStack services. Ea... | examples/catalog/technology-components/technology-mariadb-1011.yaml |
 | STCK000009-TC09 | OpenStack Ceilometer | technology_component | technology-component, openstack, telemetry, monitoring, metering, iaas | OpenStack Ceilometer is the telemetry service for OpenStack. It collects metering and monitoring data from across the... | examples/catalog/technology-components/technology-openstack-ceilometer.yaml |
 | STCK000005-TC05 | OpenStack Cinder | technology_component | technology-component, openstack, block-storage, iaas | OpenStack Cinder is the block storage service that provides persistent block volumes to Nova compute instances. It in... | examples/catalog/technology-components/technology-openstack-cinder.yaml |
@@ -163,6 +164,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | 01KQQ4Q025-3HXA | Ubuntu 22.04 LTS | technology_component | technology-component, operating-system | Canonical Ubuntu Server 22.04 LTS operating system product definition for Linux host patterns. | examples/catalog/technology-components/technology-os-canonical-ubuntu-2204.yaml |
 | STCK00000D-TC0D | RabbitMQ 3.8 | technology_component | technology-component, messaging, amqp, rabbitmq, iaas | RabbitMQ is a widely deployed open-source message broker implementing AMQP. In OpenStack it serves as the shared mess... | examples/catalog/technology-components/technology-rabbitmq-38.yaml |
 | 01KQQ4Q025-Z042 | nginx 1.26 | technology_component | technology-component, software | nginx web server software installed locally on a managed host and used without a required vendor platform interaction. | examples/catalog/technology-components/technology-software-nginx-126.yaml |
+| STCK00000F-HS0F | OpenStack Linux Service Host | host | host, openstack, linux | General-purpose self-managed Linux host standard for the OpenStack example control-plane, data, and utility services.... | examples/catalog/hosts/host-openstack-linux-service-host.yaml |
 | 01KQQ4Q025-1XDE | AWS Lambda Serverless Host | host | lambda, serverless | Serverless execution environment provided by AWS Lambda. The host is entirely AWS-managed and blackbox to the organiz... | examples/catalog/hosts/host-serverless-lambda.yaml |
 | 01KQQ4Q025-T7B7 | AWS Lambda Runtime | runtime_service | serverless, lambda | AWS Lambda serverless execution environment. Runs organization-authored function code without requiring host manageme... | examples/catalog/runtime-services/runtime-service-aws-lambda-runtime.yaml |
 | STCK000008-RS08 | Ceilometer Telemetry Service | runtime_service | runtime-service, openstack, telemetry, ceilometer, metering, iaas | Self-managed deployment of OpenStack Ceilometer providing metering and telemetry data collection across the OpenStack... | examples/catalog/runtime-services/runtime-service-ceilometer.yaml |
@@ -194,8 +196,8 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | framework/configurations/capabilities | 19 |
 | framework/configurations/requirement-groups | 13 |
 | framework/configurations/domains | 3 |
-| examples/catalog/technology-components | 18 |
-| examples/catalog/hosts | 1 |
+| examples/catalog/technology-components | 19 |
+| examples/catalog/hosts | 2 |
 | examples/catalog/runtime-services | 14 |
 | examples/catalog/data-at-rest-services | 7 |
 | examples/catalog/edge-gateway-services | 0 |

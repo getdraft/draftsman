@@ -24,6 +24,7 @@ tags:
 - hadoop
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000C-TC0C
 architecturalDecisions:
   serviceAuthentication: All Sahara API requests are authenticated via Keystone token

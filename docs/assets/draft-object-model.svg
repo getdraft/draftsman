@@ -10,123 +10,142 @@
       <polygon points="0 0, 9 4.5, 0 9" fill="#1f8a5b"/>
     </marker>
   </defs>
+
   <rect x="8" y="8" width="618" height="574" rx="12" fill="#eef4fc" stroke="#2a6fdb" stroke-width="1.5" stroke-dasharray="7 3"/>
   <text x="22" y="26" font-size="10" font-weight="700" letter-spacing="1.5" fill="#2a6fdb">ARCHITECTURE OBJECTS</text>
+
   <rect x="640" y="8" width="252" height="574" rx="12" fill="#f8f0f5" stroke="#7c3a6b" stroke-width="1.5" stroke-dasharray="7 3"/>
   <text x="654" y="26" font-size="10" font-weight="700" letter-spacing="1.5" fill="#7c3a6b">GOVERNANCE OBJECTS</text>
-  <rect x="207" y="36" width="216" height="68" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
-  <rect x="207" y="36" width="216" height="23" rx="6" fill="#2a6fdb"/>
-  <rect x="207" y="53" width="216" height="6" fill="#2a6fdb"/>
-  <text x="315" y="50" font-size="9.5" fill="white" text-anchor="middle" font-style="italic">architecture</text>
-  <text x="315" y="70" font-size="12" fill="#1a2d5a" text-anchor="middle" font-weight="700">TechnologyComponent</text>
-  <text x="315" y="84" font-size="9" fill="#5f564b" text-anchor="middle">vendor . productName . classification</text>
-  <text x="315" y="96" font-size="9" fill="#5f564b" text-anchor="middle">configurations . networkBindings</text>
-  <rect x="18" y="174" width="138" height="58" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
-  <rect x="18" y="174" width="138" height="22" rx="6" fill="#2a6fdb"/>
-  <rect x="18" y="190" width="138" height="6" fill="#2a6fdb"/>
-  <text x="87" y="187" font-size="9.5" fill="white" text-anchor="middle" font-style="italic">architecture</text>
-  <text x="87" y="207" font-size="12" fill="#1a2d5a" text-anchor="middle" font-weight="700">Host</text>
-  <text x="87" y="222" font-size="9" fill="#5f564b" text-anchor="middle">compute + OS platform</text>
-  <rect x="165" y="174" width="148" height="58" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
-  <rect x="165" y="174" width="148" height="22" rx="6" fill="#2a6fdb"/>
-  <rect x="165" y="190" width="148" height="6" fill="#2a6fdb"/>
-  <text x="239" y="187" font-size="9.5" fill="white" text-anchor="middle" font-style="italic">architecture</text>
-  <text x="239" y="207" font-size="12" fill="#1a2d5a" text-anchor="middle" font-weight="700">RuntimeService</text>
-  <text x="239" y="222" font-size="9" fill="#5f564b" text-anchor="middle">web . app . cache . worker</text>
-  <rect x="322" y="174" width="168" height="58" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
-  <rect x="322" y="174" width="168" height="22" rx="6" fill="#2a6fdb"/>
-  <rect x="322" y="190" width="168" height="6" fill="#2a6fdb"/>
-  <text x="406" y="187" font-size="9.5" fill="white" text-anchor="middle" font-style="italic">architecture</text>
-  <text x="406" y="207" font-size="12" fill="#1a2d5a" text-anchor="middle" font-weight="700">DataAtRestService</text>
-  <text x="406" y="222" font-size="9" fill="#5f564b" text-anchor="middle">database . file . object . search</text>
-  <rect x="498" y="174" width="120" height="58" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
-  <rect x="498" y="174" width="120" height="22" rx="6" fill="#2a6fdb"/>
-  <rect x="498" y="190" width="120" height="6" fill="#2a6fdb"/>
-  <text x="558" y="187" font-size="9.5" fill="white" text-anchor="middle" font-style="italic">architecture</text>
-  <text x="558" y="204" font-size="11" fill="#1a2d5a" text-anchor="middle" font-weight="700">EdgeGateway</text>
-  <text x="558" y="217" font-size="11" fill="#1a2d5a" text-anchor="middle" font-weight="700">Service</text>
-  <text x="558" y="228" font-size="8.5" fill="#5f564b" text-anchor="middle">WAF . API GW . LB . proxy</text>
-  <rect x="210" y="302" width="210" height="68" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
-  <rect x="210" y="302" width="210" height="23" rx="6" fill="#2a6fdb"/>
-  <rect x="210" y="319" width="210" height="6" fill="#2a6fdb"/>
-  <text x="315" y="316" font-size="9.5" fill="white" text-anchor="middle" font-style="italic">architecture</text>
-  <text x="315" y="336" font-size="12" fill="#1a2d5a" text-anchor="middle" font-weight="700">ProductService</text>
-  <text x="315" y="350" font-size="9" fill="#5f564b" text-anchor="middle">first-party runtime behavior</text>
-  <text x="315" y="362" font-size="9" fill="#5f564b" text-anchor="middle">product . runsOn . catalogStatus</text>
-  <rect x="55" y="440" width="230" height="68" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
-  <rect x="55" y="440" width="230" height="23" rx="6" fill="#2a6fdb"/>
-  <rect x="55" y="457" width="230" height="6" fill="#2a6fdb"/>
-  <text x="170" y="454" font-size="9.5" fill="white" text-anchor="middle" font-style="italic">architecture</text>
-  <text x="170" y="472" font-size="11" fill="#1a2d5a" text-anchor="middle" font-weight="700">SoftwareDeploymentPattern</text>
-  <text x="170" y="486" font-size="9" fill="#5f564b" text-anchor="middle">product assembly . serviceGroups</text>
-  <text x="170" y="498" font-size="9" fill="#5f564b" text-anchor="middle">deploymentTargets . diagramTier</text>
-  <rect x="340" y="450" width="218" height="58" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
-  <rect x="340" y="450" width="218" height="23" rx="6" fill="#2a6fdb"/>
-  <rect x="340" y="467" width="218" height="6" fill="#2a6fdb"/>
-  <text x="449" y="464" font-size="9.5" fill="white" text-anchor="middle" font-style="italic">architecture</text>
-  <text x="449" y="482" font-size="12" fill="#1a2d5a" text-anchor="middle" font-weight="700">ReferenceArchitecture</text>
-  <text x="449" y="496" font-size="9" fill="#5f564b" text-anchor="middle">reusable deployment approach</text>
+
+  <rect x="55" y="44" width="230" height="72" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
+  <rect x="55" y="44" width="230" height="26" rx="6" fill="#2a6fdb"/>
+  <rect x="55" y="64" width="230" height="6" fill="#2a6fdb"/>
+  <text x="170" y="61" font-size="11" fill="white" text-anchor="middle" font-weight="700">SoftwareDeploymentPattern</text>
+  <text x="170" y="84" font-size="9" fill="#5f564b" text-anchor="middle">serviceGroups . deployableObjects</text>
+  <text x="170" y="96" font-size="9" fill="#5f564b" text-anchor="middle">connections . deploymentTargets</text>
+  <text x="170" y="108" font-size="9" fill="#5f564b" text-anchor="middle">businessContext . decisions</text>
+
+  <rect x="340" y="44" width="218" height="62" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
+  <rect x="340" y="44" width="218" height="26" rx="6" fill="#2a6fdb"/>
+  <rect x="340" y="64" width="218" height="6" fill="#2a6fdb"/>
+  <text x="449" y="61" font-size="11" fill="white" text-anchor="middle" font-weight="700">ReferenceArchitecture</text>
+  <text x="449" y="84" font-size="9" fill="#5f564b" text-anchor="middle">pattern guidance . serviceGroups</text>
+  <text x="449" y="96" font-size="9" fill="#5f564b" text-anchor="middle">metadata, not a deployed node</text>
+
+  <rect x="210" y="160" width="210" height="72" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
+  <rect x="210" y="160" width="210" height="26" rx="6" fill="#2a6fdb"/>
+  <rect x="210" y="180" width="210" height="6" fill="#2a6fdb"/>
+  <text x="315" y="177" font-size="11.5" fill="white" text-anchor="middle" font-weight="700">ProductService</text>
+  <text x="315" y="200" font-size="9" fill="#5f564b" text-anchor="middle">first-party runtime behavior</text>
+  <text x="315" y="212" font-size="9" fill="#5f564b" text-anchor="middle">runsOn . internalProcesses</text>
+  <text x="315" y="224" font-size="9" fill="#5f564b" text-anchor="middle">externalInteractions</text>
+
+  <rect x="18" y="294" width="138" height="60" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
+  <rect x="18" y="294" width="138" height="26" rx="6" fill="#2a6fdb"/>
+  <rect x="18" y="314" width="138" height="6" fill="#2a6fdb"/>
+  <text x="87" y="311" font-size="11.5" fill="white" text-anchor="middle" font-weight="700">Host</text>
+  <text x="87" y="336" font-size="9" fill="#5f564b" text-anchor="middle">compute + OS platform</text>
+
+  <rect x="165" y="294" width="148" height="60" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
+  <rect x="165" y="294" width="148" height="26" rx="6" fill="#2a6fdb"/>
+  <rect x="165" y="314" width="148" height="6" fill="#2a6fdb"/>
+  <text x="239" y="311" font-size="10.5" fill="white" text-anchor="middle" font-weight="700">RuntimeService</text>
+  <text x="239" y="336" font-size="9" fill="#5f564b" text-anchor="middle">web . app . cache . worker</text>
+
+  <rect x="322" y="294" width="168" height="60" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
+  <rect x="322" y="294" width="168" height="26" rx="6" fill="#2a6fdb"/>
+  <rect x="322" y="314" width="168" height="6" fill="#2a6fdb"/>
+  <text x="406" y="311" font-size="10.5" fill="white" text-anchor="middle" font-weight="700">DataAtRestService</text>
+  <text x="406" y="336" font-size="9" fill="#5f564b" text-anchor="middle">database . file . object . search</text>
+
+  <rect x="498" y="294" width="120" height="60" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
+  <rect x="498" y="294" width="120" height="26" rx="6" fill="#2a6fdb"/>
+  <rect x="498" y="314" width="120" height="6" fill="#2a6fdb"/>
+  <text x="558" y="311" font-size="9.5" fill="white" text-anchor="middle" font-weight="700">EdgeGatewayService</text>
+  <text x="558" y="336" font-size="8.5" fill="#5f564b" text-anchor="middle">WAF . API GW . LB . proxy</text>
+
+  <rect x="207" y="438" width="216" height="72" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
+  <rect x="207" y="438" width="216" height="26" rx="6" fill="#2a6fdb"/>
+  <rect x="207" y="458" width="216" height="6" fill="#2a6fdb"/>
+  <text x="315" y="455" font-size="11" fill="white" text-anchor="middle" font-weight="700">TechnologyComponent</text>
+  <text x="315" y="478" font-size="9" fill="#5f564b" text-anchor="middle">vendor . productName . classification</text>
+  <text x="315" y="490" font-size="9" fill="#5f564b" text-anchor="middle">configurations . networkBindings</text>
+  <text x="315" y="502" font-size="9" fill="#5f564b" text-anchor="middle">capability implementations</text>
+
   <rect x="649" y="36" width="176" height="58" rx="6" fill="white" stroke="#7c3a6b" stroke-width="1.5"/>
-  <rect x="649" y="36" width="176" height="23" rx="6" fill="#7c3a6b"/>
-  <rect x="649" y="53" width="176" height="6" fill="#7c3a6b"/>
-  <text x="737" y="50" font-size="9.5" fill="white" text-anchor="middle" font-style="italic">governance</text>
-  <text x="737" y="68" font-size="12" fill="#3d1930" text-anchor="middle" font-weight="700">Capability</text>
-  <text x="737" y="82" font-size="9" fill="#5f564b" text-anchor="middle">auth . backup . logging . patch</text>
+  <rect x="649" y="36" width="176" height="26" rx="6" fill="#7c3a6b"/>
+  <rect x="649" y="56" width="176" height="6" fill="#7c3a6b"/>
+  <text x="737" y="53" font-size="11.5" fill="white" text-anchor="middle" font-weight="700">Capability</text>
+  <text x="737" y="78" font-size="9" fill="#5f564b" text-anchor="middle">auth . backup . logging . patch</text>
+
   <rect x="649" y="126" width="176" height="58" rx="6" fill="white" stroke="#7c3a6b" stroke-width="1.5"/>
-  <rect x="649" y="126" width="176" height="23" rx="6" fill="#7c3a6b"/>
-  <rect x="649" y="143" width="176" height="6" fill="#7c3a6b"/>
-  <text x="737" y="140" font-size="9.5" fill="white" text-anchor="middle" font-style="italic">governance</text>
-  <text x="737" y="158" font-size="12" fill="#3d1930" text-anchor="middle" font-weight="700">Domain</text>
-  <text x="737" y="172" font-size="9" fill="#5f564b" text-anchor="middle">strategy grouping</text>
+  <rect x="649" y="126" width="176" height="26" rx="6" fill="#7c3a6b"/>
+  <rect x="649" y="146" width="176" height="6" fill="#7c3a6b"/>
+  <text x="737" y="143" font-size="11.5" fill="white" text-anchor="middle" font-weight="700">Domain</text>
+  <text x="737" y="168" font-size="9" fill="#5f564b" text-anchor="middle">strategy grouping</text>
+
   <rect x="649" y="216" width="176" height="78" rx="6" fill="white" stroke="#7c3a6b" stroke-width="1.5"/>
-  <rect x="649" y="216" width="176" height="23" rx="6" fill="#7c3a6b"/>
-  <rect x="649" y="233" width="176" height="6" fill="#7c3a6b"/>
-  <text x="737" y="230" font-size="9.5" fill="white" text-anchor="middle" font-style="italic">governance</text>
-  <text x="737" y="250" font-size="12" fill="#3d1930" text-anchor="middle" font-weight="700">RequirementGroup</text>
-  <text x="737" y="264" font-size="9" fill="#5f564b" text-anchor="middle">always-on . workspace-mode</text>
-  <text x="737" y="276" font-size="9" fill="#5f564b" text-anchor="middle">company . compliance</text>
-  <text x="737" y="288" font-size="9" fill="#5f564b" text-anchor="middle">requirementImplementations</text>
+  <rect x="649" y="216" width="176" height="26" rx="6" fill="#7c3a6b"/>
+  <rect x="649" y="236" width="176" height="6" fill="#7c3a6b"/>
+  <text x="737" y="233" font-size="11" fill="white" text-anchor="middle" font-weight="700">RequirementGroup</text>
+  <text x="737" y="258" font-size="9" fill="#5f564b" text-anchor="middle">always-on . workspace-mode</text>
+  <text x="737" y="270" font-size="9" fill="#5f564b" text-anchor="middle">company . compliance</text>
+  <text x="737" y="282" font-size="9" fill="#5f564b" text-anchor="middle">appliesTo . requirements</text>
+
   <rect x="649" y="316" width="176" height="58" rx="6" fill="white" stroke="#7c3a6b" stroke-width="1.5"/>
-  <rect x="649" y="316" width="176" height="23" rx="6" fill="#7c3a6b"/>
-  <rect x="649" y="333" width="176" height="6" fill="#7c3a6b"/>
-  <text x="737" y="330" font-size="9.5" fill="white" text-anchor="middle" font-style="italic">governance</text>
-  <text x="737" y="350" font-size="12" fill="#3d1930" text-anchor="middle" font-weight="700">DecisionRecord</text>
-  <text x="737" y="364" font-size="9" fill="#5f564b" text-anchor="middle">risk . decision . mitigation</text>
+  <rect x="649" y="316" width="176" height="26" rx="6" fill="#7c3a6b"/>
+  <rect x="649" y="336" width="176" height="6" fill="#7c3a6b"/>
+  <text x="737" y="333" font-size="11.5" fill="white" text-anchor="middle" font-weight="700">DecisionRecord</text>
+  <text x="737" y="358" font-size="9" fill="#5f564b" text-anchor="middle">risk . decision . mitigation</text>
+
   <rect x="649" y="396" width="176" height="58" rx="6" fill="white" stroke="#7c3a6b" stroke-width="1.5"/>
-  <rect x="649" y="396" width="176" height="23" rx="6" fill="#7c3a6b"/>
-  <rect x="649" y="413" width="176" height="6" fill="#7c3a6b"/>
-  <text x="737" y="410" font-size="9.5" fill="white" text-anchor="middle" font-style="italic">governance</text>
-  <text x="737" y="430" font-size="12" fill="#3d1930" text-anchor="middle" font-weight="700">ObjectPatch</text>
-  <text x="737" y="444" font-size="9" fill="#5f564b" text-anchor="middle">workspace overlay . deep-merge</text>
+  <rect x="649" y="396" width="176" height="26" rx="6" fill="#7c3a6b"/>
+  <rect x="649" y="416" width="176" height="6" fill="#7c3a6b"/>
+  <text x="737" y="413" font-size="11.5" fill="white" text-anchor="middle" font-weight="700">ObjectPatch</text>
+  <text x="737" y="438" font-size="9" fill="#5f564b" text-anchor="middle">workspace overlay . deep-merge</text>
+
   <rect x="649" y="476" width="176" height="58" rx="6" fill="white" stroke="#7c3a6b" stroke-width="1.5"/>
-  <rect x="649" y="476" width="176" height="23" rx="6" fill="#7c3a6b"/>
-  <rect x="649" y="493" width="176" height="6" fill="#7c3a6b"/>
-  <text x="737" y="490" font-size="9.5" fill="white" text-anchor="middle" font-style="italic">governance</text>
-  <text x="737" y="510" font-size="12" fill="#3d1930" text-anchor="middle" font-weight="700">DraftingSession</text>
-  <text x="737" y="524" font-size="9" fill="#5f564b" text-anchor="middle">work-in-progress record</text>
-  <line x1="423" y1="70" x2="647" y2="65" stroke="#5f564b" stroke-width="1.5" marker-end="url(#arr)"/>
-  <text x="534" y="58" font-size="9" fill="#5f564b" text-anchor="middle" font-style="italic">satisfies</text>
-  <line x1="737" y1="125" x2="737" y2="96" stroke="#7c3a6b" stroke-width="1.5" marker-end="url(#arr-p)"/>
-  <text x="756" y="114" font-size="9" fill="#7c3a6b" font-style="italic">groups</text>
-  <line x1="647" y1="255" x2="422" y2="336" stroke="#7c3a6b" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr-p)"/>
-  <text x="546" y="280" font-size="9" fill="#7c3a6b" text-anchor="middle" font-style="italic">governs</text>
-  <line x1="79" y1="174" x2="79" y2="156" stroke="#5f564b" stroke-width="1.2"/>
-  <line x1="232" y1="174" x2="232" y2="156" stroke="#5f564b" stroke-width="1.2"/>
-  <line x1="395" y1="174" x2="395" y2="156" stroke="#5f564b" stroke-width="1.2"/>
-  <line x1="545" y1="174" x2="545" y2="156" stroke="#5f564b" stroke-width="1.2"/>
-  <line x1="79" y1="156" x2="545" y2="156" stroke="#5f564b" stroke-width="1.2"/>
-  <line x1="315" y1="156" x2="315" y2="106" stroke="#5f564b" stroke-width="1.5" marker-end="url(#arr)"/>
-  <text x="430" y="151" font-size="9" fill="#5f564b" font-style="italic">internalComponents</text>
-  <line x1="315" y1="302" x2="315" y2="270" stroke="#1f8a5b" stroke-width="1.5"/>
-  <line x1="95" y1="270" x2="568" y2="270" stroke="#1f8a5b" stroke-width="1.5"/>
-  <line x1="95" y1="270" x2="95" y2="234" stroke="#1f8a5b" stroke-width="1.5" marker-end="url(#arr-g)"/>
-  <line x1="248" y1="270" x2="248" y2="234" stroke="#1f8a5b" stroke-width="1.5" marker-end="url(#arr-g)"/>
-  <line x1="412" y1="270" x2="412" y2="234" stroke="#1f8a5b" stroke-width="1.5" marker-end="url(#arr-g)"/>
-  <line x1="568" y1="270" x2="568" y2="234" stroke="#1f8a5b" stroke-width="1.5" marker-end="url(#arr-g)"/>
-  <text x="178" y="265" font-size="9" fill="#1f8a5b" font-style="italic">runsOn</text>
-  <line x1="185" y1="440" x2="285" y2="372" stroke="#5f564b" stroke-width="1.5" marker-end="url(#arr)"/>
-  <text x="212" y="413" font-size="9" fill="#5f564b" text-anchor="middle" font-style="italic">assembles</text>
-  <line x1="285" y1="474" x2="338" y2="477" stroke="#5f564b" stroke-width="1.5" marker-end="url(#arr)"/>
-  <text x="311" y="468" font-size="9" fill="#5f564b" text-anchor="middle" font-style="italic">follows</text>
+  <rect x="649" y="476" width="176" height="26" rx="6" fill="#7c3a6b"/>
+  <rect x="649" y="496" width="176" height="6" fill="#7c3a6b"/>
+  <text x="737" y="493" font-size="11.5" fill="white" text-anchor="middle" font-weight="700">DraftingSession</text>
+  <text x="737" y="518" font-size="9" fill="#5f564b" text-anchor="middle">work-in-progress record</text>
+
+  <line x1="285" y1="75" x2="338" y2="75" stroke="#5f564b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="311" y="66" font-size="9" fill="#5f564b" text-anchor="middle" font-style="italic">followsReferenceArchitecture</text>
+
+  <line x1="170" y1="116" x2="170" y2="140" stroke="#5f564b" stroke-width="1.5"/>
+  <line x1="95" y1="140" x2="558" y2="140" stroke="#5f564b" stroke-width="1.5"/>
+  <line x1="315" y1="140" x2="315" y2="158" stroke="#5f564b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="239" y1="140" x2="239" y2="292" stroke="#5f564b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="406" y1="140" x2="406" y2="292" stroke="#5f564b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="558" y1="140" x2="558" y2="292" stroke="#5f564b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="261" y="133" font-size="9" fill="#5f564b" text-anchor="middle" font-style="italic">serviceGroups.deployableObjects</text>
+
+  <line x1="315" y1="232" x2="315" y2="258" stroke="#1f8a5b" stroke-width="1.5"/>
+  <line x1="87" y1="258" x2="558" y2="258" stroke="#1f8a5b" stroke-width="1.5"/>
+  <line x1="87" y1="258" x2="87" y2="292" stroke="#1f8a5b" stroke-width="1.5" marker-end="url(#arr-g)"/>
+  <line x1="239" y1="258" x2="239" y2="292" stroke="#1f8a5b" stroke-width="1.5" marker-end="url(#arr-g)"/>
+  <line x1="406" y1="258" x2="406" y2="292" stroke="#1f8a5b" stroke-width="1.5" marker-end="url(#arr-g)"/>
+  <line x1="558" y1="258" x2="558" y2="292" stroke="#1f8a5b" stroke-width="1.5" marker-end="url(#arr-g)"/>
+  <text x="181" y="251" font-size="9" fill="#1f8a5b" font-style="italic">runsOn</text>
+
+  <line x1="87" y1="354" x2="87" y2="402" stroke="#5f564b" stroke-width="1.2"/>
+  <line x1="239" y1="354" x2="239" y2="402" stroke="#5f564b" stroke-width="1.2"/>
+  <line x1="406" y1="354" x2="406" y2="402" stroke="#5f564b" stroke-width="1.2"/>
+  <line x1="558" y1="354" x2="558" y2="402" stroke="#5f564b" stroke-width="1.2"/>
+  <line x1="87" y1="402" x2="558" y2="402" stroke="#5f564b" stroke-width="1.2"/>
+  <line x1="315" y1="402" x2="315" y2="436" stroke="#5f564b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="414" y="395" font-size="9" fill="#5f564b" font-style="italic">component refs</text>
+
+  <line x1="620" y1="474" x2="647" y2="65" stroke="#5f564b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="423" y1="474" x2="620" y2="474" stroke="#5f564b" stroke-width="1.5"/>
+  <text x="520" y="466" font-size="9" fill="#5f564b" text-anchor="middle" font-style="italic">satisfies</text>
+
+  <line x1="737" y1="126" x2="737" y2="96" stroke="#7c3a6b" stroke-width="1.5" marker-end="url(#arr-p)"/>
+  <text x="756" y="116" font-size="9" fill="#7c3a6b" font-style="italic">groups</text>
+
+  <line x1="649" y1="255" x2="628" y2="255" stroke="#7c3a6b" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr-p)"/>
+  <text x="638" y="246" font-size="9" fill="#7c3a6b" text-anchor="middle" font-style="italic">appliesTo</text>
+
   <text x="450" y="590" font-size="11" fill="#5f564b" text-anchor="middle" font-weight="600">DRAFT Object Model - UML Class Diagram</text>
 </svg>

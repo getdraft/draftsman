@@ -24,6 +24,7 @@ tags:
 - metering
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000009-TC09
 architecturalDecisions:
   serviceAuthentication: All Ceilometer API requests are authenticated via Keystone

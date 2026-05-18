@@ -23,6 +23,7 @@ tags:
 - web-ui
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000007-TC07
 architecturalDecisions:
   serviceAuthentication: Horizon authenticates users via Keystone credential submission.

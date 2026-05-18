@@ -24,6 +24,7 @@ tags:
 - swift-proxy
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000006-TC06
 architecturalDecisions:
   serviceAuthentication: All Swift API requests are authenticated via the Keystone

@@ -23,6 +23,7 @@ tags:
 - sdn
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000004-TC04
 architecturalDecisions:
   serviceAuthentication: All Neutron API requests are authenticated via Keystone token

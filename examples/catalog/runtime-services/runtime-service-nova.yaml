@@ -22,6 +22,7 @@ tags:
 - nova
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000001-TC01
 architecturalDecisions:
   serviceAuthentication: All Nova API requests are validated via Keystone token authentication.

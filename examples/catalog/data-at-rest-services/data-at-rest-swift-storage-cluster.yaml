@@ -23,6 +23,7 @@ tags:
 - object-storage
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000006-TC06
 architecturalDecisions:
   serviceAuthentication: All access to Swift storage nodes is via the swift-proxy-server

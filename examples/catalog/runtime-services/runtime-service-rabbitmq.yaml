@@ -22,6 +22,7 @@ tags:
 - rabbitmq
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000D-TC0D
 architecturalDecisions:
   serviceAuthentication: OpenStack services authenticate to RabbitMQ using per-service

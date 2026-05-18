@@ -23,6 +23,7 @@ tags:
 - heat
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000008-TC08
 architecturalDecisions:
   serviceAuthentication: All Heat API requests are authenticated via Keystone token

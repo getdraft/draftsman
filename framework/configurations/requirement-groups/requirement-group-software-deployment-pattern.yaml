@@ -150,7 +150,7 @@ requirements:
     key: noCrossBoundaryConnections
     example: All services in this pattern communicate only within the same tier and zone
   minimumSatisfactions: 1
-  requirementMode: recommended
+  requirementMode: mandatory
   naAllowed: true
   naRationale: Acceptable when the deployment has only a single tier and no network zones.
   validAnswerTypes:

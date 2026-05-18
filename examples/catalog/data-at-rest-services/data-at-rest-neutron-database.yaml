@@ -24,6 +24,7 @@ tags:
 - mariadb
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000E-TC0E
 architecturalDecisions:
   serviceAuthentication: Neutron connects to its database schema using a dedicated

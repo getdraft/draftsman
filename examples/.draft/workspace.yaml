@@ -1,0 +1,9 @@
+workspace:
+  name: draftsman-examples
+  displayName: Draftsman Examples
+  companyName: Draftsman
+
+businessTaxonomy:
+  pillars:
+  - id: business-pillar.infrastructure
+    name: Infrastructure

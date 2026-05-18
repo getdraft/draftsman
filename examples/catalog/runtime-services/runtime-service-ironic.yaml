@@ -23,6 +23,7 @@ tags:
 - ironic
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000A-TC0A
 architecturalDecisions:
   serviceAuthentication: All Ironic API requests are authenticated via Keystone token

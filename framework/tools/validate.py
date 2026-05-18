@@ -103,6 +103,20 @@ VOCABULARY_DEFINITIONS = {
         "default_file": "failure-domains.yaml",
         "sentinels": {DRAFTING_INTERVIEW_REQUIRED},
     },
+    "connectionProtocols": {
+        "label": "connection protocol",
+        "default_file": "connection-protocols.yaml",
+        "sentinels": {DRAFTING_INTERVIEW_REQUIRED},
+    },
+    "networkZones": {
+        "label": "network zone",
+        "default_file": "network-zones.yaml",
+        "sentinels": {DRAFTING_INTERVIEW_REQUIRED},
+    },
+    "networkZonePatterns": {
+        "label": "network zone pattern",
+        "default_file": "network-zone-patterns.yaml",
+    },
 }
 
 
@@ -1582,6 +1596,8 @@ def validate_workspace_vocabulary_references(
     data_vocabulary = workspace_vocabulary.get("dataClassificationLevels")
     availability_vocabulary = workspace_vocabulary.get("availabilityTiers")
     failure_vocabulary = workspace_vocabulary.get("failureDomains")
+    connection_protocol_vocabulary = workspace_vocabulary.get("connectionProtocols")
+    network_zone_vocabulary = workspace_vocabulary.get("networkZones")
     deployable_or_pattern_types = STANDARD_TYPES | {"software_deployment_pattern"}
 
     for path, obj in objects.items():
@@ -1601,6 +1617,20 @@ def validate_workspace_vocabulary_references(
             )
 
         if obj.get("type") == "software_deployment_pattern":
+            network_zones = obj.get("networkZones") or []
+            if isinstance(network_zones, list):
+                for index, network_zone in enumerate(network_zones):
+                    if not isinstance(network_zone, dict):
+                        continue
+                    validate_vocabulary_value(
+                        obj,
+                        path,
+                        f"networkZones[{index}].id",
+                        network_zone.get("id"),
+                        network_zone_vocabulary,
+                        failures,
+                        warnings,
+                    )
             service_groups = obj.get("serviceGroups") or []
             if isinstance(service_groups, list):
                 for index, service_group in enumerate(service_groups):
@@ -1615,6 +1645,34 @@ def validate_workspace_vocabulary_references(
                         failures,
                         warnings,
                     )
+                    deployable_objects = service_group.get("deployableObjects") or []
+                    if isinstance(deployable_objects, list):
+                        for object_index, deployable_object in enumerate(deployable_objects):
+                            if not isinstance(deployable_object, dict):
+                                continue
+                            validate_vocabulary_value(
+                                obj,
+                                path,
+                                f"serviceGroups[{index}].deployableObjects[{object_index}].networkZone",
+                                deployable_object.get("networkZone"),
+                                network_zone_vocabulary,
+                                failures,
+                                warnings,
+                            )
+                    connections = service_group.get("connections") or []
+                    if isinstance(connections, list):
+                        for connection_index, connection in enumerate(connections):
+                            if not isinstance(connection, dict):
+                                continue
+                            validate_vocabulary_value(
+                                obj,
+                                path,
+                                f"serviceGroups[{index}].connections[{connection_index}].protocol",
+                                connection.get("protocol"),
+                                connection_protocol_vocabulary,
+                                failures,
+                                warnings,
+                            )
 
         if obj.get("type") not in deployable_or_pattern_types:
             continue

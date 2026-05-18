@@ -23,6 +23,7 @@ tags:
 - keystone
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000002-TC02
 architecturalDecisions:
   serviceAuthentication: Keystone is the root of trust for all OpenStack API authentication.

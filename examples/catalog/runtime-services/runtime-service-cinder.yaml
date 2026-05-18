@@ -22,6 +22,7 @@ tags:
 - cinder
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000005-TC05
 architecturalDecisions:
   serviceAuthentication: All Cinder API requests are authenticated via Keystone token

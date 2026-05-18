@@ -22,6 +22,7 @@ tags:
 - glance
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000003-TC03
 architecturalDecisions:
   serviceAuthentication: All Glance API requests are authenticated via Keystone token

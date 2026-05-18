@@ -22,6 +22,7 @@ tags:
 - trove
 - iaas
 deliveryModel: self-managed
+host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000B-TC0B
 architecturalDecisions:
   serviceAuthentication: All Trove API requests are authenticated via Keystone token

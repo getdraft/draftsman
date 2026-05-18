@@ -1,0 +1,21 @@
+schemaVersion: '1.0'
+uid: STCK00000F-HS0F
+type: host
+name: OpenStack Linux Service Host
+description: 'General-purpose self-managed Linux host standard for the OpenStack example
+  control-plane, data, and utility services. This models the reusable substrate pattern,
+  not a single node role.
+
+  '
+version: 1.0.0
+catalogStatus: draft
+lifecycleStatus: existing-only
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+tags:
+- host
+- openstack
+- linux
+operatingSystemComponent: 01KQQ4Q025-3HXA
+computePlatformComponent: STCK00000F-TC0F
