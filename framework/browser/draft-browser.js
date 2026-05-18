@@ -15,6 +15,60 @@ document.getElementById('catalog-name').textContent = browserData.catalogName ||
 document.getElementById('browser-mode').textContent = 'GitHub Pages';
 let editorState = null;
 let requirementImportState = null;
+
+// ── Deployment Targets view ─────────────────────────────────────────────────
+const DT_PROVIDERS = [
+  { id: 'aws',        name: 'AWS',            category: 'public-cloud' },
+  { id: 'gcp',        name: 'Google Cloud',   category: 'public-cloud' },
+  { id: 'azure',      name: 'Azure',          category: 'public-cloud' },
+  { id: 'onprem',     name: 'On-Premises',    category: 'private'      },
+  { id: 'colocation', name: 'Colocation',     category: 'private'      },
+  { id: 'saas',       name: 'SaaS',           category: 'saas'         },
+  { id: 'cloudflare', name: 'Cloudflare',     category: 'edge'         },
+  { id: 'customer',   name: 'Customer Site',  category: 'customer'     },
+  { id: 'unknown',    name: 'Unclassified',   category: 'unknown'      },
+];
+const DT_PROVIDER_COLORS = {
+  aws:        'oklch(0.68 0.13 65)',
+  gcp:        'oklch(0.60 0.13 240)',
+  azure:      'oklch(0.60 0.13 220)',
+  onprem:     'oklch(0.45 0.05 270)',
+  colocation: 'oklch(0.55 0.04 270)',
+  saas:       'oklch(0.55 0.13 320)',
+  cloudflare: 'oklch(0.65 0.13 50)',
+  customer:   'oklch(0.62 0.13 90)',
+  unknown:    'oklch(0.65 0.00 0)',
+};
+const DT_TYPE_LABELS = {
+  'cloud-region':  'Cloud region',
+  'cloud-account': 'Cloud account',
+  'k8s-cluster':   'Kubernetes cluster',
+  'colocation':    'Colocation',
+  'on-prem':       'On-premises',
+  'saas-tenant':   'SaaS tenant',
+  'customer-site': 'Customer site',
+  'edge-network':  'Edge network',
+};
+const DT_STATUS_OPTS = [
+  { id: 'all',      label: 'All'      },
+  { id: 'approved', label: 'Approved' },
+  { id: 'proposed', label: 'Proposed' },
+  { id: 'ad-hoc',   label: 'Ad-hoc'  },
+  { id: 'unused',   label: 'Unused'  },
+];
+let _dtVM             = null;      // built once per view entry
+let _dtActiveId       = null;      // currently open drawer
+let _dtQuery          = '';
+let _dtTypeFilter     = 'all';
+let _dtStatusFilter   = 'all';
+let _dtProviderFilter = null;      // Set<string> | null (null = all)
+let _dtResizeObserver = null;
+let _dtWorldData      = null;
+let _dtWorldPromise   = null;
+let _dtMapSize        = { w: 900, h: 450 };
+let _dtEscHandler     = null;
+// ───────────────────────────────────────────────────────────────────────────
+
 const DEPLOYABLE_OBJECT_TYPES = [
   'technology_component',
   'host',
@@ -2250,73 +2304,581 @@ function renderTechnologiesView() {
 }
 
 // ── Deployment Targets view — SDPs grouped by target ────────────────
+// ── Deployment Targets view helpers ────────────────────────────────────────
+
+function _dtInferProvider(s) {
+  if (!s) return 'unknown';
+  const u = s.toUpperCase();
+  if (/\bAWS\b|AMAZON|EC2\b|EKS\b|ECS\b|LAMBDA|SAGEMAKER|\bS3\b/.test(u)) return 'aws';
+  if (/\bGCP\b|GOOGLE.?CLOUD|GKE\b|BIGQUERY|CLOUD.?RUN/.test(u)) return 'gcp';
+  if (/\bAZURE\b|MICROSOFT|AKS\b/.test(u)) return 'azure';
+  if (/CLOUDFLARE/.test(u)) return 'cloudflare';
+  if (/SNOWFLAKE|SALESFORCE|SERVICENOW|OKTA|WORKDAY|\bSAAS\b/.test(u)) return 'saas';
+  if (/COLOC|EQUINIX|DATA.?CENTER|DATACENTER/.test(u)) return 'colocation';
+  if (/ON.?PREM|MAINFRAME|OPENSTACK/.test(u)) return 'onprem';
+  if (/\bCUSTOMER\b/.test(u)) return 'customer';
+  return 'unknown';
+}
+
+function _dtBuildVM() {
+  const vocabTargets = (browserData.vocabulary?.deploymentTargets?.values || []);
+  const sdps = (browserData.objects || []).filter(o => o.type === 'software_deployment_pattern');
+
+  // target-id → [ {id, name, pillar} ]
+  const targetToSdps = new Map();
+  sdps.forEach(sdp => {
+    const seen = new Set();
+    (sdp.serviceGroups || []).forEach(sg => {
+      const tid = sg.deploymentTarget;
+      if (!tid || seen.has(tid)) return;
+      seen.add(tid);
+      if (!targetToSdps.has(tid)) targetToSdps.set(tid, []);
+      targetToSdps.get(tid).push({ id: sdp.uid, name: sdp.name || sdp.uid, pillar: sdp.pillar || '' });
+    });
+  });
+
+  const out = [];
+  const seenIds = new Set();
+
+  vocabTargets.forEach(v => {
+    seenIds.add(v.id);
+    const sdpList = targetToSdps.get(v.id) || [];
+    const rawStatus = v.status || 'approved';
+    const status = sdpList.length === 0 ? 'unused' : rawStatus;
+    out.push({
+      id: v.id, name: v.name || v.id,
+      provider: v.provider || _dtInferProvider(v.name || v.id),
+      type: v.type || null, status,
+      lat: v.lat != null ? v.lat : null,
+      lon: v.lon != null ? v.lon : null,
+      region: v.region || null, notes: v.notes || null,
+      sdps: sdpList,
+    });
+  });
+
+  // ad-hoc: referenced in SDPs but absent from vocabulary
+  targetToSdps.forEach((sdpList, tid) => {
+    if (seenIds.has(tid)) return;
+    out.push({
+      id: tid, name: tid,
+      provider: _dtInferProvider(tid),
+      type: null, status: 'ad-hoc',
+      lat: null, lon: null, region: null, notes: null,
+      sdps: sdpList,
+    });
+  });
+
+  return out;
+}
+
+function _dtBuildClusters(targets, projection) {
+  const projected = targets.map(t => {
+    const xy = projection([t.lon, t.lat]);
+    if (!xy || !isFinite(xy[0]) || !isFinite(xy[1])) return null;
+    return { ...t, x: xy[0], y: xy[1] };
+  }).filter(Boolean);
+
+  const RAD = 18;
+  const result = [];
+  projected.forEach(t => {
+    const existing = result.find(c => Math.hypot(c.x - t.x, c.y - t.y) < RAD);
+    if (existing) {
+      existing.targets.push(t);
+      const n = existing.targets.length;
+      existing.x = (existing.x * (n - 1) + t.x) / n;
+      existing.y = (existing.y * (n - 1) + t.y) / n;
+    } else {
+      result.push({ x: t.x, y: t.y, targets: [t] });
+    }
+  });
+  return result;
+}
+
+function _dtFilteredTargets() {
+  if (!_dtVM) return [];
+  const q = _dtQuery.trim().toLowerCase();
+  return _dtVM.filter(t => {
+    if (_dtStatusFilter !== 'all' && t.status !== _dtStatusFilter) return false;
+    if (_dtTypeFilter !== 'all' && t.type !== _dtTypeFilter) return false;
+    if (_dtProviderFilter && !_dtProviderFilter.has(t.provider)) return false;
+    if (q && !t.name.toLowerCase().includes(q) && !t.id.toLowerCase().includes(q) && !(t.region || '').toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+function _dtLoadWorld() {
+  if (_dtWorldData) return Promise.resolve(_dtWorldData);
+  if (_dtWorldPromise) return _dtWorldPromise;
+  const local = 'assets/world-atlas/countries-110m.json';
+  const cdn = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
+  _dtWorldPromise = fetch(local)
+    .catch(() => fetch(cdn))
+    .then(r => r.json())
+    .then(world => {
+      _dtWorldData = topojson.feature(world, world.objects.countries);
+      return _dtWorldData;
+    });
+  return _dtWorldPromise;
+}
+
+function _dtShowTooltip(e, cluster, container) {
+  const tt = container.querySelector('#dt-map-tooltip');
+  if (!tt) return;
+  const rect = container.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = cluster.y;
+  const sdpCount = cluster.targets.reduce((s, t) => s + t.sdps.length, 0);
+  let html;
+  if (cluster.targets.length === 1) {
+    const t = cluster.targets[0];
+    html = `<div class="tt-name">${escapeHtml(t.name)}</div>` +
+      `<div class="tt-meta">${t.region ? escapeHtml(t.region) + ' · ' : ''}${sdpCount} SDP${sdpCount === 1 ? '' : 's'}</div>`;
+  } else {
+    html = `<div class="tt-name">${cluster.targets.length} targets here</div>` +
+      `<div class="tt-meta">${cluster.targets.map(t => escapeHtml(t.name)).join(' · ')}</div>`;
+  }
+  tt.innerHTML = html;
+  tt.style.display = '';
+  tt.style.left = x + 'px';
+  tt.style.top = y + 'px';
+}
+
+function _dtDrawMap() {
+  const container = document.getElementById('dt-map-container');
+  if (!container) return;
+
+  const w = Math.max(600, container.clientWidth || 900);
+  const h = Math.max(380, Math.min(640, Math.round(w * 0.5)));
+  _dtMapSize = { w, h };
+
+  if (!_dtWorldData || typeof d3 === 'undefined' || typeof topojson === 'undefined') {
+    container.innerHTML = `<div class="dt-map-loading">Loading world map…</div>`;
+    return;
+  }
+
+  const projection = d3.geoNaturalEarth1()
+    .fitSize([w - 16, h - 16], { type: 'Sphere' })
+    .precision(0.1)
+    .translate([w / 2, h / 2 - 6]);
+
+  const pathGen = d3.geoPath(projection);
+  const graticule = d3.geoGraticule().step([20, 20])();
+  const spherePath = pathGen({ type: 'Sphere' }) || '';
+  const graticulePath = pathGen(graticule) || '';
+
+  const countryPaths = _dtWorldData.features.map(feat => {
+    const d = pathGen(feat);
+    return d ? `<path class="map-land" d="${d}"/>` : '';
+  }).join('');
+
+  // Map shows all geo targets, filtered only by provider toggle
+  const allGeo = (_dtVM || []).filter(t => t.lat != null && t.lon != null);
+  const mapTargets = _dtProviderFilter ? allGeo.filter(t => _dtProviderFilter.has(t.provider)) : allGeo;
+  const clusters = _dtBuildClusters(mapTargets, projection);
+
+  const markerSvg = clusters.map((c, i) => {
+    const isActive = c.targets.some(t => t.id === _dtActiveId);
+    const dimmed = _dtActiveId != null && !isActive;
+    const prov = c.targets[0].provider || 'unknown';
+    const color = DT_PROVIDER_COLORS[prov] || 'var(--accent)';
+    const count = c.targets.length;
+    const r = count > 1 ? 11 : 7;
+    const cls = ['dt-marker', isActive && 'is-active', dimmed && 'is-dimmed'].filter(Boolean).join(' ');
+    return `<g class="${cls}" data-dt-ci="${i}" style="color:${color};cursor:pointer" transform="translate(${c.x.toFixed(1)},${c.y.toFixed(1)})">` +
+      `<circle class="dt-marker-halo" r="${r + 8}"/>` +
+      `<circle class="dt-marker-core" r="${r}"/>` +
+      (count > 1 ? `<text class="dt-marker-count">${count}</text>` : '') +
+      `</g>`;
+  }).join('');
+
+  container.innerHTML =
+    `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid meet" style="display:block;width:100%;height:auto">` +
+    `<defs><clipPath id="dt-sphere-clip"><path d="${spherePath}"/></clipPath></defs>` +
+    `<path class="map-sphere" d="${spherePath}"/>` +
+    `<g clip-path="url(#dt-sphere-clip)"><path class="map-graticule" d="${graticulePath}"/>` +
+    countryPaths + `</g>` +
+    `<g>${markerSvg}</g>` +
+    `</svg>` +
+    `<div id="dt-map-tooltip" class="dt-map-tooltip" style="display:none;position:absolute;pointer-events:none"></div>`;
+
+  container.querySelectorAll('.dt-marker').forEach((el, i) => {
+    const c = clusters[i];
+    if (!c) return;
+    el.addEventListener('mouseenter', e => _dtShowTooltip(e, c, container));
+    el.addEventListener('mousemove',  e => _dtShowTooltip(e, c, container));
+    el.addEventListener('mouseleave', () => {
+      const tt = container.querySelector('#dt-map-tooltip');
+      if (tt) tt.style.display = 'none';
+    });
+    el.addEventListener('click', () => {
+      if (c.targets.length === 1) {
+        _dtOpenDrawer(c.targets[0].id);
+      } else {
+        const idx = c.targets.findIndex(t => t.id === _dtActiveId);
+        const next = c.targets[(idx + 1) % c.targets.length];
+        _dtOpenDrawer(next.id);
+      }
+    });
+  });
+}
+
+function _dtProviderColor(id) {
+  return DT_PROVIDER_COLORS[id] || DT_PROVIDER_COLORS['unknown'];
+}
+
+function _dtStatusTagClass(status) {
+  switch (status) {
+    case 'approved': return 'dt-tag dt-tag-approved';
+    case 'proposed': return 'dt-tag dt-tag-proposed';
+    case 'ad-hoc':   return 'dt-tag dt-tag-ad-hoc';
+    case 'unused':   return 'dt-tag dt-tag-unused';
+    default:         return 'dt-tag';
+  }
+}
+
+function _dtCardMarkup(t) {
+  const color = _dtProviderColor(t.provider);
+  const providerMeta = DT_PROVIDERS.find(p => p.id === t.provider);
+  const providerName = providerMeta ? providerMeta.name : t.provider;
+  const typeLabel = DT_TYPE_LABELS[t.type] || t.type || '';
+  const isActive = t.id === _dtActiveId;
+
+  const sdpSection = t.sdps.length > 0
+    ? `<div class="dt-card-sdps"><div class="dt-card-sdps-label">Software Deployment Patterns</div>` +
+      `<div class="dt-card-sdps-list">${t.sdps.map(s => `<span class="dt-sdp-pill">${escapeHtml(s.name)}</span>`).join('')}</div></div>`
+    : `<div class="dt-card-sdps"><div class="dt-card-sdps-empty">No SDPs reference this target</div></div>`;
+
+  return `<div class="dt-card${isActive ? ' is-active' : ''}" data-dt-id="${escapeHtml(t.id)}" data-provider="${escapeHtml(t.provider)}">` +
+    `<div class="dt-card-top"><div><div class="dt-card-name">${escapeHtml(t.name)}</div>` +
+    `<div class="dt-card-id">${escapeHtml(t.id)}</div></div></div>` +
+    (t.region ? `<div class="dt-card-region"><span class="pin"></span>${escapeHtml(t.region)}</div>` : '') +
+    `<div class="dt-card-tags">` +
+    `<span class="dt-tag" style="color:${color}"><span class="swatch" style="background:${color}"></span>${escapeHtml(providerName)}</span>` +
+    (typeLabel ? `<span class="dt-tag dt-tag-type">${escapeHtml(typeLabel)}</span>` : '') +
+    `<span class="${_dtStatusTagClass(t.status)}">${escapeHtml(t.status)}</span>` +
+    `</div>${sdpSection}</div>`;
+}
+
+function _dtSectionMarkup(provider, targets) {
+  if (!targets.length) return '';
+  const p = DT_PROVIDERS.find(pr => pr.id === provider);
+  const provName = p ? p.name : provider;
+  const color = _dtProviderColor(provider);
+  const sdpCount = [...new Set(targets.flatMap(t => t.sdps.map(s => s.id)))].length;
+  return `<div class="dt-provider-section" data-provider="${escapeHtml(provider)}">` +
+    `<div class="dt-section-head">` +
+    `<div class="dt-section-title"><span class="dt-section-dot" style="color:${color}"></span><h2>${escapeHtml(provName)}</h2></div>` +
+    `<span class="dt-section-meta">${targets.length} target${targets.length === 1 ? '' : 's'} · ${sdpCount} SDP${sdpCount === 1 ? '' : 's'}</span>` +
+    `</div><div class="dt-grid">${targets.map(t => _dtCardMarkup(t)).join('')}</div></div>`;
+}
+
+function _dtDrawerMarkup(t) {
+  if (!t) return '';
+  const color = _dtProviderColor(t.provider);
+  const providerMeta = DT_PROVIDERS.find(p => p.id === t.provider);
+  const providerName = providerMeta ? providerMeta.name : t.provider;
+  const typeLabel = DT_TYPE_LABELS[t.type] || t.type || '—';
+
+  const coordRow = (t.lat != null && t.lon != null)
+    ? `<div class="dt-drawer-row"><div class="k">Coordinates</div><div class="v">${t.lat.toFixed(3)}°, ${t.lon.toFixed(3)}°</div></div>`
+    : '';
+  const notesRow = t.notes
+    ? `<div class="dt-drawer-row"><div class="k">Notes</div><div class="v">${escapeHtml(t.notes)}</div></div>`
+    : '';
+  const sdpList = t.sdps.length > 0
+    ? `<div class="dt-drawer-row"><div class="k">Software Deployment Patterns</div><div class="dt-drawer-sdp-list">` +
+      t.sdps.map(s =>
+        `<div class="dt-drawer-sdp" data-dt-sdp="${escapeHtml(s.id)}">` +
+        `<div><div class="name">${escapeHtml(s.name)}</div>${s.pillar ? `<div class="pillar">${escapeHtml(s.pillar)}</div>` : ''}</div>` +
+        `<span class="arrow">→</span></div>`
+      ).join('') +
+      `</div></div>`
+    : `<div class="dt-drawer-row"><div class="k">Software Deployment Patterns</div><div class="v" style="color:var(--muted)">None — target is unused</div></div>`;
+
+  // TODO(v2): per-target detail route #view=deployment-target&id=<id>
+  return `<div class="dt-drawer-head">` +
+    `<button class="dt-drawer-close" id="dt-drawer-close" aria-label="Close">✕</button>` +
+    `<div class="dt-drawer-eyebrow" style="color:${color}"><span class="dot" style="border-color:${color}"></span>${escapeHtml(providerName)}</div>` +
+    `<h3>${escapeHtml(t.name)}</h3><div class="dt-drawer-uid">${escapeHtml(t.id)}</div></div>` +
+    `<div class="dt-drawer-body">` +
+    `<div class="dt-drawer-row"><div class="k">Type</div><div class="v">${escapeHtml(typeLabel)}</div></div>` +
+    `<div class="dt-drawer-row"><div class="k">Status</div><div class="v"><span class="${_dtStatusTagClass(t.status)}">${escapeHtml(t.status)}</span></div></div>` +
+    (t.region ? `<div class="dt-drawer-row"><div class="k">Region / Location</div><div class="v">${escapeHtml(t.region)}</div></div>` : '') +
+    coordRow + notesRow + sdpList +
+    `</div>`;
+}
+
+function _dtOpenDrawer(id) {
+  _dtActiveId = id;
+  const t = (_dtVM || []).find(v => v.id === id);
+  const drawer = document.getElementById('dt-drawer');
+  const overlay = document.getElementById('dt-drawer-overlay');
+  if (!drawer || !t) return;
+  drawer.innerHTML = _dtDrawerMarkup(t);
+  requestAnimationFrame(() => {
+    drawer.classList.add('open');
+    if (overlay) overlay.classList.add('open');
+  });
+  document.querySelectorAll('.dt-card').forEach(el => {
+    el.classList.toggle('is-active', el.dataset.dtId === id);
+  });
+  _dtDrawMap();
+  if (_dtEscHandler) document.removeEventListener('keydown', _dtEscHandler);
+  _dtEscHandler = e => { if (e.key === 'Escape') _dtCloseDrawer(); };
+  document.addEventListener('keydown', _dtEscHandler);
+  const closeBtn = drawer.querySelector('#dt-drawer-close');
+  if (closeBtn) closeBtn.addEventListener('click', _dtCloseDrawer);
+  drawer.querySelectorAll('[data-dt-sdp]').forEach(el => {
+    el.addEventListener('click', () => {
+      const sdpId = el.dataset.dtSdp;
+      if (sdpId) { _dtCloseDrawer(); renderDetailView(sdpId); }
+    });
+  });
+}
+
+function _dtCloseDrawer() {
+  _dtActiveId = null;
+  const drawer = document.getElementById('dt-drawer');
+  const overlay = document.getElementById('dt-drawer-overlay');
+  if (drawer) drawer.classList.remove('open');
+  if (overlay) overlay.classList.remove('open');
+  document.querySelectorAll('.dt-card').forEach(el => el.classList.remove('is-active'));
+  _dtDrawMap();
+  if (_dtEscHandler) { document.removeEventListener('keydown', _dtEscHandler); _dtEscHandler = null; }
+}
+
+function _dtSectionsMarkup() {
+  const filtered = _dtFilteredTargets();
+  if (!filtered.length) return `<div class="dt-empty-block">No targets match the current filters.</div>`;
+  const byProvider = new Map(DT_PROVIDERS.map(p => [p.id, []]));
+  filtered.forEach(t => {
+    const list = byProvider.get(t.provider) || byProvider.get('unknown');
+    list.push(t);
+  });
+  return DT_PROVIDERS
+    .filter(p => (byProvider.get(p.id) || []).length > 0)
+    .map(p => _dtSectionMarkup(p.id, byProvider.get(p.id)))
+    .join('');
+}
+
+function _dtSummaryGridMarkup() {
+  const all = _dtVM || [];
+  const approved = all.filter(t => t.status === 'approved').length;
+  const proposed = all.filter(t => t.status === 'proposed').length;
+  const adHoc    = all.filter(t => t.status === 'ad-hoc').length;
+  const unused   = all.filter(t => t.status === 'unused').length;
+  const sdpCount = (browserData.objects || []).filter(o => o.type === 'software_deployment_pattern').length;
+
+  const provCounts = new Map();
+  all.forEach(t => provCounts.set(t.provider, (provCounts.get(t.provider) || 0) + 1));
+  const maxCount = Math.max(...provCounts.values(), 1);
+
+  const barRows = DT_PROVIDERS
+    .filter(p => provCounts.has(p.id))
+    .sort((a, b) => (provCounts.get(b.id) || 0) - (provCounts.get(a.id) || 0))
+    .map(p => {
+      const n = provCounts.get(p.id) || 0;
+      const pct = Math.round((n / maxCount) * 100);
+      const color = _dtProviderColor(p.id);
+      return `<div class="dt-bar-row">` +
+        `<div class="dt-bar-label"><span class="swatch" style="background:${color}"></span>${escapeHtml(p.name)}</div>` +
+        `<div class="dt-bar-track"><div class="dt-bar-fill" style="width:${pct}%;background:${color}"></div></div>` +
+        `<div class="dt-bar-count">${n}</div></div>`;
+    }).join('');
+
+  return `<div class="dt-summary-grid">` +
+    `<div class="dt-provider-chart"><h3>By Provider</h3><div class="sub">Distribution across all ${all.length} targets</div>` +
+    (barRows || `<p style="color:var(--muted);font-size:13px">No targets yet</p>`) + `</div>` +
+    `<div class="dt-summary-card"><h3>Vocabulary Health</h3><div class="sub">Based on ${all.length} total targets</div>` +
+    `<div class="dt-summary-stat"><span class="k">Approved</span><span class="v ok">${approved}</span></div>` +
+    `<div class="dt-summary-stat"><span class="k">Proposed</span><span class="v">${proposed}</span></div>` +
+    `<div class="dt-summary-stat"><span class="k">Ad-hoc</span><span class="v${adHoc > 0 ? ' warn' : ' ok'}">${adHoc}</span></div>` +
+    `<div class="dt-summary-stat"><span class="k">Unused</span><span class="v${unused > 0 ? ' warn' : ''}">${unused}</span></div>` +
+    `<div class="dt-summary-stat"><span class="k">SDPs covered</span><span class="v">${sdpCount}</span></div>` +
+    `</div></div>`;
+}
+
+function _dtLegendMarkup() {
+  const geoProviders = new Set((_dtVM || []).filter(t => t.lat != null && t.lon != null).map(t => t.provider));
+  const items = DT_PROVIDERS.filter(p => geoProviders.has(p.id)).map(p => {
+    const color = _dtProviderColor(p.id);
+    const active = !_dtProviderFilter || _dtProviderFilter.has(p.id);
+    return `<span class="dt-legend-item${active ? '' : ' is-off'}" data-dt-legend="${escapeHtml(p.id)}" style="color:${color}">` +
+      `<span class="sw" style="border-color:${color}"></span>${escapeHtml(p.name)}</span>`;
+  }).join('');
+  if (!items) return '';
+  return `<div class="dt-map-legend" id="dt-map-legend"><span class="dt-map-legend-label">Providers</span>${items}</div>`;
+}
+
+function _dtTypeChips() {
+  const types = [...new Set((_dtVM || []).map(t => t.type).filter(Boolean))].sort();
+  return ['all', ...types].map(t => {
+    const label = t === 'all' ? 'All types' : (DT_TYPE_LABELS[t] || t);
+    return `<button class="dt-chip${_dtTypeFilter === t ? ' active' : ''}" data-dt-type="${escapeHtml(t)}">${escapeHtml(label)}</button>`;
+  }).join('');
+}
+
+function _dtStatusChips() {
+  return DT_STATUS_OPTS.map(o =>
+    `<button class="dt-chip${_dtStatusFilter === o.id ? ' active' : ''}" data-dt-status="${escapeHtml(o.id)}">${escapeHtml(o.label)}</button>`
+  ).join('');
+}
+
+function _dtRerender() {
+  const filtered = _dtFilteredTargets();
+  const sectionsRoot = document.getElementById('dt-sections-root');
+  if (sectionsRoot) sectionsRoot.innerHTML = _dtSectionsMarkup();
+  const countEl = document.getElementById('dt-result-count');
+  if (countEl) countEl.textContent = `${filtered.length} target${filtered.length === 1 ? '' : 's'}`;
+  const typeChipGroup = document.getElementById('dt-type-chips');
+  if (typeChipGroup) typeChipGroup.innerHTML = _dtTypeChips();
+  const statusChipGroup = document.getElementById('dt-status-chips');
+  if (statusChipGroup) statusChipGroup.innerHTML = _dtStatusChips();
+  const legendEl = document.getElementById('dt-map-legend');
+  if (legendEl) legendEl.outerHTML = _dtLegendMarkup() || '<div id="dt-map-legend"></div>';
+  _dtDrawMap();
+  attachDtHandlers();
+}
+
+function attachDtHandlers() {
+  const view = pageRoot.querySelector('.dt-view');
+  if (!view) return;
+  if (view._dtHandler) view.removeEventListener('click', view._dtHandler);
+  if (view._dtInputHandler) view.removeEventListener('input', view._dtInputHandler);
+
+  view._dtHandler = function(e) {
+    const card = e.target.closest('.dt-card');
+    if (card && card.dataset.dtId) { _dtOpenDrawer(card.dataset.dtId); return; }
+    const typeChip = e.target.closest('[data-dt-type]');
+    if (typeChip) { _dtTypeFilter = typeChip.dataset.dtType; _dtRerender(); return; }
+    const statusChip = e.target.closest('[data-dt-status]');
+    if (statusChip) { _dtStatusFilter = statusChip.dataset.dtStatus; _dtRerender(); return; }
+    const legendItem = e.target.closest('[data-dt-legend]');
+    if (legendItem) {
+      const pid = legendItem.dataset.dtLegend;
+      if (!_dtProviderFilter) {
+        _dtProviderFilter = new Set([pid]);
+      } else if (_dtProviderFilter.has(pid) && _dtProviderFilter.size === 1) {
+        _dtProviderFilter = null;
+      } else if (_dtProviderFilter.has(pid)) {
+        _dtProviderFilter = new Set([..._dtProviderFilter].filter(x => x !== pid));
+      } else {
+        _dtProviderFilter = new Set([..._dtProviderFilter, pid]);
+      }
+      _dtRerender();
+      return;
+    }
+  };
+  view._dtInputHandler = function(e) {
+    if (e.target.id === 'dt-search') { _dtQuery = e.target.value; _dtRerender(); }
+  };
+  view.addEventListener('click', view._dtHandler);
+  view.addEventListener('input', view._dtInputHandler);
+
+  const overlay = document.getElementById('dt-drawer-overlay');
+  if (overlay && !overlay._dtClose) {
+    overlay._dtClose = true;
+    overlay.addEventListener('click', _dtCloseDrawer);
+  }
+}
+
 function renderDeploymentTargetsView() {
   currentMode = 'deployment-targets';
   currentDetailId = null;
   destroyDetailCy();
   destroySdpGraphCy();
   destroyImpactCy();
+
+  // Cleanup previous DT state
+  if (_dtResizeObserver) { _dtResizeObserver.disconnect(); _dtResizeObserver = null; }
+  if (_dtEscHandler) { document.removeEventListener('keydown', _dtEscHandler); _dtEscHandler = null; }
+  _dtQuery = ''; _dtTypeFilter = 'all'; _dtStatusFilter = 'all';
+  _dtProviderFilter = null; _dtActiveId = null;
+
   syncHashForDeploymentTargetsView();
   renderSidebarContent('');
 
-  const sdps = (browserData.objects || []).filter(o => o.type === 'software_deployment_pattern');
-  // Build target → SDPs map
-  const targetMap = new Map();
-  const unassigned = [];
-  sdps.forEach(sdp => {
-    const targets = new Set();
-    (sdp.serviceGroups || []).forEach(sg => {
-      if (sg.deploymentTarget) targets.add(sg.deploymentTarget);
-    });
-    if (targets.size === 0) {
-      unassigned.push(sdp);
-    } else {
-      targets.forEach(t => {
-        if (!targetMap.has(t)) targetMap.set(t, []);
-        targetMap.get(t).push(sdp);
-      });
-    }
-  });
-  if (unassigned.length) targetMap.set('(no deployment target)', unassigned);
-
-  // Enrich target names from vocabulary if available
-  const vocabTargets = (browserData.vocabulary?.deploymentTargets?.values || []);
-  const vocabTargetById = Object.fromEntries(vocabTargets.map(v => [v.id, v]));
-
-  const targetCards = [...targetMap.entries()].map(([targetId, targetSdps]) => {
-    const vocabEntry = vocabTargetById[targetId];
-    const targetLabel = vocabEntry?.name || targetId;
-    const targetMeta = vocabEntry ? `${vocabEntry.type || ''} ${vocabEntry.provider ? `(${vocabEntry.provider})` : ''}`.trim() : '';
-    return `
-      <div class="target-card">
-        <div class="target-card-header">
-          <span>${escapeHtml(targetLabel)}</span>
-          ${targetMeta ? `<span style="font-size:0.78rem;color:var(--text-muted)">${escapeHtml(targetMeta)}</span>` : ''}
-          <span class="badge badge-inactive">${targetSdps.length} SDP${targetSdps.length === 1 ? '' : 's'}</span>
-        </div>
-        <div class="target-sdp-list">
-          ${targetSdps.map(sdp => `
-            <span class="ard-link" data-object-link="${escapeHtml(sdp.uid || '')}">${escapeHtml(sdp.name || sdp.uid || '')}</span>
-          `).join('')}
-        </div>
-      </div>
-    `;
-  }).join('');
+  _dtVM = _dtBuildVM();
+  const all = _dtVM;
+  const sdpCount = (browserData.objects || []).filter(o => o.type === 'software_deployment_pattern').length;
+  const adHoc = all.filter(t => t.status === 'ad-hoc').length;
 
   pageRoot.innerHTML = `
-    <div class="view-shell">
+    <div class="view-shell dt-view">
       ${topNavMarkup()}
-      ${subviewHeaderMarkup('Home', 'home', 'Deployment Targets', `${targetMap.size} target${targetMap.size === 1 ? '' : 's'} · ${sdps.length} deployment pattern${sdps.length === 1 ? '' : 's'}`)}
-      <div class="targets-list">
-        ${targetCards || '<p class="empty-state">No software deployment patterns found.</p>'}
+      <div class="dt-page">
+        ${subviewHeaderMarkup('Home', 'home', 'Deployment Targets',
+          `${all.length} target${all.length === 1 ? '' : 's'} · ${sdpCount} SDP${sdpCount === 1 ? '' : 's'}`)}
+
+        ${adHoc > 0
+          ? `<div style="margin:16px 0 0;padding:10px 14px;background:var(--warn-soft);border:1px solid oklch(0.85 0.07 60);border-radius:8px;font-size:12.5px;color:oklch(0.48 0.12 60)">
+              <strong>${adHoc} ad-hoc target${adHoc === 1 ? '' : 's'}</strong> referenced in SDPs but not declared in the vocabulary.
+              Add them to <code>vocabulary/deployment-targets.yaml</code> to govern them.
+             </div>`
+          : ''}
+
+        <div class="dt-map-panel">
+          <div class="dt-map-panel-head">
+            <div>
+              <span class="eyebrow">Geographic footprint</span>
+              <h2>Deployment map</h2>
+            </div>
+          </div>
+          <div class="dt-map-container" id="dt-map-container">
+            <div class="dt-map-loading">Loading world map…</div>
+          </div>
+          ${_dtLegendMarkup()}
+        </div>
+
+        ${_dtSummaryGridMarkup()}
+
+        <div class="dt-filter-row">
+          <div class="dt-search-wrap">
+            <span class="dt-search-icon">⌕</span>
+            <input id="dt-search" type="text" placeholder="Search targets…" value="${escapeHtml(_dtQuery)}" autocomplete="off">
+          </div>
+          <span class="dt-filter-label">Type</span>
+          <div class="dt-chip-group" id="dt-type-chips">${_dtTypeChips()}</div>
+          <span class="dt-filter-label">Status</span>
+          <div class="dt-chip-group" id="dt-status-chips">${_dtStatusChips()}</div>
+          <span class="dt-result-count" id="dt-result-count">${all.length} target${all.length === 1 ? '' : 's'}</span>
+        </div>
+
+        <div id="dt-sections-root">${_dtSectionsMarkup()}</div>
       </div>
     </div>
+    <div class="dt-drawer-overlay" id="dt-drawer-overlay"></div>
+    <div class="dt-drawer" id="dt-drawer"></div>
   `;
 
   attachExecutiveHandlers();
   attachTopNavHandlers();
   attachSidebarHandlers();
   attachObjectLinkHandlers(pageRoot);
+  attachDtHandlers();
+
+  if (typeof d3 !== 'undefined' && typeof topojson !== 'undefined') {
+    _dtLoadWorld().then(() => {
+      _dtDrawMap();
+      // Refresh legend now that geo targets are known
+      const legendEl = document.getElementById('dt-map-legend');
+      if (legendEl) legendEl.outerHTML = _dtLegendMarkup() || '<div id="dt-map-legend"></div>';
+      attachDtHandlers();
+    }).catch(err => {
+      console.warn('World atlas load failed', err);
+      const c = document.getElementById('dt-map-container');
+      if (c) c.innerHTML = `<div class="dt-map-loading">Map unavailable</div>`;
+    });
+  }
+
+  const mapContainer = document.getElementById('dt-map-container');
+  if (mapContainer && typeof ResizeObserver !== 'undefined') {
+    _dtResizeObserver = new ResizeObserver(() => {
+      if (document.getElementById('dt-map-container')) _dtDrawMap();
+      else { _dtResizeObserver.disconnect(); _dtResizeObserver = null; }
+    });
+    _dtResizeObserver.observe(mapContainer);
+  }
 }
 
 // ── Shared team helpers ─────────────────────────────────────────────

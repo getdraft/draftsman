@@ -775,7 +775,7 @@ BROWSER_DATA_OUTPUT_NAME = "browser-data.js"
 BROWSER_ASSET_OUTPUT_DIR = "assets"
 BROWSER_ASSET_ROOT = FRAMEWORK_ROOT / "browser"
 BROWSER_INDEX_TEMPLATE_PATH = BROWSER_ASSET_ROOT / "index.template.html"
-BROWSER_STATIC_ASSET_NAMES = ("draft-browser.css", "draft-browser-sdp.css", "draft-browser.js")
+BROWSER_STATIC_ASSET_NAMES = ("draft-browser.css", "draft-browser-sdp.css", "draft-browser-targets.css", "draft-browser.js")
 BROWSER_STATIC_FONT_DIR = "fonts"
 WORKSPACE_THEME_OUTPUT_NAME = "workspace-theme.css"
 DEFAULT_WORKSPACE_THEME_PATH = BROWSER_ASSET_ROOT / WORKSPACE_THEME_OUTPUT_NAME
@@ -858,6 +858,18 @@ def copy_browser_assets(workspace_root: Path, output_path: Path, *, refresh_shel
             if refresh_shell or not dest.exists():
                 shutil.copy2(font_file, dest)
                 copied.append(dest)
+    # Download world-atlas for the deployment targets map (bundled to avoid CDN dependency)
+    world_atlas_target = asset_dir / "world-atlas" / "countries-110m.json"
+    if refresh_shell or not world_atlas_target.exists():
+        world_atlas_target.parent.mkdir(parents=True, exist_ok=True)
+        world_atlas_url = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json"
+        try:
+            import urllib.request
+            print(f"[browser] Downloading world-atlas from {world_atlas_url} …", file=sys.stderr)
+            urllib.request.urlretrieve(world_atlas_url, world_atlas_target)
+            copied.append(world_atlas_target)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[browser] Warning: could not download world-atlas ({exc}). Map will fall back to CDN.", file=sys.stderr)
     return copied
 
 

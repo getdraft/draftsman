@@ -7,3 +7,7 @@ businessTaxonomy:
   pillars:
   - id: business-pillar.infrastructure
     name: Infrastructure
+
+vocabulary:
+  deploymentTargets:
+    source: configurations/vocabulary/deployment-targets.yaml

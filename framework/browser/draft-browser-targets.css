@@ -1,0 +1,909 @@
+/* ============================================================================
+   draft-browser-targets.css
+   Deployment Targets view — world map, provider cards, drawer
+   Scoped under .dt-view; provider colours via [data-provider] attributes.
+============================================================================ */
+
+/* ─────────────────────────────────────────────────────────── Provider colours
+   Each provider sets --dt-provider-color; components read it via var().
+   Uses same oklch values as the prototype palette.                          */
+
+[data-provider="aws"]        { --dt-provider-color: oklch(0.68 0.13 65);  }
+[data-provider="gcp"]        { --dt-provider-color: oklch(0.60 0.13 240); }
+[data-provider="azure"]      { --dt-provider-color: oklch(0.60 0.13 220); }
+[data-provider="onprem"]     { --dt-provider-color: oklch(0.45 0.05 270); }
+[data-provider="colocation"] { --dt-provider-color: oklch(0.55 0.04 270); }
+[data-provider="saas"]       { --dt-provider-color: oklch(0.55 0.13 320); }
+[data-provider="cloudflare"] { --dt-provider-color: oklch(0.65 0.13 50);  }
+[data-provider="customer"]   { --dt-provider-color: oklch(0.62 0.13 90);  }
+[data-provider="unknown"]    { --dt-provider-color: oklch(0.65 0.00 0);   }
+
+/* ─────────────────────────────────────────────────────────── View shell */
+
+.dt-view {
+  /* Map surface tokens — local overrides inside view scope */
+  --dt-map-land:         #e6e8ec;
+  --dt-map-land-stroke:  #d6d9df;
+  --dt-map-graticule:    #e3e6ea;
+  --dt-map-bg:           #fafbfc;
+}
+
+.dt-view .dt-page {
+  max-width: 1640px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+}
+
+/* ─────────────────────────────────────────────────────────── Hero */
+
+.dt-view .dt-hero {
+  padding: 28px 0 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.dt-view .dt-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.dt-view .dt-hero-eyebrow .dot {
+  width: 6px; height: 6px; border-radius: 999px;
+  background: var(--accent);
+}
+
+.dt-view .dt-hero h1 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 42px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.dt-view .dt-hero-sub {
+  display: flex;
+  gap: 24px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.dt-view .dt-hero-sub strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ─────────────────────────────────────────────────────────── Map panel */
+
+.dt-view .dt-map-panel {
+  position: relative;
+  margin-top: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.dt-view .dt-map-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 22px 12px;
+  gap: 24px;
+}
+
+.dt-view .dt-map-panel-head h2 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.dt-view .dt-map-panel-head .eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.dt-view .dt-map-container {
+  position: relative;
+  width: 100%;
+  background: var(--dt-map-bg);
+  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+  overflow: hidden;
+}
+
+.dt-view .dt-map-container svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.dt-view .map-land {
+  fill: var(--dt-map-land);
+  stroke: var(--dt-map-land-stroke);
+  stroke-width: 0.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.dt-view .map-graticule {
+  fill: none;
+  stroke: var(--dt-map-graticule);
+  stroke-width: 0.5;
+  stroke-dasharray: 2 3;
+}
+
+.dt-view .map-sphere {
+  fill: var(--dt-map-bg);
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+/* Map markers — colour driven by --dt-provider-color from ancestor */
+.dt-view .dt-marker {
+  cursor: pointer;
+  transition: transform 120ms ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.dt-view .dt-marker-halo {
+  fill: currentColor;
+  opacity: 0.18;
+}
+
+.dt-view .dt-marker-core {
+  fill: var(--surface);
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.dt-view .dt-marker-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  fill: var(--ink);
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  user-select: none;
+}
+
+.dt-view .dt-marker:hover .dt-marker-halo { opacity: 0.32; }
+.dt-view .dt-marker.is-active .dt-marker-core  { fill: currentColor; }
+.dt-view .dt-marker.is-active .dt-marker-count { fill: #fff; }
+.dt-view .dt-marker.is-dimmed { opacity: 0.28; }
+
+.dt-view .dt-map-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--ink);
+  color: #fff;
+  padding: 8px 11px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.45;
+  box-shadow: var(--shadow-md);
+  transform: translate(-50%, -100%);
+  margin-top: -10px;
+  white-space: nowrap;
+  max-width: 240px;
+  z-index: 10;
+}
+
+.dt-view .dt-map-tooltip .tt-name { font-weight: 600; }
+
+.dt-view .dt-map-tooltip .tt-meta {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.66);
+  margin-top: 2px;
+}
+
+.dt-view .dt-map-tooltip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 0; height: 0;
+  margin-left: -5px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--ink);
+}
+
+.dt-view .dt-map-loading {
+  padding: 80px 20px;
+  text-align: center;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Map legend — provider colour swatches */
+.dt-view .dt-map-legend {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 12px 22px;
+  background: var(--surface-2);
+  border-top: 1px solid var(--line-soft);
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+
+.dt-view .dt-map-legend-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+
+.dt-view .dt-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 4px;
+  transition: background 120ms ease;
+}
+
+.dt-view .dt-legend-item:hover { background: var(--surface-sunk); }
+
+.dt-view .dt-legend-item.is-off { opacity: 0.4; }
+
+.dt-view .dt-legend-item .sw {
+  width: 10px; height: 10px; border-radius: 999px;
+  border: 2px solid currentColor;
+  background: var(--surface);
+}
+
+/* ─────────────────────────────────────────────────────────── Summary grid */
+
+.dt-view .dt-summary-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.dt-view .dt-provider-chart {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px 24px 24px;
+}
+
+.dt-view .dt-provider-chart h3,
+.dt-view .dt-summary-card h3 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 18px;
+  margin: 0 0 4px;
+  letter-spacing: -0.005em;
+}
+
+.dt-view .dt-provider-chart .sub,
+.dt-view .dt-summary-card .sub {
+  color: var(--muted);
+  font-size: 12.5px;
+  margin-bottom: 16px;
+}
+
+.dt-view .dt-bar-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 56px;
+  gap: 14px;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 13px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.dt-view .dt-bar-row:last-child { border-bottom: 0; }
+
+.dt-view .dt-bar-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dt-view .dt-bar-label .swatch {
+  width: 9px; height: 9px; border-radius: 999px;
+}
+
+.dt-view .dt-bar-track {
+  height: 10px;
+  background: var(--surface-sunk);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dt-view .dt-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+.dt-view .dt-bar-count {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  text-align: right;
+  color: var(--ink);
+}
+
+.dt-view .dt-bar-count .small {
+  color: var(--muted-2);
+  font-weight: 400;
+  font-size: 11px;
+}
+
+.dt-view .dt-summary-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px 22px 18px;
+  display: grid;
+  gap: 0;
+  align-content: start;
+}
+
+.dt-view .dt-summary-stat {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 13px;
+}
+
+.dt-view .dt-summary-stat:last-child { border-bottom: 0; }
+
+.dt-view .dt-summary-stat .k { color: var(--muted); }
+
+.dt-view .dt-summary-stat .v {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.dt-view .dt-summary-stat .v.warn { color: oklch(0.55 0.14 60); }
+.dt-view .dt-summary-stat .v.ok   { color: oklch(0.48 0.13 155); }
+
+/* ─────────────────────────────────────────────────────────── Filter bar */
+
+.dt-view .dt-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 32px 0 18px;
+  flex-wrap: wrap;
+}
+
+.dt-view .dt-search-wrap {
+  position: relative;
+  width: 300px;
+}
+
+.dt-view .dt-search-wrap input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--ink);
+  padding: 9px 12px 9px 34px;
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.dt-view .dt-search-wrap input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+.dt-view .dt-search-wrap .dt-search-icon {
+  position: absolute;
+  left: 11px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted-2);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.dt-view .dt-filter-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+
+.dt-view .dt-chip-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--surface-sunk);
+  border-radius: 8px;
+}
+
+.dt-view .dt-chip {
+  border: 0;
+  background: transparent;
+  padding: 6px 11px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.dt-view .dt-chip:hover { color: var(--ink); }
+
+.dt-view .dt-chip.active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-xs);
+}
+
+.dt-view .dt-chip .swatch {
+  width: 9px; height: 9px; border-radius: 999px;
+}
+
+.dt-view .dt-result-count {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+/* ─────────────────────────────────────────────────────────── Provider sections */
+
+.dt-view .dt-provider-section {
+  margin-top: 28px;
+}
+
+.dt-view .dt-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 0 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  gap: 16px;
+}
+
+.dt-view .dt-section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dt-view .dt-section-title h2 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.dt-view .dt-section-dot {
+  width: 12px; height: 12px;
+  border-radius: 999px;
+  border: 2px solid currentColor;
+  background: var(--surface);
+  flex-shrink: 0;
+}
+
+.dt-view .dt-section-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ─────────────────────────────────────────────────────────── Target cards */
+
+.dt-view .dt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+
+.dt-view .dt-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: grid;
+  gap: 10px;
+  cursor: pointer;
+  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+  position: relative;
+}
+
+.dt-view .dt-card:hover {
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.dt-view .dt-card.is-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+.dt-view .dt-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.dt-view .dt-card-name {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+}
+
+.dt-view .dt-card-id {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.dt-view .dt-card-region {
+  color: var(--muted);
+  font-size: 12.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dt-view .dt-card-region .pin {
+  display: inline-block;
+  width: 4px; height: 4px;
+  border-radius: 999px;
+  background: var(--muted-2);
+  flex-shrink: 0;
+}
+
+.dt-view .dt-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Tags */
+.dt-view .dt-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-2);
+}
+
+.dt-view .dt-tag .swatch {
+  width: 7px; height: 7px; border-radius: 999px;
+}
+
+.dt-view .dt-tag-type {
+  background: var(--surface-sunk);
+  color: var(--muted);
+  border-color: transparent;
+}
+
+.dt-view .dt-tag-approved {
+  background: var(--ok-soft);
+  color: oklch(0.42 0.12 155);
+  border-color: oklch(0.85 0.07 155);
+}
+
+.dt-view .dt-tag-proposed {
+  background: oklch(0.96 0.04 260);
+  color: oklch(0.42 0.13 260);
+  border-color: oklch(0.86 0.06 260);
+}
+
+.dt-view .dt-tag-ad-hoc {
+  background: var(--warn-soft);
+  color: oklch(0.48 0.12 60);
+  border-color: oklch(0.85 0.07 60);
+}
+
+.dt-view .dt-tag-unused {
+  background: var(--surface-sunk);
+  color: var(--muted-2);
+  border-color: var(--line);
+}
+
+/* Card SDP footer */
+.dt-view .dt-card-sdps {
+  border-top: 1px solid var(--line-soft);
+  padding-top: 10px;
+  display: grid;
+  gap: 5px;
+}
+
+.dt-view .dt-card-sdps-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+  margin-bottom: 1px;
+}
+
+.dt-view .dt-card-sdps-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+}
+
+.dt-view .dt-sdp-pill {
+  font-size: 12px;
+  padding: 2px 8px;
+  background: var(--surface-sunk);
+  border-radius: 999px;
+  color: var(--ink-2);
+}
+
+.dt-view .dt-card-sdps-empty {
+  color: var(--muted-2);
+  font-style: italic;
+  font-size: 12px;
+}
+
+/* Empty / no results */
+.dt-view .dt-empty-block {
+  background: var(--surface);
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  padding: 28px 24px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ─────────────────────────────────────────────────────────── Drawer */
+
+.dt-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 18, 32, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms ease;
+  z-index: 50;
+}
+
+.dt-drawer-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.dt-drawer {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: 460px;
+  max-width: 100vw;
+  background: var(--surface);
+  border-left: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 280ms cubic-bezier(.2,.7,.2,1);
+}
+
+.dt-drawer.open {
+  transform: translateX(0);
+}
+
+.dt-drawer-head {
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+
+.dt-drawer-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: transparent;
+  border: 0;
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+}
+
+.dt-drawer-close:hover {
+  background: var(--surface-sunk);
+  color: var(--ink);
+}
+
+.dt-drawer-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dt-drawer-eyebrow .dot {
+  width: 8px; height: 8px; border-radius: 999px;
+  border: 2px solid currentColor;
+  background: var(--surface);
+}
+
+.dt-drawer-head h3 {
+  margin: 8px 0 2px;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: -0.015em;
+}
+
+.dt-drawer-uid {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.dt-drawer-body {
+  padding: 20px 24px;
+  overflow: auto;
+  display: grid;
+  gap: 18px;
+  align-content: start;
+  flex: 1;
+}
+
+.dt-drawer-row { display: grid; gap: 4px; }
+
+.dt-drawer-row .k {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.dt-drawer-row .v {
+  color: var(--ink);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+/* SDP list in drawer */
+.dt-drawer-sdp-list { display: grid; gap: 6px; }
+
+.dt-drawer-sdp {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.dt-drawer-sdp:hover {
+  border-color: var(--line-strong);
+  background: var(--surface);
+}
+
+.dt-drawer-sdp .name {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.dt-drawer-sdp .pillar {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.dt-drawer-sdp .arrow {
+  color: var(--muted-2);
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+
+.dt-drawer-foot {
+  padding: 16px 24px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* ─────────────────────────────────────────────────────────── Responsive */
+
+@media (max-width: 1180px) {
+  .dt-view .dt-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .dt-view .dt-bar-row {
+    grid-template-columns: 100px 1fr 48px;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 760px) {
+  .dt-view .dt-page {
+    padding: 0 18px 60px;
+  }
+  .dt-view .dt-hero h1 {
+    font-size: 32px;
+  }
+  .dt-view .dt-filter-row {
+    gap: 10px;
+  }
+  .dt-view .dt-search-wrap {
+    width: 100%;
+  }
+  .dt-drawer {
+    width: 100%;
+  }
+}

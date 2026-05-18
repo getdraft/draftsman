@@ -40915,7 +40915,140 @@ window.DRAFT_BROWSER_DATA = {
     "activeRequirementGroups": [],
     "requireActiveRequirementGroupDisposition": false
   },
-  "vocabulary": {},
+  "vocabulary": {
+    "deploymentTargets": {
+      "values": [
+        {
+          "id": "aws-us-east-1",
+          "name": "AWS US East 1",
+          "provider": "aws",
+          "type": "cloud-region",
+          "status": "approved",
+          "lat": 38.95,
+          "lon": -77.45,
+          "region": "Virginia, US",
+          "notes": "Primary production region, multi-AZ."
+        },
+        {
+          "id": "aws-us-east-2",
+          "name": "AWS US East 2",
+          "provider": "aws",
+          "type": "cloud-region",
+          "status": "approved",
+          "lat": 40.42,
+          "lon": -82.91,
+          "region": "Ohio, US",
+          "notes": "Secondary region for disaster recovery."
+        },
+        {
+          "id": "aws-us-west-2",
+          "name": "AWS US West 2",
+          "provider": "aws",
+          "type": "cloud-region",
+          "status": "approved",
+          "lat": 45.84,
+          "lon": -119.7,
+          "region": "Oregon, US",
+          "notes": "Active-active pair with us-east-1 for tier-1 services."
+        },
+        {
+          "id": "aws-eu-west-1",
+          "name": "AWS EU West 1",
+          "provider": "aws",
+          "type": "cloud-region",
+          "status": "approved",
+          "lat": 53.41,
+          "lon": -8.24,
+          "region": "Ireland",
+          "notes": "EU data-residency primary."
+        },
+        {
+          "id": "aws-ap-southeast-1",
+          "name": "AWS AP Southeast 1",
+          "provider": "aws",
+          "type": "cloud-region",
+          "status": "approved",
+          "lat": 1.35,
+          "lon": 103.82,
+          "region": "Singapore",
+          "notes": "APAC anchor region."
+        },
+        {
+          "id": "aws-ap-northeast-1",
+          "name": "AWS AP Northeast 1",
+          "provider": "aws",
+          "type": "cloud-region",
+          "status": "proposed",
+          "lat": 35.68,
+          "lon": 139.65,
+          "region": "Tokyo, JP",
+          "notes": "Japan data residency \u2014 under review."
+        },
+        {
+          "id": "gcp-us-central1",
+          "name": "GCP US Central 1",
+          "provider": "gcp",
+          "type": "cloud-region",
+          "status": "approved",
+          "lat": 41.26,
+          "lon": -95.86,
+          "region": "Iowa, US",
+          "notes": "Analytics workloads and BigQuery."
+        },
+        {
+          "id": "azure-eastus",
+          "name": "Azure East US",
+          "provider": "azure",
+          "type": "cloud-region",
+          "status": "approved",
+          "lat": 37.32,
+          "lon": -78.1,
+          "region": "Virginia, US",
+          "notes": "ML platform and acquired workloads."
+        },
+        {
+          "id": "openstack-controller",
+          "name": "OpenStack Controller",
+          "provider": "onprem",
+          "type": "on-prem",
+          "status": "approved",
+          "lat": 39.95,
+          "lon": -83.05,
+          "region": "Columbus, OH",
+          "notes": "Self-managed OpenStack control and data plane."
+        },
+        {
+          "id": "colo-ohio-mcocne",
+          "name": "Ohio Colo MCOCNE",
+          "provider": "colocation",
+          "type": "colocation",
+          "status": "approved",
+          "lat": 39.96,
+          "lon": -82.99,
+          "region": "Columbus, OH",
+          "notes": "Primary US data center."
+        },
+        {
+          "id": "snowflake-prod",
+          "name": "Snowflake Production",
+          "provider": "saas",
+          "type": "saas-tenant",
+          "status": "approved",
+          "region": "Multi-region (vendor-managed)",
+          "notes": "Primary analytics warehouse tenant."
+        },
+        {
+          "id": "okta-corp",
+          "name": "Okta Corporate",
+          "provider": "saas",
+          "type": "saas-tenant",
+          "status": "approved",
+          "region": "Multi-region (vendor-managed)",
+          "notes": "Workforce identity provider."
+        }
+      ]
+    }
+  },
   "businessTaxonomy": {
     "pillars": [
       {
