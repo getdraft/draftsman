@@ -1,0 +1,227 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# DRAFT Framework — Vendor Sync workflow template
+#
+# SETUP INSTRUCTIONS
+# ------------------
+# 1. Copy this file to your repo at:  .github/workflows/draft-vendor-sync.yml
+# 2. Review the two inputs below and adjust LOCK_FILE if your workspace uses
+#    a path other than .draft/framework.lock
+# 3. Ensure your repo has a GitHub token with `contents: write` and
+#    `pull-requests: write` (the default GITHUB_TOKEN is sufficient for most
+#    repos; org admins may need to enable "Allow GitHub Actions to create PRs"
+#    in Settings → Actions → General).
+# 4. Run it manually from Actions → DRAFT Framework — Vendor Sync → Run workflow.
+#
+# WHAT IT DOES
+# ------------
+# Reads .draft/framework.lock to find the last-synced upstream commit.
+# Clones the upstream draftsman repo, lists every file that changed under
+# framework/ since that commit, copies them into your vendored path, updates
+# framework.lock, then opens a pull request for review.
+#
+# Files deleted upstream are also removed from your vendored copy.
+# Nothing is changed in your repo until you merge the PR.
+# ──────────────────────────────────────────────────────────────────────────────
+
+name: DRAFT Framework — Vendor Sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Preview changes without writing anything (prints a diff, no PR)'
+        type: boolean
+        default: false
+      lock_file:
+        description: 'Path to framework.lock (relative to repo root)'
+        type: string
+        default: '.draft/framework.lock'
+
+jobs:
+  vendor-sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      # ── 1. Check out the adopting workspace ──────────────────────────────────
+      - name: Checkout workspace
+        uses: actions/checkout@v4
+
+      # ── 2. Parse framework.lock ───────────────────────────────────────────────
+      - name: Read framework.lock
+        id: lock
+        run: |
+          python3 - << 'PY'
+          import yaml, os, sys
+
+          lock_path = os.environ.get('LOCK_FILE', '.draft/framework.lock')
+          try:
+              lock = yaml.safe_load(open(lock_path))
+          except FileNotFoundError:
+              print(f"::error::framework.lock not found at {lock_path}")
+              sys.exit(1)
+
+          fw = lock['framework']
+          out = os.environ['GITHUB_OUTPUT']
+          with open(out, 'a') as f:
+              print(f"synced_commit={fw['syncedCommit']}", file=f)
+              print(f"vendored_path={fw['vendoredPath']}", file=f)
+              print(f"source={fw['source']}", file=f)
+
+          print(f"Lock file:     {lock_path}")
+          print(f"Vendored path: {fw['vendoredPath']}")
+          print(f"Source:        {fw['source']}")
+          print(f"Synced commit: {fw['syncedCommit']}")
+          PY
+        env:
+          LOCK_FILE: ${{ inputs.lock_file }}
+
+      # ── 3. Clone upstream draftsman (shallow from last-synced commit) ─────────
+      - name: Fetch upstream framework
+        run: |
+          git clone \
+            --filter=blob:none \
+            --no-checkout \
+            "${{ steps.lock.outputs.source }}" \
+            /tmp/draftsman
+          cd /tmp/draftsman
+          git checkout HEAD
+          echo "Upstream HEAD: $(git rev-parse HEAD)"
+
+      # ── 4. Detect what changed in framework/ since last sync ─────────────────
+      - name: Detect changes
+        id: diff
+        run: |
+          cd /tmp/draftsman
+          UPSTREAM_HEAD=$(git rev-parse HEAD)
+          SYNCED="${{ steps.lock.outputs.synced_commit }}"
+
+          echo "upstream_head=$UPSTREAM_HEAD" >> $GITHUB_OUTPUT
+
+          if [ "$UPSTREAM_HEAD" = "$SYNCED" ]; then
+            echo "::notice::Vendored framework is already up to date at $SYNCED — nothing to do."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+
+          # List files changed under framework/ between synced commit and HEAD
+          CHANGED=$(git diff --name-only "$SYNCED" "$UPSTREAM_HEAD" -- framework/)
+
+          if [ -z "$CHANGED" ]; then
+            echo "::notice::Upstream has new commits but no framework/ files changed — skipping."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Changed framework files:"
+          echo "$CHANGED" | sed 's/^/  /'
+
+          # Write multi-line output
+          {
+            echo "changed_files<<EOF"
+            echo "$CHANGED"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+      # ── 5. Copy changed files into the vendored path ──────────────────────────
+      - name: Apply changes
+        if: steps.diff.outputs.has_changes == 'true'
+        run: |
+          VPATH="${{ steps.lock.outputs.vendored_path }}"
+          UPSTREAM="/tmp/draftsman"
+          DRY_RUN="${{ inputs.dry_run }}"
+
+          echo "Vendored path: $VPATH"
+          echo "Dry run:       $DRY_RUN"
+          echo ""
+
+          while IFS= read -r file; do
+            [[ -z "$file" ]] && continue
+
+            # Strip the "framework/" prefix to get the relative sub-path
+            rel="${file#framework/}"
+            src="$UPSTREAM/$file"
+            dst="$VPATH/$rel"
+
+            if [ -f "$src" ]; then
+              if [ "$DRY_RUN" = "true" ]; then
+                echo "  [dry-run] would copy  $file  →  $dst"
+              else
+                mkdir -p "$(dirname "$dst")"
+                cp "$src" "$dst"
+                echo "  ✓  $file  →  $dst"
+              fi
+            else
+              # File removed upstream — delete from vendored copy
+              if [ -f "$dst" ]; then
+                if [ "$DRY_RUN" = "true" ]; then
+                  echo "  [dry-run] would delete  $dst"
+                else
+                  rm "$dst"
+                  echo "  ✗  deleted  $dst"
+                fi
+              fi
+            fi
+          done <<< "${{ steps.diff.outputs.changed_files }}"
+
+      # ── 6. Update framework.lock ──────────────────────────────────────────────
+      - name: Update framework.lock
+        if: steps.diff.outputs.has_changes == 'true' && inputs.dry_run == false
+        run: |
+          python3 - << 'PY'
+          import yaml, os
+
+          lock_path = os.environ['LOCK_FILE']
+          upstream_head = os.environ['UPSTREAM_HEAD']
+
+          with open(lock_path) as f:
+              lock = yaml.safe_load(f)
+
+          lock['framework']['syncedCommit'] = upstream_head
+
+          with open(lock_path, 'w') as f:
+              yaml.dump(lock, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
+
+          print(f"framework.lock updated → syncedCommit: {upstream_head}")
+          PY
+        env:
+          LOCK_FILE: ${{ inputs.lock_file }}
+          UPSTREAM_HEAD: ${{ steps.diff.outputs.upstream_head }}
+
+      # ── 7. Open a pull request ────────────────────────────────────────────────
+      - name: Open pull request
+        if: steps.diff.outputs.has_changes == 'true' && inputs.dry_run == false
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: draft/vendor-sync-${{ steps.diff.outputs.upstream_head }}
+          delete-branch: true
+          commit-message: |
+            chore: refresh vendored DRAFT framework
+
+            Synced from ${{ steps.lock.outputs.source }}
+            Previous syncedCommit: ${{ steps.lock.outputs.synced_commit }}
+            Updated syncedCommit:  ${{ steps.diff.outputs.upstream_head }}
+          title: 'chore: refresh vendored DRAFT framework'
+          body: |
+            ## DRAFT Framework — Vendor Sync
+
+            This PR brings the vendored DRAFT framework up to date with upstream.
+
+            | | Commit |
+            |---|---|
+            | **Previous** | `${{ steps.lock.outputs.synced_commit }}` |
+            | **Updated to** | `${{ steps.diff.outputs.upstream_head }}` |
+            | **Source** | ${{ steps.lock.outputs.source }} |
+
+            ### Changed files
+            ```
+            ${{ steps.diff.outputs.changed_files }}
+            ```
+
+            Review the diff, then merge to complete the update.
+            The `framework.lock` has been updated to reflect the new commit.
+          labels: draft-framework
