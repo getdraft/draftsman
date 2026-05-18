@@ -5010,10 +5010,12 @@ function _sdpSectionNavMarkup(vm, object) {
 
 // ── Topology section ──────────────────────────────────────────────────────────
 function _sdpTopologyMarkup(vm) {
-  const tierChips = [{ id: 'all', label: 'All' }, ..._SDP_TIER_ORDER.map(t => ({ id: t, label: _SDP_TIER_LABELS[t] }))];
+  const usedTiers = new Set(vm.members.map(m => m.tier).filter(Boolean));
+  const tierChips = [{ id: 'all', label: 'All' }, ..._SDP_TIER_ORDER.filter(t => usedTiers.has(t)).map(t => ({ id: t, label: _SDP_TIER_LABELS[t] }))];
   const zoneColsHtml = vm.zones.map(zone => {
     const zt = vm.byZone[zone.id]?.tiers || {};
     const total = Object.values(zt).reduce((a, b) => a + b.length, 0);
+    if (total === 0) return '';
     const bandsHtml = _SDP_TIER_ORDER.map(tier => {
       const members = zt[tier] || [];
       if (!members.length) return '';
@@ -5049,7 +5051,7 @@ function _sdpTopologyMarkup(vm) {
     </div>`;
   }).join('');
 
-  const legendTiers = _SDP_TIER_ORDER.map(t =>
+  const legendTiers = _SDP_TIER_ORDER.filter(t => usedTiers.has(t)).map(t =>
     `<span class="topo-legend-item"><span class="sw" style="background:var(--tier-${t})"></span>${escapeHtml(_SDP_TIER_LABELS[t])}</span>`
   ).join('');
   const legendProtos = ['REST', 'AMQP', 'Other'].map((p, i) => {
@@ -5194,6 +5196,11 @@ function _sdpOpenDrawer(ref, vm) {
     ${m.notes ? `<div class="drawer-row"><div class="k">Notes</div><div class="v">${escapeHtml(m.notes)}</div></div>` : ''}
     ${conns.length ? `<div class="drawer-row"><div class="k">Connections</div><div class="drawer-list">${connRows}</div></div>` : ''}
   `;
+  const openBtn = drawer.querySelector('#sdp-drawer-open');
+  if (openBtn) {
+    openBtn.hidden = !objectLookup[ref];
+    openBtn.onclick = () => { _sdpCloseDrawer(); syncHashForDetailView(ref); };
+  }
   drawer.classList.add('open');
 }
 
@@ -5379,6 +5386,7 @@ function _sdpDrawerMarkup() {
       <div class="drawer-eyebrow"></div>
       <h3></h3>
       <div class="drawer-uid"></div>
+      <button class="drawer-open-btn" id="sdp-drawer-open" title="Open full detail page">View details →</button>
     </div>
     <div class="drawer-body"></div>
   </div>`;

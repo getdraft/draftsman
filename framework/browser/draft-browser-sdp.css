@@ -516,6 +516,25 @@
   font-size: 12px;
   color: var(--muted);
 }
+.sdp-detail .drawer-open-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+  padding: 5px 12px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.sdp-detail .drawer-open-btn:hover {
+  background: var(--surface-sunk);
+  border-color: var(--accent);
+}
 .sdp-detail .drawer-body {
   padding: 20px 24px;
   overflow: auto;
