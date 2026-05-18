@@ -146,42 +146,47 @@
 
   <!-- ══ ARROWS ══ -->
 
-  <!-- SDP → ReferenceArchitecture (governed by) -->
+  <!-- SDP → ReferenceArchitecture (adheres to) -->
   <line x1="441" y1="66" x2="651" y2="60" stroke="#7c3a6b" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr-p)"/>
-  <text x="552" y="56" font-size="8.5" fill="#7c3a6b" text-anchor="middle" font-style="italic">referenceArchitecture</text>
+  <text x="552" y="56" font-size="8.5" fill="#7c3a6b" text-anchor="middle" font-style="italic">adheres to</text>
 
   <!-- SDP → Architecture Objects (serviceGroups stub) -->
   <line x1="319" y1="108" x2="319" y2="224" stroke="#006064" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arr-e)"/>
   <text x="332" y="170" font-size="8.5" fill="#006064" font-style="italic">serviceGroups</text>
 
-  <!-- ProductComponent → RuntimeService (deploysTo) -->
+  <!-- ProductComponent → RuntimeService (deployedOn) -->
   <line x1="239" y1="196" x2="239" y2="253" stroke="#1f8a5b" stroke-width="1.5" stroke-dasharray="4 3"/>
   <line x1="239" y1="253" x2="278" y2="253" stroke="#1f8a5b" stroke-width="1.5" stroke-dasharray="4 3"/>
   <line x1="278" y1="253" x2="278" y2="260" stroke="#1f8a5b" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr-g)"/>
-  <text x="208" y="228" font-size="8.5" fill="#1f8a5b" font-style="italic">deploysTo</text>
+  <text x="208" y="228" font-size="8.5" fill="#1f8a5b" font-style="italic">deployedOn</text>
 
-  <!-- DataComponent → DataStoreService (deploysTo) -->
+  <!-- DataComponent → DataStoreService (deployedOn) -->
   <line x1="404" y1="196" x2="404" y2="256" stroke="#1f8a5b" stroke-width="1.5" stroke-dasharray="4 3"/>
   <line x1="404" y1="256" x2="490" y2="256" stroke="#1f8a5b" stroke-width="1.5" stroke-dasharray="4 3"/>
   <line x1="490" y1="256" x2="490" y2="260" stroke="#1f8a5b" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr-g)"/>
-  <text x="373" y="228" font-size="8.5" fill="#1f8a5b" font-style="italic">deploysTo</text>
+  <text x="373" y="228" font-size="8.5" fill="#1f8a5b" font-style="italic">deployedOn</text>
 
-  <!-- TechComponent + Host → component refs bus → services -->
-  <line x1="401" y1="354" x2="401" y2="342" stroke="#5f564b" stroke-width="1.2"/>
-  <line x1="559" y1="354" x2="559" y2="342" stroke="#5f564b" stroke-width="1.2"/>
+  <!-- Services → composed of bus → TechComponent + Host (services consume what is below) -->
+  <line x1="110" y1="328" x2="110" y2="342" stroke="#5f564b" stroke-width="1.2"/>
+  <line x1="306" y1="328" x2="306" y2="342" stroke="#5f564b" stroke-width="1.2"/>
+  <line x1="511" y1="328" x2="511" y2="342" stroke="#5f564b" stroke-width="1.2"/>
   <line x1="110" y1="342" x2="559" y2="342" stroke="#5f564b" stroke-width="1.2"/>
-  <line x1="110" y1="342" x2="110" y2="328" stroke="#5f564b" stroke-width="1.2" marker-end="url(#arr)"/>
-  <line x1="306" y1="342" x2="306" y2="328" stroke="#5f564b" stroke-width="1.2" marker-end="url(#arr)"/>
-  <line x1="511" y1="342" x2="511" y2="328" stroke="#5f564b" stroke-width="1.2" marker-end="url(#arr)"/>
-  <text x="490" y="335" font-size="9" fill="#5f564b" font-style="italic">component refs</text>
+  <line x1="401" y1="342" x2="401" y2="354" stroke="#5f564b" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="559" y1="342" x2="559" y2="354" stroke="#5f564b" stroke-width="1.2" marker-end="url(#arr)"/>
+  <text x="490" y="335" font-size="9" fill="#5f564b" font-style="italic">composed of</text>
 
-  <!-- TechnologyComponent → Capability (satisfies)
-       Routes: down below Host, right to clear column, up to Capability -->
+  <!-- TechnologyComponent → Capability (produces) and → Requirement (satisfies)
+       Both route below Host; "produces" uses x=626, "satisfies" uses x=633 -->
   <line x1="484" y1="391" x2="484" y2="440" stroke="#5f564b" stroke-width="1.5"/>
-  <line x1="484" y1="440" x2="629" y2="440" stroke="#5f564b" stroke-width="1.5"/>
-  <line x1="629" y1="440" x2="629" y2="201" stroke="#5f564b" stroke-width="1.5"/>
-  <line x1="629" y1="201" x2="651" y2="201" stroke="#5f564b" stroke-width="1.5" marker-end="url(#arr)"/>
-  <text x="550" y="435" font-size="9" fill="#5f564b" font-style="italic" text-anchor="middle">satisfies</text>
+  <line x1="484" y1="440" x2="633" y2="440" stroke="#5f564b" stroke-width="1.5"/>
+  <!-- satisfies → Requirement (y=353) -->
+  <line x1="633" y1="440" x2="633" y2="353" stroke="#5f564b" stroke-width="1.5"/>
+  <line x1="633" y1="353" x2="651" y2="353" stroke="#5f564b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="640" y="410" font-size="9" fill="#5f564b" font-style="italic">satisfies</text>
+  <!-- produces → Capability (y=201) -->
+  <line x1="626" y1="440" x2="626" y2="201" stroke="#5f564b" stroke-width="1.5"/>
+  <line x1="626" y1="201" x2="651" y2="201" stroke="#5f564b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="608" y="290" font-size="9" fill="#5f564b" font-style="italic" text-anchor="middle">produces</text>
 
   <!-- Domain → Capability (groups) -->
   <line x1="744" y1="164" x2="744" y2="170" stroke="#7c3a6b" stroke-width="1.5" marker-end="url(#arr-p)"/>
