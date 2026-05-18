@@ -5202,15 +5202,22 @@ function _sdpOpenDrawer(ref, vm) {
     ${conns.length ? `<div class="drawer-row"><div class="k">Connections</div><div class="drawer-list">${connRows}</div></div>` : ''}
   `;
   const canNavigate = !!objectLookup[ref];
+  function navigateToRef() {
+    _sdpCloseDrawer();
+    currentDetailId = ref;
+    navHistory.length = 0;
+    renderDetailView();
+    syncHashForDetailView(ref);
+  }
   const openBtn = drawer.querySelector('#sdp-drawer-open');
   if (openBtn) {
     openBtn.hidden = !canNavigate;
-    openBtn.onclick = () => { _sdpCloseDrawer(); syncHashForDetailView(ref); };
+    openBtn.onclick = canNavigate ? navigateToRef : null;
   }
   const titleEl = drawer.querySelector('#sdp-drawer-title');
   if (titleEl) {
     titleEl.classList.toggle('drawer-title-link', canNavigate);
-    titleEl.onclick = canNavigate ? () => { _sdpCloseDrawer(); syncHashForDetailView(ref); } : null;
+    titleEl.onclick = canNavigate ? navigateToRef : null;
   }
   drawer.classList.add('open');
 }
