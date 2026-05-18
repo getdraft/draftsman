@@ -5192,7 +5192,7 @@ function _sdpOpenDrawer(ref, vm) {
   drawer.querySelector('.drawer-eyebrow').innerHTML =
     `<span class="dot" style="background:var(--tier-${escapeHtml(m.tier || 'application')})"></span>
      ${escapeHtml(_SDP_TIER_LABELS[m.tier] || m.tier || '')} · ${escapeHtml(m.group || '')}`;
-  drawer.querySelector('h3').textContent = svc.name || ref;
+  drawer.querySelector('#sdp-drawer-title').textContent = svc.name || ref;
   drawer.querySelector('.drawer-uid').textContent = ref;
   drawer.querySelector('.drawer-body').innerHTML = `
     ${svc.description ? `<div class="drawer-row"><div class="k">Description</div><div class="v">${escapeHtml(svc.description)}</div></div>` : ''}
@@ -5201,10 +5201,16 @@ function _sdpOpenDrawer(ref, vm) {
     ${m.notes ? `<div class="drawer-row"><div class="k">Notes</div><div class="v">${escapeHtml(m.notes)}</div></div>` : ''}
     ${conns.length ? `<div class="drawer-row"><div class="k">Connections</div><div class="drawer-list">${connRows}</div></div>` : ''}
   `;
+  const canNavigate = !!objectLookup[ref];
   const openBtn = drawer.querySelector('#sdp-drawer-open');
   if (openBtn) {
-    openBtn.hidden = !objectLookup[ref];
+    openBtn.hidden = !canNavigate;
     openBtn.onclick = () => { _sdpCloseDrawer(); syncHashForDetailView(ref); };
+  }
+  const titleEl = drawer.querySelector('#sdp-drawer-title');
+  if (titleEl) {
+    titleEl.classList.toggle('drawer-title-link', canNavigate);
+    titleEl.onclick = canNavigate ? () => { _sdpCloseDrawer(); syncHashForDetailView(ref); } : null;
   }
   drawer.classList.add('open');
 }
@@ -5387,11 +5393,13 @@ function _sdpMetadataMarkup(object) {
 function _sdpDrawerMarkup() {
   return `<div class="sdp-drawer" id="sdp-drawer">
     <div class="drawer-head">
-      <button class="drawer-close" id="sdp-drawer-close" aria-label="Close">✕</button>
+      <div class="drawer-head-actions">
+        <button class="drawer-open-btn" id="sdp-drawer-open" title="Open full detail page" hidden>Open ↗</button>
+        <button class="drawer-close" id="sdp-drawer-close" aria-label="Close">✕</button>
+      </div>
       <div class="drawer-eyebrow"></div>
-      <h3></h3>
+      <h3 class="drawer-title" id="sdp-drawer-title"></h3>
       <div class="drawer-uid"></div>
-      <button class="drawer-open-btn" id="sdp-drawer-open" title="Open full detail page">View details →</button>
     </div>
     <div class="drawer-body"></div>
   </div>`;
