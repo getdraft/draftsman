@@ -5,6 +5,44 @@ notes, including patch releases.
 
 ## 0.13.13 - 2026-05-15
 
+## 0.13.14 - 2026-05-17
+
+### Compatibility Impact
+
+No migration is required. This patch improves framework browser navigation and
+framework documentation; it does not change schemas, validation behavior, or
+catalog object formats.
+
+### Added
+
+- Added an object-model UML diagram asset to the framework documentation and
+  surfaced it from the user manual.
+- Added markdown image rendering and default image styling for generated
+  framework-owned documentation pages.
+- Added executive browser drill-down views for teams, deployment patterns by
+  business pillar, and built-in DRAFT configuration navigation.
+
+### Changed
+
+- Changed the Requirement Groups browser view to separate built-in DRAFT groups
+  from company groups and to classify third-party compliance packs outside the
+  built-in DRAFT bucket.
+- Changed the Teams browser experience from a flat list into a drill-down flow
+  from team to object type to object list.
+- Changed the executive home view to present company configuration navigation
+  under a Draftsman's Office section.
+
+### Fixed
+
+- Fixed stale non-clickable links in newer browser navigation views by routing
+  those views through the shared object-link handler pattern.
+
+### Migration Notes
+
+- Existing workspaces can continue unchanged.
+- Regenerate browser assets after vendoring this framework version to pick up
+  the browser navigation changes.
+
 ### Compatibility Impact
 
 No migration is required. This patch improves framework refresh ergonomics for

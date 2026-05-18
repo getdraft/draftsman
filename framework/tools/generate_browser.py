@@ -1022,6 +1022,16 @@ USER_MANUAL_HTML_TEMPLATE = """<!doctype html>
       color: var(--accent-strong);
       font-size: 13px;
     }}
+    .content img {{
+      display: block;
+      max-width: 100%;
+      height: auto;
+      margin: 20px auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      background: var(--surface);
+    }}
     tr:last-child td {{ border-bottom: 0; }}
     blockquote {{
       margin: 16px 0;
@@ -1084,6 +1094,14 @@ def render_inline_markdown(text: str) -> str:
     rendered = html.escape(text, quote=False)
     rendered = re.sub(r"`([^`]+)`", r"<code>\1</code>", rendered)
     rendered = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", rendered)
+    rendered = re.sub(
+        r"!\[([^\]]*)\]\(([^)]+)\)",
+        lambda match: (
+            f'<img src="{html.escape(match.group(2), quote=True)}" '
+            f'alt="{html.escape(match.group(1), quote=True)}">'
+        ),
+        rendered,
+    )
     rendered = re.sub(
         r"\[([^\]]+)\]\(([^)]+)\)",
         lambda match: f'<a href="{html.escape(match.group(2), quote=True)}">{match.group(1)}</a>',

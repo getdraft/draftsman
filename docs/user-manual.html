@@ -165,6 +165,16 @@
       color: var(--accent-strong);
       font-size: 13px;
     }
+    .content img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      margin: 20px auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      background: var(--surface);
+    }
     tr:last-child td { border-bottom: 0; }
     blockquote {
       margin: 16px 0;
@@ -197,7 +207,7 @@
     <aside class="sidebar">
       <a class="back-link" href="index.html">Back to catalog</a>
       <h1>DRAFT User Manual</h1>
-      <p>Generated 2026-05-16 from the framework-owned Markdown source.</p>
+      <p>Generated 2026-05-17 from the framework-owned Markdown source.</p>
       <nav class="toc" aria-label="Table of contents">
         <a class="level-2" href="#start-here">Start Here</a>
 <a class="level-2" href="#setup-mode">Setup Mode</a>
@@ -256,11 +266,14 @@ python framework/tools/generate_ai_index.py</code></pre>
 <h2 id="the-mental-model">The Mental Model</h2>
 <p>DRAFT separates four concerns:</p>
 <table><thead><tr><th>Concern</th><th>Where It Lives</th><th>Purpose</th></tr></thead><tbody><tr><td>Framework rules</td><td><code>.draft/framework/</code> in company workspaces, <code>framework/</code> upstream</td><td>Schemas, base capabilities, Requirement Groups, docs, and tools.</td></tr><tr><td>Company architecture</td><td><code>catalog/</code></td><td>Hosts, services, Product Services, Software Deployment Patterns, and other architecture inventory.</td></tr><tr><td>Company extensions</td><td><code>configurations/</code></td><td>Capability mappings, object patches, company Requirement Groups, and local domains.</td></tr><tr><td>Generated views</td><td><code>docs/</code></td><td>Static HTML, browser assets, and browser data generated from YAML and Markdown source.</td></tr></tbody></table>
+<p>DRAFT object model — architecture objects, governance objects, and their core relationships:</p>
+<p><img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram"></p>
 <p>Framework files are not normal authoring targets inside a company workspace. Update them only through an explicit framework refresh or framework change. Architecture content belongs in the company workspace.</p>
 <p>If an AI assistant is connected only to the upstream framework repo and the user asks to create company architecture content, the assistant should ask for the company-specific DRAFT workspace before writing content.</p>
 <h2 id="object-types">Object Types</h2>
 <p>DRAFT objects are YAML documents with generated opaque UIDs. Do not ask humans to create semantic IDs. Use human-readable <code>name</code>, <code>aliases</code>, and file paths for conversation, and use the repair tool when validation reports missing or malformed UIDs.</p>
 <pre><code class="language-bash">python .draft/framework/tools/repair_uids.py --workspace .</code></pre>
+<p>Use the object model diagram above as the quickest reference for how the major object types relate to each other.</p>
 <h3 id="architecture-objects">Architecture Objects</h3>
 <table><thead><tr><th>Object Type</th><th>Use It For</th></tr></thead><tbody><tr><td>Technology Component</td><td>A governed vendor product, operating system, compute platform, agent, appliance product, software package, or product/version building block.</td></tr><tr><td>Host</td><td>An operational platform that combines compute, operating system, and required host capabilities.</td></tr><tr><td>Runtime Service</td><td>Reusable runtime behavior such as web, app, cache, worker, messaging, or serverless runtime.</td></tr><tr><td>Data-at-Rest Service</td><td>Durable data behavior such as database, file, object, search, analytics, or storage.</td></tr><tr><td>Edge/Gateway Service</td><td>Boundary behavior such as WAF, firewall, API gateway, load balancer, ingress, proxy, or traffic inspection.</td></tr><tr><td>Product Service</td><td>First-party deployable runtime behavior that runs on a selected Host, Runtime Service, Data-at-Rest Service, Edge/Gateway Service, or equivalent deployable object.</td></tr><tr><td>Software Deployment Pattern</td><td>The intended assembly of deployable objects for a product or product capability.</td></tr><tr><td>Reference Architecture</td><td>A reusable deployment approach that Software Deployment Patterns may follow.</td></tr></tbody></table>
 <p>Technology Components are governed building blocks. They are deployed as ingredients inside hosts and services, but they are not usually the service boundary you review on their own.</p>

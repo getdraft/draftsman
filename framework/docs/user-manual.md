@@ -85,6 +85,10 @@ DRAFT separates four concerns:
 | Company extensions | `configurations/` | Capability mappings, object patches, company Requirement Groups, and local domains. |
 | Generated views | `docs/` | Static HTML, browser assets, and browser data generated from YAML and Markdown source. |
 
+DRAFT object model — architecture objects, governance objects, and their core relationships:
+
+![DRAFT object model UML class diagram](assets/draft-object-model.svg)
+
 Framework files are not normal authoring targets inside a company workspace. Update them only through an explicit framework refresh or framework change. Architecture content belongs in the company workspace.
 
 If an AI assistant is connected only to the upstream framework repo and the user asks to create company architecture content, the assistant should ask for the company-specific DRAFT workspace before writing content.
@@ -96,6 +100,8 @@ DRAFT objects are YAML documents with generated opaque UIDs. Do not ask humans t
 ```bash
 python .draft/framework/tools/repair_uids.py --workspace .
 ```
+
+Use the object model diagram above as the quickest reference for how the major object types relate to each other.
 
 ### Architecture Objects
 
