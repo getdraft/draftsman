@@ -4916,7 +4916,8 @@ function _sdpBuildVM(object) {
       const tier = zoneToTier[zone] || 'application';
       members.push({
         ref: e.ref, tier, zone,
-        intent: e.intent || 'sa', notes: e.notes || '', group: sg.name
+        intent: e.intent || 'sa', notes: e.notes || '', group: sg.name,
+        riskRef: e.riskRef || null
       });
     });
   });
@@ -4984,12 +4985,21 @@ function _sdpHeroMarkup(object) {
 // ── KPI strip ─────────────────────────────────────────────────────────────────
 function _sdpKpiMarkup(object, vm) {
   const d = object.architecturalDecisions || {};
+  const n = vm.members.length;
+  const haCount  = vm.members.filter(m => m.intent === 'ha').length;
+  const saGap    = vm.members.filter(m => m.intent !== 'ha' && !m.riskRef).length;
+  const saAccepted = vm.members.filter(m => m.intent !== 'ha' && m.riskRef).length;
+  let haSub;
+  if (n === 0)           haSub = 'no services';
+  else if (haCount === n) haSub = 'fully covered';
+  else if (saGap === 0)  haSub = `${saAccepted} accepted risk`;
+  else                   haSub = `${saGap} gap${saGap > 1 ? 's' : ''}${saAccepted ? ` · ${saAccepted} accepted` : ''}`;
   const kpis = [
-    { label: 'Services',    value: vm.members.length,     sub: 'deployable objects' },
-    { label: 'Zones',       value: vm.activeZones.length, sub: 'network zones' },
-    { label: 'Connections', value: vm.connections.length, sub: 'documented paths' },
-    { label: 'Availability', value: d.availabilityTarget || '—', sub: d.availabilityTarget ? 'target SLA' : 'not specified' },
-    { label: 'Status',      value: escapeHtml((object.catalogStatus || '').replace(/^\w/, c => c.toUpperCase())), sub: 'catalog status' }
+    { label: 'Services',      value: n,                        sub: 'deployable objects' },
+    { label: 'Zones',         value: vm.activeZones.length,    sub: 'network zones' },
+    { label: 'Connections',   value: vm.connections.length,    sub: 'documented paths' },
+    { label: 'Availability',  value: d.availabilityTarget || '—', sub: d.availabilityTarget ? 'target SLA' : 'not specified' },
+    { label: 'HA Components', value: n > 0 ? `${haCount} / ${n}` : '—', sub: haSub }
   ];
   return `<div class="kpi-strip">${kpis.map(k => `
   <div class="kpi">
@@ -5187,7 +5197,11 @@ function _sdpOpenDrawer(ref, vm) {
       ${c.label ? `<div class="note">${escapeHtml(c.label)}</div>` : ''}
     </div>`;
   }).join('');
-  const intent = m.intent === 'ha' ? 'Highly Available' : m.intent === 'sa' ? 'Standalone' : (m.intent || '—');
+  const intentLabel = m.intent === 'ha' ? 'Highly Available'
+    : m.intent === 'sa' && m.riskRef  ? 'Standalone — accepted risk'
+    : m.intent === 'sa'               ? 'Standalone — no HA decision recorded'
+    : (m.intent || '—');
+  const intent = intentLabel;
   const zone = vm.zones.find(z => z.id === m.zone);
   drawer.querySelector('.drawer-eyebrow').innerHTML =
     `<span class="dot" style="background:var(--tier-${escapeHtml(m.tier || 'application')})"></span>
@@ -5198,6 +5212,7 @@ function _sdpOpenDrawer(ref, vm) {
     ${svc.description ? `<div class="drawer-row"><div class="k">Description</div><div class="v">${escapeHtml(svc.description)}</div></div>` : ''}
     <div class="drawer-row"><div class="k">Zone</div><div class="v">${escapeHtml(zone?.name || m.zone || '—')}</div></div>
     <div class="drawer-row"><div class="k">Intent</div><div class="v">${escapeHtml(intent)}</div></div>
+    ${m.riskRef ? `<div class="drawer-row"><div class="k">HA Decision</div><div class="v"><span class="drawer-risk-ref" data-object-link="${escapeHtml(m.riskRef)}">${escapeHtml(objectLookup[m.riskRef]?.name || m.riskRef)}</span></div></div>` : ''}
     ${m.notes ? `<div class="drawer-row"><div class="k">Notes</div><div class="v">${escapeHtml(m.notes)}</div></div>` : ''}
     ${conns.length ? `<div class="drawer-row"><div class="k">Connections</div><div class="drawer-list">${connRows}</div></div>` : ''}
   `;
