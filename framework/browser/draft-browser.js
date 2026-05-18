@@ -3893,12 +3893,11 @@ function shortRefLabel(ref) {
     .replace(/\s+Standard$/i, '');
 }
 
-const SOFTWARE_DEPLOYMENT_PATTERN_TIERS = ['presentation', 'application', 'data', 'utility'];
+const SOFTWARE_DEPLOYMENT_PATTERN_TIERS = ['frontend', 'application', 'data'];
 const SOFTWARE_DEPLOYMENT_PATTERN_TIER_LABELS = {
-  presentation: 'Presentation Services',
+  frontend: 'Frontend Services',
   application: 'Application Services',
-  data: 'Data Services',
-  utility: 'Utility Services'
+  data: 'Data Services'
 };
 
 function isContainerHostObject(object) {
@@ -3993,7 +3992,9 @@ function colorForToken(value) {
 }
 
 function entryDiagramTier(entry) {
-  return SOFTWARE_DEPLOYMENT_PATTERN_TIERS.includes(entry?.diagramTier) ? entry.diagramTier : 'application';
+  // Legacy helper for reference_architecture topology view — reads networkZone tier from lookup
+  const zoneTier = entry?._zoneTier;
+  return SOFTWARE_DEPLOYMENT_PATTERN_TIERS.includes(zoneTier) ? zoneTier : 'application';
 }
 
 function supportEntryTier(entry, objectType) {
@@ -4885,8 +4886,8 @@ function showDetailView(id, pushHistory = true) {
 // SDP Detail — scrolling layout with topology overlay, section nav, drawer
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const _SDP_TIER_ORDER  = ['presentation', 'application', 'data', 'utility'];
-const _SDP_TIER_LABELS = { presentation: 'Presentation', application: 'Application', data: 'Data', utility: 'Utility' };
+const _SDP_TIER_ORDER  = ['frontend', 'application', 'data'];
+const _SDP_TIER_LABELS = { frontend: 'Frontend', application: 'Application', data: 'Data' };
 
 // Per-render mutable state — reset on each new SDP detail render
 let _sdpActive = null, _sdpHover = null, _sdpDrawer = null;
@@ -4903,17 +4904,22 @@ function _sdpTeardown() {
 
 // ── View-model builder ────────────────────────────────────────────────────────
 function _sdpBuildVM(object) {
+  // Build zone→tier lookup from declared networkZones
+  const zones = object.networkZones || [];
+  const zoneToTier = {};
+  zones.forEach(z => { if (z.tier) zoneToTier[z.id] = z.tier; });
+
   const members = [];
   (object.serviceGroups || []).forEach(sg => {
     (sg.deployableObjects || []).forEach(e => {
+      const zone = e.networkZone || '';
+      const tier = zoneToTier[zone] || 'application';
       members.push({
-        ref: e.ref, tier: e.diagramTier || 'application',
-        zone: e.networkZone || _sdpInferZone(e.diagramTier, object),
+        ref: e.ref, tier, zone,
         intent: e.intent || 'sa', notes: e.notes || '', group: sg.name
       });
     });
   });
-  const zones = object.networkZones || [];
   const byZone = {};
   zones.forEach(z => (byZone[z.id] = { zone: z, tiers: {} }));
   members.forEach(m => {
@@ -4926,13 +4932,6 @@ function _sdpBuildVM(object) {
   const uidToZone = {};
   members.forEach(m => (uidToZone[m.ref] = m.zone));
   return { members, zones, byZone, connections, uidToZone };
-}
-
-function _sdpInferZone(tier, object) {
-  const zids = (object.networkZones || []).map(z => z.id);
-  if (tier === 'presentation' && zids.includes('public')) return 'public';
-  if (tier === 'data'         && zids.includes('data'))   return 'data';
-  return zids[1] || zids[0] || 'control';
 }
 
 // ── Lifecycle badge (SDP scoped) ──────────────────────────────────────────────

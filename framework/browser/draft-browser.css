@@ -33,10 +33,10 @@
   --zone-data-soft:     oklch(0.96 0.04 55);
 
   /* ── Tier accents ─────────────────────────────────────── */
-  --tier-presentation:  oklch(0.60 0.13 200);
+  --tier-frontend:      oklch(0.60 0.13 200);
   --tier-application:   oklch(0.50 0.14 260);
   --tier-data:          oklch(0.55 0.12 50);
-  --tier-utility:       oklch(0.55 0.04 270);
+  --tier-unclassified:  oklch(0.55 0.04 270);
 
   /* ── Status ───────────────────────────────────────────── */
   --ok:        oklch(0.55 0.13 155);

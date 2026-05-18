@@ -42,15 +42,18 @@ architecturalDecisions:
 networkZones:
 - id: public
   name: Public
+  tier: frontend
   description: Internet-facing tier hosting the Horizon dashboard and OpenStack API
     endpoints accessible to operators and tenants via CLI tools.
 - id: control
   name: Control Plane
+  tier: application
   description: Internal tier hosting all OpenStack API services, schedulers, conductors,
     and message broker. Not directly accessible from the public internet; fronted
     by the load balancer.
 - id: data
   name: Data Layer
+  tier: data
   description: Internal tier hosting relational databases (MariaDB Galera), message
     broker (RabbitMQ), and object storage (Swift). Accessible only from control plane
     services.
@@ -59,73 +62,61 @@ serviceGroups:
   deploymentTarget: openstack-controller
   deployableObjects:
   - ref: STCK000006-RS06
-    diagramTier: presentation
     networkZone: public
     intent: ha
     notes: Horizon dashboard served via nginx. Internet-facing. Active-active across
       controller nodes with sticky sessions.
   - ref: STCK000001-RS01
-    diagramTier: application
     networkZone: control
     intent: ha
     notes: Nova compute service. nova-api runs active-active behind load balancer.
       nova-scheduler and nova-conductor run on controller nodes.
   - ref: STCK000002-RS02
-    diagramTier: application
     networkZone: control
     intent: ha
     notes: Keystone identity service. Runs active-active. Fernet token validation
       is stateless, enabling full horizontal HA.
   - ref: STCK000003-RS03
-    diagramTier: application
     networkZone: control
     intent: ha
     notes: Glance image service. glance-api runs active-active. Image binaries stored
       in Swift cluster.
   - ref: STCK000004-RS04
-    diagramTier: application
     networkZone: control
     intent: ha
     notes: Neutron networking service. neutron-api runs active-active. ML2 agents
       deployed on compute and network nodes.
   - ref: STCK000005-RS05
-    diagramTier: application
     networkZone: control
     intent: ha
     notes: Cinder block storage service. cinder-api and cinder-scheduler run active-active.
       iSCSI backend storage.
   - ref: STCK000007-RS07
-    diagramTier: application
     networkZone: control
     intent: ha
     notes: Heat orchestration service. heat-api and heat-api-cfn run active-active.
       heat-engine workers consume from RabbitMQ.
   - ref: STCK000008-RS08
-    diagramTier: utility
     networkZone: control
     intent: ha
     notes: Ceilometer telemetry service. Consumes OpenStack notification bus from
       RabbitMQ. Non-critical path — does not affect instance operations.
   - ref: STCK000009-RS09
-    diagramTier: application
     networkZone: control
     intent: ha
     notes: Ironic bare metal service. ironic-api runs active-active. ironic-conductor
       supports multi-conductor HA with node affinity.
   - ref: STCK00000A-RS0A
-    diagramTier: application
     networkZone: control
     intent: ha
     notes: Trove database-as-a-service. trove-api runs active-active. Provisions
       database instances as Nova VMs.
   - ref: STCK00000B-RS0B
-    diagramTier: application
     networkZone: control
     intent: ha
     notes: Sahara data processing service. sahara-api runs active-active. Provisions
       Hadoop/Spark clusters as Nova VM pools.
   - ref: STCK00000C-RS0C
-    diagramTier: application
     networkZone: control
     intent: ha
     notes: Swift proxy service. Runs active-active behind load balancer. Fully stateless
@@ -262,46 +253,38 @@ serviceGroups:
   deploymentTarget: openstack-controller
   deployableObjects:
   - ref: STCK000001-DAR1
-    diagramTier: data
     networkZone: data
     intent: ha
     notes: Nova database schema in the MariaDB Galera cluster. Persists all compute
       service state.
   - ref: STCK000002-DAR2
-    diagramTier: data
     networkZone: data
     intent: ha
     notes: Keystone database schema. Highest-criticality schema — loss causes platform-wide
       outage.
   - ref: STCK000003-DAR3
-    diagramTier: data
     networkZone: data
     intent: ha
     notes: Glance database schema. Stores image metadata; image binaries are in Swift.
   - ref: STCK000004-DAR4
-    diagramTier: data
     networkZone: data
     intent: ha
     notes: Neutron database schema. Stores virtual network topology state.
   - ref: STCK000005-DAR5
-    diagramTier: data
     networkZone: data
     intent: ha
     notes: Cinder database schema. Stores volume and snapshot records.
   - ref: STCK000007-DAR7
-    diagramTier: data
     networkZone: data
     intent: ha
     notes: Shared database cluster for Heat, Ironic, Trove, Sahara, and Ceilometer
       schemas. Each service has an isolated schema within this cluster.
   - ref: STCK000006-DAR6
-    diagramTier: data
     networkZone: data
     intent: ha
     notes: Swift object storage cluster providing durable distributed storage. Primary
       consumer is Glance for image binary storage.
   - ref: STCK00000D-RS0D
-    diagramTier: utility
     networkZone: data
     intent: ha
     notes: RabbitMQ 3-node cluster providing shared AMQP message transport for all

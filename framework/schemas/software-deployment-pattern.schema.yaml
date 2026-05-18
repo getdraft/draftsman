@@ -105,12 +105,27 @@ networkZone:
   - id
   - name
   optionalFields:
+  - tier
   - description
+  enumFields:
+    tier:
+    - frontend
+    - application
+    - data
+  fieldDescriptions:
+    tier: >
+      Optional classification that determines which tier-level requirements apply to
+      all services in this zone. frontend = internet-facing presentation and edge
+      controls; application = internal service and API controls; data = persistence,
+      encryption-at-rest, and backup controls. Omit for operational or management
+      zones that do not map cleanly to a tier requirement set.
   aiHint: >
     A network zone is a logical traffic boundary within a deployment — for example
-    a public-facing network, private API network, or management plane. Use workspace
-    vocabulary list networkZones for approved zone IDs. Common patterns: public /
-    private / management; tenant / platform / management; dmz / internal / data.
+    a public-facing web zone, private application zone, restricted data zone, or
+    unclassified operations zone. Classify the zone with a tier (frontend /
+    application / data) when it maps cleanly to one of those requirement classes;
+    leave tier unset for management, CI/CD, or mixed-purpose zones. Use workspace
+    vocabulary list networkZones for approved zone IDs.
 serviceGroup:
   requiredFields:
   - name
@@ -133,26 +148,20 @@ deployableObjectEntry:
   requiredFields:
   - ref
   optionalFields:
-  - diagramTier
   - networkZone
   - intent
   - instance
   - riskRef
   - notes
   enumFields:
-    diagramTier:
-    - presentation
-    - application
-    - data
-    - utility
-  intent:
+    intent:
     - ha
     - sa
   fieldDescriptions:
     networkZone: >
-      ID of a networkZone declared on this SDP. If omitted the Draftsman infers the
-      zone from diagramTier using the workspace zone pattern. Only record explicitly
-      when the service is in a different zone than its tier default.
+      ID of a networkZone declared on this SDP. The zone's tier classification
+      determines which tier requirements apply to this service. Required for
+      topology diagram rendering.
 serviceConnection:
   requiredFields:
   - from
@@ -185,11 +194,11 @@ serviceConnection:
     port: Optional port or port range. Do not ask the engineer for this during a Draftsman session; capture only if volunteered.
     label: Optional human label for this edge. Do not ask during a Draftsman session; capture only if volunteered.
   aiHint: >
-    Capture only primary paths that cross a tier boundary (e.g. presentation→application)
-    or a network zone boundary. Do not attempt to enumerate all internal same-tier
-    connections during a single Draftsman session. Use the propose-and-confirm pattern:
-    infer likely crossings from diagramTier, ask yes/no per tier crossing, then
-    multi-select the specific services involved, then ask protocol once per crossing.
+    Capture only primary paths that cross a zone boundary. Do not attempt to enumerate
+    all internal same-zone connections during a single Draftsman session. Use the
+    propose-and-confirm pattern: infer likely crossings from zone topology, ask yes/no
+    per zone crossing, then multi-select the specific services involved, then ask
+    protocol once per crossing.
 externalInteraction:
   requiredFields:
   - name
