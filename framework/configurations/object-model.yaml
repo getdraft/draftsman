@@ -1,0 +1,320 @@
+schemaVersion: '1.0'
+name: DRAFT Object Model
+description: >
+  Source of truth for the DRAFT object model diagram.
+  docs/assets/draft-object-model.svg is a GENERATED artifact — do not hand-edit it.
+  To regenerate: python framework/tools/generate_object_model_svg.py
+
+outputPath: docs/assets/draft-object-model.svg
+
+canvas:
+  width: 900
+  padding: 8        # outer padding around all containers
+  sectionGap: 8     # vertical gap between stacked left-panel sections
+
+panels:
+  left:
+    x: 8
+    width: 622
+  right:
+    x: 644
+    width: 250
+
+# ── Color palette ───────────────────────────────────────────────────────────
+colors:
+  engineering:
+    primary: '#006064'
+    background: '#f0f7f8'
+  architecture:
+    primary: '#2a6fdb'
+    background: '#eef4fc'
+  governance:
+    primary: '#7c3a6b'
+    background: '#f8f0f5'
+  arrows:
+    default: '#5f564b'
+    green:   '#1f8a5b'
+    purple:  '#7c3a6b'
+    teal:    '#006064'
+
+# ── Left panel: sections stack top-to-bottom ────────────────────────────────
+leftSections:
+
+  - id: engineering
+    label: ENGINEERING OBJECTS
+    colorKey: engineering
+    rows:
+      - objects:
+          - typeRef: software_deployment_pattern
+            # layout: center (single object → auto-centered)
+      - objects:
+          - typeRef: product_component
+          - typeRef: data_component
+            # layout: paired-center (two objects → grouped and centered)
+
+  - id: architecture
+    label: ARCHITECTURE OBJECTS
+    colorKey: architecture
+    rows:
+      - objects:
+          - typeRef: edge_gateway_service
+          - typeRef: runtime_service
+          - typeRef: data_store_service
+            # layout: spread-3 (three objects → equal gaps, anchored to margins)
+      - objects:
+          - typeRef: technology_component
+            xHint: 310   # x relative to panel left edge (x=8), so actual x=318
+          - typeRef: host
+            xHint: 486   # actual x=494
+
+# ── Right panel: governance column spans full left-panel height ──────────────
+rightSection:
+  id: governance
+  label: GOVERNANCE OBJECTS
+  colorKey: governance
+  objectGap: 8      # vertical gap between stacked governance boxes
+  objects:
+    - typeRef: reference_architecture
+    - typeRef: domain
+    - typeRef: capability
+    - typeRef: requirement_group
+    - typeRef: requirement
+    - typeRef: decision_record
+
+# ── Object type display properties ──────────────────────────────────────────
+objectTypes:
+
+  software_deployment_pattern:
+    displayName: SoftwareDeploymentPattern
+    titleFontSize: 11
+    width: 244
+    height: 72
+    displayFields:
+      - serviceGroups · deployableObjects
+      - connections · deploymentTargets
+      - businessContext · decisions
+
+  product_component:
+    displayName: ProductComponent
+    titleFontSize: 10
+    width: 140
+    height: 74
+    displayFields:
+      - first-party code
+      - repoUrl · owner · classification
+      - runtimeRequirement
+
+  data_component:
+    displayName: DataComponent
+    titleFontSize: 10
+    width: 140
+    height: 74
+    displayFields:
+      - first-party data artifacts
+      - repoUrl · owner · targetEngine
+      - dataClassification · containsPII
+
+  edge_gateway_service:
+    displayName: EdgeGatewayService
+    titleFontSize: 10.5
+    width: 184
+    height: 68
+    displayFields:
+      - WAF · API GW · LB · proxy
+      - traffic management
+      - not a code execution env
+    lastFieldNote: true   # render last field in small italic grey
+
+  runtime_service:
+    displayName: RuntimeService
+    titleFontSize: 10.5
+    width: 184
+    height: 68
+    displayFields:
+      - web · app · worker
+      - code execution environment
+      - Host + TechComponent + ProductComponent
+    lastFieldNote: true
+
+  data_store_service:
+    displayName: DataStoreService
+    titleFontSize: 10.5
+    width: 202
+    height: 68
+    displayFields:
+      - database · file · object · search · cache
+      - data dependency, not exec env
+      - Host + TechComponent + DataComponent
+    lastFieldNote: true
+
+  technology_component:
+    displayName: TechnologyComponent
+    titleFontSize: 10.5
+    width: 166
+    height: 74
+    displayFields:
+      - vendor · productName · classification
+      - configurations · networkBindings
+      - capability implementations
+
+  host:
+    displayName: Host
+    titleFontSize: 10.5
+    width: 130
+    height: 74
+    displayFields:
+      - compute + OS platform
+      - VM · container · bare metal
+      - serverless
+
+  reference_architecture:
+    displayName: ReferenceArchitecture
+    titleFontSize: 10.5
+    width: 182
+    height: 60
+    displayFields:
+      - pattern guidance · serviceGroups
+      - metadata, not a deployed node
+
+  domain:
+    displayName: Domain
+    titleFontSize: 11.5
+    width: 182
+    height: 58
+    displayFields:
+      - strategy grouping
+
+  capability:
+    displayName: Capability
+    titleFontSize: 11.5
+    width: 182
+    height: 58
+    displayFields:
+      - auth · backup · logging · patch
+
+  requirement_group:
+    displayName: RequirementGroup
+    titleFontSize: 11
+    width: 182
+    height: 78
+    displayFields:
+      - always-on · workspace-mode
+      - company · compliance
+      - appliesTo · requirements
+
+  requirement:
+    displayName: Requirement
+    titleFontSize: 11.5
+    width: 182
+    height: 58
+    displayFields:
+      - id · description · rationale
+      - mode · naAllowed
+
+  decision_record:
+    displayName: DecisionRecord
+    titleFontSize: 11.5
+    width: 182
+    height: 58
+    displayFields:
+      - risk · decision · mitigation
+
+# ── Relationships (arrows) ───────────────────────────────────────────────────
+#
+# Routing strategies:
+#   diagonal_to_governance   – diagonal from object right edge to governance box left edge
+#   stub_down                – short dashed stub from object bottom toward section below
+#   down_through_gap         – drop from Engineering box through inter-section gap into service
+#   bus_downward             – multi-source bus that fans arrows DOWN into target objects
+#   side_route_to_governance – right edge → below arch section → up x-channel → governance box
+#   short_vertical           – straight vertical within governance column
+#   arrow_left               – short arrow pointing left from governance box into left panel
+#
+relationships:
+
+  - id: sdp-adheres-to-ra
+    from: software_deployment_pattern
+    to: reference_architecture
+    label: adheres to
+    style: dashed
+    color: purple
+    routing: diagonal_to_governance
+
+  - id: sdp-service-groups-stub
+    from: software_deployment_pattern
+    label: serviceGroups
+    style: dashed
+    color: teal
+    routing: stub_down            # indicates SDP describes architecture objects below
+
+  - id: product-component-deployed-on-runtime
+    from: product_component
+    to: runtime_service
+    label: deployedOn
+    style: dashed
+    color: green
+    routing: down_through_gap
+    jogOffset: -8                 # px above service top for horizontal jog
+
+  - id: data-component-deployed-on-datastore
+    from: data_component
+    to: data_store_service
+    label: deployedOn
+    style: dashed
+    color: green
+    routing: down_through_gap
+    jogOffset: -4
+
+  - id: services-composed-of
+    from:
+      - edge_gateway_service
+      - runtime_service
+      - data_store_service
+    to:
+      - technology_component
+      - host
+    label: composed of
+    style: solid
+    color: default
+    routing: bus_downward         # arrows point DOWN into TechComponent and Host
+
+  - id: techcomponent-produces-capability
+    from: technology_component
+    to: capability
+    label: produces
+    style: solid
+    color: default
+    routing: side_route_to_governance
+    xChannel: 626                 # vertical routing channel x in right margin
+
+  - id: techcomponent-satisfies-requirement
+    from: technology_component
+    to: requirement
+    label: satisfies
+    style: solid
+    color: default
+    routing: side_route_to_governance
+    xChannel: 633
+
+  - id: domain-groups-capability
+    from: domain
+    to: capability
+    label: groups
+    style: solid
+    color: purple
+    routing: short_vertical
+
+  - id: requirement-group-contains-requirement
+    from: requirement_group
+    to: requirement
+    label: contains
+    style: solid
+    color: purple
+    routing: short_vertical
+
+  - id: requirement-group-applies-to
+    from: requirement_group
+    label: appliesTo
+    style: dashed
+    color: purple
+    routing: arrow_left
