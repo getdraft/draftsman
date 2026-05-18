@@ -1,0 +1,75 @@
+schemaVersion: '1.0'
+uid: 01KRWRRNM7-G642
+type: requirement_group
+name: Product Component Requirement Group
+description: Built-in checklist for first-party code components deployed onto Runtime Services. Establishes what must be known about a ProductComponent before it is considered architecturally complete.
+version: 1.0.0
+catalogStatus: approved
+owner:
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+authority:
+  name: DRAFT Framework
+  shortName: DRAFT
+  source: DRAFT Framework
+activation: always
+appliesTo:
+- product_component
+requirements:
+- id: source-repository
+  description: The ProductComponent must declare its source repository.
+  rationale: First-party code without a known repository is not governable, auditable, or recoverable. The repository is the authoritative source of record for the component.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: repoUrl
+    example: https://github.com/org/repo or https://dev.azure.com/org/project/_git/repo
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - field
+- id: component-owner
+  description: The ProductComponent must declare an owning team.
+  rationale: First-party components without explicit ownership cannot be maintained, patched, or governed during incidents.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: owner.team
+    example: platform-engineering or payments-squad
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - field
+- id: runtime-requirement
+  description: The ProductComponent must declare its runtime or platform version requirement.
+  rationale: A component cannot be correctly deployed onto a RuntimeService unless its required execution environment is explicit. This drives host and TechnologyComponent selection.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: runtimeRequirement
+    example: Node 20, Python 3.12, Java 17, .NET 8, or Go 1.22
+  - mechanism: architecturalDecision
+    key: runtimeRequirement
+    example: A documented decision when the runtime requirement cannot be expressed as a single version string.
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - field
+  - architecturalDecision
+- id: classification
+  description: The ProductComponent must declare its component classification.
+  rationale: Classification drives how the component is composed into a RuntimeService and what operational patterns apply to it.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: classification
+    example: web-application, api-service, worker, library, or cli
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - field
+lifecycleStatus: candidate
+tags:
+- product-component
+- requirement-group
+- definition

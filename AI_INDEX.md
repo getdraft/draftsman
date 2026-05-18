@@ -84,12 +84,14 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 |---|---|---|
 | framework/schemas/capability.schema.yaml | capability | schemaVersion, uid, type, name, description, catalogStatus, definitionOwner, domain, implementations |
 | framework/schemas/data-at-rest-service.schema.yaml | data_at_rest_service | schemaVersion, uid, type, name, deliveryModel, catalogStatus, lifecycleStatus |
+| framework/schemas/data-component.schema.yaml | data_component | schemaVersion, uid, type, name, repoUrl, owner, targetEngine, dataClassification, containsPII, catalogStatus, lifecycleStatus |
 | framework/schemas/decision-record.schema.yaml | decision_record | schemaVersion, uid, type, name, category, status, catalogStatus, lifecycleStatus |
 | framework/schemas/domain.schema.yaml | domain | schemaVersion, uid, type, name, capabilities |
 | framework/schemas/drafting-session.schema.yaml | drafting_session | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus, sessionStatus, primaryObjectType, sourceArtifacts, generatedObjects, unresolvedQuestions |
 | framework/schemas/edge-gateway-service.schema.yaml | edge_gateway_service | schemaVersion, uid, type, name, deliveryModel, catalogStatus, lifecycleStatus |
 | framework/schemas/host.schema.yaml | host | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus |
 | framework/schemas/object-patch.schema.yaml | object_patch | schemaVersion, uid, type, name, target, patch, catalogStatus, lifecycleStatus |
+| framework/schemas/product-component.schema.yaml | product_component | schemaVersion, uid, type, name, repoUrl, owner, classification, catalogStatus, lifecycleStatus |
 | framework/schemas/product-service.schema.yaml | product_service | schemaVersion, uid, type, name, product, runsOn, catalogStatus, lifecycleStatus |
 | framework/schemas/reference-architecture.schema.yaml | reference_architecture | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus |
 | framework/schemas/requirement-group.schema.yaml | requirement_group | schemaVersion, uid, type, name, description, catalogStatus, owner, activation, appliesTo, requirements |
@@ -124,6 +126,7 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KQQ4Q026-58Q3 | Test Execution and Automation | capability |  | Runtimes and orchestration services used to execute automated tests. | framework/configurations/capabilities/capability-test-execution.yaml |
 | 01KQQ4Q027-DSDD | Appliance Delivery Requirement Group | requirement_group | appliance, requirement-group, definition | Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service uses appliance delivery and the un... | framework/configurations/requirement-groups/requirement-group-appliance-delivery.yaml |
 | 01KQQ4Q027-VBF0 | Data-at-Rest Service Requirement Group | requirement_group | service, dbms, requirement-group, definition | Additional data-at-rest checklist items extending the service behavior Requirement Group for durable data, recovery,... | framework/configurations/requirement-groups/requirement-group-data-at-rest-service.yaml |
+| 01KRWRRNM7-VJ5A | Data Component Requirement Group | requirement_group | data-component, requirement-group, definition | Built-in checklist for first-party data artifacts deployed onto Data Store Services. Establishes what must be known a... | framework/configurations/requirement-groups/requirement-group-data-component.yaml |
 | 01KQQ4Q027-69VY | NIST Cybersecurity Framework Requirement Group | requirement_group | compliance, nist, starter-pack, requirement-group | Initial NIST Cybersecurity Framework (CSF) 2.0 requirement group scoped to the outcomes that can be meaningfully answ... | framework/configurations/requirement-groups/requirement-group-draft-nist-csf.yaml |
 | 01KQQ4Q027-T3CA | Security and Security Compliance Requirement Group | requirement_group | compliance, controls, baseline, requirement-group | Baseline security and compliance requirement group bundled with DRAFT. Requirements are applied to matching object ty... | framework/configurations/requirement-groups/requirement-group-draft-security-compliance.yaml |
 | 01KQQ4Q027-7JN2 | SOC 2 Requirement Group | requirement_group | compliance, soc2, starter-pack, requirement-group | Initial SOC 2 requirement group based on the AICPA Trust Services Criteria. These requirements use DRAFT applicabilit... | framework/configurations/requirement-groups/requirement-group-draft-soc2.yaml |
@@ -131,6 +134,7 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KQQ4Q027-HHA4 | Drafting Session Requirement Group | requirement_group | drafting-session, requirement-group, intake | Structured checklist used to capture partial architecture-authoring sessions, generated outputs, and unresolved follo... | framework/configurations/requirement-groups/requirement-group-drafting-session.yaml |
 | 01KQQ4Q027-THYN | Host Requirement Group | requirement_group | host, requirement-group, definition | Structured checklist of required questions and answers used to define a complete and correct Host. | framework/configurations/requirement-groups/requirement-group-host.yaml |
 | 01KQQ4Q027-TPWG | PaaS Delivery Requirement Group | requirement_group | paas, requirement-group, definition | Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service is vendor-managed inside the organ... | framework/configurations/requirement-groups/requirement-group-paas-delivery.yaml |
+| 01KRWRRNM7-G642 | Product Component Requirement Group | requirement_group | product-component, requirement-group, definition | Built-in checklist for first-party code components deployed onto Runtime Services. Establishes what must be known abo... | framework/configurations/requirement-groups/requirement-group-product-component.yaml |
 | 01KQQ4Q027-SS2K | Reference Architecture Requirement Group | requirement_group | reference-architecture, requirement-group, definition | Structured checklist of required questions and answers used to define a complete and correct Reference Architecture. | framework/configurations/requirement-groups/requirement-group-reference-architecture.yaml |
 | 01KQQ4Q027-K5DR | Service Behavior Requirement Group | requirement_group | service, requirement-group, definition | Structured checklist of required questions and answers used to define complete and correct self-managed Runtime and E... | framework/configurations/requirement-groups/requirement-group-runtime-service.yaml |
 | 01KQQ4Q027-FKRM | SaaS Delivery Requirement Group | requirement_group | saas, requirement-group, definition | Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service is consumed as a vendor-managed ex... | framework/configurations/requirement-groups/requirement-group-saas-delivery.yaml |
@@ -194,7 +198,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | Folder | YAML Count |
 |---|---|
 | framework/configurations/capabilities | 19 |
-| framework/configurations/requirement-groups | 13 |
+| framework/configurations/requirement-groups | 15 |
 | framework/configurations/domains | 3 |
 | examples/catalog/technology-components | 19 |
 | examples/catalog/hosts | 2 |

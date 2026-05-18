@@ -1,0 +1,174 @@
+schemaVersion: '1.0'
+type: product_component
+requiredFields:
+- schemaVersion
+- uid
+- type
+- name
+- repoUrl
+- owner
+- classification
+- catalogStatus
+- lifecycleStatus
+optionalFields:
+- aliases
+- description
+- version
+- tags
+- language
+- runtimeRequirement
+- interfaces
+- networkBindings
+- environmentConfiguration
+- architecturalDecisions
+- notes
+- requirementGroups
+- requirementImplementations
+enumFields:
+  catalogStatus:
+  - stub
+  - draft
+  - approved
+  lifecycleStatus:
+  - candidate
+  - preferred
+  - existing-only
+  - deprecated
+  - retired
+  classification:
+  - web-application
+  - api-service
+  - worker
+  - library
+  - cli
+  - other
+fieldTypes:
+  aliases: list
+  owner: dict
+  tags: list
+  interfaces: list
+  networkBindings: list
+  environmentConfiguration: list
+  architecturalDecisions: dict
+  requirementGroups: list
+  requirementImplementations: list
+collectionSchemas:
+  interfaces: interface
+  networkBindings: networkBinding
+  environmentConfiguration: environmentVariable
+  requirementImplementations: requirementImplementation
+interface:
+  requiredFields:
+  - name
+  - protocol
+  optionalFields:
+  - path
+  - authenticationModel
+  - description
+  enumFields:
+    protocol:
+    - REST
+    - gRPC
+    - GraphQL
+    - WebSocket
+    - AMQP
+    - SMTP
+    - other
+    authenticationModel:
+    - iam
+    - api-key
+    - oauth
+    - saml
+    - other
+    - TBD
+  fieldTypes:
+    name: str
+    path: str
+    protocol: str
+    authenticationModel: str
+    description: str
+  fieldDescriptions:
+    name: Name the interface or API surface exposed by this component.
+    path: Record the route, topic, queue, or address when one exists.
+    protocol: Use REST, gRPC, GraphQL, WebSocket, AMQP, SMTP, or other.
+    authenticationModel: Use the authentication model that applies to this interface.
+    description: Describe the purpose or consumer-facing behavior of this interface.
+networkBinding:
+  requiredFields:
+  - port
+  - protocol
+  - direction
+  optionalFields:
+  - description
+  enumFields:
+    direction:
+    - inbound
+    - outbound
+    - bidirectional
+  fieldTypes:
+    port: int
+    protocol: str
+    direction: str
+    description: str
+  fieldDescriptions:
+    port: Record the port defined by this component's own configuration.
+    protocol: Record the protocol name such as HTTPS, gRPC, TCP, or AMQP.
+    direction: Use inbound, outbound, or bidirectional.
+    description: Explain the purpose of this network binding.
+environmentVariable:
+  requiredFields:
+  - name
+  optionalFields:
+  - description
+  - required
+  - sensitive
+  fieldTypes:
+    name: str
+    description: str
+    required: bool
+    sensitive: bool
+  fieldDescriptions:
+    name: Name the environment variable or configuration key required by this component.
+    description: Describe the purpose of this configuration value.
+    required: Set true when this variable must be present for the component to start.
+    sensitive: Set true when this variable holds a secret, key, token, or credential.
+requirementImplementation:
+  requiredFields:
+  - requirementGroup
+  - requirementId
+  - status
+  optionalFields:
+  - mechanism
+  - key
+  - equals
+  - criteria
+  - ref
+  - notes
+  enumFields:
+    status:
+    - satisfied
+    - not-applicable
+    - not-compliant
+    mechanism:
+    - architecturalDecision
+    - field
+  fieldTypes:
+    criteria: dict
+aiHint: A ProductComponent is first-party code authored by the organization and deployed onto a RuntimeService. It is the first-party peer of TechnologyComponent. Define interfaces, network bindings, and environment configuration here when they are declared by the component itself, not by the runtime or infrastructure layer.
+fieldDescriptions:
+  schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
+  uid: Use the generated opaque UID for object identity. Do not edit it for display-name changes.
+  type: Use product_component exactly.
+  name: Use a clear human-readable name for this component.
+  repoUrl: Record the source repository URL where this component's code is maintained.
+  owner: Declare the team that authors and maintains this component.
+  classification: Choose the one classification that best describes this component's role.
+  language: Record the primary programming language or platform (e.g., TypeScript, Python, Java, Go, .NET).
+  runtimeRequirement: Record the runtime version or platform this component requires (e.g., Node 20, Python 3.12, Java 17, .NET 8).
+  interfaces: List the APIs, events, or protocol surfaces this component exposes, when defined by the component itself.
+  networkBindings: List ports this component opens as defined by its own configuration, not by the runtime infrastructure.
+  environmentConfiguration: List environment variables or configuration keys this component requires at runtime.
+  catalogStatus: Use stub, draft, or approved to describe catalog maturity.
+  lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired.
+  aliases: List prior or alternate names for this component.
+uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$

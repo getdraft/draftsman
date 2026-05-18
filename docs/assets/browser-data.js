@@ -3546,6 +3546,248 @@ window.DRAFT_BROWSER_DATA = {
       "existsInCatalog": true
     },
     {
+      "id": "01KRWRRNM7-VJ5A",
+      "uid": "01KRWRRNM7-VJ5A",
+      "name": "Data Component Requirement Group",
+      "aliases": [],
+      "type": "requirement_group",
+      "typeLabel": "Requirement Group",
+      "filterType": "requirement_group",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Built-in checklist for first-party data artifacts deployed onto Data Store Services. Establishes what must be known about a DataComponent \u2014 including data classification, PII declaration, and data ownership \u2014 before it is considered architecturally complete. Backup and recovery requirements belong on the DataStoreService, not here.",
+      "version": "1.0.0",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "candidate",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {
+        "name": "DRAFT Framework",
+        "shortName": "DRAFT",
+        "source": "DRAFT Framework"
+      },
+      "shape": "barrel",
+      "color": "#7c3a6b",
+      "source": "framework/configurations/requirement-groups/requirement-group-data-component.yaml",
+      "tags": [
+        "data-component",
+        "requirement-group",
+        "definition"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {},
+      "requirements": [
+        {
+          "id": "source-repository",
+          "description": "The DataComponent must declare its source repository.",
+          "rationale": "Schemas, migrations, stored procedures, and SQL jobs are code. Data structures deployed without source control are not auditable, cannot be rolled back, and cannot be reviewed as part of change management.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "repoUrl",
+              "example": "https://github.com/org/repo or https://dev.azure.com/org/project/_git/repo"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        },
+        {
+          "id": "data-owner",
+          "description": "The DataComponent must declare an owning team.",
+          "rationale": "Data without explicit ownership cannot be governed for compliance, cannot be classified consistently, and cannot be responded to during security incidents.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "owner.team",
+              "example": "data-platform or student-records-team"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        },
+        {
+          "id": "target-engine",
+          "description": "The DataComponent must declare the database engine it targets.",
+          "rationale": "A data component cannot be correctly deployed without knowing its target engine. Engine drives migration tooling, stored procedure syntax, job scheduling, and DataStoreService selection.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "targetEngine",
+              "example": "postgresql, mssql, mysql, mongodb, dynamodb, or other"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        },
+        {
+          "id": "data-classification",
+          "description": "The DataComponent must declare the sensitivity classification of the data it contains.",
+          "rationale": "Data governance, access control, and compliance obligations are determined by classification. A data component without an explicit classification cannot be evaluated for regulatory scope.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "dataClassification",
+              "example": "public, internal, confidential, or restricted"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        },
+        {
+          "id": "pii-declaration",
+          "description": "The DataComponent must explicitly declare whether it contains or processes personally identifiable information.",
+          "rationale": "PII declaration is a prerequisite for privacy impact assessment, data subject rights handling, and regulatory compliance scoping. Absence of a declaration is not equivalent to a negative answer.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "containsPII",
+              "example": "true or false"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        }
+      ],
+      "implementations": [],
+      "appliesTo": [
+        "data_component"
+      ],
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedSoftwareDeployment": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 5,
+      "hasRiskRef": false,
+      "outboundRefs": [],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "owner",
+          "activation",
+          "appliesTo",
+          "requirements"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "lifecycleStatus",
+          "provider",
+          "authority",
+          "notes",
+          "inherits",
+          "appliesToQualifiers"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "provider": "dict",
+          "authority": "dict",
+          "appliesTo": "list",
+          "requirements": "list",
+          "appliesToQualifiers": "dict"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "activation": [
+            "always",
+            "workspace"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "requirements": "requirement"
+        },
+        "schemaPath": "framework/schemas/requirement-group.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KRWRRNM7-VJ5A\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Data Component Requirement Group\",\n  \"description\": \"Built-in checklist for first-party data artifacts deployed onto Data Store Services. Establishes what must be known about a DataComponent \\u2014 including data classification, PII declaration, and data ownership \\u2014 before it is considered architecturally complete. Backup and recovery requirements belong on the DataStoreService, not here.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"data_component\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"source-repository\",\n      \"description\": \"The DataComponent must declare its source repository.\",\n      \"rationale\": \"Schemas, migrations, stored procedures, and SQL jobs are code. Data structures deployed without source control are not auditable, cannot be rolled back, and cannot be reviewed as part of change management.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"repoUrl\",\n          \"example\": \"https://github.com/org/repo or https://dev.azure.com/org/project/_git/repo\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"data-owner\",\n      \"description\": \"The DataComponent must declare an owning team.\",\n      \"rationale\": \"Data without explicit ownership cannot be governed for compliance, cannot be classified consistently, and cannot be responded to during security incidents.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"owner.team\",\n          \"example\": \"data-platform or student-records-team\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"target-engine\",\n      \"description\": \"The DataComponent must declare the database engine it targets.\",\n      \"rationale\": \"A data component cannot be correctly deployed without knowing its target engine. Engine drives migration tooling, stored procedure syntax, job scheduling, and DataStoreService selection.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"targetEngine\",\n          \"example\": \"postgresql, mssql, mysql, mongodb, dynamodb, or other\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"data-classification\",\n      \"description\": \"The DataComponent must declare the sensitivity classification of the data it contains.\",\n      \"rationale\": \"Data governance, access control, and compliance obligations are determined by classification. A data component without an explicit classification cannot be evaluated for regulatory scope.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"dataClassification\",\n          \"example\": \"public, internal, confidential, or restricted\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"pii-declaration\",\n      \"description\": \"The DataComponent must explicitly declare whether it contains or processes personally identifiable information.\",\n      \"rationale\": \"PII declaration is a prerequisite for privacy impact assessment, data subject rights handling, and regulatory compliance scoping. Absence of a declaration is not equivalent to a negative answer.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"containsPII\",\n          \"example\": \"true or false\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"candidate\",\n  \"tags\": [\n    \"data-component\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-data-component.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    {
       "id": "01KQQ4Q027-69VY",
       "uid": "01KQQ4Q027-69VY",
       "name": "NIST Cybersecurity Framework Requirement Group",
@@ -7308,6 +7550,236 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/requirement-group.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-TPWG\",\n  \"type\": \"requirement_group\",\n  \"name\": \"PaaS Delivery Requirement Group\",\n  \"description\": \"Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service is vendor-managed inside the organization's cloud boundary.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"runtime_service\",\n    \"data_at_rest_service\",\n    \"edge_gateway_service\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"function\",\n      \"description\": \"What capability does this PaaS service provide?\",\n      \"rationale\": \"The capability is the core reason the service exists.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"capabilities\",\n          \"example\": \"capabilities: [data-persistence]\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"resilience-model\",\n      \"description\": \"What is the resilience model of this service \\u2014 is it inherently highly available within the region, or does it require multi-region config?\\n\",\n      \"rationale\": \"Adopters must know the managed availability baseline.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"resilienceModel\",\n          \"example\": \"Inherently multi-AZ within the AWS region.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"authentication-model\",\n      \"description\": \"How is access to this service authenticated?\",\n      \"rationale\": \"Defines the identity and security integration, for example IAM.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"authenticationModel\",\n          \"example\": \"authenticationModel: iam\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"configurable-surface\",\n      \"description\": \"What configuration surface does the organization control?\",\n      \"rationale\": \"Captures the customer-managed portion of the managed platform.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"configurableSurface\",\n          \"example\": \"Bucket policies, encryption settings, and lifecycle rules.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"failure-domain\",\n      \"description\": \"What is the failure domain of this platform dependency?\",\n      \"rationale\": \"Required to understand the blast radius of a vendor-managed outage.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"failureDomain\",\n          \"example\": \"Scoped to the AWS region and account.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ],\n      \"minimumSatisfactions\": 1\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"paas\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"appliesToQualifiers\": {\n    \"deliveryModel\": \"paas\"\n  },\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-paas-delivery.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    {
+      "id": "01KRWRRNM7-G642",
+      "uid": "01KRWRRNM7-G642",
+      "name": "Product Component Requirement Group",
+      "aliases": [],
+      "type": "requirement_group",
+      "typeLabel": "Requirement Group",
+      "filterType": "requirement_group",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Built-in checklist for first-party code components deployed onto Runtime Services. Establishes what must be known about a ProductComponent before it is considered architecturally complete.",
+      "version": "1.0.0",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "candidate",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {
+        "name": "DRAFT Framework",
+        "shortName": "DRAFT",
+        "source": "DRAFT Framework"
+      },
+      "shape": "barrel",
+      "color": "#7c3a6b",
+      "source": "framework/configurations/requirement-groups/requirement-group-product-component.yaml",
+      "tags": [
+        "product-component",
+        "requirement-group",
+        "definition"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {},
+      "requirements": [
+        {
+          "id": "source-repository",
+          "description": "The ProductComponent must declare its source repository.",
+          "rationale": "First-party code without a known repository is not governable, auditable, or recoverable. The repository is the authoritative source of record for the component.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "repoUrl",
+              "example": "https://github.com/org/repo or https://dev.azure.com/org/project/_git/repo"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        },
+        {
+          "id": "component-owner",
+          "description": "The ProductComponent must declare an owning team.",
+          "rationale": "First-party components without explicit ownership cannot be maintained, patched, or governed during incidents.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "owner.team",
+              "example": "platform-engineering or payments-squad"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        },
+        {
+          "id": "runtime-requirement",
+          "description": "The ProductComponent must declare its runtime or platform version requirement.",
+          "rationale": "A component cannot be correctly deployed onto a RuntimeService unless its required execution environment is explicit. This drives host and TechnologyComponent selection.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "runtimeRequirement",
+              "example": "Node 20, Python 3.12, Java 17, .NET 8, or Go 1.22"
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "runtimeRequirement",
+              "example": "A documented decision when the runtime requirement cannot be expressed as a single version string."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field",
+            "architecturalDecision"
+          ]
+        },
+        {
+          "id": "classification",
+          "description": "The ProductComponent must declare its component classification.",
+          "rationale": "Classification drives how the component is composed into a RuntimeService and what operational patterns apply to it.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "classification",
+              "example": "web-application, api-service, worker, library, or cli"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        }
+      ],
+      "implementations": [],
+      "appliesTo": [
+        "product_component"
+      ],
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedSoftwareDeployment": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 4,
+      "hasRiskRef": false,
+      "outboundRefs": [],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "owner",
+          "activation",
+          "appliesTo",
+          "requirements"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "lifecycleStatus",
+          "provider",
+          "authority",
+          "notes",
+          "inherits",
+          "appliesToQualifiers"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "provider": "dict",
+          "authority": "dict",
+          "appliesTo": "list",
+          "requirements": "list",
+          "appliesToQualifiers": "dict"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "activation": [
+            "always",
+            "workspace"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "requirements": "requirement"
+        },
+        "schemaPath": "framework/schemas/requirement-group.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KRWRRNM7-G642\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Product Component Requirement Group\",\n  \"description\": \"Built-in checklist for first-party code components deployed onto Runtime Services. Establishes what must be known about a ProductComponent before it is considered architecturally complete.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"product_component\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"source-repository\",\n      \"description\": \"The ProductComponent must declare its source repository.\",\n      \"rationale\": \"First-party code without a known repository is not governable, auditable, or recoverable. The repository is the authoritative source of record for the component.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"repoUrl\",\n          \"example\": \"https://github.com/org/repo or https://dev.azure.com/org/project/_git/repo\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"component-owner\",\n      \"description\": \"The ProductComponent must declare an owning team.\",\n      \"rationale\": \"First-party components without explicit ownership cannot be maintained, patched, or governed during incidents.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"owner.team\",\n          \"example\": \"platform-engineering or payments-squad\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"runtime-requirement\",\n      \"description\": \"The ProductComponent must declare its runtime or platform version requirement.\",\n      \"rationale\": \"A component cannot be correctly deployed onto a RuntimeService unless its required execution environment is explicit. This drives host and TechnologyComponent selection.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"runtimeRequirement\",\n          \"example\": \"Node 20, Python 3.12, Java 17, .NET 8, or Go 1.22\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"runtimeRequirement\",\n          \"example\": \"A documented decision when the runtime requirement cannot be expressed as a single version string.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"architecturalDecision\"\n      ]\n    },\n    {\n      \"id\": \"classification\",\n      \"description\": \"The ProductComponent must declare its component classification.\",\n      \"rationale\": \"Classification drives how the component is composed into a RuntimeService and what operational patterns apply to it.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"classification\",\n          \"example\": \"web-application, api-service, worker, library, or cli\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"candidate\",\n  \"tags\": [\n    \"product-component\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-product-component.yaml\"\n}",
       "existsInCatalog": true
     },
     {
@@ -22966,6 +23438,248 @@ window.DRAFT_BROWSER_DATA = {
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-VBF0\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Data-at-Rest Service Requirement Group\",\n  \"description\": \"Additional data-at-rest checklist items extending the service behavior Requirement Group for durable data, recovery, and access control.\",\n  \"version\": \"3.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"data_at_rest_service\"\n  ],\n  \"appliesToQualifiers\": {\n    \"deliveryModel\": \"self-managed\"\n  },\n  \"requirements\": [\n    {\n      \"id\": \"backup-strategy\",\n      \"description\": \"The Data-at-Rest service must document its backup strategy.\",\n      \"rationale\": \"A data-at-rest platform is not governable unless its backup model is explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"backup.strategy\",\n          \"example\": \"Daily full plus hourly log backup or daily full backup.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-7T2H\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ]\n    },\n    {\n      \"id\": \"backup-platform\",\n      \"description\": \"The Data-at-Rest service must document the backup platform, vault, or managed service responsible for storing or managing backups.\",\n      \"rationale\": \"Backup strategy says what recovery posture is expected; the backup platform makes the operational dependency explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"externalInteraction\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-7T2H\"\n          },\n          \"example\": \"An enterprise backup vault, backup service, object store, or managed provider backup capability.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"backup.platform\",\n          \"example\": \"Provider-managed backups retained inside the managed database service.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-7T2H\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"externalInteraction\"\n      ]\n    },\n    {\n      \"id\": \"recovery-time-objective\",\n      \"description\": \"The Data-at-Rest service must document its recovery time objective.\",\n      \"rationale\": \"Recovery time must be explicit so operators and product teams understand the recovery expectation.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"backup.rto\",\n          \"example\": \"A one-hour or four-hour recovery time objective.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ]\n    },\n    {\n      \"id\": \"recovery-point-objective\",\n      \"description\": \"The Data-at-Rest service must document its recovery point objective.\",\n      \"rationale\": \"Recovery point must be explicit so durability expectations are clear.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"backup.rpo\",\n          \"example\": \"A one-hour or twenty-four-hour recovery point objective.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ]\n    },\n    {\n      \"id\": \"ha-replication-mechanism\",\n      \"description\": \"The Data-at-Rest service must document its high-availability or replication mechanism.\",\n      \"rationale\": \"Database resilience depends on an explicit clustering, replication, or standalone posture.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"ha.mechanism\",\n          \"example\": \"AlwaysOn Availability Groups or none for a standard-availability deployment.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ]\n    },\n    {\n      \"id\": \"encryption-at-rest\",\n      \"description\": \"The Data-at-Rest service must document how data is encrypted at rest.\",\n      \"rationale\": \"Storage protection is a core control for regulated and business-critical data.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"encryption.atRest\",\n          \"example\": \"Transparent Data Encryption enabled for all production data stores.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-H3B5\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ]\n    },\n    {\n      \"id\": \"access-control-model\",\n      \"description\": \"The Data-at-Rest service must document its administrative and application access control model.\",\n      \"rationale\": \"Database access boundaries must be understandable to engineering, security, and operations teams.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"externalInteraction\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"Active Directory integration for data service administrators and service identities.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"accessControl.model\",\n          \"example\": \"Active Directory integrated access with role-based SQL permissions.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-4JR6\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"externalInteraction\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"existing-only\",\n  \"tags\": [\n    \"service\",\n    \"dbms\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"inherits\": \"01KQQ4Q027-K5DR\",\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-data-at-rest-service.yaml\"\n}",
       "existsInCatalog": true
     },
+    "01KRWRRNM7-VJ5A": {
+      "id": "01KRWRRNM7-VJ5A",
+      "uid": "01KRWRRNM7-VJ5A",
+      "name": "Data Component Requirement Group",
+      "aliases": [],
+      "type": "requirement_group",
+      "typeLabel": "Requirement Group",
+      "filterType": "requirement_group",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Built-in checklist for first-party data artifacts deployed onto Data Store Services. Establishes what must be known about a DataComponent \u2014 including data classification, PII declaration, and data ownership \u2014 before it is considered architecturally complete. Backup and recovery requirements belong on the DataStoreService, not here.",
+      "version": "1.0.0",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "candidate",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {
+        "name": "DRAFT Framework",
+        "shortName": "DRAFT",
+        "source": "DRAFT Framework"
+      },
+      "shape": "barrel",
+      "color": "#7c3a6b",
+      "source": "framework/configurations/requirement-groups/requirement-group-data-component.yaml",
+      "tags": [
+        "data-component",
+        "requirement-group",
+        "definition"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {},
+      "requirements": [
+        {
+          "id": "source-repository",
+          "description": "The DataComponent must declare its source repository.",
+          "rationale": "Schemas, migrations, stored procedures, and SQL jobs are code. Data structures deployed without source control are not auditable, cannot be rolled back, and cannot be reviewed as part of change management.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "repoUrl",
+              "example": "https://github.com/org/repo or https://dev.azure.com/org/project/_git/repo"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        },
+        {
+          "id": "data-owner",
+          "description": "The DataComponent must declare an owning team.",
+          "rationale": "Data without explicit ownership cannot be governed for compliance, cannot be classified consistently, and cannot be responded to during security incidents.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "owner.team",
+              "example": "data-platform or student-records-team"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        },
+        {
+          "id": "target-engine",
+          "description": "The DataComponent must declare the database engine it targets.",
+          "rationale": "A data component cannot be correctly deployed without knowing its target engine. Engine drives migration tooling, stored procedure syntax, job scheduling, and DataStoreService selection.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "targetEngine",
+              "example": "postgresql, mssql, mysql, mongodb, dynamodb, or other"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        },
+        {
+          "id": "data-classification",
+          "description": "The DataComponent must declare the sensitivity classification of the data it contains.",
+          "rationale": "Data governance, access control, and compliance obligations are determined by classification. A data component without an explicit classification cannot be evaluated for regulatory scope.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "dataClassification",
+              "example": "public, internal, confidential, or restricted"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        },
+        {
+          "id": "pii-declaration",
+          "description": "The DataComponent must explicitly declare whether it contains or processes personally identifiable information.",
+          "rationale": "PII declaration is a prerequisite for privacy impact assessment, data subject rights handling, and regulatory compliance scoping. Absence of a declaration is not equivalent to a negative answer.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "containsPII",
+              "example": "true or false"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        }
+      ],
+      "implementations": [],
+      "appliesTo": [
+        "data_component"
+      ],
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedSoftwareDeployment": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 5,
+      "hasRiskRef": false,
+      "outboundRefs": [],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "owner",
+          "activation",
+          "appliesTo",
+          "requirements"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "lifecycleStatus",
+          "provider",
+          "authority",
+          "notes",
+          "inherits",
+          "appliesToQualifiers"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "provider": "dict",
+          "authority": "dict",
+          "appliesTo": "list",
+          "requirements": "list",
+          "appliesToQualifiers": "dict"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "activation": [
+            "always",
+            "workspace"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "requirements": "requirement"
+        },
+        "schemaPath": "framework/schemas/requirement-group.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KRWRRNM7-VJ5A\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Data Component Requirement Group\",\n  \"description\": \"Built-in checklist for first-party data artifacts deployed onto Data Store Services. Establishes what must be known about a DataComponent \\u2014 including data classification, PII declaration, and data ownership \\u2014 before it is considered architecturally complete. Backup and recovery requirements belong on the DataStoreService, not here.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"data_component\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"source-repository\",\n      \"description\": \"The DataComponent must declare its source repository.\",\n      \"rationale\": \"Schemas, migrations, stored procedures, and SQL jobs are code. Data structures deployed without source control are not auditable, cannot be rolled back, and cannot be reviewed as part of change management.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"repoUrl\",\n          \"example\": \"https://github.com/org/repo or https://dev.azure.com/org/project/_git/repo\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"data-owner\",\n      \"description\": \"The DataComponent must declare an owning team.\",\n      \"rationale\": \"Data without explicit ownership cannot be governed for compliance, cannot be classified consistently, and cannot be responded to during security incidents.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"owner.team\",\n          \"example\": \"data-platform or student-records-team\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"target-engine\",\n      \"description\": \"The DataComponent must declare the database engine it targets.\",\n      \"rationale\": \"A data component cannot be correctly deployed without knowing its target engine. Engine drives migration tooling, stored procedure syntax, job scheduling, and DataStoreService selection.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"targetEngine\",\n          \"example\": \"postgresql, mssql, mysql, mongodb, dynamodb, or other\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"data-classification\",\n      \"description\": \"The DataComponent must declare the sensitivity classification of the data it contains.\",\n      \"rationale\": \"Data governance, access control, and compliance obligations are determined by classification. A data component without an explicit classification cannot be evaluated for regulatory scope.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"dataClassification\",\n          \"example\": \"public, internal, confidential, or restricted\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"pii-declaration\",\n      \"description\": \"The DataComponent must explicitly declare whether it contains or processes personally identifiable information.\",\n      \"rationale\": \"PII declaration is a prerequisite for privacy impact assessment, data subject rights handling, and regulatory compliance scoping. Absence of a declaration is not equivalent to a negative answer.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"containsPII\",\n          \"example\": \"true or false\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"candidate\",\n  \"tags\": [\n    \"data-component\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-data-component.yaml\"\n}",
+      "existsInCatalog": true
+    },
     "01KQQ4Q027-69VY": {
       "id": "01KQQ4Q027-69VY",
       "uid": "01KQQ4Q027-69VY",
@@ -26729,6 +27443,236 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/requirement-group.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-TPWG\",\n  \"type\": \"requirement_group\",\n  \"name\": \"PaaS Delivery Requirement Group\",\n  \"description\": \"Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service is vendor-managed inside the organization's cloud boundary.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"runtime_service\",\n    \"data_at_rest_service\",\n    \"edge_gateway_service\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"function\",\n      \"description\": \"What capability does this PaaS service provide?\",\n      \"rationale\": \"The capability is the core reason the service exists.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"capabilities\",\n          \"example\": \"capabilities: [data-persistence]\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"resilience-model\",\n      \"description\": \"What is the resilience model of this service \\u2014 is it inherently highly available within the region, or does it require multi-region config?\\n\",\n      \"rationale\": \"Adopters must know the managed availability baseline.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"resilienceModel\",\n          \"example\": \"Inherently multi-AZ within the AWS region.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"authentication-model\",\n      \"description\": \"How is access to this service authenticated?\",\n      \"rationale\": \"Defines the identity and security integration, for example IAM.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"authenticationModel\",\n          \"example\": \"authenticationModel: iam\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"configurable-surface\",\n      \"description\": \"What configuration surface does the organization control?\",\n      \"rationale\": \"Captures the customer-managed portion of the managed platform.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"configurableSurface\",\n          \"example\": \"Bucket policies, encryption settings, and lifecycle rules.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"failure-domain\",\n      \"description\": \"What is the failure domain of this platform dependency?\",\n      \"rationale\": \"Required to understand the blast radius of a vendor-managed outage.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"failureDomain\",\n          \"example\": \"Scoped to the AWS region and account.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ],\n      \"minimumSatisfactions\": 1\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"paas\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"appliesToQualifiers\": {\n    \"deliveryModel\": \"paas\"\n  },\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-paas-delivery.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    "01KRWRRNM7-G642": {
+      "id": "01KRWRRNM7-G642",
+      "uid": "01KRWRRNM7-G642",
+      "name": "Product Component Requirement Group",
+      "aliases": [],
+      "type": "requirement_group",
+      "typeLabel": "Requirement Group",
+      "filterType": "requirement_group",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Built-in checklist for first-party code components deployed onto Runtime Services. Establishes what must be known about a ProductComponent before it is considered architecturally complete.",
+      "version": "1.0.0",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "candidate",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {
+        "name": "DRAFT Framework",
+        "shortName": "DRAFT",
+        "source": "DRAFT Framework"
+      },
+      "shape": "barrel",
+      "color": "#7c3a6b",
+      "source": "framework/configurations/requirement-groups/requirement-group-product-component.yaml",
+      "tags": [
+        "product-component",
+        "requirement-group",
+        "definition"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {},
+      "requirements": [
+        {
+          "id": "source-repository",
+          "description": "The ProductComponent must declare its source repository.",
+          "rationale": "First-party code without a known repository is not governable, auditable, or recoverable. The repository is the authoritative source of record for the component.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "repoUrl",
+              "example": "https://github.com/org/repo or https://dev.azure.com/org/project/_git/repo"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        },
+        {
+          "id": "component-owner",
+          "description": "The ProductComponent must declare an owning team.",
+          "rationale": "First-party components without explicit ownership cannot be maintained, patched, or governed during incidents.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "owner.team",
+              "example": "platform-engineering or payments-squad"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        },
+        {
+          "id": "runtime-requirement",
+          "description": "The ProductComponent must declare its runtime or platform version requirement.",
+          "rationale": "A component cannot be correctly deployed onto a RuntimeService unless its required execution environment is explicit. This drives host and TechnologyComponent selection.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "runtimeRequirement",
+              "example": "Node 20, Python 3.12, Java 17, .NET 8, or Go 1.22"
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "runtimeRequirement",
+              "example": "A documented decision when the runtime requirement cannot be expressed as a single version string."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field",
+            "architecturalDecision"
+          ]
+        },
+        {
+          "id": "classification",
+          "description": "The ProductComponent must declare its component classification.",
+          "rationale": "Classification drives how the component is composed into a RuntimeService and what operational patterns apply to it.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "classification",
+              "example": "web-application, api-service, worker, library, or cli"
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field"
+          ]
+        }
+      ],
+      "implementations": [],
+      "appliesTo": [
+        "product_component"
+      ],
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedSoftwareDeployment": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 4,
+      "hasRiskRef": false,
+      "outboundRefs": [],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "owner",
+          "activation",
+          "appliesTo",
+          "requirements"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "lifecycleStatus",
+          "provider",
+          "authority",
+          "notes",
+          "inherits",
+          "appliesToQualifiers"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "provider": "dict",
+          "authority": "dict",
+          "appliesTo": "list",
+          "requirements": "list",
+          "appliesToQualifiers": "dict"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "activation": [
+            "always",
+            "workspace"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "requirements": "requirement"
+        },
+        "schemaPath": "framework/schemas/requirement-group.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KRWRRNM7-G642\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Product Component Requirement Group\",\n  \"description\": \"Built-in checklist for first-party code components deployed onto Runtime Services. Establishes what must be known about a ProductComponent before it is considered architecturally complete.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"product_component\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"source-repository\",\n      \"description\": \"The ProductComponent must declare its source repository.\",\n      \"rationale\": \"First-party code without a known repository is not governable, auditable, or recoverable. The repository is the authoritative source of record for the component.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"repoUrl\",\n          \"example\": \"https://github.com/org/repo or https://dev.azure.com/org/project/_git/repo\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"component-owner\",\n      \"description\": \"The ProductComponent must declare an owning team.\",\n      \"rationale\": \"First-party components without explicit ownership cannot be maintained, patched, or governed during incidents.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"owner.team\",\n          \"example\": \"platform-engineering or payments-squad\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"runtime-requirement\",\n      \"description\": \"The ProductComponent must declare its runtime or platform version requirement.\",\n      \"rationale\": \"A component cannot be correctly deployed onto a RuntimeService unless its required execution environment is explicit. This drives host and TechnologyComponent selection.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"runtimeRequirement\",\n          \"example\": \"Node 20, Python 3.12, Java 17, .NET 8, or Go 1.22\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"runtimeRequirement\",\n          \"example\": \"A documented decision when the runtime requirement cannot be expressed as a single version string.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"architecturalDecision\"\n      ]\n    },\n    {\n      \"id\": \"classification\",\n      \"description\": \"The ProductComponent must declare its component classification.\",\n      \"rationale\": \"Classification drives how the component is composed into a RuntimeService and what operational patterns apply to it.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"classification\",\n          \"example\": \"web-application, api-service, worker, library, or cli\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"candidate\",\n  \"tags\": [\n    \"product-component\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-product-component.yaml\"\n}",
       "existsInCatalog": true
     },
     "01KQQ4Q027-SS2K": {
@@ -39768,6 +40712,22 @@ window.DRAFT_BROWSER_DATA = {
         "requirementCount": 11
       },
       {
+        "id": "01KRWRRNM7-VJ5A",
+        "uid": "01KRWRRNM7-VJ5A",
+        "name": "Data Component Requirement Group",
+        "activation": "always",
+        "catalogStatus": "approved",
+        "provider": {},
+        "authority": {
+          "name": "DRAFT Framework",
+          "shortName": "DRAFT",
+          "source": "DRAFT Framework"
+        },
+        "active": false,
+        "description": "Built-in checklist for first-party data artifacts deployed onto Data Store Services. Establishes what must be known about a DataComponent \u2014 including data classification, PII declaration, and data ownership \u2014 before it is considered architecturally complete. Backup and recovery requirements belong on the DataStoreService, not here.",
+        "requirementCount": 5
+      },
+      {
         "id": "01KQQ4Q027-VBF0",
         "uid": "01KQQ4Q027-VBF0",
         "name": "Data-at-Rest Service Requirement Group",
@@ -39850,6 +40810,22 @@ window.DRAFT_BROWSER_DATA = {
         "active": false,
         "description": "Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service is vendor-managed inside the organization's cloud boundary.",
         "requirementCount": 5
+      },
+      {
+        "id": "01KRWRRNM7-G642",
+        "uid": "01KRWRRNM7-G642",
+        "name": "Product Component Requirement Group",
+        "activation": "always",
+        "catalogStatus": "approved",
+        "provider": {},
+        "authority": {
+          "name": "DRAFT Framework",
+          "shortName": "DRAFT",
+          "source": "DRAFT Framework"
+        },
+        "active": false,
+        "description": "Built-in checklist for first-party code components deployed onto Runtime Services. Establishes what must be known about a ProductComponent before it is considered architecturally complete.",
+        "requirementCount": 4
       },
       {
         "id": "01KQQ4Q027-SS2K",

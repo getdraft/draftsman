@@ -1,0 +1,83 @@
+schemaVersion: '1.0'
+uid: 01KRWRRNM7-VJ5A
+type: requirement_group
+name: Data Component Requirement Group
+description: Built-in checklist for first-party data artifacts deployed onto Data Store Services. Establishes what must be known about a DataComponent — including data classification, PII declaration, and data ownership — before it is considered architecturally complete. Backup and recovery requirements belong on the DataStoreService, not here.
+version: 1.0.0
+catalogStatus: approved
+owner:
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+authority:
+  name: DRAFT Framework
+  shortName: DRAFT
+  source: DRAFT Framework
+activation: always
+appliesTo:
+- data_component
+requirements:
+- id: source-repository
+  description: The DataComponent must declare its source repository.
+  rationale: Schemas, migrations, stored procedures, and SQL jobs are code. Data structures deployed without source control are not auditable, cannot be rolled back, and cannot be reviewed as part of change management.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: repoUrl
+    example: https://github.com/org/repo or https://dev.azure.com/org/project/_git/repo
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - field
+- id: data-owner
+  description: The DataComponent must declare an owning team.
+  rationale: Data without explicit ownership cannot be governed for compliance, cannot be classified consistently, and cannot be responded to during security incidents.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: owner.team
+    example: data-platform or student-records-team
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - field
+- id: target-engine
+  description: The DataComponent must declare the database engine it targets.
+  rationale: A data component cannot be correctly deployed without knowing its target engine. Engine drives migration tooling, stored procedure syntax, job scheduling, and DataStoreService selection.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: targetEngine
+    example: postgresql, mssql, mysql, mongodb, dynamodb, or other
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - field
+- id: data-classification
+  description: The DataComponent must declare the sensitivity classification of the data it contains.
+  rationale: Data governance, access control, and compliance obligations are determined by classification. A data component without an explicit classification cannot be evaluated for regulatory scope.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: dataClassification
+    example: public, internal, confidential, or restricted
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - field
+- id: pii-declaration
+  description: The DataComponent must explicitly declare whether it contains or processes personally identifiable information.
+  rationale: PII declaration is a prerequisite for privacy impact assessment, data subject rights handling, and regulatory compliance scoping. Absence of a declaration is not equivalent to a negative answer.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: containsPII
+    example: true or false
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - field
+lifecycleStatus: candidate
+tags:
+- data-component
+- requirement-group
+- definition

@@ -47,6 +47,8 @@ VALID_REQUIREMENT_SCOPES = {
     "data_at_rest_service",
     "edge_gateway_service",
     "product_service",
+    "product_component",
+    "data_component",
     "reference_architecture",
     "software_deployment_pattern",
 }
@@ -69,6 +71,8 @@ STANDARD_TYPES = {
     "data_at_rest_service",
     "edge_gateway_service",
     "product_service",
+    "product_component",
+    "data_component",
 }
 SERVICE_TYPES = {"runtime_service", "data_at_rest_service", "edge_gateway_service"}
 BUSINESS_PILLAR_ID_PATTERN = re.compile(r"^business-pillar\.[a-z0-9-]+$")

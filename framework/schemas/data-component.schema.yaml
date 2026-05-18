@@ -1,0 +1,157 @@
+schemaVersion: '1.0'
+type: data_component
+requiredFields:
+- schemaVersion
+- uid
+- type
+- name
+- repoUrl
+- owner
+- targetEngine
+- dataClassification
+- containsPII
+- catalogStatus
+- lifecycleStatus
+optionalFields:
+- aliases
+- description
+- version
+- tags
+- tables
+- storedProcedures
+- scheduledJobs
+- retentionPolicy
+- architecturalDecisions
+- notes
+- requirementGroups
+- requirementImplementations
+enumFields:
+  catalogStatus:
+  - stub
+  - draft
+  - approved
+  lifecycleStatus:
+  - candidate
+  - preferred
+  - existing-only
+  - deprecated
+  - retired
+  dataClassification:
+  - public
+  - internal
+  - confidential
+  - restricted
+  targetEngine:
+  - postgresql
+  - mysql
+  - mssql
+  - oracle
+  - sqlite
+  - mongodb
+  - dynamodb
+  - bigquery
+  - snowflake
+  - other
+fieldTypes:
+  aliases: list
+  owner: dict
+  tags: list
+  tables: list
+  storedProcedures: list
+  scheduledJobs: list
+  containsPII: bool
+  architecturalDecisions: dict
+  requirementGroups: list
+  requirementImplementations: list
+collectionSchemas:
+  tables: tableDefinition
+  storedProcedures: storedProcedure
+  scheduledJobs: scheduledJob
+  requirementImplementations: requirementImplementation
+tableDefinition:
+  requiredFields:
+  - name
+  optionalFields:
+  - description
+  - containsPII
+  - classification
+  fieldTypes:
+    name: str
+    description: str
+    containsPII: bool
+  fieldDescriptions:
+    name: Name the table, collection, or data structure.
+    description: Describe the data this table holds.
+    containsPII: Set true when this table contains personally identifiable information.
+storedProcedure:
+  requiredFields:
+  - name
+  optionalFields:
+  - description
+  - purpose
+  fieldTypes:
+    name: str
+    description: str
+    purpose: str
+  fieldDescriptions:
+    name: Name the stored procedure or function.
+    description: Describe what this stored procedure does.
+    purpose: Classify the purpose such as reporting, transformation, maintenance, or auditing.
+scheduledJob:
+  requiredFields:
+  - name
+  - schedule
+  optionalFields:
+  - description
+  - purpose
+  fieldTypes:
+    name: str
+    schedule: str
+    description: str
+    purpose: str
+  fieldDescriptions:
+    name: Name the scheduled job or SQL Agent job.
+    schedule: Record the schedule expression or cadence (e.g., daily at 02:00, cron 0 2 * * *).
+    description: Describe what this job does.
+    purpose: Classify the purpose such as backup, archival, reporting, or maintenance.
+requirementImplementation:
+  requiredFields:
+  - requirementGroup
+  - requirementId
+  - status
+  optionalFields:
+  - mechanism
+  - key
+  - equals
+  - criteria
+  - ref
+  - notes
+  enumFields:
+    status:
+    - satisfied
+    - not-applicable
+    - not-compliant
+    mechanism:
+    - architecturalDecision
+    - field
+  fieldTypes:
+    criteria: dict
+aiHint: A DataComponent is first-party data structure code — schemas, migrations, stored procedures, and scheduled jobs — authored by the organization and deployed onto a DataStoreService. It is the data-layer peer of ProductComponent. Governance questions about data classification, PII, and retention belong here, not on the DataStoreService.
+fieldDescriptions:
+  schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
+  uid: Use the generated opaque UID for object identity. Do not edit it for display-name changes.
+  type: Use data_component exactly.
+  name: Use a clear human-readable name for this data component.
+  repoUrl: Record the source repository URL where this component's schemas, migrations, and jobs are maintained.
+  owner: Declare the team that owns and maintains this data component.
+  targetEngine: Declare the database engine this component targets.
+  dataClassification: Declare the sensitivity classification of the data this component contains.
+  containsPII: Set true when this component contains or processes personally identifiable information.
+  tables: List the tables, collections, or data structures defined by this component.
+  storedProcedures: List stored procedures or database functions defined by this component.
+  scheduledJobs: List scheduled jobs defined by this component such as SQL Agent jobs or pg_cron entries.
+  retentionPolicy: Describe the data retention policy for data managed by this component.
+  catalogStatus: Use stub, draft, or approved to describe catalog maturity.
+  lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired.
+  aliases: List prior or alternate names for this component.
+uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$

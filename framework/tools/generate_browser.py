@@ -471,6 +471,8 @@ def shape_for(obj: dict[str, Any]) -> str:
         return "diamond"
     if obj["type"] in {"host", "runtime_service", "data_at_rest_service", "product_service"}:
         return "round-rectangle" if obj["type"] == "host" else "diamond"
+    if obj["type"] in {"product_component", "data_component"}:
+        return "round-rectangle"
     return "round-rectangle"
 
 
@@ -515,6 +517,12 @@ def type_label_for(obj: dict[str, Any]) -> str:
         return f"Data-at-Rest Service / {delivery_model}" if delivery_model else "Data-at-Rest Service"
     if is_product_service_classification(obj):
         return "Product Service"
+    if obj["type"] == "product_component":
+        classification = humanize_slug(str(obj.get("classification", "unknown")))
+        return f"Product Component / {classification}"
+    if obj["type"] == "data_component":
+        engine = str(obj.get("targetEngine", "")).replace("-", " ").title()
+        return f"Data Component / {engine}" if engine else "Data Component"
     if obj["type"] == "domain":
         return "Strategy Domain"
     return str(obj.get("type", "unknown")).replace("_", " ").title()
@@ -737,6 +745,8 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
         "data_at_rest_service",
         "edge_gateway_service",
         "product_service",
+        "product_component",
+        "data_component",
     }
     lifecycle_values = sorted(
         {obj.get("lifecycleStatus", "unknown") for obj in objects if obj.get("type") in impact_lifecycle_types},
