@@ -28,14 +28,15 @@ import yaml
 
 FRAMEWORK_ROOT = Path(__file__).resolve().parent.parent
 REPO_ROOT = FRAMEWORK_ROOT.parent
-OUTPUT_PATH = REPO_ROOT / "docs" / "index.html"
+WORKSPACE_ROOT = REPO_ROOT.parent if REPO_ROOT.name == ".draft" else REPO_ROOT
+OUTPUT_PATH = WORKSPACE_ROOT / "docs" / "index.html"
 SCHEMA_ROOT = FRAMEWORK_ROOT / "schemas"
 BASE_CONFIGURATION_ROOT = FRAMEWORK_ROOT / "configurations"
 USER_MANUAL_SOURCE_PATH = FRAMEWORK_ROOT / "docs" / "user-manual.md"
 USER_MANUAL_OUTPUT_NAME = "user-manual.html"
 COMPANY_VOCABULARY_SOURCE_PATH = FRAMEWORK_ROOT / "docs" / "company-vocabulary.md"
 COMPANY_VOCABULARY_OUTPUT_NAME = "company-vocabulary.html"
-DEFAULT_WORKSPACE_ROOT = REPO_ROOT / "examples"
+DEFAULT_WORKSPACE_ROOT = WORKSPACE_ROOT if REPO_ROOT.name == ".draft" else REPO_ROOT / "examples"
 LOGO_PATH = REPO_ROOT / "draft-logo.png"
 LEGACY_LOGO_PATH = REPO_ROOT / "draftlogo.png"
 CATALOG_FOLDERS = [

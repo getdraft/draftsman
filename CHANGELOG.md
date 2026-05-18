@@ -3,6 +3,34 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.13.16 - 2026-05-17
+
+### Compatibility Impact
+
+No migration is required. This patch fixes generated-doc output paths in
+vendored workspaces; it does not change schemas, validation behavior, or
+catalog object formats.
+
+### Added
+
+- None.
+
+### Changed
+
+- Changed vendored browser generation defaults so a company workspace writes
+  generated docs to `docs/` instead of `.draft/docs/`.
+
+### Fixed
+
+- Fixed `framework/tools/generate_browser.py` so vendored workspaces no longer
+  create stray generated output under `.draft/docs/`.
+
+### Migration Notes
+
+- Existing workspaces can continue unchanged.
+- Refresh the vendored framework and regenerate browser docs to remove any
+  previously created `.draft/docs/` output.
+
 ## 0.13.15 - 2026-05-17
 
 ### Compatibility Impact
