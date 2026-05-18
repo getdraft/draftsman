@@ -1,3 +1,75 @@
-/* Optional workspace theme override.
-   Company workspaces can define configurations/browser/theme.css to override
-   DRAFT browser CSS variables without editing framework files. */
+/* =============================================================================
+   DRAFT Browser — Workspace Brand Overrides
+   =============================================================================
+   Company workspaces can override the DRAFT browser design system by copying
+   this file to configurations/browser/theme.css and editing the tokens below.
+   The build process (draft build browser) will inject your version in place of
+   this stub so it loads after draft-browser.css, giving your values precedence.
+
+   HOW TO USE
+   ──────────
+   1. Copy this file to  .draft/configurations/browser/theme.css  in your repo.
+   2. Uncomment and edit the tokens you want to change.
+   3. Run  draft build browser  (or your CI workflow) to regenerate index.html.
+
+   WHICH TOKENS TO OVERRIDE
+   ────────────────────────
+   The most common workspace customisations are:
+     --accent / --accent-2 / --accent-soft / --accent-ring
+       Change the primary interactive color (links, active nav, focus rings,
+       topology zone-control stripe). Default: deep cobalt oklch(0.46 0.14 250).
+
+     --page / --surface / --surface-2
+       Change background tone from the default cool-slate neutrals to your
+       company's preferred neutral. Keep contrast ratios ≥ 4.5:1 against --ink.
+
+     --font-sans / --font-mono / --font-serif
+       Replace IBM Plex with your brand typeface. Must be already loaded via a
+       <link> or bundled @font-face in your own html_head.html fragment. The
+       framework bundles IBM Plex as a fallback; your font will load first.
+
+     Zone colors (--zone-public / --zone-control / --zone-data)
+       Re-map zone stripe colors if your diagrams use different zone semantics.
+       Update the -soft variants to a light tint of the same hue.
+
+   EXAMPLE THEME (blue accent, warm neutral page)
+   ───────────────────────────────────────────────
+   :root {
+     --accent:       oklch(0.48 0.17 230);
+     --accent-2:     oklch(0.40 0.16 230);
+     --accent-soft:  oklch(0.95 0.04 230);
+     --accent-ring:  oklch(0.48 0.17 230 / 0.18);
+     --page:         #f7f6f2;
+     --font-sans:    "Inter", var(--font-sans);
+   }
+
+   DO NOT edit framework files directly. Changes here survive vendor-sync
+   updates because they live in your workspace, not in the vendored framework.
+   ============================================================================= */
+
+/*
+:root {
+
+  /-* Primary accent — change to your brand color *-/
+  /- --accent:       oklch(0.46 0.14 250); *-/
+  /- --accent-2:     oklch(0.38 0.13 250); *-/
+  /- --accent-soft:  oklch(0.94 0.04 250); *-/
+  /- --accent-ring:  oklch(0.46 0.14 250 / 0.18); *-/
+
+  /-* Page / surface background *-/
+  /- --page:         #f4f5f7; *-/
+  /- --surface:      #ffffff; *-/
+
+  /-* Typography — must be pre-loaded by your html_head.html fragment *-/
+  /- --font-sans:    "Your Brand Font", var(--font-sans); *-/
+
+  /-* Zone colors *-/
+  /- --zone-public:       oklch(0.55 0.10 195); *-/
+  /- --zone-public-soft:  oklch(0.96 0.03 195); *-/
+  /- --zone-control:      oklch(0.46 0.14 250); *-/
+  /- --zone-control-soft: oklch(0.96 0.03 250); *-/
+  /- --zone-data:         oklch(0.55 0.12 55);  *-/
+  /- --zone-data-soft:    oklch(0.96 0.04 55);  *-/
+
+}
+*/

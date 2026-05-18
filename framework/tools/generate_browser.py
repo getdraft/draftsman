@@ -775,7 +775,8 @@ BROWSER_DATA_OUTPUT_NAME = "browser-data.js"
 BROWSER_ASSET_OUTPUT_DIR = "assets"
 BROWSER_ASSET_ROOT = FRAMEWORK_ROOT / "browser"
 BROWSER_INDEX_TEMPLATE_PATH = BROWSER_ASSET_ROOT / "index.template.html"
-BROWSER_STATIC_ASSET_NAMES = ("draft-browser.css", "draft-browser.js")
+BROWSER_STATIC_ASSET_NAMES = ("draft-browser.css", "draft-browser-sdp.css", "draft-browser.js")
+BROWSER_STATIC_FONT_DIR = "fonts"
 WORKSPACE_THEME_OUTPUT_NAME = "workspace-theme.css"
 DEFAULT_WORKSPACE_THEME_PATH = BROWSER_ASSET_ROOT / WORKSPACE_THEME_OUTPUT_NAME
 WORKSPACE_THEME_CANDIDATES = (
@@ -845,6 +846,18 @@ def copy_browser_assets(workspace_root: Path, output_path: Path, *, refresh_shel
     if refresh_shell or not theme_target.exists():
         shutil.copy2(theme_source, theme_target)
         copied.append(theme_target)
+    # Copy self-hosted fonts directory (file-by-file to avoid rmtree on mounted volumes)
+    fonts_source = BROWSER_ASSET_ROOT / BROWSER_STATIC_FONT_DIR
+    if fonts_source.is_dir():
+        fonts_target = asset_dir / BROWSER_STATIC_FONT_DIR
+        fonts_target.mkdir(parents=True, exist_ok=True)
+        for font_file in fonts_source.iterdir():
+            if not font_file.is_file():
+                continue
+            dest = fonts_target / font_file.name
+            if refresh_shell or not dest.exists():
+                shutil.copy2(font_file, dest)
+                copied.append(dest)
     return copied
 
 

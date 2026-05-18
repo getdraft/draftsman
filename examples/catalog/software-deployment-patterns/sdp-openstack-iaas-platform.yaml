@@ -27,14 +27,17 @@ businessContext:
   pillar: business-pillar.infrastructure
   productFamily: Cloud Infrastructure
 architecturalDecisions:
+  availabilityTarget: "99.9%"
   availabilityRequirement: All control plane services target 99.9% availability via
     active-active deployment on a minimum 3-node controller cluster with HAProxy for
     request distribution. Data plane (running instances, networking) operates independently
     of control plane availability.
   dataClassification: Internal
-  failureDomain: Platform-wide — failure of control plane affects all tenants. Data
-    plane (compute, networking, storage) is designed to tolerate control plane outages
-    for running workloads.
+  failureDomain:
+    scope: platform-wide
+    description: Failure of the control plane affects all tenants. Data plane (compute,
+      networking, storage) is designed to tolerate control plane outages for running
+      workloads.
   patternDeviations: none
 networkZones:
 - id: public

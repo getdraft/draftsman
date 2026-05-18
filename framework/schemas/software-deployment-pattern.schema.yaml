@@ -40,6 +40,41 @@ fieldTypes:
   tags: list
   businessContext: dict
   architecturalDecisions: dict
+architecturalDecisions:
+  optionalFields:
+  - availabilityTarget
+  - availabilityRequirement
+  - dataClassification
+  - failureDomain
+  - patternDeviations
+  fieldTypes:
+    failureDomain: dict
+  fieldDescriptions:
+    availabilityTarget: >
+      Structured availability target expressed as a percentage string (e.g. "99.9%",
+      "99.95%", "99.99%"). Use alongside availabilityRequirement for the human-readable
+      narrative if needed.
+    failureDomain: >
+      Structured failure domain describing the blast radius of a component or service
+      failure. Use scope for the controlled-vocabulary tier and description for the
+      human-readable narrative.
+  failureDomain:
+    optionalFields:
+    - scope
+    - description
+    enumFields:
+      scope:
+      - platform-wide
+      - service-group
+      - component
+      - isolated
+    fieldDescriptions:
+      scope: >
+        Controlled-vocabulary blast-radius tier. platform-wide = failure affects all
+        tenants or all services; service-group = failure isolates to one deployment
+        group; component = failure isolates to one service or process; isolated =
+        failure has no impact beyond the component itself (e.g. optional telemetry).
+      description: Human-readable narrative elaborating on the failure domain scope.
   scalingUnits: list
   networkZones: list
   serviceGroups: list

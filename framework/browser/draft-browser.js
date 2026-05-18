@@ -4264,6 +4264,7 @@ function destroySdpGraphCy() {
     sdpGraphCy.destroy();
     sdpGraphCy = null;
   }
+  _sdpTeardown();
 }
 
 function renderSdpGraph(object) {
@@ -4880,6 +4881,636 @@ function showDetailView(id, pushHistory = true) {
   renderDetailView();
 }
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// SDP Detail — scrolling layout with topology overlay, section nav, drawer
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const _SDP_TIER_ORDER  = ['presentation', 'application', 'data', 'utility'];
+const _SDP_TIER_LABELS = { presentation: 'Presentation', application: 'Application', data: 'Data', utility: 'Utility' };
+
+// Per-render mutable state — reset on each new SDP detail render
+let _sdpActive = null, _sdpHover = null, _sdpDrawer = null;
+let _sdpTierFilter = 'all';
+let _sdpResizeObs = null, _sdpSectionObs = null;
+let _sdpCardRefs = {};
+
+function _sdpTeardown() {
+  if (_sdpResizeObs) { _sdpResizeObs.disconnect(); _sdpResizeObs = null; }
+  if (_sdpSectionObs) { _sdpSectionObs.disconnect(); _sdpSectionObs = null; }
+  _sdpActive = null; _sdpHover = null; _sdpDrawer = null;
+  _sdpTierFilter = 'all'; _sdpCardRefs = {};
+}
+
+// ── View-model builder ────────────────────────────────────────────────────────
+function _sdpBuildVM(object) {
+  const members = [];
+  (object.serviceGroups || []).forEach(sg => {
+    (sg.deployableObjects || []).forEach(e => {
+      members.push({
+        ref: e.ref, tier: e.diagramTier || 'application',
+        zone: e.networkZone || _sdpInferZone(e.diagramTier, object),
+        intent: e.intent || 'sa', notes: e.notes || '', group: sg.name
+      });
+    });
+  });
+  const zones = object.networkZones || [];
+  const byZone = {};
+  zones.forEach(z => (byZone[z.id] = { zone: z, tiers: {} }));
+  members.forEach(m => {
+    if (!byZone[m.zone]) byZone[m.zone] = { zone: { id: m.zone, name: m.zone, description: '' }, tiers: {} };
+    const zt = byZone[m.zone].tiers;
+    if (!zt[m.tier]) zt[m.tier] = [];
+    zt[m.tier].push(m);
+  });
+  const connections = object.sdpConnections || [];
+  const uidToZone = {};
+  members.forEach(m => (uidToZone[m.ref] = m.zone));
+  return { members, zones, byZone, connections, uidToZone };
+}
+
+function _sdpInferZone(tier, object) {
+  const zids = (object.networkZones || []).map(z => z.id);
+  if (tier === 'presentation' && zids.includes('public')) return 'public';
+  if (tier === 'data'         && zids.includes('data'))   return 'data';
+  return zids[1] || zids[0] || 'control';
+}
+
+// ── Lifecycle badge (SDP scoped) ──────────────────────────────────────────────
+function _sdpLifecycleBadge(status) {
+  const labels = {
+    preferred: 'Preferred', 'existing-only': 'Existing Only',
+    deprecated: 'Deprecated', retired: 'Retired',
+    candidate: 'Candidate', unknown: 'Unknown'
+  };
+  const cls = status === 'existing-only' ? 'existing-only' : (status || 'unknown');
+  return `<span class="lifecycle ${escapeHtml(cls)}">`
+    + `<span class="dot"></span>${escapeHtml(labels[status] || status || 'Unknown')}</span>`;
+}
+
+// ── Hero ──────────────────────────────────────────────────────────────────────
+function _sdpHeroMarkup(object) {
+  const d = object.architecturalDecisions || {};
+  const fd = d.failureDomain || {};
+  const owner = object.owner || {};
+  const bc = object.businessContext || {};
+  const pillarLabel = bc.pillarLabel || (bc.pillar || '').split('.').pop() || '';
+  return `
+<div class="sdp-hero">
+  <div>
+    <div class="hero-type"><span class="dot"></span>Software Deployment Pattern</div>
+    <h1>${escapeHtml(object.name || '')}</h1>
+    <div class="hero-id-row">
+      <span class="hero-uid">${escapeHtml(object.id || object.uid || '')}</span>
+      ${object.version ? `<span class="hero-version">v${escapeHtml(String(object.version))}</span>` : ''}
+      ${_sdpLifecycleBadge(object.lifecycleStatus)}
+    </div>
+    ${object.description ? `<p class="hero-desc">${escapeHtml(object.description)}</p>` : ''}
+  </div>
+  <div class="hero-side">
+    ${owner.team    ? `<div class="hero-side-row"><span class="k">Owner</span><span class="v">${escapeHtml(owner.team)}</span></div>` : ''}
+    ${owner.contact ? `<div class="hero-side-row"><span class="k">Contact</span><span class="v contact">${escapeHtml(owner.contact)}</span></div>` : ''}
+    ${pillarLabel   ? `<div class="hero-side-row"><span class="k">Pillar</span><span class="v">${escapeHtml(pillarLabel)}</span></div>` : ''}
+    ${bc.productFamily ? `<div class="hero-side-row"><span class="k">Product</span><span class="v">${escapeHtml(bc.productFamily)}</span></div>` : ''}
+    ${d.dataClassification ? `<div class="hero-side-row"><span class="k">Data</span><span class="v">${escapeHtml(d.dataClassification)}</span></div>` : ''}
+    ${fd.scope ? `<div class="hero-side-row"><span class="k">Blast radius</span><span class="v">${escapeHtml(fd.scope)}</span></div>` : ''}
+  </div>
+</div>`;
+}
+
+// ── KPI strip ─────────────────────────────────────────────────────────────────
+function _sdpKpiMarkup(object, vm) {
+  const d = object.architecturalDecisions || {};
+  const kpis = [
+    { label: 'Services',    value: vm.members.length,     sub: 'deployable objects' },
+    { label: 'Zones',       value: vm.zones.length,       sub: 'network zones' },
+    { label: 'Connections', value: vm.connections.length, sub: 'documented paths' },
+    { label: 'Availability', value: d.availabilityTarget || '—', sub: d.availabilityTarget ? 'target SLA' : 'not specified' },
+    { label: 'Status',      value: escapeHtml((object.catalogStatus || '').replace(/^\w/, c => c.toUpperCase())), sub: 'catalog status' }
+  ];
+  return `<div class="kpi-strip">${kpis.map(k => `
+  <div class="kpi">
+    <div class="kpi-label">${escapeHtml(k.label)}</div>
+    <div class="kpi-value">${k.value}</div>
+    <div class="kpi-sub">${k.sub}</div>
+  </div>`).join('')}</div>`;
+}
+
+// ── Section nav ───────────────────────────────────────────────────────────────
+function _sdpSectionNavMarkup(vm, object) {
+  const sections = [
+    { id: 'sdp-s-topology',    label: 'Topology' },
+    { id: 'sdp-s-groups',      label: 'Service Groups' },
+    { id: 'sdp-s-decisions',   label: 'Decisions' },
+    { id: 'sdp-s-connections', label: 'Connections', skip: !vm.connections.length },
+    { id: 'sdp-s-metadata',    label: 'Metadata' }
+  ].filter(s => !s.skip);
+  return `<nav class="section-nav" id="sdp-section-nav">${sections.map((s, i) =>
+    `<button class="${i === 0 ? 'active' : ''}" data-sdp-nav="${s.id}">${escapeHtml(s.label)}</button>`
+  ).join('')}</nav>`;
+}
+
+// ── Topology section ──────────────────────────────────────────────────────────
+function _sdpTopologyMarkup(vm) {
+  const tierChips = [{ id: 'all', label: 'All' }, ..._SDP_TIER_ORDER.map(t => ({ id: t, label: _SDP_TIER_LABELS[t] }))];
+  const zoneColsHtml = vm.zones.map(zone => {
+    const zt = vm.byZone[zone.id]?.tiers || {};
+    const total = Object.values(zt).reduce((a, b) => a + b.length, 0);
+    const bandsHtml = _SDP_TIER_ORDER.map(tier => {
+      const members = zt[tier] || [];
+      if (!members.length) return '';
+      const cardsHtml = members.map(m => {
+        const svc = objectLookup[m.ref] || { name: m.ref, role: '' };
+        return `<div class="svc-card" data-ref="${escapeHtml(m.ref)}" data-tier="${escapeHtml(m.tier)}">
+          <div class="svc-name"><span>${escapeHtml(svc.name || m.ref)}</span>
+            <span class="intent-dot ${escapeHtml(m.intent)}" title="${m.intent === 'ha' ? 'Highly available' : 'Standalone'}"></span>
+          </div>
+          <div class="svc-role">${escapeHtml(svc.role || svc.type || '')}</div>
+        </div>`;
+      }).join('');
+      return `<div class="tier-band" data-tier="${escapeHtml(tier)}">
+        <div class="tier-band-head">
+          <span>${escapeHtml(_SDP_TIER_LABELS[tier])}</span>
+          <span class="bar"></span>
+          <span>${members.length}</span>
+        </div>
+        <div class="svc-grid${members.length === 1 ? ' single' : ''}">${cardsHtml}</div>
+      </div>`;
+    }).join('');
+    return `<div class="zone-col" data-zone="${escapeHtml(zone.id)}">
+      <div class="zone-header">
+        <div class="zone-eyebrow">
+          <span class="dot"></span>
+          <span>Zone · ${escapeHtml(zone.name)}</span>
+          <span class="count">— ${total} services</span>
+        </div>
+        <div class="zone-name">${escapeHtml(zone.name)}</div>
+        ${zone.description ? `<div class="zone-desc">${escapeHtml(zone.description)}</div>` : ''}
+      </div>
+      ${bandsHtml}
+    </div>`;
+  }).join('');
+
+  const legendTiers = _SDP_TIER_ORDER.map(t =>
+    `<span class="topo-legend-item"><span class="sw" style="background:var(--tier-${t})"></span>${escapeHtml(_SDP_TIER_LABELS[t])}</span>`
+  ).join('');
+  const legendProtos = ['REST', 'AMQP', 'Other'].map((p, i) => {
+    const cls = ['rest', 'amqp', 'other'][i];
+    return `<span class="topo-legend-item"><span class="ln" style="background:var(--proto-${cls})"></span>${p}</span>`;
+  }).join('');
+
+  return `
+<div class="sdp-section" id="sdp-s-topology">
+  <div class="section-head">
+    <div><span class="eyebrow">01 — Topology</span><h2>Deployment Topology</h2></div>
+    <div class="filter-bar">
+      <span class="filter-label">Tier</span>
+      <div class="chip-group">${tierChips.map(c =>
+        `<button class="chip${c.id === 'all' ? ' active' : ''}" data-tier-filter="${escapeHtml(c.id)}">`
+        + (c.id !== 'all' ? `<span class="swatch" style="background:var(--tier-${c.id})"></span>` : '')
+        + escapeHtml(c.label) + `</button>`
+      ).join('')}</div>
+    </div>
+  </div>
+  <div class="topology-wrap">
+    <div class="topology" id="sdp-topology-grid">
+      <svg class="topology-svg" id="sdp-topology-svg" aria-hidden="true"></svg>
+      ${zoneColsHtml}
+    </div>
+    <div class="topo-legend">
+      <div class="topo-legend-group"><span class="topo-legend-label">Tiers</span>${legendTiers}</div>
+      <div class="topo-legend-group"><span class="topo-legend-label">Protocols</span>${legendProtos}</div>
+      <div class="topo-legend-group">
+        <span class="topo-legend-label">Intent</span>
+        <span class="topo-legend-item"><span class="sw" style="background:var(--ok)"></span>HA</span>
+        <span class="topo-legend-item"><span class="sw" style="background:var(--warn)"></span>Single</span>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+// ── SVG path overlay ──────────────────────────────────────────────────────────
+function _sdpRecomputePaths(vm) {
+  const grid = document.getElementById('sdp-topology-grid');
+  const svg  = document.getElementById('sdp-topology-svg');
+  if (!grid || !svg) return;
+  const box = grid.getBoundingClientRect();
+  const paths = [];
+  vm.connections.forEach((c, i) => {
+    const aEl = _sdpCardRefs[c.from];
+    const bEl = _sdpCardRefs[c.to];
+    if (!aEl || !bEl) return;
+    const ra = aEl.getBoundingClientRect();
+    const rb = bEl.getBoundingClientRect();
+    const ay = ra.top - box.top + ra.height / 2;
+    const by = rb.top - box.top + rb.height / 2;
+    let sx, ex;
+    const sameCol = Math.abs(ra.left - rb.left) < 4;
+    if (sameCol) {
+      sx = ra.left - box.left + ra.width;
+      ex = rb.left - box.left + rb.width;
+    } else if (ra.left > rb.left) {
+      sx = ra.left - box.left;
+      ex = rb.left - box.left + rb.width;
+    } else {
+      sx = ra.left - box.left + ra.width;
+      ex = rb.left - box.left;
+    }
+    const dx = ex - sx;
+    const curve = sameCol ? 0 : Math.min(120, Math.max(40, Math.abs(dx) * 0.45));
+    const path = sameCol
+      ? `M ${sx} ${ay} C ${sx + 64} ${ay}, ${ex + 64} ${by}, ${ex} ${by}`
+      : `M ${sx} ${ay} C ${sx + curve} ${ay}, ${ex - curve} ${by}, ${ex} ${by}`;
+    paths.push({ ...c, path, key: `${c.from}-${c.to}-${i}` });
+  });
+
+  const proto = p => (p.protocol || '').toLowerCase();
+  const active = _sdpActive || _sdpHover;
+  svg.innerHTML = paths.map(p => {
+    const isActive = active && (p.from === active || p.to === active);
+    const isDimmed = active && !isActive;
+    const cls = ['conn-path', proto(p), isActive && 'is-active', isDimmed && 'is-dimmed'].filter(Boolean).join(' ');
+    return `<path d="${p.path}" class="${cls}"/>`;
+  }).join('');
+}
+
+function _sdpUpdateCardStates(vm) {
+  const active = _sdpActive || _sdpHover;
+  const grid = document.getElementById('sdp-topology-grid');
+  if (!grid) return;
+  if (active) {
+    const related = new Set([active]);
+    vm.connections.forEach(c => {
+      if (c.from === active) related.add(c.to);
+      if (c.to === active)   related.add(c.from);
+    });
+    grid.dataset.active = '1';
+    grid.querySelectorAll('.svc-card').forEach(el => {
+      const ref = el.dataset.ref;
+      el.classList.toggle('is-active',   ref === active);
+      el.classList.toggle('is-related',  related.has(ref) && ref !== active);
+    });
+  } else {
+    delete grid.dataset.active;
+    grid.querySelectorAll('.svc-card').forEach(el => {
+      el.classList.remove('is-active', 'is-related');
+    });
+  }
+}
+
+// ── Drawer ────────────────────────────────────────────────────────────────────
+function _sdpOpenDrawer(ref, vm) {
+  _sdpDrawer = ref;
+  const drawer = document.getElementById('sdp-drawer');
+  if (!drawer) return;
+  const svc = objectLookup[ref] || { name: ref, id: ref };
+  const m = vm.members.find(x => x.ref === ref) || {};
+  const conns = vm.connections.filter(c => c.from === ref || c.to === ref);
+  const connRows = conns.map(c => {
+    const isOut = c.from === ref;
+    const otherId = isOut ? c.to : c.from;
+    const other = objectLookup[otherId] || { name: otherId };
+    const proto = (c.protocol || '').toLowerCase();
+    const arrow = isOut ? '→' : '←';
+    return `<div class="drawer-conn" data-object-link="${escapeHtml(otherId)}">
+      <span class="pill ${proto}">${escapeHtml(c.protocol || '')}</span>
+      <div class="target-row">
+        <span class="arrow">${arrow}</span>
+        <span class="target">${escapeHtml(other.name || otherId)}</span>
+      </div>
+      ${c.label ? `<div class="note">${escapeHtml(c.label)}</div>` : ''}
+    </div>`;
+  }).join('');
+  const intent = m.intent === 'ha' ? 'Highly Available' : m.intent === 'sa' ? 'Standalone' : (m.intent || '—');
+  const zone = vm.zones.find(z => z.id === m.zone);
+  drawer.querySelector('.drawer-eyebrow').innerHTML =
+    `<span class="dot" style="background:var(--tier-${escapeHtml(m.tier || 'application')})"></span>
+     ${escapeHtml(_SDP_TIER_LABELS[m.tier] || m.tier || '')} · ${escapeHtml(m.group || '')}`;
+  drawer.querySelector('h3').textContent = svc.name || ref;
+  drawer.querySelector('.drawer-uid').textContent = ref;
+  drawer.querySelector('.drawer-body').innerHTML = `
+    ${svc.description ? `<div class="drawer-row"><div class="k">Description</div><div class="v">${escapeHtml(svc.description)}</div></div>` : ''}
+    <div class="drawer-row"><div class="k">Zone</div><div class="v">${escapeHtml(zone?.name || m.zone || '—')}</div></div>
+    <div class="drawer-row"><div class="k">Intent</div><div class="v">${escapeHtml(intent)}</div></div>
+    ${m.notes ? `<div class="drawer-row"><div class="k">Notes</div><div class="v">${escapeHtml(m.notes)}</div></div>` : ''}
+    ${conns.length ? `<div class="drawer-row"><div class="k">Connections</div><div class="drawer-list">${connRows}</div></div>` : ''}
+  `;
+  drawer.classList.add('open');
+}
+
+function _sdpCloseDrawer() {
+  _sdpDrawer = null;
+  const drawer = document.getElementById('sdp-drawer');
+  if (drawer) drawer.classList.remove('open');
+}
+
+// ── Service Groups section ────────────────────────────────────────────────────
+function _sdpGroupsMarkup(object, vm) {
+  const groups = object.serviceGroups || [];
+  if (!groups.length) return `<div class="sdp-section" id="sdp-s-groups">
+    <div class="section-head"><div><span class="eyebrow">02 — Service Groups</span><h2>Service Groups</h2></div></div>
+    <p style="color:var(--muted)">No service groups documented.</p>
+  </div>`;
+  const groupCards = groups.map((sg, gi) => {
+    const entries = sg.deployableObjects || [];
+    const ext = (sg.externalInteractions || []).filter(x => (x.type || 'external') !== 'internal');
+    const rowsHtml = entries.map(e => {
+      const svc = objectLookup[e.ref] || { name: e.ref };
+      const zone = vm.zones.find(z => z.id === e.networkZone) || { id: e.networkZone || '', name: e.networkZone || '' };
+      const intent = e.intent || 'sa';
+      return `<div class="group-row">
+        <div class="svc">
+          <span class="svc-link" data-object-link="${escapeHtml(e.ref)}">${escapeHtml(svc.name || e.ref)}</span>
+          <span class="svc-uid">${escapeHtml(e.ref)}</span>
+        </div>
+        <span class="zone-tag" data-zone="${escapeHtml(zone.id)}"><span class="dot"></span>${escapeHtml(zone.name || zone.id)}</span>
+        <span class="intent-tag ${intent}"><span class="dot"></span>${intent.toUpperCase()}</span>
+        <span class="notes">${escapeHtml(e.notes || '')}</span>
+      </div>`;
+    }).join('');
+    const extHtml = ext.length ? `<div class="ext-block">
+      <h4>External Interactions</h4>
+      ${ext.map(x => `<div class="ext-item">
+        <span class="name">${escapeHtml(x.name)}</span>
+        <span class="desc">${escapeHtml(x.notes || '')}</span>
+      </div>`).join('')}
+    </div>` : '';
+    return `<div class="group-card${gi === 0 ? ' open' : ''}" data-group-idx="${gi}">
+      <div class="group-head">
+        <div>
+          <h3>${escapeHtml(sg.name || 'Service Group')}</h3>
+          <div class="group-meta">${escapeHtml(sg.deploymentTarget || 'No deployment target')}</div>
+        </div>
+        <span class="group-toggle">▶</span>
+      </div>
+      <div class="group-body">
+        ${entries.length ? `<div class="group-table">${rowsHtml}</div>` : ''}
+        ${extHtml}
+      </div>
+    </div>`;
+  }).join('');
+  return `<div class="sdp-section" id="sdp-s-groups">
+    <div class="section-head"><div>
+      <span class="eyebrow">02 — Service Groups</span>
+      <h2>Service Groups</h2>
+    </div></div>
+    <div class="group-list">${groupCards}</div>
+  </div>`;
+}
+
+// ── Decisions section ─────────────────────────────────────────────────────────
+function _sdpDecisionsMarkup(object) {
+  const d = object.architecturalDecisions || {};
+  const cards = [];
+
+  if (d.availabilityTarget || d.availabilityRequirement) {
+    const scope = d.availabilityTarget ? `<span class="badge info"><span class="dot"></span>${escapeHtml(d.availabilityTarget)}</span>` : '';
+    cards.push({ key: 'Availability', text: d.availabilityRequirement || d.availabilityTarget, badge: scope });
+  }
+  if (d.dataClassification) {
+    cards.push({ key: 'Data Classification', text: d.dataClassification, badge: '' });
+  }
+  if (d.failureDomain) {
+    const fd = typeof d.failureDomain === 'object' ? d.failureDomain : { description: d.failureDomain };
+    const scopeBadge = fd.scope ? `<span class="badge neutral"><span class="dot"></span>${escapeHtml(fd.scope)}</span>` : '';
+    cards.push({ key: 'Failure Domain', text: fd.description || '', badge: scopeBadge });
+  }
+  if (d.patternDeviations && d.patternDeviations !== 'none') {
+    cards.push({ key: 'Pattern Deviations', text: d.patternDeviations, badge: `<span class="badge warn">Deviations noted</span>` });
+  }
+
+  if (!cards.length) return `<div class="sdp-section" id="sdp-s-decisions">
+    <div class="section-head"><div><span class="eyebrow">03 — Decisions</span><h2>Architectural Decisions</h2></div></div>
+    <p style="color:var(--muted)">No architectural decisions documented.</p>
+  </div>`;
+
+  const cardsHtml = cards.map(c => `<div class="decision-card">
+    <div class="eyebrow">${escapeHtml(c.key)}</div>
+    <h3>${escapeHtml(c.key)}</h3>
+    ${c.text ? `<div class="detail">${escapeHtml(c.text)}</div>` : ''}
+    ${c.badge ? `<div class="badge-row">${c.badge}</div>` : ''}
+  </div>`).join('');
+
+  return `<div class="sdp-section" id="sdp-s-decisions">
+    <div class="section-head"><div>
+      <span class="eyebrow">03 — Decisions</span>
+      <h2>Architectural Decisions</h2>
+    </div></div>
+    <div class="decisions-grid">${cardsHtml}</div>
+  </div>`;
+}
+
+// ── Connections table ─────────────────────────────────────────────────────────
+function _sdpConnectionsTableMarkup(vm) {
+  if (!vm.connections.length) return '';
+  const rows = vm.connections.map(c => {
+    const fromSvc = objectLookup[c.from] || { name: c.from };
+    const toSvc   = objectLookup[c.to]   || { name: c.to };
+    const proto = (c.protocol || '').toLowerCase();
+    const fz = vm.uidToZone[c.from] || '';
+    const tz = vm.uidToZone[c.to]   || '';
+    return `<tr data-object-link="${escapeHtml(c.from)}">
+      <td><span class="svc-cell">
+        <span class="zd" style="background:var(--zone-${escapeHtml(fz)},var(--muted))"></span>
+        ${escapeHtml(fromSvc.name || c.from)}
+      </span></td>
+      <td><span class="arrow">→</span><span class="svc-cell">
+        <span class="zd" style="background:var(--zone-${escapeHtml(tz)},var(--muted))"></span>
+        ${escapeHtml(toSvc.name || c.to)}
+      </span></td>
+      <td><span class="proto ${proto}">${escapeHtml(c.protocol || '')}</span></td>
+      <td class="label-cell">${escapeHtml(c.label || '')}</td>
+    </tr>`;
+  }).join('');
+  return `<div class="sdp-section" id="sdp-s-connections">
+    <div class="section-head"><div>
+      <span class="eyebrow">04 — Connections</span>
+      <h2>Service Connections</h2>
+    </div><p>${vm.connections.length} documented connection${vm.connections.length === 1 ? '' : 's'}</p></div>
+    <div class="conn-table-wrap">
+      <table class="conn-table">
+        <thead><tr>
+          <th>From</th><th>To</th><th>Protocol</th><th>Label</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+// ── Metadata section ──────────────────────────────────────────────────────────
+function _sdpMetadataMarkup(object) {
+  const tags = object.tags || [];
+  const refArch = object.followsReferenceArchitecture;
+  const refObj = refArch ? objectLookup[refArch] : null;
+  const cards = [
+    { k: 'UID',     v: object.id || object.uid || '', mono: true },
+    { k: 'Version', v: object.version ? `v${object.version}` : '—' },
+    { k: 'Catalog Status', v: object.catalogStatus || '—' },
+    { k: 'Lifecycle',      v: object.lifecycleStatus || '—' },
+  ].filter(c => c.v && c.v !== '—');
+  if (refArch) cards.push({ k: 'Reference Architecture', v: refObj ? refObj.name : refArch, link: refArch });
+
+  const cardsHtml = cards.map(c =>
+    `<div class="ref-card">
+      <div class="k">${escapeHtml(c.k)}</div>
+      <div class="v${c.mono ? ' mono' : ''}">${
+        c.link ? `<span class="ard-link" data-object-link="${escapeHtml(c.link)}">${escapeHtml(c.v)}</span>`
+               : escapeHtml(c.v)
+      }</div>
+    </div>`
+  ).join('');
+  const tagsHtml = tags.length ? `<div class="tag-row">${tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>` : '';
+
+  return `<div class="sdp-section" id="sdp-s-metadata">
+    <div class="section-head"><div>
+      <span class="eyebrow">05 — Metadata</span>
+      <h2>Metadata</h2>
+    </div></div>
+    <div class="ref-grid">${cardsHtml}</div>
+    ${tagsHtml}
+  </div>`;
+}
+
+// ── Drawer markup ─────────────────────────────────────────────────────────────
+function _sdpDrawerMarkup() {
+  return `<div class="sdp-drawer" id="sdp-drawer">
+    <div class="drawer-head">
+      <button class="drawer-close" id="sdp-drawer-close" aria-label="Close">✕</button>
+      <div class="drawer-eyebrow"></div>
+      <h3></h3>
+      <div class="drawer-uid"></div>
+    </div>
+    <div class="drawer-body"></div>
+  </div>`;
+}
+
+// ── Full SDP markup ───────────────────────────────────────────────────────────
+function _sdpDetailMarkup(object) {
+  const vm = _sdpBuildVM(object);
+  return {
+    html: `<div class="sdp-detail">
+      ${_sdpHeroMarkup(object)}
+      ${_sdpKpiMarkup(object, vm)}
+      ${_sdpSectionNavMarkup(vm, object)}
+      ${_sdpTopologyMarkup(vm)}
+      ${_sdpGroupsMarkup(object, vm)}
+      ${_sdpDecisionsMarkup(object)}
+      ${_sdpConnectionsTableMarkup(vm)}
+      ${_sdpMetadataMarkup(object)}
+      ${_sdpDrawerMarkup()}
+    </div>`,
+    vm
+  };
+}
+
+// ── Attach all interactive handlers ──────────────────────────────────────────
+function _sdpAttachHandlers(object, vm) {
+  const root = pageRoot;
+
+  // ── Collect card refs for SVG overlay
+  _sdpCardRefs = {};
+  root.querySelectorAll('.svc-card[data-ref]').forEach(el => {
+    _sdpCardRefs[el.dataset.ref] = el;
+  });
+
+  // ── Tier filter chips
+  root.querySelectorAll('[data-tier-filter]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      _sdpTierFilter = btn.dataset.tierFilter;
+      root.querySelectorAll('[data-tier-filter]').forEach(b =>
+        b.classList.toggle('active', b.dataset.tierFilter === _sdpTierFilter)
+      );
+      // Show/hide tier bands
+      root.querySelectorAll('.tier-band').forEach(band => {
+        band.hidden = _sdpTierFilter !== 'all' && band.dataset.tier !== _sdpTierFilter;
+      });
+      // Re-collect card refs (some may have moved off screen)
+      _sdpCardRefs = {};
+      root.querySelectorAll('.svc-card[data-ref]').forEach(el => {
+        _sdpCardRefs[el.dataset.ref] = el;
+      });
+      requestAnimationFrame(() => _sdpRecomputePaths(vm));
+    });
+  });
+
+  // ── Service card hover + click
+  root.querySelectorAll('.svc-card[data-ref]').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      _sdpHover = el.dataset.ref;
+      _sdpUpdateCardStates(vm);
+      _sdpRecomputePaths(vm);
+    });
+    el.addEventListener('mouseleave', () => {
+      _sdpHover = null;
+      _sdpUpdateCardStates(vm);
+      _sdpRecomputePaths(vm);
+    });
+    el.addEventListener('click', () => {
+      _sdpActive = _sdpActive === el.dataset.ref ? null : el.dataset.ref;
+      _sdpUpdateCardStates(vm);
+      _sdpRecomputePaths(vm);
+      if (_sdpActive) _sdpOpenDrawer(_sdpActive, vm);
+      else _sdpCloseDrawer();
+    });
+  });
+
+  // ── Drawer close
+  const drawerClose = document.getElementById('sdp-drawer-close');
+  if (drawerClose) {
+    drawerClose.addEventListener('click', () => {
+      _sdpActive = null;
+      _sdpUpdateCardStates(vm);
+      _sdpRecomputePaths(vm);
+      _sdpCloseDrawer();
+    });
+  }
+
+  // ── ResizeObserver for SVG paths
+  const grid = document.getElementById('sdp-topology-grid');
+  if (grid) {
+    _sdpRecomputePaths(vm);
+    _sdpResizeObs = new ResizeObserver(() => _sdpRecomputePaths(vm));
+    _sdpResizeObs.observe(grid);
+    window.addEventListener('scroll', () => _sdpRecomputePaths(vm), { passive: true });
+  }
+
+  // ── Section nav IntersectionObserver
+  const navEl = document.getElementById('sdp-section-nav');
+  if (navEl) {
+    const sections = root.querySelectorAll('.sdp-section[id]');
+    _sdpSectionObs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          navEl.querySelectorAll('[data-sdp-nav]').forEach(btn =>
+            btn.classList.toggle('active', btn.dataset.sdpNav === id)
+          );
+        }
+      });
+    }, { rootMargin: '-120px 0px -55% 0px' });
+    sections.forEach(s => _sdpSectionObs.observe(s));
+
+    navEl.querySelectorAll('[data-sdp-nav]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.sdpNav);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  }
+
+  // ── Group card collapse/expand
+  root.querySelectorAll('.group-card .group-head').forEach(head => {
+    head.addEventListener('click', () => {
+      head.closest('.group-card').classList.toggle('open');
+    });
+  });
+
+  // ── Object links in drawer and service groups
+  attachObjectLinkHandlers(root.querySelector('.sdp-detail'));
+}
+
+
 function renderDetailView() {
   currentMode = 'detail';
   executiveDrilldown = null;
@@ -4971,57 +5602,11 @@ function renderDetailView() {
       ])}
     `;
   } else if (object.type === 'software_deployment_pattern') {
-    const hasConnections = (object.sdpConnections || []).length > 0;
-    detailBody = `
-      ${headerMarkup}
-      <div class="detail-tabs">
-        <button class="detail-tab active" data-sdm-tab="topology">Deployment Topology</button>
-        <button class="detail-tab" data-sdm-tab="graph">Service Graph</button>
-        <button class="detail-tab" data-sdm-tab="details">Governance & Source</button>
-      </div>
-      <div class="detail-panel" data-sdm-panel="topology">
-        <section class="section-card">
-          <h3>Deployment Topology</h3>
-          <div id="topology-canvas"></div>
-        </section>
-      </div>
-      <div class="detail-panel" data-sdm-panel="graph" hidden>
-        <section class="section-card">
-          <h3>Service Graph</h3>
-          ${hasConnections ? `
-            <div class="sdp-graph-toolbar">
-              <div class="sdp-graph-legend" id="sdp-graph-legend"></div>
-            </div>
-            <div id="sdp-graph-cy"></div>
-          ` : `
-            <div class="sdp-graph-empty">
-              No inter-service connections are documented for this pattern yet.<br>
-              Use a Draftsman session to capture primary service communication paths.
-            </div>
-          `}
-        </section>
-      </div>
-      <div class="detail-panel" data-sdm-panel="details" hidden>
-        <section class="section-card">
-          <h3>Applied Pattern</h3>
-          <div class="section-stack">
-            ${object.followsReferenceArchitecture && objectLookup[object.followsReferenceArchitecture]
-              ? `<span class="ard-link" data-object-link="${object.followsReferenceArchitecture}">${escapeHtml(object.followsReferenceArchitecture)}</span>`
-              : `<span class="interaction-notes">${escapeHtml(object.followsReferenceArchitecture || 'No applied reference architecture documented.')}</span>`}
-          </div>
-        </section>
-        ${businessContextMarkup(object)}
-        ${requirementEvidenceMarkup(object)}
-        ${sdmServiceGroupsMarkup(object)}
-        ${sdmRisksMarkup(object)}
-        ${sourceRepositoryMarkup(object)}
-        <section class="decisions-card">
-          <h3>Architecture Decisions</h3>
-          ${decisionMarkup(object, ['sourceRepositories'])}
-        </section>
-      </div>
-      ${referencesMarkup(object)}
-    `;
+    _sdpTeardown();
+    const { html: sdpHtml, vm: sdpVm } = _sdpDetailMarkup(object);
+    detailBody = sdpHtml;
+    // Store vm on object for handler setup below
+    object._sdpVm = sdpVm;
   } else if (object.type === 'reference_architecture') {
     detailBody = `
       ${headerMarkup}
@@ -5103,7 +5688,10 @@ function renderDetailView() {
   attachTopNavHandlers();
   attachSidebarHandlers();
   attachObjectLinkHandlers(pageRoot);
-  if (object.type === 'software_deployment_pattern' || object.type === 'reference_architecture') {
+  if (object.type === 'software_deployment_pattern') {
+    _sdpAttachHandlers(object, object._sdpVm);
+    delete object._sdpVm;
+  } else if (object.type === 'reference_architecture') {
     currentSdmScalingFilter = 'all';
     const applySdmScalingFilter = () => {
       const topologyCanvas = document.getElementById('topology-canvas');
@@ -5123,7 +5711,6 @@ function renderDetailView() {
         section.classList.toggle('highlighted', filter !== 'all' && participates);
       });
     };
-
     const renderTopologyIntoCanvas = () => {
       const topologyCanvas = document.getElementById('topology-canvas');
       if (topologyCanvas && !topologyCanvas.dataset.rendered) {
@@ -5139,7 +5726,6 @@ function renderDetailView() {
         applySdmScalingFilter();
       }
     };
-
     pageRoot.querySelectorAll('[data-sdm-tab]').forEach(button => {
       button.addEventListener('click', () => {
         const nextTab = button.dataset.sdmTab;
@@ -5149,14 +5735,7 @@ function renderDetailView() {
         pageRoot.querySelectorAll('[data-sdm-panel]').forEach(panel => {
           panel.hidden = panel.dataset.sdmPanel !== nextTab;
         });
-        if (nextTab === 'topology') {
-          destroySdpGraphCy();
-          renderTopologyIntoCanvas();
-        } else if (nextTab === 'graph') {
-          renderSdpGraph(object);
-        } else {
-          destroySdpGraphCy();
-        }
+        if (nextTab === 'topology') renderTopologyIntoCanvas();
       });
     });
     renderTopologyIntoCanvas();
