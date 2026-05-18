@@ -4931,7 +4931,12 @@ function _sdpBuildVM(object) {
   const connections = object.sdpConnections || [];
   const uidToZone = {};
   members.forEach(m => (uidToZone[m.ref] = m.zone));
-  return { members, zones, byZone, connections, uidToZone };
+  // activeZones: only zones that have at least one service (matches topology render logic)
+  const activeZones = zones.filter(z => {
+    const zt = byZone[z.id]?.tiers || {};
+    return Object.values(zt).reduce((s, a) => s + a.length, 0) > 0;
+  });
+  return { members, zones, activeZones, byZone, connections, uidToZone };
 }
 
 // ── Lifecycle badge (SDP scoped) ──────────────────────────────────────────────
@@ -4981,7 +4986,7 @@ function _sdpKpiMarkup(object, vm) {
   const d = object.architecturalDecisions || {};
   const kpis = [
     { label: 'Services',    value: vm.members.length,     sub: 'deployable objects' },
-    { label: 'Zones',       value: vm.zones.length,       sub: 'network zones' },
+    { label: 'Zones',       value: vm.activeZones.length, sub: 'network zones' },
     { label: 'Connections', value: vm.connections.length, sub: 'documented paths' },
     { label: 'Availability', value: d.availabilityTarget || '—', sub: d.availabilityTarget ? 'target SLA' : 'not specified' },
     { label: 'Status',      value: escapeHtml((object.catalogStatus || '').replace(/^\w/, c => c.toUpperCase())), sub: 'catalog status' }
