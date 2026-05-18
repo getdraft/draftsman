@@ -2513,6 +2513,7 @@ html, body {
   transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
   width: 100%;
   min-height: 140px;
+  overflow: hidden;
 }
 .home-tile:hover {
   border-color: var(--accent);
@@ -2552,6 +2553,12 @@ html, body {
   color: var(--text-muted);
   margin: 0;
   line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 /* ── Sub-view header ─────────────────────────────────────────────────── */
 .subview-header {
