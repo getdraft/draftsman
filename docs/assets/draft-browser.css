@@ -2951,6 +2951,40 @@ html, body {
 .sdp-pillar-grid .home-tile { min-height: 160px; }
 .sdp-object-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 .sdp-object-grid .home-tile { min-height: 180px; justify-content: flex-start; }
+
+/* SDP lifecycle sections (pillar drill-down) */
+.sdp-lifecycle-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 0 4px;
+}
+.sdp-lifecycle-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 12px;
+  padding: 0 0 10px;
+  border-bottom: 2px solid var(--line);
+}
+.sdp-lifecycle-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.sdp-lifecycle-count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-left: auto;
+  background: var(--surface-sunk);
+  border-radius: 10px;
+  padding: 1px 8px;
+}
 /* ── Empty state shared ──────────────────────────────────────────── */
 .empty-state {
   font-size: 0.85rem;

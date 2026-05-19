@@ -3085,7 +3085,62 @@ function renderSdpsByPillarView() {
   attachSidebarHandlers();
 }
 
-// ── SDP tiles for a single pillar ───────────────────────────────────
+// ── SDP tiles for a single pillar, grouped by lifecycle ─────────────
+
+// Returns HTML sections grouping `sdps` by lifecycleStatus in invest-first order.
+function _sdpLifecycleSections(sdps) {
+  const LC_CONFIG = [
+    { id: 'preferred',     label: 'Preferred',     color: '#2e7d32' },
+    { id: 'candidate',     label: 'Candidate',     color: '#f57f17' },
+    { id: 'existing-only', label: 'Existing Only', color: '#1565c0' },
+    { id: 'deprecated',    label: 'Deprecated',    color: '#6d4c41' },
+    { id: 'retired',       label: 'Retired',       color: '#b71c1c' },
+  ];
+  const byLifecycle = new Map(LC_CONFIG.map(c => [c.id, { config: c, sdps: [] }]));
+  const uncategorized = [];
+
+  for (const sdp of sdps) {
+    const lc = sdp.lifecycleStatus || '';
+    if (byLifecycle.has(lc)) {
+      byLifecycle.get(lc).sdps.push(sdp);
+    } else {
+      uncategorized.push(sdp);
+    }
+  }
+  if (uncategorized.length) {
+    byLifecycle.set('unknown', {
+      config: { id: 'unknown', label: 'Uncategorized', color: '#7a6e60' },
+      sdps: uncategorized,
+    });
+  }
+
+  return [...byLifecycle.values()]
+    .filter(g => g.sdps.length > 0)
+    .map(({ config, sdps: groupSdps }) => {
+      const tiles = groupSdps.map(sdp => `
+        <div class="home-tile sdp-object-tile" role="button" tabindex="0"
+             data-object-link="${escapeHtml(sdp.uid || sdp.id || '')}">
+          <span class="home-tile-icon">🗺</span>
+          <span class="home-tile-title">${escapeHtml(sdp.name || sdp.uid || '')}</span>
+          ${sdp.description ? `<span class="home-tile-desc">${escapeHtml(sdp.description)}</span>` : ''}
+        </div>
+      `).join('');
+
+      return `
+        <section class="sdp-lifecycle-section">
+          <h3 class="sdp-lifecycle-heading">
+            <span class="sdp-lifecycle-dot" style="background:${config.color}"></span>
+            ${escapeHtml(config.label)}
+            <span class="sdp-lifecycle-count">${groupSdps.length}</span>
+          </h3>
+          <div class="home-tiles sdp-object-grid">
+            ${tiles}
+          </div>
+        </section>
+      `;
+    }).join('');
+}
+
 function renderPillarSdpsView(pillarId) {
   currentMode = 'pillar-sdps';
   currentDetailId = null;
@@ -3104,27 +3159,14 @@ function renderPillarSdpsView(pillarId) {
   }
 
   const { pillar, objects } = group;
-  const sdpTiles = objects.map(sdp => {
-    const lifecycle = sdp.lifecycleStatus || 'unknown';
-    const lifecycleColors = { preferred: '2e7d32', 'existing-only': '1565c0', candidate: 'f57f17', deprecated: '6d4c41', retired: 'b71c1c', unknown: '7a6e60' };
-    const color = lifecycleColors[lifecycle] ? `#${lifecycleColors[lifecycle]}` : '#7a6e60';
-    return `
-      <div class="home-tile sdp-object-tile" role="button" tabindex="0"
-           data-object-link="${escapeHtml(sdp.uid || sdp.id || '')}">
-        <span class="home-tile-icon">🗺</span>
-        <span class="home-tile-title">${escapeHtml(sdp.name || sdp.uid || '')}</span>
-        ${sdp.description ? `<span class="home-tile-desc">${escapeHtml(sdp.description)}</span>` : ''}
-        <span class="badge" style="background:${color};color:#fff;margin-top:auto">${escapeHtml(lifecycle)}</span>
-      </div>
-    `;
-  }).join('');
+  const sections = _sdpLifecycleSections(objects);
 
   pageRoot.innerHTML = `
     <div class="view-shell">
       ${topNavMarkup()}
       ${subviewHeaderMarkup('Deployment Patterns', 'sdps-by-pillar', escapeHtml(pillar.name || pillar.id), `${objects.length} pattern${objects.length === 1 ? '' : 's'}`)}
-      <div class="home-tiles sdp-object-grid">
-        ${sdpTiles || '<p class="empty-state">No patterns in this pillar.</p>'}
+      <div class="sdp-lifecycle-sections">
+        ${sections || '<p class="empty-state">No patterns in this pillar.</p>'}
       </div>
     </div>
   `;
