@@ -1305,13 +1305,21 @@ def write_markdown_page(source_path: Path, output_path: Path, fallback_title: st
 def write_user_manual(source_path: Path, output_path: Path) -> bool:
     """Copy the pre-built user manual HTML template to the output path.
 
+    Replaces the logo src placeholder with the actual base64 data URI so the
+    page is fully self-contained and works regardless of the assets directory
+    layout.
+
     Falls back to Markdown rendering if the HTML template is not present
     (preserves backward compatibility for workspaces that vendor an older
     framework without the template file).
     """
     if USER_MANUAL_TEMPLATE_PATH.exists():
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(USER_MANUAL_TEMPLATE_PATH, output_path)
+        content = USER_MANUAL_TEMPLATE_PATH.read_text(encoding="utf-8")
+        logo_uri = logo_data_uri()
+        if logo_uri:
+            content = content.replace('src="assets/draft-logo.png"', f'src="{logo_uri}"')
+        output_path.write_text(content, encoding="utf-8")
         return True
     return write_markdown_page(source_path, output_path, "DRAFT User Manual")
 
