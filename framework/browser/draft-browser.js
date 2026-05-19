@@ -638,7 +638,6 @@ function attachTopNavHandlers() {
 }
 
 function destroyImpactCy() {}
-}
 
 function filterObjectsByTypes(types) {
   const allowed = new Set(types);
