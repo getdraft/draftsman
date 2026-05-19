@@ -69,29 +69,39 @@ let _dtMapSize        = { w: 900, h: 450 };
 let _dtMapPreset      = 'world';   // 'world' | 'north-america'
 let _dtEscHandler     = null;
 
-// Map preset definitions — bounding polygons used with projection.fitExtent()
+// Map preset definitions.
+// Each preset exposes buildProjection(w, h) → a ready D3 projection.
+// World uses fitExtent with the full Sphere.
+// Regional presets derive scale/translate from the world projection so the
+// zoom is always proportional to the actual rendered viewport size.
 const DT_MAP_PRESETS = {
   'world': {
     label: 'World',
     icon: '🌍',
-    // Full sphere — use Sphere sentinel so Natural Earth renders cleanly
-    fitTarget: () => ({ type: 'Sphere' }),
+    buildProjection: (w, h) =>
+      d3.geoNaturalEarth1()
+        .fitExtent([[8, 8], [w - 8, h - 8]], { type: 'Sphere' })
+        .precision(0.1),
     graticuleStep: [20, 20],
   },
   'north-america': {
     label: 'N. America',
     icon: '🌎',
-    // Bounding polygon: west -170°, east -50°, south 10°, north 75°
-    fitTarget: () => ({
-      type: 'Feature',
-      geometry: {
-        type: 'Polygon',
-        coordinates: [[
-          [-170, 10], [-50, 10], [-50, 75], [-170, 75], [-170, 10],
-        ]],
-      },
-      properties: {},
-    }),
+    buildProjection: (w, h) => {
+      // Start from the world-fit projection so the scale factor is always
+      // relative to the actual viewport, then zoom 2.5× and re-centre on
+      // [-100 °, 45 °] — a good visual centre for North America.
+      const base = d3.geoNaturalEarth1()
+        .fitExtent([[8, 8], [w - 8, h - 8]], { type: 'Sphere' });
+      const ws = base.scale();
+      const [wtx, wty] = base.translate();
+      const [cx, cy] = base([-100, 45]);
+      const f = 2.5;
+      return d3.geoNaturalEarth1()
+        .scale(ws * f)
+        .translate([w / 2 - f * (cx - wtx), h / 2 - f * (cy - wty)])
+        .precision(0.1);
+    },
     graticuleStep: [10, 10],
   },
 };
@@ -2445,9 +2455,7 @@ function _dtDrawMap() {
   }
 
   const preset = DT_MAP_PRESETS[_dtMapPreset] || DT_MAP_PRESETS['world'];
-  const projection = d3.geoNaturalEarth1()
-    .fitExtent([[8, 8], [w - 8, h - 8]], preset.fitTarget())
-    .precision(0.1);
+  const projection = preset.buildProjection(w, h);
 
   const pathGen = d3.geoPath(projection);
   const graticule = d3.geoGraticule().step(preset.graticuleStep)();
