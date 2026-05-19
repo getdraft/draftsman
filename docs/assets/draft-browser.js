@@ -139,16 +139,6 @@ const deployableTypes = new Set([
   'edge_gateway_service',
   'product_service'
 ]);
-const impactOrder = [
-  'software_deployment_pattern',
-  'reference_architecture',
-  'host',
-  'runtime_service',
-  'data_at_rest_service',
-  'edge_gateway_service',
-  'product_service'
-];
-const impactLifecycleOrder = lifecycleValues;
 let activeCategory = 'architecture';
 let activeFilter = 'all';
 let currentDetailId = null;
@@ -158,14 +148,8 @@ let currentSubViewId = null;
 const navHistory = [];
 let listSearchTerm = '';
 let detailCy = null;
-let impactCy = null;
-let impactSelectedId = null;
-let impactSearchTerm = '';
 let currentSdmScalingFilter = 'all';
 let suppressHashSync = false;
-let impactLifecycleFilters = Object.fromEntries(
-  impactLifecycleOrder.map(status => [status, status !== 'retired'])
-);
 
 Object.entries(lifecycleColors).forEach(([label, value]) => {
   const item = document.createElement('div');
@@ -448,13 +432,6 @@ function applyRouteFromHash() {
       return;
     }
   }
-  if (view === 'impact') {
-    const objectId = params.get('id');
-    impactSelectedId = objectId && objectLookup[objectId] ? objectId : null;
-    impactSearchTerm = params.get('q') || '';
-    renderImpactView();
-    return;
-  }
   if (view === 'acceptable-use') {
     renderAcceptableUseView();
     return;
@@ -590,10 +567,6 @@ function rerenderCurrentView() {
     renderCompanyOnboardingView();
     return;
   }
-  if (currentMode === 'impact') {
-    renderImpactView();
-    return;
-  }
   renderListView();
 }
 
@@ -629,10 +602,6 @@ function attachTopNavHandlers() {
         renderDetailView();
         return;
       }
-      if (nav === 'impact') {
-        renderImpactView();
-        return;
-      }
       if (nav === 'acceptable-use') {
         renderAcceptableUseView();
       }
@@ -640,15 +609,7 @@ function attachTopNavHandlers() {
   });
 }
 
-function impactGroupForObject(object) {
-  return object.type || 'unknown';
-}
-
-function destroyImpactCy() {
-  if (impactCy) {
-    impactCy.destroy();
-    impactCy = null;
-  }
+function destroyImpactCy() {}
 }
 
 function filterObjectsByTypes(types) {
@@ -6571,475 +6532,10 @@ function traverseUp(object, visited, collector) {
   });
 }
 
-function computeImpactSelection(selectedId) {
-  const selected = objectLookup[selectedId];
-  const impacted = new Set();
-  const siblings = new Set();
-
-  if (!selected || !deployableTypes.has(selected.type)) {
-    return { selected, impacted, siblings, supported: false };
-  }
-
-  if (selected.type === 'software_deployment_pattern') {
-    traverseDown(selected, new Set([selected.id]), impacted);
-  } else {
-    traverseDown(selected, new Set([selected.id]), impacted);
-    traverseUp(selected, new Set([selected.id]), impacted);
-  }
-
-  siblings.delete(selected.id);
-  impacted.delete(selected.id);
-  return { selected, impacted, siblings, supported: true };
-}
-
-function impactHighlightColor(kind) {
-  if (kind === 'selected') return '#f59e0b';
-  if (kind === 'sibling') return '#8b5cf6';
-  return '#ef4444';
-}
-
-function groupedImpactObjects(selection) {
-  const grouped = {};
-  if (!selection.selected || !selection.supported) {
-    return grouped;
-  }
-
-  const allIds = new Set([selection.selected.id, ...selection.impacted, ...selection.siblings]);
-  [...allIds].forEach(id => {
-    const object = objectLookup[id];
-    if (!object || !deployableTypes.has(object.type)) {
-      return;
-    }
-    const group = impactGroupForObject(object);
-    const kind = id === selection.selected.id ? 'selected' : selection.siblings.has(id) ? 'sibling' : 'impacted';
-    if (!grouped[group]) {
-      grouped[group] = [];
-    }
-    grouped[group].push({ object, kind });
-  });
-
-  impactOrder.forEach(group => {
-    if (grouped[group]) {
-      grouped[group].sort((a, b) => a.object.name.localeCompare(b.object.name));
-    }
-  });
-  return grouped;
-}
-
-function impactSidebarMarkup(selection) {
-  const searchMatches = impactSearchTerm
-    ? allObjects.filter(object => deployableTypes.has(object.type)).filter(object => {
-        return objectSearchText(object).includes(impactSearchTerm.toLowerCase());
-      }).slice(0, 8)
-    : [];
-
-  const grouped = groupedImpactObjects(selection);
-  const orderedGroups = [...impactOrder.filter(group => grouped[group]?.length), ...Object.keys(grouped).filter(group => !impactOrder.includes(group) && grouped[group]?.length)];
-  const hasItems = orderedGroups.length > 0;
-
-  return `
-    <aside class="impact-sidebar">
-      <div>
-        <h3 style="margin:0 0 10px">Impact Analysis</h3>
-        <input id="impact-search" class="impact-search" type="text" placeholder="Search by name, alias, or UID" value="${escapeHtml(impactSearchTerm)}">
-      </div>
-      ${searchMatches.length ? `
-        <div class="search-results">
-          ${searchMatches.map(match => `
-            <div class="search-result" data-impact-select="${match.id}">
-              <div class="impact-item-top"><strong>${escapeHtml(match.name)}</strong></div>
-              <div class="object-id">${escapeHtml(match.id)}</div>
-            </div>
-          `).join('')}
-        </div>
-      ` : impactSearchTerm ? '<div class="empty-card">No matching catalog objects.</div>' : ''}
-      ${!impactSelectedId ? '<div class="empty-card">Search for an object to see its impact chain</div>' : ''}
-      ${impactSelectedId && !selection.supported ? '<div class="empty-card">Impact analysis is available for catalog objects that participate in references.</div>' : ''}
-      ${impactSelectedId && selection.supported && !hasItems ? '<div class="empty-card">No impacted catalog objects were found for the selected object.</div>' : ''}
-      ${impactSelectedId && selection.supported && hasItems ? orderedGroups.map(group => grouped[group].length ? `
-        <section class="impact-group">
-          <h4>${escapeHtml(formatTypeLabel(group))}</h4>
-          <div class="impact-group-list">
-            ${grouped[group].map(entry => `
-              <div class="impact-item" data-impact-select="${entry.object.id}">
-                <div class="impact-item-top">
-                  <span class="impact-dot" style="background:${impactHighlightColor(entry.kind)}"></span>
-                  <strong>${escapeHtml(entry.object.name)}</strong>
-                </div>
-                <div class="object-id">${escapeHtml(entry.object.id)}</div>
-              </div>
-            `).join('')}
-          </div>
-        </section>
-      ` : '').join('') : ''}
-    </aside>
-  `;
-}
-
-function lifecycleFilterButtonsMarkup() {
-  return `
-    <div class="lifecycle-filter-row">
-      ${impactLifecycleOrder.map(status => {
-        const active = !!impactLifecycleFilters[status];
-        const color = '#' + lifecycleColors[status];
-        const classes = ['lifecycle-filter-button', active ? 'active' : '', status === 'retired' ? 'retired-filter' : '']
-          .filter(Boolean)
-          .join(' ');
-        const style = active ? `background:${color};` : '';
-        return `<button class="${classes}" style="${style}" data-impact-lifecycle="${status}">${escapeHtml(status)}</button>`;
-      }).join('')}
-    </div>
-  `;
-}
-
-function buildImpactElements() {
-  const cyNodes = allObjects
-    .filter(object => deployableTypes.has(object.type))
-    .map(object => ({
-      data: {
-        id: object.id,
-        label: object.hasRiskRef ? `⚠ ${object.name}` : object.name,
-        type: object.type,
-        category: object.category || '',
-        deliveryModel: object.deliveryModel || '',
-        lifecycleStatus: object.lifecycleStatus,
-        shape: object.type === 'reference_architecture' || object.type === 'software_deployment_pattern' ? 'round-rectangle' : object.shape,
-        color: object.color,
-        borderStyle: object.type === 'reference_architecture' ? 'dashed' : 'solid',
-        nodeWidth: object.type === 'technology_component' || DEPLOYABLE_STANDARD_TYPES.includes(object.type) ? 145 : 150,
-        nodeHeight: object.type === 'technology_component' || DEPLOYABLE_STANDARD_TYPES.includes(object.type) ? 86 : 92,
-        textMaxWidth: object.type === 'technology_component' || DEPLOYABLE_STANDARD_TYPES.includes(object.type) ? 145 : 150
-      },
-      classes: object.name.length > 20 ? 'long-label' : ''
-    }));
-
-  const edgeIds = new Set();
-  const edges = [];
-  allObjects.filter(object => deployableTypes.has(object.type)).forEach(object => {
-    (object.outboundRefs || []).forEach(reference => {
-      if (objectLookup[reference.target] && deployableTypes.has(objectLookup[reference.target].type)) {
-        const id = `${object.id}->${reference.target}:${reference.path}`;
-        if (!edgeIds.has(id)) {
-          edgeIds.add(id);
-          edges.push({ data: { id, source: object.id, target: reference.target } });
-        }
-      }
-    });
-  });
-
-  return [...cyNodes, ...edges];
-}
-
-function visibleImpactNodes() {
-  return impactCy ? impactCy.nodes(':visible') : cytoscape().collection();
-}
-
-function serviceRbbNodesSorted(nodes) {
-  const order = ['runtime_service', 'data_at_rest_service', 'edge_gateway_service', 'product_service'];
-  return nodes
-    .filter(node => ['runtime_service', 'data_at_rest_service', 'edge_gateway_service', 'product_service'].includes(node.data('type')))
-    .sort((a, b) => {
-      const aCategory = a.data('type') || 'other';
-      const bCategory = b.data('type') || 'other';
-      const aIndex = order.includes(aCategory) ? order.indexOf(aCategory) : order.length;
-      const bIndex = order.includes(bCategory) ? order.indexOf(bCategory) : order.length;
-      if (aIndex !== bIndex) return aIndex - bIndex;
-      return String(a.data('label') || '').localeCompare(String(b.data('label') || ''));
-    });
-}
-
-function computeImpactPositions(nodes, containerWidth) {
-  const ROW_HEIGHT = 120;
-  const NODE_SPACING = 140;
-  const TIER_GAP = 40;
-  const safeWidth = Math.max(320, Math.floor(containerWidth));
-  const nodeList = nodes.toArray();
-  const knownIds = new Set();
-  const addTier = tierNodes => {
-    tierNodes.forEach(node => knownIds.add(node.id()));
-    return tierNodes;
-  };
-  const tiers = [
-    addTier(nodeList.filter(node => node.data('type') === 'software_deployment_pattern')),
-    addTier(nodeList.filter(node => node.data('type') === 'reference_architecture')),
-    addTier(serviceRbbNodesSorted(nodes)),
-    addTier(nodeList.filter(node => node.data('type') === 'host')
-      .sort((a, b) => String(a.data('label') || '').localeCompare(String(b.data('label') || '')))),
-    addTier(nodeList.filter(node => !knownIds.has(node.id()))
-      .sort((a, b) => String(a.data('label') || '').localeCompare(String(b.data('label') || ''))))
-  ];
-
-  const positions = {};
-  let currentY = 60;
-
-  tiers.forEach(tierNodes => {
-    if (!tierNodes.length) return;
-    const nodesPerRow = Math.max(1, Math.floor(safeWidth / NODE_SPACING));
-    tierNodes.forEach((node, index) => {
-      const row = Math.floor(index / nodesPerRow);
-      const col = index % nodesPerRow;
-      const rowCount = Math.min(nodesPerRow, tierNodes.length - row * nodesPerRow);
-      const contentWidth = Math.max(NODE_SPACING, (rowCount - 1) * NODE_SPACING);
-      const startX = Math.max(40, (safeWidth - contentWidth) / 2);
-      positions[node.id()] = {
-        x: startX + col * NODE_SPACING,
-        y: currentY + row * ROW_HEIGHT
-      };
-    });
-    const rowsInTier = Math.ceil(tierNodes.length / nodesPerRow);
-    currentY += rowsInTier * ROW_HEIGHT + TIER_GAP;
-  });
-
-  return positions;
-}
-
-function applyImpactLifecycleVisibility() {
-  if (!impactCy) return;
-  impactLifecycleOrder.forEach(status => {
-    const selector = `node[lifecycleStatus = "${status}"]`;
-    if (impactLifecycleFilters[status]) {
-      impactCy.nodes(selector).show();
-    } else {
-      impactCy.nodes(selector).hide();
-    }
-  });
-  impactCy.edges().forEach(edge => {
-    if (edge.source().visible() && edge.target().visible()) {
-      edge.show();
-    } else {
-      edge.hide();
-    }
-  });
-}
-
-function rerunImpactLayout() {
-  if (!impactCy) return;
-  impactCy.resize();
-  applyImpactLifecycleVisibility();
-  const container = document.getElementById('impact-cy');
-  const containerWidth = (container?.clientWidth || impactCy.width() || 960) - 24;
-  const visibleNodes = impactCy.nodes(':visible');
-  const positions = computeImpactPositions(visibleNodes, containerWidth);
-  impactCy.layout({
-    name: 'preset',
-    positions
-  }).run();
-  impactCy.resize();
-}
-
-function applyImpactStyles(selection) {
-  if (!impactCy) return;
-  impactCy.nodes().removeClass('selected-impact impacted-impact sibling-impact dim-impact base-impact');
-  impactCy.edges().removeClass('active-edge dim-edge');
-
-  if (!impactSelectedId || !selection.supported || !selection.selected || !impactCy.getElementById(selection.selected.id).nonempty()) {
-    impactCy.nodes(':visible').addClass('base-impact');
-    return;
-  }
-
-  impactCy.nodes(':visible').removeClass('base-impact').addClass('dim-impact');
-  impactCy.edges().addClass('dim-edge');
-
-  const highlighted = new Set([selection.selected.id, ...selection.impacted, ...selection.siblings]);
-  highlighted.forEach(id => {
-    const node = impactCy.getElementById(id);
-    if (!node.nonempty()) return;
-    node.removeClass('dim-impact');
-    if (id === selection.selected.id) {
-      node.addClass('selected-impact');
-    } else if (selection.siblings.has(id)) {
-      node.addClass('sibling-impact');
-    } else {
-      node.addClass('impacted-impact');
-    }
-  });
-
-  impactCy.edges().forEach(edge => {
-    if (highlighted.has(edge.source().id()) && highlighted.has(edge.target().id())) {
-      edge.removeClass('dim-edge').addClass('active-edge');
-    }
-  });
-}
-
-function renderImpactGraph(selection) {
-  destroyDetailCy();
-  destroySdpGraphCy();
-  destroyImpactCy();
-  impactCy = cytoscape({
-    container: document.getElementById('impact-cy'),
-    elements: buildImpactElements(),
-    layout: { name: 'preset', positions: {} },
-    style: [
-      {
-        selector: 'node',
-        style: {
-          'label': 'data(label)',
-          'shape': 'data(shape)',
-          'background-color': 'data(color)',
-          'border-width': 2,
-          'border-style': 'data(borderStyle)',
-          'border-color': '#a89784',
-          'color': '#1f1a14',
-          'font-size': 10,
-          'text-wrap': 'wrap',
-          'text-max-width': 'data(textMaxWidth)',
-          'text-valign': 'center',
-          'text-halign': 'center',
-          'text-outline-width': 2,
-          'text-outline-color': '#fbf8f3',
-          'width': 'data(nodeWidth)',
-          'height': 'data(nodeHeight)',
-          'cursor': 'pointer',
-          'opacity': 1
-        }
-      },
-      {
-        selector: 'edge',
-        style: {
-          'curve-style': 'bezier',
-          'width': 1.8,
-          'line-color': '#a89784',
-          'target-arrow-color': '#a89784',
-          'target-arrow-shape': 'triangle',
-          'opacity': 0.35
-        }
-      },
-      {
-        selector: 'node.base-impact',
-        style: {
-          'opacity': 1
-        }
-      },
-      {
-        selector: 'node.dim-impact',
-        style: {
-          'opacity': 0.15
-        }
-      },
-      {
-        selector: 'node.selected-impact',
-        style: {
-          'opacity': 1,
-          'border-color': '#b45309',
-          'border-width': 4
-        }
-      },
-      {
-        selector: 'node.impacted-impact',
-        style: {
-          'opacity': 1,
-          'border-color': '#b91c1c',
-          'border-width': 3
-        }
-      },
-      {
-        selector: 'node.sibling-impact',
-        style: {
-          'opacity': 1,
-          'border-color': '#7a3a8a',
-          'border-width': 3
-        }
-      },
-      {
-        selector: 'edge.active-edge',
-        style: {
-          'opacity': 0.75
-        }
-      },
-      {
-        selector: 'edge.dim-edge',
-        style: {
-          'opacity': 0.1
-        }
-      }
-    ]
-  });
-  impactCy.on('tap', 'node', evt => {
-    selectImpactObject(evt.target.data('id'));
-  });
-  applyImpactLifecycleVisibility();
-  applyImpactStyles(selection);
-  rerunImpactLayout();
-}
-
-function runImpactAnalysis(id) {
-  impactSelectedId = id;
-  renderImpactView();
-}
-
-function selectImpactObject(id, promoteToSearch = false) {
-  if (promoteToSearch && objectLookup[id]) {
-    impactSearchTerm = objectLookup[id].name;
-  }
-  runImpactAnalysis(id);
-}
-
-function renderImpactView() {
-  currentMode = 'impact';
-  executiveDrilldown = null;
-  syncHashForImpactView();
-  const selection = impactSelectedId ? computeImpactSelection(impactSelectedId) : { selected: null, impacted: new Set(), siblings: new Set(), supported: false };
-  renderSidebarContent(sidebarMarkup(impactSidebarMarkup(selection)));
-  pageRoot.innerHTML = `
-    <div class="view-shell">
-      ${topNavMarkup()}
-      <section class="impact-graph-card">
-        <div class="impact-graph-top">
-          <h3 style="margin:0">Impact Graph</h3>
-          ${lifecycleFilterButtonsMarkup()}
-        </div>
-        <div id="impact-cy"></div>
-      </section>
-    </div>
-  `;
-
-  attachTopNavHandlers();
-  const searchInput = document.getElementById('impact-search');
-  if (searchInput) {
-    searchInput.addEventListener('input', event => {
-      impactSearchTerm = event.target.value;
-      const cursorStart = event.target.selectionStart ?? impactSearchTerm.length;
-      const cursorEnd = event.target.selectionEnd ?? impactSearchTerm.length;
-      renderImpactView();
-      const refreshedInput = document.getElementById('impact-search');
-      if (refreshedInput) {
-        refreshedInput.focus();
-        refreshedInput.setSelectionRange(cursorStart, cursorEnd);
-      }
-    });
-    searchInput.addEventListener('keydown', event => {
-      if (event.key === 'Enter') {
-        const firstMatch = allObjects.find(object => deployableTypes.has(object.type) && objectSearchText(object).includes(impactSearchTerm.toLowerCase()));
-        if (firstMatch) {
-          runImpactAnalysis(firstMatch.id);
-        }
-      }
-    });
-  }
-  pageRoot.querySelectorAll('[data-impact-select]').forEach(item => {
-    item.addEventListener('click', () => {
-      selectImpactObject(item.dataset.impactSelect);
-    });
-    item.addEventListener('dblclick', () => {
-      selectImpactObject(item.dataset.impactSelect, true);
-    });
-  });
-  pageRoot.querySelectorAll('[data-impact-lifecycle]').forEach(button => {
-    button.addEventListener('click', () => {
-      const status = button.dataset.impactLifecycle;
-      impactLifecycleFilters[status] = !impactLifecycleFilters[status];
-      renderImpactView();
-    });
-  });
-  renderImpactGraph(selection);
-  attachSidebarHandlers();
-}
-
 // ── Sidebar navigation ──────────────────────────────────────────────────
 const SIDEBAR_NAV_ITEMS = [
   { id: 'executive',      label: 'Overview',        icon: '⊞' },
   { id: 'list',           label: 'Drafting Table',  icon: '▤' },
-  { id: 'impact',         label: 'Impact Analysis', icon: '◎' },
   { section: true,        label: 'Tools' },
   { id: 'acceptable-use', label: 'Acceptable Use',  icon: '✓' },
   { id: 'object-types',   label: 'Object Types',    icon: '⬡' },
@@ -7075,7 +6571,6 @@ function initSidebarNav() {
       else if (navId === 'list') { destroyImpactCy(); renderListView(); }
       else if (navId === 'object-types') { destroyImpactCy(); renderObjectTypesView(); }
       else if (navId === 'onboarding') { destroyImpactCy(); renderCompanyOnboardingView(); }
-      else if (navId === 'impact') { renderImpactView(); }
       else if (navId === 'acceptable-use') { destroyImpactCy(); renderAcceptableUseView(); }
     });
   });
@@ -7088,7 +6583,6 @@ let paletteItems = [];
 const PALETTE_VIEWS = [
   { id: 'executive',      label: 'Go to Overview',        icon: '⊞' },
   { id: 'list',           label: 'Go to Drafting Table',  icon: '▤' },
-  { id: 'impact',         label: 'Go to Impact Analysis', icon: '◎' },
   { id: 'acceptable-use', label: 'Go to Acceptable Use',  icon: '✓' },
   { id: 'object-types',   label: 'Go to Object Types',    icon: '⬡' },
   { id: 'onboarding',     label: 'Go to Onboarding',      icon: '◉' },
