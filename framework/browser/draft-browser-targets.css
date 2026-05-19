@@ -118,6 +118,37 @@
   margin-bottom: 4px;
 }
 
+/* Map preset toggle buttons */
+.dt-map-presets {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.dt-map-preset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 13px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.dt-map-preset-btn:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+.dt-map-preset-btn.is-active {
+  background: var(--accent);
+  border-color: transparent;
+  color: #fff;
+}
+
 .dt-view .dt-map-container {
   position: relative;
   width: 100%;

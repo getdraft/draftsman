@@ -66,7 +66,35 @@ let _dtResizeObserver = null;
 let _dtWorldData      = null;
 let _dtWorldPromise   = null;
 let _dtMapSize        = { w: 900, h: 450 };
+let _dtMapPreset      = 'world';   // 'world' | 'north-america'
 let _dtEscHandler     = null;
+
+// Map preset definitions — bounding polygons used with projection.fitExtent()
+const DT_MAP_PRESETS = {
+  'world': {
+    label: 'World',
+    icon: '🌍',
+    // Full sphere — use Sphere sentinel so Natural Earth renders cleanly
+    fitTarget: () => ({ type: 'Sphere' }),
+    graticuleStep: [20, 20],
+  },
+  'north-america': {
+    label: 'N. America',
+    icon: '🌎',
+    // Bounding polygon: west -170°, east -50°, south 10°, north 75°
+    fitTarget: () => ({
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [[
+          [-170, 10], [-50, 10], [-50, 75], [-170, 75], [-170, 10],
+        ]],
+      },
+      properties: {},
+    }),
+    graticuleStep: [10, 10],
+  },
+};
 // ───────────────────────────────────────────────────────────────────────────
 
 const DEPLOYABLE_OBJECT_TYPES = [
@@ -2417,13 +2445,13 @@ function _dtDrawMap() {
     return;
   }
 
+  const preset = DT_MAP_PRESETS[_dtMapPreset] || DT_MAP_PRESETS['world'];
   const projection = d3.geoNaturalEarth1()
-    .fitSize([w - 16, h - 16], { type: 'Sphere' })
-    .precision(0.1)
-    .translate([w / 2, h / 2 - 6]);
+    .fitExtent([[8, 8], [w - 8, h - 8]], preset.fitTarget())
+    .precision(0.1);
 
   const pathGen = d3.geoPath(projection);
-  const graticule = d3.geoGraticule().step([20, 20])();
+  const graticule = d3.geoGraticule().step(preset.graticuleStep)();
   const spherePath = pathGen({ type: 'Sphere' }) || '';
   const graticulePath = pathGen(graticule) || '';
 
@@ -2437,7 +2465,10 @@ function _dtDrawMap() {
   const mapTargets = _dtProviderFilter ? allGeo.filter(t => _dtProviderFilter.has(t.provider)) : allGeo;
   const clusters = _dtBuildClusters(mapTargets, projection);
 
-  const markerSvg = clusters.map((c, i) => {
+  // Only render clusters whose projected position falls within the viewport (± 20 px margin).
+  const visibleClusters = clusters.filter(c => c.x >= -20 && c.x <= w + 20 && c.y >= -20 && c.y <= h + 20);
+
+  const markerSvg = visibleClusters.map((c, i) => {
     const isActive = c.targets.some(t => t.id === _dtActiveId);
     const dimmed = _dtActiveId != null && !isActive;
     const prov = c.targets[0].provider || 'unknown';
@@ -2463,7 +2494,7 @@ function _dtDrawMap() {
     `<div id="dt-map-tooltip" class="dt-map-tooltip" style="display:none;position:absolute;pointer-events:none"></div>`;
 
   container.querySelectorAll('.dt-marker').forEach((el, i) => {
-    const c = clusters[i];
+    const c = visibleClusters[i];
     if (!c) return;
     el.addEventListener('mouseenter', e => _dtShowTooltip(e, c, container));
     el.addEventListener('mousemove',  e => _dtShowTooltip(e, c, container));
@@ -2714,6 +2745,19 @@ function attachDtHandlers() {
     if (typeChip) { _dtTypeFilter = typeChip.dataset.dtType; _dtRerender(); return; }
     const statusChip = e.target.closest('[data-dt-status]');
     if (statusChip) { _dtStatusFilter = statusChip.dataset.dtStatus; _dtRerender(); return; }
+    const presetBtn = e.target.closest('[data-dt-preset]');
+    if (presetBtn) {
+      const pid = presetBtn.dataset.dtPreset;
+      if (pid in DT_MAP_PRESETS && pid !== _dtMapPreset) {
+        _dtMapPreset = pid;
+        // Update active state on buttons
+        document.querySelectorAll('[data-dt-preset]').forEach(b => {
+          b.classList.toggle('is-active', b.dataset.dtPreset === pid);
+        });
+        _dtDrawMap();
+      }
+      return;
+    }
     const legendItem = e.target.closest('[data-dt-legend]');
     if (legendItem) {
       const pid = legendItem.dataset.dtLegend;
@@ -2755,6 +2799,9 @@ function renderDeploymentTargetsView() {
   if (_dtEscHandler) { document.removeEventListener('keydown', _dtEscHandler); _dtEscHandler = null; }
   _dtQuery = ''; _dtTypeFilter = 'all'; _dtStatusFilter = 'all';
   _dtProviderFilter = null; _dtActiveId = null;
+  _dtMapPreset = (browserData.browserConfig?.defaultMapView in DT_MAP_PRESETS
+    ? browserData.browserConfig.defaultMapView
+    : 'world');
 
   syncHashForDeploymentTargetsView();
   renderSidebarContent('');
@@ -2783,6 +2830,11 @@ function renderDeploymentTargetsView() {
             <div>
               <span class="eyebrow">Geographic footprint</span>
               <h2>Deployment map</h2>
+            </div>
+            <div class="dt-map-presets" id="dt-map-presets">
+              ${Object.entries(DT_MAP_PRESETS).map(([id, cfg]) =>
+                `<button class="dt-map-preset-btn${_dtMapPreset === id ? ' is-active' : ''}" data-dt-preset="${escapeHtml(id)}">${escapeHtml(cfg.icon)} ${escapeHtml(cfg.label)}</button>`
+              ).join('')}
             </div>
           </div>
           <div class="dt-map-container" id="dt-map-container">

@@ -168,6 +168,25 @@ def load_workspace_requirements(workspace_root: Path) -> dict[str, Any]:
     }
 
 
+def load_workspace_browser_config(workspace_root: Path) -> dict[str, Any]:
+    """Read optional [browser] section from workspace.yaml and return config dict."""
+    config_path = workspace_root / ".draft" / "workspace.yaml"
+    defaults: dict[str, Any] = {"defaultMapView": "world"}
+    if not config_path.exists():
+        return defaults
+    try:
+        data = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+    except Exception:
+        return defaults
+    browser = data.get("browser") if isinstance(data, dict) else None
+    if not isinstance(browser, dict):
+        return defaults
+    cfg = dict(defaults)
+    if browser.get("defaultMapView") in ("world", "north-america"):
+        cfg["defaultMapView"] = browser["defaultMapView"]
+    return cfg
+
+
 def load_workspace_business_taxonomy(workspace_root: Path) -> dict[str, Any]:
     config_path = workspace_root / ".draft" / "workspace.yaml"
     if not config_path.exists():
@@ -765,6 +784,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
         "requirements": build_requirement_payload(registry, workspace_root),
         "vocabulary": load_workspace_vocabulary(workspace_root),
         "businessTaxonomy": load_workspace_business_taxonomy(workspace_root),
+        "browserConfig": load_workspace_browser_config(workspace_root),
         "repoUrl": repository_web_url(workspace_root) or repository_web_url(REPO_ROOT),
         "catalogName": workspace_repository_name(workspace_root),
         "logoDataUri": logo_data_uri(),
