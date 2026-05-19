@@ -207,7 +207,7 @@
     <aside class="sidebar">
       <a class="back-link" href="index.html">Back to catalog</a>
       <h1>DRAFT User Manual</h1>
-      <p>Generated 2026-05-19 from the framework-owned Markdown source.</p>
+      <p>Generated 2026-05-18 from the framework-owned Markdown source.</p>
       <nav class="toc" aria-label="Table of contents">
         <a class="level-2" href="#start-here">Start Here</a>
 <a class="level-2" href="#setup-mode">Setup Mode</a>
@@ -226,6 +226,7 @@
 <a class="level-2" href="#dependency-rationale-rule">Dependency Rationale Rule</a>
 <a class="level-2" href="#validation">Validation</a>
 <a class="level-2" href="#browser-and-generated-docs">Browser And Generated Docs</a>
+<a class="level-3" href="#map-presets">Map Presets</a>
 <a class="level-2" href="#ai-assistant-usage">AI Assistant Usage</a>
 <a class="level-2" href="#review-checklist">Review Checklist</a>
 <a class="level-2" href="#troubleshooting">Troubleshooting</a>
@@ -366,6 +367,15 @@ python framework/tools/generate_ai_index.py</code></pre>
   --accent-soft: rgba(0, 94, 184, 0.12);
   --blue: #0072ce;
 }</code></pre>
+<h3 id="map-presets">Map Presets</h3>
+<p>The Deployment Targets view renders an interactive world map. A workspace can configure which map view opens by default and users can switch between presets with the toggle buttons in the view header.</p>
+<p>Available presets:</p>
+<table><thead><tr><th>Preset ID</th><th>Label</th><th>When to use</th></tr></thead><tbody><tr><td><code>world</code></td><td>🌍 World</td><td>Organizations with global or multi-continent deployments (default)</td></tr><tr><td><code>north-america</code></td><td>🌎 N. America</td><td>Organizations whose infrastructure is entirely in North America</td></tr></tbody></table>
+<p>Both presets use the same topojson data and projection — the North America preset zooms the map to the region bounded roughly by 50 °W–170 °W / 10 °N–75 °N so that US, Canadian, and Caribbean clusters are easier to read.</p>
+<p>To set the default for a workspace, add a <code>browser</code> section to <code>workspace.yaml</code>:</p>
+<pre><code class="language-yaml">browser:
+  defaultMapView: north-america   # or &#x27;world&#x27; (the default when this key is absent)</code></pre>
+<p>The generator validates the value and falls back to <code>world</code> for unrecognized preset IDs. Users can always switch presets at any time using the toggle; the choice resets to the workspace default the next time the view is entered.</p>
 <p>GitHub Actions workflows typically regenerate derived docs on pushes that change YAML, framework docs, templates, the browser generator, AI bootstrap files, or README content. Check the local <code>.github/workflows/</code> files for the exact path filters in a given repo.</p>
 <h2 id="ai-assistant-usage">AI Assistant Usage</h2>
 <p>DRAFT is AI-first, but AI behavior depends on the tool being used. An AI assistant can act as the Draftsman only when it has repository access, can read the bootstrap files, and has permission to write changes.</p>

@@ -361,6 +361,28 @@ Example:
 }
 ```
 
+### Map Presets
+
+The Deployment Targets view renders an interactive world map. A workspace can configure which map view opens by default and users can switch between presets with the toggle buttons in the view header.
+
+Available presets:
+
+| Preset ID | Label | When to use |
+|---|---|---|
+| `world` | 🌍 World | Organizations with global or multi-continent deployments (default) |
+| `north-america` | 🌎 N. America | Organizations whose infrastructure is entirely in North America |
+
+Both presets use the same topojson data and projection — the North America preset zooms the map to the region bounded roughly by 50 °W–170 °W / 10 °N–75 °N so that US, Canadian, and Caribbean clusters are easier to read.
+
+To set the default for a workspace, add a `browser` section to `workspace.yaml`:
+
+```yaml
+browser:
+  defaultMapView: north-america   # or 'world' (the default when this key is absent)
+```
+
+The generator validates the value and falls back to `world` for unrecognized preset IDs. Users can always switch presets at any time using the toggle; the choice resets to the workspace default the next time the view is entered.
+
 GitHub Actions workflows typically regenerate derived docs on pushes that change YAML, framework docs, templates, the browser generator, AI bootstrap files, or README content. Check the local `.github/workflows/` files for the exact path filters in a given repo.
 
 ## AI Assistant Usage
