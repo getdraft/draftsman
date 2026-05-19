@@ -182,7 +182,7 @@ def load_workspace_browser_config(workspace_root: Path) -> dict[str, Any]:
     if not isinstance(browser, dict):
         return defaults
     cfg = dict(defaults)
-    if browser.get("defaultMapView") in ("world", "north-america"):
+    if browser.get("defaultMapView") in ("world", "north-america", "europe", "asia"):
         cfg["defaultMapView"] = browser["defaultMapView"]
     return cfg
 

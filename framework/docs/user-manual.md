@@ -369,8 +369,10 @@ Available presets:
 
 | Preset ID | Label | When to use |
 |---|---|---|
-| `world` | 🌍 World | Organizations with global or multi-continent deployments (default) |
+| `world` | 🌐 World | Organizations with global or multi-continent deployments (default) |
 | `north-america` | 🌎 N. America | Organizations whose infrastructure is entirely in North America |
+| `europe` | 🌍 Europe | Organizations whose infrastructure is primarily in Europe |
+| `asia` | 🌏 Asia | Organizations whose infrastructure is primarily in Asia-Pacific |
 
 Both presets use the same topojson data and projection — the North America preset zooms the map to the region bounded roughly by 50 °W–170 °W / 10 °N–75 °N so that US, Canadian, and Caribbean clusters are easier to read.
 

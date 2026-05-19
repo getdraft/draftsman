@@ -77,7 +77,7 @@ let _dtEscHandler     = null;
 const DT_MAP_PRESETS = {
   'world': {
     label: 'World',
-    icon: '🌍',
+    icon: '🌐',
     buildProjection: (w, h) =>
       d3.geoNaturalEarth1()
         .fitExtent([[8, 8], [w - 8, h - 8]], { type: 'Sphere' })
@@ -88,15 +88,50 @@ const DT_MAP_PRESETS = {
     label: 'N. America',
     icon: '🌎',
     buildProjection: (w, h) => {
-      // Start from the world-fit projection so the scale factor is always
-      // relative to the actual viewport, then zoom 2.5× and re-centre on
-      // [-100 °, 45 °] — a good visual centre for North America.
       const base = d3.geoNaturalEarth1()
         .fitExtent([[8, 8], [w - 8, h - 8]], { type: 'Sphere' });
       const ws = base.scale();
       const [wtx, wty] = base.translate();
       const [cx, cy] = base([-100, 45]);
       const f = 2.5;
+      return d3.geoNaturalEarth1()
+        .scale(ws * f)
+        .translate([w / 2 - f * (cx - wtx), h / 2 - f * (cy - wty)])
+        .precision(0.1);
+    },
+    graticuleStep: [10, 10],
+  },
+  'europe': {
+    label: 'Europe',
+    icon: '🌍',
+    buildProjection: (w, h) => {
+      // 3.5× zoom, centred on [15°E, 52°N] — shows UK through western Russia
+      // and from Scandinavia to the Mediterranean.
+      const base = d3.geoNaturalEarth1()
+        .fitExtent([[8, 8], [w - 8, h - 8]], { type: 'Sphere' });
+      const ws = base.scale();
+      const [wtx, wty] = base.translate();
+      const [cx, cy] = base([15, 52]);
+      const f = 3.5;
+      return d3.geoNaturalEarth1()
+        .scale(ws * f)
+        .translate([w / 2 - f * (cx - wtx), h / 2 - f * (cy - wty)])
+        .precision(0.1);
+    },
+    graticuleStep: [10, 10],
+  },
+  'asia': {
+    label: 'Asia',
+    icon: '🌏',
+    buildProjection: (w, h) => {
+      // 2.3× zoom, centred on [95°E, 35°N] — shows Middle East through Japan
+      // and from Russia's south to the Indonesian archipelago.
+      const base = d3.geoNaturalEarth1()
+        .fitExtent([[8, 8], [w - 8, h - 8]], { type: 'Sphere' });
+      const ws = base.scale();
+      const [wtx, wty] = base.translate();
+      const [cx, cy] = base([95, 35]);
+      const f = 2.3;
       return d3.geoNaturalEarth1()
         .scale(ws * f)
         .translate([w / 2 - f * (cx - wtx), h / 2 - f * (cy - wty)])

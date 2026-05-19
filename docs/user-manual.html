@@ -207,7 +207,7 @@
     <aside class="sidebar">
       <a class="back-link" href="index.html">Back to catalog</a>
       <h1>DRAFT User Manual</h1>
-      <p>Generated 2026-05-19 from the framework-owned Markdown source.</p>
+      <p>Generated 2026-05-18 from the framework-owned Markdown source.</p>
       <nav class="toc" aria-label="Table of contents">
         <a class="level-2" href="#start-here">Start Here</a>
 <a class="level-2" href="#setup-mode">Setup Mode</a>
@@ -370,7 +370,7 @@ python framework/tools/generate_ai_index.py</code></pre>
 <h3 id="map-presets">Map Presets</h3>
 <p>The Deployment Targets view renders an interactive world map. A workspace can configure which map view opens by default and users can switch between presets with the toggle buttons in the view header.</p>
 <p>Available presets:</p>
-<table><thead><tr><th>Preset ID</th><th>Label</th><th>When to use</th></tr></thead><tbody><tr><td><code>world</code></td><td>🌍 World</td><td>Organizations with global or multi-continent deployments (default)</td></tr><tr><td><code>north-america</code></td><td>🌎 N. America</td><td>Organizations whose infrastructure is entirely in North America</td></tr></tbody></table>
+<table><thead><tr><th>Preset ID</th><th>Label</th><th>When to use</th></tr></thead><tbody><tr><td><code>world</code></td><td>🌐 World</td><td>Organizations with global or multi-continent deployments (default)</td></tr><tr><td><code>north-america</code></td><td>🌎 N. America</td><td>Organizations whose infrastructure is entirely in North America</td></tr><tr><td><code>europe</code></td><td>🌍 Europe</td><td>Organizations whose infrastructure is primarily in Europe</td></tr><tr><td><code>asia</code></td><td>🌏 Asia</td><td>Organizations whose infrastructure is primarily in Asia-Pacific</td></tr></tbody></table>
 <p>Both presets use the same topojson data and projection — the North America preset zooms the map to the region bounded roughly by 50 °W–170 °W / 10 °N–75 °N so that US, Canadian, and Caribbean clusters are easier to read.</p>
 <p>To set the default for a workspace, add a <code>browser</code> section to <code>workspace.yaml</code>:</p>
 <pre><code class="language-yaml">browser:
