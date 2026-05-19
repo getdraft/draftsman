@@ -4,10 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DRAFT Framework Toolkit</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.29.2/cytoscape.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <!-- defer lets the browser download all scripts in parallel while HTML renders -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.29.2/cytoscape.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <!-- preload world atlas so it's already in-flight before the JS asks for it -->
+  <link rel="preload" href="assets/world-atlas/countries-110m.json" as="fetch" crossorigin="anonymous">
   <style>
     /* IBM Plex — self-hosted for deployment consistency */
     @font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-style: normal; font-display: swap;
@@ -55,7 +58,12 @@
       </div>
     </aside>
     <main class="main">
-      <div id="page-root"></div>
+      <div id="page-root">
+        <div class="catalog-loading">
+          <div class="catalog-loading-spinner"></div>
+          <span>Loading catalog…</span>
+        </div>
+      </div>
     </main>
   </div>
   <div id="editor-overlay" class="editor-overlay"></div>
@@ -74,7 +82,7 @@
       </div>
     </div>
   </div>
-  <script src="assets/browser-data.js"></script>
-  <script src="assets/draft-browser.js"></script>
+  <script defer src="assets/browser-data.js"></script>
+  <script defer src="assets/draft-browser.js"></script>
 </body>
 </html>
