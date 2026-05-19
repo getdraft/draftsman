@@ -2407,12 +2407,29 @@ function _dtFilteredTargets() {
 function _dtLoadWorld() {
   if (_dtWorldData) return Promise.resolve(_dtWorldData);
   if (_dtWorldPromise) return _dtWorldPromise;
+
+  // Return cached topojson from sessionStorage if available (avoids refetch
+  // on every in-session navigation to the Deployment Targets view).
+  const CACHE_KEY = 'draft-world-atlas-v2';
+  let cachedJson = null;
+  try { cachedJson = sessionStorage.getItem(CACHE_KEY); } catch (_) {}
+  if (cachedJson) {
+    try {
+      const world = JSON.parse(cachedJson);
+      _dtWorldData = topojson.feature(world, world.objects.countries);
+      return (_dtWorldPromise = Promise.resolve(_dtWorldData));
+    } catch (_) {
+      try { sessionStorage.removeItem(CACHE_KEY); } catch (_2) {}
+    }
+  }
+
   const local = 'assets/world-atlas/countries-110m.json';
   const cdn = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
   _dtWorldPromise = fetch(local)
     .catch(() => fetch(cdn))
     .then(r => r.json())
     .then(world => {
+      try { sessionStorage.setItem(CACHE_KEY, JSON.stringify(world)); } catch (_) {}
       _dtWorldData = topojson.feature(world, world.objects.countries);
       return _dtWorldData;
     });
@@ -6831,3 +6848,9 @@ window.addEventListener('hashchange', () => {
 initSidebarNav();
 initPalette();
 applyRouteFromHash();
+
+// Warm up the world-atlas fetch in the background so the map is ready
+// immediately when the user navigates to the Deployment Targets view.
+if (typeof topojson !== 'undefined') {
+  _dtLoadWorld().catch(() => {});
+}
