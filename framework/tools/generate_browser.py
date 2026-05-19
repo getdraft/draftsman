@@ -795,6 +795,7 @@ BROWSER_DATA_OUTPUT_NAME = "browser-data.js"
 BROWSER_ASSET_OUTPUT_DIR = "assets"
 BROWSER_ASSET_ROOT = FRAMEWORK_ROOT / "browser"
 BROWSER_INDEX_TEMPLATE_PATH = BROWSER_ASSET_ROOT / "index.template.html"
+USER_MANUAL_TEMPLATE_PATH = BROWSER_ASSET_ROOT / "user-manual.html"
 BROWSER_STATIC_ASSET_NAMES = ("draft-browser.css", "draft-browser-sdp.css", "draft-browser-targets.css", "draft-browser.js")
 BROWSER_STATIC_FONT_DIR = "fonts"
 WORKSPACE_THEME_OUTPUT_NAME = "workspace-theme.css"
@@ -1302,6 +1303,16 @@ def write_markdown_page(source_path: Path, output_path: Path, fallback_title: st
 
 
 def write_user_manual(source_path: Path, output_path: Path) -> bool:
+    """Copy the pre-built user manual HTML template to the output path.
+
+    Falls back to Markdown rendering if the HTML template is not present
+    (preserves backward compatibility for workspaces that vendor an older
+    framework without the template file).
+    """
+    if USER_MANUAL_TEMPLATE_PATH.exists():
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(USER_MANUAL_TEMPLATE_PATH, output_path)
+        return True
     return write_markdown_page(source_path, output_path, "DRAFT User Manual")
 
 
@@ -1326,7 +1337,9 @@ def main(argv: list[str] | None = None) -> int:
         print(warning, file=sys.stderr)
     print(f"Generated {display_path(output_path)} with {len(payload['objects'])} objects.")
     if manual_generated:
-        print(f"Generated {display_path(manual_output_path)} from {display_path(USER_MANUAL_SOURCE_PATH)}.")
+        template_used = USER_MANUAL_TEMPLATE_PATH if USER_MANUAL_TEMPLATE_PATH.exists() else USER_MANUAL_SOURCE_PATH
+        verb = "Copied" if USER_MANUAL_TEMPLATE_PATH.exists() else "Generated"
+        print(f"{verb} {display_path(manual_output_path)} from {display_path(template_used)}.")
     if vocabulary_generated:
         print(f"Generated {display_path(vocabulary_output_path)} from {display_path(COMPANY_VOCABULARY_SOURCE_PATH)}.")
     return 0
