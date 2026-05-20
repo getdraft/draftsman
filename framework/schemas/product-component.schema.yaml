@@ -7,6 +7,7 @@ requiredFields:
 - name
 - repoUrl
 - owner
+- runsOn
 - classification
 - catalogStatus
 - lifecycleStatus
@@ -16,7 +17,6 @@ optionalFields:
 - version
 - tags
 - language
-- runtimeRequirement
 - interfaces
 - networkBindings
 - environmentConfiguration
@@ -45,6 +45,7 @@ enumFields:
 fieldTypes:
   aliases: list
   owner: dict
+  runsOn: str
   tags: list
   interfaces: list
   networkBindings: list
@@ -162,9 +163,9 @@ fieldDescriptions:
   name: Use a clear human-readable name for this component.
   repoUrl: Record the source repository URL where this component's code is maintained.
   owner: Declare the team that authors and maintains this component.
+  runsOn: Reference the RuntimeService, Host, or EdgeGatewayService UID this component is deployed on within its Software Deployment Pattern. A ProductComponent with no runsOn is orphaned.
   classification: Choose the one classification that best describes this component's role.
   language: Record the primary programming language or platform (e.g., TypeScript, Python, Java, Go, .NET).
-  runtimeRequirement: Record the runtime version or platform this component requires (e.g., Node 20, Python 3.12, Java 17, .NET 8).
   interfaces: List the APIs, events, or protocol surfaces this component exposes, when defined by the component itself.
   networkBindings: List ports this component opens as defined by its own configuration, not by the runtime infrastructure.
   environmentConfiguration: List environment variables or configuration keys this component requires at runtime.

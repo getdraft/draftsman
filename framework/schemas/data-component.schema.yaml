@@ -7,6 +7,7 @@ requiredFields:
 - name
 - repoUrl
 - owner
+- runsOn
 - targetEngine
 - dataClassification
 - containsPII
@@ -55,6 +56,7 @@ enumFields:
 fieldTypes:
   aliases: list
   owner: dict
+  runsOn: str
   tags: list
   tables: list
   storedProcedures: list
@@ -144,6 +146,7 @@ fieldDescriptions:
   name: Use a clear human-readable name for this data component.
   repoUrl: Record the source repository URL where this component's schemas, migrations, and jobs are maintained.
   owner: Declare the team that owns and maintains this data component.
+  runsOn: Reference the DataStoreService UID this component deploys onto. A DataComponent with no runsOn is orphaned.
   targetEngine: Declare the database engine this component targets.
   dataClassification: Declare the sensitivity classification of the data this component contains.
   containsPII: Set true when this component contains or processes personally identifiable information.
