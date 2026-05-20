@@ -48,6 +48,8 @@ CATALOG_FOLDERS = [
     "hosts",
     "runtime-services",
     "data-at-rest-services",
+    "product-components",
+    "data-components",
     "product-services",
     "decision-records",
     "objects",
