@@ -2051,6 +2051,17 @@ def validate_standard(
         target = catalog_by_id.get(runs_on) if runs_on else None
         if runs_on and (not target or target.get("type") not in STANDARD_TYPES):
             failures.append(f"{path}: runsOn references unknown deployable object '{runs_on}'")
+    if object_type == "product_component":
+        runs_on = obj.get("runsOn")
+        target = catalog_by_id.get(runs_on) if runs_on else None
+        allowed = {"host", "runtime_service", "edge_gateway_service"}
+        if runs_on and (not target or target.get("type") not in allowed):
+            failures.append(f"{path}: runsOn must reference a Host, RuntimeService, or EdgeGatewayService (got '{runs_on}')")
+    if object_type == "data_component":
+        runs_on = obj.get("runsOn")
+        target = catalog_by_id.get(runs_on) if runs_on else None
+        if runs_on and (not target or target.get("type") != "data_at_rest_service"):
+            failures.append(f"{path}: runsOn must reference a DataStoreService (got '{runs_on}')")
     if object_type in SERVICE_TYPES and obj.get("deliveryModel") == "saas":
         if "dataLeavesInfrastructure" in obj and not isinstance(obj.get("dataLeavesInfrastructure"), bool):
             failures.append(f"{path}: dataLeavesInfrastructure must be true or false")
