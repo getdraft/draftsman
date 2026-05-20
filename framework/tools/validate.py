@@ -3020,6 +3020,8 @@ def main(argv: list[str] | None = None) -> int:
     validate_workspace_vocabulary_references(objects, workspace_vocabulary, failures, warnings)
 
     for path, obj in objects.items():
+        if obj.get("type") is None:
+            continue
         if obj.get("type") == "vocabulary":
             validate_vocabulary_document(obj, path, failures, warnings)
             continue
