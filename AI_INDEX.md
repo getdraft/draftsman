@@ -84,14 +84,14 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 |---|---|---|
 | framework/schemas/capability.schema.yaml | capability | schemaVersion, uid, type, name, description, catalogStatus, definitionOwner, domain, implementations |
 | framework/schemas/data-at-rest-service.schema.yaml | data_at_rest_service | schemaVersion, uid, type, name, deliveryModel, catalogStatus, lifecycleStatus |
-| framework/schemas/data-component.schema.yaml | data_component | schemaVersion, uid, type, name, repoUrl, owner, targetEngine, dataClassification, containsPII, catalogStatus, lifecycleStatus |
+| framework/schemas/data-component.schema.yaml | data_component | schemaVersion, uid, type, name, repoUrl, owner, runsOn, targetEngine, dataClassification, containsPII, catalogStatus, lifecycleStatus |
 | framework/schemas/decision-record.schema.yaml | decision_record | schemaVersion, uid, type, name, category, status, catalogStatus, lifecycleStatus |
 | framework/schemas/domain.schema.yaml | domain | schemaVersion, uid, type, name, capabilities |
 | framework/schemas/drafting-session.schema.yaml | drafting_session | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus, sessionStatus, primaryObjectType, sourceArtifacts, generatedObjects, unresolvedQuestions |
 | framework/schemas/edge-gateway-service.schema.yaml | edge_gateway_service | schemaVersion, uid, type, name, deliveryModel, catalogStatus, lifecycleStatus |
 | framework/schemas/host.schema.yaml | host | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus |
 | framework/schemas/object-patch.schema.yaml | object_patch | schemaVersion, uid, type, name, target, patch, catalogStatus, lifecycleStatus |
-| framework/schemas/product-component.schema.yaml | product_component | schemaVersion, uid, type, name, repoUrl, owner, classification, catalogStatus, lifecycleStatus |
+| framework/schemas/product-component.schema.yaml | product_component | schemaVersion, uid, type, name, repoUrl, owner, runsOn, classification, catalogStatus, lifecycleStatus |
 | framework/schemas/product-service.schema.yaml | product_service | schemaVersion, uid, type, name, product, runsOn, catalogStatus, lifecycleStatus |
 | framework/schemas/reference-architecture.schema.yaml | reference_architecture | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus |
 | framework/schemas/requirement-group.schema.yaml | requirement_group | schemaVersion, uid, type, name, description, catalogStatus, owner, activation, appliesTo, requirements |
