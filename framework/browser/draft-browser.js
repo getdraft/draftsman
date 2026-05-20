@@ -148,17 +148,19 @@ const DEPLOYABLE_OBJECT_TYPES = [
   'runtime_service',
   'data_at_rest_service',
   'edge_gateway_service',
+  'product_component',
+  'data_component',
   'product_service',
   'software_deployment_pattern'
 ];
 const SERVICE_OBJECT_TYPES = ['runtime_service', 'data_at_rest_service', 'edge_gateway_service'];
-const DEPLOYABLE_STANDARD_TYPES = ['host', 'runtime_service', 'data_at_rest_service', 'edge_gateway_service', 'product_service'];
+const DEPLOYABLE_STANDARD_TYPES = ['host', 'runtime_service', 'data_at_rest_service', 'edge_gateway_service', 'product_component', 'data_component', 'product_service'];
 const CATEGORY_CONFIG = [
   {
     id: 'architecture',
     label: 'Architecture Content',
     filters: [
-      { id: 'all', label: 'All', types: ['software_deployment_pattern', 'reference_architecture', 'host', 'runtime_service', 'data_at_rest_service', 'edge_gateway_service', 'product_service'] },
+      { id: 'all', label: 'All', types: ['software_deployment_pattern', 'reference_architecture', 'host', 'runtime_service', 'data_at_rest_service', 'edge_gateway_service', 'product_component', 'data_component', 'product_service'] },
       { id: 'software_deployment_pattern', label: 'Software Deployment Patterns', types: ['software_deployment_pattern'] },
       { id: 'reference_architecture', label: 'Reference Architectures', types: ['reference_architecture'] },
       { id: 'deployable_objects', label: 'Deployable Objects', types: DEPLOYABLE_STANDARD_TYPES }
@@ -170,6 +172,8 @@ const CATEGORY_CONFIG = [
       { id: 'runtime_service', label: 'Runtime Services', types: ['runtime_service'] },
       { id: 'data_at_rest_service', label: 'Data-at-Rest Services', types: ['data_at_rest_service'] },
       { id: 'edge_gateway_service', label: 'Edge/Gateway Services', types: ['edge_gateway_service'] },
+      { id: 'product_component', label: 'Product Components', types: ['product_component'] },
+      { id: 'data_component', label: 'Data Components', types: ['data_component'] },
       { id: 'product_service', label: 'Product Services', types: ['product_service'] }
     ]
   },
@@ -210,6 +214,8 @@ const deployableTypes = new Set([
   'runtime_service',
   'data_at_rest_service',
   'edge_gateway_service',
+  'product_component',
+  'data_component',
   'product_service'
 ]);
 let activeCategory = 'architecture';
@@ -1752,7 +1758,9 @@ function executiveStats() {
     runtimeServices: allObjects.filter(object => object.type === 'runtime_service').length,
     dataAtRestServices: allObjects.filter(object => object.type === 'data_at_rest_service').length,
     edgeGatewayServices: allObjects.filter(object => object.type === 'edge_gateway_service').length,
-    productServices: allObjects.filter(object => object.type === 'product_service').length
+    productServices: allObjects.filter(object => object.type === 'product_service').length,
+    productComponents: allObjects.filter(object => object.type === 'product_component').length,
+    dataComponents: allObjects.filter(object => object.type === 'data_component').length
   };
   return {
     objectCount: allObjects.length,
@@ -2954,13 +2962,15 @@ function renderDeploymentTargetsView() {
 }
 
 // ── Shared team helpers ─────────────────────────────────────────────
-const TEAM_TYPES = ['software_deployment_pattern','reference_architecture','runtime_service','data_at_rest_service','edge_gateway_service','product_service','host'];
+const TEAM_TYPES = ['software_deployment_pattern','reference_architecture','runtime_service','data_at_rest_service','edge_gateway_service','product_component','data_component','product_service','host'];
 const TEAM_TYPE_LABELS = {
   software_deployment_pattern: 'Deployment Patterns',
   reference_architecture: 'Reference Architectures',
   runtime_service: 'Runtime Services',
   data_at_rest_service: 'Data-at-Rest Services',
   edge_gateway_service: 'Edge / Gateway Services',
+  product_component: 'Product Components',
+  data_component: 'Data Components',
   product_service: 'Product Services',
   host: 'Hosts',
 };
@@ -2970,6 +2980,8 @@ const TEAM_TYPE_ICONS = {
   runtime_service: '⚙️',
   data_at_rest_service: '🗄',
   edge_gateway_service: '🌐',
+  product_component: '📦',
+  data_component: '🗃',
   product_service: '📦',
   host: '🖥',
 };
@@ -3297,7 +3309,7 @@ function renderExecutiveView() {
   const targetSet = new Set();
   sdps.forEach(sdp => (sdp.serviceGroups || []).forEach(sg => { if (sg.deploymentTarget) targetSet.add(sg.deploymentTarget); }));
   const teamSet = new Set();
-  const TEAM_TYPES_EXEC = new Set(['software_deployment_pattern','reference_architecture','runtime_service','data_at_rest_service','edge_gateway_service','product_service','host']);
+  const TEAM_TYPES_EXEC = new Set(['software_deployment_pattern','reference_architecture','runtime_service','data_at_rest_service','edge_gateway_service','product_component','data_component','product_service','host']);
   (browserData.objects || []).filter(o => TEAM_TYPES_EXEC.has(o.type)).forEach(obj => {
     const t = obj.owner?.team || obj.definitionOwner?.team;
     if (t) teamSet.add(t);
@@ -3391,10 +3403,16 @@ const OBJECT_TYPE_GUIDE = {
       deployableRole: 'Deploys traffic control behavior at a product or network boundary.'
     },
     {
-      type: 'product_service',
-      label: 'Product Service',
-      purpose: 'A first-party custom binary or black-box service that runs on a selected deployable object.',
-      deployableRole: 'Deploys company-authored application behavior.'
+      type: 'product_component',
+      label: 'Product Component',
+      purpose: 'A first-party code repository or deployable unit owned by a product team.',
+      deployableRole: 'Deploys company-authored application behavior on a Runtime Service.'
+    },
+    {
+      type: 'data_component',
+      label: 'Data Component',
+      purpose: 'A first-party data artifact such as a schema, migration set, or data pipeline owned by a product team.',
+      deployableRole: 'Deploys company-owned data artifacts on a Data-at-Rest Service.'
     },
     {
       type: 'software_deployment_pattern',
