@@ -23,6 +23,7 @@ optionalFields:
 - decisionRecords
 - requirementGroups
 - requirementImplementations
+- tierVariants
 enumFields:
   catalogStatus:
   - stub
@@ -82,6 +83,7 @@ architecturalDecisions:
   decisionRecords: list
   requirementGroups: list
   requirementImplementations: list
+  tierVariants: list
 collectionSchemas:
   scalingUnits: scalingUnit
   networkZones: networkZone
@@ -89,6 +91,7 @@ collectionSchemas:
   externalInteractions: externalInteraction
   decisionRecords: decisionRecordRef
   requirementImplementations: requirementImplementation
+  tierVariants: tierVariant
 scalingUnit:
   requiredFields:
   - name
@@ -247,6 +250,74 @@ requirementImplementation:
     - field
   fieldTypes:
     criteria: dict
+tierVariant:
+  requiredFields:
+  - tier
+  optionalFields:
+  - deploymentTarget
+  - serviceGroupVariants
+  - notes
+  fieldTypes:
+    deploymentTarget: dict
+    serviceGroupVariants: list
+  collectionSchemas:
+    serviceGroupVariants: serviceGroupVariant
+  deploymentTarget:
+    requiredFields:
+    - provider
+    optionalFields:
+    - region
+    enumFields:
+      provider:
+      - aws
+      - azure
+      - gcp
+      - on-premises
+      - other
+    fieldDescriptions:
+      provider: Cloud or infrastructure provider for this tier's deployment target.
+      region: >
+        Provider region or datacenter identifier (e.g. us-east-1, eastus). Omit when
+        region is pipeline-controlled or not yet decided.
+  fieldDescriptions:
+    tier: UID of the environment_tier object this variant applies to.
+    deploymentTarget: >
+      Provider and optional region where this SDP deploys for this environment tier.
+      Captures the architectural decision (e.g. "we deploy to AWS us-east-1 in prod")
+      without encoding operational values like account IDs — those belong in the
+      parameterSurface of the environment_tier.
+    serviceGroupVariants: >
+      List of per-service-group architectural deltas that apply in this tier. Omit
+      service groups whose architecture is identical across tiers.
+    notes: Free-text notes about architectural choices specific to this tier.
+serviceGroupVariant:
+  requiredFields:
+  - serviceGroup
+  optionalFields:
+  - replicaCount
+  - autoscaling
+  - notes
+  fieldTypes:
+    autoscaling: dict
+  autoscaling:
+    requiredFields:
+    - enabled
+    optionalFields:
+    - min
+    - max
+    fieldDescriptions:
+      enabled: Whether autoscaling is active for this service group in this tier.
+      min: Minimum replica count when autoscaling is enabled.
+      max: Maximum replica count when autoscaling is enabled.
+  fieldDescriptions:
+    serviceGroup: >
+      Name of the serviceGroup declared on this SDP whose replica or scaling behavior
+      differs in this tier from the default.
+    replicaCount: >
+      Static replica count for this service group in this tier. Omit when autoscaling
+      is enabled or when the default (typically 1) applies.
+    autoscaling: Autoscaling configuration for this service group in this tier.
+    notes: Notes on why this service group behaves differently in this tier.
 aiHint: A Software Deployment Pattern describes intended product deployment architecture in terms of deployable objects, topology, decisions, and risks.
 fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
@@ -257,4 +328,9 @@ fieldDescriptions:
   businessContext: Use workspace-defined business taxonomy values, especially businessContext.pillar, to identify which company portfolio or pillar owns this deployment pattern.
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name, product-name, or taxonomy changes.
   aliases: List prior or alternate human-readable names that should resolve to this object.
+  tierVariants: >
+    Per-environment-tier architectural declarations for this SDP. Each entry references
+    an environment_tier UID and captures where this SDP deploys (provider + region) and
+    how individual service groups differ (replica count, autoscaling) in that tier.
+    Approved SDPs should have a tierVariant for every active environment tier.
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$

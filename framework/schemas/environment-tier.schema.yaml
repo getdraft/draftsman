@@ -1,0 +1,102 @@
+schemaVersion: '1.0'
+type: environment_tier
+requiredFields:
+- schemaVersion
+- uid
+- type
+- name
+- tierId
+- purpose
+- availabilityExpectation
+- catalogStatus
+optionalFields:
+- description
+- costPosture
+- complianceScope
+- parameterSurface
+- notes
+enumFields:
+  catalogStatus:
+  - stub
+  - draft
+  - approved
+  purpose:
+  - development
+  - test
+  - staging
+  - production
+  - other
+  availabilityExpectation:
+  - best-effort
+  - business-hours
+  - high-availability
+  - mission-critical
+  costPosture:
+  - cost-optimized
+  - balanced
+  - performance-optimized
+fieldTypes:
+  complianceScope: list
+  parameterSurface: list
+collectionSchemas:
+  parameterSurface: tierParameter
+tierParameter:
+  requiredFields:
+  - name
+  optionalFields:
+  - description
+  - required
+  - sensitive
+  fieldTypes:
+    required: bool
+    sensitive: bool
+  fieldDescriptions:
+    name: >
+      Machine-readable parameter name that the CI/CD pipeline is expected to supply
+      for this tier (e.g. awsAccountId, vpcId, deployRoleArn). Use camelCase.
+    description: Human-readable description of what this parameter controls or where it comes from.
+    required: >
+      Whether the pipeline must supply this parameter for deployments to this tier.
+      Defaults to true. Set false for optional enrichment parameters.
+    sensitive: >
+      Whether this parameter carries a secret or credential that should not be
+      logged or stored in plaintext. Defaults to false.
+aiHint: >
+  An EnvironmentTier is a company-standard template for a deployment environment
+  class (e.g. dev, test, staging, production). It declares the intended availability
+  posture, cost posture, compliance scope (which requirement groups apply), and the
+  parameter surface the CI/CD pipeline must supply. EnvironmentTier objects live in
+  configurations/environment-tiers/ and are referenced by SDP tierVariants.
+fieldDescriptions:
+  schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
+  type: Use the exact object type declared by the matching schema.
+  name: Human-readable display name for this environment tier (e.g. "Production", "Staging").
+  uid: Use the generated opaque UID for object identity. Do not edit it for display-name changes.
+  tierId: >
+    Short machine-readable slug identifying this tier (e.g. dev, test, staging, prod).
+    Used as the key when CI/CD pipelines select tier-specific parameters. Lowercase,
+    no spaces.
+  purpose: >
+    Broad classification of this tier's role in the delivery lifecycle. Use development
+    for inner-loop dev environments, test for automated integration/QA environments,
+    staging for pre-production validation, production for live customer-facing workloads,
+    and other for specialty tiers (demo, load-test, etc.).
+  availabilityExpectation: >
+    Company-standard availability posture expected for workloads in this tier.
+    best-effort = no SLA, failures tolerated; business-hours = availability during
+    working hours only; high-availability = 99.9%+ with automated recovery;
+    mission-critical = 99.95%+ with near-zero RTO.
+  costPosture: >
+    Guidance on how cost-vs-performance trade-offs should be made for resources in
+    this tier. cost-optimized = minimize spend (spot instances, right-sizing, scale-to-zero);
+    balanced = moderate spend with reliable performance; performance-optimized = prioritize
+    latency and throughput over cost.
+  complianceScope: >
+    List of requirement group UIDs whose controls must be satisfied for deployments to
+    this tier. Used to gate SDP approval against tier-appropriate requirement groups.
+  parameterSurface: >
+    Ordered list of parameters the CI/CD pipeline must supply when deploying to this
+    tier. Declares the contract between DRAFT and the pipeline — DRAFT owns the names
+    and semantics, the pipeline owns the values.
+  notes: Free-text notes or caveats about this tier definition.
+uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$

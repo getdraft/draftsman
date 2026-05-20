@@ -2293,6 +2293,85 @@ def validate_software_deployment_pattern(
             warnings,
         )
 
+    tier_variants = obj.get("tierVariants", [])
+    if tier_variants is not None:
+        if not isinstance(tier_variants, list):
+            failures.append(f"{path}: tierVariants must be a list")
+        else:
+            seen_tiers: set[str] = set()
+            service_group_names = {
+                g.get("name")
+                for g in (obj.get("serviceGroups") or [])
+                if isinstance(g, dict) and g.get("name")
+            }
+            for idx, variant in enumerate(tier_variants):
+                if not isinstance(variant, dict):
+                    failures.append(f"{path}: tierVariants[{idx}] must be a mapping")
+                    continue
+                tier_ref = variant.get("tier")
+                if not tier_ref:
+                    failures.append(f"{path}: tierVariants[{idx}] missing required field 'tier'")
+                else:
+                    tier_obj = catalog_by_id.get(str(tier_ref))
+                    if not tier_obj:
+                        failures.append(f"{path}: tierVariants[{idx}].tier '{tier_ref}' does not reference a known object")
+                    elif tier_obj.get("type") != "environment_tier":
+                        failures.append(f"{path}: tierVariants[{idx}].tier '{tier_ref}' must reference an environment_tier object (got '{tier_obj.get('type')}')")
+                    else:
+                        tier_id = tier_obj.get("uid")
+                        if tier_id in seen_tiers:
+                            failures.append(f"{path}: tierVariants contains duplicate entry for tier '{tier_ref}'")
+                        seen_tiers.add(tier_id)
+                dt = variant.get("deploymentTarget")
+                if dt is not None:
+                    if not isinstance(dt, dict):
+                        failures.append(f"{path}: tierVariants[{idx}].deploymentTarget must be a mapping")
+                    elif not dt.get("provider"):
+                        failures.append(f"{path}: tierVariants[{idx}].deploymentTarget missing required field 'provider'")
+                sgv_list = variant.get("serviceGroupVariants", [])
+                if sgv_list is not None:
+                    if not isinstance(sgv_list, list):
+                        failures.append(f"{path}: tierVariants[{idx}].serviceGroupVariants must be a list")
+                    else:
+                        for sgv_idx, sgv in enumerate(sgv_list):
+                            if not isinstance(sgv, dict):
+                                failures.append(f"{path}: tierVariants[{idx}].serviceGroupVariants[{sgv_idx}] must be a mapping")
+                                continue
+                            sg_name = sgv.get("serviceGroup")
+                            if not sg_name:
+                                failures.append(f"{path}: tierVariants[{idx}].serviceGroupVariants[{sgv_idx}] missing required field 'serviceGroup'")
+                            elif service_group_names and sg_name not in service_group_names:
+                                failures.append(f"{path}: tierVariants[{idx}].serviceGroupVariants[{sgv_idx}].serviceGroup '{sg_name}' does not match any declared serviceGroup name")
+                            auto = sgv.get("autoscaling")
+                            if auto is not None:
+                                if not isinstance(auto, dict):
+                                    failures.append(f"{path}: tierVariants[{idx}].serviceGroupVariants[{sgv_idx}].autoscaling must be a mapping")
+                                elif "enabled" not in auto:
+                                    failures.append(f"{path}: tierVariants[{idx}].serviceGroupVariants[{sgv_idx}].autoscaling missing required field 'enabled'")
+
+
+def validate_environment_tier(obj: dict[str, Any], path: Path, failures: list[str], warnings: list[str]) -> None:
+    tier_id = obj.get("tierId")
+    if not is_non_empty(tier_id):
+        failures.append(f"{path}: environment_tier missing required field 'tierId'")
+    elif not str(tier_id).islower() or " " in str(tier_id):
+        warnings.append(f"{path}: tierId '{tier_id}' should be lowercase with no spaces (e.g. 'prod', 'staging')")
+    param_surface = obj.get("parameterSurface", [])
+    if param_surface is not None:
+        if not isinstance(param_surface, list):
+            failures.append(f"{path}: parameterSurface must be a list")
+        else:
+            for idx, param in enumerate(param_surface):
+                if not isinstance(param, dict):
+                    failures.append(f"{path}: parameterSurface[{idx}] must be a mapping")
+                    continue
+                if not is_non_empty(param.get("name")):
+                    failures.append(f"{path}: parameterSurface[{idx}] missing required field 'name'")
+                for bool_field in ("required", "sensitive"):
+                    val = param.get(bool_field)
+                    if val is not None and not isinstance(val, bool):
+                        failures.append(f"{path}: parameterSurface[{idx}].{bool_field} must be true or false")
+
 
 def validate_decision_record(obj: dict[str, Any], path: Path, failures: list[str], warnings: list[str]) -> None:
     if obj.get("category") == "decision" and not is_non_empty(obj.get("decisionRationale")):
@@ -3061,6 +3140,8 @@ def main(argv: list[str] | None = None) -> int:
             )
         if obj.get("type") == "decision_record":
             validate_decision_record(obj, path, failures, warnings)
+        if obj.get("type") == "environment_tier":
+            validate_environment_tier(obj, path, failures, warnings)
         if obj.get("type") == "drafting_session":
             validate_drafting_session(
                 obj,

@@ -546,6 +546,9 @@ def type_label_for(obj: dict[str, Any]) -> str:
         return f"Data Component / {engine}" if engine else "Data Component"
     if obj["type"] == "domain":
         return "Strategy Domain"
+    if obj["type"] == "environment_tier":
+        purpose = str(obj.get("purpose", "")).replace("-", " ").title()
+        return f"Environment Tier / {purpose}" if purpose else "Environment Tier"
     return str(obj.get("type", "unknown")).replace("_", " ").title()
 
 
@@ -731,6 +734,13 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
                 "networkZones": obj.get("networkZones", []),
                 "sdpConnections": build_sdp_connections(obj) if obj.get("type") == "software_deployment_pattern" else [],
                 "serviceGroups": obj.get("serviceGroups", []),
+                "tierVariants": obj.get("tierVariants", []),
+                "tierId": obj.get("tierId", ""),
+                "purpose": obj.get("purpose", ""),
+                "availabilityExpectation": obj.get("availabilityExpectation", ""),
+                "costPosture": obj.get("costPosture", ""),
+                "complianceScope": obj.get("complianceScope", []),
+                "parameterSurface": obj.get("parameterSurface", []),
                 "followsReferenceArchitecture": obj.get("followsReferenceArchitecture", ""),
                 "decisionRecords": obj.get("decisionRecords", []),
                 "affectedComponent": obj.get("affectedComponent", ""),
