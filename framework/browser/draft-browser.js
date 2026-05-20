@@ -191,6 +191,17 @@ const CATEGORY_CONFIG = [
     ]
   },
   {
+    id: 'workspace',
+    label: 'Workspace Configuration',
+    filters: [
+      { id: 'all', label: 'All', types: ['environment_tier'] },
+      { id: 'environment_tier', label: 'Environment Tiers', types: ['environment_tier'] }
+    ],
+    rows: [
+      { id: 'environment_tier', label: 'Environment Tiers', types: ['environment_tier'] }
+    ]
+  },
+  {
     id: 'framework',
     label: 'Framework Content',
     filters: [
@@ -1760,7 +1771,8 @@ function executiveStats() {
     edgeGatewayServices: allObjects.filter(object => object.type === 'edge_gateway_service').length,
     productServices: allObjects.filter(object => object.type === 'product_service').length,
     productComponents: allObjects.filter(object => object.type === 'product_component').length,
-    dataComponents: allObjects.filter(object => object.type === 'data_component').length
+    dataComponents: allObjects.filter(object => object.type === 'data_component').length,
+    environmentTiers: allObjects.filter(object => object.type === 'environment_tier').length
   };
   return {
     objectCount: allObjects.length,
@@ -3428,7 +3440,8 @@ const OBJECT_TYPE_GUIDE = {
     { type: 'reference_architecture', label: 'Reference Architecture', purpose: 'Documents a reusable deployment approach that Software Deployment Patterns may follow.' },
     { type: 'decision_record', label: 'Decision Record', purpose: 'Records an architecture decision, risk, exception, or rationale.' },
     { type: 'drafting_session', label: 'Drafting Session', purpose: 'Stores interview memory, assumptions, unresolved questions, and generated work while drafting.' },
-    { type: 'object_patch', label: 'Object Patch', purpose: 'A workspace overlay that changes selected fields on a framework-owned object without copying the full object.' }
+    { type: 'object_patch', label: 'Object Patch', purpose: 'A workspace overlay that changes selected fields on a framework-owned object without copying the full object.' },
+    { type: 'environment_tier', label: 'Environment Tier', purpose: 'Defines a company-standard deployment environment class (e.g. dev, staging, production) with availability posture, cost posture, compliance scope, and the parameter surface the CI/CD pipeline must supply.' }
   ]
 };
 
@@ -5710,6 +5723,7 @@ function _sdpSectionNavMarkup(vm, object) {
     { id: 'sdp-s-groups',      label: 'Service Groups' },
     { id: 'sdp-s-decisions',   label: 'Decisions' },
     { id: 'sdp-s-connections', label: 'Connections', skip: !vm.connections.length },
+    { id: 'sdp-s-tiers',       label: 'Tier Variants', skip: !(object.tierVariants && object.tierVariants.length) },
     { id: 'sdp-s-metadata',    label: 'Metadata' }
   ].filter(s => !s.skip);
   return `<nav class="section-nav" id="sdp-section-nav">${sections.map((s, i) =>
@@ -6072,6 +6086,59 @@ function _sdpConnectionsTableMarkup(vm) {
 }
 
 // ── Metadata section ──────────────────────────────────────────────────────────
+function _sdpTierVariantsMarkup(object) {
+  const variants = object.tierVariants || [];
+  if (!variants.length) return '';
+  const allTiers = (browserData.objects || []).filter(o => o.type === 'environment_tier');
+  const tierLookup = Object.fromEntries(allTiers.map(t => [t.id || t.uid, t]));
+  const purposeIcon = { development: '🔧', test: '🧪', staging: '🚦', production: '🏭', other: '🔹' };
+
+  const variantCards = variants.map(v => {
+    const tierRef = v.tier;
+    const tierObj = tierLookup[tierRef];
+    const tierName = tierObj ? escapeHtml(tierObj.name) : escapeHtml(tierRef || 'Unknown Tier');
+    const tierId = tierObj ? escapeHtml(tierObj.tierId || '') : '';
+    const purpose = tierObj?.purpose || '';
+    const icon = purposeIcon[purpose] || '🔹';
+    const dt = v.deploymentTarget;
+    const dtHtml = dt
+      ? `<div class="interaction-notes">${escapeHtml(dt.provider)}${dt.region ? ` / ${escapeHtml(dt.region)}` : ''}</div>`
+      : '';
+    const sgv = v.serviceGroupVariants || [];
+    const sgvHtml = sgv.length ? `
+      <table class="def-table" style="margin-top:0.5rem">
+        <thead><tr><th>Service Group</th><th>Replicas</th><th>Autoscaling</th></tr></thead>
+        <tbody>
+          ${sgv.map(s => {
+            const auto = s.autoscaling;
+            const autoText = auto
+              ? (auto.enabled ? `enabled (${auto.min ?? '?'}–${auto.max ?? '?'})` : 'disabled')
+              : '—';
+            return `<tr>
+              <td>${escapeHtml(s.serviceGroup || '')}</td>
+              <td>${s.replicaCount != null ? escapeHtml(String(s.replicaCount)) : '—'}</td>
+              <td>${escapeHtml(autoText)}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>` : '';
+    return `<article class="odc-card">
+      <div class="odc-name">${icon} ${tierName}${tierId ? ` <span class="badge">${tierId}</span>` : ''}</div>
+      ${dtHtml}
+      ${sgvHtml}
+      ${v.notes ? `<div class="interaction-notes">${escapeHtml(v.notes)}</div>` : ''}
+    </article>`;
+  }).join('');
+
+  return `<div class="sdp-section" id="sdp-s-tiers">
+    <div class="section-head"><div>
+      <span class="eyebrow">05 — Environment Tiers</span>
+      <h2>Tier Variants</h2>
+    </div></div>
+    <div class="section-stack">${variantCards}</div>
+  </div>`;
+}
+
 function _sdpMetadataMarkup(object) {
   const tags = object.tags || [];
   const refArch = object.followsReferenceArchitecture;
@@ -6097,7 +6164,7 @@ function _sdpMetadataMarkup(object) {
 
   return `<div class="sdp-section" id="sdp-s-metadata">
     <div class="section-head"><div>
-      <span class="eyebrow">05 — Metadata</span>
+      <span class="eyebrow">06 — Metadata</span>
       <h2>Metadata</h2>
     </div></div>
     <div class="ref-grid">${cardsHtml}</div>
@@ -6133,6 +6200,7 @@ function _sdpDetailMarkup(object) {
       ${_sdpGroupsMarkup(object, vm)}
       ${_sdpDecisionsMarkup(object)}
       ${_sdpConnectionsTableMarkup(vm)}
+      ${_sdpTierVariantsMarkup(object)}
       ${_sdpMetadataMarkup(object)}
       ${_sdpDrawerMarkup()}
     </div>`,
