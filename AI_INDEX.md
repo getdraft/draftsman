@@ -228,12 +228,14 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | templates/runtime-service.yaml.tmpl | Reusable YAML authoring template. |
 | templates/software-deployment-pattern.yaml.tmpl | Reusable YAML authoring template. |
 | templates/technology-component.yaml.tmpl | Reusable YAML authoring template. |
+| templates/workspace/.cursor/rules/draftsman.mdc.tmpl | Reusable YAML authoring template. |
 | templates/workspace/.draft/framework.lock.tmpl | Reusable YAML authoring template. |
 | templates/workspace/.draft/workspace.yaml.tmpl | Reusable YAML authoring template. |
 | templates/workspace/.github/copilot-instructions.md.tmpl | Copilot Instructions |
 | templates/workspace/.github/workflows/draft-framework-update.yml.tmpl | Reusable YAML authoring template. |
 | templates/workspace/.github/workflows/draft-vocabulary-proposals.yml.tmpl | DRAFT Vocabulary Proposal PRs |
 | templates/workspace/.gitignore.tmpl | Reusable YAML authoring template. |
+| templates/workspace/.windsurfrules.tmpl | DRAFT Draftsman |
 | templates/workspace/AGENTS.md.tmpl | AI Agent Instructions |
 | templates/workspace/CLAUDE.md.tmpl | Claude Instructions |
 | templates/workspace/GEMINI.md.tmpl | Gemini Instructions |
