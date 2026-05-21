@@ -4645,10 +4645,14 @@ function objectIconDataUri(svgMarkup, cls) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(source)}`;
 }
 
-function topologyNodeIcon(entry, objectType = 'host') {
+function topologyNodeIcon(entry, objectType = 'host', options = {}) {
   const ref = entry.ref || '';
   const object = objectLookup[ref];
-  const serviceObject = object?.type === 'product_component' && object?.runsOn ? objectLookup[object.runsOn] : object;
+  // For product_components, resolve the host from runsOn first, then fall back to the
+  // serviceGroup substrate passed in from the caller.
+  const hostObject = object?.type === 'product_component'
+    ? (object?.runsOn ? objectLookup[object.runsOn] : (options.substrateObj || null))
+    : object;
   if (objectType === 'appliance') {
     const caps = object?.capabilities || [];
     if (caps.some(c => ['file-storage', 'data-persistence', 'storage'].includes(c))) return { icon: objectIconSvg('database'), cls: 'data' };
@@ -4658,13 +4662,13 @@ function topologyNodeIcon(entry, objectType = 'host') {
   if (object?.type === 'host') return { icon: objectIconSvg('monitor'), cls: 'host' };
   if (object?.deliveryModel === 'saas') return { icon: objectIconSvg('cloud'), cls: 'cloud' };
   if (object?.deliveryModel === 'paas') return { icon: objectIconSvg('cloud'), cls: 'cloud' };
-  if (object?.type === 'product_component' && isContainerHostObject(objectLookup[object?.runsOn])) {
+  if (object?.type === 'product_component' && isContainerHostObject(hostObject)) {
     return { icon: objectIconSvg('container'), cls: 'pod' };
   }
   if (object?.type === 'product_component') return { icon: objectIconSvg('code'), cls: 'product' };
   if (object?.type === 'edge_gateway_service') return { icon: objectIconSvg('gateway'), cls: 'gateway' };
-  if (serviceObject?.type === 'data_store_service') return { icon: objectIconSvg('database'), cls: 'data' };
-  if (serviceObject?.type === 'runtime_service') return { icon: objectIconSvg('gear'), cls: 'runtime' };
+  if (hostObject?.type === 'data_store_service') return { icon: objectIconSvg('database'), cls: 'data' };
+  if (hostObject?.type === 'runtime_service') return { icon: objectIconSvg('gear'), cls: 'runtime' };
   return { icon: objectIconSvg('gear'), cls: 'runtime' };
 }
 
@@ -4749,8 +4753,9 @@ function topologyNodeMarkup(entry, options = {}) {
     intent = entry.intent || '',
     badgeLabel = '',
     scalingUnit = '',
+    substrateObj = null,
   } = options;
-  const icon = topologyNodeIcon(entry, objectType);
+  const icon = topologyNodeIcon(entry, objectType, { substrateObj });
   const targetId = entry.ref || '';
   const classes = ['topology-node'];
   if (objectType === 'product') classes.push('ps-node');
@@ -4773,6 +4778,12 @@ function topologyNodeMarkup(entry, options = {}) {
   `;
 }
 
+const SUBSTRATE_TYPE_LABELS = {
+  runtime_service:    'runtime',
+  host:               'host',
+  edge_gateway_service: 'edge/gateway',
+};
+
 function serviceGroupSectionMarkup(group, tier) {
   const scalingUnit = group.scalingUnit || '';
   const accent = colorForToken(scalingUnit || group.name || tier);
@@ -4780,6 +4791,10 @@ function serviceGroupSectionMarkup(group, tier) {
     group.deploymentTarget || 'Unspecified deployment target',
     scalingUnit || 'No scaling unit'
   ].join(' • ');
+
+  const substrateObj = group.substrate ? objectLookup[group.substrate] : null;
+  const substrateTypeLabel = substrateObj ? (SUBSTRATE_TYPE_LABELS[substrateObj.type] || substrateObj.type) : '';
+
   const topologyNodes = [];
 
   (group.deployableObjects || [])
@@ -4789,14 +4804,19 @@ function serviceGroupSectionMarkup(group, tier) {
       const deliveryModel = target.deliveryModel || '';
       const objectType = target.type === 'product_component'
         ? 'product'
-        : (deliveryModel === 'paas' ? 'paas' : (deliveryModel === 'saas' ? 'saas' : (deliveryModel === 'appliance' ? 'appliance' : 'host')));
+        : target.type === 'data_component'
+          ? 'product'
+          : (deliveryModel === 'paas' ? 'paas' : (deliveryModel === 'saas' ? 'saas' : (deliveryModel === 'appliance' ? 'appliance' : 'host')));
       const badgeLabel = target.type === 'product_component'
-        ? 'PS'
-        : (deliveryModel === 'paas' ? 'PaaS' : (deliveryModel === 'saas' ? 'SaaS' : (deliveryModel === 'appliance' ? 'APPL' : '')));
+        ? 'PC'
+        : target.type === 'data_component'
+          ? 'DC'
+          : (deliveryModel === 'paas' ? 'PaaS' : (deliveryModel === 'saas' ? 'SaaS' : (deliveryModel === 'appliance' ? 'APPL' : '')));
       topologyNodes.push(topologyNodeMarkup(entry, {
         objectType,
         badgeLabel,
         scalingUnit,
+        substrateObj,
         meta: `${group.name} • ${groupMeta}`
       }));
     });
@@ -4808,8 +4828,16 @@ function serviceGroupSectionMarkup(group, tier) {
   const internalInteractions = (group.externalInteractions || []).filter(item => (item.type || 'external') === 'internal');
   const externalInteractions = (group.externalInteractions || []).filter(item => (item.type || 'external') !== 'internal');
 
+  const substrateBar = substrateObj ? `
+    <div class="service-group-substrate-bar">
+      <span class="substrate-bar-icon">${objectIconSvg('gear')}</span>
+      <span class="substrate-bar-name" ${group.substrate ? `data-object-link="${escapeHtml(group.substrate)}"` : ''}>${escapeHtml(substrateObj.name)}</span>
+      <span class="substrate-bar-type">${escapeHtml(substrateTypeLabel)}</span>
+    </div>
+  ` : '';
+
   return `
-    <section class="service-group-section" style="--scaling-accent:${accent}" ${scalingUnit ? `data-scaling-unit-group="${escapeHtml(scalingUnit)}"` : ''}>
+    <section class="service-group-section${substrateObj ? ' has-substrate' : ''}" style="--scaling-accent:${accent}" ${scalingUnit ? `data-scaling-unit-group="${escapeHtml(scalingUnit)}"` : ''}>
       <div class="service-group-section-header">
         <div class="service-group-section-title">${escapeHtml(group.name || 'Unnamed Service Group')}</div>
         <div class="service-group-section-meta">
@@ -4817,6 +4845,7 @@ function serviceGroupSectionMarkup(group, tier) {
           ${scalingUnit ? `<span class="scaling-unit-badge">${escapeHtml(scalingUnit)}</span>` : '<span class="scaling-unit-badge">unscoped</span>'}
         </div>
       </div>
+      ${substrateBar}
       <div class="node-grid">
         ${topologyNodes.join('')}
       </div>
@@ -4879,6 +4908,24 @@ function buildSdpGraphElements(object) {
   const zones = object.networkZones || [];
   const zoneIds = new Set(zones.map(z => z.id));
 
+  // Build substrate maps: which deployable objects belong to a substrate,
+  // and which zone to place each substrate compound node in.
+  const uidToSubstrate = {};
+  const substrateToZone = {};
+  const substrateUids = new Set();
+  (object.serviceGroups || []).forEach(group => {
+    if (!group.substrate) return;
+    substrateUids.add(group.substrate);
+    (group.deployableObjects || []).forEach(entry => {
+      if (entry.ref) {
+        uidToSubstrate[entry.ref] = group.substrate;
+        if (entry.networkZone && !substrateToZone[group.substrate]) {
+          substrateToZone[group.substrate] = entry.networkZone;
+        }
+      }
+    });
+  });
+
   // Collect all UIDs that appear in connections
   const referencedUids = new Set();
   connections.forEach(conn => {
@@ -4927,10 +4974,29 @@ function buildSdpGraphElements(object) {
     });
   }
 
-  // Service nodes
+  // Substrate compound nodes — rendered inside their zone when one is known.
+  // ProductComponents in the group will be children of these nodes.
+  substrateUids.forEach(substrateUid => {
+    const substrateObj = objectLookup[substrateUid];
+    const substData = {
+      id: `substrate::${substrateUid}`,
+      label: substrateObj ? substrateObj.name : substrateUid,
+      isSubstrate: true,
+      substrateRef: substrateUid,
+    };
+    const zoneId = substrateToZone[substrateUid];
+    if (zoneId && zoneIds.has(zoneId)) {
+      substData.parent = `zone::${zoneId}`;
+    }
+    elements.push({ data: substData, classes: 'substrate-compound' });
+  });
+
+  // Service nodes — substrates are rendered as compound nodes above, not as service nodes.
   nodeUids.forEach(uid => {
+    if (substrateUids.has(uid)) return;
     const obj = objectLookup[uid];
     const tier = uidToTier[uid] || (obj ? (obj.diagramTier || 'unknown') : 'unknown');
+    const substrateUid = uidToSubstrate[uid];
     const zoneMembership = uidToZone[uid];
     const nodeData = {
       id: uid,
@@ -4938,7 +5004,10 @@ function buildSdpGraphElements(object) {
       tier,
       nodeColor: SDP_GRAPH_TIER_COLORS[tier] || SDP_GRAPH_TIER_COLORS.unknown,
     };
-    if (zoneMembership && zoneIds.has(zoneMembership)) {
+    // Prefer substrate containment over zone containment for substrate-group members.
+    if (substrateUid && substrateUids.has(substrateUid)) {
+      nodeData.parent = `substrate::${substrateUid}`;
+    } else if (zoneMembership && zoneIds.has(zoneMembership)) {
       nodeData.parent = `zone::${zoneMembership}`;
     }
     elements.push({ data: nodeData, classes: `tier-${tier}` });
@@ -5050,6 +5119,24 @@ function renderSdpGraph(object) {
           'font-weight': '700',
           'text-margin-y': '10px',
           'padding': '24px',
+        }
+      },
+      {
+        selector: 'node.substrate-compound',
+        style: {
+          'background-color': 'rgba(94,234,212,0.12)',
+          'background-opacity': 1,
+          'border-style': 'solid',
+          'border-width': 1.5,
+          'border-color': 'rgba(94,234,212,0.55)',
+          'label': 'data(label)',
+          'color': '#0e6b62',
+          'text-valign': 'top',
+          'text-halign': 'center',
+          'font-size': '11px',
+          'font-weight': '600',
+          'text-margin-y': '8px',
+          'padding': '20px',
         }
       },
       {
