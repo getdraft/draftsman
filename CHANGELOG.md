@@ -3,6 +3,35 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.16.3 - 2026-05-21
+
+### Compatibility Impact
+
+No migration required. This patch adds command discovery documentation; it does
+not change schemas, validation behavior, or catalog object formats.
+
+### Added
+
+- Added Commands section to `README.md.tmpl` listing `/draftsman`,
+  `/draft-session`, and `/validate-catalog` with human-readable descriptions
+  and a fallback note for tools without slash command support.
+- Added Available Commands section to `AGENTS.md.tmpl` so any AI reading
+  the bootstrap file can surface the command table when users ask what they
+  can do.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Existing workspaces: add a Commands section to `README.md` and an Available
+  Commands section to `AGENTS.md` manually, following the new template content.
+
 ## 0.16.2 - 2026-05-21
 
 ### Compatibility Impact
