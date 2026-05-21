@@ -69,6 +69,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/product-service.md | Product Service | A Product Service represents a first-party custom binary or black-box component |
 | framework/docs/reference-architectures.md | Reference Architectures | A Reference Architecture is a deployment pattern. It tells application |
 | framework/docs/requirement-groups.md | Requirement Groups | A Requirement Group is the unified DRAFT requirement model. It replaces the old |
+| framework/docs/sdp-completion-interview.md | SDP Completion Interview | The SDP Completion Interview is a structured protocol for enriching an existing |
 | framework/docs/security-and-compliance-controls.md | Security And Compliance Requirement Groups | DRAFT treats compliance as an explicitly activated authoring and validation layer. |
 | framework/docs/setup-mode.md | Draftsman Setup Mode | Setup mode is the first-run Draftsman conversation for a company DRAFT |
 | framework/docs/software-deployment-patterns.md | Software Deployment Patterns | A Software Deployment Pattern is a declaration that a specific product is intended |
