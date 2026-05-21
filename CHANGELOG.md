@@ -3,6 +3,95 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.16.0 - 2026-05-21
+
+### Compatibility Impact
+
+This release retires the `product_service` object type and renames
+`data_at_rest_service` to `data_store_service`. Both changes are breaking for
+any catalog that uses these types. Existing `product_service` artifacts must be
+deleted or converted; existing `data_at_rest_service` artifacts must have their
+`type` field changed to `data_store_service` and their folder moved. Requirement
+groups that reference either type must be updated to use `data_store_service` or
+`software_deployment_pattern` as appropriate. No other object types are affected.
+
+### Added
+
+- Added `serviceGroup.substrate` optional field to the
+  `software_deployment_pattern` schema. When set to the UID of a
+  `runtime_service`, `host`, or `edge_gateway_service`, that runtime is rendered
+  as the deployment container for the service group's `product_component` members
+  in both the browser card view and the topology graph, eliminating the need to
+  list the hosting runtime as a separate `deployableObjects` entry.
+- Added `data_store_service` as the canonical object type for persistent data
+  stores, replacing the retired `data_at_rest_service` type.
+- Added new catalog scaffold directories: `catalog/data-store-services/`,
+  `catalog/product-components/`, and `catalog/data-components/`.
+- Added `data-store-service` requirement group covering compliance and
+  availability requirements for persistent data stores.
+- Added substrate compound-node rendering in the SDP topology graph (teal
+  bordered compound node wrapping hosted `product_component` nodes).
+- Added substrate bar UI in the SDP service-group card view showing the hosting
+  runtime name and type.
+
+### Changed
+
+- Renamed object type `data_at_rest_service` → `data_store_service` throughout
+  schemas, validation, browser generation, requirement groups, docs, and
+  templates.
+- Retired `product_service` object type. The SDP `serviceGroup` is now the
+  canonical unit for grouping `product_component` objects within a deployment
+  target and network zone. The `serviceGroup.substrate` field replaces the role
+  `product_service` played as a hosting container.
+- Changed `product_component.runsOn` from required to optional. When every SDP
+  that references a `product_component` declares a `substrate`, `runsOn` may be
+  omitted.
+- Updated all built-in requirement groups to replace `product_service` scope
+  references with `software_deployment_pattern` and `data_at_rest_service`
+  references with `data_store_service`.
+- Updated `validate.py` to recognize `data_store_service` and reject
+  `data_at_rest_service` and `product_service` as unknown types.
+- Updated `generate_browser.py` to scan `catalog/data-store-services/`,
+  `catalog/product-components/`, and `catalog/data-components/` folders.
+- Updated browser JS and CSS to render `product_component` and `data_component`
+  type badges and substrate bars.
+- Updated docs (`object-types.md`, `overview.md`, `user-manual.md`) to reflect
+  the new object model.
+
+### Fixed
+
+- Fixed `validate.py` field-path resolution (`resolve_field_path()`) so the
+  `field` mechanism correctly handles dotted paths (e.g. `owner.team`) and
+  list-probe paths (e.g. `serviceGroups[].connections`).
+- Fixed requirement-group rationale enforcement for `runtime_service` and
+  `data_store_service` internal components: referencing a `product_component` or
+  `data_component` no longer incorrectly demands an architectural rationale.
+- Fixed `software-deployment-pattern.schema.yaml` where `deploymentTarget` was
+  listed in both `requiredFields` and `optionalFields`; it is now correctly
+  listed only in `requiredFields`.
+- Fixed the example OpenStack IaaS SDP to include `diagramTier` on all
+  deployable objects.
+
+### Migration Notes
+
+- **`data_at_rest_service` → `data_store_service`**: Change `type:
+  data_at_rest_service` to `type: data_store_service` in every affected catalog
+  file. Move files from `catalog/data-at-rest-services/` to
+  `catalog/data-store-services/`. Update any requirement groups that reference
+  the old type.
+- **`product_service` retirement**: Delete any `product_service` catalog files.
+  The deployment grouping they represented is now expressed via `serviceGroup`
+  entries in the SDP that references those components. Add a `substrate` field to
+  the relevant `serviceGroup` if you need to capture which runtime hosts the
+  group.
+- **`product_component.runsOn`**: If all SDPs referencing a component now use
+  `serviceGroup.substrate`, the `runsOn` field may be removed from the component.
+  It remains valid and may be kept for components that are referenced outside any
+  SDP `serviceGroup.substrate` context.
+- **Requirement groups**: Search for `product_service` and `data_at_rest_service`
+  scope references and replace with `software_deployment_pattern` and
+  `data_store_service` respectively.
+
 ## 0.13.16 - 2026-05-17
 
 ### Compatibility Impact
