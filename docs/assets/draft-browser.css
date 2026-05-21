@@ -1507,6 +1507,50 @@ html, body {
   color: var(--muted);
   font-size: 14px;
 }
+.service-group-substrate-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(94,234,212,0.08);
+  border: 1px solid rgba(94,234,212,0.25);
+  font-size: 12px;
+}
+.substrate-bar-icon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  color: #5eead4;
+}
+.substrate-bar-icon svg {
+  width: 14px;
+  height: 14px;
+  stroke: #5eead4;
+  fill: none;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  display: block;
+}
+.substrate-bar-name {
+  color: #5eead4;
+  font-weight: 600;
+  cursor: pointer;
+}
+.substrate-bar-name:hover {
+  text-decoration: underline;
+}
+.substrate-bar-type {
+  color: var(--subtle);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-left: auto;
+}
+.service-group-section.has-substrate {
+  border-left-color: rgba(94,234,212,0.55);
+}
 .service-group-section.dimmed {
   opacity: 0.22;
 }

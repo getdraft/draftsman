@@ -1108,7 +1108,7 @@
         <a class="sidebar-sub-link" href="#repo-ownership">Repository ownership</a>
         <a class="sidebar-sub-link" href="#modeling-technology-components">Technology Components</a>
         <a class="sidebar-sub-link" href="#modeling-hosts-services">Hosts and Services</a>
-        <a class="sidebar-sub-link" href="#modeling-product-services">Product Services</a>
+        <a class="sidebar-sub-link" href="#modeling-product-services">ProductComponents</a>
         <a class="sidebar-sub-link" href="#modeling-sdps">Deployment Patterns</a>
         <a class="sidebar-link" href="#part-3b">3b · Requirements</a>
         <a class="sidebar-sub-link" href="#capabilities-requirement-groups">Capabilities &amp; Req Groups</a>
@@ -1186,7 +1186,7 @@
                 <tr>
                   <td>Company architecture</td>
                   <td><code>catalog/</code></td>
-                  <td>Hosts, services, Product Services, Software Deployment Patterns, and other architecture inventory.</td>
+                  <td>Hosts, services, ProductComponents, Software Deployment Patterns, and other architecture inventory.</td>
                 </tr>
                 <tr>
                   <td>Company extensions</td>
@@ -1213,7 +1213,7 @@
               <span class="diagram-sub">UML · framework-generated</span>
             </div>
             <div class="diagram-body">
-              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing architecture objects (Technology Component, Host, Runtime Service, Data-at-Rest Service, Edge/Gateway Service, Product Service, Software Deployment Pattern, Reference Architecture) and governance objects (Capability, Requirement Group, Domain, Decision Record, Drafting Session, Object Patch) and their relationships">
+              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing architecture objects (Technology Component, Host, Runtime Service, DataStoreService, Edge/Gateway Service, ProductComponent, Software Deployment Pattern, Reference Architecture) and governance objects (Capability, Requirement Group, Domain, Decision Record, Drafting Session, Object Patch) and their relationships">
             </div>
           </div>
         </div>
@@ -1385,7 +1385,7 @@
               <span class="diagram-sub">UML · framework-generated</span>
             </div>
             <div class="diagram-body">
-              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing architecture objects (Technology Component, Host, Runtime Service, Data-at-Rest Service, Edge/Gateway Service, Product Service, Software Deployment Pattern, Reference Architecture) and governance objects (Capability, Requirement Group, Domain, Decision Record, Drafting Session, Object Patch) and their relationships">
+              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing architecture objects (Technology Component, Host, Runtime Service, DataStoreService, Edge/Gateway Service, ProductComponent, Software Deployment Pattern, Reference Architecture) and governance objects (Capability, Requirement Group, Domain, Decision Record, Drafting Session, Object Patch) and their relationships">
             </div>
           </div>
         </div>
@@ -1415,7 +1415,7 @@
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Architecture Object</div>
-                <h5>Data-at-Rest Service</h5>
+                <h5>DataStoreService</h5>
                 <p>Durable data behavior such as database, file, object, search, analytics, or storage.</p>
               </div>
               <div class="object-card">
@@ -1425,8 +1425,8 @@
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Architecture Object</div>
-                <h5>Product Service</h5>
-                <p>First-party deployable runtime behavior that runs on a selected Host, Runtime Service, Data-at-Rest Service, Edge/Gateway Service, or equivalent deployable object.</p>
+                <h5>ProductComponent</h5>
+                <p>First-party deployable runtime behavior that runs on a selected Host, Runtime Service, DataStoreService, Edge/Gateway Service, or equivalent deployable object.</p>
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Architecture Object</div>
@@ -1605,7 +1605,7 @@
             tooling.
           </p>
           <p>
-            Runtime Service, Data-at-Rest Service, and Edge/Gateway Service objects describe
+            Runtime Service, DataStoreService, and Edge/Gateway Service objects describe
             reusable behavior delivered through a delivery model:
           </p>
           <ul>
@@ -1620,7 +1620,7 @@
             rationale for the primary component when it is the object core.
           </p>
           <p>
-            Data-at-Rest Services should document backup strategy, backup platform, RTO, and RPO.
+            DataStoreServices should document backup strategy, backup platform, RTO, and RPO.
             Use an external interaction for a separate backup platform, or use
             <code>architecturalDecisions.backup.platform</code> when the backup capability is
             provider-managed inside the service.
@@ -1630,18 +1630,18 @@
         <!-- 3a.7 -->
         <div class="chapter content-col" id="modeling-product-services">
           <div class="chapter-num">3a.7</div>
-          <h3>Modeling Product Services</h3>
+          <h3>Modeling ProductComponents</h3>
           <p>
-            A Product Service represents first-party runtime behavior. It is the place to document
+            A ProductComponent represents first-party runtime behavior. It is the place to document
             company-authored application code or black-box first-party components.
           </p>
-          <p>At minimum, a Product Service needs:</p>
+          <p>At minimum, a ProductComponent needs:</p>
           <dl class="def-list">
             <dt>schemaVersion</dt>
             <dd>Schema version declaration required by all DRAFT objects.</dd>
             <dt>uid</dt>
             <dd>Generated opaque unique identifier — use the repair tool if missing.</dd>
-            <dt>type: product_service</dt>
+            <dt>type: product_component</dt>
             <dd>Object type discriminator that determines which schema and validations apply.</dd>
             <dt>name</dt>
             <dd>Human-readable name used in the catalog browser and cross-references.</dd>
@@ -1654,7 +1654,7 @@
             <dt>lifecycleStatus</dt>
             <dd>The operational lifecycle state of the deployed product service.</dd>
           </dl>
-          <p>Use Product Service fields to document:</p>
+          <p>Use ProductComponent fields to document:</p>
           <ul>
             <li>internal processes such as API, worker, scheduler, conductor, or queue processor</li>
             <li>API or protocol endpoints exposed by those processes</li>
@@ -1667,7 +1667,7 @@
             <span class="callout-badge" aria-hidden="true">⚑</span>
             <div class="callout-content">
               <div class="callout-label">Note</div>
-              <p class="callout-body">Don't elevate static assets, database schemas, build scripts, or simple product configuration to Product Service just because they are deployable by CI/CD. The boundary is first-party runtime behavior that a Software Deployment Pattern needs to communicate.</p>
+              <p class="callout-body">Don't elevate static assets, database schemas, build scripts, or simple product configuration to ProductComponent just because they are deployable by CI/CD. The boundary is first-party runtime behavior that a Software Deployment Pattern needs to communicate.</p>
             </div>
           </div>
         </div>
@@ -1694,7 +1694,7 @@
             <span class="callout-badge" aria-hidden="true">⚑</span>
             <div class="callout-content">
               <div class="callout-label">Note</div>
-              <p class="callout-body">Don't stop when the Software Deployment Pattern validates. Walk the full object graph and make sure every referenced Host, Service, Product Service, Technology Component, and dependency is valid enough for review.</p>
+              <p class="callout-body">Don't stop when the Software Deployment Pattern validates. Walk the full object graph and make sure every referenced Host, Service, ProductComponent, Technology Component, and dependency is valid enough for review.</p>
             </div>
           </div>
         </div>
@@ -1832,7 +1832,7 @@
               <tr>
                 <td>Company architecture</td>
                 <td><code>catalog/</code></td>
-                <td>Hosts, services, Product Services, Software Deployment Patterns, and other architecture inventory.</td>
+                <td>Hosts, services, ProductComponents, Software Deployment Patterns, and other architecture inventory.</td>
               </tr>
               <tr>
                 <td>Company extensions</td>
@@ -2139,7 +2139,7 @@ python framework/tools/generate_ai_index.py</code></pre>
             <li>required schema fields are present</li>
             <li>references point to real objects</li>
             <li>Technology Components are specific enough to govern</li>
-            <li>Product Services represent first-party runtime behavior</li>
+            <li>ProductComponents represent first-party runtime behavior</li>
             <li>Requirement Groups and implementations are coherent</li>
             <li>internal components and external interactions either satisfy requirements or have rationale</li>
             <li>generated docs were regenerated from source</li>

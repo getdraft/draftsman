@@ -1,6 +1,6 @@
 schemaVersion: '1.0'
 uid: STCK000001-DAR1
-type: data_at_rest_service
+type: data_store_service
 name: Nova Database
 description: 'MariaDB database schema dedicated to OpenStack Nova for persisting all
   compute service state. Stores instance records, flavor definitions, host aggregates,

@@ -44,9 +44,8 @@ TYPE_CHECKERS = {
 VALID_REQUIREMENT_SCOPES = {
     "host",
     "runtime_service",
-    "data_at_rest_service",
+    "data_store_service",
     "edge_gateway_service",
-    "product_service",
     "product_component",
     "data_component",
     "reference_architecture",
@@ -68,13 +67,12 @@ VALID_IMPLEMENTATION_STATUSES = {"candidate", "preferred", "existing-only", "dep
 STANDARD_TYPES = {
     "host",
     "runtime_service",
-    "data_at_rest_service",
+    "data_store_service",
     "edge_gateway_service",
-    "product_service",
     "product_component",
     "data_component",
 }
-SERVICE_TYPES = {"runtime_service", "data_at_rest_service", "edge_gateway_service"}
+SERVICE_TYPES = {"runtime_service", "data_store_service", "edge_gateway_service"}
 BUSINESS_PILLAR_ID_PATTERN = re.compile(r"^business-pillar\.[a-z0-9-]+$")
 UID_PATTERN = re.compile(UID_PATTERN_TEXT)
 WORKSPACE_DOCUMENT_TYPES = {"vocabulary", "vocabulary_proposal"}
@@ -1017,10 +1015,48 @@ def vendor_lifecycle_risk_technologies(
     return expired, extended_support
 
 
+def resolve_field_path(node: Any, path: str) -> Any:
+    """Resolve a possibly dotted or list-probe path against a node.
+
+    Supported path forms:
+    - ``"field"`` — simple key lookup in a dict.
+    - ``"parent.child"`` — dotted nested dict lookup.
+    - ``"someList[].field"`` — list-probe: returns True when any list entry
+      at ``someList`` has a non-empty ``field`` value.  Any other value
+      (including the sentinel ``True``) means the list probe matched.
+
+    Returns the resolved value, or ``None`` when the path cannot be followed.
+    When a list-probe pattern is used, returns ``True`` on match and ``None``
+    on no-match so that callers can use ``is_non_empty()`` uniformly.
+    """
+    if "[]." in path:
+        list_key, remainder = path.split("[].", 1)
+        list_val = get_nested_value(node, list_key) if "." in list_key else (node.get(list_key) if isinstance(node, dict) else None)
+        if not isinstance(list_val, list):
+            return None
+        for item in list_val:
+            resolved = resolve_field_path(item, remainder)
+            if is_non_empty(resolved):
+                return True
+        return None
+    if "." in path:
+        return get_nested_value(node, path)
+    if isinstance(node, dict):
+        return node.get(path)
+    return None
+
+
 def mechanism_satisfied(obj: dict[str, Any], mechanism: dict[str, Any], catalog_by_id: dict[str, dict[str, Any]]) -> bool:
     mechanism_type = mechanism.get("mechanism")
     if mechanism_type == "field":
         key = mechanism.get("key", "")
+        if "." in key or "[]" in key:
+            value = resolve_field_path(obj, key)
+            if "equals" in mechanism:
+                return value == mechanism.get("equals")
+            if mechanism.get("allowEmpty") is True:
+                return value is not None
+            return is_non_empty(value)
         if key not in obj:
             return False
         value = obj.get(key)
@@ -1449,6 +1485,18 @@ def validate_unrequired_dependency_rationales(
             if not isinstance(component, dict):
                 continue
             context = f"internalComponents[{index}]"
+            # Gap 5: skip rationale demand when a runtime_service hosts a product_component
+            # or when a data_store_service hosts a data_component — these are natural
+            # engineering-object containment relationships that need no architectural rationale.
+            ref = component.get("ref")
+            host_type = obj.get("type")
+            if is_non_empty(ref):
+                ref_target = catalog_by_id.get(str(ref))
+                if ref_target:
+                    component_type = ref_target.get("type")
+                    if (host_type == "runtime_service" and component_type == "product_component") or \
+                       (host_type == "data_store_service" and component_type == "data_component"):
+                        continue
             satisfies_requirement = any(
                 internal_component_satisfies_mechanism(obj, component, mechanism, catalog_by_id)
                 for _, _, requirement in applicable_requirements
@@ -1457,7 +1505,6 @@ def validate_unrequired_dependency_rationales(
             ) or any(internal_component_satisfies_implementation(obj, component, implementation, catalog_by_id) for implementation in implementations)
             if satisfies_requirement or dependency_rationale_present(obj, "internal", component, context):
                 continue
-            ref = component.get("ref")
             enabled_interaction_has_rationale = (
                 is_non_empty(ref)
                 and isinstance(interactions, list)
@@ -1788,7 +1835,7 @@ def validate_external_interaction_refs(
         if ref and ref not in catalog_by_id:
             failures.append(
                 f"{path}: externalInteractions[{index}].ref references unknown object '{ref}' — "
-                "model the interacted platform as a Host, Runtime Service, Data-at-Rest Service, Edge/Gateway Service, Product Service, or Technology Component, "
+                "model the interacted platform as a Host, RuntimeService, DataStoreService, Edge/Gateway Service, or Technology Component, "
                 "or remove ref until the target object exists"
             )
 
@@ -1839,33 +1886,8 @@ def validate_product_service_architecture_refs(
     path: Path,
     failures: list[str],
 ) -> None:
-    if obj.get("type") != "product_service":
-        return
-    processes = obj.get("internalProcesses", [])
-    process_names: set[str] = set()
-    duplicate_names: set[str] = set()
-    if isinstance(processes, list):
-        for process in processes:
-            if not isinstance(process, dict) or not is_non_empty(process.get("name")):
-                continue
-            name = str(process["name"])
-            if name in process_names:
-                duplicate_names.add(name)
-            process_names.add(name)
-    for name in sorted(duplicate_names):
-        failures.append(f"{path}: internalProcesses contains duplicate process name '{name}'")
-
-    endpoints = obj.get("apiEndpoints", [])
-    if not isinstance(endpoints, list):
-        return
-    for index, endpoint in enumerate(endpoints):
-        if not isinstance(endpoint, dict):
-            continue
-        exposed_by = endpoint.get("exposedBy")
-        if is_non_empty(exposed_by) and str(exposed_by) not in process_names:
-            failures.append(
-                f"{path}: apiEndpoints[{index}].exposedBy references unknown internal process '{exposed_by}'"
-            )
+    # product_service type has been retired; this function is a no-op for historical compatibility
+    pass
 
 
 def validate_component(
@@ -2046,11 +2068,6 @@ def validate_standard(
         host_target = catalog_by_id.get(str(host_ref)) if is_non_empty(host_ref) else None
         if host_ref and (not host_target or host_target.get("type") != "host"):
             failures.append(f"{path}: host references unknown Host '{host_ref}'")
-    if object_type == "product_service":
-        runs_on = obj.get("runsOn")
-        target = catalog_by_id.get(runs_on) if runs_on else None
-        if runs_on and (not target or target.get("type") not in STANDARD_TYPES):
-            failures.append(f"{path}: runsOn references unknown deployable object '{runs_on}'")
     if object_type == "product_component":
         runs_on = obj.get("runsOn")
         target = catalog_by_id.get(runs_on) if runs_on else None
@@ -2060,7 +2077,7 @@ def validate_standard(
     if object_type == "data_component":
         runs_on = obj.get("runsOn")
         target = catalog_by_id.get(runs_on) if runs_on else None
-        if runs_on and (not target or target.get("type") != "data_at_rest_service"):
+        if runs_on and (not target or target.get("type") != "data_store_service"):
             failures.append(f"{path}: runsOn must reference a DataStoreService (got '{runs_on}')")
     if object_type in SERVICE_TYPES and obj.get("deliveryModel") == "saas":
         if "dataLeavesInfrastructure" in obj and not isinstance(obj.get("dataLeavesInfrastructure"), bool):
@@ -3000,6 +3017,22 @@ def validate_service_group_structure(
         scaling_unit_name = group.get("scalingUnit")
         if scaling_unit_name and scaling_unit_name not in scaling_unit_names:
             failures.append(f"{path}: serviceGroup '{group_name}' references unknown scalingUnit '{scaling_unit_name}'")
+
+        substrate_ref = group.get("substrate")
+        if substrate_ref:
+            substrate_target = catalog_by_id.get(substrate_ref)
+            if not substrate_target:
+                failures.append(
+                    f"{path}: serviceGroup '{group_name}' substrate references unknown object '{substrate_ref}'"
+                )
+            else:
+                substrate_type = substrate_target.get("type")
+                valid_substrate_types = {"runtime_service", "host", "edge_gateway_service"}
+                if substrate_type not in valid_substrate_types:
+                    failures.append(
+                        f"{path}: serviceGroup '{group_name}' substrate must reference a RuntimeService, Host, "
+                        f"or EdgeGatewayService (got type '{substrate_type}')"
+                    )
 
         for entry in group.get("deployableObjects", []) or []:
             if not isinstance(entry, dict):

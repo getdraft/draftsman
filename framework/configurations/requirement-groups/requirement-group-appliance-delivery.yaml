@@ -15,7 +15,7 @@ authority:
 activation: always
 appliesTo:
 - runtime_service
-- data_at_rest_service
+- data_store_service
 - edge_gateway_service
 requirements:
 - id: function

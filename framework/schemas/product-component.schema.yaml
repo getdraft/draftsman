@@ -7,7 +7,6 @@ requiredFields:
 - name
 - repoUrl
 - owner
-- runsOn
 - classification
 - catalogStatus
 - lifecycleStatus
@@ -16,6 +15,7 @@ optionalFields:
 - description
 - version
 - tags
+- runsOn
 - language
 - interfaces
 - networkBindings
@@ -163,7 +163,13 @@ fieldDescriptions:
   name: Use a clear human-readable name for this component.
   repoUrl: Record the source repository URL where this component's code is maintained.
   owner: Declare the team that authors and maintains this component.
-  runsOn: Reference the RuntimeService, Host, or EdgeGatewayService UID this component is deployed on within its Software Deployment Pattern. A ProductComponent with no runsOn is orphaned.
+  runsOn: >
+    UID of the RuntimeService, Host, or EdgeGatewayService this component is
+    deployed on. Optional when the hosting runtime is declared via the serviceGroup
+    substrate field in every SDP that references this component — the SDP is the
+    canonical deployment context. Set runsOn when a single unambiguous host exists
+    across all deployment contexts, or when a Draftsman session cannot yet confirm
+    the SDP placement.
   classification: Choose the one classification that best describes this component's role.
   language: Record the primary programming language or platform (e.g., TypeScript, Python, Java, Go, .NET).
   interfaces: List the APIs, events, or protocol surfaces this component exposes, when defined by the component itself.

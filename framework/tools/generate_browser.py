@@ -47,10 +47,9 @@ CATALOG_FOLDERS = [
     "edge-gateway-services",
     "hosts",
     "runtime-services",
-    "data-at-rest-services",
+    "data-store-services",
     "product-components",
     "data-components",
-    "product-services",
     "decision-records",
     "objects",
     "object-types",
@@ -71,6 +70,7 @@ LIFECYCLE_COLORS = {
 REF_CONTAINER_KEYS = {
     "ref",
     "runsOn",
+    "substrate",
     "followsReferenceArchitecture",
     "host",
     "primaryTechnologyComponent",
@@ -90,20 +90,16 @@ REF_CONTAINER_KEYS = {
 UID_PATTERN = re.compile(r"^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$")
 
 
-def is_product_service_classification(obj: dict[str, Any]) -> bool:
-    return obj.get("type") == "product_service"
-
-
 def is_saas_service_classification(obj: dict[str, Any]) -> bool:
-    return obj.get("type") in {"runtime_service", "data_at_rest_service", "edge_gateway_service"} and obj.get("deliveryModel") == "saas"
+    return obj.get("type") in {"runtime_service", "data_store_service", "edge_gateway_service"} and obj.get("deliveryModel") == "saas"
 
 
 def is_paas_service_classification(obj: dict[str, Any]) -> bool:
-    return obj.get("type") in {"runtime_service", "data_at_rest_service", "edge_gateway_service"} and obj.get("deliveryModel") == "paas"
+    return obj.get("type") in {"runtime_service", "data_store_service", "edge_gateway_service"} and obj.get("deliveryModel") == "paas"
 
 
 def is_database_service(obj: dict[str, Any]) -> bool:
-    return obj.get("type") == "data_at_rest_service"
+    return obj.get("type") == "data_store_service"
 
 
 def is_general_service(obj: dict[str, Any]) -> bool:
@@ -490,7 +486,7 @@ def shape_for(obj: dict[str, Any]) -> str:
         return "ellipse"
     if obj["type"] == "edge_gateway_service":
         return "diamond"
-    if obj["type"] in {"host", "runtime_service", "data_at_rest_service", "product_service"}:
+    if obj["type"] in {"host", "runtime_service", "data_store_service"}:
         return "round-rectangle" if obj["type"] == "host" else "diamond"
     if obj["type"] in {"product_component", "data_component"}:
         return "round-rectangle"
@@ -533,11 +529,9 @@ def type_label_for(obj: dict[str, Any]) -> str:
     if obj["type"] == "runtime_service":
         delivery_model = str(obj.get("deliveryModel", "")).replace("-", " ").title()
         return f"Runtime Service / {delivery_model}" if delivery_model else "Runtime Service"
-    if obj["type"] == "data_at_rest_service":
+    if obj["type"] == "data_store_service":
         delivery_model = str(obj.get("deliveryModel", "")).replace("-", " ").title()
-        return f"Data-at-Rest Service / {delivery_model}" if delivery_model else "Data-at-Rest Service"
-    if is_product_service_classification(obj):
-        return "Product Service"
+        return f"DataStoreService / {delivery_model}" if delivery_model else "DataStoreService"
     if obj["type"] == "product_component":
         classification = humanize_slug(str(obj.get("classification", "unknown")))
         return f"Product Component / {classification}"
@@ -773,9 +767,8 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
         "software_deployment_pattern",
         "host",
         "runtime_service",
-        "data_at_rest_service",
+        "data_store_service",
         "edge_gateway_service",
-        "product_service",
         "product_component",
         "data_component",
     }

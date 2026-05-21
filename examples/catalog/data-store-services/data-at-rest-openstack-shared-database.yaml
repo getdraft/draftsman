@@ -1,6 +1,6 @@
 schemaVersion: '1.0'
 uid: STCK000007-DAR7
-type: data_at_rest_service
+type: data_store_service
 name: OpenStack Shared Database
 description: 'Shared MariaDB database cluster hosting the schemas for OpenStack services
   that do not warrant dedicated database objects at this modeling granularity: Heat,

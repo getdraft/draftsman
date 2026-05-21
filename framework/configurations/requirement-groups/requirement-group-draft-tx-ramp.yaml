@@ -12,9 +12,9 @@ owner:
   contact: cloud-architecture@example.com
 activation: workspace
 appliesTo:
-- data_at_rest_service
+- data_store_service
 - host
-- product_service
+- product_component
 - runtime_service
 - edge_gateway_service
 - software_deployment_pattern
@@ -161,7 +161,7 @@ requirements:
   description: Data Protection for Database Services
   rationale: Record how this object satisfies SC-28 for TX-RAMP.
   appliesTo:
-  - data_at_rest_service
+  - data_store_service
   requirementMode: conditional
   naAllowed: true
   canBeSatisfiedBy:
@@ -191,7 +191,7 @@ requirements:
   description: Least Privilege for Database Services
   rationale: Record how this object satisfies AC-6 for TX-RAMP.
   appliesTo:
-  - data_at_rest_service
+  - data_store_service
   requirementMode: conditional
   naAllowed: true
   canBeSatisfiedBy:
@@ -222,7 +222,7 @@ requirements:
   description: Backup and Recovery
   rationale: Record how this object satisfies CP-9 for TX-RAMP.
   appliesTo:
-  - data_at_rest_service
+  - data_store_service
   requirementMode: conditional
   naAllowed: true
   canBeSatisfiedBy:
@@ -274,20 +274,20 @@ requirements:
     - field: complianceContext.soldInTexas
       equals: true
   externalReference: https://dir.texas.gov/information-security/texas-risk-and-authorization-management-program-tx-ramp
-- id: IA-5.product_service
+- id: IA-5.product_component
   externalControlId: IA-5
   name: Product Service Secrets and Authenticator Management
   description: Product Service Secrets and Authenticator Management
   rationale: Record how this object satisfies IA-5 for TX-RAMP.
   appliesTo:
-  - product_service
+  - product_component
   requirementMode: conditional
   naAllowed: true
   canBeSatisfiedBy:
   - mechanism: externalInteraction
   - mechanism: technologyComponentConfiguration
   - mechanism: architecturalDecision
-    key: product_service
+    key: product_component
   minimumSatisfactions: 1
   validAnswerTypes:
   - externalInteraction

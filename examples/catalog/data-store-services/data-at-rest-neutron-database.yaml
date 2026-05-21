@@ -1,6 +1,6 @@
 schemaVersion: '1.0'
 uid: STCK000004-DAR4
-type: data_at_rest_service
+type: data_store_service
 name: Neutron Database
 description: 'MariaDB database schema dedicated to OpenStack Neutron for persisting
   all network service state. Stores virtual networks, subnets, ports, routers, floating
