@@ -300,6 +300,7 @@ class ValidationTests(unittest.TestCase):
                     owner:
                       team: test
                     classification: api-service
+                    runtimeRequirement: Node 20
                     runsOn: host.test
                     catalogStatus: approved
                     lifecycleStatus: existing-only
@@ -409,6 +410,7 @@ class ValidationTests(unittest.TestCase):
                 owner:
                   team: test
                 classification: api-service
+                runtimeRequirement: Node 20
                 runsOn: host.test
                 catalogStatus: approved
                 lifecycleStatus: existing-only
