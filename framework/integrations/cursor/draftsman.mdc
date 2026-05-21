@@ -1,0 +1,21 @@
+---
+description: DRAFT Draftsman — architecture catalog authoring and workspace setup
+globs: ["catalog/**", "configurations/**", ".draft/**", ".draft/framework/commands/**"]
+alwaysApply: false
+---
+
+# DRAFT Draftsman
+
+This workspace uses the DRAFT architecture framework. When the user invokes
+`/draftsman`, `/draft-session`, or `/validate-catalog`, or asks you to act as
+a Draftsman, read the corresponding command file and follow its instructions
+exactly:
+
+- `/draftsman [intent]` → read `.draft/framework/commands/draftsman.md`
+- `/draft-session [topic]` → read `.draft/framework/commands/draft-session.md`
+- `/validate-catalog` → read `.draft/framework/commands/validate-catalog.md`
+
+All Draftsman workflows bootstrap from `AGENTS.md` and treat
+`.draft/framework/` as the approved vendored framework copy. Do not edit
+`.draft/framework/**` or `.draft/framework.lock` during catalog authoring.
+Company architecture content belongs in `catalog/` and `configurations/`.

@@ -3,6 +3,49 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.16.2 - 2026-05-21
+
+### Compatibility Impact
+
+No migration required. This patch adds multi-AI IDE integration support; it
+does not change schemas, validation behavior, or catalog object formats.
+
+### Added
+
+- Added `framework/integrations/` directory with ready-to-use IDE integration
+  files for Cursor (`cursor/draftsman.mdc`) and Windsurf (`windsurf/draftsman.md`).
+- Added `framework/integrations/README.md` documenting the AI-agnostic model
+  and how to add support for new IDEs.
+- Added `.cursor/rules/draftsman.mdc.tmpl` workspace template for Cursor.
+- Added `.windsurfrules.tmpl` workspace template for Windsurf.
+- Updated workspace templates (`AGENTS.md`, `GEMINI.md`,
+  `copilot-instructions.md`) to include command invocation guidance so any AI
+  tool reading these files knows about `/draftsman`, `/draft-session`, and
+  `/validate-catalog`.
+
+### Changed
+
+- Expanded setup-mode step 7 (IDE Integration) from Claude Code-only to a
+  multi-IDE wizard covering Claude Code, Cursor, Windsurf, Copilot, Gemini
+  CLI, and OpenAI Codex.
+- Reframed `draftsman-ai-configuration.md` Slash Commands section as
+  AI-Agnostic Design + Workflow Commands + IDE Integration to reflect that
+  the framework is tool-neutral.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Existing workspaces can continue unchanged.
+- To enable commands in Cursor, copy `.draft/framework/integrations/cursor/draftsman.mdc`
+  to `.cursor/rules/draftsman.mdc`.
+- To enable commands in Windsurf, copy `.draft/framework/integrations/windsurf/draftsman.md`
+  to `.windsurfrules` (or append if the file already exists).
+- `AGENTS.md` and `GEMINI.md` in existing workspaces can be updated manually
+  by adding the command invocation paragraph from the updated templates.
+
 ## 0.16.1 - 2026-05-21
 
 ### Compatibility Impact

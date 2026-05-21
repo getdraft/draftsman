@@ -69,11 +69,21 @@ Do not store AI provider credentials, API keys, Git credentials, or unrelated
 secrets in tracked framework or workspace files. DRAFT content is architecture
 metadata and should remain reviewable as source.
 
-## Slash Commands
+## AI-Agnostic Design
 
-DRAFT ships IDE-ready slash commands in `framework/commands/`. When a workspace
-has linked these into its IDE command folder, the following commands are
-available without relying on role-activation phrases:
+DRAFT is designed so that any capable AI assistant can act as the Draftsman.
+The framework does not assume Claude, Gemini, Copilot, or any specific model.
+A company can bring whichever AI tool their team already uses.
+
+The canonical workflow instructions live in `framework/commands/` as plain
+markdown. Any AI that can read files in the workspace can read and follow them.
+What varies per IDE is how the AI *discovers* these commands — that is the only
+tool-specific layer.
+
+## Workflow Commands
+
+The following commands are available in any IDE that has been wired up per
+setup-mode step 7:
 
 | Command | Purpose |
 |---|---|
@@ -81,12 +91,27 @@ available without relying on role-activation phrases:
 | `/draft-session [topic]` | Start or resume a guided Drafting Session |
 | `/validate-catalog` | Run the validator and report issues with fix guidance |
 
-Commands are symlinked during setup from `.draft/framework/commands/` into
-`.claude/commands/` (or the equivalent for other IDEs). The links are shallow —
-they follow the vendored framework copy, so updating the framework automatically
-updates command behavior without re-linking.
+Command files live in `.draft/framework/commands/`. They include Claude Code
+frontmatter (`description`, `argument-hint`, `allowed-tools`) which other AI
+tools skip — the instruction content that follows works for any AI without
+modification.
 
-See `framework/docs/setup-mode.md` step 7 for linking instructions.
+## IDE Integration
+
+Each IDE has its own registration mechanism. Per-IDE files live in
+`framework/integrations/` (ready to copy into the workspace) and workspace
+templates include command invocation guidance for each supported tool:
+
+| IDE | Mechanism | Setup |
+|---|---|---|
+| Claude Code | `.claude/commands/` symlinks | setup-mode step 7a |
+| Cursor | `.cursor/rules/draftsman.mdc` | setup-mode step 7b |
+| Windsurf | `.windsurfrules` | setup-mode step 7c |
+| GitHub Copilot | `.github/copilot-instructions.md` block | setup-mode step 7d |
+| Gemini CLI | `GEMINI.md` (workspace bootstrap) | included automatically |
+| OpenAI Codex / generic | `AGENTS.md` (workspace bootstrap) | included automatically |
+
+See `framework/docs/setup-mode.md` step 7 for full instructions.
 
 ## Browser Boundary
 
