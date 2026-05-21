@@ -69,6 +69,25 @@ Do not store AI provider credentials, API keys, Git credentials, or unrelated
 secrets in tracked framework or workspace files. DRAFT content is architecture
 metadata and should remain reviewable as source.
 
+## Slash Commands
+
+DRAFT ships IDE-ready slash commands in `framework/commands/`. When a workspace
+has linked these into its IDE command folder, the following commands are
+available without relying on role-activation phrases:
+
+| Command | Purpose |
+|---|---|
+| `/draftsman [intent]` | Activate the Draftsman for authoring or workspace setup |
+| `/draft-session [topic]` | Start or resume a guided Drafting Session |
+| `/validate-catalog` | Run the validator and report issues with fix guidance |
+
+Commands are symlinked during setup from `.draft/framework/commands/` into
+`.claude/commands/` (or the equivalent for other IDEs). The links are shallow —
+they follow the vendored framework copy, so updating the framework automatically
+updates command behavior without re-linking.
+
+See `framework/docs/setup-mode.md` step 7 for linking instructions.
+
 ## Browser Boundary
 
 The generated GitHub Pages browser is read-only. It helps humans and AI agents
