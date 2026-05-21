@@ -596,6 +596,18 @@ capabilities directly on the Edge/Gateway Service: authentication, logging,
 monitoring, patch/update model, resilience, configurable surface, failure
 domain, and compliance posture.
 
+## SDP Completion Interview
+
+When a user asks to complete, fill in gaps for, or review completeness of an
+existing Software Deployment Pattern, run the structured protocol defined in
+[sdp-completion-interview.md](sdp-completion-interview.md).
+
+The protocol scores the SDP against a ten-dimension completeness rubric,
+reports gaps to the user, and works through each gap in a focused phased
+interview. It references the Network Zone and Connection Elicitation procedure
+in this document verbatim — do not redefine that procedure during a completion
+session.
+
 ## Catalog Questions
 
 When the user asks what exists, what an object means, or where something is
