@@ -63,61 +63,73 @@ serviceGroups:
   deployableObjects:
   - ref: STCK000006-RS06
     networkZone: public
+    diagramTier: presentation
     intent: ha
     notes: Horizon dashboard served via nginx. Internet-facing. Active-active across
       controller nodes with sticky sessions.
   - ref: STCK000001-RS01
     networkZone: control
+    diagramTier: application
     intent: ha
     notes: Nova compute service. nova-api runs active-active behind load balancer.
       nova-scheduler and nova-conductor run on controller nodes.
   - ref: STCK000002-RS02
     networkZone: control
+    diagramTier: application
     intent: ha
     notes: Keystone identity service. Runs active-active. Fernet token validation
       is stateless, enabling full horizontal HA.
   - ref: STCK000003-RS03
     networkZone: control
+    diagramTier: application
     intent: ha
     notes: Glance image service. glance-api runs active-active. Image binaries stored
       in Swift cluster.
   - ref: STCK000004-RS04
     networkZone: control
+    diagramTier: application
     intent: ha
     notes: Neutron networking service. neutron-api runs active-active. ML2 agents
       deployed on compute and network nodes.
   - ref: STCK000005-RS05
     networkZone: control
+    diagramTier: application
     intent: ha
     notes: Cinder block storage service. cinder-api and cinder-scheduler run active-active.
       iSCSI backend storage.
   - ref: STCK000007-RS07
     networkZone: control
+    diagramTier: application
     intent: ha
     notes: Heat orchestration service. heat-api and heat-api-cfn run active-active.
       heat-engine workers consume from RabbitMQ.
   - ref: STCK000008-RS08
     networkZone: control
+    diagramTier: utility
     intent: ha
     notes: Ceilometer telemetry service. Consumes OpenStack notification bus from
       RabbitMQ. Non-critical path — does not affect instance operations.
   - ref: STCK000009-RS09
     networkZone: control
+    diagramTier: application
     intent: ha
     notes: Ironic bare metal service. ironic-api runs active-active. ironic-conductor
       supports multi-conductor HA with node affinity.
   - ref: STCK00000A-RS0A
     networkZone: control
+    diagramTier: application
     intent: ha
     notes: Trove database-as-a-service. trove-api runs active-active. Provisions
       database instances as Nova VMs.
   - ref: STCK00000B-RS0B
     networkZone: control
+    diagramTier: application
     intent: ha
     notes: Sahara data processing service. sahara-api runs active-active. Provisions
       Hadoop/Spark clusters as Nova VM pools.
   - ref: STCK00000C-RS0C
     networkZone: control
+    diagramTier: application
     intent: ha
     notes: Swift proxy service. Runs active-active behind load balancer. Fully stateless
       — provides the object storage API gateway.
@@ -254,38 +266,46 @@ serviceGroups:
   deployableObjects:
   - ref: STCK000001-DAR1
     networkZone: data
+    diagramTier: data
     intent: ha
     notes: Nova database schema in the MariaDB Galera cluster. Persists all compute
       service state.
   - ref: STCK000002-DAR2
     networkZone: data
+    diagramTier: data
     intent: ha
     notes: Keystone database schema. Highest-criticality schema — loss causes platform-wide
       outage.
   - ref: STCK000003-DAR3
     networkZone: data
+    diagramTier: data
     intent: ha
     notes: Glance database schema. Stores image metadata; image binaries are in Swift.
   - ref: STCK000004-DAR4
     networkZone: data
+    diagramTier: data
     intent: ha
     notes: Neutron database schema. Stores virtual network topology state.
   - ref: STCK000005-DAR5
     networkZone: data
+    diagramTier: data
     intent: ha
     notes: Cinder database schema. Stores volume and snapshot records.
   - ref: STCK000007-DAR7
     networkZone: data
+    diagramTier: data
     intent: ha
     notes: Shared database cluster for Heat, Ironic, Trove, Sahara, and Ceilometer
       schemas. Each service has an isolated schema within this cluster.
   - ref: STCK000006-DAR6
     networkZone: data
+    diagramTier: data
     intent: ha
     notes: Swift object storage cluster providing durable distributed storage. Primary
       consumer is Glance for image binary storage.
   - ref: STCK00000D-RS0D
     networkZone: data
+    diagramTier: utility
     intent: ha
     notes: RabbitMQ 3-node cluster providing shared AMQP message transport for all
       OpenStack services. Quorum queues ensure message durability.
