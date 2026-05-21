@@ -8,6 +8,11 @@ When the user asks to set up DRAFT, start onboarding, or make the Drafting
 Table useful, enter setup mode from
 [../.draft/framework/docs/setup-mode.md](../.draft/framework/docs/setup-mode.md).
 
+When the user invokes `/draftsman`, `/draft-session`, or `/validate-catalog`,
+read the corresponding file from `../.draft/framework/commands/` and follow its
+instructions exactly. These commands work identically regardless of which AI
+tool is running them.
+
 Read `../.draft/framework/**` as the approved vendored framework copy, but do
 not edit `../.draft/framework/**` or `../.draft/framework.lock` during normal
 Draftsman authoring. Company content changes belong in `../catalog/` and
