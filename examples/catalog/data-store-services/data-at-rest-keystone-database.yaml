@@ -1,6 +1,6 @@
 schemaVersion: '1.0'
 uid: STCK000002-DAR2
-type: data_at_rest_service
+type: data_store_service
 name: Keystone Database
 description: 'MariaDB database schema dedicated to OpenStack Keystone for persisting
   all identity service data. Stores users, groups, projects, domains, roles, role

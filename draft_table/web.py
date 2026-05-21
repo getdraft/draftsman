@@ -250,8 +250,8 @@ def type_label(object_type: str) -> str:
         "edge_gateway_service": "Edge/Gateway Service",
         "host": "Host",
         "runtime_service": "Runtime Service",
-        "data_at_rest_service": "Data-at-Rest Service",
-        "product_service": "Product Service",
+        "data_store_service": "DataStoreService",
+        "product_component": "ProductComponent",
         "edge_gateway_service": "Edge/Gateway Service",
         "reference_architecture": "Reference Architecture",
         "software_deployment_pattern": "Software Deployment Pattern",
@@ -1052,7 +1052,7 @@ INDEX_HTML = """<!doctype html>
               <li><strong>Technology Component</strong>: a discrete product, operating system, software package, tool, runtime, or agent.</li>
               <li><strong>Host</strong>: a reusable compute standard built from an operating system, compute platform, and required operational capabilities.</li>
               <li><strong>Runtime Service</strong>: a reusable service building block that combines a host or platform with the primary internal component that makes it useful.</li>
-              <li><strong>Data-at-Rest Service</strong>: a data service standard with durability, protection, operation, and compliance expectations.</li>
+              <li><strong>DataStoreService</strong>: a data service standard with durability, protection, operation, and compliance expectations.</li>
               <li><strong>Edge/Gateway Service</strong>: a vendor product that behaves like a service but does not expose a host model.</li>
             </ul>
           </section>

@@ -1,6 +1,6 @@
 schemaVersion: '1.0'
 uid: STCK000006-DAR6
-type: data_at_rest_service
+type: data_store_service
 name: Swift Storage Cluster
 description: 'OpenStack Swift object storage cluster providing durable, distributed
   storage for unstructured data. Consists of multiple storage nodes running swift-account,

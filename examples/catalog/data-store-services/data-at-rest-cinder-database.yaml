@@ -1,6 +1,6 @@
 schemaVersion: '1.0'
 uid: STCK000005-DAR5
-type: data_at_rest_service
+type: data_store_service
 name: Cinder Database
 description: 'MariaDB database schema dedicated to OpenStack Cinder for persisting
   all block storage service state. Stores volume records, snapshot records, attachment

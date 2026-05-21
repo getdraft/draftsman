@@ -12,9 +12,9 @@ owner:
   contact: cloud-architecture@example.com
 activation: workspace
 appliesTo:
-- data_at_rest_service
+- data_store_service
 - host
-- product_service
+- product_component
 - runtime_service
 - edge_gateway_service
 - software_deployment_pattern
@@ -170,7 +170,7 @@ requirements:
   description: Identity Management, Authentication, and Access Control
   rationale: Record how this object satisfies PR.AA for NIST Cybersecurity Framework.
   appliesTo:
-  - data_at_rest_service
+  - data_store_service
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:
@@ -195,7 +195,7 @@ requirements:
   description: Data Security
   rationale: Record how this object satisfies PR.DS for NIST Cybersecurity Framework.
   appliesTo:
-  - data_at_rest_service
+  - data_store_service
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:
@@ -219,7 +219,7 @@ requirements:
   description: Recovery Plan Execution
   rationale: Record how this object satisfies RC.RP for NIST Cybersecurity Framework.
   appliesTo:
-  - data_at_rest_service
+  - data_store_service
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:
@@ -259,20 +259,20 @@ requirements:
   - architecturalDecision
   relatedCapability: 01KQQ4Q026-DTJJ
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
-- id: PR.AA.product_service
+- id: PR.AA.product_component
   externalControlId: PR.AA
   name: Identity Management, Authentication, and Access Control
   description: Identity Management, Authentication, and Access Control
   rationale: Record how this object satisfies PR.AA for NIST Cybersecurity Framework.
   appliesTo:
-  - product_service
+  - product_component
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:
   - mechanism: externalInteraction
   - mechanism: technologyComponentConfiguration
   - mechanism: architecturalDecision
-    key: product_service
+    key: product_component
   minimumSatisfactions: 1
   validAnswerTypes:
   - externalInteraction

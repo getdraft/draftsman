@@ -271,7 +271,7 @@ class ValidationTests(unittest.TestCase):
                       team: test
                     activation: workspace
                     appliesTo:
-                      - product_service
+                      - product_component
                     requirements:
                       - id: company-required-field
                         description: Product services must provide company evidence.
@@ -289,14 +289,17 @@ class ValidationTests(unittest.TestCase):
                 + "\n",
                 encoding="utf-8",
             )
-            (workspace / "catalog" / "product-services" / "product-service-test-app.yaml").write_text(
+            (workspace / "catalog" / "product-components" / "product-service-test-app.yaml").write_text(
                 textwrap.dedent(
                     """
                     schemaVersion: "1.0"
                     id: product-service.test.app
-                    type: product_service
+                    type: product_component
                     name: Test App
-                    product: Test
+                    repoUrl: https://github.com/test/test-app
+                    owner:
+                      team: test
+                    classification: api-service
                     runsOn: host.test
                     catalogStatus: approved
                     lifecycleStatus: existing-only
@@ -359,7 +362,7 @@ class ValidationTests(unittest.TestCase):
                   team: test
                 activation: workspace
                 appliesTo:
-                  - product_service
+                  - product_component
                 requirements:
                   - id: company-required-field
                     description: Product services must provide the company required field when disposition is required.
@@ -393,16 +396,19 @@ class ValidationTests(unittest.TestCase):
             + "\n",
             encoding="utf-8",
         )
-        product_dir = workspace / "catalog" / "product-services"
+        product_dir = workspace / "catalog" / "product-components"
         product_dir.mkdir(parents=True, exist_ok=True)
         (product_dir / "product-service-test-app.yaml").write_text(
             textwrap.dedent(
                 """
                 schemaVersion: "1.0"
                 id: product-service.test.app
-                type: product_service
+                type: product_component
                 name: Test App
-                product: Test
+                repoUrl: https://github.com/test/test-app
+                owner:
+                  team: test
+                classification: api-service
                 runsOn: host.test
                 catalogStatus: approved
                 lifecycleStatus: existing-only
@@ -712,7 +718,7 @@ requirementGroups:
             ensure_workspace_layout(workspace)
             tech_dir = workspace / "catalog" / "technology-components"
             host_dir = workspace / "catalog" / "hosts"
-            data_dir = workspace / "catalog" / "data-at-rest-services"
+            data_dir = workspace / "catalog" / "data-store-services"
             tech_dir.mkdir(parents=True, exist_ok=True)
             host_dir.mkdir(parents=True, exist_ok=True)
             data_dir.mkdir(parents=True, exist_ok=True)
@@ -752,7 +758,7 @@ requirementGroups:
                     """
                     schemaVersion: "1.0"
                     uid: 01KQS0TF61-DATA
-                    type: data_at_rest_service
+                    type: data_store_service
                     name: Test Data Service
                     deliveryModel: self-managed
                     catalogStatus: approved
@@ -796,13 +802,13 @@ requirementGroups:
         self.assertNotIn("internalComponentRationales['01KQS0TF61-DBMS']", result.stdout)
         self.assertNotIn("does not directly satisfy any applicable requirement", result.stdout)
 
-    def test_backup_platform_external_interaction_satisfies_data_at_rest_requirement(self) -> None:
+    def test_backup_platform_external_interaction_satisfies_data_store_requirement(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
             ensure_workspace_layout(workspace)
             tech_dir = workspace / "catalog" / "technology-components"
             host_dir = workspace / "catalog" / "hosts"
-            data_dir = workspace / "catalog" / "data-at-rest-services"
+            data_dir = workspace / "catalog" / "data-store-services"
             tech_dir.mkdir(parents=True, exist_ok=True)
             host_dir.mkdir(parents=True, exist_ok=True)
             data_dir.mkdir(parents=True, exist_ok=True)
@@ -842,7 +848,7 @@ requirementGroups:
                     """
                     schemaVersion: "1.0"
                     uid: 01KQS0TF62-DATA
-                    type: data_at_rest_service
+                    type: data_store_service
                     name: Test Data Service
                     deliveryModel: self-managed
                     catalogStatus: approved
@@ -974,7 +980,7 @@ requirementGroups:
             ensure_workspace_layout(workspace)
             tech_dir = workspace / "catalog" / "technology-components"
             host_dir = workspace / "catalog" / "hosts"
-            product_dir = workspace / "catalog" / "product-services"
+            product_dir = workspace / "catalog" / "product-components"
             tech_dir.mkdir(parents=True, exist_ok=True)
             host_dir.mkdir(parents=True, exist_ok=True)
             product_dir.mkdir(parents=True, exist_ok=True)
@@ -1020,9 +1026,12 @@ requirementGroups:
                     """
                     schemaVersion: "1.0"
                     uid: 01KQS0TF65-PRDS
-                    type: product_service
+                    type: product_component
                     name: Messaging API
-                    product: test-product
+                    repoUrl: https://github.com/test/messaging-api
+                    owner:
+                      team: test
+                    classification: api-service
                     runsOn: 01KQS0TF65-HST1
                     catalogStatus: draft
                     lifecycleStatus: candidate
@@ -1041,13 +1050,13 @@ requirementGroups:
         self.assertFalse(result.ok, result.stdout + result.stderr)
         self.assertIn("internalComponents[0].configuration references unknown configuration 'missing-listener'", result.stdout)
 
-    def test_product_service_accepts_processes_endpoints_and_configured_components(self) -> None:
+    def test_product_component_accepts_configured_components(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
             ensure_workspace_layout(workspace)
             tech_dir = workspace / "catalog" / "technology-components"
             host_dir = workspace / "catalog" / "hosts"
-            product_dir = workspace / "catalog" / "product-services"
+            product_dir = workspace / "catalog" / "product-components"
             tech_dir.mkdir(parents=True, exist_ok=True)
             host_dir.mkdir(parents=True, exist_ok=True)
             product_dir.mkdir(parents=True, exist_ok=True)
@@ -1097,33 +1106,19 @@ requirementGroups:
                     """
                     schemaVersion: "1.0"
                     uid: 01KQS0TF66-PRDS
-                    type: product_service
+                    type: product_component
                     name: Messaging API
-                    product: test-product
+                    repoUrl: https://github.com/test/messaging-api
+                    owner:
+                      team: test
+                    classification: api-service
                     runsOn: 01KQS0TF66-HST1
                     catalogStatus: draft
                     lifecycleStatus: candidate
-                    internalProcesses:
-                      - name: messaging-api
-                        role: api
-                        exposesApi: true
-                        communicationModel: both
-                    apiEndpoints:
-                      - name: Public REST API
-                        path: /messages
-                        protocol: REST
-                        authenticationModel: oauth
-                        exposedBy: messaging-api
                     internalComponents:
                       - ref: 01KQS0TF66-RBMQ
                         role: broker-client
                         configuration: amqp-listener
-                    deploymentConfigurations:
-                      - id: multi-tenant
-                        name: Multi-tenant
-                        description: Shared product deployment.
-                        addressesQualities:
-                          - scalability
                     architecturalDecisions:
                       internalComponentRationales:
                         01KQS0TF66-RBMQ: Required broker client dependency for queue-mediated message publishing.
@@ -1136,15 +1131,15 @@ requirementGroups:
             result = validate_workspace(workspace)
 
         self.assertTrue(result.ok, result.stdout + result.stderr)
-        self.assertNotIn("apiEndpoints[0].exposedBy references unknown", result.stdout)
+        self.assertNotIn("unknown configuration", result.stdout)
         self.assertNotIn("unknown configuration", result.stdout)
 
-    def test_product_service_endpoint_protocol_and_process_reference_validate(self) -> None:
+    def test_product_component_endpoint_protocol_validates(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
             ensure_workspace_layout(workspace)
             host_dir = workspace / "catalog" / "hosts"
-            product_dir = workspace / "catalog" / "product-services"
+            product_dir = workspace / "catalog" / "product-components"
             host_dir.mkdir(parents=True, exist_ok=True)
             product_dir.mkdir(parents=True, exist_ok=True)
             (host_dir / "host-test.yaml").write_text(
@@ -1166,19 +1161,18 @@ requirementGroups:
                     """
                     schemaVersion: "1.0"
                     uid: 01KQS0TF67-PRDS
-                    type: product_service
+                    type: product_component
                     name: Messaging API
-                    product: test-product
+                    repoUrl: https://github.com/test/messaging-api
+                    owner:
+                      team: test
+                    classification: api-service
                     runsOn: 01KQS0TF67-HST1
                     catalogStatus: draft
                     lifecycleStatus: candidate
-                    internalProcesses:
-                      - name: messaging-api
-                        role: api
-                    apiEndpoints:
+                    interfaces:
                       - name: Invalid API
                         protocol: SOAP
-                        exposedBy: missing-process
                     """
                 ).strip()
                 + "\n",
@@ -1189,15 +1183,14 @@ requirementGroups:
 
         self.assertFalse(result.ok, result.stdout + result.stderr)
         self.assertIn("Set protocol to one of", result.stdout)
-        self.assertIn("apiEndpoints[0].exposedBy references unknown internal process 'missing-process'", result.stdout)
 
-    def test_product_service_dependency_without_rationale_fails_when_approved(self) -> None:
+    def test_product_component_dependency_without_rationale_fails_when_approved(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
             ensure_workspace_layout(workspace)
             tech_dir = workspace / "catalog" / "technology-components"
             host_dir = workspace / "catalog" / "hosts"
-            product_dir = workspace / "catalog" / "product-services"
+            product_dir = workspace / "catalog" / "product-components"
             tech_dir.mkdir(parents=True, exist_ok=True)
             host_dir.mkdir(parents=True, exist_ok=True)
             product_dir.mkdir(parents=True, exist_ok=True)
@@ -1243,9 +1236,12 @@ requirementGroups:
                     """
                     schemaVersion: "1.0"
                     uid: 01KQS0TF68-PRDS
-                    type: product_service
+                    type: product_component
                     name: Messaging API
-                    product: test-product
+                    repoUrl: https://github.com/test/messaging-api
+                    owner:
+                      team: test
+                    classification: api-service
                     runsOn: 01KQS0TF68-HST1
                     catalogStatus: approved
                     lifecycleStatus: candidate

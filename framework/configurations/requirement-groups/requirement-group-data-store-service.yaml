@@ -1,8 +1,8 @@
 schemaVersion: '1.0'
 uid: 01KQQ4Q027-VBF0
 type: requirement_group
-name: Data-at-Rest Service Requirement Group
-description: Additional data-at-rest checklist items extending the service behavior Requirement Group for durable data, recovery, and access control.
+name: DataStoreService Requirement Group
+description: Additional DataStoreService checklist items extending the service behavior Requirement Group for durable data, recovery, and access control.
 version: 3.0.0
 catalogStatus: approved
 owner:
@@ -14,7 +14,7 @@ authority:
   source: DRAFT Framework
 activation: always
 appliesTo:
-- data_at_rest_service
+- data_store_service
 appliesToQualifiers:
   deliveryModel: self-managed
 requirements:

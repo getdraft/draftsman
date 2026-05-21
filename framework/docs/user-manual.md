@@ -17,7 +17,7 @@ DRAFT is a framework for describing architecture as structured objects that can 
 | Concern | Where It Lives | Purpose |
 |---|---|---|
 | Framework rules | `.draft/framework/` in company workspaces, `framework/` upstream | Schemas, base capabilities, Requirement Groups, docs, and tools. |
-| Company architecture | `catalog/` | Hosts, services, Product Services, Software Deployment Patterns, and other architecture inventory. |
+| Company architecture | `catalog/` | Hosts, services, ProductComponents, DataComponents, Software Deployment Patterns, and other architecture inventory. |
 | Company extensions | `configurations/` | Capability mappings, object patches, company Requirement Groups, and local domains. |
 | Generated views | `docs/` | Static HTML, browser assets, and browser data generated from YAML and Markdown source. |
 
@@ -110,22 +110,34 @@ Use the object model diagram as the quickest reference for how the major object 
 
 ![DRAFT object model UML class diagram](assets/draft-object-model.svg)
 
-#### 3a.2 Architecture objects {#architecture-objects}
+#### 3a.2 Engineering objects {#engineering-objects}
+
+Engineering objects represent first-party software components authored by the
+engineering team. They are deployed inside or on top of Architecture Objects.
+
+| Object Type | Use It For |
+|---|---|
+| ProductComponent | A first-party deployable runtime unit — API, worker, scheduler, or service — that uses `runsOn` to reference the RuntimeService, Host, or EdgeGatewayService it is deployed on. |
+| DataComponent | A first-party data schema, dataset, or storage unit that uses `runsOn` to reference the DataStoreService it is deployed on. |
+| Software Deployment Pattern | The intended assembly of deployable objects for a product or product capability. |
+
+#### 3a.3 Architecture objects {#architecture-objects}
+
+Architecture Objects are reusable infrastructure-level services that Engineering
+Objects run on or connect to.
 
 | Object Type | Use It For |
 |---|---|
 | Technology Component | A governed vendor product, operating system, compute platform, agent, appliance product, software package, or product/version building block. |
 | Host | An operational platform that combines compute, operating system, and required host capabilities. |
 | Runtime Service | Reusable runtime behavior such as web, app, cache, worker, messaging, or serverless runtime. |
-| Data-at-Rest Service | Durable data behavior such as database, file, object, search, analytics, or storage. |
+| DataStoreService | Durable data behavior such as database, file, object, search, analytics, or storage. |
 | Edge/Gateway Service | Boundary behavior such as WAF, firewall, API gateway, load balancer, ingress, proxy, or traffic inspection. |
-| Product Service | First-party deployable runtime behavior that runs on a selected Host, Runtime Service, Data-at-Rest Service, Edge/Gateway Service, or equivalent deployable object. |
-| Software Deployment Pattern | The intended assembly of deployable objects for a product or product capability. |
 | Reference Architecture | A reusable deployment approach that Software Deployment Patterns may follow. |
 
 Technology Components are governed building blocks. They are deployed as ingredients inside hosts and services, but they are not usually the service boundary you review on their own.
 
-#### 3a.3 Governance objects {#governance-objects}
+#### 3a.4 Governance objects {#governance-objects}
 
 | Object Type | Use It For |
 |---|---|
@@ -136,7 +148,7 @@ Technology Components are governed building blocks. They are deployed as ingredi
 | Drafting Session | A machine-readable work-in-progress record for partial authoring sessions. |
 | Object Patch | A workspace overlay that deep-merges selected company fields into a framework-owned object. |
 
-#### 3a.4 Repository ownership {#repo-ownership}
+#### 3a.5 Repository ownership {#repo-ownership}
 
 Use this decision table before editing:
 
@@ -150,7 +162,7 @@ Use this decision table before editing:
 | Change the static browser output | source YAML, Markdown, or generator code, then regenerate |
 | Change company browser colors or branding | company-owned `configurations/browser/theme.css` |
 
-#### 3a.5 Modeling Technology Components {#modeling-technology-components}
+#### 3a.6 Modeling Technology Components {#modeling-technology-components}
 
 Create a Technology Component when you need to govern a specific product, product family, product version, operating system, compute platform, agent, appliance, or software package.
 
@@ -188,48 +200,65 @@ internalComponents:
     configuration: default-listener
 ```
 
-#### 3a.6 Modeling Hosts and Services {#modeling-hosts-services}
+#### 3a.7 Modeling Hosts and Services {#modeling-hosts-services}
 
 Hosts describe operational platforms. A useful Host normally references operating system and compute Technology Components, then documents required host capabilities such as monitoring, logging, patching, identity integration, backup, and security tooling.
 
-Runtime Service, Data-at-Rest Service, and Edge/Gateway Service objects describe reusable behavior delivered through a delivery model:
+Runtime Service, DataStoreService, and Edge/Gateway Service objects describe reusable behavior delivered through a delivery model:
 
 - `self-managed`
 - `paas`
 - `saas`
 - `appliance`
 
-For Runtime, Data-at-Rest, and Edge/Gateway Services, the primary Technology Component is the main functional component. Do not add a separate dependency rationale for the primary component when it is the object core.
+For Runtime, DataStoreService, and Edge/Gateway Services, the primary Technology Component is the main functional component. Do not add a separate dependency rationale for the primary component when it is the object core.
 
-Data-at-Rest Services should document backup strategy, backup platform, RTO, and RPO. Use an external interaction for a separate backup platform, or use `architecturalDecisions.backup.platform` when the backup capability is provider-managed inside the service.
+DataStoreServices should document backup strategy, backup platform, RTO, and RPO. Use an external interaction for a separate backup platform, or use `architecturalDecisions.backup.platform` when the backup capability is provider-managed inside the service.
 
-#### 3a.7 Modeling Product Services {#modeling-product-services}
+#### 3a.8 Modeling ProductComponents {#modeling-product-components}
 
-A Product Service represents first-party runtime behavior. It is the place to document company-authored application code or black-box first-party components.
+A ProductComponent represents a first-party deployable runtime unit — an API, worker, scheduler, conductor, or service binary — authored by the engineering team.
 
-At minimum, a Product Service needs:
+At minimum, a ProductComponent needs:
 
 - `schemaVersion`
 - `uid`
-- `type: product_service`
+- `type: product_component`
 - `name`
-- `product`
-- `runsOn`
+- `runsOn` — referencing the RuntimeService, Host, or EdgeGatewayService it is deployed on
 - `catalogStatus`
 - `lifecycleStatus`
 
-Use Product Service fields to document:
+Use ProductComponent fields to document:
 
-- internal processes such as API, worker, scheduler, conductor, or queue processor
-- API or protocol endpoints exposed by those processes
 - internal components consumed by the product
 - external interactions the product depends on
 - deployment configurations such as single-tenant, multi-tenant, embedded, or standalone variants
 - architectural decisions that explain requirements or non-obvious dependencies
 
-Don't elevate static assets, database schemas, build scripts, or simple product configuration to Product Service just because they are deployable by CI/CD. The boundary is first-party runtime behavior that a Software Deployment Pattern needs to communicate.
+Don't elevate static assets, build scripts, or simple product configuration to ProductComponent. The boundary is first-party runtime behavior that a Software Deployment Pattern needs to communicate.
 
-#### 3a.8 Modeling Software Deployment Patterns {#modeling-sdps}
+#### 3a.9 Modeling DataComponents {#modeling-data-components}
+
+A DataComponent represents a first-party data schema, dataset, or storage unit that lives inside a DataStoreService.
+
+At minimum, a DataComponent needs:
+
+- `schemaVersion`
+- `uid`
+- `type: data_component`
+- `name`
+- `runsOn` — referencing the DataStoreService it is deployed on
+- `catalogStatus`
+- `lifecycleStatus`
+
+Use DataComponent fields to document:
+
+- internal components (Technology Components) used inside the data layer
+- external interactions the data layer depends on
+- architectural decisions about data classification, retention, or encryption
+
+#### 3a.10 Modeling Software Deployment Patterns {#modeling-sdps}
 
 A Software Deployment Pattern is the product-level assembly. It answers what a product deploys and how those objects relate.
 
@@ -243,7 +272,7 @@ A good Software Deployment Pattern includes:
 - source repository provenance when the pattern is generated from repository discovery
 - decisions or assumptions that explain uncertain boundaries
 
-Don't stop when the Software Deployment Pattern validates. Walk the full object graph and make sure every referenced Host, Service, Product Service, Technology Component, and dependency is valid enough for review.
+Don't stop when the Software Deployment Pattern validates. Walk the full object graph and make sure every referenced Host, Service, ProductComponent, DataComponent, Technology Component, and dependency is valid enough for review.
 
 ---
 
@@ -308,7 +337,7 @@ Agent Technology Components have an additional rule: any deployable object that 
 | Concern | Where It Lives | Purpose |
 |---|---|---|
 | Framework rules | `.draft/framework/` in company workspaces, `framework/` upstream | Schemas, base capabilities, Requirement Groups, docs, and tools. |
-| Company architecture | `catalog/` | Hosts, services, Product Services, Software Deployment Patterns, and other architecture inventory. |
+| Company architecture | `catalog/` | Hosts, services, ProductComponents, DataComponents, Software Deployment Patterns, and other architecture inventory. |
 | Company extensions | `configurations/` | Capability mappings, object patches, company Requirement Groups, and local domains. |
 | Generated views | `docs/` | Static HTML, browser assets, and browser data generated from YAML and Markdown source. |
 
@@ -458,7 +487,8 @@ Before merging a DRAFT change, check:
 - required schema fields are present
 - references point to real objects
 - Technology Components are specific enough to govern
-- Product Services represent first-party runtime behavior
+- ProductComponents represent first-party runtime behavior and use `runsOn` to reference a RuntimeService, Host, or EdgeGatewayService
+- DataComponents represent first-party data schemas or datasets and use `runsOn` to reference a DataStoreService
 - Requirement Groups and implementations are coherent
 - internal components and external interactions either satisfy requirements or have rationale
 - generated docs were regenerated from source
@@ -466,7 +496,7 @@ Before merging a DRAFT change, check:
 
 ### 4.8 Troubleshooting {#troubleshooting}
 
-**Browser does not show a new object.** Verify the file is under a discovered folder such as `catalog/hosts/`, `catalog/runtime-services/`, or `configurations/capabilities/`, and confirm the YAML has a valid `uid`.
+**Browser does not show a new object.** Verify the file is under a discovered folder such as `catalog/hosts/`, `catalog/runtime-services/`, `catalog/data-store-services/`, `catalog/product-components/`, or `configurations/capabilities/`, and confirm the YAML has a valid `uid`.
 
 **Validation cannot find framework objects in a company workspace.** Confirm the vendored framework exists at `.draft/framework/` and run validation with `--workspace .`.
 

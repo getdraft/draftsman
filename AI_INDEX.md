@@ -66,9 +66,9 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/naming-conventions.md | Naming Conventions | DRAFT first-class objects use an opaque generated `uid` for machine identity and |
 | framework/docs/object-types.md | DRAFT Object Types | DRAFT object types are split into deployable architecture and non-deployable |
 | framework/docs/overview.md | Framework Overview | This page is the high-level object map for DRAFT. For the complete object type |
-| framework/docs/product-service.md | Product Service | A Product Service represents a first-party custom binary or black-box component |
 | framework/docs/reference-architectures.md | Reference Architectures | A Reference Architecture is a deployment pattern. It tells application |
 | framework/docs/requirement-groups.md | Requirement Groups | A Requirement Group is the unified DRAFT requirement model. It replaces the old |
+| framework/docs/sdp-completion-interview.md | SDP Completion Interview | The SDP Completion Interview is a structured protocol for enriching an existing |
 | framework/docs/security-and-compliance-controls.md | Security And Compliance Requirement Groups | DRAFT treats compliance as an explicitly activated authoring and validation layer. |
 | framework/docs/setup-mode.md | Draftsman Setup Mode | Setup mode is the first-run Draftsman conversation for a company DRAFT |
 | framework/docs/software-deployment-patterns.md | Software Deployment Patterns | A Software Deployment Pattern is a declaration that a specific product is intended |
@@ -83,8 +83,8 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | Path | Scope | Required Fields |
 |---|---|---|
 | framework/schemas/capability.schema.yaml | capability | schemaVersion, uid, type, name, description, catalogStatus, definitionOwner, domain, implementations |
-| framework/schemas/data-at-rest-service.schema.yaml | data_at_rest_service | schemaVersion, uid, type, name, deliveryModel, catalogStatus, lifecycleStatus |
 | framework/schemas/data-component.schema.yaml | data_component | schemaVersion, uid, type, name, repoUrl, owner, runsOn, targetEngine, dataClassification, containsPII, catalogStatus, lifecycleStatus |
+| framework/schemas/data-store-service.schema.yaml | data_store_service | schemaVersion, uid, type, name, deliveryModel, catalogStatus, lifecycleStatus |
 | framework/schemas/decision-record.schema.yaml | decision_record | schemaVersion, uid, type, name, category, status, catalogStatus, lifecycleStatus |
 | framework/schemas/domain.schema.yaml | domain | schemaVersion, uid, type, name, capabilities |
 | framework/schemas/drafting-session.schema.yaml | drafting_session | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus, sessionStatus, primaryObjectType, sourceArtifacts, generatedObjects, unresolvedQuestions |
@@ -93,7 +93,6 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/schemas/host.schema.yaml | host | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus |
 | framework/schemas/object-patch.schema.yaml | object_patch | schemaVersion, uid, type, name, target, patch, catalogStatus, lifecycleStatus |
 | framework/schemas/product-component.schema.yaml | product_component | schemaVersion, uid, type, name, repoUrl, owner, runsOn, classification, catalogStatus, lifecycleStatus |
-| framework/schemas/product-service.schema.yaml | product_service | schemaVersion, uid, type, name, product, runsOn, catalogStatus, lifecycleStatus |
 | framework/schemas/reference-architecture.schema.yaml | reference_architecture | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus |
 | framework/schemas/requirement-group.schema.yaml | requirement_group | schemaVersion, uid, type, name, description, catalogStatus, owner, activation, appliesTo, requirements |
 | framework/schemas/runtime-service.schema.yaml | runtime_service | schemaVersion, uid, type, name, deliveryModel, catalogStatus, lifecycleStatus |
@@ -126,8 +125,8 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KQQ4Q026-QC9S | Test Authoring | capability |  | Tools and frameworks used to author automated tests. | framework/configurations/capabilities/capability-test-authoring.yaml |
 | 01KQQ4Q026-58Q3 | Test Execution and Automation | capability |  | Runtimes and orchestration services used to execute automated tests. | framework/configurations/capabilities/capability-test-execution.yaml |
 | 01KQQ4Q027-DSDD | Appliance Delivery Requirement Group | requirement_group | appliance, requirement-group, definition | Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service uses appliance delivery and the un... | framework/configurations/requirement-groups/requirement-group-appliance-delivery.yaml |
-| 01KQQ4Q027-VBF0 | Data-at-Rest Service Requirement Group | requirement_group | service, dbms, requirement-group, definition | Additional data-at-rest checklist items extending the service behavior Requirement Group for durable data, recovery,... | framework/configurations/requirement-groups/requirement-group-data-at-rest-service.yaml |
 | 01KRWRRNM7-VJ5A | Data Component Requirement Group | requirement_group | data-component, requirement-group, definition | Built-in checklist for first-party data artifacts deployed onto Data Store Services. Establishes what must be known a... | framework/configurations/requirement-groups/requirement-group-data-component.yaml |
+| 01KQQ4Q027-VBF0 | DataStoreService Requirement Group | requirement_group | service, dbms, requirement-group, definition | Additional DataStoreService checklist items extending the service behavior Requirement Group for durable data, recove... | framework/configurations/requirement-groups/requirement-group-data-store-service.yaml |
 | 01KQQ4Q027-69VY | NIST Cybersecurity Framework Requirement Group | requirement_group | compliance, nist, starter-pack, requirement-group | Initial NIST Cybersecurity Framework (CSF) 2.0 requirement group scoped to the outcomes that can be meaningfully answ... | framework/configurations/requirement-groups/requirement-group-draft-nist-csf.yaml |
 | 01KQQ4Q027-T3CA | Security and Security Compliance Requirement Group | requirement_group | compliance, controls, baseline, requirement-group | Baseline security and compliance requirement group bundled with DRAFT. Requirements are applied to matching object ty... | framework/configurations/requirement-groups/requirement-group-draft-security-compliance.yaml |
 | 01KQQ4Q027-7JN2 | SOC 2 Requirement Group | requirement_group | compliance, soc2, starter-pack, requirement-group | Initial SOC 2 requirement group based on the AICPA Trust Services Criteria. These requirements use DRAFT applicabilit... | framework/configurations/requirement-groups/requirement-group-draft-soc2.yaml |
@@ -185,13 +184,13 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | STCK00000B-RS0B | Sahara Data Processing Service | runtime_service | runtime-service, openstack, data-processing, sahara, hadoop, iaas | Self-managed deployment of OpenStack Sahara providing data processing cluster orchestration on OpenStack. Runs sahara... | examples/catalog/runtime-services/runtime-service-sahara.yaml |
 | STCK00000C-RS0C | Swift Proxy Service | runtime_service | runtime-service, openstack, object-storage, swift, swift-proxy, iaas | Self-managed deployment of the OpenStack Swift proxy-server providing the API gateway for all object storage operatio... | examples/catalog/runtime-services/runtime-service-swift-proxy.yaml |
 | STCK00000A-RS0A | Trove Database Service | runtime_service | runtime-service, openstack, database-as-a-service, trove, iaas | Self-managed deployment of OpenStack Trove providing database-as-a-service on top of the OpenStack compute platform.... | examples/catalog/runtime-services/runtime-service-trove.yaml |
-| STCK000005-DAR5 | Cinder Database | data_at_rest_service | data-at-rest, openstack, cinder, block-storage, database, mariadb, iaas | MariaDB database schema dedicated to OpenStack Cinder for persisting all block storage service state. Stores volume r... | examples/catalog/data-at-rest-services/data-at-rest-cinder-database.yaml |
-| STCK000003-DAR3 | Glance Database | data_at_rest_service | data-at-rest, openstack, glance, image, database, mariadb, iaas | MariaDB database schema dedicated to OpenStack Glance for persisting virtual machine image metadata. Stores image rec... | examples/catalog/data-at-rest-services/data-at-rest-glance-database.yaml |
-| STCK000002-DAR2 | Keystone Database | data_at_rest_service | data-at-rest, openstack, keystone, identity, database, mariadb, iaas | MariaDB database schema dedicated to OpenStack Keystone for persisting all identity service data. Stores users, group... | examples/catalog/data-at-rest-services/data-at-rest-keystone-database.yaml |
-| STCK000004-DAR4 | Neutron Database | data_at_rest_service | data-at-rest, openstack, neutron, networking, database, mariadb, iaas | MariaDB database schema dedicated to OpenStack Neutron for persisting all network service state. Stores virtual netwo... | examples/catalog/data-at-rest-services/data-at-rest-neutron-database.yaml |
-| STCK000001-DAR1 | Nova Database | data_at_rest_service | data-at-rest, openstack, nova, database, mariadb, iaas | MariaDB database schema dedicated to OpenStack Nova for persisting all compute service state. Stores instance records... | examples/catalog/data-at-rest-services/data-at-rest-nova-database.yaml |
-| STCK000007-DAR7 | OpenStack Shared Database | data_at_rest_service | data-at-rest, openstack, heat, ironic, trove, sahara, ceilometer, database, mariadb, iaas | Shared MariaDB database cluster hosting the schemas for OpenStack services that do not warrant dedicated database obj... | examples/catalog/data-at-rest-services/data-at-rest-openstack-shared-database.yaml |
-| STCK000006-DAR6 | Swift Storage Cluster | data_at_rest_service | data-at-rest, openstack, swift, object-storage, iaas | OpenStack Swift object storage cluster providing durable, distributed storage for unstructured data. Consists of mult... | examples/catalog/data-at-rest-services/data-at-rest-swift-storage-cluster.yaml |
+| STCK000005-DAR5 | Cinder Database | data_store_service | data-at-rest, openstack, cinder, block-storage, database, mariadb, iaas | MariaDB database schema dedicated to OpenStack Cinder for persisting all block storage service state. Stores volume r... | examples/catalog/data-store-services/data-at-rest-cinder-database.yaml |
+| STCK000003-DAR3 | Glance Database | data_store_service | data-at-rest, openstack, glance, image, database, mariadb, iaas | MariaDB database schema dedicated to OpenStack Glance for persisting virtual machine image metadata. Stores image rec... | examples/catalog/data-store-services/data-at-rest-glance-database.yaml |
+| STCK000002-DAR2 | Keystone Database | data_store_service | data-at-rest, openstack, keystone, identity, database, mariadb, iaas | MariaDB database schema dedicated to OpenStack Keystone for persisting all identity service data. Stores users, group... | examples/catalog/data-store-services/data-at-rest-keystone-database.yaml |
+| STCK000004-DAR4 | Neutron Database | data_store_service | data-at-rest, openstack, neutron, networking, database, mariadb, iaas | MariaDB database schema dedicated to OpenStack Neutron for persisting all network service state. Stores virtual netwo... | examples/catalog/data-store-services/data-at-rest-neutron-database.yaml |
+| STCK000001-DAR1 | Nova Database | data_store_service | data-at-rest, openstack, nova, database, mariadb, iaas | MariaDB database schema dedicated to OpenStack Nova for persisting all compute service state. Stores instance records... | examples/catalog/data-store-services/data-at-rest-nova-database.yaml |
+| STCK000007-DAR7 | OpenStack Shared Database | data_store_service | data-at-rest, openstack, heat, ironic, trove, sahara, ceilometer, database, mariadb, iaas | Shared MariaDB database cluster hosting the schemas for OpenStack services that do not warrant dedicated database obj... | examples/catalog/data-store-services/data-at-rest-openstack-shared-database.yaml |
+| STCK000006-DAR6 | Swift Storage Cluster | data_store_service | data-at-rest, openstack, swift, object-storage, iaas | OpenStack Swift object storage cluster providing durable, distributed storage for unstructured data. Consists of mult... | examples/catalog/data-store-services/data-at-rest-swift-storage-cluster.yaml |
 | STCK000001-SDP1 | OpenStack IaaS Platform | software_deployment_pattern | software-deployment-pattern, openstack, iaas, cloud, platform | Full-stack self-managed OpenStack Infrastructure-as-a-Service deployment pattern covering the complete control plane... | examples/catalog/software-deployment-patterns/sdp-openstack-iaas-platform.yaml |
 
 ## Content Folder Counts
@@ -204,11 +203,12 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | examples/catalog/technology-components | 19 |
 | examples/catalog/hosts | 2 |
 | examples/catalog/runtime-services | 14 |
-| examples/catalog/data-at-rest-services | 7 |
+| examples/catalog/data-store-services | 7 |
 | examples/catalog/edge-gateway-services | 0 |
 | examples/catalog/reference-architectures | 0 |
 | examples/catalog/software-deployment-patterns | 1 |
-| examples/catalog/product-services | 0 |
+| examples/catalog/product-components | 0 |
+| examples/catalog/data-components | 0 |
 | examples/catalog/decision-records | 0 |
 | examples/catalog/sessions | 0 |
 
@@ -217,7 +217,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | Path | Purpose |
 |---|---|
 | templates/capability.yaml.tmpl | Reusable YAML authoring template. |
-| templates/data-at-rest-service.yaml.tmpl | Reusable YAML authoring template. |
+| templates/data-store-service.yaml.tmpl | Reusable YAML authoring template. |
 | templates/decision-record.yaml.tmpl | Reusable YAML authoring template. |
 | templates/drafting-session.yaml.tmpl | Reusable YAML authoring template. |
 | templates/edge-gateway-service.yaml.tmpl | Reusable YAML authoring template. |

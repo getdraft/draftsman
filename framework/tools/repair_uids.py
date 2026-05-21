@@ -152,10 +152,12 @@ def legacy_ids_for_path(path: Path, data: dict[str, Any]) -> list[str]:
         return ["host." + stem.removeprefix("host-")]
     if object_type == "runtime_service" and stem.startswith("runtime-service-"):
         return ["runtime-service." + stem.removeprefix("runtime-service-")]
-    if object_type == "data_at_rest_service" and stem.startswith("data-at-rest-service-"):
-        return ["data-at-rest-service." + stem.removeprefix("data-at-rest-service-")]
-    if object_type == "product_service" and stem.startswith("product-service-"):
-        return ["product-service." + stem.removeprefix("product-service-")]
+    if object_type == "data_store_service" and stem.startswith("data-store-service-"):
+        return ["data-store-service." + stem.removeprefix("data-store-service-")]
+    if object_type == "product_component" and stem.startswith("product-component-"):
+        return ["product-component." + stem.removeprefix("product-component-")]
+    if object_type == "data_component" and stem.startswith("data-component-"):
+        return ["data-component." + stem.removeprefix("data-component-")]
     if object_type == "reference_architecture" and stem.startswith("reference-architecture-"):
         return ["reference-architecture." + stem.removeprefix("reference-architecture-")]
     if object_type == "software_deployment_pattern" and stem.startswith("software-deployment-"):

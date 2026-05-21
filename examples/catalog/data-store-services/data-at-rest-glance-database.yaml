@@ -1,6 +1,6 @@
 schemaVersion: '1.0'
 uid: STCK000003-DAR3
-type: data_at_rest_service
+type: data_store_service
 name: Glance Database
 description: 'MariaDB database schema dedicated to OpenStack Glance for persisting
   virtual machine image metadata. Stores image records including name, format, size,
