@@ -3,6 +3,36 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.16.1 - 2026-05-21
+
+### Compatibility Impact
+
+No migration required. This patch adds AI-facing guidance and IDE slash
+commands; it does not change schemas, validation behavior, or catalog object
+formats.
+
+### Added
+
+- Added `framework/commands/` with three Claude Code slash commands:
+  `/draftsman`, `/draft-session`, and `/validate-catalog`.
+- Added setup-mode step 7 with linking instructions for wiring commands into
+  `.claude/commands/` on macOS/Linux and Windows.
+- Added Slash Commands section to `draftsman-ai-configuration.md`.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Existing workspaces can continue unchanged.
+- To enable the slash commands, run the symlink step from setup-mode step 7 once
+  at the workspace root after updating the vendored framework.
+
 ## 0.16.0 - 2026-05-21
 
 ### Compatibility Impact
