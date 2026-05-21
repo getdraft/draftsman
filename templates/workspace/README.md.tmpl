@@ -32,6 +32,21 @@ it, stop and tell the user exactly what they need to enable so the Draftsman
 session can work end to end.
 ```
 
+## Commands
+
+These commands work in any AI IDE. Claude Code users see them in `/` autocomplete;
+all other tools respond when you type them in chat.
+
+| Command | What it does |
+|---|---|
+| `/draftsman [intent]` | Start a Draftsman session. Provide an optional intent or leave it blank to be prompted. |
+| `/draft-session [topic]` | Start or resume a guided Drafting Session for a specific system or product area. |
+| `/validate-catalog` | Run the DRAFT validator and get a grouped, actionable report of any errors or warnings. |
+
+If your AI tool does not respond to slash commands, phrase the request naturally —
+*"Act as a Draftsman and help me draft [system name]."* — and any AI reading
+`AGENTS.md` will pick up the Draftsman role automatically.
+
 ## How This Workspace Works
 
 - `AGENTS.md` is the canonical bootstrap for AI assistants.
