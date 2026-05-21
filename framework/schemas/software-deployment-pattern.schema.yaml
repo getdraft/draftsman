@@ -134,12 +134,13 @@ serviceGroup:
   - name
   - deploymentTarget
   optionalFields:
-  - deploymentTarget
+  - substrate
   - scalingUnit
   - deployableObjects
   - externalInteractions
   - connections
   fieldTypes:
+    substrate: str
     deployableObjects: list
     externalInteractions: list
     connections: list
@@ -147,6 +148,30 @@ serviceGroup:
     deployableObjects: deployableObjectEntry
     externalInteractions: externalInteraction
     connections: serviceConnection
+  fieldDescriptions:
+    substrate: >
+      UID of the RuntimeService, Host, or EdgeGatewayService that hosts the
+      ProductComponents in this service group. When set, the hosting runtime is
+      rendered as the deployment container for this group in the browser and does
+      not need to appear as a separate entry in deployableObjects. List only
+      ProductComponents (and any DataComponents) in deployableObjects. Omit
+      substrate when this service group is a data-tier group whose primary object
+      is a DataStoreService — DataStoreServices remain in deployableObjects because
+      they are connection targets for other groups.
+    deploymentTarget: >
+      Workspace vocabulary value identifying the physical or logical deployment
+      target for this service group (e.g. aws-us-east-1, openstack-controller).
+      Records where this group lands; tier-specific overrides go in
+      tierVariants.serviceGroupVariants.
+  aiHint: >
+    A service group is one deployment unit within an SDP — a set of objects that
+    share a deployment target, network placement, and scaling boundary. Use
+    substrate to declare the hosting runtime (RuntimeService, Host, or
+    EdgeGatewayService) when this group contains ProductComponents; list only the
+    ProductComponents in deployableObjects rather than repeating the runtime
+    alongside them. For data-tier groups whose primary object is a DataStoreService,
+    leave substrate unset and include the DataStoreService in deployableObjects so
+    other groups can reference it in connections.
 deployableObjectEntry:
   requiredFields:
   - ref
@@ -191,7 +216,13 @@ serviceConnection:
     - bidirectional
   fieldDescriptions:
     from: UID of a deployable object ref declared in this serviceGroup's deployableObjects.
-    to: UID of a deployable object ref anywhere in this SDP (may be in another serviceGroup).
+    to: >
+      UID of a deployable object ref anywhere in this SDP (may be in another
+      serviceGroup), or the substrate UID of another serviceGroup. Use the
+      substrate UID when connecting to a DataStoreService that is declared as
+      substrate rather than in deployableObjects — but prefer keeping
+      DataStoreServices in deployableObjects so the connection target is
+      unambiguous.
     protocol: Communication protocol. Use workspace vocabulary list connectionProtocols for approved values.
     direction: Direction from the perspective of the `from` object. Defaults to outbound.
     port: Optional port or port range. Do not ask the engineer for this during a Draftsman session; capture only if volunteered.

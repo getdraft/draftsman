@@ -3018,6 +3018,22 @@ def validate_service_group_structure(
         if scaling_unit_name and scaling_unit_name not in scaling_unit_names:
             failures.append(f"{path}: serviceGroup '{group_name}' references unknown scalingUnit '{scaling_unit_name}'")
 
+        substrate_ref = group.get("substrate")
+        if substrate_ref:
+            substrate_target = catalog_by_id.get(substrate_ref)
+            if not substrate_target:
+                failures.append(
+                    f"{path}: serviceGroup '{group_name}' substrate references unknown object '{substrate_ref}'"
+                )
+            else:
+                substrate_type = substrate_target.get("type")
+                valid_substrate_types = {"runtime_service", "host", "edge_gateway_service"}
+                if substrate_type not in valid_substrate_types:
+                    failures.append(
+                        f"{path}: serviceGroup '{group_name}' substrate must reference a RuntimeService, Host, "
+                        f"or EdgeGatewayService (got type '{substrate_type}')"
+                    )
+
         for entry in group.get("deployableObjects", []) or []:
             if not isinstance(entry, dict):
                 continue

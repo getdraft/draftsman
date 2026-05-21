@@ -70,6 +70,7 @@ LIFECYCLE_COLORS = {
 REF_CONTAINER_KEYS = {
     "ref",
     "runsOn",
+    "substrate",
     "followsReferenceArchitecture",
     "host",
     "primaryTechnologyComponent",
