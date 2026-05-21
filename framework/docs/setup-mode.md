@@ -39,7 +39,7 @@ deliberately queued:
 6. Capability owners identified for the first mapped capabilities.
 7. Acceptable-use Technology Components seeded for the most common standards.
 8. Baseline deployable objects started for common Host, Runtime Service,
-   Data-at-Rest Service, and Edge/Gateway patterns.
+   DataStoreService, and Edge/Gateway patterns.
 9. One real product, system, diagram, repository, or source document selected
    for the first guided Drafting Session.
 
@@ -132,9 +132,45 @@ standards instead of inventing everything.
 Question:
 
 > Which common deployable standard should we draft first: Host, Runtime
-> Service, Data-at-Rest Service, or Edge/Gateway Service?
+> Service, DataStoreService, or Edge/Gateway Service?
 
-### 7. First Real Drafting Session
+### 7. IDE Integration
+
+Wire DRAFT's built-in slash commands into the workspace's IDE command folder so
+the Draftsman and catalog workflows are available as first-class invocable
+commands rather than role-activation phrases.
+
+For Claude Code, run once from the workspace root:
+
+```bash
+mkdir -p .claude/commands
+ln -sf ../../.draft/framework/commands/draftsman.md .claude/commands/draftsman.md
+ln -sf ../../.draft/framework/commands/draft-session.md .claude/commands/draft-session.md
+ln -sf ../../.draft/framework/commands/validate-catalog.md .claude/commands/validate-catalog.md
+```
+
+On Windows (PowerShell as Administrator, or with Developer Mode enabled):
+
+```powershell
+New-Item -ItemType Directory -Force -Path .claude\commands
+New-Item -ItemType SymbolicLink -Path .claude\commands\draftsman.md `
+  -Target ..\..\draft\framework\commands\draftsman.md -Force
+New-Item -ItemType SymbolicLink -Path .claude\commands\draft-session.md `
+  -Target ..\..\draft\framework\commands\draft-session.md -Force
+New-Item -ItemType SymbolicLink -Path .claude\commands\validate-catalog.md `
+  -Target ..\..\draft\framework\commands\validate-catalog.md -Force
+```
+
+Once linked, `/draftsman`, `/draft-session`, and `/validate-catalog` are
+available in any Claude Code session opened at the workspace root. The symlinks
+follow the vendored framework copy, so updating the framework automatically
+updates command behavior without re-linking. Re-run this step if a framework
+update adds new commands.
+
+This step is optional for workspaces that prefer role-activation phrases, but
+it is recommended for teams that want a more consistent, discoverable workflow.
+
+### 8. First Real Drafting Session
 
 Start with one real product or system and capture gaps as work in progress.
 
