@@ -239,6 +239,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | templates/workspace/.windsurfrules.tmpl | DRAFT Draftsman |
 | templates/workspace/AGENTS.md.tmpl | AI Agent Instructions |
 | templates/workspace/CLAUDE.md.tmpl | Claude Instructions |
+| templates/workspace/CODEOWNERS.tmpl | DRAFT Workspace — CODEOWNERS |
 | templates/workspace/GEMINI.md.tmpl | Gemini Instructions |
 | templates/workspace/README.md.tmpl | Company DRAFT Workspace |
 | templates/workspace/llms.txt.tmpl | Company DRAFT Workspace |

@@ -223,7 +223,66 @@ This step is optional for workspaces that prefer role-activation phrases, but
 is recommended for teams who want a consistent, discoverable workflow across
 all AI tools.
 
-### 8. First Real Drafting Session
+### 8. GitHub Governance
+
+Enable branch protection and CODEOWNERS so every catalog change is reviewed by
+the right team before it reaches main. This step wires the three DRAFT roles
+(Draft Admin, Technology Admin, Engineer) to GitHub Teams.
+
+#### 8a. CODEOWNERS file
+
+A `CODEOWNERS.tmpl` template is shipped with the framework. If `.github/CODEOWNERS`
+does not yet exist, generate it from the template and fill in your GitHub org
+slug and team handles:
+
+```bash
+cp .draft/framework/templates/workspace/CODEOWNERS.tmpl .github/CODEOWNERS
+```
+
+Edit `.github/CODEOWNERS`:
+- Replace `YOUR-ORG` with your GitHub organization slug.
+- Set the team handle for `draft-admins` (the team that governs the workspace).
+- Set the team handle for `technology-admins` (the team that owns the shared
+  technology catalog — runtime services, hosts, technology components, edge
+  gateway services, data store services).
+- Add one line per engineering team for their catalog path:
+  `catalog/engineering/[team-slug]/   @YOUR-ORG/[github-team-slug]`
+
+Questions:
+
+> What is your GitHub organization slug?
+
+> Which GitHub team should be the Draft Admin (governs workspace config,
+> vocabulary, and requirement groups)?
+
+> Which GitHub team should be the Technology Admin (owns the shared technology
+> catalog)?
+
+> Which engineering teams need CODEOWNERS lines, and what are their GitHub team
+> slugs?
+
+#### 8b. Branch protection
+
+Enable branch protection on `main` so pull request review is required before
+merging. Run this once using the GitHub CLI (requires admin access to the repo):
+
+```bash
+gh api repos/YOUR-ORG/YOUR-REPO/branches/main/protection \
+  --method PUT \
+  --field required_status_checks=null \
+  --field enforce_admins=false \
+  --field required_pull_request_reviews='{"required_approving_review_count":1,"dismiss_stale_reviews":true}' \
+  --field restrictions=null
+```
+
+Or enable it manually in the repository Settings → Branches → Branch protection
+rules → Require a pull request before merging.
+
+Once branch protection is active, the Draftsman will automatically create a
+branch for each session and open a pull request at the end. CODEOWNERS routes
+that PR to the correct reviewers without any additional configuration.
+
+### 9. First Real Drafting Session
 
 Start with one real product or system and capture gaps as work in progress.
 

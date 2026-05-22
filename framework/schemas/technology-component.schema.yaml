@@ -14,6 +14,7 @@ optionalFields:
 - aliases
 - description
 - version
+- ownerRole
 - owner
 - tags
 - subtype
@@ -27,6 +28,10 @@ optionalFields:
 - controlReferences
 - notes
 enumFields:
+  ownerRole:
+  - engineer
+  - technology-admin
+  - draft-admin
   catalogStatus:
   - stub
   - draft

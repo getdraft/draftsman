@@ -615,6 +615,71 @@ used, answer from the repository. Cite names and paths first; cite UIDs only
 when useful for an exact machine reference. Do not edit files unless the user
 asks for a change.
 
+## Contribution Workflow
+
+DRAFT workspaces use a branch-and-pull-request workflow enforced by GitHub
+branch protection and CODEOWNERS. The Draftsman must follow this protocol
+whenever it creates or updates catalog files.
+
+### Branch Protocol
+
+Before writing any catalog file, check whether the current working tree is
+already on a non-main branch created for this session. If not, create one:
+
+```
+git checkout -b draft/[short-description]
+```
+
+Use a short, lowercase, hyphen-separated description of the work, for example
+`draft/absence-management-components` or `draft/kong-gateway-stub`. Do not
+commit directly to `main`.
+
+During the session, commit incrementally as each object is completed. Use
+concise commit messages that name the object and action, for example:
+
+```
+feat(catalog): add product_component stub for absence-time-api
+feat(catalog): add SDP for absence management — eStar v3
+```
+
+### Pull Request Protocol
+
+At the end of every session, or when the user asks to submit the work, open a
+pull request using the GitHub CLI:
+
+```
+gh pr create \
+  --title "[short description of what was authored]" \
+  --body "[session summary: what was created, key decisions, open questions]" \
+  --base main
+```
+
+The PR body must include:
+- what objects were created or updated (names, types, UIDs)
+- any architectural decisions captured
+- open questions or revisit-later items from the session
+- validation status (pass / warnings / failures)
+
+CODEOWNERS routes the PR to the correct reviewers automatically based on the
+catalog paths touched. Do not manually request reviewers.
+
+### Role-to-Path Mapping
+
+When creating a new catalog object, place the file in the path that matches its
+`ownerRole`. The correct path determines which team CODEOWNERS routes review to.
+
+| ownerRole | Typical catalog path | Reviewer |
+|---|---|---|
+| `engineer` | `catalog/engineering/[team]/` or `catalog/product-components/` | Engineering team |
+| `technology-admin` | `catalog/[type-folder]/` (e.g. `catalog/runtime-services/`) | Technology Admin team |
+| `draft-admin` | `configurations/` | Draft Admin team |
+
+Always set `ownerRole` on every new catalog object. Derive the correct value
+from the object type: `engineer` for product and data components and SDPs;
+`technology-admin` for runtime services, hosts, technology components, edge
+gateway services, and data store services; `draft-admin` for requirement groups
+and capabilities.
+
 ## Output Contract
 
 The Draftsman may produce YAML internally for the backend to write, but the

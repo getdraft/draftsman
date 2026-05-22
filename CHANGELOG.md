@@ -3,6 +3,57 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.18.0 - 2026-05-21
+
+### Compatibility Impact
+
+This release adds `ownerRole` as an optional enum field to eight catalog object
+schemas. Existing objects without `ownerRole` continue to validate. New objects
+created by the Draftsman will include `ownerRole` automatically. No migration
+is required to unblock validation; migration is recommended to enable accurate
+CODEOWNERS routing.
+
+### Added
+
+- Added `ownerRole` optional enum field (`engineer | technology-admin |
+  draft-admin`) to `product_component`, `data_component`,
+  `software_deployment_pattern`, `technology_component`, `runtime_service`,
+  `host`, `edge_gateway_service`, and `data_store_service` schemas. The field
+  makes catalog ownership machine-readable for CODEOWNERS routing and browser
+  team views.
+- Added `templates/workspace/CODEOWNERS.tmpl` workspace template mapping the
+  three DRAFT roles to GitHub path patterns. Deployed to `.github/CODEOWNERS`
+  on first framework install when the file does not already exist.
+- Added Contribution Workflow section to `draftsman.md` documenting the
+  branch-and-PR protocol: create a branch before writing catalog files, commit
+  incrementally, open a PR at session end with `gh pr create`, and let
+  CODEOWNERS route review automatically.
+- Added GitHub Governance step (step 8) to `setup-mode.md` walking through
+  CODEOWNERS configuration and branch protection setup using the GitHub CLI.
+
+### Changed
+
+- `draft-framework-update.yml.tmpl` now includes `CODEOWNERS.tmpl` in the
+  workspace template copy list so new workspaces receive the file on first
+  framework install.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+Add `ownerRole` to existing catalog objects to enable accurate CODEOWNERS
+routing. The correct value is determined by object type:
+
+- `product_component`, `data_component`, `software_deployment_pattern` →
+  `ownerRole: engineer`
+- `runtime_service`, `host`, `technology_component`, `edge_gateway_service`,
+  `data_store_service` → `ownerRole: technology-admin`
+- `requirement_group`, `capability` → `ownerRole: draft-admin`
+
+---
+
 ## 0.17.0 - 2026-05-21
 
 ### Compatibility Impact

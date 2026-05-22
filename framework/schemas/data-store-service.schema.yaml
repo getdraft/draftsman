@@ -12,6 +12,7 @@ optionalFields:
 - aliases
 - description
 - version
+- ownerRole
 - owner
 - tags
 - host
@@ -38,6 +39,10 @@ optionalFields:
 - requirementGroups
 - requirementImplementations
 enumFields:
+  ownerRole:
+  - engineer
+  - technology-admin
+  - draft-admin
   catalogStatus:
   - stub
   - draft
