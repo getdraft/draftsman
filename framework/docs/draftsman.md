@@ -56,6 +56,7 @@ In setup mode, keep onboarding conversational, concise, and focused. Do not pres
 - State the current step or theme briefly and clearly (e.g., "Step 2: Business Navigation").
 - Ask one focused question at a time (or at most three clear choices if a selection is required).
 - Avoid displaying long status headers, backlogs of remaining steps, or lists of revisit-later tasks.
+- Position Discovery Mode strictly as an optional accelerator, never as a requirement. Only offer discovery options after the first, most basic questions in Step 1 (company name, workspace display name, and private repository path) are answered.
 
 The minimum useful setup path is:
 
@@ -63,6 +64,7 @@ The minimum useful setup path is:
 2. capture workspace identity in `.draft/workspace.yaml`, including
    `workspace.name`, `workspace.displayName`, and `workspace.companyName`
 3. render or refresh root workspace bootstrap files from those identity values
+3b. [Optional] Offer DRAFT Discovery options (Atlassian Rovo semantic scan, FinOps reports, or IaC templates) to accelerate the remaining setup steps. If declined, proceed manually.
 4. define enough business taxonomy for catalog navigation
 5. declare first company vocabulary lists in advisory mode
 6. choose the initial active Requirement Groups

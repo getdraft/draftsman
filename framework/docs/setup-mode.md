@@ -30,6 +30,7 @@ deliberately queued:
    `.draft/framework/`.
 2. Workspace identity populated in `.draft/workspace.yaml`, including
    `workspace.name`, `workspace.displayName`, and `workspace.companyName`.
+2b. [Optional] DRAFT Discovery options offered to accelerate onboarding setup.
 3. Business taxonomy defined well enough for catalog navigation.
 4. First company vocabulary lists declared in advisory mode, or deliberately
    queued for later.
@@ -82,6 +83,21 @@ Questions:
 Record the repo metadata in `.draft/workspace.yaml` before rendering templates:
 provider, owner, repo name, and default branch. The generated README prompt
 should tell the AI exactly which repo to connect to.
+
+### 1b. [Optional] Discovery Integration
+
+After workspace readiness is established (basic questions like repo path, company name, and workspace name are answered), present Discovery Mode as an optional value-add accelerator to automate the subsequent onboarding setup. Position it strictly as an option, never as a requirement. 
+
+If the user declines, proceed directly to **Step 2: Business Navigation**.
+
+If they are interested, offer the following discovery methods:
+- **Atlassian Rovo (Semantic Discovery)**: The Draftsman provides a copy-paste prompt for their enterprise Rovo agent to scan Confluence spaces, Jira projects, and JSM databases for pillars, teams, and active services.
+- **FinOps & Cloud Billing (Operational Discovery)**: Ingesting read-only static cost or infrastructure reports (such as AWS Cost and Usage Reports or CloudHealth spreadsheets) to identify actual running server and database substrates.
+- **IaC Snapshot (Structure Discovery)**: Ingesting read-only Terraform `.tfstate` snapshots or CloudFormation templates to map deployed components.
+
+Question:
+
+> Would you like to use DRAFT Discovery Mode to automatically scan and import your engineering taxonomy, business pillars, and active services (via Atlassian Rovo, CloudHealth billing reports, or Terraform state)? If yes, which method would you like to explore first? If no, we can configure them manually.
 
 ### 2. Business Navigation
 
