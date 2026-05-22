@@ -234,6 +234,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | templates/workspace/.github/copilot-instructions.md.tmpl | Copilot Instructions |
 | templates/workspace/.github/workflows/draft-framework-update.yml.tmpl | Reusable YAML authoring template. |
 | templates/workspace/.github/workflows/draft-vocabulary-proposals.yml.tmpl | DRAFT Vocabulary Proposal PRs |
+| templates/workspace/.github/workflows/generate-browser.yml.tmpl | Reusable YAML authoring template. |
 | templates/workspace/.gitignore.tmpl | Reusable YAML authoring template. |
 | templates/workspace/.windsurfrules.tmpl | DRAFT Draftsman |
 | templates/workspace/AGENTS.md.tmpl | AI Agent Instructions |

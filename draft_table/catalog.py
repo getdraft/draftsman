@@ -36,7 +36,7 @@ REFERENCE_KEYS = {
     "computePlatformComponent",
     "inherits",
     "platformDependency",
-    "linkedSoftwareDeployment",
+    "linkedObject",
     "primaryObjectUid",
     "riskRef",
     "domain",

@@ -78,7 +78,7 @@ REF_CONTAINER_KEYS = {
     "computePlatformComponent",
     "inherits",
     "platformDependency",
-    "linkedSoftwareDeployment",
+    "linkedObject",
     "primaryObjectUid",
     "riskRef",
     "controls",
@@ -106,9 +106,30 @@ def is_general_service(obj: dict[str, Any]) -> bool:
     return obj.get("type") == "runtime_service"
 
 
-def discover_yaml_files(root: Path) -> list[Path]:
+def load_workspace_catalog_folders(workspace_root: Path) -> list[str] | None:
+    """Read optional paths.catalogFolders from workspace.yaml, or None to use framework defaults."""
+    config_path = workspace_root / ".draft" / "workspace.yaml"
+    if not config_path.exists():
+        return None
+    try:
+        data = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+    except Exception:
+        return None
+    if not isinstance(data, dict):
+        return None
+    paths = data.get("paths")
+    if not isinstance(paths, dict):
+        return None
+    folders = paths.get("catalogFolders")
+    if not isinstance(folders, list) or not folders:
+        return None
+    return [str(f) for f in folders if str(f).strip()]
+
+
+def discover_yaml_files(root: Path, folder_names: list[str] | None = None) -> list[Path]:
+    folders = folder_names if folder_names is not None else CATALOG_FOLDERS
     files: list[Path] = []
-    for folder_name in CATALOG_FOLDERS:
+    for folder_name in folders:
         folder = root / folder_name
         if not folder.exists():
             continue
@@ -287,8 +308,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 def load_objects(workspace_root: Path) -> dict[str, dict[str, Any]]:
     objects: dict[str, dict[str, Any]] = {}
+    catalog_folders = load_workspace_catalog_folders(workspace_root)
+    workspace_catalog = workspace_root / "catalog"
     for root in workspace_yaml_roots(workspace_root):
-        for path in discover_yaml_files(root):
+        folder_override = catalog_folders if (catalog_folders is not None and root == workspace_catalog) else None
+        for path in discover_yaml_files(root, folder_override):
             with path.open("r", encoding="utf-8") as handle:
                 data = yaml.safe_load(handle) or {}
             if isinstance(data, dict) and data.get("uid"):
@@ -742,7 +766,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
                 "mitigationPath": obj.get("mitigationPath", ""),
                 "decisionRationale": obj.get("decisionRationale", ""),
                 "relatedDecisionRecords": obj.get("relatedDecisionRecords", []),
-                "linkedSoftwareDeployment": obj.get("linkedSoftwareDeployment", ""),
+                "linkedObject": obj.get("linkedObject", ""),
                 "primaryObjectType": obj.get("primaryObjectType", ""),
                 "primaryObjectUid": obj.get("primaryObjectUid", ""),
                 "generatedObjects": obj.get("generatedObjects", []),

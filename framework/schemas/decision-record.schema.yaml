@@ -21,7 +21,7 @@ optionalFields:
 - decisionRationale
 - relatedDecisionRecords
 - controlReferences
-- linkedSoftwareDeployment
+- linkedObject
 enumFields:
   catalogStatus:
   - stub
@@ -63,4 +63,5 @@ fieldDescriptions:
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired where this object still carries a lifecycle signal.
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name, product-name, or taxonomy changes.
   aliases: List prior or alternate human-readable names that should resolve to this object.
+  linkedObject: UID of the catalog object (any type) most directly affected by or related to this decision or risk.
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$

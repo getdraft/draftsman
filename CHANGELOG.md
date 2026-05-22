@@ -3,6 +3,50 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.17.0 - 2026-05-21
+
+### Compatibility Impact
+
+This release renames the `decision_record` field `linkedSoftwareDeployment` to
+`linkedObject`. Existing YAML files that use `linkedSoftwareDeployment` will
+continue to pass validation (the old field is not flagged as an error), but the
+browser cross-reference index will not follow the old field name. Migrate by
+renaming the field to `linkedObject` in each affected decision record.
+
+### Added
+
+- Added `generate-browser.yml.tmpl` workflow template. Workspaces that apply
+  a framework update will now receive a ready-made GitHub Actions workflow that
+  regenerates `docs/index.html`, `docs/assets/`, and `docs/user-manual.html`
+  on every push to `main` that touches a YAML file, browser asset, or
+  framework tool. The workflow commits with `[skip ci]` to avoid feedback loops.
+- Added `paths.catalogFolders` workspace configuration. Set this list in
+  `.draft/workspace.yaml` under a `paths:` key to declare which subdirectory
+  names inside `catalog/` the browser generator and cross-reference index should
+  scan. When unset the framework's default folder list is used. This enables
+  team-namespaced catalog structures such as `catalog/engineering/[team]/` and
+  `catalog/infrastructure/` without any code changes.
+
+### Changed
+
+- Renamed `decision_record` optional field `linkedSoftwareDeployment` →
+  `linkedObject`. The new field accepts the UID of any catalog object type,
+  not just software deployment patterns. This allows a decision record to link
+  directly to a `data_store_service`, `runtime_service`, `host`, or any other
+  catalog object that is the subject of the recorded decision or risk.
+- Updated `generate_browser.py` REF_CONTAINER_KEYS and rendering to use
+  `linkedObject` in place of `linkedSoftwareDeployment`.
+
+### Fixed
+
+- `draft_table/catalog.py` REF_CONTAINER_KEYS updated to match the schema
+  rename from `linkedSoftwareDeployment` to `linkedObject`.
+
+### Migration Notes
+
+Rename `linkedSoftwareDeployment` to `linkedObject` in every
+`decision_record` YAML file. The value (a UID string) is unchanged.
+
 ## 0.16.3 - 2026-05-21
 
 ### Compatibility Impact
