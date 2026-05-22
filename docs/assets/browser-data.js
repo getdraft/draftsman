@@ -10702,6 +10702,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -10726,6 +10727,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -10870,6 +10876,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -10894,6 +10901,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -11028,6 +11040,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -11052,6 +11065,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -11231,6 +11249,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -11255,6 +11274,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -11395,6 +11419,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -11419,6 +11444,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -11557,6 +11587,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -11581,6 +11612,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -11719,6 +11755,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -11743,6 +11780,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -11882,6 +11924,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -11906,6 +11949,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -12045,6 +12093,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -12069,6 +12118,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -12208,6 +12262,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -12232,6 +12287,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -12371,6 +12431,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -12395,6 +12456,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -12534,6 +12600,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -12558,6 +12625,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -12696,6 +12768,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -12720,6 +12793,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -12859,6 +12937,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -12883,6 +12962,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -13029,6 +13113,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -13053,6 +13138,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -13192,6 +13282,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -13216,6 +13307,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -13378,6 +13474,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -13402,6 +13499,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -13541,6 +13643,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -13565,6 +13668,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -13692,6 +13800,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -13716,6 +13825,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -13944,6 +14058,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "requirementGroups",
@@ -13967,6 +14082,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -14130,6 +14250,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "requirementGroups",
@@ -14153,6 +14274,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -14338,6 +14464,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -14380,6 +14507,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -14594,6 +14726,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -14636,6 +14769,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -14855,6 +14993,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -14897,6 +15036,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -15116,6 +15260,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -15158,6 +15303,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -15377,6 +15527,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -15419,6 +15570,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -15657,6 +15813,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -15699,6 +15856,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -15924,6 +16086,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -15966,6 +16129,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -16185,6 +16353,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -16227,6 +16396,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -16447,6 +16621,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -16489,6 +16664,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -16726,6 +16906,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -16768,6 +16949,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -16975,6 +17161,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -17017,6 +17204,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -17231,6 +17423,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -17273,6 +17466,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -17487,6 +17685,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -17529,6 +17728,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -17748,6 +17952,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -17790,6 +17995,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -18011,6 +18221,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -18053,6 +18264,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -18274,6 +18490,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -18316,6 +18533,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -18537,6 +18759,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -18579,6 +18802,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -18800,6 +19028,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -18842,6 +19071,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -19062,6 +19296,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -19104,6 +19339,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -19328,6 +19568,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -19370,6 +19611,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -19589,6 +19835,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -19631,6 +19878,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -20438,6 +20690,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "businessContext",
@@ -20460,6 +20713,11 @@ window.DRAFT_BROWSER_DATA = {
           "architecturalDecisions": "dict"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -31192,6 +31450,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -31216,6 +31475,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -31360,6 +31624,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -31384,6 +31649,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -31518,6 +31788,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -31542,6 +31813,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -31721,6 +31997,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -31745,6 +32022,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -31885,6 +32167,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -31909,6 +32192,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -32047,6 +32335,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -32071,6 +32360,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -32209,6 +32503,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -32233,6 +32528,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -32372,6 +32672,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -32396,6 +32697,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -32535,6 +32841,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -32559,6 +32866,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -32698,6 +33010,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -32722,6 +33035,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -32861,6 +33179,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -32885,6 +33204,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -33024,6 +33348,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -33048,6 +33373,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -33186,6 +33516,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -33210,6 +33541,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -33349,6 +33685,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -33373,6 +33710,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -33519,6 +33861,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -33543,6 +33886,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -33682,6 +34030,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -33706,6 +34055,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -33868,6 +34222,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -33892,6 +34247,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -34031,6 +34391,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -34055,6 +34416,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -34182,6 +34548,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -34206,6 +34573,11 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -34434,6 +34806,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "requirementGroups",
@@ -34457,6 +34830,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -34620,6 +34998,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "requirementGroups",
@@ -34643,6 +35022,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -34828,6 +35212,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -34870,6 +35255,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -35084,6 +35474,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -35126,6 +35517,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -35345,6 +35741,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -35387,6 +35784,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -35606,6 +36008,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -35648,6 +36051,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -35867,6 +36275,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -35909,6 +36318,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -36147,6 +36561,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -36189,6 +36604,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -36414,6 +36834,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -36456,6 +36877,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -36675,6 +37101,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -36717,6 +37144,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -36937,6 +37369,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -36979,6 +37412,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -37216,6 +37654,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -37258,6 +37697,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -37465,6 +37909,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -37507,6 +37952,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -37721,6 +38171,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -37763,6 +38214,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -37977,6 +38433,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -38019,6 +38476,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -38238,6 +38700,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -38280,6 +38743,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -38501,6 +38969,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -38543,6 +39012,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -38764,6 +39238,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -38806,6 +39281,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -39027,6 +39507,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -39069,6 +39550,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -39290,6 +39776,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -39332,6 +39819,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -39552,6 +40044,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -39594,6 +40087,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -39818,6 +40316,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -39860,6 +40359,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -40079,6 +40583,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -40121,6 +40626,11 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
@@ -40928,6 +41438,7 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
+          "ownerRole",
           "owner",
           "tags",
           "businessContext",
@@ -40950,6 +41461,11 @@ window.DRAFT_BROWSER_DATA = {
           "architecturalDecisions": "dict"
         },
         "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
           "catalogStatus": [
             "stub",
             "draft",
