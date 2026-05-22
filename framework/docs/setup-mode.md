@@ -11,17 +11,15 @@ DRAFT-specific CLI is required for the v1.0 path.
 
 ## Setup Mode Contract
 
-When setup mode starts, the Draftsman must show:
+When setup mode starts, the Draftsman must keep the onboarding conversational, concise, and focused. Avoid presenting heavy system summaries, checklists of "what is next/remaining," or excessive manual documentation during active setup steps. Keep the current step clear but extremely brief, and focus on the immediate question.
 
-- current step
-- next step
-- what remains after the current step
-- what can be revisited later
-- one focused question, or at most three questions when the team needs choices
-
-The Draftsman should not ask for UIDs, YAML fields, schema names, or exhaustive
-inventories. It should use plain architecture language and record revisit-later
-items instead of forcing perfect answers.
+The Draftsman should:
+- State the current theme/step briefly (e.g., "Step 2: Business Navigation").
+- Ask one focused question at a time (or at most three clear choices if a selection is required).
+- Avoid displaying long status headers, backlogs of remaining steps, or lists of revisit-later tasks.
+- Translate all camelCase schema/YAML fields into clear, capitalized, user-friendly labels (e.g., use "Data Classification Levels" instead of `dataClassificationLevels`, and "Deployment Targets" instead of `deploymentTargets`). Do not expose raw camelCase fields or technical schema keys directly to the user.
+- When asking about a governed vocabulary or taxonomy choice, provide 1–2 simple sentences explaining *why* you are asking and *how* that choice affects the architecture catalog (e.g., how it will group services, drive validation, or enable search filters) rather than assuming the user already knows.
+- Never ask for UIDs, YAML fields, schema names, or exhaustive inventories. It should use plain architecture language and record revisit-later items instead of forcing perfect answers.
 
 ## Minimum Useful Setup
 
@@ -51,13 +49,13 @@ is complete.
 
 Every setup or drafting session should feel like a guided conversation:
 
-- Start with the intended outcome.
-- Explain what the Draftsman already knows from the repo.
+- Start with the intended outcome in 1-2 brief sentences.
+- Explain what the Draftsman already knows from the repo concisely.
 - Ask only for the missing fact needed for the current step.
 - Prefer multiple-choice questions when the catalog has approved options.
-- Keep a short visible backlog of remaining setup work.
-- Mark uncertain answers as assumptions or Drafting Session questions.
-- Summarize what changed, what validation says, and what the next useful action is.
+- Avoid displaying walls of text or lists of remaining/revisit-later steps during active onboarding.
+- Mark uncertain answers as assumptions or Drafting Session questions behind the scenes.
+- Summarize only the immediate, key change and validation status in 1-2 brief sentences.
 
 Audience matters. Architects can answer governance, lifecycle, and pattern
 questions. Engineers can answer runtime, dependency, port, platform, and
@@ -293,28 +291,14 @@ Question:
 
 ## Good Setup Output
 
-A good setup-mode response looks like this:
+A good setup-mode response is conversational, concise, and focused. It avoids checklists of remaining work and explains the context of vocabulary/taxonomy choices in a human-friendly way:
 
 ```text
 Setup mode is active.
 
-Current state:
-- Workspace: /path/to/company-draft
-- Framework copy: present
-- Business taxonomy: 4 pillars
-- Company vocabulary: teams and deployment targets advisory
-- Active Requirement Groups: 1 active group
-- Capability ownership: 5 of 8 mapped capabilities have owners
-- Company catalog baseline: 12 Technology Components, 3 deployable standards
+We've successfully verified your workspace at `/path/to/company-draft` and confirmed your base governance configurations are loaded.
 
-Next: pick one real product, diagram, repository, or source document and start
-the first focused Drafting Session.
+Before we begin drafting your first service, we need to map your Business Pillars. These pillars represent the primary business divisions (like Core Infrastructure or Retail Operations) and will organize your architecture catalog so engineers can easily find and filter the services they need.
 
-Left after that: finish acceptable-use mappings, draft missing baseline
-standards, validate, and review the generated browser.
-
-Can revisit later: taxonomy names, active governance groups, lifecycle choices,
-availability tiers, failure domains, and incomplete object details.
-
-Question: Which real product or system should we draft first?
+Question: What are the first 3 to 7 Business Pillars or product groupings used at your company?
 ```
