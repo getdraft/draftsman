@@ -2827,6 +2827,10 @@ html, body {
 .sdp-object-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 .sdp-object-grid .home-tile { min-height: 180px; justify-content: flex-start; }
 
+/* ── Teams grouped by business pillar ───────────────────────────── */
+.teams-by-pillar { display: flex; flex-direction: column; gap: 8px; }
+.teams-pillar-section + .teams-pillar-section { margin-top: 16px; }
+
 /* SDP lifecycle sections (pillar drill-down) */
 .sdp-lifecycle-sections {
   display: flex;
