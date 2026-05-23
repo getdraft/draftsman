@@ -3016,6 +3016,39 @@ function teamDisplayName(teamId) {
 }
 
 // ── Teams tile view ─────────────────────────────────────────────────
+function teamPillarGroups(teamMap) {
+  const pillars = (browserData.businessTaxonomy?.pillars || []);
+
+  // Infer each team's primary pillar from the first SDP they own that has one
+  const teamToPillar = new Map();
+  [...teamMap.entries()].forEach(([teamId, objects]) => {
+    for (const obj of objects) {
+      if (obj.type === 'software_deployment_pattern') {
+        const pillarId = obj.businessContext?.pillar;
+        if (pillarId) { teamToPillar.set(teamId, pillarId); break; }
+      }
+    }
+  });
+
+  // Bucket teams by pillar, preserving declared pillar order
+  const pillarBuckets = new Map(pillars.map(p => [p.id, { pillar: p, teams: [] }]));
+  const unaffiliated = [];
+  [...teamMap.keys()].forEach(teamId => {
+    const pillarId = teamToPillar.get(teamId);
+    if (pillarId && pillarBuckets.has(pillarId)) {
+      pillarBuckets.get(pillarId).teams.push(teamId);
+    } else {
+      unaffiliated.push(teamId);
+    }
+  });
+
+  const groups = [...pillarBuckets.values()].filter(b => b.teams.length);
+  if (unaffiliated.length) {
+    groups.push({ pillar: { id: '__unaffiliated', name: 'Platform & Shared Services' }, teams: unaffiliated });
+  }
+  return groups;
+}
+
 function renderTeamsView() {
   currentMode = 'teams';
   currentDetailId = null;
@@ -3026,25 +3059,38 @@ function renderTeamsView() {
   renderSidebarContent('');
 
   const teamMap = buildTeamMap();
-  const tiles = [...teamMap.entries()].map(([teamId, objects]) => {
+
+  const makeTile = teamId => {
+    const objects = teamMap.get(teamId);
     const label = teamDisplayName(teamId);
-    const count = objects.length;
     return `
       <div class="home-tile team-tile" role="button" tabindex="0"
            data-executive-target="team-detail:${escapeHtml(teamId)}">
         <span class="home-tile-icon">👥</span>
         <span class="home-tile-title">${escapeHtml(label)}</span>
-        <span class="home-tile-count">${count} object${count === 1 ? '' : 's'}</span>
+        <span class="home-tile-count">${objects.length} object${objects.length === 1 ? '' : 's'}</span>
       </div>
     `;
-  }).join('');
+  };
+
+  const groups = teamPillarGroups(teamMap);
+  const hasPillars = groups.some(g => g.pillar.id !== '__unaffiliated');
+
+  const sectionsHtml = hasPillars
+    ? groups.map(({ pillar, teams }) => `
+        <section class="teams-pillar-section">
+          <h2 class="rg-section-heading teams-pillar-heading">${escapeHtml(pillar.name)}</h2>
+          <div class="home-tiles team-tile-grid">${teams.map(makeTile).join('')}</div>
+        </section>
+      `).join('')
+    : `<div class="home-tiles team-tile-grid">${[...teamMap.keys()].map(makeTile).join('')}</div>`;
 
   pageRoot.innerHTML = `
     <div class="view-shell">
       ${topNavMarkup()}
       ${subviewHeaderMarkup('Home', 'home', 'Teams', `${teamMap.size} team${teamMap.size === 1 ? '' : 's'} with owned objects`)}
-      <div class="home-tiles team-tile-grid">
-        ${tiles || '<p class="empty-state">No team ownership assigned to any objects yet.</p>'}
+      <div class="teams-by-pillar">
+        ${sectionsHtml || '<p class="empty-state">No team ownership assigned to any objects yet.</p>'}
       </div>
     </div>
   `;
