@@ -69,7 +69,7 @@ groups it architects against:
 requirements:
   activeRequirementGroups:
     - <soc2-requirement-group-uid>
-    - <company-roper-requirement-group-uid>
+    - <company-requirement-group-uid>
   requireActiveRequirementGroupDisposition: false
 ```
 

@@ -179,7 +179,7 @@ A Reference Architecture should be generic enough to guide many products, not ju
    from an external control source.
 7. Set `authority.shortName` when the group maps external or named framework
    controls so generated UI can cite labels like `SOC 2.CC7` or
-   `Roper.CC.04.4.1` instead of raw requirement group UIDs.
+   `CompanyPolicy.IAM.04` instead of raw requirement group UIDs.
 8. Activate workspace-mode groups in `.draft/workspace.yaml` only when the
    company wants Draftsman and validation to use them for authoring.
 9. Run validation.

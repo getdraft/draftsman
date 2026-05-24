@@ -240,9 +240,9 @@ For each active requirement:
 
 Example wording:
 
-> `Roper.CC.09.1.3` requires a web application firewall in front of in-scope
-> services. Frontline's approved WAF choices are Imperva and Signal Sciences.
-> Which are you using: Imperva, Signal Sciences, or something else?
+> `CompanyPolicy.NET.03` requires a web application firewall in front of in-scope
+> services. The company's approved WAF choices are listed in the capability catalog.
+> Which are you using, or do you need to propose a new implementation?
 
 If no approved implementation exists, ask a bounded question that names the
 capability and owner. For example: "`DRAFT Host / authentication` requires an
@@ -344,7 +344,7 @@ Objects use:
 
 When speaking to a user, cite requirements by their human label instead of raw
 UIDs. Use `authority.shortName` plus the requirement `id` for external controls,
-such as `SOC 2.CC7.security-monitoring` or `Roper.CC.04.4.1`. Use the DRAFT
+such as `SOC 2.CC7.security-monitoring` or `CompanyPolicy.IAM.04`. Use the DRAFT
 group label for framework-native requirements, such as
 `DRAFT Host / log-management`.
 

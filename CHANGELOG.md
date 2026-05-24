@@ -19,7 +19,7 @@ notes, including patch releases.
   job, retention policy, and data classification declarations.
 - Added `examples/catalog/decision-records/dr-openstack-no-waf-internal-only.yaml`:
   accepted decision record explaining why no WAF is required for the internal-only
-  OpenStack deployment, with control reference to Roper.cc.09.1.3.
+  OpenStack deployment.
 - Added `examples/catalog/sessions/session-openstack-ha-proxy-edge-service.yaml`:
   drafting session stub capturing unresolved questions about the HAProxy edge
   gateway service topology; demonstrates the session object model.
@@ -1151,7 +1151,7 @@ human-readable requirement label rollout in validation messages.
 ### Changed
 
 - Changed remaining requirement implementation validation messages to cite
-  source-aware labels such as `Roper.CC.03.2.3` and
+  source-aware labels such as `SOC 2.CC7.security-monitoring` and
   `DRAFT Host / operating-system`.
 
 ### Fixed
@@ -1177,7 +1177,7 @@ messages now resolve those keys into human-readable requirement citations.
 
 - Added `authority.shortName` guidance for Requirement Groups so external
   controls can render as labels such as `SOC 2.CC7.security-monitoring`,
-  `NIST CSF.PR.AA`, `TX-RAMP.AC-2`, or `Roper.CC.04.4.1`.
+  `NIST CSF.PR.AA`, `TX-RAMP.AC-2`, or `CompanyPolicy.IAM.04`.
 - Added explicit DRAFT authority metadata to framework-native always-on
   Requirement Groups so they render as labels such as
   `DRAFT Host / operating-system`.
@@ -1198,7 +1198,7 @@ messages now resolve those keys into human-readable requirement citations.
 ### Fixed
 
 - Fixed ambiguous requirement/control display where controls such as `CC.04.4.1`
-  appeared without showing whether they came from Roper, SOC 2, DRAFT Security,
+  appeared without showing whether they came from SOC 2, DRAFT Security,
   or another activated Requirement Group.
 
 ### Migration Notes

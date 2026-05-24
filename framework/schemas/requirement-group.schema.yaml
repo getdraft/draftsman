@@ -54,7 +54,7 @@ fieldDescriptions:
   description: Explain what this group requires and when the Draftsman should apply it.
   catalogStatus: Use catalog maturity for the requirement group definition.
   owner: Identify the team accountable for maintaining this requirement group.
-  authority: Identify the source authority for external or framework-owned requirements; use authority.shortName as the human citation prefix, such as SOC 2, NIST CSF, TX-RAMP, Roper, or DRAFT Security.
+  authority: Identify the source authority for external or framework-owned requirements; use authority.shortName as the human citation prefix, such as SOC 2, NIST CSF, TX-RAMP, or DRAFT Security.
   activation: Use always for base authoring requirements or workspace for explicitly activated compliance/control groups.
   appliesTo: List object types governed by this group.
   requirements: List the requirement entries the Draftsman asks and the validator checks.
