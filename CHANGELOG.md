@@ -3,6 +3,57 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.19.0 - 2026-05-24
+
+### Compatibility Impact
+
+This release makes `ref` optional in Reference Architecture `deployableObjects`
+entries and adds an `objectType` field. Existing RAs with `ref`-based entries
+continue to validate unchanged. The change enables framework-level and community
+RAs that declare expected object types without pinning to company-specific catalog
+UIDs.
+
+### Added
+
+- Added `framework/configurations/reference-architectures/` directory. Framework
+  RAs are vendored into company workspaces alongside requirement groups and
+  capability definitions. Companies adopt them by referencing the RA UID in
+  `followsReferenceArchitecture` on an SDP; adoption is opt-in.
+- Added three baseline framework RAs: Three-Tier Web Application
+  (`01KS8N4KR2-3TWA`), Multi-Tenant SaaS (`01KS8N4KR3-MTSA`), and Serverless
+  Event-Driven (`01KS8N4KR4-SVED`). Each defines service group tiers, an
+  `applicableDefinitionChecklist`, and `architecturalDecisions` capturing the
+  key pattern rules.
+- Added `objectType` optional field to the Reference Architecture schema's
+  `deployableObjectEntry`. Accepts any standard deployable object type
+  (`host`, `runtime_service`, `data_store_service`, `edge_gateway_service`,
+  `product_component`, `data_component`). Framework and community RAs use
+  `objectType` instead of `ref` so the pattern is not tied to a specific
+  company catalog object.
+
+### Changed
+
+- Updated `generate_ai_index.py` to include
+  `framework/configurations/reference-architectures/` in the framework
+  configuration index so framework RAs appear in `AI_INDEX.md`.
+- Updated `reference-architectures.md` to document the framework RA adoption
+  model, the `objectType` field, and the community contribution path.
+
+### Fixed
+
+- Fixed validator error messages for service group deployable object entries to
+  use `ref or objectType` as the entry label rather than always printing `ref`
+  (which was `None` for type-only entries).
+
+### Migration Notes
+
+No migration required. Existing Reference Architectures with `ref`-based
+`deployableObjects` entries continue to validate. The `ref` field remains
+fully supported and preferred when a specific catalog object is the intended
+target.
+
+---
+
 ## 0.18.1 - 2026-05-24
 
 ### Compatibility Impact

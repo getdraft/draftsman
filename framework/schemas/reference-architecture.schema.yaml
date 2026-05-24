@@ -70,15 +70,23 @@ serviceGroup:
     deployableObjects: deployableObjectEntry
     externalInteractions: externalInteraction
 deployableObjectEntry:
-  requiredFields:
-  - ref
+  requiredFields: []
   optionalFields:
+  - ref
+  - objectType
   - diagramTier
   - intent
   - instance
   - riskRef
   - notes
   enumFields:
+    objectType:
+    - host
+    - runtime_service
+    - data_store_service
+    - edge_gateway_service
+    - product_component
+    - data_component
     diagramTier:
     - presentation
     - application
@@ -87,6 +95,13 @@ deployableObjectEntry:
   intent:
     - ha
     - sa
+  fieldDescriptions:
+    ref: Reference a specific catalog object UID when this entry represents a known
+      deployable object. Used in company SDPs and RAs that reference catalog-specific
+      objects.
+    objectType: Declare the expected catalog object type when no specific ref is provided.
+      Use in framework-level or community RAs where the company catalog defines which
+      specific objects satisfy the role. Provide ref or objectType; both may be present.
 externalInteraction:
   requiredFields:
   - name

@@ -66,7 +66,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/naming-conventions.md | Naming Conventions | DRAFT first-class objects use an opaque generated `uid` for machine identity and |
 | framework/docs/object-types.md | DRAFT Object Types | DRAFT object types are split into deployable architecture and non-deployable |
 | framework/docs/overview.md | Framework Overview | This page is the high-level object map for DRAFT. For the complete object type |
-| framework/docs/reference-architectures.md | Reference Architectures | A Reference Architecture is a deployment pattern. It tells application |
+| framework/docs/reference-architectures.md | Reference Architectures | The DRAFT framework ships a set of baseline Reference Architectures in |
 | framework/docs/requirement-groups.md | Requirement Groups | A Requirement Group is the unified DRAFT requirement model. It replaces the old |
 | framework/docs/sdp-completion-interview.md | SDP Completion Interview | The SDP Completion Interview is a structured protocol for enriching an existing |
 | framework/docs/security-and-compliance-controls.md | Security And Compliance Requirement Groups | DRAFT treats compliance as an explicitly activated authoring and validation layer. |
@@ -139,6 +139,9 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KQQ4Q027-K5DR | Service Behavior Requirement Group | requirement_group | service, requirement-group, definition | Structured checklist of required questions and answers used to define complete and correct self-managed Runtime and E... | framework/configurations/requirement-groups/requirement-group-runtime-service.yaml |
 | 01KQQ4Q027-FKRM | SaaS Delivery Requirement Group | requirement_group | saas, requirement-group, definition | Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service is consumed as a vendor-managed ex... | framework/configurations/requirement-groups/requirement-group-saas-delivery.yaml |
 | 01KQQ4Q027-VK45 | Software Deployment Pattern Requirement Group | requirement_group | software-deployment-pattern, requirement-group, definition | Structured checklist of required questions and answers used to define a complete and correct software deployment patt... | framework/configurations/requirement-groups/requirement-group-software-deployment-pattern.yaml |
+| 01KS8N4KR3-MTSA | Multi-Tenant SaaS | reference_architecture | reference-architecture, multi-tenant, saas | Deployment pattern for software-as-a-service products that serve multiple customer tenants from shared infrastructure... | framework/configurations/reference-architectures/ra-multi-tenant-saas.yaml |
+| 01KS8N4KR4-SVED | Serverless Event-Driven | reference_architecture | reference-architecture, serverless, event-driven | Deployment pattern for event-driven applications using serverless compute runtimes. No persistent application-tier co... | framework/configurations/reference-architectures/ra-serverless-event-driven.yaml |
+| 01KS8N4KR2-3TWA | Three-Tier Web Application | reference_architecture | reference-architecture, three-tier, web | Standard pattern for web-facing applications with a presentation tier (edge/gateway services), an application tier (r... | framework/configurations/reference-architectures/ra-three-tier-web.yaml |
 | 01KQQ4Q027-ZTHF | Compute & Runtime | domain |  | Strategic domain covering application runtimes, serverless functions, and physical or virtual compute resources. | framework/configurations/domains/compute.yaml |
 | 01KQQ4Q027-C213 | Observability & Monitoring | domain |  | Strategic domain covering logging, metrics, tracing, and health monitoring across infrastructure and application stacks. | framework/configurations/domains/observability.yaml |
 | 01KQQ4Q027-SGHR | Testing & Quality | domain |  | Strategic domain covering all aspects of software testing, quality assurance, and release gates. | framework/configurations/domains/testing.yaml |
@@ -199,6 +202,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 |---|---|
 | framework/configurations/capabilities | 19 |
 | framework/configurations/requirement-groups | 15 |
+| framework/configurations/reference-architectures | 3 |
 | framework/configurations/domains | 3 |
 | examples/catalog/technology-components | 19 |
 | examples/catalog/hosts | 2 |
