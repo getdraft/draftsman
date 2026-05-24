@@ -195,6 +195,10 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | STCK000007-DAR7 | OpenStack Shared Database | data_store_service | data-at-rest, openstack, heat, ironic, trove, sahara, ceilometer, database, mariadb, iaas | Shared MariaDB database cluster hosting the schemas for OpenStack services that do not warrant dedicated database obj... | examples/catalog/data-store-services/data-at-rest-openstack-shared-database.yaml |
 | STCK000006-DAR6 | Swift Storage Cluster | data_store_service | data-at-rest, openstack, swift, object-storage, iaas | OpenStack Swift object storage cluster providing durable, distributed storage for unstructured data. Consists of mult... | examples/catalog/data-store-services/data-at-rest-swift-storage-cluster.yaml |
 | STCK000001-SDP1 | OpenStack IaaS Platform | software_deployment_pattern | software-deployment-pattern, openstack, iaas, cloud, platform | Full-stack self-managed OpenStack Infrastructure-as-a-Service deployment pattern covering the complete control plane... | examples/catalog/software-deployment-patterns/sdp-openstack-iaas-platform.yaml |
+| 01KSE5V73Z-Q0A0 | OpenStack Ops Console | product_component | product-component, openstack, operations, internal-tooling | Internal web-based operations console for platform engineering teams. Surfaces real-time service health, quota utiliz... | examples/catalog/product-components/product-component-openstack-ops-console.yaml |
+| 01KSE5V73Z-RTKZ | Platform Audit Schema | data_component | data-component, openstack, audit, compliance | Relational schema tracking platform-level audit events — control plane API calls, administrative actions, quota chang... | examples/catalog/data-components/data-component-platform-audit-schema.yaml |
+| 01KSE5V73Z-CRZV | No WAF Required — OpenStack Is Internal-Only | decision_record | decision-record, openstack, security, network-boundary | Documents the accepted decision that a Web Application Firewall (WAF) is not required for the OpenStack IaaS platform... | examples/catalog/decision-records/dr-openstack-no-waf-internal-only.yaml |
+| 01KSE5V73Z-VATZ | OpenStack HAProxy Edge Gateway Service | drafting_session | drafting-session, openstack, edge-gateway, haproxy | Incomplete authoring session for the HAProxy load balancer edge gateway service object. HAProxy fronts the OpenStack... | examples/catalog/sessions/session-openstack-ha-proxy-edge-service.yaml |
 
 ## Content Folder Counts
 
@@ -211,10 +215,10 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | examples/catalog/edge-gateway-services | 0 |
 | examples/catalog/reference-architectures | 0 |
 | examples/catalog/software-deployment-patterns | 1 |
-| examples/catalog/product-components | 0 |
-| examples/catalog/data-components | 0 |
-| examples/catalog/decision-records | 0 |
-| examples/catalog/sessions | 0 |
+| examples/catalog/product-components | 1 |
+| examples/catalog/data-components | 1 |
+| examples/catalog/decision-records | 1 |
+| examples/catalog/sessions | 1 |
 
 ## Templates
 

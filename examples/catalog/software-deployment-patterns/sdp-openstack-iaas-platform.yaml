@@ -12,8 +12,9 @@ description: 'Full-stack self-managed OpenStack Infrastructure-as-a-Service depl
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: approved
 lifecycleStatus: existing-only
+followsReferenceArchitecture: 01KS8N4KR2-3TWA
 owner:
   team: platform-engineering
   contact: platform-engineering@example.com
@@ -39,6 +40,41 @@ architecturalDecisions:
       networking, storage) is designed to tolerate control plane outages for running
       workloads.
   patternDeviations: none
+  deploymentTargets: Self-managed bare metal deployment on dedicated OpenStack controller
+    nodes and compute nodes within the company private data center. All control plane
+    services run on the openstack-controller host class. Compute services run on openstack-compute
+    host class. No cloud-provider managed services are used; all infrastructure is
+    owned and operated by the platform-engineering team.
+  reference_architecture_conformance: Follows Three-Tier Web Application RA (01KS8N4KR2-3TWA).
+    Horizon + HAProxy satisfy the presentation tier. Nova, Neutron, Cinder, Glance,
+    Keystone, Heat, and supporting services satisfy the application tier. MariaDB
+    Galera and Swift satisfy the data tier. No WAF is required; the deployment is
+    internal-only and access-controlled by network boundary and VPN/ZTNA. See decision
+    record 01KSE5V73Z-CRZV.
+requirementGroups:
+- 01KQQ4Q027-T3CA
+requirementImplementations:
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.10.1.1
+  status: satisfied
+  mechanism: field
+  key: architecturalDecisions.reference_architecture_conformance
+  notes: Conformance narrative is documented in architecturalDecisions.reference_architecture_conformance.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.10.1.2
+  status: satisfied
+  mechanism: field
+  key: architecturalDecisions.availabilityTarget
+  notes: Availability target is 99.9% per architecturalDecisions.availabilityTarget.
+    Active-active controller cluster with HAProxy satisfies this requirement.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.00.2.1
+  status: satisfied
+  mechanism: field
+  key: architecturalDecisions.dataClassification
+  notes: Data classification is Internal per architecturalDecisions.dataClassification.
+    The platform does not process public or confidential data directly; tenant workloads
+    inherit their own classification independently of this SDP.
 networkZones:
 - id: public
   name: Public

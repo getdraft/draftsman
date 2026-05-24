@@ -1,0 +1,49 @@
+schemaVersion: '1.0'
+uid: 01KSE5V73Z-RTKZ
+type: data_component
+name: Platform Audit Schema
+description: Relational schema tracking platform-level audit events — control plane
+  API calls, administrative actions, quota changes, and security-relevant state transitions
+  across the OpenStack deployment. Used by the operations console and compliance reporting
+  pipelines.
+version: 1.2.0
+catalogStatus: approved
+lifecycleStatus: preferred
+repoUrl: https://github.example.com/platform-engineering/platform-audit-schema
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+tags:
+- data-component
+- openstack
+- audit
+- compliance
+targetEngine: mysql
+dataClassification: internal
+containsPII: false
+runsOn: STCK000007-DAR7
+retentionPolicy: Audit records are retained for 13 months to satisfy annual compliance
+  review cycles. Records older than 13 months are archived to object storage (Swift)
+  before deletion from the active schema.
+tables:
+- name: audit_events
+  description: One row per auditable platform event. Captures actor identity, target
+    resource, action, timestamp, source IP, and outcome.
+  containsPII: false
+- name: audit_actors
+  description: Normalized actor table linking Keystone user UUIDs to human-readable
+    identities at the time of the event. Avoids join-time identity lookup against
+    a potentially changed Keystone state.
+  containsPII: false
+- name: quota_change_log
+  description: Supplemental table recording every project quota modification with
+    before/after values and the approving operator identity.
+  containsPII: false
+scheduledJobs:
+- name: audit_archive_job
+  schedule: cron 0 2 1 * *
+  description: Moves audit_events rows older than 13 months to Swift cold storage
+    and hard-deletes them from the active table.
+  purpose: archival
+requirementGroups: []
+requirementImplementations: []

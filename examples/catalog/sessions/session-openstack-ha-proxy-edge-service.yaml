@@ -1,0 +1,78 @@
+schemaVersion: '1.0'
+uid: 01KSE5V73Z-VATZ
+type: drafting_session
+name: OpenStack HAProxy Edge Gateway Service
+sessionStatus: open
+catalogStatus: draft
+lifecycleStatus: candidate
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+tags:
+- drafting-session
+- openstack
+- edge-gateway
+- haproxy
+description: Incomplete authoring session for the HAProxy load balancer edge gateway
+  service object. HAProxy fronts the OpenStack public network zone, distributing
+  API and Horizon traffic across controller nodes. This session captures unresolved
+  questions about whether HAProxy should be modeled as a separate edge_gateway_service
+  catalog object or whether its role is sufficiently captured as a deployment note
+  on the Horizon runtime service.
+primaryObjectType: edge_gateway_service
+primaryObjectUid: null
+sourceArtifacts:
+- name: sdp-openstack-iaas-platform.yaml
+  type: catalog-object
+  location: examples/catalog/software-deployment-patterns/sdp-openstack-iaas-platform.yaml
+  notes: HAProxy is referenced in the SDP notes as the HA mechanism for the public
+    network zone but is not modeled as a standalone catalog object.
+- name: OpenStack HA Guide — HAProxy
+  type: external-reference
+  location: https://docs.openstack.org/ha-guide/
+  notes: Upstream HA guide documents HAProxy configuration patterns for multi-controller
+    deployments.
+generatedObjects:
+- name: HAProxy Edge Gateway Service
+  type: edge_gateway_service
+  status: stubbed
+  proposedUid: TBD
+  notes: Stub exists as a placeholder. Requires confirmation of deployment topology
+    (dedicated VMs vs. co-located on controller nodes) before the object can be completed.
+unresolvedQuestions:
+- id: Q1
+  question: Is HAProxy deployed on dedicated load balancer VMs, or co-located on
+    the same controller nodes as the OpenStack services?
+  status: open
+  impact: Determines whether the edge_gateway_service object gets its own deploymentTarget
+    or shares the openstack-controller host reference.
+  currentBestGuess: Co-located on controller nodes based on standard Kolla-Ansible
+    deployment defaults.
+- id: Q2
+  question: Does HAProxy terminate TLS, or does TLS pass through to the backend services?
+  status: open
+  impact: Affects the network binding and protocol declarations on the edge gateway
+    object and the security compliance evidence for in-transit encryption.
+  currentBestGuess: TLS terminated at HAProxy; backends use HTTP on the control plane
+    network.
+assumptions:
+- id: A1
+  statement: HAProxy version in use is 2.4 or later (shipped with Ubuntu 22.04 LTS).
+  rationale: The controller host uses Ubuntu 22.04 LTS per the technology-component
+    catalog.
+  impact: If an older HAProxy version is in use, the edge_gateway_service object
+    may need a technology-component version override.
+nextSteps:
+- id: NS1
+  action: Confirm HAProxy deployment topology (dedicated VMs vs. co-located) with
+    platform-engineering team.
+  status: open
+  owner: platform-engineering
+- id: NS2
+  action: Confirm TLS termination point.
+  status: open
+  owner: platform-engineering
+- id: NS3
+  action: Create the edge_gateway_service catalog object once topology is confirmed.
+  status: blocked
+  notes: Blocked on NS1 and NS2.

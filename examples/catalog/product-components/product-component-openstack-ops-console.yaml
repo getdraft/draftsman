@@ -1,0 +1,67 @@
+schemaVersion: '1.0'
+uid: 01KSE5V73Z-Q0A0
+type: product_component
+name: OpenStack Ops Console
+description: Internal web-based operations console for platform engineering teams.
+  Surfaces real-time service health, quota utilization, and incident triage workflows
+  across the OpenStack control plane. Deployed alongside Horizon on the same runtime
+  service.
+version: 2.4.1
+catalogStatus: approved
+lifecycleStatus: preferred
+repoUrl: https://github.example.com/platform-engineering/openstack-ops-console
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+tags:
+- product-component
+- openstack
+- operations
+- internal-tooling
+classification: web-application
+language: TypeScript
+runtimeRequirement: Node 20 LTS
+runsOn: STCK000006-RS06
+interfaces:
+- name: Ops Console UI
+  protocol: REST
+  path: /ops
+  authenticationModel: saml
+  description: Web UI for internal operators. SAML SSO via enterprise identity provider.
+- name: Health API
+  protocol: REST
+  path: /ops/api/health
+  authenticationModel: api-key
+  description: Machine-readable health endpoint consumed by monitoring pipelines.
+networkBindings:
+- port: 8080
+  protocol: HTTPS
+  direction: inbound
+  description: Inbound HTTPS from Horizon nginx reverse proxy.
+environmentConfiguration:
+- name: KEYSTONE_ENDPOINT
+  description: Keystone identity service endpoint for authentication delegation.
+  required: true
+  sensitive: false
+- name: OPS_CONSOLE_SECRET_KEY
+  description: Application secret key used for session signing.
+  required: true
+  sensitive: true
+- name: SAML_IDP_METADATA_URL
+  description: URL for the enterprise SAML identity provider metadata document.
+  required: true
+  sensitive: false
+architecturalDecisions:
+  product_component: Application secrets (OPS_CONSOLE_SECRET_KEY, SAML credentials)
+    are injected at deploy time from the platform secret store. No secrets are present
+    in source code or container images.
+requirementGroups:
+- 01KQQ4Q027-T3CA
+requirementImplementations:
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.04.3.1.product_component
+  status: satisfied
+  mechanism: architecturalDecision
+  key: product_component
+  notes: Secrets injection via platform secret store at deploy time. Documented in
+    architecturalDecisions.product_component.
