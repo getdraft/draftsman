@@ -3038,33 +3038,49 @@ def validate_service_group_structure(
             if not isinstance(entry, dict):
                 continue
             ref = entry.get("ref")
+            object_type = entry.get("objectType")
+            entry_label = ref or object_type or "unnamed"
+            is_ra = obj.get("type") == "reference_architecture"
             target = catalog_by_id.get(ref) if ref else None
             target_type = target.get("type") if target else None
-            if ref and not target:
-                failures.append(f"{path}: serviceGroup '{group_name}' references unknown deployable object '{ref}'")
-            elif (
-                ref
-                and obj.get("type") == "software_deployment_pattern"
-                and target_type in {"host", "technology_component"}
-            ):
-                failures.append(
-                    f"{path}: software deployment pattern serviceGroup '{group_name}' references {target_type} "
-                    f"'{ref}' directly; serviceGroups must reference service-level deployable objects, "
-                    "and the Host or Technology Component must be modeled on that service object"
-                )
-            elif ref and target_type not in STANDARD_TYPES:
-                failures.append(f"{path}: serviceGroup '{group_name}' references unknown deployable object '{ref}'")
+            if is_ra:
+                if not ref and not object_type:
+                    failures.append(
+                        f"{path}: serviceGroup '{group_name}' deployable object entry must include ref or objectType"
+                    )
+                elif object_type and object_type not in STANDARD_TYPES:
+                    failures.append(
+                        f"{path}: serviceGroup '{group_name}' objectType '{object_type}' is not a valid deployable "
+                        f"object type; use one of {sorted(STANDARD_TYPES)}"
+                    )
+                if ref and not target:
+                    failures.append(f"{path}: serviceGroup '{group_name}' references unknown deployable object '{ref}'")
+            else:
+                if ref and not target:
+                    failures.append(f"{path}: serviceGroup '{group_name}' references unknown deployable object '{ref}'")
+                elif (
+                    ref
+                    and obj.get("type") == "software_deployment_pattern"
+                    and target_type in {"host", "technology_component"}
+                ):
+                    failures.append(
+                        f"{path}: software deployment pattern serviceGroup '{group_name}' references {target_type} "
+                        f"'{ref}' directly; serviceGroups must reference service-level deployable objects, "
+                        "and the Host or Technology Component must be modeled on that service object"
+                    )
+                elif ref and target_type not in STANDARD_TYPES:
+                    failures.append(f"{path}: serviceGroup '{group_name}' references unknown deployable object '{ref}'")
             diagram_tier = entry.get("diagramTier")
             if diagram_tier not in VALID_DIAGRAM_TIERS:
                 failures.append(
-                    f"{path}: serviceGroup '{group_name}' deployable object '{ref}' must set diagramTier to one of {sorted(VALID_DIAGRAM_TIERS)}"
+                    f"{path}: serviceGroup '{group_name}' deployable object '{entry_label}' must set diagramTier to one of {sorted(VALID_DIAGRAM_TIERS)}"
                 )
             risk_ref = entry.get("riskRef")
             if risk_ref and risk_ref not in decision_record_ids:
-                failures.append(f"{path}: serviceGroup '{group_name}' deployable object '{ref}' references unknown Decision Record '{risk_ref}'")
+                failures.append(f"{path}: serviceGroup '{group_name}' deployable object '{entry_label}' references unknown Decision Record '{risk_ref}'")
             intent = entry.get("intent")
             if intent and intent not in {"ha", "sa"}:
-                failures.append(f"{path}: serviceGroup '{group_name}' deployable object '{ref}' has invalid intent '{intent}'")
+                failures.append(f"{path}: serviceGroup '{group_name}' deployable object '{entry_label}' has invalid intent '{intent}'")
 
         for interaction in group.get("externalInteractions", []) or []:
             if not isinstance(interaction, dict):

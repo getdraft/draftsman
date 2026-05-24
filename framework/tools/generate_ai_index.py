@@ -45,6 +45,7 @@ FRAMEWORK_ENTRYPOINTS = [
 CONFIGURATION_FOLDERS = [
     "framework/configurations/capabilities",
     "framework/configurations/requirement-groups",
+    "framework/configurations/reference-architectures",
     "framework/configurations/domains",
 ]
 

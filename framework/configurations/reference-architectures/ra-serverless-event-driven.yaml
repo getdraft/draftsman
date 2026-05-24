@@ -1,0 +1,68 @@
+schemaVersion: '1.0'
+uid: 01KS8N4KR4-SVED
+type: reference_architecture
+name: Serverless Event-Driven
+description: Deployment pattern for event-driven applications using serverless compute
+  runtimes. No persistent application-tier compute is present. Logic executes in response
+  to events, API calls, or scheduled triggers. All durable state is external to the
+  function execution environment.
+patternType: serverless
+catalogStatus: approved
+lifecycleStatus: preferred
+owner:
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+tags:
+- reference-architecture
+- serverless
+- event-driven
+applicableDefinitionChecklist:
+- No persistent runtime tier is present. All compute must be serverless or container-on-demand
+  with no affinity to a running instance.
+- All durable state must be stored in external data store services, not in function
+  memory or ephemeral local storage.
+- Cold start latency characteristics must be documented in architecturalDecisions
+  for any user-facing function path.
+- Event sources, routing rules, and trigger conditions must be documented in service
+  group connections or architecturalDecisions.
+- Functions must not carry coordination state between invocations. Cross-invocation
+  coordination must use an external data store or queue.
+serviceGroups:
+- name: Ingestion
+  deployableObjects:
+  - objectType: edge_gateway_service
+    diagramTier: presentation
+    notes: API gateway or event bus entry point. Routes inbound HTTP requests or events
+      to processing functions. Provides authentication, throttling, and payload validation
+      at the boundary.
+- name: Processing
+  deployableObjects:
+  - objectType: runtime_service
+    diagramTier: application
+    notes: Serverless runtime (deliveryModel paas or saas). Each logical function
+      group, event processor, or scheduled job should be modeled as a distinct runtime
+      service to keep governance boundaries clear. ProductComponents are deployed onto
+      this service.
+- name: State
+  deployableObjects:
+  - objectType: data_store_service
+    diagramTier: data
+    notes: External data store consumed by processing functions. May be a relational
+      database, object store, cache, or queue depending on the access pattern. Functions
+      must treat this as the sole source of durable state. DataComponents are deployed
+      onto this service.
+architecturalDecisions:
+  patternRationale: Serverless patterns eliminate persistent compute management at
+    the cost of cold start latency and per-invocation billing. They are well-suited
+    for event-driven workloads, background jobs, and APIs with irregular traffic patterns.
+    The pattern requires all state to be externalized because function instances are
+    ephemeral and cannot be assumed to be reused between invocations.
+  coldStartConsideration: User-facing serverless functions must document expected cold
+    start latency and the mitigation strategy — provisioned concurrency, warm-up schedules,
+    or explicit acceptance of cold start delay. Background processing functions may
+    omit this if latency is not user-visible.
+  statelessRequirement: Functions must not depend on in-memory state, local filesystem
+    state, or any state from a prior invocation. All coordination between function
+    instances must use external services — data stores, queues, or distributed caches.
+requirementGroups: []
+requirementImplementations: []

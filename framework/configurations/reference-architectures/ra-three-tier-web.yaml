@@ -1,0 +1,65 @@
+schemaVersion: '1.0'
+uid: 01KS8N4KR2-3TWA
+type: reference_architecture
+name: Three-Tier Web Application
+description: Standard pattern for web-facing applications with a presentation tier
+  (edge/gateway services), an application tier (runtime services), and a data tier
+  (data store services). Use this pattern when the deployment serves web or API traffic
+  to external users or partners.
+patternType: three-tier
+catalogStatus: approved
+lifecycleStatus: preferred
+owner:
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+tags:
+- reference-architecture
+- three-tier
+- web
+applicableDefinitionChecklist:
+- An edge/gateway service must be present in the presentation tier. This is not optional
+  for externally-facing web or API deployments.
+- Application tier services must not be directly internet-facing. All inbound traffic
+  flows through the presentation tier.
+- Data tier services must only accept connections from the application tier, not from
+  the presentation tier or external sources.
+- All cross-tier connections must be documented in service group connections or externalInteractions.
+- Backup strategy, RTO, and RPO must be documented on the data tier service.
+serviceGroups:
+- name: Presentation Tier
+  deployableObjects:
+  - objectType: edge_gateway_service
+    diagramTier: presentation
+    notes: Traffic inspection and protection service (WAF, application delivery controller,
+      or equivalent). Provides DDoS mitigation, rate limiting, and request filtering
+      before traffic reaches the application tier. The company catalog defines which
+      edge/gateway service objects satisfy this role.
+  - objectType: edge_gateway_service
+    diagramTier: presentation
+    notes: Load balancer distributing stateless traffic across application tier instances.
+      May be combined with the WAF/ADC in a single edge service depending on the chosen
+      platform.
+- name: Application Tier
+  deployableObjects:
+  - objectType: runtime_service
+    diagramTier: application
+    notes: Primary application runtime. Stateless; may be replicated across availability
+      zones. ProductComponents are deployed onto this service.
+- name: Data Tier
+  deployableObjects:
+  - objectType: data_store_service
+    diagramTier: data
+    notes: Primary persistent data store. Must document backup strategy, RTO, and RPO.
+      DataComponents are deployed onto this service.
+architecturalDecisions:
+  patternRationale: The three-tier pattern separates traffic control, application logic,
+    and data persistence so that each tier can be governed, scaled, and secured independently.
+    The presentation tier is the only tier with direct internet exposure.
+  presentationTierRequirement: An edge/gateway service is required in the presentation
+    tier for all externally-facing deployments. The Draftsman should surface the company-approved
+    WAF or load balancer catalog object when drafting an SDP that follows this pattern.
+  dataTierIsolation: Data tier services must not accept direct connections from the
+    presentation tier. All data access flows through the application tier. This constraint
+    will be enforceable via RA constraints when that feature is available.
+requirementGroups: []
+requirementImplementations: []

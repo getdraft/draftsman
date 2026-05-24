@@ -1,5 +1,41 @@
 # Reference Architectures
 
+## Framework and Community RAs
+
+The DRAFT framework ships a set of baseline Reference Architectures in
+`framework/configurations/reference-architectures/`. These are vendored into
+company workspaces alongside requirement groups and capability definitions. Like
+compliance requirement group starter packs (SOC 2, NIST CSF, TX-RAMP), they are
+opt-in: an SDP adopts an RA by declaring `followsReferenceArchitecture`, and a
+company is not required to use any particular framework RA.
+
+| RA | UID | Use when |
+|---|---|---|
+| Three-Tier Web Application | `01KS8N4KR2-3TWA` | The deployment serves web or API traffic to external users through a presentation, application, and data tier. |
+| Multi-Tenant SaaS | `01KS8N4KR3-MTSA` | The product serves multiple customer tenants from shared infrastructure with explicit isolation requirements. |
+| Serverless Event-Driven | `01KS8N4KR4-SVED` | The deployment has no persistent compute tier; all logic executes in response to events, API calls, or scheduled triggers. |
+
+Companies may author their own RAs in `configurations/reference-architectures/`
+inside the company workspace. These are private to the workspace and not vendored
+upstream.
+
+Companies may also contribute reusable RAs back to the DRAFT community library.
+The contribution path is the same as for compliance requirement group starter
+packs: generalize the RA (replace company-specific UIDs with `objectType`
+declarations, remove internal names), then submit a pull request.
+
+## Framework RA objectType Entries
+
+Framework-level RAs use `objectType` instead of `ref` in `deployableObjects`
+entries. `objectType` declares the expected catalog object type without pinning
+to a specific company catalog object. The company catalog defines which specific
+Host, RuntimeService, DataStoreService, or Edge/Gateway Service objects satisfy
+each role when the SDP is drafted.
+
+When a company authors their own RA or extends a framework RA, they may use
+`ref` to point to specific catalog objects, `objectType` for type-level
+constraints, or both.
+
 ## What A Reference Architecture Is
 
 A Reference Architecture is a deployment pattern. It tells application
