@@ -9403,6 +9403,578 @@ window.DRAFT_BROWSER_DATA = {
       "existsInCatalog": true
     },
     {
+      "id": "01KS8N4KR3-MTSA",
+      "uid": "01KS8N4KR3-MTSA",
+      "name": "Multi-Tenant SaaS",
+      "aliases": [],
+      "type": "reference_architecture",
+      "typeLabel": "Reference Architecture",
+      "filterType": "reference_architecture",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Deployment pattern for software-as-a-service products that serve multiple customer tenants from shared infrastructure. Defines tenant, platform, data, and management zones with explicit isolation requirements.",
+      "version": "",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "preferred",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "hexagon",
+      "color": "#1f8a5b",
+      "source": "framework/configurations/reference-architectures/ra-multi-tenant-saas.yaml",
+      "tags": [
+        "reference-architecture",
+        "multi-tenant",
+        "saas"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {
+        "patternRationale": "Multi-tenant SaaS deployments require explicit isolation guarantees at the data, runtime, and network layers. The pattern separates tenant-facing runtime from shared platform services to prevent cross-tenant data leakage and allow platform services to evolve independently of tenant workloads.",
+        "tenantIsolationModels": "Three isolation models are supported: (1) separate database per tenant \u2014 highest isolation, highest operational cost; (2) shared database with separate schema per tenant \u2014 moderate isolation, moderate cost; (3) shared schema with row-level security \u2014 lowest isolation, lowest cost. The chosen model must be documented in the SDP's architecturalDecisions.",
+        "managementPlaneIsolation": "The management plane must not share network paths with tenant-facing services. Administrative access to tenant data must flow through the management plane, not through tenant runtime endpoints."
+      },
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [
+        {
+          "name": "Tenant Runtime",
+          "deployableObjects": [
+            {
+              "objectType": "edge_gateway_service",
+              "diagramTier": "presentation",
+              "notes": "Per-tenant or shared API gateway providing tenant routing, authentication enforcement, and per-tenant rate limiting."
+            },
+            {
+              "objectType": "runtime_service",
+              "diagramTier": "application",
+              "notes": "Tenant-scoped runtime service. May be shared across tenants with row-level isolation or deployed per-tenant depending on the chosen isolation model."
+            }
+          ]
+        },
+        {
+          "name": "Platform Services",
+          "deployableObjects": [
+            {
+              "objectType": "runtime_service",
+              "diagramTier": "application",
+              "notes": "Shared platform service consumed by all tenants \u2014 for example identity, billing, notifications, or audit log. Must not store tenant data without a documented isolation mechanism."
+            }
+          ]
+        },
+        {
+          "name": "Data Tier",
+          "deployableObjects": [
+            {
+              "objectType": "data_store_service",
+              "diagramTier": "data",
+              "notes": "Tenant data store. The isolation model must be documented in the SDP's architecturalDecisions. DataComponents are deployed onto this service."
+            }
+          ]
+        },
+        {
+          "name": "Management Plane",
+          "deployableObjects": [
+            {
+              "objectType": "runtime_service",
+              "diagramTier": "utility",
+              "notes": "Control-plane services including tenant provisioning, observability aggregation, and administrative tooling. Must be isolated from tenant-facing network paths."
+            }
+          ]
+        }
+      ],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "catalogStatus",
+          "lifecycleStatus"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags",
+          "patternType",
+          "architecturalDecisions",
+          "applicableDefinitionChecklist",
+          "scalingUnits",
+          "serviceGroups",
+          "requirementGroups",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "architecturalDecisions": "dict",
+          "scalingUnits": "list",
+          "serviceGroups": "list",
+          "requirementGroups": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "scalingUnits": "scalingUnit",
+          "serviceGroups": "serviceGroup",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/reference-architecture.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KS8N4KR3-MTSA\",\n  \"type\": \"reference_architecture\",\n  \"name\": \"Multi-Tenant SaaS\",\n  \"description\": \"Deployment pattern for software-as-a-service products that serve multiple customer tenants from shared infrastructure. Defines tenant, platform, data, and management zones with explicit isolation requirements.\",\n  \"patternType\": \"multi-tenant\",\n  \"catalogStatus\": \"approved\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"tags\": [\n    \"reference-architecture\",\n    \"multi-tenant\",\n    \"saas\"\n  ],\n  \"applicableDefinitionChecklist\": [\n    \"Tenant isolation strategy must be documented in architecturalDecisions \\u2014 separate database per tenant, shared database with separate schema, or shared schema with row-level security.\",\n    \"Platform tier services must not store tenant-identifiable data without an explicit isolation rationale in architecturalDecisions.\",\n    \"Management plane must be in a separate network zone from tenant-facing services.\",\n    \"The data tier must document which tenants share which stores and what isolation mechanism applies.\",\n    \"The SDP must document the tenant provisioning and de-provisioning path.\"\n  ],\n  \"serviceGroups\": [\n    {\n      \"name\": \"Tenant Runtime\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"edge_gateway_service\",\n          \"diagramTier\": \"presentation\",\n          \"notes\": \"Per-tenant or shared API gateway providing tenant routing, authentication enforcement, and per-tenant rate limiting.\"\n        },\n        {\n          \"objectType\": \"runtime_service\",\n          \"diagramTier\": \"application\",\n          \"notes\": \"Tenant-scoped runtime service. May be shared across tenants with row-level isolation or deployed per-tenant depending on the chosen isolation model.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Platform Services\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"runtime_service\",\n          \"diagramTier\": \"application\",\n          \"notes\": \"Shared platform service consumed by all tenants \\u2014 for example identity, billing, notifications, or audit log. Must not store tenant data without a documented isolation mechanism.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Data Tier\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"data_store_service\",\n          \"diagramTier\": \"data\",\n          \"notes\": \"Tenant data store. The isolation model must be documented in the SDP's architecturalDecisions. DataComponents are deployed onto this service.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Management Plane\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"runtime_service\",\n          \"diagramTier\": \"utility\",\n          \"notes\": \"Control-plane services including tenant provisioning, observability aggregation, and administrative tooling. Must be isolated from tenant-facing network paths.\"\n        }\n      ]\n    }\n  ],\n  \"architecturalDecisions\": {\n    \"patternRationale\": \"Multi-tenant SaaS deployments require explicit isolation guarantees at the data, runtime, and network layers. The pattern separates tenant-facing runtime from shared platform services to prevent cross-tenant data leakage and allow platform services to evolve independently of tenant workloads.\",\n    \"tenantIsolationModels\": \"Three isolation models are supported: (1) separate database per tenant \\u2014 highest isolation, highest operational cost; (2) shared database with separate schema per tenant \\u2014 moderate isolation, moderate cost; (3) shared schema with row-level security \\u2014 lowest isolation, lowest cost. The chosen model must be documented in the SDP's architecturalDecisions.\",\n    \"managementPlaneIsolation\": \"The management plane must not share network paths with tenant-facing services. Administrative access to tenant data must flow through the management plane, not through tenant runtime endpoints.\"\n  },\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"framework/configurations/reference-architectures/ra-multi-tenant-saas.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    {
+      "id": "01KS8N4KR4-SVED",
+      "uid": "01KS8N4KR4-SVED",
+      "name": "Serverless Event-Driven",
+      "aliases": [],
+      "type": "reference_architecture",
+      "typeLabel": "Reference Architecture",
+      "filterType": "reference_architecture",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Deployment pattern for event-driven applications using serverless compute runtimes. No persistent application-tier compute is present. Logic executes in response to events, API calls, or scheduled triggers. All durable state is external to the function execution environment.",
+      "version": "",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "preferred",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "hexagon",
+      "color": "#1f8a5b",
+      "source": "framework/configurations/reference-architectures/ra-serverless-event-driven.yaml",
+      "tags": [
+        "reference-architecture",
+        "serverless",
+        "event-driven"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {
+        "patternRationale": "Serverless patterns eliminate persistent compute management at the cost of cold start latency and per-invocation billing. They are well-suited for event-driven workloads, background jobs, and APIs with irregular traffic patterns. The pattern requires all state to be externalized because function instances are ephemeral and cannot be assumed to be reused between invocations.",
+        "coldStartConsideration": "User-facing serverless functions must document expected cold start latency and the mitigation strategy \u2014 provisioned concurrency, warm-up schedules, or explicit acceptance of cold start delay. Background processing functions may omit this if latency is not user-visible.",
+        "statelessRequirement": "Functions must not depend on in-memory state, local filesystem state, or any state from a prior invocation. All coordination between function instances must use external services \u2014 data stores, queues, or distributed caches."
+      },
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [
+        {
+          "name": "Ingestion",
+          "deployableObjects": [
+            {
+              "objectType": "edge_gateway_service",
+              "diagramTier": "presentation",
+              "notes": "API gateway or event bus entry point. Routes inbound HTTP requests or events to processing functions. Provides authentication, throttling, and payload validation at the boundary."
+            }
+          ]
+        },
+        {
+          "name": "Processing",
+          "deployableObjects": [
+            {
+              "objectType": "runtime_service",
+              "diagramTier": "application",
+              "notes": "Serverless runtime (deliveryModel paas or saas). Each logical function group, event processor, or scheduled job should be modeled as a distinct runtime service to keep governance boundaries clear. ProductComponents are deployed onto this service."
+            }
+          ]
+        },
+        {
+          "name": "State",
+          "deployableObjects": [
+            {
+              "objectType": "data_store_service",
+              "diagramTier": "data",
+              "notes": "External data store consumed by processing functions. May be a relational database, object store, cache, or queue depending on the access pattern. Functions must treat this as the sole source of durable state. DataComponents are deployed onto this service."
+            }
+          ]
+        }
+      ],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "catalogStatus",
+          "lifecycleStatus"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags",
+          "patternType",
+          "architecturalDecisions",
+          "applicableDefinitionChecklist",
+          "scalingUnits",
+          "serviceGroups",
+          "requirementGroups",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "architecturalDecisions": "dict",
+          "scalingUnits": "list",
+          "serviceGroups": "list",
+          "requirementGroups": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "scalingUnits": "scalingUnit",
+          "serviceGroups": "serviceGroup",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/reference-architecture.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KS8N4KR4-SVED\",\n  \"type\": \"reference_architecture\",\n  \"name\": \"Serverless Event-Driven\",\n  \"description\": \"Deployment pattern for event-driven applications using serverless compute runtimes. No persistent application-tier compute is present. Logic executes in response to events, API calls, or scheduled triggers. All durable state is external to the function execution environment.\",\n  \"patternType\": \"serverless\",\n  \"catalogStatus\": \"approved\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"tags\": [\n    \"reference-architecture\",\n    \"serverless\",\n    \"event-driven\"\n  ],\n  \"applicableDefinitionChecklist\": [\n    \"No persistent runtime tier is present. All compute must be serverless or container-on-demand with no affinity to a running instance.\",\n    \"All durable state must be stored in external data store services, not in function memory or ephemeral local storage.\",\n    \"Cold start latency characteristics must be documented in architecturalDecisions for any user-facing function path.\",\n    \"Event sources, routing rules, and trigger conditions must be documented in service group connections or architecturalDecisions.\",\n    \"Functions must not carry coordination state between invocations. Cross-invocation coordination must use an external data store or queue.\"\n  ],\n  \"serviceGroups\": [\n    {\n      \"name\": \"Ingestion\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"edge_gateway_service\",\n          \"diagramTier\": \"presentation\",\n          \"notes\": \"API gateway or event bus entry point. Routes inbound HTTP requests or events to processing functions. Provides authentication, throttling, and payload validation at the boundary.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Processing\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"runtime_service\",\n          \"diagramTier\": \"application\",\n          \"notes\": \"Serverless runtime (deliveryModel paas or saas). Each logical function group, event processor, or scheduled job should be modeled as a distinct runtime service to keep governance boundaries clear. ProductComponents are deployed onto this service.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"State\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"data_store_service\",\n          \"diagramTier\": \"data\",\n          \"notes\": \"External data store consumed by processing functions. May be a relational database, object store, cache, or queue depending on the access pattern. Functions must treat this as the sole source of durable state. DataComponents are deployed onto this service.\"\n        }\n      ]\n    }\n  ],\n  \"architecturalDecisions\": {\n    \"patternRationale\": \"Serverless patterns eliminate persistent compute management at the cost of cold start latency and per-invocation billing. They are well-suited for event-driven workloads, background jobs, and APIs with irregular traffic patterns. The pattern requires all state to be externalized because function instances are ephemeral and cannot be assumed to be reused between invocations.\",\n    \"coldStartConsideration\": \"User-facing serverless functions must document expected cold start latency and the mitigation strategy \\u2014 provisioned concurrency, warm-up schedules, or explicit acceptance of cold start delay. Background processing functions may omit this if latency is not user-visible.\",\n    \"statelessRequirement\": \"Functions must not depend on in-memory state, local filesystem state, or any state from a prior invocation. All coordination between function instances must use external services \\u2014 data stores, queues, or distributed caches.\"\n  },\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"framework/configurations/reference-architectures/ra-serverless-event-driven.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    {
+      "id": "01KS8N4KR2-3TWA",
+      "uid": "01KS8N4KR2-3TWA",
+      "name": "Three-Tier Web Application",
+      "aliases": [],
+      "type": "reference_architecture",
+      "typeLabel": "Reference Architecture",
+      "filterType": "reference_architecture",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Standard pattern for web-facing applications with a presentation tier (edge/gateway services), an application tier (runtime services), and a data tier (data store services). Use this pattern when the deployment serves web or API traffic to external users or partners.",
+      "version": "",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "preferred",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "hexagon",
+      "color": "#1f8a5b",
+      "source": "framework/configurations/reference-architectures/ra-three-tier-web.yaml",
+      "tags": [
+        "reference-architecture",
+        "three-tier",
+        "web"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {
+        "patternRationale": "The three-tier pattern separates traffic control, application logic, and data persistence so that each tier can be governed, scaled, and secured independently. The presentation tier is the only tier with direct internet exposure.",
+        "presentationTierRequirement": "An edge/gateway service is required in the presentation tier for all externally-facing deployments. The Draftsman should surface the company-approved WAF or load balancer catalog object when drafting an SDP that follows this pattern.",
+        "dataTierIsolation": "Data tier services must not accept direct connections from the presentation tier. All data access flows through the application tier. This constraint will be enforceable via RA constraints when that feature is available."
+      },
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [
+        {
+          "name": "Presentation Tier",
+          "deployableObjects": [
+            {
+              "objectType": "edge_gateway_service",
+              "diagramTier": "presentation",
+              "notes": "Traffic inspection and protection service (WAF, application delivery controller, or equivalent). Provides DDoS mitigation, rate limiting, and request filtering before traffic reaches the application tier. The company catalog defines which edge/gateway service objects satisfy this role."
+            },
+            {
+              "objectType": "edge_gateway_service",
+              "diagramTier": "presentation",
+              "notes": "Load balancer distributing stateless traffic across application tier instances. May be combined with the WAF/ADC in a single edge service depending on the chosen platform."
+            }
+          ]
+        },
+        {
+          "name": "Application Tier",
+          "deployableObjects": [
+            {
+              "objectType": "runtime_service",
+              "diagramTier": "application",
+              "notes": "Primary application runtime. Stateless; may be replicated across availability zones. ProductComponents are deployed onto this service."
+            }
+          ]
+        },
+        {
+          "name": "Data Tier",
+          "deployableObjects": [
+            {
+              "objectType": "data_store_service",
+              "diagramTier": "data",
+              "notes": "Primary persistent data store. Must document backup strategy, RTO, and RPO. DataComponents are deployed onto this service."
+            }
+          ]
+        }
+      ],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "catalogStatus",
+          "lifecycleStatus"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags",
+          "patternType",
+          "architecturalDecisions",
+          "applicableDefinitionChecklist",
+          "scalingUnits",
+          "serviceGroups",
+          "requirementGroups",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "architecturalDecisions": "dict",
+          "scalingUnits": "list",
+          "serviceGroups": "list",
+          "requirementGroups": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "scalingUnits": "scalingUnit",
+          "serviceGroups": "serviceGroup",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/reference-architecture.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KS8N4KR2-3TWA\",\n  \"type\": \"reference_architecture\",\n  \"name\": \"Three-Tier Web Application\",\n  \"description\": \"Standard pattern for web-facing applications with a presentation tier (edge/gateway services), an application tier (runtime services), and a data tier (data store services). Use this pattern when the deployment serves web or API traffic to external users or partners.\",\n  \"patternType\": \"three-tier\",\n  \"catalogStatus\": \"approved\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"tags\": [\n    \"reference-architecture\",\n    \"three-tier\",\n    \"web\"\n  ],\n  \"applicableDefinitionChecklist\": [\n    \"An edge/gateway service must be present in the presentation tier. This is not optional for externally-facing web or API deployments.\",\n    \"Application tier services must not be directly internet-facing. All inbound traffic flows through the presentation tier.\",\n    \"Data tier services must only accept connections from the application tier, not from the presentation tier or external sources.\",\n    \"All cross-tier connections must be documented in service group connections or externalInteractions.\",\n    \"Backup strategy, RTO, and RPO must be documented on the data tier service.\"\n  ],\n  \"serviceGroups\": [\n    {\n      \"name\": \"Presentation Tier\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"edge_gateway_service\",\n          \"diagramTier\": \"presentation\",\n          \"notes\": \"Traffic inspection and protection service (WAF, application delivery controller, or equivalent). Provides DDoS mitigation, rate limiting, and request filtering before traffic reaches the application tier. The company catalog defines which edge/gateway service objects satisfy this role.\"\n        },\n        {\n          \"objectType\": \"edge_gateway_service\",\n          \"diagramTier\": \"presentation\",\n          \"notes\": \"Load balancer distributing stateless traffic across application tier instances. May be combined with the WAF/ADC in a single edge service depending on the chosen platform.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Application Tier\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"runtime_service\",\n          \"diagramTier\": \"application\",\n          \"notes\": \"Primary application runtime. Stateless; may be replicated across availability zones. ProductComponents are deployed onto this service.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Data Tier\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"data_store_service\",\n          \"diagramTier\": \"data\",\n          \"notes\": \"Primary persistent data store. Must document backup strategy, RTO, and RPO. DataComponents are deployed onto this service.\"\n        }\n      ]\n    }\n  ],\n  \"architecturalDecisions\": {\n    \"patternRationale\": \"The three-tier pattern separates traffic control, application logic, and data persistence so that each tier can be governed, scaled, and secured independently. The presentation tier is the only tier with direct internet exposure.\",\n    \"presentationTierRequirement\": \"An edge/gateway service is required in the presentation tier for all externally-facing deployments. The Draftsman should surface the company-approved WAF or load balancer catalog object when drafting an SDP that follows this pattern.\",\n    \"dataTierIsolation\": \"Data tier services must not accept direct connections from the presentation tier. All data access flows through the application tier. This constraint will be enforceable via RA constraints when that feature is available.\"\n  },\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"framework/configurations/reference-architectures/ra-three-tier-web.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    {
       "id": "01KQQ4Q027-ZTHF",
       "uid": "01KQQ4Q027-ZTHF",
       "name": "Compute & Runtime",
@@ -30150,6 +30722,578 @@ window.DRAFT_BROWSER_DATA = {
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-VK45\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Software Deployment Pattern Requirement Group\",\n  \"description\": \"Structured checklist of required questions and answers used to define a complete and correct software deployment pattern.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"software_deployment_pattern\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"reference-architecture-conformance\",\n      \"description\": \"The Software Deployment Pattern must reference a valid Reference Architecture ID or explicitly document that no applicable Reference Architecture exists yet.\",\n      \"rationale\": \"Connecting deployments to patterns enables governance discoverability and impact analysis.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"followsReferenceArchitecture\",\n          \"example\": \"reference-architecture.dotnet.three-tier.ha\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"noApplicablePattern\",\n          \"example\": \"No applicable Reference Architecture exists yet for this deployment shape\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"service-groups\",\n      \"description\": \"The Software Deployment Pattern must declare the service groups that make up the deployed product.\",\n      \"rationale\": \"A deployment manifest is incomplete until the real deployed service group structure is explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"serviceGroups\",\n          \"example\": \"Non-empty serviceGroups list with named deployment groups and deployable object references\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"role\": \"service-group\"\n          },\n          \"example\": \"Frontend UI, Data Services, Shared Event Processing Services\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"internalComponent\"\n      ]\n    },\n    {\n      \"id\": \"deployment-targets\",\n      \"description\": \"Every service group must describe its deployment boundary or execution context at the level needed to understand ownership, isolation, and operational responsibility.\",\n      \"rationale\": \"Deployment reality is not complete until the architect can explain the boundary that matters for operating and governing each service group; that boundary may be an account, cluster, data center, customer site, tenant/environment boundary, SaaS context, or another architecture-relevant execution context.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"deploymentTargets\",\n          \"example\": \"Production services run in the Team_Accelify_Prod AWS account; shared services run in the Shared Services platform boundary.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ]\n    },\n    {\n      \"id\": \"availability-requirement\",\n      \"description\": \"The product availability tier must be documented.\",\n      \"rationale\": \"Availability requirements justify deployment posture and inform operational support models.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"availabilityRequirement\",\n          \"example\": \"99.9%, business-hours, 24x7\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ]\n    },\n    {\n      \"id\": \"additional-interactions\",\n      \"description\": \"Any external systems this product interacts with beyond what its component deployable objects declare must be documented \\u2014 or explicitly stated as none.\",\n      \"rationale\": \"Product-specific integrations are invisible to the architecture without explicit declaration.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"externalInteraction\",\n          \"criteria\": {\n            \"capability\": \"any\"\n          },\n          \"example\": \"Product-specific SaaS integration, partner API\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"noAdditionalInteractions\",\n          \"example\": \"No additional interactions beyond component deployable objects\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"externalInteraction\"\n      ]\n    },\n    {\n      \"id\": \"data-classification\",\n      \"description\": \"The type of data this product stores or processes must be documented.\",\n      \"rationale\": \"Data classification drives security posture requirements and compliance obligations.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"dataClassification\",\n          \"example\": \"PII, student records, internal-only, public\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ]\n    },\n    {\n      \"id\": \"failure-domain\",\n      \"description\": \"The Software Deployment Pattern must document the deployment-level failure domain of the product.\",\n      \"rationale\": \"Product-level impact boundaries cannot be inferred from component selections alone.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"failureDomain\",\n          \"example\": \"Shared services are cross-sub-environment dependencies; sub-environment failures are tenant-bounded\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ]\n    },\n    {\n      \"id\": \"pattern-deviations\",\n      \"description\": \"Any intentional deviation from the selected Reference Architecture must be documented, or the Software Deployment Pattern must explicitly state that no deviations exist.\",\n      \"rationale\": \"The Software Deployment Pattern is where pattern intent becomes product deployment reality, so departures from the Reference Architecture must be visible.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"patternDeviations\",\n          \"example\": \"Shared ingestion remains centralized rather than per-sub-environment\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"noPatternDeviations\",\n          \"example\": \"No intentional deviations from the selected Reference Architecture\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ]\n    },\n    {\n      \"id\": \"inter-service-connections\",\n      \"description\": \"Primary inter-service communication paths that cross a tier boundary (e.g. presentation\\u2192application) or a network zone boundary must be documented in serviceGroups[].connections, or the pattern must explicitly state that no cross-boundary connections exist.\\n\",\n      \"rationale\": \"Service-to-service communication across tiers and zones is an architecture decision with security, performance, and compliance implications. Without explicit connection records the architecture cannot be analyzed for data-flow compliance, blast-radius, or network policy conformance.\\n\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"serviceGroups[].connections\",\n          \"example\": \"At least one connection entry per tier or zone crossing represented in the deployment \\u2014 from: <ref>, to: <ref>, protocol: REST, direction: outbound\\n\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"noCrossBoundaryConnections\",\n          \"example\": \"All services in this pattern communicate only within the same tier and zone\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"naRationale\": \"Acceptable when the deployment has only a single tier and no network zones.\",\n      \"validAnswerTypes\": [\n        \"field\",\n        \"architecturalDecision\"\n      ],\n      \"interviewHint\": \"Use the propose-and-confirm pattern. Ask one yes/no question per tier crossing (presentation\\u2192application, application\\u2192data, application\\u2192utility). For each confirmed crossing, present a multi-select list of the services in the source tier and ask which ones make calls across. Then ask protocol once per crossing using the connectionProtocols vocabulary list. Do not ask about port or label. Do not attempt to enumerate every same-tier connection in a single session.\\n\"\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"software-deployment-pattern\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-software-deployment-pattern.yaml\"\n}",
       "existsInCatalog": true
     },
+    "01KS8N4KR3-MTSA": {
+      "id": "01KS8N4KR3-MTSA",
+      "uid": "01KS8N4KR3-MTSA",
+      "name": "Multi-Tenant SaaS",
+      "aliases": [],
+      "type": "reference_architecture",
+      "typeLabel": "Reference Architecture",
+      "filterType": "reference_architecture",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Deployment pattern for software-as-a-service products that serve multiple customer tenants from shared infrastructure. Defines tenant, platform, data, and management zones with explicit isolation requirements.",
+      "version": "",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "preferred",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "hexagon",
+      "color": "#1f8a5b",
+      "source": "framework/configurations/reference-architectures/ra-multi-tenant-saas.yaml",
+      "tags": [
+        "reference-architecture",
+        "multi-tenant",
+        "saas"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {
+        "patternRationale": "Multi-tenant SaaS deployments require explicit isolation guarantees at the data, runtime, and network layers. The pattern separates tenant-facing runtime from shared platform services to prevent cross-tenant data leakage and allow platform services to evolve independently of tenant workloads.",
+        "tenantIsolationModels": "Three isolation models are supported: (1) separate database per tenant \u2014 highest isolation, highest operational cost; (2) shared database with separate schema per tenant \u2014 moderate isolation, moderate cost; (3) shared schema with row-level security \u2014 lowest isolation, lowest cost. The chosen model must be documented in the SDP's architecturalDecisions.",
+        "managementPlaneIsolation": "The management plane must not share network paths with tenant-facing services. Administrative access to tenant data must flow through the management plane, not through tenant runtime endpoints."
+      },
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [
+        {
+          "name": "Tenant Runtime",
+          "deployableObjects": [
+            {
+              "objectType": "edge_gateway_service",
+              "diagramTier": "presentation",
+              "notes": "Per-tenant or shared API gateway providing tenant routing, authentication enforcement, and per-tenant rate limiting."
+            },
+            {
+              "objectType": "runtime_service",
+              "diagramTier": "application",
+              "notes": "Tenant-scoped runtime service. May be shared across tenants with row-level isolation or deployed per-tenant depending on the chosen isolation model."
+            }
+          ]
+        },
+        {
+          "name": "Platform Services",
+          "deployableObjects": [
+            {
+              "objectType": "runtime_service",
+              "diagramTier": "application",
+              "notes": "Shared platform service consumed by all tenants \u2014 for example identity, billing, notifications, or audit log. Must not store tenant data without a documented isolation mechanism."
+            }
+          ]
+        },
+        {
+          "name": "Data Tier",
+          "deployableObjects": [
+            {
+              "objectType": "data_store_service",
+              "diagramTier": "data",
+              "notes": "Tenant data store. The isolation model must be documented in the SDP's architecturalDecisions. DataComponents are deployed onto this service."
+            }
+          ]
+        },
+        {
+          "name": "Management Plane",
+          "deployableObjects": [
+            {
+              "objectType": "runtime_service",
+              "diagramTier": "utility",
+              "notes": "Control-plane services including tenant provisioning, observability aggregation, and administrative tooling. Must be isolated from tenant-facing network paths."
+            }
+          ]
+        }
+      ],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "catalogStatus",
+          "lifecycleStatus"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags",
+          "patternType",
+          "architecturalDecisions",
+          "applicableDefinitionChecklist",
+          "scalingUnits",
+          "serviceGroups",
+          "requirementGroups",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "architecturalDecisions": "dict",
+          "scalingUnits": "list",
+          "serviceGroups": "list",
+          "requirementGroups": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "scalingUnits": "scalingUnit",
+          "serviceGroups": "serviceGroup",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/reference-architecture.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KS8N4KR3-MTSA\",\n  \"type\": \"reference_architecture\",\n  \"name\": \"Multi-Tenant SaaS\",\n  \"description\": \"Deployment pattern for software-as-a-service products that serve multiple customer tenants from shared infrastructure. Defines tenant, platform, data, and management zones with explicit isolation requirements.\",\n  \"patternType\": \"multi-tenant\",\n  \"catalogStatus\": \"approved\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"tags\": [\n    \"reference-architecture\",\n    \"multi-tenant\",\n    \"saas\"\n  ],\n  \"applicableDefinitionChecklist\": [\n    \"Tenant isolation strategy must be documented in architecturalDecisions \\u2014 separate database per tenant, shared database with separate schema, or shared schema with row-level security.\",\n    \"Platform tier services must not store tenant-identifiable data without an explicit isolation rationale in architecturalDecisions.\",\n    \"Management plane must be in a separate network zone from tenant-facing services.\",\n    \"The data tier must document which tenants share which stores and what isolation mechanism applies.\",\n    \"The SDP must document the tenant provisioning and de-provisioning path.\"\n  ],\n  \"serviceGroups\": [\n    {\n      \"name\": \"Tenant Runtime\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"edge_gateway_service\",\n          \"diagramTier\": \"presentation\",\n          \"notes\": \"Per-tenant or shared API gateway providing tenant routing, authentication enforcement, and per-tenant rate limiting.\"\n        },\n        {\n          \"objectType\": \"runtime_service\",\n          \"diagramTier\": \"application\",\n          \"notes\": \"Tenant-scoped runtime service. May be shared across tenants with row-level isolation or deployed per-tenant depending on the chosen isolation model.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Platform Services\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"runtime_service\",\n          \"diagramTier\": \"application\",\n          \"notes\": \"Shared platform service consumed by all tenants \\u2014 for example identity, billing, notifications, or audit log. Must not store tenant data without a documented isolation mechanism.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Data Tier\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"data_store_service\",\n          \"diagramTier\": \"data\",\n          \"notes\": \"Tenant data store. The isolation model must be documented in the SDP's architecturalDecisions. DataComponents are deployed onto this service.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Management Plane\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"runtime_service\",\n          \"diagramTier\": \"utility\",\n          \"notes\": \"Control-plane services including tenant provisioning, observability aggregation, and administrative tooling. Must be isolated from tenant-facing network paths.\"\n        }\n      ]\n    }\n  ],\n  \"architecturalDecisions\": {\n    \"patternRationale\": \"Multi-tenant SaaS deployments require explicit isolation guarantees at the data, runtime, and network layers. The pattern separates tenant-facing runtime from shared platform services to prevent cross-tenant data leakage and allow platform services to evolve independently of tenant workloads.\",\n    \"tenantIsolationModels\": \"Three isolation models are supported: (1) separate database per tenant \\u2014 highest isolation, highest operational cost; (2) shared database with separate schema per tenant \\u2014 moderate isolation, moderate cost; (3) shared schema with row-level security \\u2014 lowest isolation, lowest cost. The chosen model must be documented in the SDP's architecturalDecisions.\",\n    \"managementPlaneIsolation\": \"The management plane must not share network paths with tenant-facing services. Administrative access to tenant data must flow through the management plane, not through tenant runtime endpoints.\"\n  },\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"framework/configurations/reference-architectures/ra-multi-tenant-saas.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    "01KS8N4KR4-SVED": {
+      "id": "01KS8N4KR4-SVED",
+      "uid": "01KS8N4KR4-SVED",
+      "name": "Serverless Event-Driven",
+      "aliases": [],
+      "type": "reference_architecture",
+      "typeLabel": "Reference Architecture",
+      "filterType": "reference_architecture",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Deployment pattern for event-driven applications using serverless compute runtimes. No persistent application-tier compute is present. Logic executes in response to events, API calls, or scheduled triggers. All durable state is external to the function execution environment.",
+      "version": "",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "preferred",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "hexagon",
+      "color": "#1f8a5b",
+      "source": "framework/configurations/reference-architectures/ra-serverless-event-driven.yaml",
+      "tags": [
+        "reference-architecture",
+        "serverless",
+        "event-driven"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {
+        "patternRationale": "Serverless patterns eliminate persistent compute management at the cost of cold start latency and per-invocation billing. They are well-suited for event-driven workloads, background jobs, and APIs with irregular traffic patterns. The pattern requires all state to be externalized because function instances are ephemeral and cannot be assumed to be reused between invocations.",
+        "coldStartConsideration": "User-facing serverless functions must document expected cold start latency and the mitigation strategy \u2014 provisioned concurrency, warm-up schedules, or explicit acceptance of cold start delay. Background processing functions may omit this if latency is not user-visible.",
+        "statelessRequirement": "Functions must not depend on in-memory state, local filesystem state, or any state from a prior invocation. All coordination between function instances must use external services \u2014 data stores, queues, or distributed caches."
+      },
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [
+        {
+          "name": "Ingestion",
+          "deployableObjects": [
+            {
+              "objectType": "edge_gateway_service",
+              "diagramTier": "presentation",
+              "notes": "API gateway or event bus entry point. Routes inbound HTTP requests or events to processing functions. Provides authentication, throttling, and payload validation at the boundary."
+            }
+          ]
+        },
+        {
+          "name": "Processing",
+          "deployableObjects": [
+            {
+              "objectType": "runtime_service",
+              "diagramTier": "application",
+              "notes": "Serverless runtime (deliveryModel paas or saas). Each logical function group, event processor, or scheduled job should be modeled as a distinct runtime service to keep governance boundaries clear. ProductComponents are deployed onto this service."
+            }
+          ]
+        },
+        {
+          "name": "State",
+          "deployableObjects": [
+            {
+              "objectType": "data_store_service",
+              "diagramTier": "data",
+              "notes": "External data store consumed by processing functions. May be a relational database, object store, cache, or queue depending on the access pattern. Functions must treat this as the sole source of durable state. DataComponents are deployed onto this service."
+            }
+          ]
+        }
+      ],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "catalogStatus",
+          "lifecycleStatus"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags",
+          "patternType",
+          "architecturalDecisions",
+          "applicableDefinitionChecklist",
+          "scalingUnits",
+          "serviceGroups",
+          "requirementGroups",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "architecturalDecisions": "dict",
+          "scalingUnits": "list",
+          "serviceGroups": "list",
+          "requirementGroups": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "scalingUnits": "scalingUnit",
+          "serviceGroups": "serviceGroup",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/reference-architecture.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KS8N4KR4-SVED\",\n  \"type\": \"reference_architecture\",\n  \"name\": \"Serverless Event-Driven\",\n  \"description\": \"Deployment pattern for event-driven applications using serverless compute runtimes. No persistent application-tier compute is present. Logic executes in response to events, API calls, or scheduled triggers. All durable state is external to the function execution environment.\",\n  \"patternType\": \"serverless\",\n  \"catalogStatus\": \"approved\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"tags\": [\n    \"reference-architecture\",\n    \"serverless\",\n    \"event-driven\"\n  ],\n  \"applicableDefinitionChecklist\": [\n    \"No persistent runtime tier is present. All compute must be serverless or container-on-demand with no affinity to a running instance.\",\n    \"All durable state must be stored in external data store services, not in function memory or ephemeral local storage.\",\n    \"Cold start latency characteristics must be documented in architecturalDecisions for any user-facing function path.\",\n    \"Event sources, routing rules, and trigger conditions must be documented in service group connections or architecturalDecisions.\",\n    \"Functions must not carry coordination state between invocations. Cross-invocation coordination must use an external data store or queue.\"\n  ],\n  \"serviceGroups\": [\n    {\n      \"name\": \"Ingestion\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"edge_gateway_service\",\n          \"diagramTier\": \"presentation\",\n          \"notes\": \"API gateway or event bus entry point. Routes inbound HTTP requests or events to processing functions. Provides authentication, throttling, and payload validation at the boundary.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Processing\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"runtime_service\",\n          \"diagramTier\": \"application\",\n          \"notes\": \"Serverless runtime (deliveryModel paas or saas). Each logical function group, event processor, or scheduled job should be modeled as a distinct runtime service to keep governance boundaries clear. ProductComponents are deployed onto this service.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"State\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"data_store_service\",\n          \"diagramTier\": \"data\",\n          \"notes\": \"External data store consumed by processing functions. May be a relational database, object store, cache, or queue depending on the access pattern. Functions must treat this as the sole source of durable state. DataComponents are deployed onto this service.\"\n        }\n      ]\n    }\n  ],\n  \"architecturalDecisions\": {\n    \"patternRationale\": \"Serverless patterns eliminate persistent compute management at the cost of cold start latency and per-invocation billing. They are well-suited for event-driven workloads, background jobs, and APIs with irregular traffic patterns. The pattern requires all state to be externalized because function instances are ephemeral and cannot be assumed to be reused between invocations.\",\n    \"coldStartConsideration\": \"User-facing serverless functions must document expected cold start latency and the mitigation strategy \\u2014 provisioned concurrency, warm-up schedules, or explicit acceptance of cold start delay. Background processing functions may omit this if latency is not user-visible.\",\n    \"statelessRequirement\": \"Functions must not depend on in-memory state, local filesystem state, or any state from a prior invocation. All coordination between function instances must use external services \\u2014 data stores, queues, or distributed caches.\"\n  },\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"framework/configurations/reference-architectures/ra-serverless-event-driven.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    "01KS8N4KR2-3TWA": {
+      "id": "01KS8N4KR2-3TWA",
+      "uid": "01KS8N4KR2-3TWA",
+      "name": "Three-Tier Web Application",
+      "aliases": [],
+      "type": "reference_architecture",
+      "typeLabel": "Reference Architecture",
+      "filterType": "reference_architecture",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Standard pattern for web-facing applications with a presentation tier (edge/gateway services), an application tier (runtime services), and a data tier (data store services). Use this pattern when the deployment serves web or API traffic to external users or partners.",
+      "version": "",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "preferred",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "hexagon",
+      "color": "#1f8a5b",
+      "source": "framework/configurations/reference-architectures/ra-three-tier-web.yaml",
+      "tags": [
+        "reference-architecture",
+        "three-tier",
+        "web"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {
+        "patternRationale": "The three-tier pattern separates traffic control, application logic, and data persistence so that each tier can be governed, scaled, and secured independently. The presentation tier is the only tier with direct internet exposure.",
+        "presentationTierRequirement": "An edge/gateway service is required in the presentation tier for all externally-facing deployments. The Draftsman should surface the company-approved WAF or load balancer catalog object when drafting an SDP that follows this pattern.",
+        "dataTierIsolation": "Data tier services must not accept direct connections from the presentation tier. All data access flows through the application tier. This constraint will be enforceable via RA constraints when that feature is available."
+      },
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [
+        {
+          "name": "Presentation Tier",
+          "deployableObjects": [
+            {
+              "objectType": "edge_gateway_service",
+              "diagramTier": "presentation",
+              "notes": "Traffic inspection and protection service (WAF, application delivery controller, or equivalent). Provides DDoS mitigation, rate limiting, and request filtering before traffic reaches the application tier. The company catalog defines which edge/gateway service objects satisfy this role."
+            },
+            {
+              "objectType": "edge_gateway_service",
+              "diagramTier": "presentation",
+              "notes": "Load balancer distributing stateless traffic across application tier instances. May be combined with the WAF/ADC in a single edge service depending on the chosen platform."
+            }
+          ]
+        },
+        {
+          "name": "Application Tier",
+          "deployableObjects": [
+            {
+              "objectType": "runtime_service",
+              "diagramTier": "application",
+              "notes": "Primary application runtime. Stateless; may be replicated across availability zones. ProductComponents are deployed onto this service."
+            }
+          ]
+        },
+        {
+          "name": "Data Tier",
+          "deployableObjects": [
+            {
+              "objectType": "data_store_service",
+              "diagramTier": "data",
+              "notes": "Primary persistent data store. Must document backup strategy, RTO, and RPO. DataComponents are deployed onto this service."
+            }
+          ]
+        }
+      ],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "catalogStatus",
+          "lifecycleStatus"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags",
+          "patternType",
+          "architecturalDecisions",
+          "applicableDefinitionChecklist",
+          "scalingUnits",
+          "serviceGroups",
+          "requirementGroups",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "architecturalDecisions": "dict",
+          "scalingUnits": "list",
+          "serviceGroups": "list",
+          "requirementGroups": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "scalingUnits": "scalingUnit",
+          "serviceGroups": "serviceGroup",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/reference-architecture.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KS8N4KR2-3TWA\",\n  \"type\": \"reference_architecture\",\n  \"name\": \"Three-Tier Web Application\",\n  \"description\": \"Standard pattern for web-facing applications with a presentation tier (edge/gateway services), an application tier (runtime services), and a data tier (data store services). Use this pattern when the deployment serves web or API traffic to external users or partners.\",\n  \"patternType\": \"three-tier\",\n  \"catalogStatus\": \"approved\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"tags\": [\n    \"reference-architecture\",\n    \"three-tier\",\n    \"web\"\n  ],\n  \"applicableDefinitionChecklist\": [\n    \"An edge/gateway service must be present in the presentation tier. This is not optional for externally-facing web or API deployments.\",\n    \"Application tier services must not be directly internet-facing. All inbound traffic flows through the presentation tier.\",\n    \"Data tier services must only accept connections from the application tier, not from the presentation tier or external sources.\",\n    \"All cross-tier connections must be documented in service group connections or externalInteractions.\",\n    \"Backup strategy, RTO, and RPO must be documented on the data tier service.\"\n  ],\n  \"serviceGroups\": [\n    {\n      \"name\": \"Presentation Tier\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"edge_gateway_service\",\n          \"diagramTier\": \"presentation\",\n          \"notes\": \"Traffic inspection and protection service (WAF, application delivery controller, or equivalent). Provides DDoS mitigation, rate limiting, and request filtering before traffic reaches the application tier. The company catalog defines which edge/gateway service objects satisfy this role.\"\n        },\n        {\n          \"objectType\": \"edge_gateway_service\",\n          \"diagramTier\": \"presentation\",\n          \"notes\": \"Load balancer distributing stateless traffic across application tier instances. May be combined with the WAF/ADC in a single edge service depending on the chosen platform.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Application Tier\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"runtime_service\",\n          \"diagramTier\": \"application\",\n          \"notes\": \"Primary application runtime. Stateless; may be replicated across availability zones. ProductComponents are deployed onto this service.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Data Tier\",\n      \"deployableObjects\": [\n        {\n          \"objectType\": \"data_store_service\",\n          \"diagramTier\": \"data\",\n          \"notes\": \"Primary persistent data store. Must document backup strategy, RTO, and RPO. DataComponents are deployed onto this service.\"\n        }\n      ]\n    }\n  ],\n  \"architecturalDecisions\": {\n    \"patternRationale\": \"The three-tier pattern separates traffic control, application logic, and data persistence so that each tier can be governed, scaled, and secured independently. The presentation tier is the only tier with direct internet exposure.\",\n    \"presentationTierRequirement\": \"An edge/gateway service is required in the presentation tier for all externally-facing deployments. The Draftsman should surface the company-approved WAF or load balancer catalog object when drafting an SDP that follows this pattern.\",\n    \"dataTierIsolation\": \"Data tier services must not accept direct connections from the presentation tier. All data access flows through the application tier. This constraint will be enforceable via RA constraints when that feature is available.\"\n  },\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"framework/configurations/reference-architectures/ra-three-tier-web.yaml\"\n}",
+      "existsInCatalog": true
+    },
     "01KQQ4Q027-ZTHF": {
       "id": "01KQQ4Q027-ZTHF",
       "uid": "01KQQ4Q027-ZTHF",
@@ -41509,6 +42653,7 @@ window.DRAFT_BROWSER_DATA = {
     "domain",
     "host",
     "object_patch",
+    "reference_architecture",
     "requirement_group",
     "runtime_service",
     "software_deployment_pattern",
