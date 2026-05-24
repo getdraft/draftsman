@@ -42,6 +42,8 @@ FRAMEWORK_VENDOR_DIRS = (
     "docs",
     "schemas",
     "tools",
+    "commands",
+    "integrations",
 )
 
 FRAMEWORK_VENDOR_OPTIONAL_DIRS = (
@@ -76,6 +78,8 @@ WORKSPACE_TEMPLATE_FILES = (
     ("templates/workspace/.github/copilot-instructions.md.tmpl", ".github/copilot-instructions.md"),
     ("templates/workspace/.github/workflows/draft-framework-update.yml.tmpl", ".github/workflows/draft-framework-update.yml"),
     ("templates/workspace/.github/workflows/draft-vocabulary-proposals.yml.tmpl", ".github/workflows/draft-vocabulary-proposals.yml"),
+    ("templates/workspace/.windsurfrules.tmpl", ".windsurfrules"),
+    ("templates/workspace/.cursor/rules/draftsman.mdc.tmpl", ".cursor/rules/draftsman.mdc"),
 )
 
 TEMPLATE_ACRONYMS = {

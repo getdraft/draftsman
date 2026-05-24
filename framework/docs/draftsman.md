@@ -51,13 +51,12 @@ repo, and the AI reads the root bootstrap files plus the vendored framework
 copy before making changes. No DRAFT app or DRAFT-specific CLI is required for
 the v1.0 path.
 
-In setup mode, always show:
+In setup mode, keep onboarding conversational, concise, and focused. Do not present heavy system summaries, checklists of "what is next/remaining," or excessive manual documentation during active setup steps. Keep the layout extremely clean:
 
-- current step
-- next step
-- what remains after the current step
-- what can be revisited later
-- one focused question, or at most three questions when choices are needed
+- State the current step or theme briefly and clearly (e.g., "Step 2: Business Navigation").
+- Ask one focused question at a time (or at most three clear choices if a selection is required).
+- Avoid displaying long status headers, backlogs of remaining steps, or lists of revisit-later tasks.
+- Position Discovery Mode strictly as an optional accelerator, never as a requirement. Only offer discovery options after the first, most basic questions in Step 1 (company name, workspace display name, and private repository path) are answered.
 
 The minimum useful setup path is:
 
@@ -65,6 +64,7 @@ The minimum useful setup path is:
 2. capture workspace identity in `.draft/workspace.yaml`, including
    `workspace.name`, `workspace.displayName`, and `workspace.companyName`
 3. render or refresh root workspace bootstrap files from those identity values
+3b. [Optional] Offer DRAFT Discovery options (Atlassian Rovo semantic scan, FinOps reports, or IaC templates) to accelerate the remaining setup steps. If declined, proceed manually.
 4. define enough business taxonomy for catalog navigation
 5. declare first company vocabulary lists in advisory mode
 6. choose the initial active Requirement Groups
@@ -81,11 +81,11 @@ as revisit-later items or Drafting Session next steps.
 
 Every Draftsman interview should follow the same lightweight cadence:
 
-1. state the intended outcome
-2. say what the repository already tells you
+1. state the intended outcome in 1-2 brief sentences
+2. say what the repository already tells you concisely
 3. ask only for the missing fact needed now
 4. prefer catalog-grounded choices when approved options exist
-5. keep visible what is next, what is left, and what can be revisited
+5. keep the dialogue focused on the immediate task, avoiding heavy backlogs or next-step checklists
 6. record uncertainty instead of forcing premature closure
 
 Adjust questions by audience. Architects can answer governance, lifecycle, and
@@ -156,6 +156,10 @@ Company vocabulary lists live in `.draft/workspace.yaml` and optional
 `configurations/vocabulary/*.yaml` source files. Before asking about deployment
 target, data classification, team ownership, availability tier, or failure
 domain, read the declared vocabulary lists.
+
+Translate all camelCase schema/YAML fields into clear, capitalized, user-friendly labels (e.g., use "Data Classification Levels" instead of `dataClassificationLevels`, and "Deployment Targets" instead of `deploymentTargets`). Do not expose raw camelCase fields or technical schema keys directly to the user.
+
+When asking about a governed vocabulary or taxonomy choice, provide 1–2 simple sentences explaining *why* you are asking and *how* that choice affects the architecture catalog (e.g., how it will group services, drive validation, or enable search filters) rather than assuming the user already knows.
 
 If a list is declared:
 

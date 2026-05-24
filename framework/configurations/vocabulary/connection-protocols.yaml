@@ -1,53 +1,51 @@
 schemaVersion: '1.0'
+uid: 01KS7ZZ1C5-1PFR
 type: vocabulary
 vocabulary: connectionProtocols
 name: Connection Protocols
-description: >
-  Approved inter-service communication protocols for use in
-  serviceGroup.connections[].protocol. Companies may extend this list via
-  vocabulary proposals. The Draftsman presents these as a multiple-choice list
-  during connection elicitation; if the engineer's answer is not in this list
-  the Draftsman records it as a non-standard value and offers a vocabulary proposal.
+description: 'Approved inter-service communication protocols for use in serviceGroup.connections[].protocol. Companies may extend this list via vocabulary proposals. The Draftsman presents these as a multiple-choice list during connection elicitation; if the engineer''s answer is not in this list the Draftsman records it as a non-standard value and offers a vocabulary proposal.
+
+  '
 values:
-  - id: REST
-    name: REST
-    description: HTTP/S RESTful API. Use for synchronous request/response between services.
-    status: approved
-  - id: gRPC
-    name: gRPC
-    description: Google Remote Procedure Call over HTTP/2. Use for high-throughput internal service calls.
-    status: approved
-  - id: AMQP
-    name: AMQP
-    description: >
-      Advanced Message Queuing Protocol. Use for asynchronous message-based
-      communication via a broker (RabbitMQ, Azure Service Bus, AWS SQS/SNS compatible).
-    status: approved
-  - id: JDBC
-    name: JDBC
-    description: Java Database Connectivity. Use when a service connects directly to a relational data store.
-    status: approved
-  - id: SQL
-    name: SQL
-    description: Direct SQL connection to a relational database. Use when the driver is not JDBC-based.
-    status: approved
-  - id: WebSocket
-    name: WebSocket
-    description: Persistent bidirectional connection. Use for real-time push or streaming from server to client.
-    status: approved
-  - id: HTTPS
-    name: HTTPS
-    description: >
-      Plain HTTPS without a REST or GraphQL contract — for example a webhook
-      receiver, CDN origin pull, or third-party callback endpoint.
-    status: approved
-  - id: GraphQL
-    name: GraphQL
-    description: GraphQL query/mutation over HTTP. Use when the service exposes or consumes a GraphQL API.
-    status: approved
-  - id: other
-    name: Other
-    description: >
-      Protocol not covered by the approved list. The Draftsman will record the
-      value as non-standard and offer a vocabulary proposal.
-    status: approved
+- id: REST
+  name: REST
+  description: HTTP/S RESTful API. Use for synchronous request/response between services.
+  status: approved
+- id: gRPC
+  name: gRPC
+  description: Google Remote Procedure Call over HTTP/2. Use for high-throughput internal service calls.
+  status: approved
+- id: AMQP
+  name: AMQP
+  description: 'Advanced Message Queuing Protocol. Use for asynchronous message-based communication via a broker (RabbitMQ, Azure Service Bus, AWS SQS/SNS compatible).
+
+    '
+  status: approved
+- id: JDBC
+  name: JDBC
+  description: Java Database Connectivity. Use when a service connects directly to a relational data store.
+  status: approved
+- id: SQL
+  name: SQL
+  description: Direct SQL connection to a relational database. Use when the driver is not JDBC-based.
+  status: approved
+- id: WebSocket
+  name: WebSocket
+  description: Persistent bidirectional connection. Use for real-time push or streaming from server to client.
+  status: approved
+- id: HTTPS
+  name: HTTPS
+  description: 'Plain HTTPS without a REST or GraphQL contract — for example a webhook receiver, CDN origin pull, or third-party callback endpoint.
+
+    '
+  status: approved
+- id: GraphQL
+  name: GraphQL
+  description: GraphQL query/mutation over HTTP. Use when the service exposes or consumes a GraphQL API.
+  status: approved
+- id: other
+  name: Other
+  description: 'Protocol not covered by the approved list. The Draftsman will record the value as non-standard and offer a vocabulary proposal.
+
+    '
+  status: approved

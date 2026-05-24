@@ -1,95 +1,79 @@
 schemaVersion: '1.0'
+uid: 01KS7ZZ1C6-6H8D
 type: vocabulary
 vocabulary: networkZonePatterns
 name: Network Zone Patterns
-description: >
-  Common named network zone patterns the Draftsman presents as multiple-choice
-  options when an engineer confirms that their deployment uses distinct network
-  zones. The engineer selects one pattern; the Draftsman expands it into the
-  SDP's networkZones list with tier classifications already set. Companies that
-  need custom zones can select the custom pattern and name their zones directly,
-  or submit a vocabulary proposal to add a new pattern.
-  This vocabulary is distinct from the per-workspace networkZones declared in
-  workspace.yaml; it is a catalogue of starting-point patterns only.
+description: 'Common named network zone patterns the Draftsman presents as multiple-choice options when an engineer confirms that their deployment uses distinct network zones. The engineer selects one pattern; the Draftsman expands it into the SDP''s networkZones list with tier classifications already set. Companies that need custom zones can select the custom pattern and name their zones directly, or submit a vocabulary proposal to add a new pattern. This vocabulary is distinct from the per-workspace networkZones declared in workspace.yaml; it is a catalogue of starting-point patterns only.
+
+  '
 values:
-  - id: pattern.public-private-management
-    name: Public / Private / Management
-    description: >
-      Three-zone web service pattern. Public zone faces the internet (frontend
-      tier — CDN, WAF, load balancer, UI). Private zone holds application logic.
-      Management zone holds operational tooling, bastion access, and monitoring
-      (unclassified — no tier requirement set applies).
-    zones:
-      - id: public
-        name: Public
-        tier: frontend
-        description: Internet-facing services and edge components.
-      - id: private
-        name: Private
-        tier: application
-        description: Internal application services with no direct internet access.
-      - id: data
-        name: Data
-        tier: data
-        description: Data stores, caches, and persistence services.
-      - id: management
-        name: Management
-        description: Operational, monitoring, and administrative services.
-    status: approved
+- id: pattern.public-private-management
+  name: Public / Private / Management
+  description: 'Three-zone web service pattern. Public zone faces the internet (frontend tier — CDN, WAF, load balancer, UI). Private zone holds application logic. Management zone holds operational tooling, bastion access, and monitoring (unclassified — no tier requirement set applies).
 
-  - id: pattern.tenant-platform-management
-    name: Tenant / Platform / Management
-    description: >
-      Multi-tenant SaaS pattern. Tenant zone contains per-customer runtime services
-      (application tier). Platform zone contains shared services used by all tenants
-      (application tier). Management zone contains control-plane and operational
-      tooling (unclassified).
-    zones:
-      - id: tenant
-        name: Tenant
-        tier: application
-        description: Per-tenant runtime services.
-      - id: platform
-        name: Platform
-        tier: application
-        description: Shared platform services consumed by all tenants.
-      - id: data
-        name: Data
-        tier: data
-        description: Shared data stores and persistence layer.
-      - id: management
-        name: Management
-        description: Control plane, monitoring, and administrative services.
-    status: approved
+    '
+  zones:
+  - id: public
+    name: Public
+    tier: frontend
+    description: Internet-facing services and edge components.
+  - id: private
+    name: Private
+    tier: application
+    description: Internal application services with no direct internet access.
+  - id: data
+    name: Data
+    tier: data
+    description: Data stores, caches, and persistence services.
+  - id: management
+    name: Management
+    description: Operational, monitoring, and administrative services.
+  status: approved
+- id: pattern.tenant-platform-management
+  name: Tenant / Platform / Management
+  description: 'Multi-tenant SaaS pattern. Tenant zone contains per-customer runtime services (application tier). Platform zone contains shared services used by all tenants (application tier). Management zone contains control-plane and operational tooling (unclassified).
 
-  - id: pattern.dmz-internal-data
-    name: DMZ / Internal / Data
-    description: >
-      Perimeter security model. DMZ holds externally accessible services behind
-      a firewall (frontend tier). Internal zone holds application-tier services
-      with no direct internet access. Data zone is restricted to data stores
-      and backup services.
-    zones:
-      - id: dmz
-        name: DMZ
-        tier: frontend
-        description: Externally accessible services, reverse proxies, and API gateways.
-      - id: internal
-        name: Internal
-        tier: application
-        description: Application-tier services with no direct internet access.
-      - id: data
-        name: Data
-        tier: data
-        description: Data stores, caches, and backup services.
-    status: approved
+    '
+  zones:
+  - id: tenant
+    name: Tenant
+    tier: application
+    description: Per-tenant runtime services.
+  - id: platform
+    name: Platform
+    tier: application
+    description: Shared platform services consumed by all tenants.
+  - id: data
+    name: Data
+    tier: data
+    description: Shared data stores and persistence layer.
+  - id: management
+    name: Management
+    description: Control plane, monitoring, and administrative services.
+  status: approved
+- id: pattern.dmz-internal-data
+  name: DMZ / Internal / Data
+  description: 'Perimeter security model. DMZ holds externally accessible services behind a firewall (frontend tier). Internal zone holds application-tier services with no direct internet access. Data zone is restricted to data stores and backup services.
 
-  - id: pattern.custom
-    name: Custom
-    description: >
-      The deployment uses zones that do not match a standard pattern. The Draftsman
-      will ask the engineer to name each zone and optionally classify each with a
-      tier (frontend / application / data). Leave tier unset for management, CI/CD,
-      or mixed-purpose zones that do not map to a specific requirement class.
-    zones: []
-    status: approved
+    '
+  zones:
+  - id: dmz
+    name: DMZ
+    tier: frontend
+    description: Externally accessible services, reverse proxies, and API gateways.
+  - id: internal
+    name: Internal
+    tier: application
+    description: Application-tier services with no direct internet access.
+  - id: data
+    name: Data
+    tier: data
+    description: Data stores, caches, and backup services.
+  status: approved
+- id: pattern.custom
+  name: Custom
+  description: 'The deployment uses zones that do not match a standard pattern. The Draftsman will ask the engineer to name each zone and optionally classify each with a tier (frontend / application / data). Leave tier unset for management, CI/CD, or mixed-purpose zones that do not map to a specific requirement class.
+
+    '
+  zones: []
+  status: approved

@@ -36,8 +36,8 @@ Do not ask what "draftsman" means. In this repo, it means:
   outside approved choices non-standard values that can be revisited or
   proposed for review
 - preserve unresolved uncertainty in a Drafting Session when needed
-- keep the user aware of the current step, next step, remaining work, and
-  revisit-later items
+- keep the conversation conversational, concise, and focused on the immediate task without overwhelming the user with heavy lists of remaining work
+- position discovery as an optional value-add path (never a requirement) and present discovery options (Atlassian Rovo, FinOps reports, IaC templates) only after basic onboarding questions are answered in Step 1 (company name, repo location, and workspace name)
 
 ## Repository Mode
 
@@ -108,9 +108,13 @@ AI agents should treat DRAFT as a deterministic authoring system:
   `.draft/workspace.yaml` before setting `businessContext.pillar`; do not
   invent company pillar values in tags or architecture domains.
 - Resolve declared company vocabulary lists from `.draft/workspace.yaml` and
-  `configurations/vocabulary/` before setting deployment target, data
-  classification, owner team, availability tier, or failure domain.
+   `configurations/vocabulary/` before setting deployment target, data
+   classification, owner team, availability tier, or failure domain.
 - Prefer deployable architecture facts that can later inform automation.
+- Translate camelCase schema or YAML fields into clear, capitalized, user-friendly labels (e.g., use "Data Classification Levels" instead of `dataClassificationLevels`, and "Deployment Targets" instead of `deploymentTargets`). Do not present raw camelCase variables or technical keys to the user.
+- Keep the setup and onboarding experience conversational, concise, and focused. Avoid presenting heavy system summaries, checklists of "what is next/remaining," or excessive manual documentation during active setup steps.
+- When asking about a governed vocabulary or taxonomy choice, provide 1–2 simple sentences explaining *why* you are asking and *how* that choice affects the architecture catalog (e.g., to group services, guide validation, or map compliance targets) rather than assuming the user already knows.
+- Position Discovery Mode strictly as an optional accelerator, never as a requirement. Only offer discovery options (Atlassian Rovo semantic scan, FinOps reports, or IaC templates) after the first, most basic questions are answered in Step 1 (company name, workspace display name, and private repository path).
 
 ## Compliance Claims
 

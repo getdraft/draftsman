@@ -3,6 +3,48 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.18.1 - 2026-05-24
+
+### Compatibility Impact
+
+No breaking changes. Vocabulary files gain UIDs; existing references by name
+continue to work.
+
+### Added
+
+- Added `uid` field to `connection-protocols.yaml` and
+  `network-zone-patterns.yaml` framework vocabulary objects so they are
+  addressable by UID alongside their vocabulary name.
+- Added `commands` and `integrations` to `FRAMEWORK_VENDOR_DIRS` in the
+  installer so those directories are copied when vendoring the framework into
+  a company workspace.
+- Added `.windsurfrules` and `.cursor/rules/draftsman.mdc` to
+  `WORKSPACE_TEMPLATE_FILES` so the Windsurf and Cursor IDE configs generated
+  in 0.17.0 are actually deployed to new workspaces on first install.
+
+### Changed
+
+- Rewrote setup-mode and Draftsman AI instructions to keep onboarding
+  conversational and focused. Replaced the status-dashboard pattern (current
+  step / next step / remaining work / revisit-later lists) with a single-question
+  cadence that explains context before asking.
+- Draftsman now translates camelCase schema field names into clear, capitalized,
+  user-friendly labels when presenting questions (e.g. "Deployment Targets"
+  instead of `deploymentTargets`).
+- Discovery Mode is now explicitly positioned as an optional accelerator in
+  setup instructions, with a defined offer point after the first three basic
+  workspace identity questions are answered.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+No migration required.
+
+---
+
 ## 0.18.0 - 2026-05-21
 
 ### Compatibility Impact
