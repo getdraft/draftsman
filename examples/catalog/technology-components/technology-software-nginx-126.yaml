@@ -6,7 +6,7 @@ description: 'nginx web server software installed locally on a managed host and 
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 owner:
   team: cloud-architecture
   contact: cloud-architecture@example.com

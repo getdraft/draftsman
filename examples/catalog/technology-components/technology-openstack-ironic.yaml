@@ -10,7 +10,7 @@ description: 'OpenStack Ironic is the bare metal provisioning service. It expose
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 owner:
   team: platform-engineering
   contact: platform-engineering@example.com

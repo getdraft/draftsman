@@ -7,7 +7,7 @@ description: Internal web-based operations console for platform engineering team
   across the OpenStack control plane. Deployed alongside Horizon on the same runtime
   service.
 version: 2.4.1
-catalogStatus: approved
+catalogStatus: complete
 lifecycleStatus: preferred
 repoUrl: https://github.example.com/platform-engineering/openstack-ops-console
 owner:

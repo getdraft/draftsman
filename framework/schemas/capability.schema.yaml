@@ -19,8 +19,8 @@ optionalFields:
 enumFields:
   catalogStatus:
   - stub
-  - draft
-  - approved
+  - incomplete
+  - complete
 fieldTypes:
   aliases: list
   definitionOwner: dict

@@ -25,8 +25,8 @@ optionalFields:
 enumFields:
   catalogStatus:
   - stub
-  - draft
-  - approved
+  - incomplete
+  - complete
   lifecycleStatus:
   - candidate
   - preferred
@@ -59,7 +59,7 @@ fieldDescriptions:
   name: Use a clear human-readable name for the object.
   category: Provide a valid category value for this decision_record object.
   status: Provide a valid status value for this decision_record object.
-  catalogStatus: Use stub, draft, or approved to describe catalog maturity, not company adoption disposition.
+  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition.
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired where this object still carries a lifecycle signal.
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name, product-name, or taxonomy changes.
   aliases: List prior or alternate human-readable names that should resolve to this object.

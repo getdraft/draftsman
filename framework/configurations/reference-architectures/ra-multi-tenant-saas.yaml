@@ -6,7 +6,7 @@ description: Deployment pattern for software-as-a-service products that serve mu
   customer tenants from shared infrastructure. Defines tenant, platform, data, and
   management zones with explicit isolation requirements.
 patternType: multi-tenant
-catalogStatus: approved
+catalogStatus: complete
 lifecycleStatus: preferred
 owner:
   team: cloud-architecture

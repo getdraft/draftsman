@@ -34,8 +34,8 @@ enumFields:
   - draft-admin
   catalogStatus:
   - stub
-  - draft
-  - approved
+  - incomplete
+  - complete
   classification:
   - operating-system
   - compute-platform
@@ -98,7 +98,7 @@ fieldDescriptions:
   productName: Name the vendor product independently from the DRAFT object name.
   productVersion: Record the product version, release train, or managed/current marker.
   classification: Choose the one classification that describes the technology role.
-  catalogStatus: Use stub, draft, or approved to describe catalog maturity, not company adoption disposition.
+  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition.
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name, product-name, or taxonomy changes.
   aliases: List prior or alternate human-readable names that should resolve to this object.
   configurations: Use named configurations to describe capability-specific or deployment-specific variants of this Technology Component.

@@ -4,7 +4,7 @@ type: capability
 name: Authentication
 description: Identity and access authentication capability for users, services, administrators, or workloads.
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

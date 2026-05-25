@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import subprocess
 import tempfile
+import textwrap
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -19,6 +20,7 @@ from draft_table.draftsman import (
     safe_workspace_path,
 )
 from draft_table.paths import REPO_ROOT
+from draft_table.repo import ensure_workspace_layout
 from draft_table.sessions import DraftsmanSessionStore
 
 
@@ -182,6 +184,55 @@ class DraftsmanTests(unittest.TestCase):
         self.assertTrue(response.provider_used)
         self.assertEqual(public["proposals"][0]["name"], "Managed Host")
         self.assertNotIn("content", public["proposals"][0])
+
+
+    def test_apply_proposals_writes_draft_files_and_reports_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory) / "workspace"
+            workspace.mkdir()
+            ensure_workspace_layout(workspace)
+            config_path = Path(directory) / "config.yaml"
+            save_config(
+                {
+                    "framework_repo_path": str(REPO_ROOT),
+                    "content_repo_path": str(workspace),
+                },
+                config_path,
+            )
+            engine = DraftsmanEngine(config_path, DraftsmanSessionStore(Path(directory) / "sessions"))
+            session = engine.session_store.load(None)
+            session["proposals"] = [
+                {
+                    "id": "stub-tech",
+                    "action": "create",
+                    "artifactType": "Technology Component",
+                    "name": "Stub Technology",
+                    "summary": "Incomplete stub — uid will be repaired before approval.",
+                    "path": "catalog/technology-components/technology-stub.yaml",
+                    "content": textwrap.dedent(
+                        """
+                        schemaVersion: "1.0"
+                        type: technology_component
+                        name: Stub Technology
+                        vendor: Test Vendor
+                        productName: Stub Tech
+                        productVersion: "1"
+                        classification: software
+                        catalogStatus: stub
+                        """
+                    ).strip()
+                    + "\n",
+                    "applied": False,
+                }
+            ]
+            engine.session_store.save(session)
+
+            result = engine.apply_proposals(session["id"])
+
+            target = workspace / "catalog" / "technology-components" / "technology-stub.yaml"
+            self.assertTrue(target.exists())
+            self.assertFalse(result.get("preWriteFailure"))
+            self.assertEqual(len(result["applied"]), 1)
 
 
 if __name__ == "__main__":

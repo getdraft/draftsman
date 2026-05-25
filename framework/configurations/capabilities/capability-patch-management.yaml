@@ -4,7 +4,7 @@ type: capability
 name: Patch Management
 description: Patch orchestration and update application capability for managed runtime components.
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

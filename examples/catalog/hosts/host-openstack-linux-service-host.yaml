@@ -8,7 +8,7 @@ description: 'General-purpose self-managed Linux host standard for the OpenStack
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 lifecycleStatus: existing-only
 owner:
   team: platform-engineering

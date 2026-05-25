@@ -7,7 +7,7 @@ description: Standard pattern for web-facing applications with a presentation ti
   (data store services). Use this pattern when the deployment serves web or API traffic
   to external users or partners.
 patternType: three-tier
-catalogStatus: approved
+catalogStatus: complete
 lifecycleStatus: preferred
 owner:
   team: cloud-architecture

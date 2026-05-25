@@ -4,7 +4,7 @@ type: capability
 name: Security Monitoring
 description: Threat detection, intrusion detection, security event monitoring, and audit telemetry.
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

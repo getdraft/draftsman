@@ -11,7 +11,7 @@ description: 'Shared MariaDB database cluster hosting the schemas for OpenStack 
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 lifecycleStatus: existing-only
 owner:
   team: platform-engineering

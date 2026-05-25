@@ -7,7 +7,7 @@ description: Deployment pattern for event-driven applications using serverless c
   to events, API calls, or scheduled triggers. All durable state is external to the
   function execution environment.
 patternType: serverless
-catalogStatus: approved
+catalogStatus: complete
 lifecycleStatus: preferred
 owner:
   team: cloud-architecture

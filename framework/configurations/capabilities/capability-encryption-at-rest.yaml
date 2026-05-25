@@ -4,7 +4,7 @@ type: capability
 name: Encryption At Rest
 description: Protection of persisted data through encryption or equivalent storage safeguards.
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

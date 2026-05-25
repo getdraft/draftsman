@@ -4,7 +4,7 @@ type: object_patch
 name: Example capability.security-monitoring implementations
 description: Example workspace-owned capability implementation mapping.
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 lifecycleStatus: existing-only
 target: 01KQQ4Q026-JW52
 patch:

@@ -7,7 +7,7 @@ description: HAProxy load balancer co-located on OpenStack controller nodes. Dis
   control plane cluster. Provides health checking, connection queuing, and SSL termination
   for the OpenStack public network zone.
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 lifecycleStatus: existing-only
 owner:
   team: platform-engineering

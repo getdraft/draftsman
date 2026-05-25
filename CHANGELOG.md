@@ -3,6 +3,98 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.23.0 - 2026-05-25
+
+### Added
+
+No new features.
+
+### Changed
+
+- **`catalogStatus` enum renamed** (breaking): The three catalog maturity values
+  have been renamed to remove ambiguity with review/approval processes and avoid
+  collision with the word "draft" in the framework name.
+  - `draft` → `incomplete`
+  - `approved` → `complete`
+  - `stub` is unchanged
+  The internal validator function `approved_or_preferred_object` has been renamed
+  to `complete_or_preferred_object`. All enforcement behavior is unchanged — hard
+  failures fire when `catalogStatus: complete`, warnings when `incomplete` or
+  `stub`.
+
+### Fixed
+
+No bug fixes.
+
+### Compatibility Impact
+
+Breaking change for all workspace YAML files that set `catalogStatus: draft` or
+`catalogStatus: approved`. All framework-bundled configurations have been
+migrated. Company workspaces must migrate before validating against this release.
+
+### Migration Notes
+
+Run the following commands from your company workspace root to migrate all YAML
+files in one step:
+
+```bash
+find . -name "*.yaml" | xargs sed -i '' \
+  's/catalogStatus: draft$/catalogStatus: incomplete/g; \
+   s/catalogStatus: approved$/catalogStatus: complete/g'
+```
+
+Verify with `draft validate` after running.
+
+## 0.22.0 - 2026-05-25
+
+### Added
+
+- **Draftsman pre-flight validation** (closes #5): Added
+  `preview_proposals(session_id, proposal_ids)` method to `DraftsmanEngine`:
+  copies the workspace to a temp directory, writes the selected proposals there,
+  runs the validator, and returns the full result without touching the real
+  workspace. Callers use this as an advisory pre-flight check before calling
+  `apply_proposals`. `apply_proposals` continues to write files regardless of
+  validation state — stub and incomplete objects are expected to have gaps.
+- Added `resumptionContext` optional dict field to the Drafting Session schema
+  (`framework/schemas/drafting-session.schema.yaml`): stores Draftsman-internal
+  state (e.g. matched Reference Architecture UID, confirmed delivery models,
+  scope decisions) so interrupted sessions can be resumed without re-asking
+  answered questions.
+- Added three new Draftsman doc sections to `framework/docs/draftsman.md`:
+  - **Pre-Write Review**: protocol for showing a structured review card before
+    writing YAML and holding batches that fail preview validation.
+  - **Validation Repair Procedures**: table mapping common validator error
+    patterns to specific repair steps.
+  - **Resuming a Drafting Session**: how to reconstruct working context from a
+    session YAML using `generatedObjects`, `unresolvedQuestions`, `nextSteps`,
+    `assumptions`, and `resumptionContext`.
+- Added tests: `test_apply_proposals_blocked_when_content_would_fail_validator`
+  (pre-write gate), `test_ra_constraint_violation_fails_sdp` (RA constraint
+  enforcement), `test_ra_constraint_satisfied_passes_sdp` (constraint satisfied
+  passes).
+
+### Changed
+
+- Pre-write review is advisory, not a gate: `apply_proposals` writes files
+  regardless of validation state. Stub and incomplete objects are expected to
+  have gaps; enforcement happens at the `complete` catalogStatus boundary.
+
+### Fixed
+
+- `import shutil` and `import tempfile` added to `draft_table/draftsman.py` for
+  the temp-workspace copy used by `preview_proposals`.
+
+### Compatibility Impact
+
+No breaking changes. `apply_proposals` behavior is unchanged — files are written
+and validation runs after. `preview_proposals` is additive.
+
+### Migration Notes
+
+No migration required. The new `resumptionContext` field on `drafting_session`
+is optional and backwards-compatible.
+
 ## 0.21.0 - 2026-05-25
 
 ### Added

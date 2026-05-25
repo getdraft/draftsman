@@ -6,7 +6,7 @@ description: 'Canonical Ubuntu Server 22.04 LTS operating system product definit
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 owner:
   team: cloud-architecture
   contact: cloud-architecture@example.com

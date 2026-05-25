@@ -4,7 +4,7 @@ type: requirement_group
 name: Drafting Session Requirement Group
 description: Structured checklist used to capture partial architecture-authoring sessions, generated outputs, and unresolved follow-up questions in a machine-readable way.
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 owner:
   team: cloud-architecture
   contact: cloud-architecture@example.com

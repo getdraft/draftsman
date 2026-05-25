@@ -8,7 +8,7 @@ description: 'Serverless execution environment provided by AWS Lambda. The host 
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 lifecycleStatus: preferred
 owner:
   team: cloud-architecture

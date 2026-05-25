@@ -6,7 +6,7 @@ description: 'Starter TX-RAMP requirement group for DRAFT. This file is intended
 
   '
 version: 0.1.0
-catalogStatus: draft
+catalogStatus: incomplete
 owner:
   team: cloud-architecture
   contact: cloud-architecture@example.com

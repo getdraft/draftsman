@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
 import subprocess
+import tempfile
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -109,6 +111,53 @@ class DraftsmanEngine:
         validation = validate_workspace(workspace, Path(config.get("framework_repo_path") or REPO_ROOT).expanduser())
         return {
             "applied": applied,
+            "validation": {
+                "ok": validation.ok,
+                "stdout": validation.stdout,
+                "stderr": validation.stderr,
+            },
+        }
+
+    def preview_proposals(self, session_id: str, proposal_ids: list[str] | None = None) -> dict[str, Any]:
+        config = load_config(self.config_path)
+        workspace_value = str(config.get("content_repo_path") or "").strip()
+        if not workspace_value:
+            raise ValueError("No company DRAFT repo selected.")
+        workspace = Path(workspace_value).expanduser()
+        framework_repo = Path(config.get("framework_repo_path") or REPO_ROOT).expanduser()
+        session = self.session_store.load(session_id)
+        selected = set(proposal_ids or [])
+        previewed: list[dict[str, str]] = []
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_workspace = Path(temp_dir) / "workspace"
+            if workspace.exists():
+                shutil.copytree(workspace, temp_workspace, symlinks=True)
+            else:
+                temp_workspace.mkdir()
+            for proposal in session.get("proposals", []):
+                if selected and proposal.get("id") not in selected:
+                    continue
+                relative_path = proposal.get("path")
+                content = proposal.get("content")
+                if not relative_path or not content:
+                    continue
+                target = safe_workspace_path(temp_workspace, str(relative_path))
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(str(content), encoding="utf-8")
+                previewed.append(
+                    {
+                        "id": str(proposal.get("id", "")),
+                        "artifactId": str(proposal.get("artifactId", "")),
+                        "name": str(proposal.get("name", "")),
+                        "artifactType": str(proposal.get("artifactType", "")),
+                        "path": str(relative_path),
+                    }
+                )
+            validation = validate_workspace(temp_workspace, framework_repo)
+
+        return {
+            "previewed": previewed,
             "validation": {
                 "ok": validation.ok,
                 "stdout": validation.stdout,

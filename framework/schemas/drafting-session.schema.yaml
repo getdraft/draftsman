@@ -22,11 +22,12 @@ optionalFields:
 - assumptions
 - nextSteps
 - architecturalDecisions
+- resumptionContext
 enumFields:
   catalogStatus:
   - stub
-  - draft
-  - approved
+  - incomplete
+  - complete
   lifecycleStatus:
   - candidate
   - preferred
@@ -47,6 +48,7 @@ fieldTypes:
   assumptions: list
   nextSteps: list
   architecturalDecisions: dict
+  resumptionContext: dict
 collectionSchemas:
   sourceArtifacts: sourceArtifact
   generatedObjects: generatedObject
@@ -132,7 +134,7 @@ fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   type: Use the exact object type declared by the matching schema.
   name: Use a clear human-readable name for the object.
-  catalogStatus: Use stub, draft, or approved to describe catalog maturity, not company adoption disposition.
+  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition.
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired where this object still carries a lifecycle signal.
   sessionStatus: Provide a valid sessionStatus value for this drafting_session object.
   primaryObjectType: Provide a valid primaryObjectType value for this drafting_session object.

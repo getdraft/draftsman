@@ -4,7 +4,7 @@ type: requirement_group
 name: Engineering Quality Requirement Group
 description: Optional checklist for ProductComponents covering build quality, test coverage, and performance validation practices. Activated per workspace; does not fire automatically.
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 owner:
   team: cloud-architecture
   contact: cloud-architecture@example.com

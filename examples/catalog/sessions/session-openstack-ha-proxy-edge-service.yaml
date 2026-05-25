@@ -3,7 +3,7 @@ uid: 01KSE5V73Z-VATZ
 type: drafting_session
 name: OpenStack HAProxy Edge Gateway Service
 sessionStatus: resolved
-catalogStatus: draft
+catalogStatus: incomplete
 lifecycleStatus: candidate
 owner:
   team: platform-engineering
