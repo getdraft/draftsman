@@ -2108,6 +2108,93 @@ def validate_standard(
     validate_architectural_decisions(obj, path, failures)
 
 
+def _sdp_deployable_objects(
+    sdp: dict[str, Any], catalog_by_id: dict[str, dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """Return {objectType, diagramTier} for every deployable object in an SDP's service groups."""
+    objects: list[dict[str, Any]] = []
+    for group in sdp.get("serviceGroups") or []:
+        if not isinstance(group, dict):
+            continue
+        for entry in group.get("deployableObjects") or []:
+            if not isinstance(entry, dict):
+                continue
+            ref = entry.get("ref")
+            obj_type: str | None = None
+            if ref:
+                target = catalog_by_id.get(str(ref))
+                if target:
+                    obj_type = target.get("type")
+            if not obj_type:
+                obj_type = entry.get("objectType")
+            objects.append({"objectType": obj_type, "diagramTier": entry.get("diagramTier")})
+    return objects
+
+
+def _matches_object_condition(obj: dict[str, Any], condition: dict[str, Any]) -> bool:
+    for key, value in condition.items():
+        if key in ("diagramTier", "objectType") and obj.get(key) != value:
+            return False
+    return True
+
+
+def evaluate_ra_constraints(
+    sdp: dict[str, Any],
+    path: Path,
+    ra: dict[str, Any],
+    catalog_by_id: dict[str, dict[str, Any]],
+    failures: list[str],
+) -> None:
+    constraints = ra.get("constraints")
+    if not constraints or not isinstance(constraints, list):
+        return
+
+    sdp_objects = _sdp_deployable_objects(sdp, catalog_by_id)
+    ra_name = ra.get("name") or ra.get("uid") or "unknown"
+
+    for constraint in constraints:
+        if not isinstance(constraint, dict):
+            continue
+        constraint_id = constraint.get("id", "unnamed")
+
+        # Evaluate the `when` condition — if absent the constraint fires unconditionally
+        when = constraint.get("when")
+        if isinstance(when, dict) and when:
+            any_sg_cond = when.get("anyServiceGroup")
+            if isinstance(any_sg_cond, dict) and any_sg_cond:
+                if not any(_matches_object_condition(o, any_sg_cond) for o in sdp_objects):
+                    continue  # condition not met; constraint does not apply to this SDP
+
+        require = constraint.get("require")
+        if not require or not isinstance(require, list):
+            continue
+
+        for req in require:
+            if not isinstance(req, dict):
+                continue
+            req_type = req.get("objectType")
+            req_tier = req.get("diagramTier")
+            satisfied = any(
+                (not req_type or o.get("objectType") == req_type)
+                and (not req_tier or o.get("diagramTier") == req_tier)
+                for o in sdp_objects
+            )
+            if not satisfied:
+                sdp_id = object_label(sdp)
+                parts = []
+                if req_tier:
+                    parts.append(f"diagramTier '{req_tier}'")
+                if req_type:
+                    parts.append(f"objectType '{req_type}'")
+                req_desc = " and ".join(parts) if parts else "a required object"
+                failures.append(
+                    f"{path}: [{sdp_id}] RA constraint '{constraint_id}' violated — "
+                    f"no service group entry satisfies {req_desc}. "
+                    f"Required by Reference Architecture '{ra_name}'. "
+                    f"See constraint description: {constraint.get('description') or constraint_id}"
+                )
+
+
 def validate_ra(
     obj: dict[str, Any],
     path: Path,
@@ -2197,6 +2284,62 @@ def validate_ra(
             warnings,
         )
 
+    constraints = obj.get("constraints")
+    if constraints is not None:
+        if not isinstance(constraints, list):
+            failures.append(f"{path}: 'constraints' must be a list")
+        else:
+            for idx, constraint in enumerate(constraints):
+                if not isinstance(constraint, dict):
+                    failures.append(f"{path}: constraints[{idx}] must be a mapping")
+                    continue
+                if not is_non_empty(constraint.get("id")):
+                    failures.append(f"{path}: constraints[{idx}] missing required field 'id'")
+                if not constraint.get("require"):
+                    failures.append(f"{path}: constraints[{idx}] missing required field 'require'")
+                when = constraint.get("when")
+                if when is not None:
+                    if not isinstance(when, dict):
+                        failures.append(f"{path}: constraints[{idx}].when must be a mapping")
+                    else:
+                        any_sg = when.get("anyServiceGroup")
+                        if any_sg is not None:
+                            if not isinstance(any_sg, dict):
+                                failures.append(f"{path}: constraints[{idx}].when.anyServiceGroup must be a mapping")
+                            else:
+                                for ckey, cval in any_sg.items():
+                                    if ckey == "diagramTier" and cval not in VALID_DIAGRAM_TIERS:
+                                        failures.append(
+                                            f"{path}: constraints[{idx}].when.anyServiceGroup.diagramTier "
+                                            f"'{cval}' must be one of {sorted(VALID_DIAGRAM_TIERS)}"
+                                        )
+                                    elif ckey == "objectType" and cval not in STANDARD_TYPES:
+                                        failures.append(
+                                            f"{path}: constraints[{idx}].when.anyServiceGroup.objectType "
+                                            f"'{cval}' must be one of {sorted(STANDARD_TYPES)}"
+                                        )
+                require = constraint.get("require")
+                if require is not None:
+                    if not isinstance(require, list):
+                        failures.append(f"{path}: constraints[{idx}].require must be a list")
+                    else:
+                        for ridx, req in enumerate(require):
+                            if not isinstance(req, dict):
+                                failures.append(f"{path}: constraints[{idx}].require[{ridx}] must be a mapping")
+                                continue
+                            req_type = req.get("objectType")
+                            if req_type is not None and req_type not in STANDARD_TYPES:
+                                failures.append(
+                                    f"{path}: constraints[{idx}].require[{ridx}].objectType "
+                                    f"'{req_type}' must be one of {sorted(STANDARD_TYPES)}"
+                                )
+                            req_tier = req.get("diagramTier")
+                            if req_tier is not None and req_tier not in VALID_DIAGRAM_TIERS:
+                                failures.append(
+                                    f"{path}: constraints[{idx}].require[{ridx}].diagramTier "
+                                    f"'{req_tier}' must be one of {sorted(VALID_DIAGRAM_TIERS)}"
+                                )
+
 
 def validate_software_deployment_pattern(
     obj: dict[str, Any],
@@ -2224,7 +2367,8 @@ def validate_software_deployment_pattern(
     validate_software_deployment_business_context(obj, path, business_taxonomy, failures)
 
     object_id = object_label(obj)
-    if not is_non_empty(obj.get("followsReferenceArchitecture")) and not is_non_empty(obj.get("architecturalDecisions", {}).get("noApplicablePattern") if isinstance(obj.get("architecturalDecisions"), dict) else None):
+    ra_uid = obj.get("followsReferenceArchitecture")
+    if not is_non_empty(ra_uid) and not is_non_empty(obj.get("architecturalDecisions", {}).get("noApplicablePattern") if isinstance(obj.get("architecturalDecisions"), dict) else None):
         record_requirement_gap(
             obj,
             path,
@@ -2232,6 +2376,11 @@ def validate_software_deployment_pattern(
             failures,
             warnings,
         )
+
+    if is_non_empty(ra_uid):
+        ra_obj = catalog_by_id.get(str(ra_uid))
+        if ra_obj and ra_obj.get("type") == "reference_architecture":
+            evaluate_ra_constraints(obj, path, ra_obj, catalog_by_id, failures)
 
     service_groups = obj.get("serviceGroups", [])
     if not isinstance(service_groups, list):

@@ -64,5 +64,26 @@ architecturalDecisions:
   statelessRequirement: Functions must not depend on in-memory state, local filesystem
     state, or any state from a prior invocation. All coordination between function
     instances must use external services — data stores, queues, or distributed caches.
+constraints:
+- id: ingestion-requires-edge-gateway
+  description: Serverless event-driven SDPs with a presentation-tier entry point must declare an edge/gateway service at that boundary.
+  rationale: All inbound traffic must enter through a managed edge boundary before reaching processing functions. The edge/gateway service provides authentication enforcement, throttling, and payload validation that function runtimes should not implement themselves.
+  when:
+    anyServiceGroup:
+      diagramTier: presentation
+  require:
+  - objectType: edge_gateway_service
+    diagramTier: presentation
+    notes: Add an edge/gateway service (API gateway or event bus) to the presentation tier. The company catalog defines which specific platform (API Gateway, EventBridge, SNS, etc.) satisfies this role.
+- id: state-requires-data-store-service
+  description: Serverless event-driven SDPs that model a data tier must use data_store_service objects for all durable state.
+  rationale: Function instances are ephemeral and cannot hold durable state. All cross-invocation state must be externalized into data store services governed by the data-tier requirement groups.
+  when:
+    anyServiceGroup:
+      diagramTier: data
+  require:
+  - objectType: data_store_service
+    diagramTier: data
+    notes: Model all durable state as data_store_service objects. Using runtime services for state storage bypasses data-tier governance controls and creates implicit state in ephemeral compute.
 requirementGroups: []
 requirementImplementations: []
