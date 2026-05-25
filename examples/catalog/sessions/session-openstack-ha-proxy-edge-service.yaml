@@ -2,7 +2,7 @@ schemaVersion: '1.0'
 uid: 01KSE5V73Z-VATZ
 type: drafting_session
 name: OpenStack HAProxy Edge Gateway Service
-sessionStatus: open
+sessionStatus: resolved
 catalogStatus: draft
 lifecycleStatus: candidate
 owner:
@@ -35,26 +35,23 @@ sourceArtifacts:
 generatedObjects:
 - name: HAProxy Edge Gateway Service
   type: edge_gateway_service
-  status: stubbed
-  proposedUid: TBD
-  notes: Stub exists as a placeholder. Requires confirmation of deployment topology
-    (dedicated VMs vs. co-located on controller nodes) before the object can be completed.
+  status: created
+  ref: 01KSF29JTP-9HYA
+  notes: Modeled as edge_gateway_service co-located on the OpenStack controller host
+    (STCK00000F-HS0F). TLS terminated at HAProxy; backends use HTTP on the control
+    plane network. Added to the SDP presentation tier in the RA constraints implementation.
 unresolvedQuestions:
 - id: Q1
   question: Is HAProxy deployed on dedicated load balancer VMs, or co-located on
     the same controller nodes as the OpenStack services?
-  status: open
-  impact: Determines whether the edge_gateway_service object gets its own deploymentTarget
-    or shares the openstack-controller host reference.
-  currentBestGuess: Co-located on controller nodes based on standard Kolla-Ansible
-    deployment defaults.
+  status: answered
+  resolution: Co-located on controller nodes (STCK00000F-HS0F). The edge_gateway_service
+    object references the same host as the OpenStack runtime services.
 - id: Q2
   question: Does HAProxy terminate TLS, or does TLS pass through to the backend services?
-  status: open
-  impact: Affects the network binding and protocol declarations on the edge gateway
-    object and the security compliance evidence for in-transit encryption.
-  currentBestGuess: TLS terminated at HAProxy; backends use HTTP on the control plane
-    network.
+  status: answered
+  resolution: TLS terminated at HAProxy. Backends use HTTP on the control plane network
+    zone.
 assumptions:
 - id: A1
   statement: HAProxy version in use is 2.4 or later (shipped with Ubuntu 22.04 LTS).
@@ -66,13 +63,14 @@ nextSteps:
 - id: NS1
   action: Confirm HAProxy deployment topology (dedicated VMs vs. co-located) with
     platform-engineering team.
-  status: open
+  status: done
   owner: platform-engineering
 - id: NS2
   action: Confirm TLS termination point.
-  status: open
+  status: done
   owner: platform-engineering
 - id: NS3
   action: Create the edge_gateway_service catalog object once topology is confirmed.
-  status: blocked
-  notes: Blocked on NS1 and NS2.
+  status: done
+  notes: edge_gateway_service-openstack-api-lb.yaml (01KSF29JTP-9HYA) added to catalog
+    and included in the SDP presentation tier.

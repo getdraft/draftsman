@@ -61,5 +61,26 @@ architecturalDecisions:
   dataTierIsolation: Data tier services must not accept direct connections from the
     presentation tier. All data access flows through the application tier. This constraint
     will be enforceable via RA constraints when that feature is available.
+constraints:
+- id: presentation-tier-requires-edge-gateway
+  description: All SDPs with a presentation-tier service must include at least one edge/gateway service in the presentation tier.
+  rationale: The presentation tier is the only tier with direct internet or partner exposure. An edge/gateway service (WAF, application delivery controller, or load balancer) must inspect and distribute traffic before it reaches the application tier. Omitting this layer leaves application services directly addressable from outside the SDP boundary.
+  when:
+    anyServiceGroup:
+      diagramTier: presentation
+  require:
+  - objectType: edge_gateway_service
+    diagramTier: presentation
+    notes: Add an edge/gateway service to the presentation tier. The company catalog defines which specific WAF, ADC, or load balancer objects satisfy this role. Internal-only SDPs that operate behind a network boundary without a software edge gateway should document the exception in architecturalDecisions.reference_architecture_conformance and reference a Decision Record.
+- id: data-tier-requires-data-store-service
+  description: All SDPs with a data-tier service must model persistent data using data_store_service objects, not runtime services.
+  rationale: Modelling persistent data as a data_store_service ensures that backup strategy, encryption-at-rest, and access-control requirements are governed through the data store requirement group. Using a runtime_service for data persistence bypasses data-tier governance controls.
+  when:
+    anyServiceGroup:
+      diagramTier: data
+  require:
+  - objectType: data_store_service
+    diagramTier: data
+    notes: Replace any runtime_service acting as a data store with a data_store_service object so that data-tier requirement groups are correctly applied.
 requirementGroups: []
 requirementImplementations: []

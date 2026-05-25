@@ -3,6 +3,37 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.21.0 - 2026-05-25
+
+### Added
+
+- **RA constraint enforcement** (closes #21): Reference Architectures now support
+  an optional `constraints` block. Each constraint declares a `when` condition
+  (`anyServiceGroup.diagramTier` or `anyServiceGroup.objectType`) and a `require`
+  list of object characteristics that must be present in every SDP that follows
+  the RA. The validator evaluates constraints at `validate_software_deployment_pattern`
+  time and reports failures for any violated constraint.
+- Added `constraints` to the three baseline framework Reference Architectures:
+  - **Three-Tier Web** (`01KS8N4KR2-3TWA`): `presentation-tier-requires-edge-gateway`
+    and `data-tier-requires-data-store-service`.
+  - **Multi-Tenant SaaS** (`01KS8N4KR3-MTSA`): `presentation-tier-requires-edge-gateway`
+    and `saas-requires-utility-tier`.
+  - **Serverless Event-Driven** (`01KS8N4KR4-SVED`): `ingestion-requires-edge-gateway`
+    and `state-requires-data-store-service`.
+- Added `constraints` to the Reference Architecture schema
+  (`framework/schemas/reference-architecture.schema.yaml`) with full field
+  documentation for `id`, `description`, `rationale`, `when`, `require`, `notes`.
+- Added Draftsman guidance for proactive constraint checking during SDP authoring
+  (`framework/docs/draftsman.md` — "RA Constraint Enforcement" section).
+
+### Changed
+
+- Added `01KSF29JTP-9HYA` (HAProxy OpenStack API Load Balancer, `edge_gateway_service`)
+  to the OpenStack SDP's presentation tier service group, satisfying the new
+  Three-Tier Web RA `presentation-tier-requires-edge-gateway` constraint.
+- Resolved `session-openstack-ha-proxy-edge-service.yaml`: session closed, all
+  unresolved questions answered, generated object confirmed as `01KSF29JTP-9HYA`.
+
 ## 0.20.0 - 2026-05-25
 
 ### Added

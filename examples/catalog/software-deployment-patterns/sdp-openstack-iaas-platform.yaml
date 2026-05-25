@@ -97,6 +97,13 @@ serviceGroups:
 - name: Presentation & API Layer
   deploymentTarget: openstack-controller
   deployableObjects:
+  - ref: 01KSF29JTP-9HYA
+    networkZone: public
+    diagramTier: presentation
+    intent: ha
+    notes: HAProxy load balancer distributing inbound API and dashboard traffic across
+      all active controller nodes. Virtual IP managed by Keepalived provides a single
+      entry point with 2-second failover.
   - ref: STCK000006-RS06
     networkZone: public
     diagramTier: presentation

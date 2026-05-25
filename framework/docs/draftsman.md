@@ -393,6 +393,45 @@ For a Software Deployment Pattern session:
 5. Do not invent a Reference Architecture match to make the session feel
    complete.
 
+## RA Constraint Enforcement
+
+Reference Architectures may carry a `constraints` block — a list of
+compositional rules that the validator enforces against every SDP that declares
+`followsReferenceArchitecture` pointing to that RA.
+
+Each constraint has a `when` condition and a `require` list:
+
+- `when.anyServiceGroup.diagramTier: X` — the constraint fires if any
+  deployable object in any service group has that diagram tier.
+- `when.anyServiceGroup.objectType: Y` — the constraint fires if any
+  deployable object resolves to that catalog object type.
+- If `when` is absent the constraint fires unconditionally.
+- `require` lists the object characteristics that must be present in the SDP's
+  service groups when the constraint fires (`objectType`, `diagramTier`).
+
+**Draftsman behavior during SDP authoring:**
+
+When the Draftsman identifies which RA an SDP follows, it must proactively
+evaluate the RA's `constraints` against the SDP's current service groups and
+surface any violations before the user submits the draft. Do not wait for the
+validator to report a failure after the fact.
+
+For example, when drafting an SDP that follows the Three-Tier Web RA and the
+user declares a presentation-tier service, the Draftsman should immediately
+check whether an `edge_gateway_service` is present in the presentation tier. If
+it is not, propose one from the approved catalog before proceeding.
+
+**Exception handling:**
+
+When an SDP legitimately cannot satisfy an RA constraint (internal-only
+deployment, operator-accepted deviation, etc.) the author should:
+
+1. Document the exception in `architecturalDecisions.reference_architecture_conformance`.
+2. Reference a Decision Record explaining the rationale.
+3. Note that the validator will still report a failure unless the constraint is
+   structurally satisfied — the exception is architectural documentation, not a
+   validator bypass.
+
 Example wording:
 
 > This sounds like a web/API/batch/data deployment. I found no exact approved
