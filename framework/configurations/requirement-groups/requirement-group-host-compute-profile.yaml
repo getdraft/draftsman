@@ -1,0 +1,41 @@
+schemaVersion: '1.0'
+uid: 01KSF4NHSP-HCPX
+type: requirement_group
+name: Host Compute Profile Requirement Group
+description: Optional checklist for Hosts covering compute type classification. Activated per workspace; does not fire automatically.
+version: 1.0.0
+catalogStatus: approved
+owner:
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+authority:
+  name: DRAFT Framework
+  shortName: DRAFT
+  source: DRAFT Framework
+activation: workspace
+appliesTo:
+- host
+requirements:
+- id: compute-type
+  description: The host must declare its compute type or instance class when the compute profile is not captured by the compute-platform requirement alone.
+  rationale: Compute type captures the general-purpose, memory-optimized, GPU, or bare-metal classification of the host's compute resources, which affects workload placement and capacity planning.
+  canBeSatisfiedBy:
+  - mechanism: architecturalDecision
+    key: computeType
+    example: A documented statement of the compute type such as general-purpose, memory-optimized, GPU, or bare-metal.
+  - mechanism: field
+    key: computeType
+    example: A field declaration of the compute type on the host object.
+  minimumSatisfactions: 1
+  relatedCapability: 01KQQ4Q026-9K8G
+  requirementMode: mandatory
+  naAllowed: true
+  validAnswerTypes:
+  - architecturalDecision
+  - field
+lifecycleStatus: candidate
+tags:
+- host
+- requirement-group
+- compute
+- optional

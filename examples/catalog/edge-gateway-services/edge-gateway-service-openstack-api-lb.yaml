@@ -1,0 +1,65 @@
+schemaVersion: '1.0'
+uid: 01KSF29JTP-9HYA
+type: edge_gateway_service
+name: OpenStack API Load Balancer
+description: HAProxy load balancer co-located on OpenStack controller nodes. Distributes
+  inbound API and dashboard traffic across all active controller nodes in the active-active
+  control plane cluster. Provides health checking, connection queuing, and SSL termination
+  for the OpenStack public network zone.
+version: 1.0.0
+catalogStatus: approved
+lifecycleStatus: existing-only
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+tags:
+- edge-gateway-service
+- openstack
+- load-balancer
+- haproxy
+- iaas
+deliveryModel: self-managed
+host: STCK00000F-HS0F
+primaryTechnologyComponent: 01KSF29JTP-8YRX
+architecturalDecisions:
+  serviceAuthentication: HAProxy does not authenticate requests itself. Authentication
+    is delegated to backend services (Keystone for API requests, nginx/Django for
+    Horizon). HAProxy operates in pass-through mode for TLS; backends receive forwarded
+    requests with X-Forwarded-For headers.
+  secretsManagement: HAProxy configuration and SSL certificates are managed by configuration
+    management tooling (Ansible). Certificate private keys are stored in the OS certificate
+    store on each controller node. No application-level secrets are held by HAProxy.
+  serviceLogging: HAProxy logs all connections to syslog. Logs include client IP,
+    backend selected, response code, and latency. Forwarded to the centralised log
+    aggregation platform via local log shipper.
+  healthWelfareMonitoring: HAProxy performs active health checks on each backend
+    (nova-api, keystone, glance, neutron, cinder, horizon) on a 2-second interval.
+    Unhealthy backends are removed from rotation automatically. HAProxy statistics
+    socket is exposed for monitoring agent collection.
+  availabilityModel: HAProxy itself runs on all three controller nodes. A shared virtual
+    IP (VIP) managed by Keepalived provides a single entry point. If the active Keepalived
+    master fails, the VIP migrates to a standby within 2 seconds.
+  scalabilityModel: HAProxy is stateless; scaling is achieved by adding controller
+    nodes. Connection limits are tunable per backend.
+  recoverabilityModel: HAProxy process is managed by systemd and restarts automatically
+    on failure. Configuration is managed by configuration management tooling and can
+    be reapplied within minutes.
+  failureDomain: Loss of the active HAProxy instance causes a 2-second VIP failover
+    via Keepalived. Loss of all controller nodes renders the control plane unavailable;
+    data plane (running instances) continues unaffected.
+  externalInteractionRationales:
+    OpenStack API Backends: HAProxy forwards inbound requests to the appropriate
+      OpenStack API backend services. Modeled to show the forwarding dependency on
+      the full set of control plane services.
+internalComponents:
+- ref: 01KSF29JTP-8YRX
+  role: HAProxy Community Edition providing load balancing, health checking, and
+    connection management for the OpenStack control plane.
+externalInteractions:
+- name: OpenStack API Backends
+  capabilities: []
+  notes: HAProxy forwards requests to Nova, Keystone, Glance, Neutron, Cinder, Heat,
+    Horizon, and other API services running on the same controller nodes. Backend
+    health is checked on a 2-second interval.
+requirementGroups: []
+requirementImplementations: []

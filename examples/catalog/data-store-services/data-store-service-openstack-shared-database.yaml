@@ -61,6 +61,9 @@ architecturalDecisions:
     strategy: Automated daily full backup using Percona XtraBackup for all schemas
       in this cluster, with 4-hourly incremental backups. Backups written to object
       storage. Each schema is exported as a separate logical backup for granular restore.
+    platform: Percona XtraBackup writing to Swift object storage on the openstack-controller
+      deployment target. Per-schema logical exports allow targeted restore without
+      full cluster recovery.
     rto: 2 hours for full cluster restore; per-schema restore in 30-60 minutes; near-zero
       for Galera node failure.
     rpo: 4 hours maximum; near-zero for Galera replication failure.
@@ -74,7 +77,9 @@ architecturalDecisions:
     model: Role-based database access control with schema-level isolation. Each service
       has a dedicated account with DML access to its own schema only. Cross-schema
       access is denied at the DB grant level.
-  externalInteractionRationales: {}
+  externalInteractionRationales:
+    Backup Service: Percona XtraBackup automated backup writes per-schema logical
+      backups to Swift object storage. Modeled to show the external backup platform dependency.
 internalComponents:
 - ref: STCK00000E-TC0E
   role: MariaDB Galera cluster providing the shared relational database engine for

@@ -58,6 +58,9 @@ architecturalDecisions:
       nodes distributed across separate failure domains. For critical data, cross-region
       replication via Swift replication can be configured. Traditional backup is not
       applicable for the object storage cluster itself.
+    platform: Swift's native 3x replication ring serves as the durability platform.
+      No external backup tooling is applied to Swift itself; the replication ring
+      IS the backup mechanism for object data.
     rto: Near-zero for node failures with surviving replicas; hours for full cluster
       rebuild from hardware.
     rpo: Near-zero — synchronous replication ensures no data loss for confirmed writes.
@@ -73,7 +76,10 @@ architecturalDecisions:
     model: Access control is enforced at the Swift proxy layer via Keystone ACLs.
       Containers have ACLs defining read and write permissions per project and user.
       Storage nodes are not directly accessible to tenants.
-  externalInteractionRationales: {}
+  externalInteractionRationales:
+    Backup Service: Swift's replication ring provides native object durability. The
+      Backup Service interaction represents the operational tooling used to verify
+      ring consistency and node health, not a traditional backup agent.
 internalComponents:
 - ref: STCK000006-TC06
   role: Swift storage cluster providing distributed object storage with account, container,

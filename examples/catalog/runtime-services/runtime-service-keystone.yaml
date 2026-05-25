@@ -50,6 +50,8 @@ architecturalDecisions:
     as all other services depend on token validation. This is the highest-blast-radius
     component in the platform.
   externalInteractionRationales:
+    Keystone Identity: Keystone is the identity service itself. Intra-service admin
+      operations use the admin endpoint for initial setup and service catalog registration.
     Keystone Database: Keystone persists all identity data (users, projects, roles,
       endpoints, tokens for UUID mode) to MariaDB. Modeled as a critical dependency.
     LDAP Directory: Optional federation for enterprise identity. Modeled to show the
