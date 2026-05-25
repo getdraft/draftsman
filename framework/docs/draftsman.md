@@ -416,10 +416,29 @@ evaluate the RA's `constraints` against the SDP's current service groups and
 surface any violations before the user submits the draft. Do not wait for the
 validator to report a failure after the fact.
 
-For example, when drafting an SDP that follows the Three-Tier Web RA and the
-user declares a presentation-tier service, the Draftsman should immediately
-check whether an `edge_gateway_service` is present in the presentation tier. If
-it is not, propose one from the approved catalog before proceeding.
+When a constraint fires and the required object is not yet present, the
+resolution is a two-step lookup — not a free choice:
+
+1. **Identify what is required.** The constraint names an `objectType` (and
+   optionally a `diagramTier`). This is the pattern requirement: "the SDP
+   needs an `edge_gateway_service` here."
+2. **Resolve which catalog object satisfies it.** Search the effective catalog
+   for objects of that type with `lifecycleStatus: preferred`. That is the
+   company's current acceptable-use answer to "which one." If no `preferred`
+   object exists, fall back to `existing-only` and note the gap. Never propose
+   an object in `deprecated` or `retired` state to satisfy a constraint.
+
+The RA is intentionally abstract — it says "use a WAF," not "use product X."
+The lifecycle status on catalog objects is what resolves the pattern to a
+specific object at authoring time. As the company's preferred WAF changes, the
+SDP authors get the right answer automatically without the RA ever changing.
+
+Example: drafting an SDP that follows the Three-Tier Web RA. The user declares
+a presentation-tier runtime service. The Draftsman evaluates constraints, finds
+`presentation-tier-requires-edge-gateway` firing, checks the SDP's service
+groups, finds no `edge_gateway_service`, then searches the catalog for a
+`preferred` `edge_gateway_service` and proposes it. If the company has five
+edge/gateway products, only the `preferred` one is proposed.
 
 **Exception handling:**
 
