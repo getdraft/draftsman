@@ -4,7 +4,7 @@ type: requirement_group
 name: Reference Architecture Requirement Group
 description: Structured checklist of required questions and answers used to define a complete and correct Reference Architecture.
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 owner:
   team: cloud-architecture
   contact: cloud-architecture@example.com

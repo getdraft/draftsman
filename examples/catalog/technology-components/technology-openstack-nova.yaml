@@ -10,7 +10,7 @@ description: 'OpenStack Nova is the compute service responsible for managing and
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 owner:
   team: platform-engineering
   contact: platform-engineering@example.com

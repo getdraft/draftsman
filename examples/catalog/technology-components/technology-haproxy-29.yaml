@@ -6,7 +6,7 @@ description: Open-source TCP/HTTP load balancer and proxy server. Provides high-
   request distribution, health checking, connection pooling, and SSL termination. Used
   as the primary load balancer for the OpenStack control plane API endpoints.
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 lifecycleStatus: preferred
 owner:
   team: platform-engineering

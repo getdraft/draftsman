@@ -12,7 +12,7 @@ description: 'Full-stack self-managed OpenStack Infrastructure-as-a-Service depl
 
   '
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 lifecycleStatus: existing-only
 followsReferenceArchitecture: 01KS8N4KR2-3TWA
 owner:

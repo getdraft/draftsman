@@ -25,8 +25,8 @@ optionalFields:
 enumFields:
   catalogStatus:
   - stub
-  - draft
-  - approved
+  - incomplete
+  - complete
   activation:
   - always
   - workspace

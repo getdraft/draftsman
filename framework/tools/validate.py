@@ -1544,14 +1544,14 @@ def record_requirement_gap(
     warnings: list[str],
 ) -> None:
     entry = f"{path}: {message}"
-    if obj.get("catalogStatus") == "approved":
+    if obj.get("catalogStatus") == "complete":
         failures.append(entry)
     else:
         warnings.append(entry)
 
 
-def approved_or_preferred_object(obj: dict[str, Any]) -> bool:
-    return obj.get("catalogStatus") == "approved" or obj.get("lifecycleStatus") == "preferred"
+def complete_or_preferred_object(obj: dict[str, Any]) -> bool:
+    return obj.get("catalogStatus") == "complete" or obj.get("lifecycleStatus") == "preferred"
 
 
 def valid_values_text(vocabulary: dict[str, Any]) -> str:
@@ -1603,7 +1603,7 @@ def validate_vocabulary_value(
             "is an interview-required value that must be revisited before approval",
             failures,
             warnings,
-            fail_when_gated=approved_or_preferred_object(obj),
+            fail_when_gated=complete_or_preferred_object(obj),
         )
         return
 
@@ -2757,7 +2757,7 @@ def validate_capability(
             f"{path}: Add this Capability to at least one Requirement Group before approving it; "
             "approved capabilities must be traceable to a requirement demand signal"
         )
-        if obj.get("catalogStatus") == "approved":
+        if obj.get("catalogStatus") == "complete":
             failures.append(message)
         else:
             warnings.append(message)

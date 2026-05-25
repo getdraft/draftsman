@@ -4,7 +4,7 @@ type: capability
 name: Compute Platform
 description: Compute substrate or virtualized platform used to run Hosts.
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

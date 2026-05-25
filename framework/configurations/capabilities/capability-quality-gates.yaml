@@ -4,7 +4,7 @@ type: capability
 name: Quality Gates
 description: Promotion criteria and automated checks required for lifecycle transitions.
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

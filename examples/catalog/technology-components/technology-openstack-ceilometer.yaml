@@ -10,7 +10,7 @@ description: 'OpenStack Ceilometer is the telemetry service for OpenStack. It co
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 owner:
   team: platform-engineering
   contact: platform-engineering@example.com

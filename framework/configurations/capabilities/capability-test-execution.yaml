@@ -4,7 +4,7 @@ type: capability
 name: Test Execution and Automation
 description: Runtimes and orchestration services used to execute automated tests.
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

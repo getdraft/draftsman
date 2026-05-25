@@ -4,7 +4,7 @@ type: capability
 name: General Purpose Compute
 description: Provisioning and execution of arbitrary code on reusable compute substrates.
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

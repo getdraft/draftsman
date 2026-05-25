@@ -7,7 +7,7 @@ description: Relational schema tracking platform-level audit events — control 
   across the OpenStack deployment. Used by the operations console and compliance reporting
   pipelines.
 version: 1.2.0
-catalogStatus: approved
+catalogStatus: complete
 lifecycleStatus: preferred
 repoUrl: https://github.example.com/platform-engineering/platform-audit-schema
 owner:

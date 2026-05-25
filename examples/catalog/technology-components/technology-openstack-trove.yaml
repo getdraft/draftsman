@@ -10,7 +10,7 @@ description: 'OpenStack Trove is the database-as-a-service component. It provide
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 owner:
   team: platform-engineering
   contact: platform-engineering@example.com

@@ -42,7 +42,7 @@ class ValidationTests(unittest.TestCase):
                     productName: Test Product
                     productVersion: "1"
                     classification: software
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     """
                 ).strip()
                 + "\n",
@@ -73,7 +73,7 @@ class ValidationTests(unittest.TestCase):
                     productName: Test Product
                     productVersion: "1"
                     classification: software
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     """
                 ).strip()
                 + "\n",
@@ -174,7 +174,7 @@ class ValidationTests(unittest.TestCase):
                     type: runtime_service
                     name: Missing Host Runtime
                     deliveryModel: self-managed
-                    catalogStatus: approved
+                    catalogStatus: complete
                     lifecycleStatus: candidate
                     architecturalDecisions:
                       serviceAuthentication: Uses centralized identity.
@@ -210,7 +210,7 @@ class ValidationTests(unittest.TestCase):
                     uid: 01KQS0TF52-HOST
                     type: host
                     name: Test Host
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     """
                 ).strip()
@@ -226,7 +226,7 @@ class ValidationTests(unittest.TestCase):
                     uid: 01KQS0TF53-SDMP
                     type: software_deployment_pattern
                     name: Host Ref Pattern
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     architecturalDecisions:
                       noApplicablePattern: Test fixture.
@@ -266,7 +266,7 @@ class ValidationTests(unittest.TestCase):
                     type: requirement_group
                     name: Company Control
                     description: Workspace-mode control group used by validation tests.
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     owner:
                       team: test
                     activation: workspace
@@ -302,7 +302,7 @@ class ValidationTests(unittest.TestCase):
                     classification: api-service
                     runtimeRequirement: Node 20
                     runsOn: host.test
-                    catalogStatus: approved
+                    catalogStatus: complete
                     lifecycleStatus: existing-only
                     requirementGroups:
                       - requirement-group.company-control
@@ -358,7 +358,7 @@ class ValidationTests(unittest.TestCase):
                 type: requirement_group
                 name: Company Control
                 description: Workspace-mode control group used by validation tests.
-                catalogStatus: draft
+                catalogStatus: incomplete
                 owner:
                   team: test
                 activation: workspace
@@ -412,7 +412,7 @@ class ValidationTests(unittest.TestCase):
                 classification: api-service
                 runtimeRequirement: Node 20
                 runsOn: host.test
-                catalogStatus: approved
+                catalogStatus: complete
                 lifecycleStatus: existing-only
                 """
             ).strip()
@@ -491,7 +491,7 @@ class ValidationTests(unittest.TestCase):
                     productName: {name}
                     productVersion: "1"
                     classification: {classification}
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     capabilities:
                     {capability_lines}
                     """
@@ -527,7 +527,7 @@ class ValidationTests(unittest.TestCase):
 uid: 01KQS0TF60-XYZ1
 type: host
 name: Test Complete Host
-catalogStatus: approved
+catalogStatus: complete
 lifecycleStatus: preferred
 category: host
 operatingSystemComponent: 01KQS0TF60-ABCD
@@ -588,7 +588,7 @@ requirementGroups:
                     productName: Application Load Balancer
                     productVersion: managed
                     classification: software
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: preferred
                     capabilities:
                       - capability.compute
@@ -735,7 +735,7 @@ requirementGroups:
                     productName: Test DBMS
                     productVersion: "1"
                     classification: software
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     """
                 ).strip()
                 + "\n",
@@ -748,7 +748,7 @@ requirementGroups:
                     uid: 01KQS0TF61-HST1
                     type: host
                     name: Test Host
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     """
                 ).strip()
@@ -763,7 +763,7 @@ requirementGroups:
                     type: data_store_service
                     name: Test Data Service
                     deliveryModel: self-managed
-                    catalogStatus: approved
+                    catalogStatus: complete
                     lifecycleStatus: preferred
                     host: 01KQS0TF61-HST1
                     primaryTechnologyComponent: 01KQS0TF61-DBMS
@@ -825,7 +825,7 @@ requirementGroups:
                     productName: Test DBMS
                     productVersion: "1"
                     classification: software
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     """
                 ).strip()
                 + "\n",
@@ -838,7 +838,7 @@ requirementGroups:
                     uid: 01KQS0TF62-HST1
                     type: host
                     name: Test Host
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     """
                 ).strip()
@@ -853,7 +853,7 @@ requirementGroups:
                     type: data_store_service
                     name: Test Data Service
                     deliveryModel: self-managed
-                    catalogStatus: approved
+                    catalogStatus: complete
                     lifecycleStatus: preferred
                     host: 01KQS0TF62-HST1
                     primaryTechnologyComponent: 01KQS0TF62-DBMS
@@ -914,7 +914,7 @@ requirementGroups:
                     productName: RabbitMQ
                     productVersion: "3.13"
                     classification: software
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     configurations:
                       - id: amqp-listener
                         name: AMQP Listener
@@ -953,7 +953,7 @@ requirementGroups:
                     productName: RabbitMQ
                     productVersion: "3.13"
                     classification: software
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     configurations:
                       - id: amqp-listener
                         name: AMQP Listener
@@ -997,7 +997,7 @@ requirementGroups:
                     productName: RabbitMQ
                     productVersion: "3.13"
                     classification: software
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     configurations:
                       - id: amqp-listener
                         name: AMQP Listener
@@ -1016,7 +1016,7 @@ requirementGroups:
                     uid: 01KQS0TF65-HST1
                     type: host
                     name: Test Host
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     """
                 ).strip()
@@ -1035,7 +1035,7 @@ requirementGroups:
                       team: test
                     classification: api-service
                     runsOn: 01KQS0TF65-HST1
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     internalComponents:
                       - ref: 01KQS0TF65-RBMQ
@@ -1073,7 +1073,7 @@ requirementGroups:
                     productName: RabbitMQ
                     productVersion: "3.13"
                     classification: software
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     configurations:
                       - id: amqp-listener
                         name: AMQP Listener
@@ -1096,7 +1096,7 @@ requirementGroups:
                     uid: 01KQS0TF66-HST1
                     type: host
                     name: Test Host
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     """
                 ).strip()
@@ -1115,7 +1115,7 @@ requirementGroups:
                       team: test
                     classification: api-service
                     runsOn: 01KQS0TF66-HST1
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     internalComponents:
                       - ref: 01KQS0TF66-RBMQ
@@ -1151,7 +1151,7 @@ requirementGroups:
                     uid: 01KQS0TF67-HST1
                     type: host
                     name: Test Host
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     """
                 ).strip()
@@ -1170,7 +1170,7 @@ requirementGroups:
                       team: test
                     classification: api-service
                     runsOn: 01KQS0TF67-HST1
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     interfaces:
                       - name: Invalid API
@@ -1207,7 +1207,7 @@ requirementGroups:
                     productName: RabbitMQ
                     productVersion: "3.13"
                     classification: software
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     configurations:
                       - id: amqp-listener
                         name: AMQP Listener
@@ -1226,7 +1226,7 @@ requirementGroups:
                     uid: 01KQS0TF68-HST1
                     type: host
                     name: Test Host
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     """
                 ).strip()
@@ -1245,7 +1245,7 @@ requirementGroups:
                       team: test
                     classification: api-service
                     runsOn: 01KQS0TF68-HST1
-                    catalogStatus: approved
+                    catalogStatus: complete
                     lifecycleStatus: candidate
                     internalComponents:
                       - ref: 01KQS0TF68-RBMQ
@@ -1281,7 +1281,7 @@ requirementGroups:
                     productName: Test Agent
                     productVersion: "1"
                     classification: agent
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     """
                 ).strip()
                 + "\n",
@@ -1295,7 +1295,7 @@ requirementGroups:
                     type: object_patch
                     name: Test Security Monitoring Implementation
                     target: capability.security-monitoring
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: existing-only
                     patch:
                       implementations:
@@ -1343,7 +1343,7 @@ requirementGroups:
                     type: object_patch
                     name: Test Security Monitoring Implementation
                     target: capability.security-monitoring
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: existing-only
                     patch:
                       owner:
@@ -1452,7 +1452,7 @@ requirementGroups:
                     uid: 01KQS0TF71-RAXC
                     type: reference_architecture
                     name: Test Constraint RA
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: preferred
                     constraints:
                       - id: presentation-requires-edge-gateway
@@ -1478,7 +1478,7 @@ requirementGroups:
                     type: runtime_service
                     name: Test Runtime Service
                     deliveryModel: paas
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     """
                 ).strip()
@@ -1494,7 +1494,7 @@ requirementGroups:
                     uid: 01KQS0TF71-SDPV
                     type: software_deployment_pattern
                     name: Test RA Constraint Violation
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     followsReferenceArchitecture: 01KQS0TF71-RAXC
                     architecturalDecisions:
@@ -1536,7 +1536,7 @@ requirementGroups:
                     uid: 01KQS0TF72-RAXC
                     type: reference_architecture
                     name: Test Constraint RA
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: preferred
                     constraints:
                       - id: presentation-requires-edge-gateway
@@ -1562,7 +1562,7 @@ requirementGroups:
                     type: edge_gateway_service
                     name: Test Edge Gateway
                     deliveryModel: appliance
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: preferred
                     """
                 ).strip()
@@ -1579,7 +1579,7 @@ requirementGroups:
                     type: runtime_service
                     name: Test Runtime Service
                     deliveryModel: paas
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     """
                 ).strip()
@@ -1595,7 +1595,7 @@ requirementGroups:
                     uid: 01KQS0TF72-SDPS
                     type: software_deployment_pattern
                     name: Test RA Constraint Satisfied
-                    catalogStatus: draft
+                    catalogStatus: incomplete
                     lifecycleStatus: candidate
                     followsReferenceArchitecture: 01KQS0TF72-RAXC
                     architecturalDecisions:
@@ -1663,7 +1663,7 @@ requirementGroups:
                 uid: 01KQS0TF70-SDMP
                 type: software_deployment_pattern
                 name: Vocabulary Test Pattern
-                catalogStatus: draft
+                catalogStatus: incomplete
                 lifecycleStatus: candidate
                 architecturalDecisions:
                   noApplicablePattern: Test fixture.

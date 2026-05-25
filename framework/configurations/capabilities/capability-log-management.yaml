@@ -4,7 +4,7 @@ type: capability
 name: Log Management
 description: Aggregation, retention, searchability, and forwarding of system or application logs.
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

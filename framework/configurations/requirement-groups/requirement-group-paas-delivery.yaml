@@ -4,7 +4,7 @@ type: requirement_group
 name: PaaS Delivery Requirement Group
 description: Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service is vendor-managed inside the organization's cloud boundary.
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 owner:
   team: cloud-architecture
   contact: cloud-architecture@example.com

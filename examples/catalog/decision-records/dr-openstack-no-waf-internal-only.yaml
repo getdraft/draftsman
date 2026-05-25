@@ -4,7 +4,7 @@ type: decision_record
 name: No WAF Required — OpenStack Is Internal-Only
 category: decision
 status: accepted
-catalogStatus: approved
+catalogStatus: complete
 lifecycleStatus: preferred
 owner:
   team: cloud-architecture

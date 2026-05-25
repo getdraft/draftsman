@@ -32,8 +32,8 @@ enumFields:
   - draft-admin
   catalogStatus:
   - stub
-  - draft
-  - approved
+  - incomplete
+  - complete
   lifecycleStatus:
   - candidate
   - preferred
@@ -180,7 +180,7 @@ fieldDescriptions:
   interfaces: List the APIs, events, or protocol surfaces this component exposes, when defined by the component itself.
   networkBindings: List ports this component opens as defined by its own configuration, not by the runtime infrastructure.
   environmentConfiguration: List environment variables or configuration keys this component requires at runtime.
-  catalogStatus: Use stub, draft, or approved to describe catalog maturity.
+  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity.
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired.
   aliases: List prior or alternate names for this component.
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$

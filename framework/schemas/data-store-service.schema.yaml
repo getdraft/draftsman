@@ -45,8 +45,8 @@ enumFields:
   - draft-admin
   catalogStatus:
   - stub
-  - draft
-  - approved
+  - incomplete
+  - complete
   lifecycleStatus:
   - candidate
   - preferred
@@ -191,7 +191,7 @@ fieldDescriptions:
   host: For self-managed DataStoreServices, reference the Host this service runs on.
   primaryTechnologyComponent: For self-managed DataStoreServices, reference the main Technology Component that provides persistence.
   internalComponents: List additional Technology Components that run inside the DataStoreService.
-  catalogStatus: Use stub, draft, or approved to describe catalog maturity, not company adoption disposition.
+  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition.
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired for this deployable service pattern.
   aliases: List prior or alternate human-readable names that should resolve to this object.
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$

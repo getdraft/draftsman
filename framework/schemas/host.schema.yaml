@@ -29,8 +29,8 @@ enumFields:
   - draft-admin
   catalogStatus:
   - stub
-  - draft
-  - approved
+  - incomplete
+  - complete
   lifecycleStatus:
   - candidate
   - preferred
@@ -136,7 +136,7 @@ fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   type: Use host exactly.
   name: Use a clear human-readable name for the object.
-  catalogStatus: Use stub, draft, or approved to describe catalog maturity, not company adoption disposition.
+  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition.
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired for this deployable host pattern.
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name, product-name, or taxonomy changes.
   aliases: List prior or alternate human-readable names that should resolve to this object.

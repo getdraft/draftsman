@@ -4,7 +4,7 @@ type: capability
 name: Backup Strategy
 description: Backup, restore, and recovery point capability for durable data stores.
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

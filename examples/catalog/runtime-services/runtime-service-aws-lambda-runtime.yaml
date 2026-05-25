@@ -6,7 +6,7 @@ description: 'AWS Lambda serverless execution environment. Runs organization-aut
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 lifecycleStatus: preferred
 owner:
   team: cloud-architecture

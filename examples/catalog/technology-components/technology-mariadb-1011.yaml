@@ -10,7 +10,7 @@ description: 'MariaDB 10.11 is the long-term support relational database used as
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 owner:
   team: platform-engineering
   contact: platform-engineering@example.com

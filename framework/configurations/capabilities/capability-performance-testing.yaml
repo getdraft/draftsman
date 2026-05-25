@@ -4,7 +4,7 @@ type: capability
 name: Performance and Load Testing
 description: Capabilities to simulate load and measure system behavior under stress.
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

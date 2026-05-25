@@ -6,7 +6,7 @@ description: 'Baseline security and compliance requirement group bundled with DR
 
   '
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 owner:
   team: cloud-architecture
   contact: cloud-architecture@example.com

@@ -4,7 +4,7 @@ type: capability
 name: Operating System
 description: Supported operating system product used to define managed Hosts.
 version: 1.0.0
-catalogStatus: approved
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

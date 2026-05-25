@@ -10,7 +10,7 @@ description: 'Self-managed deployment of OpenStack Horizon providing the web-bas
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 lifecycleStatus: existing-only
 owner:
   team: platform-engineering

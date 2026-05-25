@@ -9,7 +9,7 @@ description: 'MariaDB database schema dedicated to OpenStack Nova for persisting
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 lifecycleStatus: existing-only
 owner:
   team: platform-engineering

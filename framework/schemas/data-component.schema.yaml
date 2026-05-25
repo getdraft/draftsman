@@ -34,8 +34,8 @@ enumFields:
   - draft-admin
   catalogStatus:
   - stub
-  - draft
-  - approved
+  - incomplete
+  - complete
   lifecycleStatus:
   - candidate
   - preferred
@@ -159,7 +159,7 @@ fieldDescriptions:
   storedProcedures: List stored procedures or database functions defined by this component.
   scheduledJobs: List scheduled jobs defined by this component such as SQL Agent jobs or pg_cron entries.
   retentionPolicy: Describe the data retention policy for data managed by this component.
-  catalogStatus: Use stub, draft, or approved to describe catalog maturity.
+  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity.
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired.
   aliases: List prior or alternate names for this component.
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$

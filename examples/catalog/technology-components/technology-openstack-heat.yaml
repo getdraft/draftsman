@@ -10,7 +10,7 @@ description: 'OpenStack Heat is the orchestration service for OpenStack. It impl
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 owner:
   team: platform-engineering
   contact: platform-engineering@example.com

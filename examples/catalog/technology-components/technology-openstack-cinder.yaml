@@ -10,7 +10,7 @@ description: 'OpenStack Cinder is the block storage service that provides persis
 
   '
 version: 1.0.0
-catalogStatus: draft
+catalogStatus: incomplete
 owner:
   team: platform-engineering
   contact: platform-engineering@example.com
