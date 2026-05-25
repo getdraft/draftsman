@@ -58,12 +58,12 @@ use the short name to make controls readable:
 
 - framework-native requirements render as `DRAFT Host / operating-system`
 - framework-mapped external controls render as `SOC 2.CC7.security-monitoring`
-- company-mapped external controls render as `Roper.CC.04.4.1`
+- company-mapped external controls render as `CompanyPolicy.IAM.04`
 
 Use `provider` for the organization that supplies the DRAFT mapping and
 `authority` for the external or framework source that owns the requirement
-language. For example, a company-owned Roper mapping can have
-`provider.name: Frontline Education` and `authority.shortName: Roper`.
+language. For example, a company-owned policy mapping can have
+`provider.name: Company Name` and `authority.shortName: CompanyPolicy`.
 
 ## Capability Demand
 

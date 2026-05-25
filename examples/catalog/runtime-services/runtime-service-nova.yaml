@@ -48,6 +48,9 @@ architecturalDecisions:
   failureDomain: Failure of nova-scheduler or nova-conductor affects all new instance
     provisioning but does not impact running instances. Failure of a compute node
     affects only instances resident on that host.
+  secrets_management: Service credentials and database passwords are stored in nova.conf,
+    managed by configuration management tooling (Ansible/Puppet). Secrets rotation
+    requires service restart. No secrets are stored in source control or container images.
   externalInteractionRationales:
     Keystone Identity: All Nova API requests require Keystone token validation. Modeled
       to show the hard authentication dependency.
@@ -89,5 +92,13 @@ externalInteractions:
   capabilities: []
   notes: Nova calls Cinder APIs to attach and detach persistent block volumes to running
     instances.
-requirementGroups: []
-requirementImplementations: []
+requirementGroups:
+- 01KQQ4Q027-T3CA
+requirementImplementations:
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.04.3.1
+  status: satisfied
+  mechanism: architecturalDecision
+  key: secrets_management
+  notes: Service credentials are managed in nova.conf via configuration management
+    tooling. Secrets rotation requires planned maintenance. See architecturalDecisions.secretsManagement.

@@ -3,6 +3,47 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.19.1 - 2026-05-24
+
+### Added
+
+- Added golden reference workspace built on the OpenStack IaaS Platform example
+  catalog. Demonstrates how a real SDP adopts a framework RA, activates a
+  requirement group, and carries requirement evidence.
+- Added `examples/catalog/product-components/product-component-openstack-ops-console.yaml`:
+  first-party `ProductComponent` example deploying onto the Horizon runtime service.
+  Includes interfaces, network bindings, environment configuration, and
+  `CC.SecurityCompliance.04.3.1.product_component` evidence.
+- Added `examples/catalog/data-components/data-component-platform-audit-schema.yaml`:
+  first-party `DataComponent` example with table definitions, a scheduled archive
+  job, retention policy, and data classification declarations.
+- Added `examples/catalog/decision-records/dr-openstack-no-waf-internal-only.yaml`:
+  accepted decision record explaining why no WAF is required for the internal-only
+  OpenStack deployment.
+- Added `examples/catalog/sessions/session-openstack-ha-proxy-edge-service.yaml`:
+  drafting session stub capturing unresolved questions about the HAProxy edge
+  gateway service topology; demonstrates the session object model.
+- Activated `01KQQ4Q027-T3CA` (Security and Security Compliance Requirement Group)
+  in `examples/.draft/workspace.yaml`.
+
+### Changed
+
+- Updated `sdp-openstack-iaas-platform.yaml`: promoted `catalogStatus` to
+  `approved`, added `followsReferenceArchitecture: 01KS8N4KR2-3TWA`, added
+  `requirementGroups` and `requirementImplementations` for the three SDP-scoped
+  security compliance requirements (10.1.1, 10.1.2, 00.2.1), and added
+  `architecturalDecisions.deploymentTargets` and
+  `architecturalDecisions.reference_architecture_conformance`.
+- Updated `data-at-rest-nova-database.yaml`: added `access_control_model` and
+  `backup.platform` to `architecturalDecisions`; added `requirementGroups` and
+  `requirementImplementations` for four applicable security compliance requirements;
+  added `externalInteractionRationales` for the Backup Service interaction.
+- Updated `runtime-service-nova.yaml`: added `secrets_management` to
+  `architecturalDecisions`; added `requirementGroups` and
+  `requirementImplementations` for `CC.SecurityCompliance.04.3.1`.
+- Removed obsolete empty placeholder directories: `examples/catalog/ards/`,
+  `examples/catalog/sdms/`, `examples/catalog/saas-services/`.
+
 ## 0.19.0 - 2026-05-24
 
 ### Compatibility Impact
@@ -1110,7 +1151,7 @@ human-readable requirement label rollout in validation messages.
 ### Changed
 
 - Changed remaining requirement implementation validation messages to cite
-  source-aware labels such as `Roper.CC.03.2.3` and
+  source-aware labels such as `SOC 2.CC7.security-monitoring` and
   `DRAFT Host / operating-system`.
 
 ### Fixed
@@ -1136,7 +1177,7 @@ messages now resolve those keys into human-readable requirement citations.
 
 - Added `authority.shortName` guidance for Requirement Groups so external
   controls can render as labels such as `SOC 2.CC7.security-monitoring`,
-  `NIST CSF.PR.AA`, `TX-RAMP.AC-2`, or `Roper.CC.04.4.1`.
+  `NIST CSF.PR.AA`, `TX-RAMP.AC-2`, or `CompanyPolicy.IAM.04`.
 - Added explicit DRAFT authority metadata to framework-native always-on
   Requirement Groups so they render as labels such as
   `DRAFT Host / operating-system`.
@@ -1157,7 +1198,7 @@ messages now resolve those keys into human-readable requirement citations.
 ### Fixed
 
 - Fixed ambiguous requirement/control display where controls such as `CC.04.4.1`
-  appeared without showing whether they came from Roper, SOC 2, DRAFT Security,
+  appeared without showing whether they came from SOC 2, DRAFT Security,
   or another activated Requirement Group.
 
 ### Migration Notes

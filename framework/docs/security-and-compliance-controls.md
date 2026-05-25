@@ -13,7 +13,7 @@ activates the groups it architects against in `.draft/workspace.yaml`:
 requirements:
   activeRequirementGroups:
     - <soc2-requirement-group-uid>
-    - <company-roper-requirement-group-uid>
+    - <company-requirement-group-uid>
   requireActiveRequirementGroupDisposition: false
 ```
 

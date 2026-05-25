@@ -51,6 +51,9 @@ architecturalDecisions:
   backup:
     strategy: Automated daily full backup using Percona XtraBackup with binlog-based
       incremental backups every 4 hours. Backups are written to object storage.
+    platform: Percona XtraBackup writing to Swift object storage on the openstack-controller
+      deployment target. Backup jobs are managed by a cron schedule on a dedicated
+      backup controller node.
     rto: 2 hours for full schema restore from backup; near-zero for Galera node failure
       with surviving quorum.
     rpo: 4 hours maximum data loss in worst-case scenario (binlog backup window);
@@ -65,7 +68,13 @@ architecturalDecisions:
     model: Role-based database access control. Nova service account has DML access
       to the nova schema only. Root access is restricted to DBA team members via
       SSH-tunnelled connections.
-  externalInteractionRationales: {}
+  access_control_model: Role-based database access control. Nova service account has
+    DML access to the nova schema only. Root access is restricted to DBA team members
+    via SSH-tunnelled connections. No shared credentials between OpenStack services.
+  externalInteractionRationales:
+    Backup Service: Percona XtraBackup automated backup writes point-in-time backups
+      to object storage. Modeled to show the external backup dependency and recovery
+      boundary.
 internalComponents:
 - ref: STCK00000E-TC0E
   role: MariaDB Galera cluster providing the relational database engine for the Nova
@@ -75,5 +84,33 @@ externalInteractions:
   capabilities: []
   notes: Point-in-time backups via Percona XtraBackup automated backup tooling writing
     to object storage.
-requirementGroups: []
-requirementImplementations: []
+requirementGroups:
+- 01KQQ4Q027-T3CA
+requirementImplementations:
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.00.2.1.access-control-model
+  status: satisfied
+  mechanism: field
+  key: architecturalDecisions.accessControl.model
+  notes: Access control model is role-based; Nova service account has DML-only access
+    to the nova schema. Documented in architecturalDecisions.accessControl.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.10.2.1
+  status: satisfied
+  mechanism: field
+  key: architecturalDecisions.backup.strategy
+  notes: Backup strategy, RTO (2h), and RPO (4h) are documented in architecturalDecisions.backup.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.04.1.1
+  status: satisfied
+  mechanism: architecturalDecision
+  key: access_control_model
+  notes: Database access control model is documented in architecturalDecisions.accessControl.
+    MariaDB role-based access restricts the Nova service account to its own schema.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.04.4.1.access-control-model
+  status: satisfied
+  mechanism: architecturalDecision
+  key: access_control_model
+  notes: MariaDB user model enforces schema-level isolation. Service accounts for
+    each OpenStack service are scoped to their own schema only.

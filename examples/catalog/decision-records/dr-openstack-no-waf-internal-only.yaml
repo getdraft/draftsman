@@ -1,0 +1,35 @@
+schemaVersion: '1.0'
+uid: 01KSE5V73Z-CRZV
+type: decision_record
+name: No WAF Required — OpenStack Is Internal-Only
+category: decision
+status: accepted
+catalogStatus: approved
+lifecycleStatus: preferred
+owner:
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+tags:
+- decision-record
+- openstack
+- security
+- network-boundary
+linkedObject: STCK000001-SDP1
+description: Documents the accepted decision that a Web Application Firewall (WAF)
+  is not required for the OpenStack IaaS platform because the deployment is not directly
+  internet-facing in the sense that warrants WAF placement.
+decisionRationale: The OpenStack Horizon dashboard and API endpoints are accessible
+  only to internal operators and tenants over a managed internal network. Public-internet
+  exposure, when present, is mediated by a VPN gateway or zero-trust network access
+  layer — not by direct routing to the OpenStack public network zone. A WAF is the
+  appropriate control for applications that process untrusted public HTTP traffic
+  from external users. The OpenStack API surface processes trusted operator traffic
+  behind an access-controlled boundary; the network boundary and VPN/ZTNA access
+  control layer satisfy WAF-equivalent intent for this deployment. If a future
+  deployment exposes any OpenStack API endpoint to the public internet without a
+  VPN or ZTNA layer, this decision must be revisited and a WAF external interaction
+  must be added to the SDP.
+impact: No WAF external interaction is required on the OpenStack SDP. The network
+  zone architecture and VPN/ZTNA access control boundary provide equivalent protection
+  for this internal-only deployment.
+relatedDecisionRecords: []
