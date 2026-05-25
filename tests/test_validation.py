@@ -1439,6 +1439,191 @@ requirementGroups:
         self.assertIn("gcp-us-central1", created_text)
         self.assertIn("status: proposed", created_text)
 
+    def test_ra_constraint_violation_fails_sdp(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            ra_dir = workspace / "configurations" / "reference-architectures"
+            ra_dir.mkdir(parents=True, exist_ok=True)
+            (ra_dir / "ra-test-constraint.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF71-RAXC
+                    type: reference_architecture
+                    name: Test Constraint RA
+                    catalogStatus: draft
+                    lifecycleStatus: preferred
+                    constraints:
+                      - id: presentation-requires-edge-gateway
+                        description: Presentation tier needs an edge/gateway service.
+                        when:
+                          anyServiceGroup:
+                            diagramTier: presentation
+                        require:
+                          - objectType: edge_gateway_service
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            runtime_dir = workspace / "catalog" / "runtime-services"
+            runtime_dir.mkdir(parents=True, exist_ok=True)
+            (runtime_dir / "runtime-service-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF71-RSRV
+                    type: runtime_service
+                    name: Test Runtime Service
+                    deliveryModel: paas
+                    catalogStatus: draft
+                    lifecycleStatus: candidate
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            sdp_dir = workspace / "catalog" / "software-deployment-patterns"
+            sdp_dir.mkdir(parents=True, exist_ok=True)
+            (sdp_dir / "sdp-ra-constraint-violation.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF71-SDPV
+                    type: software_deployment_pattern
+                    name: Test RA Constraint Violation
+                    catalogStatus: draft
+                    lifecycleStatus: candidate
+                    followsReferenceArchitecture: 01KQS0TF71-RAXC
+                    architecturalDecisions:
+                      deploymentTargets: Test environment.
+                      availabilityRequirement: Single instance.
+                      dataClassification: Internal.
+                      failureDomain: Single deployment.
+                      noPatternDeviations: Test fixture.
+                      noAdditionalInteractions: Test fixture.
+                    serviceGroups:
+                      - name: Presentation Tier
+                        deploymentTarget: test-env
+                        deployableObjects:
+                          - ref: 01KQS0TF71-RSRV
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("presentation-requires-edge-gateway", result.stdout)
+        self.assertIn("RA constraint", result.stdout)
+        self.assertIn("edge_gateway_service", result.stdout)
+
+    def test_ra_constraint_satisfied_passes_sdp(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            ra_dir = workspace / "configurations" / "reference-architectures"
+            ra_dir.mkdir(parents=True, exist_ok=True)
+            (ra_dir / "ra-test-constraint.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF72-RAXC
+                    type: reference_architecture
+                    name: Test Constraint RA
+                    catalogStatus: draft
+                    lifecycleStatus: preferred
+                    constraints:
+                      - id: presentation-requires-edge-gateway
+                        description: Presentation tier needs an edge/gateway service.
+                        when:
+                          anyServiceGroup:
+                            diagramTier: presentation
+                        require:
+                          - objectType: edge_gateway_service
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            egw_dir = workspace / "catalog" / "edge-gateway-services"
+            egw_dir.mkdir(parents=True, exist_ok=True)
+            (egw_dir / "edge-gateway-service-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF72-EGWS
+                    type: edge_gateway_service
+                    name: Test Edge Gateway
+                    deliveryModel: appliance
+                    catalogStatus: draft
+                    lifecycleStatus: preferred
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            runtime_dir = workspace / "catalog" / "runtime-services"
+            runtime_dir.mkdir(parents=True, exist_ok=True)
+            (runtime_dir / "runtime-service-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF72-RSRV
+                    type: runtime_service
+                    name: Test Runtime Service
+                    deliveryModel: paas
+                    catalogStatus: draft
+                    lifecycleStatus: candidate
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            sdp_dir = workspace / "catalog" / "software-deployment-patterns"
+            sdp_dir.mkdir(parents=True, exist_ok=True)
+            (sdp_dir / "sdp-ra-constraint-satisfied.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF72-SDPS
+                    type: software_deployment_pattern
+                    name: Test RA Constraint Satisfied
+                    catalogStatus: draft
+                    lifecycleStatus: candidate
+                    followsReferenceArchitecture: 01KQS0TF72-RAXC
+                    architecturalDecisions:
+                      deploymentTargets: Test environment.
+                      availabilityRequirement: Single instance.
+                      dataClassification: Internal.
+                      failureDomain: Single deployment.
+                      noPatternDeviations: Test fixture.
+                      noAdditionalInteractions: Test fixture.
+                    serviceGroups:
+                      - name: Presentation Tier
+                        deploymentTarget: test-env
+                        deployableObjects:
+                          - ref: 01KQS0TF72-EGWS
+                            diagramTier: presentation
+                          - ref: 01KQS0TF72-RSRV
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+        self.assertNotIn("presentation-requires-edge-gateway", result.stdout)
+
     def _write_vocabulary_workspace(self, workspace: Path, mode: str) -> None:
         (workspace / ".draft" / "workspace.yaml").write_text(
             textwrap.dedent(

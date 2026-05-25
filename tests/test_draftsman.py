@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import subprocess
 import tempfile
+import textwrap
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -19,6 +20,7 @@ from draft_table.draftsman import (
     safe_workspace_path,
 )
 from draft_table.paths import REPO_ROOT
+from draft_table.repo import ensure_workspace_layout
 from draft_table.sessions import DraftsmanSessionStore
 
 
@@ -182,6 +184,55 @@ class DraftsmanTests(unittest.TestCase):
         self.assertTrue(response.provider_used)
         self.assertEqual(public["proposals"][0]["name"], "Managed Host")
         self.assertNotIn("content", public["proposals"][0])
+
+
+    def test_apply_proposals_blocked_when_content_would_fail_validator(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory) / "workspace"
+            workspace.mkdir()
+            ensure_workspace_layout(workspace)
+            config_path = Path(directory) / "config.yaml"
+            save_config(
+                {
+                    "framework_repo_path": str(REPO_ROOT),
+                    "content_repo_path": str(workspace),
+                },
+                config_path,
+            )
+            engine = DraftsmanEngine(config_path, DraftsmanSessionStore(Path(directory) / "sessions"))
+            session = engine.session_store.load(None)
+            session["proposals"] = [
+                {
+                    "id": "bad-tech",
+                    "action": "create",
+                    "artifactType": "Technology Component",
+                    "name": "Bad Technology",
+                    "summary": "Missing required uid field.",
+                    "path": "catalog/technology-components/technology-bad.yaml",
+                    "content": textwrap.dedent(
+                        """
+                        schemaVersion: "1.0"
+                        type: technology_component
+                        name: Bad Technology
+                        vendor: Test Vendor
+                        productName: Bad Tech
+                        productVersion: "1"
+                        classification: software
+                        catalogStatus: draft
+                        """
+                    ).strip()
+                    + "\n",
+                    "applied": False,
+                }
+            ]
+            engine.session_store.save(session)
+
+            result = engine.apply_proposals(session["id"])
+
+        self.assertTrue(result.get("preWriteFailure"))
+        self.assertFalse(result["validation"]["ok"])
+        target = workspace / "catalog" / "technology-components" / "technology-bad.yaml"
+        self.assertFalse(target.exists())
 
 
 if __name__ == "__main__":

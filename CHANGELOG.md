@@ -3,6 +3,62 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.22.0 - 2026-05-25
+
+### Added
+
+- **Deterministic Draftsman pre-write validation** (closes #5): `DraftsmanEngine`
+  now validates proposals in a temporary workspace copy before writing any file
+  to disk. `apply_proposals` calls `preview_proposals` first; if validation
+  fails the batch is blocked and `preWriteFailure: true` is returned with the
+  full validation output. No file is written until the workspace would pass
+  validation with the proposals applied.
+- Added `preview_proposals(session_id, proposal_ids)` method to `DraftsmanEngine`:
+  copies the workspace to a temp directory, writes the selected proposals there,
+  runs the validator, and returns the result without touching the real workspace.
+- Added `resumptionContext` optional dict field to the Drafting Session schema
+  (`framework/schemas/drafting-session.schema.yaml`): stores Draftsman-internal
+  state (e.g. matched Reference Architecture UID, confirmed delivery models,
+  scope decisions) so interrupted sessions can be resumed without re-asking
+  answered questions.
+- Added three new Draftsman doc sections to `framework/docs/draftsman.md`:
+  - **Pre-Write Review**: protocol for showing a structured review card before
+    writing YAML and holding batches that fail preview validation.
+  - **Validation Repair Procedures**: table mapping common validator error
+    patterns to specific repair steps.
+  - **Resuming a Drafting Session**: how to reconstruct working context from a
+    session YAML using `generatedObjects`, `unresolvedQuestions`, `nextSteps`,
+    `assumptions`, and `resumptionContext`.
+- Added tests: `test_apply_proposals_blocked_when_content_would_fail_validator`
+  (pre-write gate), `test_ra_constraint_violation_fails_sdp` (RA constraint
+  enforcement), `test_ra_constraint_satisfied_passes_sdp` (constraint satisfied
+  passes).
+
+### Changed
+
+- `apply_proposals` now gates on `preview_proposals` before writing any file:
+  if the preview validation fails, the batch is returned with `preWriteFailure:
+  true` and no files are written to the workspace.
+
+### Fixed
+
+- `import shutil` and `import tempfile` added to `draft_table/draftsman.py` for
+  the temp-workspace copy used by `preview_proposals`.
+
+### Compatibility Impact
+
+No breaking changes. `apply_proposals` behavior changes: calls that would write
+invalid YAML now return `{"applied": [], "preWriteFailure": true, "validation":
+{...}}` instead of writing the files and returning a post-write validation
+failure. Callers that check `validation.ok` continue to work; callers that
+expect files to be written before checking `validation.ok` need to handle the
+new `preWriteFailure` flag.
+
+### Migration Notes
+
+No migration required. The new `resumptionContext` field on `drafting_session`
+is optional and backwards-compatible.
+
 ## 0.21.0 - 2026-05-25
 
 ### Added

@@ -742,6 +742,86 @@ from the object type: `engineer` for product and data components and SDPs;
 gateway services, and data store services; `draft-admin` for requirement groups
 and capabilities.
 
+## Pre-Write Review
+
+Before writing any proposal to the workspace, the Draftsman validates it against
+the framework schemas in a temporary copy of the workspace. A proposal is only
+written to disk when the preview validation passes.
+
+A review card for each proposal shows:
+
+- Artifact type, name, and target path
+- Schema-required fields present or missing
+- Validation status (pass / fail)
+- Actionable repair step for each failure
+
+If any proposal fails preview validation, all proposals in the batch are held.
+No files are written to the workspace. The Draftsman presents the failure and
+the applicable repair procedure from the Validation Repair Procedures section
+below, then re-drafts the corrected YAML before offering to apply again.
+
+Do not silently apply proposals that would fail validation. The user must see
+the validation result before any file lands in the workspace.
+
+## Validation Repair Procedures
+
+Map validator error patterns to the repair step that resolves them. Use these
+to explain what went wrong and what to do next without exposing raw validator
+output to the user.
+
+| Error pattern | What it means | Repair step |
+|---|---|---|
+| `Add required field 'uid' with generated value` | Object is missing its stable machine identity | Run `framework/tools/repair_uids.py --workspace <path> --file <relative-path> --uid <generated>` |
+| `Replace malformed uid '...' with generated value` | uid exists but does not match the Crockford Base32 pattern | Run `repair_uids.py` with the suggested generated value |
+| `RA constraint '...' violated` | An SDP following an RA is missing a required object type in a service group | Add a deployable object entry of the required `objectType` and `diagramTier` to the appropriate service group, then resolve the specific catalog object using the Capability Lookup procedure |
+| `Satisfy ... / ...` | An active workspace Requirement Group requires evidence not yet present | Add a `requirementImplementations` entry with `status: satisfied` citing the applicable mechanism, or mark it `not-applicable` if the requirement does not apply |
+| `Set catalogStatus: deprecated` | A Technology Component in the object's graph has passed its vendor end-of-support date | Set `catalogStatus: deprecated` and add `architecturalDecisions.lifecycleRationale` explaining the transition plan |
+| `deliveryModel must be one of` | An invalid delivery model value was used | Replace with one of `self-managed`, `saas`, `paas`, `appliance`, `serverless` |
+| `classification must be one of` (technology_component) | Invalid classification field | Replace with one of `software`, `agent`, `operating-system`, `compute-platform` |
+| `externalInteractions[N].ref references unknown object` | An external interaction references a non-existent catalog object | Correct the ref to an existing catalog UID or remove the ref and use a bare name |
+| `internalComponentRationales['...']` + `does not directly satisfy any applicable requirement` | An internal component is present but does not satisfy a requirement and no rationale explains why | Add `architecturalDecisions.internalComponentRationales.<uid>` explaining the reason |
+| `externalInteractionRationales['...']` + `does not directly satisfy any applicable requirement` | An external interaction is present but does not satisfy a requirement and no rationale explains why | Add `architecturalDecisions.externalInteractionRationales.<name>` explaining the reason |
+
+## Resuming a Drafting Session
+
+A Drafting Session YAML captures all the context needed to continue interrupted
+authoring work. To resume from an existing session:
+
+1. Read the session YAML to reconstruct current context.
+2. Read `generatedObjects` to know which catalog objects already exist and their
+   current status (`created`, `proposed`, `stubbed`, `deferred`).
+3. Read `unresolvedQuestions` to find open items (`status: open`) still needing
+   answers.
+4. Read `nextSteps` to find the open next actions (`status: open` or
+   `status: blocked`).
+5. Read `assumptions` to check which working assumptions need confirmation.
+6. Read `resumptionContext` for any additional state stored to avoid re-asking
+   answered questions — for example, the identified Reference Architecture,
+   confirmed delivery models, or scope decisions.
+
+When resuming, lead with a brief summary of what was captured and what is left
+open. Ask only for the facts still missing — do not re-interview for decisions
+already recorded in the session.
+
+The `resumptionContext` field is for Draftsman-internal session state only. It
+should not duplicate information already expressed in other session fields.
+Typical entries include the matched Reference Architecture UID, the delivery
+model decisions made so far, and the scope boundary confirmed by the user.
+
+Example:
+
+```yaml
+resumptionContext:
+  matchedReferenceArchitecture: 01KS8N4KR2-3TWA
+  confirmedDeliveryModels:
+    app-runtime: self-managed
+    load-balancer: appliance
+  scopeDecision: SDP covers the frontend and API layers only; data tier is out of scope for this session.
+```
+
+If the session's `sessionStatus` is `blocked`, surface the blocking reason from
+`unresolvedQuestions` or `nextSteps` before asking the user how to proceed.
+
 ## Output Contract
 
 The Draftsman may produce YAML internally for the backend to write, but the
