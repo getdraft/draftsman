@@ -3,6 +3,28 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.23.1 - 2026-05-25
+
+### Added
+
+- Apache 2.0 license (`LICENSE` file, copyright 2026 Dale Sackrider). Attribution is required for redistribution.
+
+### Changed
+
+No changes.
+
+### Fixed
+
+No bug fixes.
+
+### Compatibility Impact
+
+No breaking changes.
+
+### Migration Notes
+
+No migration required.
+
 ## 0.23.0 - 2026-05-25
 
 ### Added
