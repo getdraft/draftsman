@@ -1,0 +1,27 @@
+schemaVersion: '1.0'
+uid: 01KSF29JTP-8YRX
+type: technology_component
+name: HAProxy 2.9
+description: Open-source TCP/HTTP load balancer and proxy server. Provides high-availability
+  request distribution, health checking, connection pooling, and SSL termination. Used
+  as the primary load balancer for the OpenStack control plane API endpoints.
+version: 1.0.0
+catalogStatus: approved
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+tags:
+- technology-component
+- load-balancer
+- haproxy
+- openstack
+vendor: HAProxy Technologies
+productName: HAProxy Community Edition
+productVersion: '2.9'
+classification: software
+vendorLifecycle:
+  mainstreamSupportEnd: '2026-12-31'
+  extendedSupportEnd: '2027-12-31'
+capabilities:
+- 01KQQ4Q026-98VD

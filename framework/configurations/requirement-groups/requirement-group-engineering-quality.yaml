@@ -1,0 +1,97 @@
+schemaVersion: '1.0'
+uid: 01KSF4NHSP-8HPP
+type: requirement_group
+name: Engineering Quality Requirement Group
+description: Optional checklist for ProductComponents covering build quality, test coverage, and performance validation practices. Activated per workspace; does not fire automatically.
+version: 1.0.0
+catalogStatus: approved
+owner:
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+authority:
+  name: DRAFT Framework
+  shortName: DRAFT
+  source: DRAFT Framework
+activation: workspace
+appliesTo:
+- product_component
+requirements:
+- id: performance-testing
+  description: The ProductComponent may declare how performance and load testing is performed.
+  rationale: Components without a performance testing approach may cause latency or throughput regressions that are not detected before production.
+  canBeSatisfiedBy:
+  - mechanism: externalInteraction
+    criteria:
+      capability: 01KQQ4Q026-S5J6
+    example: A load testing platform or service referenced as an externalInteraction.
+  - mechanism: architecturalDecision
+    key: performanceTesting
+    example: A documented statement of the load or performance testing approach, or a declaration that it is not applicable.
+  minimumSatisfactions: 1
+  relatedCapability: 01KQQ4Q026-S5J6
+  requirementMode: mandatory
+  naAllowed: true
+  validAnswerTypes:
+  - architecturalDecision
+  - externalInteraction
+- id: quality-gates
+  description: The ProductComponent may declare the quality gates that govern release readiness.
+  rationale: Quality gates enforce that code coverage, static analysis, and security scanning thresholds are met before a component can be promoted.
+  canBeSatisfiedBy:
+  - mechanism: externalInteraction
+    criteria:
+      capability: 01KQQ4Q026-RTWC
+    example: A CI/CD platform or quality gate service referenced as an externalInteraction.
+  - mechanism: architecturalDecision
+    key: qualityGates
+    example: A documented statement of the quality gate criteria and enforcement mechanism.
+  minimumSatisfactions: 1
+  relatedCapability: 01KQQ4Q026-RTWC
+  requirementMode: mandatory
+  naAllowed: true
+  validAnswerTypes:
+  - architecturalDecision
+  - externalInteraction
+- id: test-authoring
+  description: The ProductComponent may declare how automated tests are authored and maintained.
+  rationale: Components with no documented test authoring approach accumulate untested behavior that blocks safe refactoring.
+  canBeSatisfiedBy:
+  - mechanism: externalInteraction
+    criteria:
+      capability: 01KQQ4Q026-QC9S
+    example: A test management or specification platform referenced as an externalInteraction.
+  - mechanism: architecturalDecision
+    key: testAuthoring
+    example: A documented statement of the test framework, coverage targets, and authoring ownership.
+  minimumSatisfactions: 1
+  relatedCapability: 01KQQ4Q026-QC9S
+  requirementMode: mandatory
+  naAllowed: true
+  validAnswerTypes:
+  - architecturalDecision
+  - externalInteraction
+- id: test-execution
+  description: The ProductComponent may declare how automated tests are executed in CI and pre-production environments.
+  rationale: Test execution infrastructure determines whether test suites run reliably and at sufficient coverage depth during each build or deploy cycle.
+  canBeSatisfiedBy:
+  - mechanism: externalInteraction
+    criteria:
+      capability: 01KQQ4Q026-58Q3
+    example: A CI platform or test execution service referenced as an externalInteraction.
+  - mechanism: architecturalDecision
+    key: testExecution
+    example: A documented statement of the test execution environment and trigger model.
+  minimumSatisfactions: 1
+  relatedCapability: 01KQQ4Q026-58Q3
+  requirementMode: mandatory
+  naAllowed: true
+  validAnswerTypes:
+  - architecturalDecision
+  - externalInteraction
+lifecycleStatus: candidate
+tags:
+- product-component
+- requirement-group
+- engineering
+- quality
+- optional

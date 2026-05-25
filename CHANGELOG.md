@@ -3,6 +3,41 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.20.0 - 2026-05-25
+
+### Added
+
+- Added `framework/configurations/requirement-groups/requirement-group-service-engineering.yaml`
+  (`01KSF29JTP-SRVE`, `activation: workspace`): links the APM, Container
+  Orchestration, and Serverless Runtime capabilities to the framework. Workspaces
+  opt in via `activeRequirementGroups` in `.draft/workspace.yaml`.
+- Added `framework/configurations/requirement-groups/requirement-group-engineering-quality.yaml`
+  (`01KSF4NHSP-8HPP`, `activation: workspace`): links the Performance Testing,
+  Quality Gates, Test Authoring, and Test Execution capabilities. Workspaces opt
+  in to require product components to address build quality practices.
+- Added `framework/configurations/requirement-groups/requirement-group-host-compute-profile.yaml`
+  (`01KSF4NHSP-HCPX`, `activation: workspace`): links the General Purpose Compute
+  capability. Workspaces opt in to require hosts to declare their compute type.
+- Added `examples/catalog/technology-components/technology-haproxy-29.yaml`:
+  HAProxy 2.9 Technology Component (`classification: software`) with
+  Health/Welfare Monitoring capability.
+- Added `examples/catalog/edge-gateway-services/edge-gateway-service-openstack-api-lb.yaml`:
+  self-managed HAProxy load balancer for the OpenStack control plane, completing
+  the edge/gateway service object type in the examples catalog.
+- Completed requirement group coverage: all approved framework capabilities are
+  now linked to at least one requirement group, eliminating the eight
+  `capability-not-in-requirement-group` validator warnings.
+
+### Changed
+
+- Renamed all `data-at-rest-*.yaml` files in `examples/catalog/data-store-services/`
+  to `data-store-service-*.yaml` to match the object type naming convention used
+  by all other catalog file types.
+- Completed `architecturalDecisions` and `externalInteractionRationales` on the
+  remaining five data store services (Cinder, Glance, Keystone, Neutron, OpenStack
+  Shared, Swift) and the Keystone and RabbitMQ runtime services to resolve all
+  outstanding requirement group compliance gaps.
+
 ## 0.19.1 - 2026-05-24
 
 ### Added

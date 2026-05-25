@@ -49,6 +49,8 @@ architecturalDecisions:
   backup:
     strategy: Automated daily full backup using Percona XtraBackup with 4-hourly
       incremental backups. Backups written to object storage.
+    platform: Percona XtraBackup writing to Swift object storage on the openstack-controller
+      deployment target.
     rto: 2 hours for full restore; near-zero for Galera node failure.
     rpo: 4 hours maximum; near-zero for Galera replication.
   ha:
@@ -59,7 +61,9 @@ architecturalDecisions:
   accessControl:
     model: Role-based database access. Neutron service account has DML access to the
       neutron schema only.
-  externalInteractionRationales: {}
+  externalInteractionRationales:
+    Backup Service: Percona XtraBackup automated backup writes point-in-time backups
+      to Swift object storage. Modeled to show the external backup platform dependency.
 internalComponents:
 - ref: STCK00000E-TC0E
   role: MariaDB Galera cluster providing the relational database engine for the Neutron

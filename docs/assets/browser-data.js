@@ -257,6 +257,10 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "referencedBy": [
         {
+          "source": "01KSF29JTP-SRVE",
+          "path": "requirements[0].relatedCapability"
+        },
+        {
           "source": "01KQQ4Q027-C213",
           "path": "capabilities[3]"
         }
@@ -891,6 +895,10 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "referencedBy": [
         {
+          "source": "01KSF4NHSP-HCPX",
+          "path": "requirements[0].relatedCapability"
+        },
+        {
           "source": "01KQQ4Q027-ZTHF",
           "path": "capabilities[0]"
         },
@@ -1041,6 +1049,10 @@ window.DRAFT_BROWSER_DATA = {
         }
       ],
       "referencedBy": [
+        {
+          "source": "01KSF29JTP-SRVE",
+          "path": "requirements[1].relatedCapability"
+        },
         {
           "source": "01KQQ4Q027-ZTHF",
           "path": "capabilities[4]"
@@ -1353,6 +1365,10 @@ window.DRAFT_BROWSER_DATA = {
         },
         {
           "source": "01KQQ4Q027-C213",
+          "path": "capabilities[0]"
+        },
+        {
+          "source": "01KSF29JTP-8YRX",
           "path": "capabilities[0]"
         },
         {
@@ -1999,6 +2015,10 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "referencedBy": [
         {
+          "source": "01KSF4NHSP-8HPP",
+          "path": "requirements[0].relatedCapability"
+        },
+        {
           "source": "01KQQ4Q027-SGHR",
           "path": "capabilities[3]"
         }
@@ -2137,6 +2157,10 @@ window.DRAFT_BROWSER_DATA = {
         }
       ],
       "referencedBy": [
+        {
+          "source": "01KSF4NHSP-8HPP",
+          "path": "requirements[1].relatedCapability"
+        },
         {
           "source": "01KQQ4Q027-SGHR",
           "path": "capabilities[2]"
@@ -2612,6 +2636,10 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "referencedBy": [
         {
+          "source": "01KSF29JTP-SRVE",
+          "path": "requirements[2].relatedCapability"
+        },
+        {
           "source": "01KQQ4Q027-ZTHF",
           "path": "capabilities[3]"
         }
@@ -2751,6 +2779,10 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "referencedBy": [
         {
+          "source": "01KSF4NHSP-8HPP",
+          "path": "requirements[2].relatedCapability"
+        },
+        {
           "source": "01KQQ4Q027-SGHR",
           "path": "capabilities[0]"
         }
@@ -2889,6 +2921,10 @@ window.DRAFT_BROWSER_DATA = {
         }
       ],
       "referencedBy": [
+        {
+          "source": "01KSF4NHSP-8HPP",
+          "path": "requirements[3].relatedCapability"
+        },
         {
           "source": "01KQQ4Q027-SGHR",
           "path": "capabilities[1]"
@@ -7117,6 +7153,482 @@ window.DRAFT_BROWSER_DATA = {
       "existsInCatalog": true
     },
     {
+      "id": "01KSF4NHSP-8HPP",
+      "uid": "01KSF4NHSP-8HPP",
+      "name": "Engineering Quality Requirement Group",
+      "aliases": [],
+      "type": "requirement_group",
+      "typeLabel": "Requirement Group",
+      "filterType": "requirement_group",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Optional checklist for ProductComponents covering build quality, test coverage, and performance validation practices. Activated per workspace; does not fire automatically.",
+      "version": "1.0.0",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "candidate",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {
+        "name": "DRAFT Framework",
+        "shortName": "DRAFT",
+        "source": "DRAFT Framework"
+      },
+      "shape": "barrel",
+      "color": "#7c3a6b",
+      "source": "framework/configurations/requirement-groups/requirement-group-engineering-quality.yaml",
+      "tags": [
+        "product-component",
+        "requirement-group",
+        "engineering",
+        "quality",
+        "optional"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {},
+      "requirements": [
+        {
+          "id": "performance-testing",
+          "description": "The ProductComponent may declare how performance and load testing is performed.",
+          "rationale": "Components without a performance testing approach may cause latency or throughput regressions that are not detected before production.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "externalInteraction",
+              "criteria": {
+                "capability": "01KQQ4Q026-S5J6"
+              },
+              "example": "A load testing platform or service referenced as an externalInteraction."
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "performanceTesting",
+              "example": "A documented statement of the load or performance testing approach, or a declaration that it is not applicable."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-S5J6",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "externalInteraction"
+          ]
+        },
+        {
+          "id": "quality-gates",
+          "description": "The ProductComponent may declare the quality gates that govern release readiness.",
+          "rationale": "Quality gates enforce that code coverage, static analysis, and security scanning thresholds are met before a component can be promoted.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "externalInteraction",
+              "criteria": {
+                "capability": "01KQQ4Q026-RTWC"
+              },
+              "example": "A CI/CD platform or quality gate service referenced as an externalInteraction."
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "qualityGates",
+              "example": "A documented statement of the quality gate criteria and enforcement mechanism."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-RTWC",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "externalInteraction"
+          ]
+        },
+        {
+          "id": "test-authoring",
+          "description": "The ProductComponent may declare how automated tests are authored and maintained.",
+          "rationale": "Components with no documented test authoring approach accumulate untested behavior that blocks safe refactoring.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "externalInteraction",
+              "criteria": {
+                "capability": "01KQQ4Q026-QC9S"
+              },
+              "example": "A test management or specification platform referenced as an externalInteraction."
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "testAuthoring",
+              "example": "A documented statement of the test framework, coverage targets, and authoring ownership."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-QC9S",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "externalInteraction"
+          ]
+        },
+        {
+          "id": "test-execution",
+          "description": "The ProductComponent may declare how automated tests are executed in CI and pre-production environments.",
+          "rationale": "Test execution infrastructure determines whether test suites run reliably and at sufficient coverage depth during each build or deploy cycle.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "externalInteraction",
+              "criteria": {
+                "capability": "01KQQ4Q026-58Q3"
+              },
+              "example": "A CI platform or test execution service referenced as an externalInteraction."
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "testExecution",
+              "example": "A documented statement of the test execution environment and trigger model."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-58Q3",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "externalInteraction"
+          ]
+        }
+      ],
+      "implementations": [],
+      "appliesTo": [
+        "product_component"
+      ],
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 4,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KQQ4Q026-S5J6",
+          "path": "requirements[0].relatedCapability"
+        },
+        {
+          "target": "01KQQ4Q026-RTWC",
+          "path": "requirements[1].relatedCapability"
+        },
+        {
+          "target": "01KQQ4Q026-QC9S",
+          "path": "requirements[2].relatedCapability"
+        },
+        {
+          "target": "01KQQ4Q026-58Q3",
+          "path": "requirements[3].relatedCapability"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "owner",
+          "activation",
+          "appliesTo",
+          "requirements"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "lifecycleStatus",
+          "provider",
+          "authority",
+          "notes",
+          "inherits",
+          "appliesToQualifiers"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "provider": "dict",
+          "authority": "dict",
+          "appliesTo": "list",
+          "requirements": "list",
+          "appliesToQualifiers": "dict"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "activation": [
+            "always",
+            "workspace"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "requirements": "requirement"
+        },
+        "schemaPath": "framework/schemas/requirement-group.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSF4NHSP-8HPP\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Engineering Quality Requirement Group\",\n  \"description\": \"Optional checklist for ProductComponents covering build quality, test coverage, and performance validation practices. Activated per workspace; does not fire automatically.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"workspace\",\n  \"appliesTo\": [\n    \"product_component\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"performance-testing\",\n      \"description\": \"The ProductComponent may declare how performance and load testing is performed.\",\n      \"rationale\": \"Components without a performance testing approach may cause latency or throughput regressions that are not detected before production.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"externalInteraction\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-S5J6\"\n          },\n          \"example\": \"A load testing platform or service referenced as an externalInteraction.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"performanceTesting\",\n          \"example\": \"A documented statement of the load or performance testing approach, or a declaration that it is not applicable.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-S5J6\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"externalInteraction\"\n      ]\n    },\n    {\n      \"id\": \"quality-gates\",\n      \"description\": \"The ProductComponent may declare the quality gates that govern release readiness.\",\n      \"rationale\": \"Quality gates enforce that code coverage, static analysis, and security scanning thresholds are met before a component can be promoted.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"externalInteraction\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-RTWC\"\n          },\n          \"example\": \"A CI/CD platform or quality gate service referenced as an externalInteraction.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"qualityGates\",\n          \"example\": \"A documented statement of the quality gate criteria and enforcement mechanism.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-RTWC\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"externalInteraction\"\n      ]\n    },\n    {\n      \"id\": \"test-authoring\",\n      \"description\": \"The ProductComponent may declare how automated tests are authored and maintained.\",\n      \"rationale\": \"Components with no documented test authoring approach accumulate untested behavior that blocks safe refactoring.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"externalInteraction\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-QC9S\"\n          },\n          \"example\": \"A test management or specification platform referenced as an externalInteraction.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"testAuthoring\",\n          \"example\": \"A documented statement of the test framework, coverage targets, and authoring ownership.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-QC9S\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"externalInteraction\"\n      ]\n    },\n    {\n      \"id\": \"test-execution\",\n      \"description\": \"The ProductComponent may declare how automated tests are executed in CI and pre-production environments.\",\n      \"rationale\": \"Test execution infrastructure determines whether test suites run reliably and at sufficient coverage depth during each build or deploy cycle.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"externalInteraction\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-58Q3\"\n          },\n          \"example\": \"A CI platform or test execution service referenced as an externalInteraction.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"testExecution\",\n          \"example\": \"A documented statement of the test execution environment and trigger model.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-58Q3\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"externalInteraction\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"candidate\",\n  \"tags\": [\n    \"product-component\",\n    \"requirement-group\",\n    \"engineering\",\n    \"quality\",\n    \"optional\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-engineering-quality.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    {
+      "id": "01KSF4NHSP-HCPX",
+      "uid": "01KSF4NHSP-HCPX",
+      "name": "Host Compute Profile Requirement Group",
+      "aliases": [],
+      "type": "requirement_group",
+      "typeLabel": "Requirement Group",
+      "filterType": "requirement_group",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Optional checklist for Hosts covering compute type classification. Activated per workspace; does not fire automatically.",
+      "version": "1.0.0",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "candidate",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {
+        "name": "DRAFT Framework",
+        "shortName": "DRAFT",
+        "source": "DRAFT Framework"
+      },
+      "shape": "barrel",
+      "color": "#7c3a6b",
+      "source": "framework/configurations/requirement-groups/requirement-group-host-compute-profile.yaml",
+      "tags": [
+        "host",
+        "requirement-group",
+        "compute",
+        "optional"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {},
+      "requirements": [
+        {
+          "id": "compute-type",
+          "description": "The host must declare its compute type or instance class when the compute profile is not captured by the compute-platform requirement alone.",
+          "rationale": "Compute type captures the general-purpose, memory-optimized, GPU, or bare-metal classification of the host's compute resources, which affects workload placement and capacity planning.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "architecturalDecision",
+              "key": "computeType",
+              "example": "A documented statement of the compute type such as general-purpose, memory-optimized, GPU, or bare-metal."
+            },
+            {
+              "mechanism": "field",
+              "key": "computeType",
+              "example": "A field declaration of the compute type on the host object."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-9K8G",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "field"
+          ]
+        }
+      ],
+      "implementations": [],
+      "appliesTo": [
+        "host"
+      ],
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 1,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KQQ4Q026-9K8G",
+          "path": "requirements[0].relatedCapability"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "owner",
+          "activation",
+          "appliesTo",
+          "requirements"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "lifecycleStatus",
+          "provider",
+          "authority",
+          "notes",
+          "inherits",
+          "appliesToQualifiers"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "provider": "dict",
+          "authority": "dict",
+          "appliesTo": "list",
+          "requirements": "list",
+          "appliesToQualifiers": "dict"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "activation": [
+            "always",
+            "workspace"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "requirements": "requirement"
+        },
+        "schemaPath": "framework/schemas/requirement-group.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSF4NHSP-HCPX\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Host Compute Profile Requirement Group\",\n  \"description\": \"Optional checklist for Hosts covering compute type classification. Activated per workspace; does not fire automatically.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"workspace\",\n  \"appliesTo\": [\n    \"host\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"compute-type\",\n      \"description\": \"The host must declare its compute type or instance class when the compute profile is not captured by the compute-platform requirement alone.\",\n      \"rationale\": \"Compute type captures the general-purpose, memory-optimized, GPU, or bare-metal classification of the host's compute resources, which affects workload placement and capacity planning.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"computeType\",\n          \"example\": \"A documented statement of the compute type such as general-purpose, memory-optimized, GPU, or bare-metal.\"\n        },\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"computeType\",\n          \"example\": \"A field declaration of the compute type on the host object.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-9K8G\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"field\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"candidate\",\n  \"tags\": [\n    \"host\",\n    \"requirement-group\",\n    \"compute\",\n    \"optional\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-host-compute-profile.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    {
       "id": "01KQQ4Q027-THYN",
       "uid": "01KQQ4Q027-THYN",
       "name": "Host Requirement Group",
@@ -9097,6 +9609,269 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/requirement-group.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-FKRM\",\n  \"type\": \"requirement_group\",\n  \"name\": \"SaaS Delivery Requirement Group\",\n  \"description\": \"Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service is consumed as a vendor-managed external service.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"runtime_service\",\n    \"data_store_service\",\n    \"edge_gateway_service\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"function\",\n      \"description\": \"What capability does this SaaS service provide?\",\n      \"rationale\": \"Capability is the core architectural reason the service exists.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"capabilities\",\n          \"example\": \"capabilities: [waf]\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"data-boundary\",\n      \"description\": \"Does data leave the infrastructure boundary through this service?\",\n      \"rationale\": \"The data boundary determines whether the service is modeled as SaaS and what governance obligations follow.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"dataLeavesInfrastructure\",\n          \"example\": \"dataLeavesInfrastructure: true\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"data-residency\",\n      \"description\": \"What are the vendor's data residency commitments? Critical for FERPA, HIPAA-adjacent, and PII data.\\n\",\n      \"rationale\": \"Data residency commitments are required before regulated or sensitive workloads can depend on a blackbox vendor platform.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"dataResidencyCommitment\",\n          \"example\": \"dataResidencyCommitment: US-only, AWS us-east-1\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"data-processing-agreement\",\n      \"description\": \"Is a Data Processing Agreement in place with this vendor?\",\n      \"rationale\": \"A SaaS dependency that handles organizational data requires explicit contractual treatment.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"dpaNotes\",\n          \"example\": \"dpaNotes: DPA signed 2024-03, covers FERPA and COPPA\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"compliance-certifications\",\n      \"description\": \"What compliance certifications does the vendor carry?\",\n      \"rationale\": \"Blackbox services need external attestations or certifications when internal architecture evidence is unavailable.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"complianceCerts\",\n          \"allowEmpty\": true,\n          \"example\": \"complianceCerts: [SOC2 Type II, ISO27001]\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"authentication-model\",\n      \"description\": \"How does the organization authenticate to this service?\",\n      \"rationale\": \"SaaS consumption must define how identities are established and federated into the vendor platform.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"authenticationModel\",\n          \"example\": \"authenticationModel: saml\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"audit-visibility\",\n      \"description\": \"What logging, audit, or event visibility does the consumer have into this service?\",\n      \"rationale\": \"Blackbox services must still define what operational and security evidence is visible to the adopter.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"auditVisibility\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"health-status-visibility\",\n      \"description\": \"How can the consumer observe the health, status, or incident state of this service?\",\n      \"rationale\": \"Vendor-managed services require an explicit answer for how outages or degradations are detected by the adopter.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"incidentNotificationProcess\",\n          \"example\": \"incidentNotificationProcess: Vendor status page plus email incident notifications\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"healthStatusVisibility\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"failure-domain\",\n      \"description\": \"What is the failure domain of this SaaS dependency?\",\n      \"rationale\": \"Shared vendor dependencies can create large failure domains and that scope must be explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"failureDomain\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"vendor-sla\",\n      \"description\": \"What is the vendor's SLA commitment?\",\n      \"rationale\": \"SaaS service quality must be defined in terms available to the adopter, not hidden internal design.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"vendorSLA\",\n          \"example\": \"vendorSLA: 99.99% uptime, 24x7 support\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"saas\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"appliesToQualifiers\": {\n    \"deliveryModel\": \"saas\"\n  },\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-saas-delivery.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    {
+      "id": "01KSF29JTP-SRVE",
+      "uid": "01KSF29JTP-SRVE",
+      "name": "Service Engineering Practices Requirement Group",
+      "aliases": [],
+      "type": "requirement_group",
+      "typeLabel": "Requirement Group",
+      "filterType": "requirement_group",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Optional checklist for self-managed Runtime and Edge/Gateway Services covering advanced observability and runtime patterns. Activated per workspace; does not fire automatically.",
+      "version": "1.0.0",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "candidate",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {
+        "name": "DRAFT Framework",
+        "shortName": "DRAFT",
+        "source": "DRAFT Framework"
+      },
+      "shape": "barrel",
+      "color": "#7c3a6b",
+      "source": "framework/configurations/requirement-groups/requirement-group-service-engineering.yaml",
+      "tags": [
+        "service",
+        "requirement-group",
+        "engineering",
+        "optional"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {},
+      "requirements": [
+        {
+          "id": "application-performance-monitoring",
+          "description": "The service may declare how application performance and tracing data is captured.",
+          "rationale": "APM tracing enables latency profiling, distributed trace correlation, and error root-cause analysis beyond what host-level metrics provide.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "externalInteraction",
+              "criteria": {
+                "capability": "01KQQ4Q026-NB1W"
+              },
+              "example": "An APM platform such as a tracing backend or observability service referenced by externalInteractions."
+            },
+            {
+              "mechanism": "internalComponent",
+              "criteria": {
+                "capability": "01KQQ4Q026-NB1W"
+              },
+              "example": "An APM agent or instrumentation library installed as an internalComponent."
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "apm",
+              "example": "A documented statement of the APM approach or a declaration that APM is not applicable."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-NB1W",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "externalInteraction",
+            "internalComponent"
+          ]
+        },
+        {
+          "id": "container-orchestration",
+          "description": "The service may declare its container orchestration runtime when running in a containerized environment.",
+          "rationale": "Container orchestration determines scheduling, scaling, and health management behavior for containerized services.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "internalComponent",
+              "criteria": {
+                "capability": "01KQQ4Q026-GW5D"
+              },
+              "example": "A container orchestration platform (Kubernetes, ECS, Nomad) declared as an internalComponent."
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "containerRuntime",
+              "example": "A documented statement of the container runtime when it cannot be expressed as a catalog internalComponent."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-GW5D",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "internalComponent"
+          ]
+        },
+        {
+          "id": "serverless-runtime",
+          "description": "The service may declare its serverless execution runtime when using a function-as-a-service delivery model.",
+          "rationale": "The serverless runtime determines cold start behavior, concurrency limits, execution duration, and billing model.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "internalComponent",
+              "criteria": {
+                "capability": "01KQQ4Q026-3ZWJ"
+              },
+              "example": "A serverless platform (AWS Lambda, Azure Functions, Google Cloud Run) declared as an internalComponent."
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "serverlessRuntime",
+              "example": "A documented statement of the serverless execution environment when not catalog-modeled."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-3ZWJ",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "internalComponent"
+          ]
+        }
+      ],
+      "implementations": [],
+      "appliesTo": [
+        "runtime_service",
+        "edge_gateway_service"
+      ],
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 3,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KQQ4Q026-NB1W",
+          "path": "requirements[0].relatedCapability"
+        },
+        {
+          "target": "01KQQ4Q026-GW5D",
+          "path": "requirements[1].relatedCapability"
+        },
+        {
+          "target": "01KQQ4Q026-3ZWJ",
+          "path": "requirements[2].relatedCapability"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "owner",
+          "activation",
+          "appliesTo",
+          "requirements"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "lifecycleStatus",
+          "provider",
+          "authority",
+          "notes",
+          "inherits",
+          "appliesToQualifiers"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "provider": "dict",
+          "authority": "dict",
+          "appliesTo": "list",
+          "requirements": "list",
+          "appliesToQualifiers": "dict"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "activation": [
+            "always",
+            "workspace"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "requirements": "requirement"
+        },
+        "schemaPath": "framework/schemas/requirement-group.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSF29JTP-SRVE\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Service Engineering Practices Requirement Group\",\n  \"description\": \"Optional checklist for self-managed Runtime and Edge/Gateway Services covering advanced observability and runtime patterns. Activated per workspace; does not fire automatically.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"workspace\",\n  \"appliesTo\": [\n    \"runtime_service\",\n    \"edge_gateway_service\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"application-performance-monitoring\",\n      \"description\": \"The service may declare how application performance and tracing data is captured.\",\n      \"rationale\": \"APM tracing enables latency profiling, distributed trace correlation, and error root-cause analysis beyond what host-level metrics provide.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"externalInteraction\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-NB1W\"\n          },\n          \"example\": \"An APM platform such as a tracing backend or observability service referenced by externalInteractions.\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-NB1W\"\n          },\n          \"example\": \"An APM agent or instrumentation library installed as an internalComponent.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"apm\",\n          \"example\": \"A documented statement of the APM approach or a declaration that APM is not applicable.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-NB1W\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"externalInteraction\",\n        \"internalComponent\"\n      ]\n    },\n    {\n      \"id\": \"container-orchestration\",\n      \"description\": \"The service may declare its container orchestration runtime when running in a containerized environment.\",\n      \"rationale\": \"Container orchestration determines scheduling, scaling, and health management behavior for containerized services.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-GW5D\"\n          },\n          \"example\": \"A container orchestration platform (Kubernetes, ECS, Nomad) declared as an internalComponent.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"containerRuntime\",\n          \"example\": \"A documented statement of the container runtime when it cannot be expressed as a catalog internalComponent.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-GW5D\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"internalComponent\"\n      ]\n    },\n    {\n      \"id\": \"serverless-runtime\",\n      \"description\": \"The service may declare its serverless execution runtime when using a function-as-a-service delivery model.\",\n      \"rationale\": \"The serverless runtime determines cold start behavior, concurrency limits, execution duration, and billing model.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-3ZWJ\"\n          },\n          \"example\": \"A serverless platform (AWS Lambda, Azure Functions, Google Cloud Run) declared as an internalComponent.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"serverlessRuntime\",\n          \"example\": \"A documented statement of the serverless execution environment when not catalog-modeled.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-3ZWJ\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"internalComponent\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"candidate\",\n  \"tags\": [\n    \"service\",\n    \"requirement-group\",\n    \"engineering\",\n    \"optional\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-service-engineering.yaml\"\n}",
       "existsInCatalog": true
     },
     {
@@ -11719,6 +12494,181 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/technology-component.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK00000F-TC0F\",\n  \"type\": \"technology_component\",\n  \"name\": \"OpenStack Bare Metal Standard Compute Platform\",\n  \"description\": \"Generic bare-metal x86_64 compute substrate used by the OpenStack example service-host patterns.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"technology-component\",\n    \"compute-platform\",\n    \"bare-metal\",\n    \"openstack\"\n  ],\n  \"vendor\": \"Example Infrastructure\",\n  \"productName\": \"Bare Metal x86_64\",\n  \"productVersion\": \"standard\",\n  \"classification\": \"compute-platform\",\n  \"_source\": \"examples/catalog/technology-components/technology-compute-openstack-bare-metal-standard.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    {
+      "id": "01KSF29JTP-8YRX",
+      "uid": "01KSF29JTP-8YRX",
+      "name": "HAProxy 2.9",
+      "aliases": [],
+      "type": "technology_component",
+      "typeLabel": "Technology Component / Software",
+      "filterType": "technology_component",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Open-source TCP/HTTP load balancer and proxy server. Provides high-availability request distribution, health checking, connection pooling, and SSL termination. Used as the primary load balancer for the OpenStack control plane API endpoints.",
+      "version": "1.0.0",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "HAProxy Technologies",
+      "productName": "HAProxy Community Edition",
+      "productVersion": "2.9",
+      "classification": "software",
+      "platformDependency": "",
+      "capabilities": [
+        "01KQQ4Q026-98VD"
+      ],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "platform-engineering",
+        "contact": "platform-engineering@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "ellipse",
+      "color": "#64748b",
+      "source": "examples/catalog/technology-components/technology-haproxy-29.yaml",
+      "tags": [
+        "technology-component",
+        "load-balancer",
+        "haproxy",
+        "openstack"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KQQ4Q026-98VD",
+          "path": "capabilities[0]"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KSF29JTP-9HYA",
+          "path": "primaryTechnologyComponent"
+        },
+        {
+          "source": "01KSF29JTP-9HYA",
+          "path": "internalComponents[0].ref"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "vendor",
+          "productName",
+          "productVersion",
+          "classification",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "ownerRole",
+          "owner",
+          "tags",
+          "subtype",
+          "vendorLifecycle",
+          "platformDependency",
+          "capabilities",
+          "configurations",
+          "networkPlacement",
+          "patchingOwner",
+          "complianceCerts",
+          "controlReferences",
+          "notes"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "vendorLifecycle": "dict",
+          "capabilities": "list",
+          "configurations": "list",
+          "complianceCerts": "list",
+          "controlReferences": "list"
+        },
+        "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "classification": [
+            "operating-system",
+            "compute-platform",
+            "software",
+            "agent"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "configurations": "configuration"
+        },
+        "schemaPath": "framework/schemas/technology-component.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSF29JTP-8YRX\",\n  \"type\": \"technology_component\",\n  \"name\": \"HAProxy 2.9\",\n  \"description\": \"Open-source TCP/HTTP load balancer and proxy server. Provides high-availability request distribution, health checking, connection pooling, and SSL termination. Used as the primary load balancer for the OpenStack control plane API endpoints.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"technology-component\",\n    \"load-balancer\",\n    \"haproxy\",\n    \"openstack\"\n  ],\n  \"vendor\": \"HAProxy Technologies\",\n  \"productName\": \"HAProxy Community Edition\",\n  \"productVersion\": \"2.9\",\n  \"classification\": \"software\",\n  \"vendorLifecycle\": {\n    \"mainstreamSupportEnd\": \"2026-12-31\",\n    \"extendedSupportEnd\": \"2027-12-31\"\n  },\n  \"capabilities\": [\n    \"01KQQ4Q026-98VD\"\n  ],\n  \"_source\": \"examples/catalog/technology-components/technology-haproxy-29.yaml\"\n}",
       "existsInCatalog": true
     },
     {
@@ -14482,6 +15432,256 @@ window.DRAFT_BROWSER_DATA = {
       "existsInCatalog": true
     },
     {
+      "id": "01KSF29JTP-9HYA",
+      "uid": "01KSF29JTP-9HYA",
+      "name": "OpenStack API Load Balancer",
+      "aliases": [],
+      "type": "edge_gateway_service",
+      "typeLabel": "Edge/Gateway Service / Self Managed",
+      "filterType": "edge_gateway_service",
+      "category": "",
+      "deliveryModel": "self-managed",
+      "domain": "",
+      "description": "HAProxy load balancer co-located on OpenStack controller nodes. Distributes inbound API and dashboard traffic across all active controller nodes in the active-active control plane cluster. Provides health checking, connection queuing, and SSL termination for the OpenStack public network zone.",
+      "version": "1.0.0",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "existing-only",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "platform-engineering",
+        "contact": "platform-engineering@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "diamond",
+      "color": "#2a6fdb",
+      "source": "examples/catalog/edge-gateway-services/edge-gateway-service-openstack-api-lb.yaml",
+      "tags": [
+        "edge-gateway-service",
+        "openstack",
+        "load-balancer",
+        "haproxy",
+        "iaas"
+      ],
+      "ardCategory": "",
+      "internalComponents": [
+        {
+          "ref": "01KSF29JTP-8YRX",
+          "role": "HAProxy Community Edition providing load balancing, health checking, and connection management for the OpenStack control plane.",
+          "configuration": "",
+          "notes": ""
+        },
+        {
+          "ref": "STCK00000F-HS0F",
+          "role": "host",
+          "configuration": "",
+          "notes": ""
+        }
+      ],
+      "externalInteractions": [
+        {
+          "name": "OpenStack API Backends",
+          "capabilities": [],
+          "notes": "HAProxy forwards requests to Nova, Keystone, Glance, Neutron, Cinder, Heat, Horizon, and other API services running on the same controller nodes. Backend health is checked on a 2-second interval."
+        }
+      ],
+      "architecturalDecisions": {
+        "serviceAuthentication": "HAProxy does not authenticate requests itself. Authentication is delegated to backend services (Keystone for API requests, nginx/Django for Horizon). HAProxy operates in pass-through mode for TLS; backends receive forwarded requests with X-Forwarded-For headers.",
+        "secretsManagement": "HAProxy configuration and SSL certificates are managed by configuration management tooling (Ansible). Certificate private keys are stored in the OS certificate store on each controller node. No application-level secrets are held by HAProxy.",
+        "serviceLogging": "HAProxy logs all connections to syslog. Logs include client IP, backend selected, response code, and latency. Forwarded to the centralised log aggregation platform via local log shipper.",
+        "healthWelfareMonitoring": "HAProxy performs active health checks on each backend (nova-api, keystone, glance, neutron, cinder, horizon) on a 2-second interval. Unhealthy backends are removed from rotation automatically. HAProxy statistics socket is exposed for monitoring agent collection.",
+        "availabilityModel": "HAProxy itself runs on all three controller nodes. A shared virtual IP (VIP) managed by Keepalived provides a single entry point. If the active Keepalived master fails, the VIP migrates to a standby within 2 seconds.",
+        "scalabilityModel": "HAProxy is stateless; scaling is achieved by adding controller nodes. Connection limits are tunable per backend.",
+        "recoverabilityModel": "HAProxy process is managed by systemd and restarts automatically on failure. Configuration is managed by configuration management tooling and can be reapplied within minutes.",
+        "failureDomain": "Loss of the active HAProxy instance causes a 2-second VIP failover via Keepalived. Loss of all controller nodes renders the control plane unavailable; data plane (running instances) continues unaffected.",
+        "externalInteractionRationales": {
+          "OpenStack API Backends": "HAProxy forwards inbound requests to the appropriate OpenStack API backend services. Modeled to show the forwarding dependency on the full set of control plane services."
+        }
+      },
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "STCK00000F-HS0F",
+          "path": "host"
+        },
+        {
+          "target": "01KSF29JTP-8YRX",
+          "path": "primaryTechnologyComponent"
+        },
+        {
+          "target": "01KSF29JTP-8YRX",
+          "path": "internalComponents[0].ref"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "deliveryModel",
+          "catalogStatus",
+          "lifecycleStatus"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "ownerRole",
+          "owner",
+          "tags",
+          "host",
+          "primaryTechnologyComponent",
+          "internalComponents",
+          "externalInteractions",
+          "deploymentConfigurations",
+          "vendor",
+          "productName",
+          "productVersion",
+          "capabilities",
+          "configurations",
+          "networkPlacement",
+          "patchingOwner",
+          "dataLeavesInfrastructure",
+          "dataResidencyCommitment",
+          "dpaNotes",
+          "vendorSLA",
+          "authenticationModel",
+          "complianceCerts",
+          "incidentNotificationProcess",
+          "architecturalDecisions",
+          "notes",
+          "requirementGroups",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "internalComponents": "list",
+          "externalInteractions": "list",
+          "deploymentConfigurations": "list",
+          "capabilities": "list",
+          "configurations": "list",
+          "complianceCerts": "list",
+          "dataLeavesInfrastructure": "bool",
+          "architecturalDecisions": "dict",
+          "requirementGroups": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ],
+          "deliveryModel": [
+            "self-managed",
+            "paas",
+            "saas",
+            "appliance"
+          ],
+          "networkPlacement": [
+            "public-facing",
+            "internal",
+            "vpc-private"
+          ],
+          "patchingOwner": [
+            "provider-managed",
+            "organization-scheduled",
+            "vendor-managed",
+            "aws-managed"
+          ],
+          "authenticationModel": [
+            "iam",
+            "api-key",
+            "oauth",
+            "saml",
+            "other",
+            "TBD"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "internalComponents": "internalComponent",
+          "externalInteractions": "externalInteraction",
+          "deploymentConfigurations": "deploymentConfiguration",
+          "configurations": "configuration",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/edge-gateway-service.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSF29JTP-9HYA\",\n  \"type\": \"edge_gateway_service\",\n  \"name\": \"OpenStack API Load Balancer\",\n  \"description\": \"HAProxy load balancer co-located on OpenStack controller nodes. Distributes inbound API and dashboard traffic across all active controller nodes in the active-active control plane cluster. Provides health checking, connection queuing, and SSL termination for the OpenStack public network zone.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"edge-gateway-service\",\n    \"openstack\",\n    \"load-balancer\",\n    \"haproxy\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"01KSF29JTP-8YRX\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"HAProxy does not authenticate requests itself. Authentication is delegated to backend services (Keystone for API requests, nginx/Django for Horizon). HAProxy operates in pass-through mode for TLS; backends receive forwarded requests with X-Forwarded-For headers.\",\n    \"secretsManagement\": \"HAProxy configuration and SSL certificates are managed by configuration management tooling (Ansible). Certificate private keys are stored in the OS certificate store on each controller node. No application-level secrets are held by HAProxy.\",\n    \"serviceLogging\": \"HAProxy logs all connections to syslog. Logs include client IP, backend selected, response code, and latency. Forwarded to the centralised log aggregation platform via local log shipper.\",\n    \"healthWelfareMonitoring\": \"HAProxy performs active health checks on each backend (nova-api, keystone, glance, neutron, cinder, horizon) on a 2-second interval. Unhealthy backends are removed from rotation automatically. HAProxy statistics socket is exposed for monitoring agent collection.\",\n    \"availabilityModel\": \"HAProxy itself runs on all three controller nodes. A shared virtual IP (VIP) managed by Keepalived provides a single entry point. If the active Keepalived master fails, the VIP migrates to a standby within 2 seconds.\",\n    \"scalabilityModel\": \"HAProxy is stateless; scaling is achieved by adding controller nodes. Connection limits are tunable per backend.\",\n    \"recoverabilityModel\": \"HAProxy process is managed by systemd and restarts automatically on failure. Configuration is managed by configuration management tooling and can be reapplied within minutes.\",\n    \"failureDomain\": \"Loss of the active HAProxy instance causes a 2-second VIP failover via Keepalived. Loss of all controller nodes renders the control plane unavailable; data plane (running instances) continues unaffected.\",\n    \"externalInteractionRationales\": {\n      \"OpenStack API Backends\": \"HAProxy forwards inbound requests to the appropriate OpenStack API backend services. Modeled to show the forwarding dependency on the full set of control plane services.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"01KSF29JTP-8YRX\",\n      \"role\": \"HAProxy Community Edition providing load balancing, health checking, and connection management for the OpenStack control plane.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"OpenStack API Backends\",\n      \"capabilities\": [],\n      \"notes\": \"HAProxy forwards requests to Nova, Keystone, Glance, Neutron, Cinder, Heat, Horizon, and other API services running on the same controller nodes. Backend health is checked on a 2-second interval.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/edge-gateway-services/edge-gateway-service-openstack-api-lb.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    {
       "id": "STCK00000F-HS0F",
       "uid": "STCK00000F-HS0F",
       "name": "OpenStack Linux Service Host",
@@ -14594,6 +15794,10 @@ window.DRAFT_BROWSER_DATA = {
         }
       ],
       "referencedBy": [
+        {
+          "source": "01KSF29JTP-9HYA",
+          "path": "host"
+        },
         {
           "source": "STCK000008-RS08",
           "path": "host"
@@ -16917,6 +18121,7 @@ window.DRAFT_BROWSER_DATA = {
         "recoverabilityModel": "Keystone API processes are recovered via systemd restart. Keystone DB is recovered from MariaDB Galera replication. Fernet key loss requires re-issuance of all active tokens.",
         "failureDomain": "Failure of Keystone renders the entire OpenStack control plane inaccessible as all other services depend on token validation. This is the highest-blast-radius component in the platform.",
         "externalInteractionRationales": {
+          "Keystone Identity": "Keystone is the identity service itself. Intra-service admin operations use the admin endpoint for initial setup and service catalog registration.",
           "Keystone Database": "Keystone persists all identity data (users, projects, roles, endpoints, tokens for UUID mode) to MariaDB. Modeled as a critical dependency.",
           "LDAP Directory": "Optional federation for enterprise identity. Modeled to show the external identity dependency when LDAP backend is configured."
         }
@@ -17083,7 +18288,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/runtime-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000002-RS02\",\n  \"type\": \"runtime_service\",\n  \"name\": \"Keystone Identity Service\",\n  \"description\": \"Self-managed deployment of OpenStack Keystone providing identity, authentication, and authorization services for all OpenStack platform components. Issues scoped tokens used by every other service for request validation. Manages projects, users, roles, groups, and service endpoints. Optionally federates with an external LDAP directory for enterprise identity integration.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"runtime-service\",\n    \"openstack\",\n    \"identity\",\n    \"auth\",\n    \"keystone\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK000002-TC02\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Keystone is the root of trust for all OpenStack API authentication. Keystone itself authenticates administrative users via local credential store or LDAP federation. Bootstrap credentials are managed out-of-band.\",\n    \"secretsManagement\": \"Keystone Fernet token signing keys are stored on the controller nodes and rotated on a scheduled basis. Database credentials are stored in keystone.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"Keystone emits structured logs to /var/log/keystone/. Logs are shipped to the centralised log aggregation platform. Auth failure events are treated as security events and routed to SIEM.\",\n    \"healthWelfareMonitoring\": \"keystone-api health is verified via HTTP endpoint polling on the admin and public endpoints. Token issuance rate and auth failure rate are monitored as platform health indicators.\",\n    \"availabilityModel\": \"Keystone runs active-active across multiple controller nodes behind a load balancer (HAProxy). Loss of a single controller does not interrupt token validation as Fernet tokens are stateless.\",\n    \"scalabilityModel\": \"Keystone scales horizontally by adding API replicas. Fernet token validation is fully stateless and does not require inter-node coordination.\",\n    \"recoverabilityModel\": \"Keystone API processes are recovered via systemd restart. Keystone DB is recovered from MariaDB Galera replication. Fernet key loss requires re-issuance of all active tokens.\",\n    \"failureDomain\": \"Failure of Keystone renders the entire OpenStack control plane inaccessible as all other services depend on token validation. This is the highest-blast-radius component in the platform.\",\n    \"externalInteractionRationales\": {\n      \"Keystone Database\": \"Keystone persists all identity data (users, projects, roles, endpoints, tokens for UUID mode) to MariaDB. Modeled as a critical dependency.\",\n      \"LDAP Directory\": \"Optional federation for enterprise identity. Modeled to show the external identity dependency when LDAP backend is configured.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK000002-TC02\",\n      \"role\": \"Core identity service providing token issuance, project and user management, and service endpoint catalog.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Keystone Identity\",\n      \"capabilities\": [],\n      \"notes\": \"Keystone is the identity service itself. Intra-service admin operations use the admin endpoint with bootstrap credentials.\"\n    },\n    {\n      \"name\": \"Keystone Database\",\n      \"capabilities\": [],\n      \"notes\": \"Keystone persists all identity data including users, projects, roles, assignments, and service endpoints to the Keystone MariaDB schema.\"\n    },\n    {\n      \"name\": \"LDAP Directory\",\n      \"capabilities\": [],\n      \"notes\": \"Optional LDAP backend for enterprise identity federation. When configured, Keystone delegates user and group lookups to the LDAP directory while retaining role assignments locally.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/runtime-services/runtime-service-keystone.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000002-RS02\",\n  \"type\": \"runtime_service\",\n  \"name\": \"Keystone Identity Service\",\n  \"description\": \"Self-managed deployment of OpenStack Keystone providing identity, authentication, and authorization services for all OpenStack platform components. Issues scoped tokens used by every other service for request validation. Manages projects, users, roles, groups, and service endpoints. Optionally federates with an external LDAP directory for enterprise identity integration.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"runtime-service\",\n    \"openstack\",\n    \"identity\",\n    \"auth\",\n    \"keystone\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK000002-TC02\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Keystone is the root of trust for all OpenStack API authentication. Keystone itself authenticates administrative users via local credential store or LDAP federation. Bootstrap credentials are managed out-of-band.\",\n    \"secretsManagement\": \"Keystone Fernet token signing keys are stored on the controller nodes and rotated on a scheduled basis. Database credentials are stored in keystone.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"Keystone emits structured logs to /var/log/keystone/. Logs are shipped to the centralised log aggregation platform. Auth failure events are treated as security events and routed to SIEM.\",\n    \"healthWelfareMonitoring\": \"keystone-api health is verified via HTTP endpoint polling on the admin and public endpoints. Token issuance rate and auth failure rate are monitored as platform health indicators.\",\n    \"availabilityModel\": \"Keystone runs active-active across multiple controller nodes behind a load balancer (HAProxy). Loss of a single controller does not interrupt token validation as Fernet tokens are stateless.\",\n    \"scalabilityModel\": \"Keystone scales horizontally by adding API replicas. Fernet token validation is fully stateless and does not require inter-node coordination.\",\n    \"recoverabilityModel\": \"Keystone API processes are recovered via systemd restart. Keystone DB is recovered from MariaDB Galera replication. Fernet key loss requires re-issuance of all active tokens.\",\n    \"failureDomain\": \"Failure of Keystone renders the entire OpenStack control plane inaccessible as all other services depend on token validation. This is the highest-blast-radius component in the platform.\",\n    \"externalInteractionRationales\": {\n      \"Keystone Identity\": \"Keystone is the identity service itself. Intra-service admin operations use the admin endpoint for initial setup and service catalog registration.\",\n      \"Keystone Database\": \"Keystone persists all identity data (users, projects, roles, endpoints, tokens for UUID mode) to MariaDB. Modeled as a critical dependency.\",\n      \"LDAP Directory\": \"Optional federation for enterprise identity. Modeled to show the external identity dependency when LDAP backend is configured.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK000002-TC02\",\n      \"role\": \"Core identity service providing token issuance, project and user management, and service endpoint catalog.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Keystone Identity\",\n      \"capabilities\": [],\n      \"notes\": \"Keystone is the identity service itself. Intra-service admin operations use the admin endpoint with bootstrap credentials.\"\n    },\n    {\n      \"name\": \"Keystone Database\",\n      \"capabilities\": [],\n      \"notes\": \"Keystone persists all identity data including users, projects, roles, assignments, and service endpoints to the Keystone MariaDB schema.\"\n    },\n    {\n      \"name\": \"LDAP Directory\",\n      \"capabilities\": [],\n      \"notes\": \"Optional LDAP backend for enterprise identity federation. When configured, Keystone delegates user and group lookups to the LDAP directory while retaining role assignments locally.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/runtime-services/runtime-service-keystone.yaml\"\n}",
       "existsInCatalog": true
     },
     {
@@ -17746,7 +18951,8 @@ window.DRAFT_BROWSER_DATA = {
         "recoverabilityModel": "RabbitMQ cluster nodes are recovered via systemd restart. Quorum queue state is automatically resynchronised on node rejoin. Messages published with delivery guarantees are not lost during single-node failure.",
         "failureDomain": "Loss of RabbitMQ quorum (majority of cluster nodes) causes all OpenStack services using AMQP to stop processing background tasks. nova-api, neutron-api, cinder-api, and other REST endpoints continue to function for read-only operations but write operations that require background processing are queued or fail.",
         "externalInteractionRationales": {
-          "RabbitMQ Service": "RabbitMQ is the broker itself. Internal management operations use the management API on the local cluster."
+          "RabbitMQ Service": "RabbitMQ is the broker itself. Internal management operations use the management API on the local cluster.",
+          "Keystone Identity": "All API requests to the RabbitMQ management plugin are authenticated via Keystone token validation when the OpenStack Keystone auth backend is configured."
         }
       },
       "requirements": [],
@@ -17911,7 +19117,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/runtime-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK00000D-RS0D\",\n  \"type\": \"runtime_service\",\n  \"name\": \"RabbitMQ Message Broker Service\",\n  \"description\": \"Self-managed deployment of RabbitMQ serving as the shared AMQP message broker for the OpenStack control plane. Provides the message transport layer for Nova, Neutron, Cinder, Heat, Ceilometer, Ironic, and Trove. Deployed as a 3-node RabbitMQ cluster with quorum queues for durability. All OpenStack services connect to RabbitMQ using dedicated virtual hosts and credentials.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"runtime-service\",\n    \"messaging\",\n    \"amqp\",\n    \"rabbitmq\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000D-TC0D\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"OpenStack services authenticate to RabbitMQ using per-service AMQP credentials (username and password) configured in each service's conf file. The RabbitMQ management interface is protected by separate admin credentials.\",\n    \"secretsManagement\": \"RabbitMQ service credentials are stored in each OpenStack service's conf file, managed by configuration management tooling. RabbitMQ admin credentials are stored in the platform secrets vault.\",\n    \"serviceLogging\": \"RabbitMQ emits logs to /var/log/rabbitmq/. Logs are shipped to the centralised log aggregation platform. Queue depth and connection metrics are captured via the RabbitMQ management plugin.\",\n    \"healthWelfareMonitoring\": \"RabbitMQ cluster health is monitored via the management API. Queue depth, consumer counts, connection counts, and node membership are monitored. Alerts fire when queues exceed depth thresholds or when cluster nodes are lost.\",\n    \"availabilityModel\": \"RabbitMQ runs as a 3-node cluster with quorum queues for message durability. The cluster tolerates loss of one node (majority quorum). All OpenStack services reconnect automatically on node failure.\",\n    \"scalabilityModel\": \"RabbitMQ capacity scales by adding nodes to the cluster. Message throughput scales with additional queue sharding. OpenStack services use connection pools to distribute load across cluster nodes.\",\n    \"recoverabilityModel\": \"RabbitMQ cluster nodes are recovered via systemd restart. Quorum queue state is automatically resynchronised on node rejoin. Messages published with delivery guarantees are not lost during single-node failure.\",\n    \"failureDomain\": \"Loss of RabbitMQ quorum (majority of cluster nodes) causes all OpenStack services using AMQP to stop processing background tasks. nova-api, neutron-api, cinder-api, and other REST endpoints continue to function for read-only operations but write operations that require background processing are queued or fail.\",\n    \"externalInteractionRationales\": {\n      \"RabbitMQ Service\": \"RabbitMQ is the broker itself. Internal management operations use the management API on the local cluster.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000D-TC0D\",\n      \"role\": \"Core AMQP message broker providing exchange and queue management, clustering, and quorum queue durability for all OpenStack services.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Keystone Identity\",\n      \"capabilities\": [],\n      \"notes\": \"All API requests authenticated via Keystone token validation. RabbitMQ management API uses its own credential model; service connections use AMQP credentials configured per service.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/runtime-services/runtime-service-rabbitmq.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK00000D-RS0D\",\n  \"type\": \"runtime_service\",\n  \"name\": \"RabbitMQ Message Broker Service\",\n  \"description\": \"Self-managed deployment of RabbitMQ serving as the shared AMQP message broker for the OpenStack control plane. Provides the message transport layer for Nova, Neutron, Cinder, Heat, Ceilometer, Ironic, and Trove. Deployed as a 3-node RabbitMQ cluster with quorum queues for durability. All OpenStack services connect to RabbitMQ using dedicated virtual hosts and credentials.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"runtime-service\",\n    \"messaging\",\n    \"amqp\",\n    \"rabbitmq\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000D-TC0D\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"OpenStack services authenticate to RabbitMQ using per-service AMQP credentials (username and password) configured in each service's conf file. The RabbitMQ management interface is protected by separate admin credentials.\",\n    \"secretsManagement\": \"RabbitMQ service credentials are stored in each OpenStack service's conf file, managed by configuration management tooling. RabbitMQ admin credentials are stored in the platform secrets vault.\",\n    \"serviceLogging\": \"RabbitMQ emits logs to /var/log/rabbitmq/. Logs are shipped to the centralised log aggregation platform. Queue depth and connection metrics are captured via the RabbitMQ management plugin.\",\n    \"healthWelfareMonitoring\": \"RabbitMQ cluster health is monitored via the management API. Queue depth, consumer counts, connection counts, and node membership are monitored. Alerts fire when queues exceed depth thresholds or when cluster nodes are lost.\",\n    \"availabilityModel\": \"RabbitMQ runs as a 3-node cluster with quorum queues for message durability. The cluster tolerates loss of one node (majority quorum). All OpenStack services reconnect automatically on node failure.\",\n    \"scalabilityModel\": \"RabbitMQ capacity scales by adding nodes to the cluster. Message throughput scales with additional queue sharding. OpenStack services use connection pools to distribute load across cluster nodes.\",\n    \"recoverabilityModel\": \"RabbitMQ cluster nodes are recovered via systemd restart. Quorum queue state is automatically resynchronised on node rejoin. Messages published with delivery guarantees are not lost during single-node failure.\",\n    \"failureDomain\": \"Loss of RabbitMQ quorum (majority of cluster nodes) causes all OpenStack services using AMQP to stop processing background tasks. nova-api, neutron-api, cinder-api, and other REST endpoints continue to function for read-only operations but write operations that require background processing are queued or fail.\",\n    \"externalInteractionRationales\": {\n      \"RabbitMQ Service\": \"RabbitMQ is the broker itself. Internal management operations use the management API on the local cluster.\",\n      \"Keystone Identity\": \"All API requests to the RabbitMQ management plugin are authenticated via Keystone token validation when the OpenStack Keystone auth backend is configured.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000D-TC0D\",\n      \"role\": \"Core AMQP message broker providing exchange and queue management, clustering, and quorum queue durability for all OpenStack services.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Keystone Identity\",\n      \"capabilities\": [],\n      \"notes\": \"All API requests authenticated via Keystone token validation. RabbitMQ management API uses its own credential model; service connections use AMQP credentials configured per service.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/runtime-services/runtime-service-rabbitmq.yaml\"\n}",
       "existsInCatalog": true
     },
     {
@@ -18752,7 +19958,7 @@ window.DRAFT_BROWSER_DATA = {
       "authority": {},
       "shape": "diamond",
       "color": "#2a6fdb",
-      "source": "examples/catalog/data-store-services/data-at-rest-cinder-database.yaml",
+      "source": "examples/catalog/data-store-services/data-store-service-cinder-database.yaml",
       "tags": [
         "data-at-rest",
         "openstack",
@@ -18795,6 +20001,7 @@ window.DRAFT_BROWSER_DATA = {
         "failureDomain": "Loss of the Cinder database prevents volume provisioning and management operations. Existing attached volumes continue to function via direct iSCSI connections between compute nodes and storage backend.",
         "backup": {
           "strategy": "Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.",
+          "platform": "Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.",
           "rto": "2 hours for full restore; near-zero for Galera node failure.",
           "rpo": "4 hours maximum; near-zero for Galera replication."
         },
@@ -18807,7 +20014,9 @@ window.DRAFT_BROWSER_DATA = {
         "accessControl": {
           "model": "Role-based database access. Cinder service account has DML access to the cinder schema only."
         },
-        "externalInteractionRationales": {}
+        "externalInteractionRationales": {
+          "Backup Service": "Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to show the external backup platform dependency."
+        }
       },
       "requirements": [],
       "implementations": [],
@@ -18971,7 +20180,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/data-store-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000005-DAR5\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Cinder Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Cinder for persisting all block storage service state. Stores volume records, snapshot records, attachment records, volume type definitions, backend service state, quota allocations, and encryption key references. The actual block data resides on the storage backend (iSCSI targets, SAN/NAS). Loss of this database orphans volumes on the storage backend but does not destroy block data.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"cinder\",\n    \"block-storage\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Cinder connects to its database schema using a dedicated MariaDB service account with credentials configured in cinder.conf.\",\n    \"secretsManagement\": \"Database credentials stored in cinder.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Cinder schema are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status. Volume operation latency and attachment record counts are tracked as health indicators.\",\n    \"availabilityModel\": \"Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.\",\n    \"scalabilityModel\": \"The Cinder schema grows with the number of volumes and snapshots. Purging of deleted resource records is recommended for large deployments.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Schema migrations applied via cinder-manage db sync. Orphaned volumes on the storage backend require manual reconciliation after restore.\",\n    \"failureDomain\": \"Loss of the Cinder database prevents volume provisioning and management operations. Existing attached volumes continue to function via direct iSCSI connections between compute nodes and storage backend.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.\",\n      \"rto\": \"2 hours for full restore; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Cinder schema. Volume encryption keys are managed by Barbican (when deployed).\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access. Cinder service account has DML access to the cinder schema only.\"\n    },\n    \"externalInteractionRationales\": {}\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Cinder block storage state schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-at-rest-cinder-database.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000005-DAR5\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Cinder Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Cinder for persisting all block storage service state. Stores volume records, snapshot records, attachment records, volume type definitions, backend service state, quota allocations, and encryption key references. The actual block data resides on the storage backend (iSCSI targets, SAN/NAS). Loss of this database orphans volumes on the storage backend but does not destroy block data.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"cinder\",\n    \"block-storage\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Cinder connects to its database schema using a dedicated MariaDB service account with credentials configured in cinder.conf.\",\n    \"secretsManagement\": \"Database credentials stored in cinder.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Cinder schema are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status. Volume operation latency and attachment record counts are tracked as health indicators.\",\n    \"availabilityModel\": \"Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.\",\n    \"scalabilityModel\": \"The Cinder schema grows with the number of volumes and snapshots. Purging of deleted resource records is recommended for large deployments.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Schema migrations applied via cinder-manage db sync. Orphaned volumes on the storage backend require manual reconciliation after restore.\",\n    \"failureDomain\": \"Loss of the Cinder database prevents volume provisioning and management operations. Existing attached volumes continue to function via direct iSCSI connections between compute nodes and storage backend.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.\",\n      \"platform\": \"Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.\",\n      \"rto\": \"2 hours for full restore; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Cinder schema. Volume encryption keys are managed by Barbican (when deployed).\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access. Cinder service account has DML access to the cinder schema only.\"\n    },\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to show the external backup platform dependency.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Cinder block storage state schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-store-service-cinder-database.yaml\"\n}",
       "existsInCatalog": true
     },
     {
@@ -19021,7 +20230,7 @@ window.DRAFT_BROWSER_DATA = {
       "authority": {},
       "shape": "diamond",
       "color": "#2a6fdb",
-      "source": "examples/catalog/data-store-services/data-at-rest-glance-database.yaml",
+      "source": "examples/catalog/data-store-services/data-store-service-glance-database.yaml",
       "tags": [
         "data-at-rest",
         "openstack",
@@ -19064,6 +20273,7 @@ window.DRAFT_BROWSER_DATA = {
         "failureDomain": "Loss of the Glance database prevents image metadata operations. Image binary data in Swift is unaffected. Nova instance provisioning fails as it cannot look up image metadata.",
         "backup": {
           "strategy": "Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.",
+          "platform": "Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.",
           "rto": "2 hours for full restore; near-zero for Galera node failure.",
           "rpo": "4 hours maximum; near-zero for Galera replication."
         },
@@ -19076,7 +20286,9 @@ window.DRAFT_BROWSER_DATA = {
         "accessControl": {
           "model": "Role-based database access. Glance service account has DML access to the glance schema only."
         },
-        "externalInteractionRationales": {}
+        "externalInteractionRationales": {
+          "Backup Service": "Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to show the external backup platform dependency."
+        }
       },
       "requirements": [],
       "implementations": [],
@@ -19240,7 +20452,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/data-store-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000003-DAR3\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Glance Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Glance for persisting virtual machine image metadata. Stores image records including name, format, size, checksum, visibility (public/private/shared), and storage location references. Image binary data is stored separately in the Swift storage cluster. Loss of this database orphans image binaries in Swift but does not destroy binary data.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"glance\",\n    \"image\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Glance connects to its database schema using a dedicated MariaDB service account with credentials configured in glance-api.conf.\",\n    \"secretsManagement\": \"Database credentials stored in glance-api.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Glance schema are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status. Image count and metadata query latency are tracked as health indicators.\",\n    \"availabilityModel\": \"Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.\",\n    \"scalabilityModel\": \"The Glance schema is typically low-volume (image metadata only). Scales within the shared Galera cluster.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Schema migrations applied via glance-manage db_sync.\",\n    \"failureDomain\": \"Loss of the Glance database prevents image metadata operations. Image binary data in Swift is unaffected. Nova instance provisioning fails as it cannot look up image metadata.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.\",\n      \"rto\": \"2 hours for full restore; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Glance schema.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access. Glance service account has DML access to the glance schema only.\"\n    },\n    \"externalInteractionRationales\": {}\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Glance image metadata schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-at-rest-glance-database.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000003-DAR3\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Glance Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Glance for persisting virtual machine image metadata. Stores image records including name, format, size, checksum, visibility (public/private/shared), and storage location references. Image binary data is stored separately in the Swift storage cluster. Loss of this database orphans image binaries in Swift but does not destroy binary data.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"glance\",\n    \"image\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Glance connects to its database schema using a dedicated MariaDB service account with credentials configured in glance-api.conf.\",\n    \"secretsManagement\": \"Database credentials stored in glance-api.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Glance schema are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status. Image count and metadata query latency are tracked as health indicators.\",\n    \"availabilityModel\": \"Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.\",\n    \"scalabilityModel\": \"The Glance schema is typically low-volume (image metadata only). Scales within the shared Galera cluster.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Schema migrations applied via glance-manage db_sync.\",\n    \"failureDomain\": \"Loss of the Glance database prevents image metadata operations. Image binary data in Swift is unaffected. Nova instance provisioning fails as it cannot look up image metadata.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.\",\n      \"platform\": \"Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.\",\n      \"rto\": \"2 hours for full restore; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Glance schema.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access. Glance service account has DML access to the glance schema only.\"\n    },\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to show the external backup platform dependency.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Glance image metadata schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-store-service-glance-database.yaml\"\n}",
       "existsInCatalog": true
     },
     {
@@ -19290,7 +20502,7 @@ window.DRAFT_BROWSER_DATA = {
       "authority": {},
       "shape": "diamond",
       "color": "#2a6fdb",
-      "source": "examples/catalog/data-store-services/data-at-rest-keystone-database.yaml",
+      "source": "examples/catalog/data-store-services/data-store-service-keystone-database.yaml",
       "tags": [
         "data-at-rest",
         "openstack",
@@ -19333,6 +20545,7 @@ window.DRAFT_BROWSER_DATA = {
         "failureDomain": "Loss of the Keystone database is a platform-wide outage. All other OpenStack services lose the ability to validate tokens and refuse new API requests. This schema has the highest blast radius of any database in the platform.",
         "backup": {
           "strategy": "Automated daily full backup using Percona XtraBackup with binlog-based incremental backups every hour (higher frequency than other schemas due to criticality). Backups are written to object storage and replicated off-site.",
+          "platform": "Percona XtraBackup writing to Swift object storage with off-site replication. Higher-frequency and replicated due to Keystone's platform-critical status.",
           "rto": "1 hour for full schema restore; near-zero for Galera node failure.",
           "rpo": "1 hour maximum data loss; near-zero for Galera replication failure."
         },
@@ -19345,7 +20558,9 @@ window.DRAFT_BROWSER_DATA = {
         "accessControl": {
           "model": "Role-based database access control. Keystone service account has DML access to the keystone schema only. DBA team access via SSH-tunnelled connections with MFA required."
         },
-        "externalInteractionRationales": {}
+        "externalInteractionRationales": {
+          "Backup Service": "Percona XtraBackup automated backup writes point-in-time backups to Swift object storage with off-site replication. Keystone is the highest-criticality schema; backup frequency and replication are elevated accordingly."
+        }
       },
       "requirements": [],
       "implementations": [],
@@ -19509,7 +20724,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/data-store-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000002-DAR2\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Keystone Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Keystone for persisting all identity service data. Stores users, groups, projects, domains, roles, role assignments, service endpoints, credentials, and Fernet key metadata. This is the highest-criticality database schema in the OpenStack platform; its loss renders all services inaccessible.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"keystone\",\n    \"identity\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Keystone connects to its database schema using a dedicated MariaDB service account with credentials configured in keystone.conf. Access is restricted to the Keystone service account.\",\n    \"secretsManagement\": \"Database credentials are stored in keystone.conf managed by configuration management tooling. Fernet signing keys are managed separately and rotated on a scheduled basis.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Keystone schema are shipped to the centralised log aggregation platform. High-volume read operations on the token/endpoint tables are tracked.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health is monitored via wsrep status variables. Keystone DB health is verified by keystone-manage doctor. Endpoint table access latency is a key health indicator.\",\n    \"availabilityModel\": \"The Keystone database is hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability. The Keystone DB is the most critical schema \\u2014 Galera quorum is non-negotiable.\",\n    \"scalabilityModel\": \"Read load on the Keystone schema is high as all services validate tokens. Read scaling is achieved via ProxySQL read replicas or caching layers (e.g. Memcached for token validation).\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Point-in-time recovery from automated backups. Schema migrations applied via keystone-manage db_sync.\",\n    \"failureDomain\": \"Loss of the Keystone database is a platform-wide outage. All other OpenStack services lose the ability to validate tokens and refuse new API requests. This schema has the highest blast radius of any database in the platform.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with binlog-based incremental backups every hour (higher frequency than other schemas due to criticality). Backups are written to object storage and replicated off-site.\",\n      \"rto\": \"1 hour for full schema restore; near-zero for Galera node failure.\",\n      \"rpo\": \"1 hour maximum data loss; near-zero for Galera replication failure.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy. Quorum requires at least 2 of 3 nodes.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled. Keystone schema tablespace-level encryption applied. Credential fields additionally encrypted at application layer by Keystone.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access control. Keystone service account has DML access to the keystone schema only. DBA team access via SSH-tunnelled connections with MFA required.\"\n    },\n    \"externalInteractionRationales\": {}\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Keystone identity schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling with hourly incremental backups writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-at-rest-keystone-database.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000002-DAR2\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Keystone Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Keystone for persisting all identity service data. Stores users, groups, projects, domains, roles, role assignments, service endpoints, credentials, and Fernet key metadata. This is the highest-criticality database schema in the OpenStack platform; its loss renders all services inaccessible.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"keystone\",\n    \"identity\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Keystone connects to its database schema using a dedicated MariaDB service account with credentials configured in keystone.conf. Access is restricted to the Keystone service account.\",\n    \"secretsManagement\": \"Database credentials are stored in keystone.conf managed by configuration management tooling. Fernet signing keys are managed separately and rotated on a scheduled basis.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Keystone schema are shipped to the centralised log aggregation platform. High-volume read operations on the token/endpoint tables are tracked.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health is monitored via wsrep status variables. Keystone DB health is verified by keystone-manage doctor. Endpoint table access latency is a key health indicator.\",\n    \"availabilityModel\": \"The Keystone database is hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability. The Keystone DB is the most critical schema \\u2014 Galera quorum is non-negotiable.\",\n    \"scalabilityModel\": \"Read load on the Keystone schema is high as all services validate tokens. Read scaling is achieved via ProxySQL read replicas or caching layers (e.g. Memcached for token validation).\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Point-in-time recovery from automated backups. Schema migrations applied via keystone-manage db_sync.\",\n    \"failureDomain\": \"Loss of the Keystone database is a platform-wide outage. All other OpenStack services lose the ability to validate tokens and refuse new API requests. This schema has the highest blast radius of any database in the platform.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with binlog-based incremental backups every hour (higher frequency than other schemas due to criticality). Backups are written to object storage and replicated off-site.\",\n      \"platform\": \"Percona XtraBackup writing to Swift object storage with off-site replication. Higher-frequency and replicated due to Keystone's platform-critical status.\",\n      \"rto\": \"1 hour for full schema restore; near-zero for Galera node failure.\",\n      \"rpo\": \"1 hour maximum data loss; near-zero for Galera replication failure.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy. Quorum requires at least 2 of 3 nodes.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled. Keystone schema tablespace-level encryption applied. Credential fields additionally encrypted at application layer by Keystone.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access control. Keystone service account has DML access to the keystone schema only. DBA team access via SSH-tunnelled connections with MFA required.\"\n    },\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Percona XtraBackup automated backup writes point-in-time backups to Swift object storage with off-site replication. Keystone is the highest-criticality schema; backup frequency and replication are elevated accordingly.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Keystone identity schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling with hourly incremental backups writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-store-service-keystone-database.yaml\"\n}",
       "existsInCatalog": true
     },
     {
@@ -19559,7 +20774,7 @@ window.DRAFT_BROWSER_DATA = {
       "authority": {},
       "shape": "diamond",
       "color": "#2a6fdb",
-      "source": "examples/catalog/data-store-services/data-at-rest-neutron-database.yaml",
+      "source": "examples/catalog/data-store-services/data-store-service-neutron-database.yaml",
       "tags": [
         "data-at-rest",
         "openstack",
@@ -19602,6 +20817,7 @@ window.DRAFT_BROWSER_DATA = {
         "failureDomain": "Loss of the Neutron database prevents network provisioning operations (new ports, router updates, floating IP assignment). Existing network connectivity on the data plane is unaffected as it is programmed in the kernel/OVS tables.",
         "backup": {
           "strategy": "Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.",
+          "platform": "Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.",
           "rto": "2 hours for full restore; near-zero for Galera node failure.",
           "rpo": "4 hours maximum; near-zero for Galera replication."
         },
@@ -19614,7 +20830,9 @@ window.DRAFT_BROWSER_DATA = {
         "accessControl": {
           "model": "Role-based database access. Neutron service account has DML access to the neutron schema only."
         },
-        "externalInteractionRationales": {}
+        "externalInteractionRationales": {
+          "Backup Service": "Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to show the external backup platform dependency."
+        }
       },
       "requirements": [],
       "implementations": [],
@@ -19778,7 +20996,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/data-store-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000004-DAR4\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Neutron Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Neutron for persisting all network service state. Stores virtual networks, subnets, ports, routers, floating IPs, security groups, security group rules, load balancers, and ML2 plugin state. This is one of the higher-volume schemas due to the number of ports created per instance during compute operations.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"neutron\",\n    \"networking\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Neutron connects to its database schema using a dedicated MariaDB service account with credentials configured in neutron.conf.\",\n    \"secretsManagement\": \"Database credentials stored in neutron.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Neutron schema are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status. Port allocation rate and ML2 plugin query latency are tracked as health indicators.\",\n    \"availabilityModel\": \"Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.\",\n    \"scalabilityModel\": \"The Neutron schema grows with the number of ports, networks, and security group rules. Archival of deleted resource records is recommended for large deployments.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Virtual network configuration is rebuilt from database state on neutron-agent restart. Schema migrations applied via neutron-db-manage upgrade.\",\n    \"failureDomain\": \"Loss of the Neutron database prevents network provisioning operations (new ports, router updates, floating IP assignment). Existing network connectivity on the data plane is unaffected as it is programmed in the kernel/OVS tables.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.\",\n      \"rto\": \"2 hours for full restore; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Neutron schema.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access. Neutron service account has DML access to the neutron schema only.\"\n    },\n    \"externalInteractionRationales\": {}\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Neutron network state schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-at-rest-neutron-database.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000004-DAR4\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Neutron Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Neutron for persisting all network service state. Stores virtual networks, subnets, ports, routers, floating IPs, security groups, security group rules, load balancers, and ML2 plugin state. This is one of the higher-volume schemas due to the number of ports created per instance during compute operations.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"neutron\",\n    \"networking\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Neutron connects to its database schema using a dedicated MariaDB service account with credentials configured in neutron.conf.\",\n    \"secretsManagement\": \"Database credentials stored in neutron.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Neutron schema are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status. Port allocation rate and ML2 plugin query latency are tracked as health indicators.\",\n    \"availabilityModel\": \"Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.\",\n    \"scalabilityModel\": \"The Neutron schema grows with the number of ports, networks, and security group rules. Archival of deleted resource records is recommended for large deployments.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Virtual network configuration is rebuilt from database state on neutron-agent restart. Schema migrations applied via neutron-db-manage upgrade.\",\n    \"failureDomain\": \"Loss of the Neutron database prevents network provisioning operations (new ports, router updates, floating IP assignment). Existing network connectivity on the data plane is unaffected as it is programmed in the kernel/OVS tables.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.\",\n      \"platform\": \"Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.\",\n      \"rto\": \"2 hours for full restore; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Neutron schema.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access. Neutron service account has DML access to the neutron schema only.\"\n    },\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to show the external backup platform dependency.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Neutron network state schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-store-service-neutron-database.yaml\"\n}",
       "existsInCatalog": true
     },
     {
@@ -19863,7 +21081,7 @@ window.DRAFT_BROWSER_DATA = {
       "authority": {},
       "shape": "diamond",
       "color": "#2a6fdb",
-      "source": "examples/catalog/data-store-services/data-at-rest-nova-database.yaml",
+      "source": "examples/catalog/data-store-services/data-store-service-nova-database.yaml",
       "tags": [
         "data-at-rest",
         "openstack",
@@ -20105,7 +21323,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/data-store-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000001-DAR1\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Nova Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Nova for persisting all compute service state. Stores instance records, flavor definitions, host aggregates, cell mappings, scheduler hints, migration records, and quota allocations. Hosted within the shared MariaDB Galera cluster on the OpenStack controller nodes.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"nova\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Nova connects to its database schema using a dedicated MariaDB service account with credentials configured in nova.conf. Access is restricted to the Nova service account; no shared credentials with other OpenStack services.\",\n    \"secretsManagement\": \"Database credentials are stored in nova.conf managed by configuration management tooling. Credentials are not rotated automatically; rotation requires planned maintenance.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs are captured for the Nova schema. Logs are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health is monitored via wsrep status variables. Nova DB schema health is verified by the nova-manage db check command. Replication lag is monitored across Galera nodes.\",\n    \"availabilityModel\": \"The Nova database is hosted in a 3-node MariaDB Galera cluster with synchronous multi-master replication. Loss of one Galera node does not interrupt database availability. HAProxy routes all DB connections to the active primary.\",\n    \"scalabilityModel\": \"The Nova schema is contained within the shared Galera cluster. Read scaling is achieved via ProxySQL read replicas. Write scaling requires Galera cluster expansion.\",\n    \"recoverabilityModel\": \"Data is recovered from MariaDB Galera replication in the event of node failure. Point-in-time recovery is available from automated backups. Nova schema migrations are applied via nova-manage db sync.\",\n    \"failureDomain\": \"Loss of the Nova database schema renders the Nova compute service unable to process API requests. Running instances are not immediately affected but instance lifecycle operations (start, stop, delete) fail until DB is restored.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with binlog-based incremental backups every 4 hours. Backups are written to object storage.\",\n      \"platform\": \"Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target. Backup jobs are managed by a cron schedule on a dedicated backup controller node.\",\n      \"rto\": \"2 hours for full schema restore from backup; near-zero for Galera node failure with surviving quorum.\",\n      \"rpo\": \"4 hours maximum data loss in worst-case scenario (binlog backup window); near-zero for Galera replication failure.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy for connection routing. Quorum requires at least 2 of 3 nodes.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption is enabled using the file_key_management plugin. Tablespace-level encryption is applied to the Nova schema.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access control. Nova service account has DML access to the nova schema only. Root access is restricted to DBA team members via SSH-tunnelled connections.\"\n    },\n    \"access_control_model\": \"Role-based database access control. Nova service account has DML access to the nova schema only. Root access is restricted to DBA team members via SSH-tunnelled connections. No shared credentials between OpenStack services.\",\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Percona XtraBackup automated backup writes point-in-time backups to object storage. Modeled to show the external backup dependency and recovery boundary.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Nova schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [\n    \"01KQQ4Q027-T3CA\"\n  ],\n  \"requirementImplementations\": [\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.00.2.1.access-control-model\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"field\",\n      \"key\": \"architecturalDecisions.accessControl.model\",\n      \"notes\": \"Access control model is role-based; Nova service account has DML-only access to the nova schema. Documented in architecturalDecisions.accessControl.\"\n    },\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.10.2.1\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"field\",\n      \"key\": \"architecturalDecisions.backup.strategy\",\n      \"notes\": \"Backup strategy, RTO (2h), and RPO (4h) are documented in architecturalDecisions.backup.\"\n    },\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.04.1.1\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"architecturalDecision\",\n      \"key\": \"access_control_model\",\n      \"notes\": \"Database access control model is documented in architecturalDecisions.accessControl. MariaDB role-based access restricts the Nova service account to its own schema.\"\n    },\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.04.4.1.access-control-model\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"architecturalDecision\",\n      \"key\": \"access_control_model\",\n      \"notes\": \"MariaDB user model enforces schema-level isolation. Service accounts for each OpenStack service are scoped to their own schema only.\"\n    }\n  ],\n  \"_source\": \"examples/catalog/data-store-services/data-at-rest-nova-database.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000001-DAR1\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Nova Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Nova for persisting all compute service state. Stores instance records, flavor definitions, host aggregates, cell mappings, scheduler hints, migration records, and quota allocations. Hosted within the shared MariaDB Galera cluster on the OpenStack controller nodes.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"nova\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Nova connects to its database schema using a dedicated MariaDB service account with credentials configured in nova.conf. Access is restricted to the Nova service account; no shared credentials with other OpenStack services.\",\n    \"secretsManagement\": \"Database credentials are stored in nova.conf managed by configuration management tooling. Credentials are not rotated automatically; rotation requires planned maintenance.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs are captured for the Nova schema. Logs are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health is monitored via wsrep status variables. Nova DB schema health is verified by the nova-manage db check command. Replication lag is monitored across Galera nodes.\",\n    \"availabilityModel\": \"The Nova database is hosted in a 3-node MariaDB Galera cluster with synchronous multi-master replication. Loss of one Galera node does not interrupt database availability. HAProxy routes all DB connections to the active primary.\",\n    \"scalabilityModel\": \"The Nova schema is contained within the shared Galera cluster. Read scaling is achieved via ProxySQL read replicas. Write scaling requires Galera cluster expansion.\",\n    \"recoverabilityModel\": \"Data is recovered from MariaDB Galera replication in the event of node failure. Point-in-time recovery is available from automated backups. Nova schema migrations are applied via nova-manage db sync.\",\n    \"failureDomain\": \"Loss of the Nova database schema renders the Nova compute service unable to process API requests. Running instances are not immediately affected but instance lifecycle operations (start, stop, delete) fail until DB is restored.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with binlog-based incremental backups every 4 hours. Backups are written to object storage.\",\n      \"platform\": \"Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target. Backup jobs are managed by a cron schedule on a dedicated backup controller node.\",\n      \"rto\": \"2 hours for full schema restore from backup; near-zero for Galera node failure with surviving quorum.\",\n      \"rpo\": \"4 hours maximum data loss in worst-case scenario (binlog backup window); near-zero for Galera replication failure.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy for connection routing. Quorum requires at least 2 of 3 nodes.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption is enabled using the file_key_management plugin. Tablespace-level encryption is applied to the Nova schema.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access control. Nova service account has DML access to the nova schema only. Root access is restricted to DBA team members via SSH-tunnelled connections.\"\n    },\n    \"access_control_model\": \"Role-based database access control. Nova service account has DML access to the nova schema only. Root access is restricted to DBA team members via SSH-tunnelled connections. No shared credentials between OpenStack services.\",\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Percona XtraBackup automated backup writes point-in-time backups to object storage. Modeled to show the external backup dependency and recovery boundary.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Nova schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [\n    \"01KQQ4Q027-T3CA\"\n  ],\n  \"requirementImplementations\": [\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.00.2.1.access-control-model\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"field\",\n      \"key\": \"architecturalDecisions.accessControl.model\",\n      \"notes\": \"Access control model is role-based; Nova service account has DML-only access to the nova schema. Documented in architecturalDecisions.accessControl.\"\n    },\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.10.2.1\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"field\",\n      \"key\": \"architecturalDecisions.backup.strategy\",\n      \"notes\": \"Backup strategy, RTO (2h), and RPO (4h) are documented in architecturalDecisions.backup.\"\n    },\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.04.1.1\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"architecturalDecision\",\n      \"key\": \"access_control_model\",\n      \"notes\": \"Database access control model is documented in architecturalDecisions.accessControl. MariaDB role-based access restricts the Nova service account to its own schema.\"\n    },\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.04.4.1.access-control-model\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"architecturalDecision\",\n      \"key\": \"access_control_model\",\n      \"notes\": \"MariaDB user model enforces schema-level isolation. Service accounts for each OpenStack service are scoped to their own schema only.\"\n    }\n  ],\n  \"_source\": \"examples/catalog/data-store-services/data-store-service-nova-database.yaml\"\n}",
       "existsInCatalog": true
     },
     {
@@ -20155,7 +21373,7 @@ window.DRAFT_BROWSER_DATA = {
       "authority": {},
       "shape": "diamond",
       "color": "#2a6fdb",
-      "source": "examples/catalog/data-store-services/data-at-rest-openstack-shared-database.yaml",
+      "source": "examples/catalog/data-store-services/data-store-service-openstack-shared-database.yaml",
       "tags": [
         "data-at-rest",
         "openstack",
@@ -20201,6 +21419,7 @@ window.DRAFT_BROWSER_DATA = {
         "failureDomain": "Loss of this database cluster affects Heat, Ironic, Trove, Sahara, and Ceilometer simultaneously. In-progress orchestration stacks, bare metal provisioning, and database service operations are disrupted. Running Nova instances, networks, and Cinder volumes are not affected.",
         "backup": {
           "strategy": "Automated daily full backup using Percona XtraBackup for all schemas in this cluster, with 4-hourly incremental backups. Backups written to object storage. Each schema is exported as a separate logical backup for granular restore.",
+          "platform": "Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target. Per-schema logical exports allow targeted restore without full cluster recovery.",
           "rto": "2 hours for full cluster restore; per-schema restore in 30-60 minutes; near-zero for Galera node failure.",
           "rpo": "4 hours maximum; near-zero for Galera replication failure."
         },
@@ -20213,7 +21432,9 @@ window.DRAFT_BROWSER_DATA = {
         "accessControl": {
           "model": "Role-based database access control with schema-level isolation. Each service has a dedicated account with DML access to its own schema only. Cross-schema access is denied at the DB grant level."
         },
-        "externalInteractionRationales": {}
+        "externalInteractionRationales": {
+          "Backup Service": "Percona XtraBackup automated backup writes per-schema logical backups to Swift object storage. Modeled to show the external backup platform dependency."
+        }
       },
       "requirements": [],
       "implementations": [],
@@ -20381,7 +21602,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/data-store-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000007-DAR7\",\n  \"type\": \"data_store_service\",\n  \"name\": \"OpenStack Shared Database\",\n  \"description\": \"Shared MariaDB database cluster hosting the schemas for OpenStack services that do not warrant dedicated database objects at this modeling granularity: Heat, Ironic, Trove, Sahara, and Ceilometer. Each service maintains its own isolated schema (database) within the shared cluster. This consolidation is appropriate for medium-scale deployments; large-scale deployments may separate schemas to dedicated clusters.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"heat\",\n    \"ironic\",\n    \"trove\",\n    \"sahara\",\n    \"ceilometer\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Each OpenStack service (Heat, Ironic, Trove, Sahara, Ceilometer) connects to its own dedicated schema using a per-service MariaDB service account. Credentials are configured in each service's conf file. Schema isolation prevents cross-service data access at the database layer.\",\n    \"secretsManagement\": \"Per-service database credentials are stored in each service's conf file managed by configuration management tooling. All credentials are distinct; compromise of one service's credentials does not expose other schemas.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs are aggregated across schemas and shipped to the centralised log aggregation platform. Per-schema query patterns are monitored separately.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status variables. Per-schema query latency and connection counts are tracked. Galera replication lag across all three nodes is monitored.\",\n    \"availabilityModel\": \"The shared cluster runs as a 3-node MariaDB Galera cluster with synchronous multi-master replication. Loss of one node does not interrupt availability. All five service schemas share the same Galera quorum.\",\n    \"scalabilityModel\": \"Each schema grows independently with its service's workload. The Ceilometer schema tends to be the highest-volume due to metric collection. Schema separation within the cluster allows per-schema tuning and archival policies.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Each schema is backed up independently. Schema migrations are applied per service (heat-manage db_sync, ironic-dbsync, etc.).\",\n    \"failureDomain\": \"Loss of this database cluster affects Heat, Ironic, Trove, Sahara, and Ceilometer simultaneously. In-progress orchestration stacks, bare metal provisioning, and database service operations are disrupted. Running Nova instances, networks, and Cinder volumes are not affected.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup for all schemas in this cluster, with 4-hourly incremental backups. Backups written to object storage. Each schema is exported as a separate logical backup for granular restore.\",\n      \"rto\": \"2 hours for full cluster restore; per-schema restore in 30-60 minutes; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication failure.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy for connection routing. Quorum requires at least 2 of 3 nodes.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption across all schemas in this cluster.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access control with schema-level isolation. Each service has a dedicated account with DML access to its own schema only. Cross-schema access is denied at the DB grant level.\"\n    },\n    \"externalInteractionRationales\": {}\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the shared relational database engine for Heat, Ironic, Trove, Sahara, and Ceilometer schemas.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling with per-schema logical exports writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-at-rest-openstack-shared-database.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000007-DAR7\",\n  \"type\": \"data_store_service\",\n  \"name\": \"OpenStack Shared Database\",\n  \"description\": \"Shared MariaDB database cluster hosting the schemas for OpenStack services that do not warrant dedicated database objects at this modeling granularity: Heat, Ironic, Trove, Sahara, and Ceilometer. Each service maintains its own isolated schema (database) within the shared cluster. This consolidation is appropriate for medium-scale deployments; large-scale deployments may separate schemas to dedicated clusters.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"heat\",\n    \"ironic\",\n    \"trove\",\n    \"sahara\",\n    \"ceilometer\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Each OpenStack service (Heat, Ironic, Trove, Sahara, Ceilometer) connects to its own dedicated schema using a per-service MariaDB service account. Credentials are configured in each service's conf file. Schema isolation prevents cross-service data access at the database layer.\",\n    \"secretsManagement\": \"Per-service database credentials are stored in each service's conf file managed by configuration management tooling. All credentials are distinct; compromise of one service's credentials does not expose other schemas.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs are aggregated across schemas and shipped to the centralised log aggregation platform. Per-schema query patterns are monitored separately.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status variables. Per-schema query latency and connection counts are tracked. Galera replication lag across all three nodes is monitored.\",\n    \"availabilityModel\": \"The shared cluster runs as a 3-node MariaDB Galera cluster with synchronous multi-master replication. Loss of one node does not interrupt availability. All five service schemas share the same Galera quorum.\",\n    \"scalabilityModel\": \"Each schema grows independently with its service's workload. The Ceilometer schema tends to be the highest-volume due to metric collection. Schema separation within the cluster allows per-schema tuning and archival policies.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Each schema is backed up independently. Schema migrations are applied per service (heat-manage db_sync, ironic-dbsync, etc.).\",\n    \"failureDomain\": \"Loss of this database cluster affects Heat, Ironic, Trove, Sahara, and Ceilometer simultaneously. In-progress orchestration stacks, bare metal provisioning, and database service operations are disrupted. Running Nova instances, networks, and Cinder volumes are not affected.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup for all schemas in this cluster, with 4-hourly incremental backups. Backups written to object storage. Each schema is exported as a separate logical backup for granular restore.\",\n      \"platform\": \"Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target. Per-schema logical exports allow targeted restore without full cluster recovery.\",\n      \"rto\": \"2 hours for full cluster restore; per-schema restore in 30-60 minutes; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication failure.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy for connection routing. Quorum requires at least 2 of 3 nodes.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption across all schemas in this cluster.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access control with schema-level isolation. Each service has a dedicated account with DML access to its own schema only. Cross-schema access is denied at the DB grant level.\"\n    },\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Percona XtraBackup automated backup writes per-schema logical backups to Swift object storage. Modeled to show the external backup platform dependency.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the shared relational database engine for Heat, Ironic, Trove, Sahara, and Ceilometer schemas.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling with per-schema logical exports writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-store-service-openstack-shared-database.yaml\"\n}",
       "existsInCatalog": true
     },
     {
@@ -20431,7 +21652,7 @@ window.DRAFT_BROWSER_DATA = {
       "authority": {},
       "shape": "diamond",
       "color": "#2a6fdb",
-      "source": "examples/catalog/data-store-services/data-at-rest-swift-storage-cluster.yaml",
+      "source": "examples/catalog/data-store-services/data-store-service-swift-storage-cluster.yaml",
       "tags": [
         "data-at-rest",
         "openstack",
@@ -20472,6 +21693,7 @@ window.DRAFT_BROWSER_DATA = {
         "failureDomain": "Loss of a minority of storage nodes reduces capacity and resilience but does not cause data loss. Loss of a majority of nodes holding a given replica set causes data unavailability for affected objects. Cluster-wide failures require hardware recovery.",
         "backup": {
           "strategy": "Object durability is achieved through 3x replication across storage nodes distributed across separate failure domains. For critical data, cross-region replication via Swift replication can be configured. Traditional backup is not applicable for the object storage cluster itself.",
+          "platform": "Swift's native 3x replication ring serves as the durability platform. No external backup tooling is applied to Swift itself; the replication ring IS the backup mechanism for object data.",
           "rto": "Near-zero for node failures with surviving replicas; hours for full cluster rebuild from hardware.",
           "rpo": "Near-zero \u2014 synchronous replication ensures no data loss for confirmed writes."
         },
@@ -20484,7 +21706,9 @@ window.DRAFT_BROWSER_DATA = {
         "accessControl": {
           "model": "Access control is enforced at the Swift proxy layer via Keystone ACLs. Containers have ACLs defining read and write permissions per project and user. Storage nodes are not directly accessible to tenants."
         },
-        "externalInteractionRationales": {}
+        "externalInteractionRationales": {
+          "Backup Service": "Swift's replication ring provides native object durability. The Backup Service interaction represents the operational tooling used to verify ring consistency and node health, not a traditional backup agent."
+        }
       },
       "requirements": [],
       "implementations": [],
@@ -20648,7 +21872,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/data-store-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000006-DAR6\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Swift Storage Cluster\",\n  \"description\": \"OpenStack Swift object storage cluster providing durable, distributed storage for unstructured data. Consists of multiple storage nodes running swift-account, swift-container, and swift-object daemons. Uses consistent hashing and configurable replication (default 3 replicas) for durability without a single point of failure. Primary consumers are Glance (image binaries) and tenants using the S3-compatible object storage API directly.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"swift\",\n    \"object-storage\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK000006-TC06\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"All access to Swift storage nodes is via the swift-proxy-server which enforces Keystone authentication. Direct access to storage nodes is restricted at the network level to the proxy tier only.\",\n    \"secretsManagement\": \"Storage node configuration is managed by configuration management tooling. Ring files are distributed to all nodes. No per-tenant secrets are stored on storage nodes.\",\n    \"serviceLogging\": \"Swift storage daemons emit access and error logs. Logs are shipped to the centralised log aggregation platform. Replication logs are monitored for data consistency.\",\n    \"healthWelfareMonitoring\": \"Swift cluster health is monitored via swift-recon and swift-dispersion-report. Per-node disk usage, replication completeness, and async pending counts are tracked. Alerts fire on disk failures, replication lag, and capacity thresholds.\",\n    \"availabilityModel\": \"Swift uses a shared-nothing distributed architecture. Object reads and writes are distributed across storage nodes using consistent hashing. Failure of storage nodes reduces available capacity but does not interrupt access as long as replica quorum is maintained.\",\n    \"scalabilityModel\": \"Storage capacity scales by adding storage nodes and rebalancing the Swift ring. The cluster supports horizontal scale-out to petabyte capacity. No downtime is required for ring rebalancing.\",\n    \"recoverabilityModel\": \"Data durability is provided by the replication factor (default 3). Lost storage nodes are replaced and data is automatically replicated to restore the replication factor. There is no traditional backup/restore for object data \\u2014 durability comes from replication.\",\n    \"failureDomain\": \"Loss of a minority of storage nodes reduces capacity and resilience but does not cause data loss. Loss of a majority of nodes holding a given replica set causes data unavailability for affected objects. Cluster-wide failures require hardware recovery.\",\n    \"backup\": {\n      \"strategy\": \"Object durability is achieved through 3x replication across storage nodes distributed across separate failure domains. For critical data, cross-region replication via Swift replication can be configured. Traditional backup is not applicable for the object storage cluster itself.\",\n      \"rto\": \"Near-zero for node failures with surviving replicas; hours for full cluster rebuild from hardware.\",\n      \"rpo\": \"Near-zero \\u2014 synchronous replication ensures no data loss for confirmed writes.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"Consistent hashing ring with 3x replication factor. Reads and writes are distributed across nodes. No single master \\u2014 all nodes are peers. Quorum reads/writes ensure consistency.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"Swift supports server-side encryption using the Keymaster and KMIP middleware. When enabled, all object data is encrypted with per-object keys before writing to disk.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Access control is enforced at the Swift proxy layer via Keystone ACLs. Containers have ACLs defining read and write permissions per project and user. Storage nodes are not directly accessible to tenants.\"\n    },\n    \"externalInteractionRationales\": {}\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK000006-TC06\",\n      \"role\": \"Swift storage cluster providing distributed object storage with account, container, and object daemons across all storage nodes.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Swift cluster itself serves as an object storage target for OpenStack service backups. Cross-region Swift replication is used for off-site durability of critical object data.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-at-rest-swift-storage-cluster.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000006-DAR6\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Swift Storage Cluster\",\n  \"description\": \"OpenStack Swift object storage cluster providing durable, distributed storage for unstructured data. Consists of multiple storage nodes running swift-account, swift-container, and swift-object daemons. Uses consistent hashing and configurable replication (default 3 replicas) for durability without a single point of failure. Primary consumers are Glance (image binaries) and tenants using the S3-compatible object storage API directly.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"swift\",\n    \"object-storage\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK000006-TC06\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"All access to Swift storage nodes is via the swift-proxy-server which enforces Keystone authentication. Direct access to storage nodes is restricted at the network level to the proxy tier only.\",\n    \"secretsManagement\": \"Storage node configuration is managed by configuration management tooling. Ring files are distributed to all nodes. No per-tenant secrets are stored on storage nodes.\",\n    \"serviceLogging\": \"Swift storage daemons emit access and error logs. Logs are shipped to the centralised log aggregation platform. Replication logs are monitored for data consistency.\",\n    \"healthWelfareMonitoring\": \"Swift cluster health is monitored via swift-recon and swift-dispersion-report. Per-node disk usage, replication completeness, and async pending counts are tracked. Alerts fire on disk failures, replication lag, and capacity thresholds.\",\n    \"availabilityModel\": \"Swift uses a shared-nothing distributed architecture. Object reads and writes are distributed across storage nodes using consistent hashing. Failure of storage nodes reduces available capacity but does not interrupt access as long as replica quorum is maintained.\",\n    \"scalabilityModel\": \"Storage capacity scales by adding storage nodes and rebalancing the Swift ring. The cluster supports horizontal scale-out to petabyte capacity. No downtime is required for ring rebalancing.\",\n    \"recoverabilityModel\": \"Data durability is provided by the replication factor (default 3). Lost storage nodes are replaced and data is automatically replicated to restore the replication factor. There is no traditional backup/restore for object data \\u2014 durability comes from replication.\",\n    \"failureDomain\": \"Loss of a minority of storage nodes reduces capacity and resilience but does not cause data loss. Loss of a majority of nodes holding a given replica set causes data unavailability for affected objects. Cluster-wide failures require hardware recovery.\",\n    \"backup\": {\n      \"strategy\": \"Object durability is achieved through 3x replication across storage nodes distributed across separate failure domains. For critical data, cross-region replication via Swift replication can be configured. Traditional backup is not applicable for the object storage cluster itself.\",\n      \"platform\": \"Swift's native 3x replication ring serves as the durability platform. No external backup tooling is applied to Swift itself; the replication ring IS the backup mechanism for object data.\",\n      \"rto\": \"Near-zero for node failures with surviving replicas; hours for full cluster rebuild from hardware.\",\n      \"rpo\": \"Near-zero \\u2014 synchronous replication ensures no data loss for confirmed writes.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"Consistent hashing ring with 3x replication factor. Reads and writes are distributed across nodes. No single master \\u2014 all nodes are peers. Quorum reads/writes ensure consistency.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"Swift supports server-side encryption using the Keymaster and KMIP middleware. When enabled, all object data is encrypted with per-object keys before writing to disk.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Access control is enforced at the Swift proxy layer via Keystone ACLs. Containers have ACLs defining read and write permissions per project and user. Storage nodes are not directly accessible to tenants.\"\n    },\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Swift's replication ring provides native object durability. The Backup Service interaction represents the operational tooling used to verify ring consistency and node health, not a traditional backup agent.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK000006-TC06\",\n      \"role\": \"Swift storage cluster providing distributed object storage with account, container, and object daemons across all storage nodes.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Swift cluster itself serves as an object storage target for OpenStack service backups. Cross-region Swift replication is used for off-site durability of critical object data.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-store-service-swift-storage-cluster.yaml\"\n}",
       "existsInCatalog": true
     },
     {
@@ -22531,6 +23755,10 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "referencedBy": [
         {
+          "source": "01KSF29JTP-SRVE",
+          "path": "requirements[0].relatedCapability"
+        },
+        {
           "source": "01KQQ4Q027-C213",
           "path": "capabilities[3]"
         }
@@ -23165,6 +24393,10 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "referencedBy": [
         {
+          "source": "01KSF4NHSP-HCPX",
+          "path": "requirements[0].relatedCapability"
+        },
+        {
           "source": "01KQQ4Q027-ZTHF",
           "path": "capabilities[0]"
         },
@@ -23315,6 +24547,10 @@ window.DRAFT_BROWSER_DATA = {
         }
       ],
       "referencedBy": [
+        {
+          "source": "01KSF29JTP-SRVE",
+          "path": "requirements[1].relatedCapability"
+        },
         {
           "source": "01KQQ4Q027-ZTHF",
           "path": "capabilities[4]"
@@ -23627,6 +24863,10 @@ window.DRAFT_BROWSER_DATA = {
         },
         {
           "source": "01KQQ4Q027-C213",
+          "path": "capabilities[0]"
+        },
+        {
+          "source": "01KSF29JTP-8YRX",
           "path": "capabilities[0]"
         },
         {
@@ -24273,6 +25513,10 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "referencedBy": [
         {
+          "source": "01KSF4NHSP-8HPP",
+          "path": "requirements[0].relatedCapability"
+        },
+        {
           "source": "01KQQ4Q027-SGHR",
           "path": "capabilities[3]"
         }
@@ -24411,6 +25655,10 @@ window.DRAFT_BROWSER_DATA = {
         }
       ],
       "referencedBy": [
+        {
+          "source": "01KSF4NHSP-8HPP",
+          "path": "requirements[1].relatedCapability"
+        },
         {
           "source": "01KQQ4Q027-SGHR",
           "path": "capabilities[2]"
@@ -24886,6 +26134,10 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "referencedBy": [
         {
+          "source": "01KSF29JTP-SRVE",
+          "path": "requirements[2].relatedCapability"
+        },
+        {
           "source": "01KQQ4Q027-ZTHF",
           "path": "capabilities[3]"
         }
@@ -25025,6 +26277,10 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "referencedBy": [
         {
+          "source": "01KSF4NHSP-8HPP",
+          "path": "requirements[2].relatedCapability"
+        },
+        {
           "source": "01KQQ4Q027-SGHR",
           "path": "capabilities[0]"
         }
@@ -25163,6 +26419,10 @@ window.DRAFT_BROWSER_DATA = {
         }
       ],
       "referencedBy": [
+        {
+          "source": "01KSF4NHSP-8HPP",
+          "path": "requirements[3].relatedCapability"
+        },
         {
           "source": "01KQQ4Q027-SGHR",
           "path": "capabilities[1]"
@@ -29390,6 +30650,482 @@ window.DRAFT_BROWSER_DATA = {
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-HHA4\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Drafting Session Requirement Group\",\n  \"description\": \"Structured checklist used to capture partial architecture-authoring sessions, generated outputs, and unresolved follow-up questions in a machine-readable way.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"drafting_session\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"target-object\",\n      \"description\": \"The session must state what object type it is trying to produce and, when available, the concrete object id it is building toward.\",\n      \"rationale\": \"A drafting session is only useful if a later reviewer can tell what the session is trying to create or refine.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"primaryObjectType\",\n          \"example\": \"software_deployment_pattern\"\n        },\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"primaryObjectUid\",\n          \"example\": \"software-deployment.tx-erp-sis-hrms\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"source-artifacts\",\n      \"description\": \"The session must record the source materials that informed the drafting work.\",\n      \"rationale\": \"Later reviewers need to know what pages, diagrams, interviews, or files the best-effort answers came from.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"sourceArtifacts\",\n          \"example\": \"Confluence page, interview notes, architecture diagram\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"generated-objects\",\n      \"description\": \"The session must record what YAML objects were created, proposed, or stubbed during the session.\",\n      \"rationale\": \"Session output should be directly traceable to the architecture content it produced.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"generatedObjects\",\n          \"example\": \"software-deployment.tx-erp-sis-hrms, product-service.tx-erp.application, decision.tx-erp.001\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"unresolved-questions\",\n      \"description\": \"The session must explicitly capture the questions that remain open.\",\n      \"rationale\": \"Partial drafting only scales if open questions are machine-readable and easy to revisit later.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"unresolvedQuestions\",\n          \"example\": \"Is each district deployed with exactly one DB engine?\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"next-steps\",\n      \"description\": \"The session must record the follow-up actions needed to close the remaining gaps.\",\n      \"rationale\": \"An unresolved question without a next step is easy to lose and hard to revisit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"nextSteps\",\n          \"example\": \"Confirm ECS-native Java runtime and rebind the application component\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"drafting-session\",\n    \"requirement-group\",\n    \"intake\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-drafting-session.yaml\"\n}",
       "existsInCatalog": true
     },
+    "01KSF4NHSP-8HPP": {
+      "id": "01KSF4NHSP-8HPP",
+      "uid": "01KSF4NHSP-8HPP",
+      "name": "Engineering Quality Requirement Group",
+      "aliases": [],
+      "type": "requirement_group",
+      "typeLabel": "Requirement Group",
+      "filterType": "requirement_group",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Optional checklist for ProductComponents covering build quality, test coverage, and performance validation practices. Activated per workspace; does not fire automatically.",
+      "version": "1.0.0",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "candidate",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {
+        "name": "DRAFT Framework",
+        "shortName": "DRAFT",
+        "source": "DRAFT Framework"
+      },
+      "shape": "barrel",
+      "color": "#7c3a6b",
+      "source": "framework/configurations/requirement-groups/requirement-group-engineering-quality.yaml",
+      "tags": [
+        "product-component",
+        "requirement-group",
+        "engineering",
+        "quality",
+        "optional"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {},
+      "requirements": [
+        {
+          "id": "performance-testing",
+          "description": "The ProductComponent may declare how performance and load testing is performed.",
+          "rationale": "Components without a performance testing approach may cause latency or throughput regressions that are not detected before production.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "externalInteraction",
+              "criteria": {
+                "capability": "01KQQ4Q026-S5J6"
+              },
+              "example": "A load testing platform or service referenced as an externalInteraction."
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "performanceTesting",
+              "example": "A documented statement of the load or performance testing approach, or a declaration that it is not applicable."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-S5J6",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "externalInteraction"
+          ]
+        },
+        {
+          "id": "quality-gates",
+          "description": "The ProductComponent may declare the quality gates that govern release readiness.",
+          "rationale": "Quality gates enforce that code coverage, static analysis, and security scanning thresholds are met before a component can be promoted.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "externalInteraction",
+              "criteria": {
+                "capability": "01KQQ4Q026-RTWC"
+              },
+              "example": "A CI/CD platform or quality gate service referenced as an externalInteraction."
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "qualityGates",
+              "example": "A documented statement of the quality gate criteria and enforcement mechanism."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-RTWC",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "externalInteraction"
+          ]
+        },
+        {
+          "id": "test-authoring",
+          "description": "The ProductComponent may declare how automated tests are authored and maintained.",
+          "rationale": "Components with no documented test authoring approach accumulate untested behavior that blocks safe refactoring.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "externalInteraction",
+              "criteria": {
+                "capability": "01KQQ4Q026-QC9S"
+              },
+              "example": "A test management or specification platform referenced as an externalInteraction."
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "testAuthoring",
+              "example": "A documented statement of the test framework, coverage targets, and authoring ownership."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-QC9S",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "externalInteraction"
+          ]
+        },
+        {
+          "id": "test-execution",
+          "description": "The ProductComponent may declare how automated tests are executed in CI and pre-production environments.",
+          "rationale": "Test execution infrastructure determines whether test suites run reliably and at sufficient coverage depth during each build or deploy cycle.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "externalInteraction",
+              "criteria": {
+                "capability": "01KQQ4Q026-58Q3"
+              },
+              "example": "A CI platform or test execution service referenced as an externalInteraction."
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "testExecution",
+              "example": "A documented statement of the test execution environment and trigger model."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-58Q3",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "externalInteraction"
+          ]
+        }
+      ],
+      "implementations": [],
+      "appliesTo": [
+        "product_component"
+      ],
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 4,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KQQ4Q026-S5J6",
+          "path": "requirements[0].relatedCapability"
+        },
+        {
+          "target": "01KQQ4Q026-RTWC",
+          "path": "requirements[1].relatedCapability"
+        },
+        {
+          "target": "01KQQ4Q026-QC9S",
+          "path": "requirements[2].relatedCapability"
+        },
+        {
+          "target": "01KQQ4Q026-58Q3",
+          "path": "requirements[3].relatedCapability"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "owner",
+          "activation",
+          "appliesTo",
+          "requirements"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "lifecycleStatus",
+          "provider",
+          "authority",
+          "notes",
+          "inherits",
+          "appliesToQualifiers"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "provider": "dict",
+          "authority": "dict",
+          "appliesTo": "list",
+          "requirements": "list",
+          "appliesToQualifiers": "dict"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "activation": [
+            "always",
+            "workspace"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "requirements": "requirement"
+        },
+        "schemaPath": "framework/schemas/requirement-group.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSF4NHSP-8HPP\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Engineering Quality Requirement Group\",\n  \"description\": \"Optional checklist for ProductComponents covering build quality, test coverage, and performance validation practices. Activated per workspace; does not fire automatically.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"workspace\",\n  \"appliesTo\": [\n    \"product_component\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"performance-testing\",\n      \"description\": \"The ProductComponent may declare how performance and load testing is performed.\",\n      \"rationale\": \"Components without a performance testing approach may cause latency or throughput regressions that are not detected before production.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"externalInteraction\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-S5J6\"\n          },\n          \"example\": \"A load testing platform or service referenced as an externalInteraction.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"performanceTesting\",\n          \"example\": \"A documented statement of the load or performance testing approach, or a declaration that it is not applicable.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-S5J6\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"externalInteraction\"\n      ]\n    },\n    {\n      \"id\": \"quality-gates\",\n      \"description\": \"The ProductComponent may declare the quality gates that govern release readiness.\",\n      \"rationale\": \"Quality gates enforce that code coverage, static analysis, and security scanning thresholds are met before a component can be promoted.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"externalInteraction\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-RTWC\"\n          },\n          \"example\": \"A CI/CD platform or quality gate service referenced as an externalInteraction.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"qualityGates\",\n          \"example\": \"A documented statement of the quality gate criteria and enforcement mechanism.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-RTWC\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"externalInteraction\"\n      ]\n    },\n    {\n      \"id\": \"test-authoring\",\n      \"description\": \"The ProductComponent may declare how automated tests are authored and maintained.\",\n      \"rationale\": \"Components with no documented test authoring approach accumulate untested behavior that blocks safe refactoring.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"externalInteraction\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-QC9S\"\n          },\n          \"example\": \"A test management or specification platform referenced as an externalInteraction.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"testAuthoring\",\n          \"example\": \"A documented statement of the test framework, coverage targets, and authoring ownership.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-QC9S\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"externalInteraction\"\n      ]\n    },\n    {\n      \"id\": \"test-execution\",\n      \"description\": \"The ProductComponent may declare how automated tests are executed in CI and pre-production environments.\",\n      \"rationale\": \"Test execution infrastructure determines whether test suites run reliably and at sufficient coverage depth during each build or deploy cycle.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"externalInteraction\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-58Q3\"\n          },\n          \"example\": \"A CI platform or test execution service referenced as an externalInteraction.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"testExecution\",\n          \"example\": \"A documented statement of the test execution environment and trigger model.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-58Q3\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"externalInteraction\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"candidate\",\n  \"tags\": [\n    \"product-component\",\n    \"requirement-group\",\n    \"engineering\",\n    \"quality\",\n    \"optional\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-engineering-quality.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    "01KSF4NHSP-HCPX": {
+      "id": "01KSF4NHSP-HCPX",
+      "uid": "01KSF4NHSP-HCPX",
+      "name": "Host Compute Profile Requirement Group",
+      "aliases": [],
+      "type": "requirement_group",
+      "typeLabel": "Requirement Group",
+      "filterType": "requirement_group",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Optional checklist for Hosts covering compute type classification. Activated per workspace; does not fire automatically.",
+      "version": "1.0.0",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "candidate",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {
+        "name": "DRAFT Framework",
+        "shortName": "DRAFT",
+        "source": "DRAFT Framework"
+      },
+      "shape": "barrel",
+      "color": "#7c3a6b",
+      "source": "framework/configurations/requirement-groups/requirement-group-host-compute-profile.yaml",
+      "tags": [
+        "host",
+        "requirement-group",
+        "compute",
+        "optional"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {},
+      "requirements": [
+        {
+          "id": "compute-type",
+          "description": "The host must declare its compute type or instance class when the compute profile is not captured by the compute-platform requirement alone.",
+          "rationale": "Compute type captures the general-purpose, memory-optimized, GPU, or bare-metal classification of the host's compute resources, which affects workload placement and capacity planning.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "architecturalDecision",
+              "key": "computeType",
+              "example": "A documented statement of the compute type such as general-purpose, memory-optimized, GPU, or bare-metal."
+            },
+            {
+              "mechanism": "field",
+              "key": "computeType",
+              "example": "A field declaration of the compute type on the host object."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-9K8G",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "field"
+          ]
+        }
+      ],
+      "implementations": [],
+      "appliesTo": [
+        "host"
+      ],
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 1,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KQQ4Q026-9K8G",
+          "path": "requirements[0].relatedCapability"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "owner",
+          "activation",
+          "appliesTo",
+          "requirements"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "lifecycleStatus",
+          "provider",
+          "authority",
+          "notes",
+          "inherits",
+          "appliesToQualifiers"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "provider": "dict",
+          "authority": "dict",
+          "appliesTo": "list",
+          "requirements": "list",
+          "appliesToQualifiers": "dict"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "activation": [
+            "always",
+            "workspace"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "requirements": "requirement"
+        },
+        "schemaPath": "framework/schemas/requirement-group.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSF4NHSP-HCPX\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Host Compute Profile Requirement Group\",\n  \"description\": \"Optional checklist for Hosts covering compute type classification. Activated per workspace; does not fire automatically.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"workspace\",\n  \"appliesTo\": [\n    \"host\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"compute-type\",\n      \"description\": \"The host must declare its compute type or instance class when the compute profile is not captured by the compute-platform requirement alone.\",\n      \"rationale\": \"Compute type captures the general-purpose, memory-optimized, GPU, or bare-metal classification of the host's compute resources, which affects workload placement and capacity planning.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"computeType\",\n          \"example\": \"A documented statement of the compute type such as general-purpose, memory-optimized, GPU, or bare-metal.\"\n        },\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"computeType\",\n          \"example\": \"A field declaration of the compute type on the host object.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-9K8G\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"field\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"candidate\",\n  \"tags\": [\n    \"host\",\n    \"requirement-group\",\n    \"compute\",\n    \"optional\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-host-compute-profile.yaml\"\n}",
+      "existsInCatalog": true
+    },
     "01KQQ4Q027-THYN": {
       "id": "01KQQ4Q027-THYN",
       "uid": "01KQQ4Q027-THYN",
@@ -31371,6 +33107,269 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/requirement-group.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-FKRM\",\n  \"type\": \"requirement_group\",\n  \"name\": \"SaaS Delivery Requirement Group\",\n  \"description\": \"Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service is consumed as a vendor-managed external service.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"runtime_service\",\n    \"data_store_service\",\n    \"edge_gateway_service\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"function\",\n      \"description\": \"What capability does this SaaS service provide?\",\n      \"rationale\": \"Capability is the core architectural reason the service exists.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"capabilities\",\n          \"example\": \"capabilities: [waf]\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"data-boundary\",\n      \"description\": \"Does data leave the infrastructure boundary through this service?\",\n      \"rationale\": \"The data boundary determines whether the service is modeled as SaaS and what governance obligations follow.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"dataLeavesInfrastructure\",\n          \"example\": \"dataLeavesInfrastructure: true\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"data-residency\",\n      \"description\": \"What are the vendor's data residency commitments? Critical for FERPA, HIPAA-adjacent, and PII data.\\n\",\n      \"rationale\": \"Data residency commitments are required before regulated or sensitive workloads can depend on a blackbox vendor platform.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"dataResidencyCommitment\",\n          \"example\": \"dataResidencyCommitment: US-only, AWS us-east-1\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"data-processing-agreement\",\n      \"description\": \"Is a Data Processing Agreement in place with this vendor?\",\n      \"rationale\": \"A SaaS dependency that handles organizational data requires explicit contractual treatment.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"dpaNotes\",\n          \"example\": \"dpaNotes: DPA signed 2024-03, covers FERPA and COPPA\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"compliance-certifications\",\n      \"description\": \"What compliance certifications does the vendor carry?\",\n      \"rationale\": \"Blackbox services need external attestations or certifications when internal architecture evidence is unavailable.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"complianceCerts\",\n          \"allowEmpty\": true,\n          \"example\": \"complianceCerts: [SOC2 Type II, ISO27001]\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"authentication-model\",\n      \"description\": \"How does the organization authenticate to this service?\",\n      \"rationale\": \"SaaS consumption must define how identities are established and federated into the vendor platform.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"authenticationModel\",\n          \"example\": \"authenticationModel: saml\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"audit-visibility\",\n      \"description\": \"What logging, audit, or event visibility does the consumer have into this service?\",\n      \"rationale\": \"Blackbox services must still define what operational and security evidence is visible to the adopter.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"auditVisibility\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"health-status-visibility\",\n      \"description\": \"How can the consumer observe the health, status, or incident state of this service?\",\n      \"rationale\": \"Vendor-managed services require an explicit answer for how outages or degradations are detected by the adopter.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"incidentNotificationProcess\",\n          \"example\": \"incidentNotificationProcess: Vendor status page plus email incident notifications\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"healthStatusVisibility\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"failure-domain\",\n      \"description\": \"What is the failure domain of this SaaS dependency?\",\n      \"rationale\": \"Shared vendor dependencies can create large failure domains and that scope must be explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"failureDomain\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"vendor-sla\",\n      \"description\": \"What is the vendor's SLA commitment?\",\n      \"rationale\": \"SaaS service quality must be defined in terms available to the adopter, not hidden internal design.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"vendorSLA\",\n          \"example\": \"vendorSLA: 99.99% uptime, 24x7 support\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"saas\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"appliesToQualifiers\": {\n    \"deliveryModel\": \"saas\"\n  },\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-saas-delivery.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    "01KSF29JTP-SRVE": {
+      "id": "01KSF29JTP-SRVE",
+      "uid": "01KSF29JTP-SRVE",
+      "name": "Service Engineering Practices Requirement Group",
+      "aliases": [],
+      "type": "requirement_group",
+      "typeLabel": "Requirement Group",
+      "filterType": "requirement_group",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Optional checklist for self-managed Runtime and Edge/Gateway Services covering advanced observability and runtime patterns. Activated per workspace; does not fire automatically.",
+      "version": "1.0.0",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "candidate",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {
+        "name": "DRAFT Framework",
+        "shortName": "DRAFT",
+        "source": "DRAFT Framework"
+      },
+      "shape": "barrel",
+      "color": "#7c3a6b",
+      "source": "framework/configurations/requirement-groups/requirement-group-service-engineering.yaml",
+      "tags": [
+        "service",
+        "requirement-group",
+        "engineering",
+        "optional"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {},
+      "requirements": [
+        {
+          "id": "application-performance-monitoring",
+          "description": "The service may declare how application performance and tracing data is captured.",
+          "rationale": "APM tracing enables latency profiling, distributed trace correlation, and error root-cause analysis beyond what host-level metrics provide.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "externalInteraction",
+              "criteria": {
+                "capability": "01KQQ4Q026-NB1W"
+              },
+              "example": "An APM platform such as a tracing backend or observability service referenced by externalInteractions."
+            },
+            {
+              "mechanism": "internalComponent",
+              "criteria": {
+                "capability": "01KQQ4Q026-NB1W"
+              },
+              "example": "An APM agent or instrumentation library installed as an internalComponent."
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "apm",
+              "example": "A documented statement of the APM approach or a declaration that APM is not applicable."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-NB1W",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "externalInteraction",
+            "internalComponent"
+          ]
+        },
+        {
+          "id": "container-orchestration",
+          "description": "The service may declare its container orchestration runtime when running in a containerized environment.",
+          "rationale": "Container orchestration determines scheduling, scaling, and health management behavior for containerized services.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "internalComponent",
+              "criteria": {
+                "capability": "01KQQ4Q026-GW5D"
+              },
+              "example": "A container orchestration platform (Kubernetes, ECS, Nomad) declared as an internalComponent."
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "containerRuntime",
+              "example": "A documented statement of the container runtime when it cannot be expressed as a catalog internalComponent."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-GW5D",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "internalComponent"
+          ]
+        },
+        {
+          "id": "serverless-runtime",
+          "description": "The service may declare its serverless execution runtime when using a function-as-a-service delivery model.",
+          "rationale": "The serverless runtime determines cold start behavior, concurrency limits, execution duration, and billing model.",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "internalComponent",
+              "criteria": {
+                "capability": "01KQQ4Q026-3ZWJ"
+              },
+              "example": "A serverless platform (AWS Lambda, Azure Functions, Google Cloud Run) declared as an internalComponent."
+            },
+            {
+              "mechanism": "architecturalDecision",
+              "key": "serverlessRuntime",
+              "example": "A documented statement of the serverless execution environment when not catalog-modeled."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "relatedCapability": "01KQQ4Q026-3ZWJ",
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "validAnswerTypes": [
+            "architecturalDecision",
+            "internalComponent"
+          ]
+        }
+      ],
+      "implementations": [],
+      "appliesTo": [
+        "runtime_service",
+        "edge_gateway_service"
+      ],
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 3,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KQQ4Q026-NB1W",
+          "path": "requirements[0].relatedCapability"
+        },
+        {
+          "target": "01KQQ4Q026-GW5D",
+          "path": "requirements[1].relatedCapability"
+        },
+        {
+          "target": "01KQQ4Q026-3ZWJ",
+          "path": "requirements[2].relatedCapability"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "owner",
+          "activation",
+          "appliesTo",
+          "requirements"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "lifecycleStatus",
+          "provider",
+          "authority",
+          "notes",
+          "inherits",
+          "appliesToQualifiers"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "provider": "dict",
+          "authority": "dict",
+          "appliesTo": "list",
+          "requirements": "list",
+          "appliesToQualifiers": "dict"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "activation": [
+            "always",
+            "workspace"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "requirements": "requirement"
+        },
+        "schemaPath": "framework/schemas/requirement-group.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSF29JTP-SRVE\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Service Engineering Practices Requirement Group\",\n  \"description\": \"Optional checklist for self-managed Runtime and Edge/Gateway Services covering advanced observability and runtime patterns. Activated per workspace; does not fire automatically.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"workspace\",\n  \"appliesTo\": [\n    \"runtime_service\",\n    \"edge_gateway_service\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"application-performance-monitoring\",\n      \"description\": \"The service may declare how application performance and tracing data is captured.\",\n      \"rationale\": \"APM tracing enables latency profiling, distributed trace correlation, and error root-cause analysis beyond what host-level metrics provide.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"externalInteraction\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-NB1W\"\n          },\n          \"example\": \"An APM platform such as a tracing backend or observability service referenced by externalInteractions.\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-NB1W\"\n          },\n          \"example\": \"An APM agent or instrumentation library installed as an internalComponent.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"apm\",\n          \"example\": \"A documented statement of the APM approach or a declaration that APM is not applicable.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-NB1W\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"externalInteraction\",\n        \"internalComponent\"\n      ]\n    },\n    {\n      \"id\": \"container-orchestration\",\n      \"description\": \"The service may declare its container orchestration runtime when running in a containerized environment.\",\n      \"rationale\": \"Container orchestration determines scheduling, scaling, and health management behavior for containerized services.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-GW5D\"\n          },\n          \"example\": \"A container orchestration platform (Kubernetes, ECS, Nomad) declared as an internalComponent.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"containerRuntime\",\n          \"example\": \"A documented statement of the container runtime when it cannot be expressed as a catalog internalComponent.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-GW5D\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"internalComponent\"\n      ]\n    },\n    {\n      \"id\": \"serverless-runtime\",\n      \"description\": \"The service may declare its serverless execution runtime when using a function-as-a-service delivery model.\",\n      \"rationale\": \"The serverless runtime determines cold start behavior, concurrency limits, execution duration, and billing model.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-3ZWJ\"\n          },\n          \"example\": \"A serverless platform (AWS Lambda, Azure Functions, Google Cloud Run) declared as an internalComponent.\"\n        },\n        {\n          \"mechanism\": \"architecturalDecision\",\n          \"key\": \"serverlessRuntime\",\n          \"example\": \"A documented statement of the serverless execution environment when not catalog-modeled.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-3ZWJ\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architecturalDecision\",\n        \"internalComponent\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"candidate\",\n  \"tags\": [\n    \"service\",\n    \"requirement-group\",\n    \"engineering\",\n    \"optional\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-service-engineering.yaml\"\n}",
       "existsInCatalog": true
     },
     "01KQQ4Q027-VK45": {
@@ -33993,6 +35992,181 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/technology-component.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK00000F-TC0F\",\n  \"type\": \"technology_component\",\n  \"name\": \"OpenStack Bare Metal Standard Compute Platform\",\n  \"description\": \"Generic bare-metal x86_64 compute substrate used by the OpenStack example service-host patterns.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"technology-component\",\n    \"compute-platform\",\n    \"bare-metal\",\n    \"openstack\"\n  ],\n  \"vendor\": \"Example Infrastructure\",\n  \"productName\": \"Bare Metal x86_64\",\n  \"productVersion\": \"standard\",\n  \"classification\": \"compute-platform\",\n  \"_source\": \"examples/catalog/technology-components/technology-compute-openstack-bare-metal-standard.yaml\"\n}",
+      "existsInCatalog": true
+    },
+    "01KSF29JTP-8YRX": {
+      "id": "01KSF29JTP-8YRX",
+      "uid": "01KSF29JTP-8YRX",
+      "name": "HAProxy 2.9",
+      "aliases": [],
+      "type": "technology_component",
+      "typeLabel": "Technology Component / Software",
+      "filterType": "technology_component",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Open-source TCP/HTTP load balancer and proxy server. Provides high-availability request distribution, health checking, connection pooling, and SSL termination. Used as the primary load balancer for the OpenStack control plane API endpoints.",
+      "version": "1.0.0",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "HAProxy Technologies",
+      "productName": "HAProxy Community Edition",
+      "productVersion": "2.9",
+      "classification": "software",
+      "platformDependency": "",
+      "capabilities": [
+        "01KQQ4Q026-98VD"
+      ],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "platform-engineering",
+        "contact": "platform-engineering@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "ellipse",
+      "color": "#64748b",
+      "source": "examples/catalog/technology-components/technology-haproxy-29.yaml",
+      "tags": [
+        "technology-component",
+        "load-balancer",
+        "haproxy",
+        "openstack"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "externalInteractions": [],
+      "architecturalDecisions": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KQQ4Q026-98VD",
+          "path": "capabilities[0]"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KSF29JTP-9HYA",
+          "path": "primaryTechnologyComponent"
+        },
+        {
+          "source": "01KSF29JTP-9HYA",
+          "path": "internalComponents[0].ref"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "vendor",
+          "productName",
+          "productVersion",
+          "classification",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "ownerRole",
+          "owner",
+          "tags",
+          "subtype",
+          "vendorLifecycle",
+          "platformDependency",
+          "capabilities",
+          "configurations",
+          "networkPlacement",
+          "patchingOwner",
+          "complianceCerts",
+          "controlReferences",
+          "notes"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "vendorLifecycle": "dict",
+          "capabilities": "list",
+          "configurations": "list",
+          "complianceCerts": "list",
+          "controlReferences": "list"
+        },
+        "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "classification": [
+            "operating-system",
+            "compute-platform",
+            "software",
+            "agent"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "configurations": "configuration"
+        },
+        "schemaPath": "framework/schemas/technology-component.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSF29JTP-8YRX\",\n  \"type\": \"technology_component\",\n  \"name\": \"HAProxy 2.9\",\n  \"description\": \"Open-source TCP/HTTP load balancer and proxy server. Provides high-availability request distribution, health checking, connection pooling, and SSL termination. Used as the primary load balancer for the OpenStack control plane API endpoints.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"technology-component\",\n    \"load-balancer\",\n    \"haproxy\",\n    \"openstack\"\n  ],\n  \"vendor\": \"HAProxy Technologies\",\n  \"productName\": \"HAProxy Community Edition\",\n  \"productVersion\": \"2.9\",\n  \"classification\": \"software\",\n  \"vendorLifecycle\": {\n    \"mainstreamSupportEnd\": \"2026-12-31\",\n    \"extendedSupportEnd\": \"2027-12-31\"\n  },\n  \"capabilities\": [\n    \"01KQQ4Q026-98VD\"\n  ],\n  \"_source\": \"examples/catalog/technology-components/technology-haproxy-29.yaml\"\n}",
       "existsInCatalog": true
     },
     "STCK00000E-TC0E": {
@@ -36755,6 +38929,256 @@ window.DRAFT_BROWSER_DATA = {
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q025-Z042\",\n  \"type\": \"technology_component\",\n  \"name\": \"nginx 1.26\",\n  \"description\": \"nginx web server software installed locally on a managed host and used without a required vendor platform interaction.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"tags\": [\n    \"technology-component\",\n    \"software\"\n  ],\n  \"vendor\": \"F5 NGINX\",\n  \"productName\": \"nginx\",\n  \"productVersion\": \"1.26\",\n  \"classification\": \"software\",\n  \"_source\": \"examples/catalog/technology-components/technology-software-nginx-126.yaml\"\n}",
       "existsInCatalog": true
     },
+    "01KSF29JTP-9HYA": {
+      "id": "01KSF29JTP-9HYA",
+      "uid": "01KSF29JTP-9HYA",
+      "name": "OpenStack API Load Balancer",
+      "aliases": [],
+      "type": "edge_gateway_service",
+      "typeLabel": "Edge/Gateway Service / Self Managed",
+      "filterType": "edge_gateway_service",
+      "category": "",
+      "deliveryModel": "self-managed",
+      "domain": "",
+      "description": "HAProxy load balancer co-located on OpenStack controller nodes. Distributes inbound API and dashboard traffic across all active controller nodes in the active-active control plane cluster. Provides health checking, connection queuing, and SSL termination for the OpenStack public network zone.",
+      "version": "1.0.0",
+      "catalogStatus": "approved",
+      "lifecycleStatus": "existing-only",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "platform-engineering",
+        "contact": "platform-engineering@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "diamond",
+      "color": "#2a6fdb",
+      "source": "examples/catalog/edge-gateway-services/edge-gateway-service-openstack-api-lb.yaml",
+      "tags": [
+        "edge-gateway-service",
+        "openstack",
+        "load-balancer",
+        "haproxy",
+        "iaas"
+      ],
+      "ardCategory": "",
+      "internalComponents": [
+        {
+          "ref": "01KSF29JTP-8YRX",
+          "role": "HAProxy Community Edition providing load balancing, health checking, and connection management for the OpenStack control plane.",
+          "configuration": "",
+          "notes": ""
+        },
+        {
+          "ref": "STCK00000F-HS0F",
+          "role": "host",
+          "configuration": "",
+          "notes": ""
+        }
+      ],
+      "externalInteractions": [
+        {
+          "name": "OpenStack API Backends",
+          "capabilities": [],
+          "notes": "HAProxy forwards requests to Nova, Keystone, Glance, Neutron, Cinder, Heat, Horizon, and other API services running on the same controller nodes. Backend health is checked on a 2-second interval."
+        }
+      ],
+      "architecturalDecisions": {
+        "serviceAuthentication": "HAProxy does not authenticate requests itself. Authentication is delegated to backend services (Keystone for API requests, nginx/Django for Horizon). HAProxy operates in pass-through mode for TLS; backends receive forwarded requests with X-Forwarded-For headers.",
+        "secretsManagement": "HAProxy configuration and SSL certificates are managed by configuration management tooling (Ansible). Certificate private keys are stored in the OS certificate store on each controller node. No application-level secrets are held by HAProxy.",
+        "serviceLogging": "HAProxy logs all connections to syslog. Logs include client IP, backend selected, response code, and latency. Forwarded to the centralised log aggregation platform via local log shipper.",
+        "healthWelfareMonitoring": "HAProxy performs active health checks on each backend (nova-api, keystone, glance, neutron, cinder, horizon) on a 2-second interval. Unhealthy backends are removed from rotation automatically. HAProxy statistics socket is exposed for monitoring agent collection.",
+        "availabilityModel": "HAProxy itself runs on all three controller nodes. A shared virtual IP (VIP) managed by Keepalived provides a single entry point. If the active Keepalived master fails, the VIP migrates to a standby within 2 seconds.",
+        "scalabilityModel": "HAProxy is stateless; scaling is achieved by adding controller nodes. Connection limits are tunable per backend.",
+        "recoverabilityModel": "HAProxy process is managed by systemd and restarts automatically on failure. Configuration is managed by configuration management tooling and can be reapplied within minutes.",
+        "failureDomain": "Loss of the active HAProxy instance causes a 2-second VIP failover via Keepalived. Loss of all controller nodes renders the control plane unavailable; data plane (running instances) continues unaffected.",
+        "externalInteractionRationales": {
+          "OpenStack API Backends": "HAProxy forwards inbound requests to the appropriate OpenStack API backend services. Modeled to show the forwarding dependency on the full set of control plane services."
+        }
+      },
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "STCK00000F-HS0F",
+          "path": "host"
+        },
+        {
+          "target": "01KSF29JTP-8YRX",
+          "path": "primaryTechnologyComponent"
+        },
+        {
+          "target": "01KSF29JTP-8YRX",
+          "path": "internalComponents[0].ref"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "deliveryModel",
+          "catalogStatus",
+          "lifecycleStatus"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "ownerRole",
+          "owner",
+          "tags",
+          "host",
+          "primaryTechnologyComponent",
+          "internalComponents",
+          "externalInteractions",
+          "deploymentConfigurations",
+          "vendor",
+          "productName",
+          "productVersion",
+          "capabilities",
+          "configurations",
+          "networkPlacement",
+          "patchingOwner",
+          "dataLeavesInfrastructure",
+          "dataResidencyCommitment",
+          "dpaNotes",
+          "vendorSLA",
+          "authenticationModel",
+          "complianceCerts",
+          "incidentNotificationProcess",
+          "architecturalDecisions",
+          "notes",
+          "requirementGroups",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "internalComponents": "list",
+          "externalInteractions": "list",
+          "deploymentConfigurations": "list",
+          "capabilities": "list",
+          "configurations": "list",
+          "complianceCerts": "list",
+          "dataLeavesInfrastructure": "bool",
+          "architecturalDecisions": "dict",
+          "requirementGroups": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "ownerRole": [
+            "engineer",
+            "technology-admin",
+            "draft-admin"
+          ],
+          "catalogStatus": [
+            "stub",
+            "draft",
+            "approved"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ],
+          "deliveryModel": [
+            "self-managed",
+            "paas",
+            "saas",
+            "appliance"
+          ],
+          "networkPlacement": [
+            "public-facing",
+            "internal",
+            "vpc-private"
+          ],
+          "patchingOwner": [
+            "provider-managed",
+            "organization-scheduled",
+            "vendor-managed",
+            "aws-managed"
+          ],
+          "authenticationModel": [
+            "iam",
+            "api-key",
+            "oauth",
+            "saml",
+            "other",
+            "TBD"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "internalComponents": "internalComponent",
+          "externalInteractions": "externalInteraction",
+          "deploymentConfigurations": "deploymentConfiguration",
+          "configurations": "configuration",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/edge-gateway-service.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSF29JTP-9HYA\",\n  \"type\": \"edge_gateway_service\",\n  \"name\": \"OpenStack API Load Balancer\",\n  \"description\": \"HAProxy load balancer co-located on OpenStack controller nodes. Distributes inbound API and dashboard traffic across all active controller nodes in the active-active control plane cluster. Provides health checking, connection queuing, and SSL termination for the OpenStack public network zone.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"approved\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"edge-gateway-service\",\n    \"openstack\",\n    \"load-balancer\",\n    \"haproxy\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"01KSF29JTP-8YRX\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"HAProxy does not authenticate requests itself. Authentication is delegated to backend services (Keystone for API requests, nginx/Django for Horizon). HAProxy operates in pass-through mode for TLS; backends receive forwarded requests with X-Forwarded-For headers.\",\n    \"secretsManagement\": \"HAProxy configuration and SSL certificates are managed by configuration management tooling (Ansible). Certificate private keys are stored in the OS certificate store on each controller node. No application-level secrets are held by HAProxy.\",\n    \"serviceLogging\": \"HAProxy logs all connections to syslog. Logs include client IP, backend selected, response code, and latency. Forwarded to the centralised log aggregation platform via local log shipper.\",\n    \"healthWelfareMonitoring\": \"HAProxy performs active health checks on each backend (nova-api, keystone, glance, neutron, cinder, horizon) on a 2-second interval. Unhealthy backends are removed from rotation automatically. HAProxy statistics socket is exposed for monitoring agent collection.\",\n    \"availabilityModel\": \"HAProxy itself runs on all three controller nodes. A shared virtual IP (VIP) managed by Keepalived provides a single entry point. If the active Keepalived master fails, the VIP migrates to a standby within 2 seconds.\",\n    \"scalabilityModel\": \"HAProxy is stateless; scaling is achieved by adding controller nodes. Connection limits are tunable per backend.\",\n    \"recoverabilityModel\": \"HAProxy process is managed by systemd and restarts automatically on failure. Configuration is managed by configuration management tooling and can be reapplied within minutes.\",\n    \"failureDomain\": \"Loss of the active HAProxy instance causes a 2-second VIP failover via Keepalived. Loss of all controller nodes renders the control plane unavailable; data plane (running instances) continues unaffected.\",\n    \"externalInteractionRationales\": {\n      \"OpenStack API Backends\": \"HAProxy forwards inbound requests to the appropriate OpenStack API backend services. Modeled to show the forwarding dependency on the full set of control plane services.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"01KSF29JTP-8YRX\",\n      \"role\": \"HAProxy Community Edition providing load balancing, health checking, and connection management for the OpenStack control plane.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"OpenStack API Backends\",\n      \"capabilities\": [],\n      \"notes\": \"HAProxy forwards requests to Nova, Keystone, Glance, Neutron, Cinder, Heat, Horizon, and other API services running on the same controller nodes. Backend health is checked on a 2-second interval.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/edge-gateway-services/edge-gateway-service-openstack-api-lb.yaml\"\n}",
+      "existsInCatalog": true
+    },
     "STCK00000F-HS0F": {
       "id": "STCK00000F-HS0F",
       "uid": "STCK00000F-HS0F",
@@ -36868,6 +39292,10 @@ window.DRAFT_BROWSER_DATA = {
         }
       ],
       "referencedBy": [
+        {
+          "source": "01KSF29JTP-9HYA",
+          "path": "host"
+        },
         {
           "source": "STCK000008-RS08",
           "path": "host"
@@ -39191,6 +41619,7 @@ window.DRAFT_BROWSER_DATA = {
         "recoverabilityModel": "Keystone API processes are recovered via systemd restart. Keystone DB is recovered from MariaDB Galera replication. Fernet key loss requires re-issuance of all active tokens.",
         "failureDomain": "Failure of Keystone renders the entire OpenStack control plane inaccessible as all other services depend on token validation. This is the highest-blast-radius component in the platform.",
         "externalInteractionRationales": {
+          "Keystone Identity": "Keystone is the identity service itself. Intra-service admin operations use the admin endpoint for initial setup and service catalog registration.",
           "Keystone Database": "Keystone persists all identity data (users, projects, roles, endpoints, tokens for UUID mode) to MariaDB. Modeled as a critical dependency.",
           "LDAP Directory": "Optional federation for enterprise identity. Modeled to show the external identity dependency when LDAP backend is configured."
         }
@@ -39357,7 +41786,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/runtime-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000002-RS02\",\n  \"type\": \"runtime_service\",\n  \"name\": \"Keystone Identity Service\",\n  \"description\": \"Self-managed deployment of OpenStack Keystone providing identity, authentication, and authorization services for all OpenStack platform components. Issues scoped tokens used by every other service for request validation. Manages projects, users, roles, groups, and service endpoints. Optionally federates with an external LDAP directory for enterprise identity integration.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"runtime-service\",\n    \"openstack\",\n    \"identity\",\n    \"auth\",\n    \"keystone\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK000002-TC02\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Keystone is the root of trust for all OpenStack API authentication. Keystone itself authenticates administrative users via local credential store or LDAP federation. Bootstrap credentials are managed out-of-band.\",\n    \"secretsManagement\": \"Keystone Fernet token signing keys are stored on the controller nodes and rotated on a scheduled basis. Database credentials are stored in keystone.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"Keystone emits structured logs to /var/log/keystone/. Logs are shipped to the centralised log aggregation platform. Auth failure events are treated as security events and routed to SIEM.\",\n    \"healthWelfareMonitoring\": \"keystone-api health is verified via HTTP endpoint polling on the admin and public endpoints. Token issuance rate and auth failure rate are monitored as platform health indicators.\",\n    \"availabilityModel\": \"Keystone runs active-active across multiple controller nodes behind a load balancer (HAProxy). Loss of a single controller does not interrupt token validation as Fernet tokens are stateless.\",\n    \"scalabilityModel\": \"Keystone scales horizontally by adding API replicas. Fernet token validation is fully stateless and does not require inter-node coordination.\",\n    \"recoverabilityModel\": \"Keystone API processes are recovered via systemd restart. Keystone DB is recovered from MariaDB Galera replication. Fernet key loss requires re-issuance of all active tokens.\",\n    \"failureDomain\": \"Failure of Keystone renders the entire OpenStack control plane inaccessible as all other services depend on token validation. This is the highest-blast-radius component in the platform.\",\n    \"externalInteractionRationales\": {\n      \"Keystone Database\": \"Keystone persists all identity data (users, projects, roles, endpoints, tokens for UUID mode) to MariaDB. Modeled as a critical dependency.\",\n      \"LDAP Directory\": \"Optional federation for enterprise identity. Modeled to show the external identity dependency when LDAP backend is configured.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK000002-TC02\",\n      \"role\": \"Core identity service providing token issuance, project and user management, and service endpoint catalog.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Keystone Identity\",\n      \"capabilities\": [],\n      \"notes\": \"Keystone is the identity service itself. Intra-service admin operations use the admin endpoint with bootstrap credentials.\"\n    },\n    {\n      \"name\": \"Keystone Database\",\n      \"capabilities\": [],\n      \"notes\": \"Keystone persists all identity data including users, projects, roles, assignments, and service endpoints to the Keystone MariaDB schema.\"\n    },\n    {\n      \"name\": \"LDAP Directory\",\n      \"capabilities\": [],\n      \"notes\": \"Optional LDAP backend for enterprise identity federation. When configured, Keystone delegates user and group lookups to the LDAP directory while retaining role assignments locally.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/runtime-services/runtime-service-keystone.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000002-RS02\",\n  \"type\": \"runtime_service\",\n  \"name\": \"Keystone Identity Service\",\n  \"description\": \"Self-managed deployment of OpenStack Keystone providing identity, authentication, and authorization services for all OpenStack platform components. Issues scoped tokens used by every other service for request validation. Manages projects, users, roles, groups, and service endpoints. Optionally federates with an external LDAP directory for enterprise identity integration.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"runtime-service\",\n    \"openstack\",\n    \"identity\",\n    \"auth\",\n    \"keystone\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK000002-TC02\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Keystone is the root of trust for all OpenStack API authentication. Keystone itself authenticates administrative users via local credential store or LDAP federation. Bootstrap credentials are managed out-of-band.\",\n    \"secretsManagement\": \"Keystone Fernet token signing keys are stored on the controller nodes and rotated on a scheduled basis. Database credentials are stored in keystone.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"Keystone emits structured logs to /var/log/keystone/. Logs are shipped to the centralised log aggregation platform. Auth failure events are treated as security events and routed to SIEM.\",\n    \"healthWelfareMonitoring\": \"keystone-api health is verified via HTTP endpoint polling on the admin and public endpoints. Token issuance rate and auth failure rate are monitored as platform health indicators.\",\n    \"availabilityModel\": \"Keystone runs active-active across multiple controller nodes behind a load balancer (HAProxy). Loss of a single controller does not interrupt token validation as Fernet tokens are stateless.\",\n    \"scalabilityModel\": \"Keystone scales horizontally by adding API replicas. Fernet token validation is fully stateless and does not require inter-node coordination.\",\n    \"recoverabilityModel\": \"Keystone API processes are recovered via systemd restart. Keystone DB is recovered from MariaDB Galera replication. Fernet key loss requires re-issuance of all active tokens.\",\n    \"failureDomain\": \"Failure of Keystone renders the entire OpenStack control plane inaccessible as all other services depend on token validation. This is the highest-blast-radius component in the platform.\",\n    \"externalInteractionRationales\": {\n      \"Keystone Identity\": \"Keystone is the identity service itself. Intra-service admin operations use the admin endpoint for initial setup and service catalog registration.\",\n      \"Keystone Database\": \"Keystone persists all identity data (users, projects, roles, endpoints, tokens for UUID mode) to MariaDB. Modeled as a critical dependency.\",\n      \"LDAP Directory\": \"Optional federation for enterprise identity. Modeled to show the external identity dependency when LDAP backend is configured.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK000002-TC02\",\n      \"role\": \"Core identity service providing token issuance, project and user management, and service endpoint catalog.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Keystone Identity\",\n      \"capabilities\": [],\n      \"notes\": \"Keystone is the identity service itself. Intra-service admin operations use the admin endpoint with bootstrap credentials.\"\n    },\n    {\n      \"name\": \"Keystone Database\",\n      \"capabilities\": [],\n      \"notes\": \"Keystone persists all identity data including users, projects, roles, assignments, and service endpoints to the Keystone MariaDB schema.\"\n    },\n    {\n      \"name\": \"LDAP Directory\",\n      \"capabilities\": [],\n      \"notes\": \"Optional LDAP backend for enterprise identity federation. When configured, Keystone delegates user and group lookups to the LDAP directory while retaining role assignments locally.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/runtime-services/runtime-service-keystone.yaml\"\n}",
       "existsInCatalog": true
     },
     "STCK000004-RS04": {
@@ -40020,7 +42449,8 @@ window.DRAFT_BROWSER_DATA = {
         "recoverabilityModel": "RabbitMQ cluster nodes are recovered via systemd restart. Quorum queue state is automatically resynchronised on node rejoin. Messages published with delivery guarantees are not lost during single-node failure.",
         "failureDomain": "Loss of RabbitMQ quorum (majority of cluster nodes) causes all OpenStack services using AMQP to stop processing background tasks. nova-api, neutron-api, cinder-api, and other REST endpoints continue to function for read-only operations but write operations that require background processing are queued or fail.",
         "externalInteractionRationales": {
-          "RabbitMQ Service": "RabbitMQ is the broker itself. Internal management operations use the management API on the local cluster."
+          "RabbitMQ Service": "RabbitMQ is the broker itself. Internal management operations use the management API on the local cluster.",
+          "Keystone Identity": "All API requests to the RabbitMQ management plugin are authenticated via Keystone token validation when the OpenStack Keystone auth backend is configured."
         }
       },
       "requirements": [],
@@ -40185,7 +42615,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/runtime-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK00000D-RS0D\",\n  \"type\": \"runtime_service\",\n  \"name\": \"RabbitMQ Message Broker Service\",\n  \"description\": \"Self-managed deployment of RabbitMQ serving as the shared AMQP message broker for the OpenStack control plane. Provides the message transport layer for Nova, Neutron, Cinder, Heat, Ceilometer, Ironic, and Trove. Deployed as a 3-node RabbitMQ cluster with quorum queues for durability. All OpenStack services connect to RabbitMQ using dedicated virtual hosts and credentials.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"runtime-service\",\n    \"messaging\",\n    \"amqp\",\n    \"rabbitmq\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000D-TC0D\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"OpenStack services authenticate to RabbitMQ using per-service AMQP credentials (username and password) configured in each service's conf file. The RabbitMQ management interface is protected by separate admin credentials.\",\n    \"secretsManagement\": \"RabbitMQ service credentials are stored in each OpenStack service's conf file, managed by configuration management tooling. RabbitMQ admin credentials are stored in the platform secrets vault.\",\n    \"serviceLogging\": \"RabbitMQ emits logs to /var/log/rabbitmq/. Logs are shipped to the centralised log aggregation platform. Queue depth and connection metrics are captured via the RabbitMQ management plugin.\",\n    \"healthWelfareMonitoring\": \"RabbitMQ cluster health is monitored via the management API. Queue depth, consumer counts, connection counts, and node membership are monitored. Alerts fire when queues exceed depth thresholds or when cluster nodes are lost.\",\n    \"availabilityModel\": \"RabbitMQ runs as a 3-node cluster with quorum queues for message durability. The cluster tolerates loss of one node (majority quorum). All OpenStack services reconnect automatically on node failure.\",\n    \"scalabilityModel\": \"RabbitMQ capacity scales by adding nodes to the cluster. Message throughput scales with additional queue sharding. OpenStack services use connection pools to distribute load across cluster nodes.\",\n    \"recoverabilityModel\": \"RabbitMQ cluster nodes are recovered via systemd restart. Quorum queue state is automatically resynchronised on node rejoin. Messages published with delivery guarantees are not lost during single-node failure.\",\n    \"failureDomain\": \"Loss of RabbitMQ quorum (majority of cluster nodes) causes all OpenStack services using AMQP to stop processing background tasks. nova-api, neutron-api, cinder-api, and other REST endpoints continue to function for read-only operations but write operations that require background processing are queued or fail.\",\n    \"externalInteractionRationales\": {\n      \"RabbitMQ Service\": \"RabbitMQ is the broker itself. Internal management operations use the management API on the local cluster.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000D-TC0D\",\n      \"role\": \"Core AMQP message broker providing exchange and queue management, clustering, and quorum queue durability for all OpenStack services.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Keystone Identity\",\n      \"capabilities\": [],\n      \"notes\": \"All API requests authenticated via Keystone token validation. RabbitMQ management API uses its own credential model; service connections use AMQP credentials configured per service.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/runtime-services/runtime-service-rabbitmq.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK00000D-RS0D\",\n  \"type\": \"runtime_service\",\n  \"name\": \"RabbitMQ Message Broker Service\",\n  \"description\": \"Self-managed deployment of RabbitMQ serving as the shared AMQP message broker for the OpenStack control plane. Provides the message transport layer for Nova, Neutron, Cinder, Heat, Ceilometer, Ironic, and Trove. Deployed as a 3-node RabbitMQ cluster with quorum queues for durability. All OpenStack services connect to RabbitMQ using dedicated virtual hosts and credentials.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"runtime-service\",\n    \"messaging\",\n    \"amqp\",\n    \"rabbitmq\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000D-TC0D\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"OpenStack services authenticate to RabbitMQ using per-service AMQP credentials (username and password) configured in each service's conf file. The RabbitMQ management interface is protected by separate admin credentials.\",\n    \"secretsManagement\": \"RabbitMQ service credentials are stored in each OpenStack service's conf file, managed by configuration management tooling. RabbitMQ admin credentials are stored in the platform secrets vault.\",\n    \"serviceLogging\": \"RabbitMQ emits logs to /var/log/rabbitmq/. Logs are shipped to the centralised log aggregation platform. Queue depth and connection metrics are captured via the RabbitMQ management plugin.\",\n    \"healthWelfareMonitoring\": \"RabbitMQ cluster health is monitored via the management API. Queue depth, consumer counts, connection counts, and node membership are monitored. Alerts fire when queues exceed depth thresholds or when cluster nodes are lost.\",\n    \"availabilityModel\": \"RabbitMQ runs as a 3-node cluster with quorum queues for message durability. The cluster tolerates loss of one node (majority quorum). All OpenStack services reconnect automatically on node failure.\",\n    \"scalabilityModel\": \"RabbitMQ capacity scales by adding nodes to the cluster. Message throughput scales with additional queue sharding. OpenStack services use connection pools to distribute load across cluster nodes.\",\n    \"recoverabilityModel\": \"RabbitMQ cluster nodes are recovered via systemd restart. Quorum queue state is automatically resynchronised on node rejoin. Messages published with delivery guarantees are not lost during single-node failure.\",\n    \"failureDomain\": \"Loss of RabbitMQ quorum (majority of cluster nodes) causes all OpenStack services using AMQP to stop processing background tasks. nova-api, neutron-api, cinder-api, and other REST endpoints continue to function for read-only operations but write operations that require background processing are queued or fail.\",\n    \"externalInteractionRationales\": {\n      \"RabbitMQ Service\": \"RabbitMQ is the broker itself. Internal management operations use the management API on the local cluster.\",\n      \"Keystone Identity\": \"All API requests to the RabbitMQ management plugin are authenticated via Keystone token validation when the OpenStack Keystone auth backend is configured.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000D-TC0D\",\n      \"role\": \"Core AMQP message broker providing exchange and queue management, clustering, and quorum queue durability for all OpenStack services.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Keystone Identity\",\n      \"capabilities\": [],\n      \"notes\": \"All API requests authenticated via Keystone token validation. RabbitMQ management API uses its own credential model; service connections use AMQP credentials configured per service.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/runtime-services/runtime-service-rabbitmq.yaml\"\n}",
       "existsInCatalog": true
     },
     "STCK00000B-RS0B": {
@@ -41026,7 +43456,7 @@ window.DRAFT_BROWSER_DATA = {
       "authority": {},
       "shape": "diamond",
       "color": "#2a6fdb",
-      "source": "examples/catalog/data-store-services/data-at-rest-cinder-database.yaml",
+      "source": "examples/catalog/data-store-services/data-store-service-cinder-database.yaml",
       "tags": [
         "data-at-rest",
         "openstack",
@@ -41069,6 +43499,7 @@ window.DRAFT_BROWSER_DATA = {
         "failureDomain": "Loss of the Cinder database prevents volume provisioning and management operations. Existing attached volumes continue to function via direct iSCSI connections between compute nodes and storage backend.",
         "backup": {
           "strategy": "Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.",
+          "platform": "Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.",
           "rto": "2 hours for full restore; near-zero for Galera node failure.",
           "rpo": "4 hours maximum; near-zero for Galera replication."
         },
@@ -41081,7 +43512,9 @@ window.DRAFT_BROWSER_DATA = {
         "accessControl": {
           "model": "Role-based database access. Cinder service account has DML access to the cinder schema only."
         },
-        "externalInteractionRationales": {}
+        "externalInteractionRationales": {
+          "Backup Service": "Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to show the external backup platform dependency."
+        }
       },
       "requirements": [],
       "implementations": [],
@@ -41245,7 +43678,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/data-store-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000005-DAR5\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Cinder Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Cinder for persisting all block storage service state. Stores volume records, snapshot records, attachment records, volume type definitions, backend service state, quota allocations, and encryption key references. The actual block data resides on the storage backend (iSCSI targets, SAN/NAS). Loss of this database orphans volumes on the storage backend but does not destroy block data.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"cinder\",\n    \"block-storage\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Cinder connects to its database schema using a dedicated MariaDB service account with credentials configured in cinder.conf.\",\n    \"secretsManagement\": \"Database credentials stored in cinder.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Cinder schema are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status. Volume operation latency and attachment record counts are tracked as health indicators.\",\n    \"availabilityModel\": \"Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.\",\n    \"scalabilityModel\": \"The Cinder schema grows with the number of volumes and snapshots. Purging of deleted resource records is recommended for large deployments.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Schema migrations applied via cinder-manage db sync. Orphaned volumes on the storage backend require manual reconciliation after restore.\",\n    \"failureDomain\": \"Loss of the Cinder database prevents volume provisioning and management operations. Existing attached volumes continue to function via direct iSCSI connections between compute nodes and storage backend.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.\",\n      \"rto\": \"2 hours for full restore; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Cinder schema. Volume encryption keys are managed by Barbican (when deployed).\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access. Cinder service account has DML access to the cinder schema only.\"\n    },\n    \"externalInteractionRationales\": {}\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Cinder block storage state schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-at-rest-cinder-database.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000005-DAR5\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Cinder Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Cinder for persisting all block storage service state. Stores volume records, snapshot records, attachment records, volume type definitions, backend service state, quota allocations, and encryption key references. The actual block data resides on the storage backend (iSCSI targets, SAN/NAS). Loss of this database orphans volumes on the storage backend but does not destroy block data.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"cinder\",\n    \"block-storage\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Cinder connects to its database schema using a dedicated MariaDB service account with credentials configured in cinder.conf.\",\n    \"secretsManagement\": \"Database credentials stored in cinder.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Cinder schema are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status. Volume operation latency and attachment record counts are tracked as health indicators.\",\n    \"availabilityModel\": \"Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.\",\n    \"scalabilityModel\": \"The Cinder schema grows with the number of volumes and snapshots. Purging of deleted resource records is recommended for large deployments.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Schema migrations applied via cinder-manage db sync. Orphaned volumes on the storage backend require manual reconciliation after restore.\",\n    \"failureDomain\": \"Loss of the Cinder database prevents volume provisioning and management operations. Existing attached volumes continue to function via direct iSCSI connections between compute nodes and storage backend.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.\",\n      \"platform\": \"Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.\",\n      \"rto\": \"2 hours for full restore; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Cinder schema. Volume encryption keys are managed by Barbican (when deployed).\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access. Cinder service account has DML access to the cinder schema only.\"\n    },\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to show the external backup platform dependency.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Cinder block storage state schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-store-service-cinder-database.yaml\"\n}",
       "existsInCatalog": true
     },
     "STCK000003-DAR3": {
@@ -41295,7 +43728,7 @@ window.DRAFT_BROWSER_DATA = {
       "authority": {},
       "shape": "diamond",
       "color": "#2a6fdb",
-      "source": "examples/catalog/data-store-services/data-at-rest-glance-database.yaml",
+      "source": "examples/catalog/data-store-services/data-store-service-glance-database.yaml",
       "tags": [
         "data-at-rest",
         "openstack",
@@ -41338,6 +43771,7 @@ window.DRAFT_BROWSER_DATA = {
         "failureDomain": "Loss of the Glance database prevents image metadata operations. Image binary data in Swift is unaffected. Nova instance provisioning fails as it cannot look up image metadata.",
         "backup": {
           "strategy": "Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.",
+          "platform": "Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.",
           "rto": "2 hours for full restore; near-zero for Galera node failure.",
           "rpo": "4 hours maximum; near-zero for Galera replication."
         },
@@ -41350,7 +43784,9 @@ window.DRAFT_BROWSER_DATA = {
         "accessControl": {
           "model": "Role-based database access. Glance service account has DML access to the glance schema only."
         },
-        "externalInteractionRationales": {}
+        "externalInteractionRationales": {
+          "Backup Service": "Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to show the external backup platform dependency."
+        }
       },
       "requirements": [],
       "implementations": [],
@@ -41514,7 +43950,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/data-store-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000003-DAR3\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Glance Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Glance for persisting virtual machine image metadata. Stores image records including name, format, size, checksum, visibility (public/private/shared), and storage location references. Image binary data is stored separately in the Swift storage cluster. Loss of this database orphans image binaries in Swift but does not destroy binary data.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"glance\",\n    \"image\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Glance connects to its database schema using a dedicated MariaDB service account with credentials configured in glance-api.conf.\",\n    \"secretsManagement\": \"Database credentials stored in glance-api.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Glance schema are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status. Image count and metadata query latency are tracked as health indicators.\",\n    \"availabilityModel\": \"Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.\",\n    \"scalabilityModel\": \"The Glance schema is typically low-volume (image metadata only). Scales within the shared Galera cluster.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Schema migrations applied via glance-manage db_sync.\",\n    \"failureDomain\": \"Loss of the Glance database prevents image metadata operations. Image binary data in Swift is unaffected. Nova instance provisioning fails as it cannot look up image metadata.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.\",\n      \"rto\": \"2 hours for full restore; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Glance schema.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access. Glance service account has DML access to the glance schema only.\"\n    },\n    \"externalInteractionRationales\": {}\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Glance image metadata schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-at-rest-glance-database.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000003-DAR3\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Glance Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Glance for persisting virtual machine image metadata. Stores image records including name, format, size, checksum, visibility (public/private/shared), and storage location references. Image binary data is stored separately in the Swift storage cluster. Loss of this database orphans image binaries in Swift but does not destroy binary data.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"glance\",\n    \"image\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Glance connects to its database schema using a dedicated MariaDB service account with credentials configured in glance-api.conf.\",\n    \"secretsManagement\": \"Database credentials stored in glance-api.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Glance schema are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status. Image count and metadata query latency are tracked as health indicators.\",\n    \"availabilityModel\": \"Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.\",\n    \"scalabilityModel\": \"The Glance schema is typically low-volume (image metadata only). Scales within the shared Galera cluster.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Schema migrations applied via glance-manage db_sync.\",\n    \"failureDomain\": \"Loss of the Glance database prevents image metadata operations. Image binary data in Swift is unaffected. Nova instance provisioning fails as it cannot look up image metadata.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.\",\n      \"platform\": \"Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.\",\n      \"rto\": \"2 hours for full restore; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Glance schema.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access. Glance service account has DML access to the glance schema only.\"\n    },\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to show the external backup platform dependency.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Glance image metadata schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-store-service-glance-database.yaml\"\n}",
       "existsInCatalog": true
     },
     "STCK000002-DAR2": {
@@ -41564,7 +44000,7 @@ window.DRAFT_BROWSER_DATA = {
       "authority": {},
       "shape": "diamond",
       "color": "#2a6fdb",
-      "source": "examples/catalog/data-store-services/data-at-rest-keystone-database.yaml",
+      "source": "examples/catalog/data-store-services/data-store-service-keystone-database.yaml",
       "tags": [
         "data-at-rest",
         "openstack",
@@ -41607,6 +44043,7 @@ window.DRAFT_BROWSER_DATA = {
         "failureDomain": "Loss of the Keystone database is a platform-wide outage. All other OpenStack services lose the ability to validate tokens and refuse new API requests. This schema has the highest blast radius of any database in the platform.",
         "backup": {
           "strategy": "Automated daily full backup using Percona XtraBackup with binlog-based incremental backups every hour (higher frequency than other schemas due to criticality). Backups are written to object storage and replicated off-site.",
+          "platform": "Percona XtraBackup writing to Swift object storage with off-site replication. Higher-frequency and replicated due to Keystone's platform-critical status.",
           "rto": "1 hour for full schema restore; near-zero for Galera node failure.",
           "rpo": "1 hour maximum data loss; near-zero for Galera replication failure."
         },
@@ -41619,7 +44056,9 @@ window.DRAFT_BROWSER_DATA = {
         "accessControl": {
           "model": "Role-based database access control. Keystone service account has DML access to the keystone schema only. DBA team access via SSH-tunnelled connections with MFA required."
         },
-        "externalInteractionRationales": {}
+        "externalInteractionRationales": {
+          "Backup Service": "Percona XtraBackup automated backup writes point-in-time backups to Swift object storage with off-site replication. Keystone is the highest-criticality schema; backup frequency and replication are elevated accordingly."
+        }
       },
       "requirements": [],
       "implementations": [],
@@ -41783,7 +44222,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/data-store-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000002-DAR2\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Keystone Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Keystone for persisting all identity service data. Stores users, groups, projects, domains, roles, role assignments, service endpoints, credentials, and Fernet key metadata. This is the highest-criticality database schema in the OpenStack platform; its loss renders all services inaccessible.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"keystone\",\n    \"identity\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Keystone connects to its database schema using a dedicated MariaDB service account with credentials configured in keystone.conf. Access is restricted to the Keystone service account.\",\n    \"secretsManagement\": \"Database credentials are stored in keystone.conf managed by configuration management tooling. Fernet signing keys are managed separately and rotated on a scheduled basis.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Keystone schema are shipped to the centralised log aggregation platform. High-volume read operations on the token/endpoint tables are tracked.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health is monitored via wsrep status variables. Keystone DB health is verified by keystone-manage doctor. Endpoint table access latency is a key health indicator.\",\n    \"availabilityModel\": \"The Keystone database is hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability. The Keystone DB is the most critical schema \\u2014 Galera quorum is non-negotiable.\",\n    \"scalabilityModel\": \"Read load on the Keystone schema is high as all services validate tokens. Read scaling is achieved via ProxySQL read replicas or caching layers (e.g. Memcached for token validation).\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Point-in-time recovery from automated backups. Schema migrations applied via keystone-manage db_sync.\",\n    \"failureDomain\": \"Loss of the Keystone database is a platform-wide outage. All other OpenStack services lose the ability to validate tokens and refuse new API requests. This schema has the highest blast radius of any database in the platform.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with binlog-based incremental backups every hour (higher frequency than other schemas due to criticality). Backups are written to object storage and replicated off-site.\",\n      \"rto\": \"1 hour for full schema restore; near-zero for Galera node failure.\",\n      \"rpo\": \"1 hour maximum data loss; near-zero for Galera replication failure.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy. Quorum requires at least 2 of 3 nodes.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled. Keystone schema tablespace-level encryption applied. Credential fields additionally encrypted at application layer by Keystone.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access control. Keystone service account has DML access to the keystone schema only. DBA team access via SSH-tunnelled connections with MFA required.\"\n    },\n    \"externalInteractionRationales\": {}\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Keystone identity schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling with hourly incremental backups writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-at-rest-keystone-database.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000002-DAR2\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Keystone Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Keystone for persisting all identity service data. Stores users, groups, projects, domains, roles, role assignments, service endpoints, credentials, and Fernet key metadata. This is the highest-criticality database schema in the OpenStack platform; its loss renders all services inaccessible.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"keystone\",\n    \"identity\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Keystone connects to its database schema using a dedicated MariaDB service account with credentials configured in keystone.conf. Access is restricted to the Keystone service account.\",\n    \"secretsManagement\": \"Database credentials are stored in keystone.conf managed by configuration management tooling. Fernet signing keys are managed separately and rotated on a scheduled basis.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Keystone schema are shipped to the centralised log aggregation platform. High-volume read operations on the token/endpoint tables are tracked.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health is monitored via wsrep status variables. Keystone DB health is verified by keystone-manage doctor. Endpoint table access latency is a key health indicator.\",\n    \"availabilityModel\": \"The Keystone database is hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability. The Keystone DB is the most critical schema \\u2014 Galera quorum is non-negotiable.\",\n    \"scalabilityModel\": \"Read load on the Keystone schema is high as all services validate tokens. Read scaling is achieved via ProxySQL read replicas or caching layers (e.g. Memcached for token validation).\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Point-in-time recovery from automated backups. Schema migrations applied via keystone-manage db_sync.\",\n    \"failureDomain\": \"Loss of the Keystone database is a platform-wide outage. All other OpenStack services lose the ability to validate tokens and refuse new API requests. This schema has the highest blast radius of any database in the platform.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with binlog-based incremental backups every hour (higher frequency than other schemas due to criticality). Backups are written to object storage and replicated off-site.\",\n      \"platform\": \"Percona XtraBackup writing to Swift object storage with off-site replication. Higher-frequency and replicated due to Keystone's platform-critical status.\",\n      \"rto\": \"1 hour for full schema restore; near-zero for Galera node failure.\",\n      \"rpo\": \"1 hour maximum data loss; near-zero for Galera replication failure.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy. Quorum requires at least 2 of 3 nodes.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled. Keystone schema tablespace-level encryption applied. Credential fields additionally encrypted at application layer by Keystone.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access control. Keystone service account has DML access to the keystone schema only. DBA team access via SSH-tunnelled connections with MFA required.\"\n    },\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Percona XtraBackup automated backup writes point-in-time backups to Swift object storage with off-site replication. Keystone is the highest-criticality schema; backup frequency and replication are elevated accordingly.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Keystone identity schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling with hourly incremental backups writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-store-service-keystone-database.yaml\"\n}",
       "existsInCatalog": true
     },
     "STCK000004-DAR4": {
@@ -41833,7 +44272,7 @@ window.DRAFT_BROWSER_DATA = {
       "authority": {},
       "shape": "diamond",
       "color": "#2a6fdb",
-      "source": "examples/catalog/data-store-services/data-at-rest-neutron-database.yaml",
+      "source": "examples/catalog/data-store-services/data-store-service-neutron-database.yaml",
       "tags": [
         "data-at-rest",
         "openstack",
@@ -41876,6 +44315,7 @@ window.DRAFT_BROWSER_DATA = {
         "failureDomain": "Loss of the Neutron database prevents network provisioning operations (new ports, router updates, floating IP assignment). Existing network connectivity on the data plane is unaffected as it is programmed in the kernel/OVS tables.",
         "backup": {
           "strategy": "Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.",
+          "platform": "Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.",
           "rto": "2 hours for full restore; near-zero for Galera node failure.",
           "rpo": "4 hours maximum; near-zero for Galera replication."
         },
@@ -41888,7 +44328,9 @@ window.DRAFT_BROWSER_DATA = {
         "accessControl": {
           "model": "Role-based database access. Neutron service account has DML access to the neutron schema only."
         },
-        "externalInteractionRationales": {}
+        "externalInteractionRationales": {
+          "Backup Service": "Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to show the external backup platform dependency."
+        }
       },
       "requirements": [],
       "implementations": [],
@@ -42052,7 +44494,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/data-store-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000004-DAR4\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Neutron Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Neutron for persisting all network service state. Stores virtual networks, subnets, ports, routers, floating IPs, security groups, security group rules, load balancers, and ML2 plugin state. This is one of the higher-volume schemas due to the number of ports created per instance during compute operations.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"neutron\",\n    \"networking\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Neutron connects to its database schema using a dedicated MariaDB service account with credentials configured in neutron.conf.\",\n    \"secretsManagement\": \"Database credentials stored in neutron.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Neutron schema are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status. Port allocation rate and ML2 plugin query latency are tracked as health indicators.\",\n    \"availabilityModel\": \"Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.\",\n    \"scalabilityModel\": \"The Neutron schema grows with the number of ports, networks, and security group rules. Archival of deleted resource records is recommended for large deployments.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Virtual network configuration is rebuilt from database state on neutron-agent restart. Schema migrations applied via neutron-db-manage upgrade.\",\n    \"failureDomain\": \"Loss of the Neutron database prevents network provisioning operations (new ports, router updates, floating IP assignment). Existing network connectivity on the data plane is unaffected as it is programmed in the kernel/OVS tables.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.\",\n      \"rto\": \"2 hours for full restore; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Neutron schema.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access. Neutron service account has DML access to the neutron schema only.\"\n    },\n    \"externalInteractionRationales\": {}\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Neutron network state schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-at-rest-neutron-database.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000004-DAR4\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Neutron Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Neutron for persisting all network service state. Stores virtual networks, subnets, ports, routers, floating IPs, security groups, security group rules, load balancers, and ML2 plugin state. This is one of the higher-volume schemas due to the number of ports created per instance during compute operations.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"neutron\",\n    \"networking\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Neutron connects to its database schema using a dedicated MariaDB service account with credentials configured in neutron.conf.\",\n    \"secretsManagement\": \"Database credentials stored in neutron.conf managed by configuration management tooling.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs for the Neutron schema are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status. Port allocation rate and ML2 plugin query latency are tracked as health indicators.\",\n    \"availabilityModel\": \"Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.\",\n    \"scalabilityModel\": \"The Neutron schema grows with the number of ports, networks, and security group rules. Archival of deleted resource records is recommended for large deployments.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Virtual network configuration is rebuilt from database state on neutron-agent restart. Schema migrations applied via neutron-db-manage upgrade.\",\n    \"failureDomain\": \"Loss of the Neutron database prevents network provisioning operations (new ports, router updates, floating IP assignment). Existing network connectivity on the data plane is unaffected as it is programmed in the kernel/OVS tables.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to object storage.\",\n      \"platform\": \"Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.\",\n      \"rto\": \"2 hours for full restore; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Neutron schema.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access. Neutron service account has DML access to the neutron schema only.\"\n    },\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to show the external backup platform dependency.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Neutron network state schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-store-service-neutron-database.yaml\"\n}",
       "existsInCatalog": true
     },
     "STCK000001-DAR1": {
@@ -42137,7 +44579,7 @@ window.DRAFT_BROWSER_DATA = {
       "authority": {},
       "shape": "diamond",
       "color": "#2a6fdb",
-      "source": "examples/catalog/data-store-services/data-at-rest-nova-database.yaml",
+      "source": "examples/catalog/data-store-services/data-store-service-nova-database.yaml",
       "tags": [
         "data-at-rest",
         "openstack",
@@ -42379,7 +44821,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/data-store-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000001-DAR1\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Nova Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Nova for persisting all compute service state. Stores instance records, flavor definitions, host aggregates, cell mappings, scheduler hints, migration records, and quota allocations. Hosted within the shared MariaDB Galera cluster on the OpenStack controller nodes.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"nova\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Nova connects to its database schema using a dedicated MariaDB service account with credentials configured in nova.conf. Access is restricted to the Nova service account; no shared credentials with other OpenStack services.\",\n    \"secretsManagement\": \"Database credentials are stored in nova.conf managed by configuration management tooling. Credentials are not rotated automatically; rotation requires planned maintenance.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs are captured for the Nova schema. Logs are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health is monitored via wsrep status variables. Nova DB schema health is verified by the nova-manage db check command. Replication lag is monitored across Galera nodes.\",\n    \"availabilityModel\": \"The Nova database is hosted in a 3-node MariaDB Galera cluster with synchronous multi-master replication. Loss of one Galera node does not interrupt database availability. HAProxy routes all DB connections to the active primary.\",\n    \"scalabilityModel\": \"The Nova schema is contained within the shared Galera cluster. Read scaling is achieved via ProxySQL read replicas. Write scaling requires Galera cluster expansion.\",\n    \"recoverabilityModel\": \"Data is recovered from MariaDB Galera replication in the event of node failure. Point-in-time recovery is available from automated backups. Nova schema migrations are applied via nova-manage db sync.\",\n    \"failureDomain\": \"Loss of the Nova database schema renders the Nova compute service unable to process API requests. Running instances are not immediately affected but instance lifecycle operations (start, stop, delete) fail until DB is restored.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with binlog-based incremental backups every 4 hours. Backups are written to object storage.\",\n      \"platform\": \"Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target. Backup jobs are managed by a cron schedule on a dedicated backup controller node.\",\n      \"rto\": \"2 hours for full schema restore from backup; near-zero for Galera node failure with surviving quorum.\",\n      \"rpo\": \"4 hours maximum data loss in worst-case scenario (binlog backup window); near-zero for Galera replication failure.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy for connection routing. Quorum requires at least 2 of 3 nodes.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption is enabled using the file_key_management plugin. Tablespace-level encryption is applied to the Nova schema.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access control. Nova service account has DML access to the nova schema only. Root access is restricted to DBA team members via SSH-tunnelled connections.\"\n    },\n    \"access_control_model\": \"Role-based database access control. Nova service account has DML access to the nova schema only. Root access is restricted to DBA team members via SSH-tunnelled connections. No shared credentials between OpenStack services.\",\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Percona XtraBackup automated backup writes point-in-time backups to object storage. Modeled to show the external backup dependency and recovery boundary.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Nova schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [\n    \"01KQQ4Q027-T3CA\"\n  ],\n  \"requirementImplementations\": [\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.00.2.1.access-control-model\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"field\",\n      \"key\": \"architecturalDecisions.accessControl.model\",\n      \"notes\": \"Access control model is role-based; Nova service account has DML-only access to the nova schema. Documented in architecturalDecisions.accessControl.\"\n    },\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.10.2.1\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"field\",\n      \"key\": \"architecturalDecisions.backup.strategy\",\n      \"notes\": \"Backup strategy, RTO (2h), and RPO (4h) are documented in architecturalDecisions.backup.\"\n    },\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.04.1.1\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"architecturalDecision\",\n      \"key\": \"access_control_model\",\n      \"notes\": \"Database access control model is documented in architecturalDecisions.accessControl. MariaDB role-based access restricts the Nova service account to its own schema.\"\n    },\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.04.4.1.access-control-model\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"architecturalDecision\",\n      \"key\": \"access_control_model\",\n      \"notes\": \"MariaDB user model enforces schema-level isolation. Service accounts for each OpenStack service are scoped to their own schema only.\"\n    }\n  ],\n  \"_source\": \"examples/catalog/data-store-services/data-at-rest-nova-database.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000001-DAR1\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Nova Database\",\n  \"description\": \"MariaDB database schema dedicated to OpenStack Nova for persisting all compute service state. Stores instance records, flavor definitions, host aggregates, cell mappings, scheduler hints, migration records, and quota allocations. Hosted within the shared MariaDB Galera cluster on the OpenStack controller nodes.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"nova\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Nova connects to its database schema using a dedicated MariaDB service account with credentials configured in nova.conf. Access is restricted to the Nova service account; no shared credentials with other OpenStack services.\",\n    \"secretsManagement\": \"Database credentials are stored in nova.conf managed by configuration management tooling. Credentials are not rotated automatically; rotation requires planned maintenance.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs are captured for the Nova schema. Logs are shipped to the centralised log aggregation platform.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health is monitored via wsrep status variables. Nova DB schema health is verified by the nova-manage db check command. Replication lag is monitored across Galera nodes.\",\n    \"availabilityModel\": \"The Nova database is hosted in a 3-node MariaDB Galera cluster with synchronous multi-master replication. Loss of one Galera node does not interrupt database availability. HAProxy routes all DB connections to the active primary.\",\n    \"scalabilityModel\": \"The Nova schema is contained within the shared Galera cluster. Read scaling is achieved via ProxySQL read replicas. Write scaling requires Galera cluster expansion.\",\n    \"recoverabilityModel\": \"Data is recovered from MariaDB Galera replication in the event of node failure. Point-in-time recovery is available from automated backups. Nova schema migrations are applied via nova-manage db sync.\",\n    \"failureDomain\": \"Loss of the Nova database schema renders the Nova compute service unable to process API requests. Running instances are not immediately affected but instance lifecycle operations (start, stop, delete) fail until DB is restored.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup with binlog-based incremental backups every 4 hours. Backups are written to object storage.\",\n      \"platform\": \"Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target. Backup jobs are managed by a cron schedule on a dedicated backup controller node.\",\n      \"rto\": \"2 hours for full schema restore from backup; near-zero for Galera node failure with surviving quorum.\",\n      \"rpo\": \"4 hours maximum data loss in worst-case scenario (binlog backup window); near-zero for Galera replication failure.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy for connection routing. Quorum requires at least 2 of 3 nodes.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption is enabled using the file_key_management plugin. Tablespace-level encryption is applied to the Nova schema.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access control. Nova service account has DML access to the nova schema only. Root access is restricted to DBA team members via SSH-tunnelled connections.\"\n    },\n    \"access_control_model\": \"Role-based database access control. Nova service account has DML access to the nova schema only. Root access is restricted to DBA team members via SSH-tunnelled connections. No shared credentials between OpenStack services.\",\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Percona XtraBackup automated backup writes point-in-time backups to object storage. Modeled to show the external backup dependency and recovery boundary.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the relational database engine for the Nova schema.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [\n    \"01KQQ4Q027-T3CA\"\n  ],\n  \"requirementImplementations\": [\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.00.2.1.access-control-model\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"field\",\n      \"key\": \"architecturalDecisions.accessControl.model\",\n      \"notes\": \"Access control model is role-based; Nova service account has DML-only access to the nova schema. Documented in architecturalDecisions.accessControl.\"\n    },\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.10.2.1\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"field\",\n      \"key\": \"architecturalDecisions.backup.strategy\",\n      \"notes\": \"Backup strategy, RTO (2h), and RPO (4h) are documented in architecturalDecisions.backup.\"\n    },\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.04.1.1\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"architecturalDecision\",\n      \"key\": \"access_control_model\",\n      \"notes\": \"Database access control model is documented in architecturalDecisions.accessControl. MariaDB role-based access restricts the Nova service account to its own schema.\"\n    },\n    {\n      \"requirementGroup\": \"01KQQ4Q027-T3CA\",\n      \"requirementId\": \"CC.SecurityCompliance.04.4.1.access-control-model\",\n      \"status\": \"satisfied\",\n      \"mechanism\": \"architecturalDecision\",\n      \"key\": \"access_control_model\",\n      \"notes\": \"MariaDB user model enforces schema-level isolation. Service accounts for each OpenStack service are scoped to their own schema only.\"\n    }\n  ],\n  \"_source\": \"examples/catalog/data-store-services/data-store-service-nova-database.yaml\"\n}",
       "existsInCatalog": true
     },
     "STCK000007-DAR7": {
@@ -42429,7 +44871,7 @@ window.DRAFT_BROWSER_DATA = {
       "authority": {},
       "shape": "diamond",
       "color": "#2a6fdb",
-      "source": "examples/catalog/data-store-services/data-at-rest-openstack-shared-database.yaml",
+      "source": "examples/catalog/data-store-services/data-store-service-openstack-shared-database.yaml",
       "tags": [
         "data-at-rest",
         "openstack",
@@ -42475,6 +44917,7 @@ window.DRAFT_BROWSER_DATA = {
         "failureDomain": "Loss of this database cluster affects Heat, Ironic, Trove, Sahara, and Ceilometer simultaneously. In-progress orchestration stacks, bare metal provisioning, and database service operations are disrupted. Running Nova instances, networks, and Cinder volumes are not affected.",
         "backup": {
           "strategy": "Automated daily full backup using Percona XtraBackup for all schemas in this cluster, with 4-hourly incremental backups. Backups written to object storage. Each schema is exported as a separate logical backup for granular restore.",
+          "platform": "Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target. Per-schema logical exports allow targeted restore without full cluster recovery.",
           "rto": "2 hours for full cluster restore; per-schema restore in 30-60 minutes; near-zero for Galera node failure.",
           "rpo": "4 hours maximum; near-zero for Galera replication failure."
         },
@@ -42487,7 +44930,9 @@ window.DRAFT_BROWSER_DATA = {
         "accessControl": {
           "model": "Role-based database access control with schema-level isolation. Each service has a dedicated account with DML access to its own schema only. Cross-schema access is denied at the DB grant level."
         },
-        "externalInteractionRationales": {}
+        "externalInteractionRationales": {
+          "Backup Service": "Percona XtraBackup automated backup writes per-schema logical backups to Swift object storage. Modeled to show the external backup platform dependency."
+        }
       },
       "requirements": [],
       "implementations": [],
@@ -42655,7 +45100,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/data-store-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000007-DAR7\",\n  \"type\": \"data_store_service\",\n  \"name\": \"OpenStack Shared Database\",\n  \"description\": \"Shared MariaDB database cluster hosting the schemas for OpenStack services that do not warrant dedicated database objects at this modeling granularity: Heat, Ironic, Trove, Sahara, and Ceilometer. Each service maintains its own isolated schema (database) within the shared cluster. This consolidation is appropriate for medium-scale deployments; large-scale deployments may separate schemas to dedicated clusters.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"heat\",\n    \"ironic\",\n    \"trove\",\n    \"sahara\",\n    \"ceilometer\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Each OpenStack service (Heat, Ironic, Trove, Sahara, Ceilometer) connects to its own dedicated schema using a per-service MariaDB service account. Credentials are configured in each service's conf file. Schema isolation prevents cross-service data access at the database layer.\",\n    \"secretsManagement\": \"Per-service database credentials are stored in each service's conf file managed by configuration management tooling. All credentials are distinct; compromise of one service's credentials does not expose other schemas.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs are aggregated across schemas and shipped to the centralised log aggregation platform. Per-schema query patterns are monitored separately.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status variables. Per-schema query latency and connection counts are tracked. Galera replication lag across all three nodes is monitored.\",\n    \"availabilityModel\": \"The shared cluster runs as a 3-node MariaDB Galera cluster with synchronous multi-master replication. Loss of one node does not interrupt availability. All five service schemas share the same Galera quorum.\",\n    \"scalabilityModel\": \"Each schema grows independently with its service's workload. The Ceilometer schema tends to be the highest-volume due to metric collection. Schema separation within the cluster allows per-schema tuning and archival policies.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Each schema is backed up independently. Schema migrations are applied per service (heat-manage db_sync, ironic-dbsync, etc.).\",\n    \"failureDomain\": \"Loss of this database cluster affects Heat, Ironic, Trove, Sahara, and Ceilometer simultaneously. In-progress orchestration stacks, bare metal provisioning, and database service operations are disrupted. Running Nova instances, networks, and Cinder volumes are not affected.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup for all schemas in this cluster, with 4-hourly incremental backups. Backups written to object storage. Each schema is exported as a separate logical backup for granular restore.\",\n      \"rto\": \"2 hours for full cluster restore; per-schema restore in 30-60 minutes; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication failure.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy for connection routing. Quorum requires at least 2 of 3 nodes.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption across all schemas in this cluster.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access control with schema-level isolation. Each service has a dedicated account with DML access to its own schema only. Cross-schema access is denied at the DB grant level.\"\n    },\n    \"externalInteractionRationales\": {}\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the shared relational database engine for Heat, Ironic, Trove, Sahara, and Ceilometer schemas.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling with per-schema logical exports writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-at-rest-openstack-shared-database.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000007-DAR7\",\n  \"type\": \"data_store_service\",\n  \"name\": \"OpenStack Shared Database\",\n  \"description\": \"Shared MariaDB database cluster hosting the schemas for OpenStack services that do not warrant dedicated database objects at this modeling granularity: Heat, Ironic, Trove, Sahara, and Ceilometer. Each service maintains its own isolated schema (database) within the shared cluster. This consolidation is appropriate for medium-scale deployments; large-scale deployments may separate schemas to dedicated clusters.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"heat\",\n    \"ironic\",\n    \"trove\",\n    \"sahara\",\n    \"ceilometer\",\n    \"database\",\n    \"mariadb\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK00000E-TC0E\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"Each OpenStack service (Heat, Ironic, Trove, Sahara, Ceilometer) connects to its own dedicated schema using a per-service MariaDB service account. Credentials are configured in each service's conf file. Schema isolation prevents cross-service data access at the database layer.\",\n    \"secretsManagement\": \"Per-service database credentials are stored in each service's conf file managed by configuration management tooling. All credentials are distinct; compromise of one service's credentials does not expose other schemas.\",\n    \"serviceLogging\": \"MariaDB slow query logs and error logs are aggregated across schemas and shipped to the centralised log aggregation platform. Per-schema query patterns are monitored separately.\",\n    \"healthWelfareMonitoring\": \"MariaDB Galera cluster health monitored via wsrep status variables. Per-schema query latency and connection counts are tracked. Galera replication lag across all three nodes is monitored.\",\n    \"availabilityModel\": \"The shared cluster runs as a 3-node MariaDB Galera cluster with synchronous multi-master replication. Loss of one node does not interrupt availability. All five service schemas share the same Galera quorum.\",\n    \"scalabilityModel\": \"Each schema grows independently with its service's workload. The Ceilometer schema tends to be the highest-volume due to metric collection. Schema separation within the cluster allows per-schema tuning and archival policies.\",\n    \"recoverabilityModel\": \"Data recovered from MariaDB Galera replication. Each schema is backed up independently. Schema migrations are applied per service (heat-manage db_sync, ironic-dbsync, etc.).\",\n    \"failureDomain\": \"Loss of this database cluster affects Heat, Ironic, Trove, Sahara, and Ceilometer simultaneously. In-progress orchestration stacks, bare metal provisioning, and database service operations are disrupted. Running Nova instances, networks, and Cinder volumes are not affected.\",\n    \"backup\": {\n      \"strategy\": \"Automated daily full backup using Percona XtraBackup for all schemas in this cluster, with 4-hourly incremental backups. Backups written to object storage. Each schema is exported as a separate logical backup for granular restore.\",\n      \"platform\": \"Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target. Per-schema logical exports allow targeted restore without full cluster recovery.\",\n      \"rto\": \"2 hours for full cluster restore; per-schema restore in 30-60 minutes; near-zero for Galera node failure.\",\n      \"rpo\": \"4 hours maximum; near-zero for Galera replication failure.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"MariaDB Galera cluster with 3 synchronous replicas and HAProxy for connection routing. Quorum requires at least 2 of 3 nodes.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"MariaDB data-at-rest encryption enabled with tablespace-level encryption across all schemas in this cluster.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Role-based database access control with schema-level isolation. Each service has a dedicated account with DML access to its own schema only. Cross-schema access is denied at the DB grant level.\"\n    },\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Percona XtraBackup automated backup writes per-schema logical backups to Swift object storage. Modeled to show the external backup platform dependency.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK00000E-TC0E\",\n      \"role\": \"MariaDB Galera cluster providing the shared relational database engine for Heat, Ironic, Trove, Sahara, and Ceilometer schemas.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling with per-schema logical exports writing to object storage.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-store-service-openstack-shared-database.yaml\"\n}",
       "existsInCatalog": true
     },
     "STCK000006-DAR6": {
@@ -42705,7 +45150,7 @@ window.DRAFT_BROWSER_DATA = {
       "authority": {},
       "shape": "diamond",
       "color": "#2a6fdb",
-      "source": "examples/catalog/data-store-services/data-at-rest-swift-storage-cluster.yaml",
+      "source": "examples/catalog/data-store-services/data-store-service-swift-storage-cluster.yaml",
       "tags": [
         "data-at-rest",
         "openstack",
@@ -42746,6 +45191,7 @@ window.DRAFT_BROWSER_DATA = {
         "failureDomain": "Loss of a minority of storage nodes reduces capacity and resilience but does not cause data loss. Loss of a majority of nodes holding a given replica set causes data unavailability for affected objects. Cluster-wide failures require hardware recovery.",
         "backup": {
           "strategy": "Object durability is achieved through 3x replication across storage nodes distributed across separate failure domains. For critical data, cross-region replication via Swift replication can be configured. Traditional backup is not applicable for the object storage cluster itself.",
+          "platform": "Swift's native 3x replication ring serves as the durability platform. No external backup tooling is applied to Swift itself; the replication ring IS the backup mechanism for object data.",
           "rto": "Near-zero for node failures with surviving replicas; hours for full cluster rebuild from hardware.",
           "rpo": "Near-zero \u2014 synchronous replication ensures no data loss for confirmed writes."
         },
@@ -42758,7 +45204,9 @@ window.DRAFT_BROWSER_DATA = {
         "accessControl": {
           "model": "Access control is enforced at the Swift proxy layer via Keystone ACLs. Containers have ACLs defining read and write permissions per project and user. Storage nodes are not directly accessible to tenants."
         },
-        "externalInteractionRationales": {}
+        "externalInteractionRationales": {
+          "Backup Service": "Swift's replication ring provides native object durability. The Backup Service interaction represents the operational tooling used to verify ring consistency and node health, not a traditional backup agent."
+        }
       },
       "requirements": [],
       "implementations": [],
@@ -42922,7 +45370,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/data-store-service.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000006-DAR6\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Swift Storage Cluster\",\n  \"description\": \"OpenStack Swift object storage cluster providing durable, distributed storage for unstructured data. Consists of multiple storage nodes running swift-account, swift-container, and swift-object daemons. Uses consistent hashing and configurable replication (default 3 replicas) for durability without a single point of failure. Primary consumers are Glance (image binaries) and tenants using the S3-compatible object storage API directly.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"swift\",\n    \"object-storage\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK000006-TC06\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"All access to Swift storage nodes is via the swift-proxy-server which enforces Keystone authentication. Direct access to storage nodes is restricted at the network level to the proxy tier only.\",\n    \"secretsManagement\": \"Storage node configuration is managed by configuration management tooling. Ring files are distributed to all nodes. No per-tenant secrets are stored on storage nodes.\",\n    \"serviceLogging\": \"Swift storage daemons emit access and error logs. Logs are shipped to the centralised log aggregation platform. Replication logs are monitored for data consistency.\",\n    \"healthWelfareMonitoring\": \"Swift cluster health is monitored via swift-recon and swift-dispersion-report. Per-node disk usage, replication completeness, and async pending counts are tracked. Alerts fire on disk failures, replication lag, and capacity thresholds.\",\n    \"availabilityModel\": \"Swift uses a shared-nothing distributed architecture. Object reads and writes are distributed across storage nodes using consistent hashing. Failure of storage nodes reduces available capacity but does not interrupt access as long as replica quorum is maintained.\",\n    \"scalabilityModel\": \"Storage capacity scales by adding storage nodes and rebalancing the Swift ring. The cluster supports horizontal scale-out to petabyte capacity. No downtime is required for ring rebalancing.\",\n    \"recoverabilityModel\": \"Data durability is provided by the replication factor (default 3). Lost storage nodes are replaced and data is automatically replicated to restore the replication factor. There is no traditional backup/restore for object data \\u2014 durability comes from replication.\",\n    \"failureDomain\": \"Loss of a minority of storage nodes reduces capacity and resilience but does not cause data loss. Loss of a majority of nodes holding a given replica set causes data unavailability for affected objects. Cluster-wide failures require hardware recovery.\",\n    \"backup\": {\n      \"strategy\": \"Object durability is achieved through 3x replication across storage nodes distributed across separate failure domains. For critical data, cross-region replication via Swift replication can be configured. Traditional backup is not applicable for the object storage cluster itself.\",\n      \"rto\": \"Near-zero for node failures with surviving replicas; hours for full cluster rebuild from hardware.\",\n      \"rpo\": \"Near-zero \\u2014 synchronous replication ensures no data loss for confirmed writes.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"Consistent hashing ring with 3x replication factor. Reads and writes are distributed across nodes. No single master \\u2014 all nodes are peers. Quorum reads/writes ensure consistency.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"Swift supports server-side encryption using the Keymaster and KMIP middleware. When enabled, all object data is encrypted with per-object keys before writing to disk.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Access control is enforced at the Swift proxy layer via Keystone ACLs. Containers have ACLs defining read and write permissions per project and user. Storage nodes are not directly accessible to tenants.\"\n    },\n    \"externalInteractionRationales\": {}\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK000006-TC06\",\n      \"role\": \"Swift storage cluster providing distributed object storage with account, container, and object daemons across all storage nodes.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Swift cluster itself serves as an object storage target for OpenStack service backups. Cross-region Swift replication is used for off-site durability of critical object data.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-at-rest-swift-storage-cluster.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000006-DAR6\",\n  \"type\": \"data_store_service\",\n  \"name\": \"Swift Storage Cluster\",\n  \"description\": \"OpenStack Swift object storage cluster providing durable, distributed storage for unstructured data. Consists of multiple storage nodes running swift-account, swift-container, and swift-object daemons. Uses consistent hashing and configurable replication (default 3 replicas) for durability without a single point of failure. Primary consumers are Glance (image binaries) and tenants using the S3-compatible object storage API directly.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"draft\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"data-at-rest\",\n    \"openstack\",\n    \"swift\",\n    \"object-storage\",\n    \"iaas\"\n  ],\n  \"deliveryModel\": \"self-managed\",\n  \"host\": \"STCK00000F-HS0F\",\n  \"primaryTechnologyComponent\": \"STCK000006-TC06\",\n  \"architecturalDecisions\": {\n    \"serviceAuthentication\": \"All access to Swift storage nodes is via the swift-proxy-server which enforces Keystone authentication. Direct access to storage nodes is restricted at the network level to the proxy tier only.\",\n    \"secretsManagement\": \"Storage node configuration is managed by configuration management tooling. Ring files are distributed to all nodes. No per-tenant secrets are stored on storage nodes.\",\n    \"serviceLogging\": \"Swift storage daemons emit access and error logs. Logs are shipped to the centralised log aggregation platform. Replication logs are monitored for data consistency.\",\n    \"healthWelfareMonitoring\": \"Swift cluster health is monitored via swift-recon and swift-dispersion-report. Per-node disk usage, replication completeness, and async pending counts are tracked. Alerts fire on disk failures, replication lag, and capacity thresholds.\",\n    \"availabilityModel\": \"Swift uses a shared-nothing distributed architecture. Object reads and writes are distributed across storage nodes using consistent hashing. Failure of storage nodes reduces available capacity but does not interrupt access as long as replica quorum is maintained.\",\n    \"scalabilityModel\": \"Storage capacity scales by adding storage nodes and rebalancing the Swift ring. The cluster supports horizontal scale-out to petabyte capacity. No downtime is required for ring rebalancing.\",\n    \"recoverabilityModel\": \"Data durability is provided by the replication factor (default 3). Lost storage nodes are replaced and data is automatically replicated to restore the replication factor. There is no traditional backup/restore for object data \\u2014 durability comes from replication.\",\n    \"failureDomain\": \"Loss of a minority of storage nodes reduces capacity and resilience but does not cause data loss. Loss of a majority of nodes holding a given replica set causes data unavailability for affected objects. Cluster-wide failures require hardware recovery.\",\n    \"backup\": {\n      \"strategy\": \"Object durability is achieved through 3x replication across storage nodes distributed across separate failure domains. For critical data, cross-region replication via Swift replication can be configured. Traditional backup is not applicable for the object storage cluster itself.\",\n      \"platform\": \"Swift's native 3x replication ring serves as the durability platform. No external backup tooling is applied to Swift itself; the replication ring IS the backup mechanism for object data.\",\n      \"rto\": \"Near-zero for node failures with surviving replicas; hours for full cluster rebuild from hardware.\",\n      \"rpo\": \"Near-zero \\u2014 synchronous replication ensures no data loss for confirmed writes.\"\n    },\n    \"ha\": {\n      \"mechanism\": \"Consistent hashing ring with 3x replication factor. Reads and writes are distributed across nodes. No single master \\u2014 all nodes are peers. Quorum reads/writes ensure consistency.\"\n    },\n    \"encryption\": {\n      \"atRest\": \"Swift supports server-side encryption using the Keymaster and KMIP middleware. When enabled, all object data is encrypted with per-object keys before writing to disk.\"\n    },\n    \"accessControl\": {\n      \"model\": \"Access control is enforced at the Swift proxy layer via Keystone ACLs. Containers have ACLs defining read and write permissions per project and user. Storage nodes are not directly accessible to tenants.\"\n    },\n    \"externalInteractionRationales\": {\n      \"Backup Service\": \"Swift's replication ring provides native object durability. The Backup Service interaction represents the operational tooling used to verify ring consistency and node health, not a traditional backup agent.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"STCK000006-TC06\",\n      \"role\": \"Swift storage cluster providing distributed object storage with account, container, and object daemons across all storage nodes.\"\n    }\n  ],\n  \"externalInteractions\": [\n    {\n      \"name\": \"Backup Service\",\n      \"capabilities\": [],\n      \"notes\": \"Swift cluster itself serves as an object storage target for OpenStack service backups. Cross-region Swift replication is used for off-site durability of critical object data.\"\n    }\n  ],\n  \"requirementGroups\": [],\n  \"requirementImplementations\": [],\n  \"_source\": \"examples/catalog/data-store-services/data-store-service-swift-storage-cluster.yaml\"\n}",
       "existsInCatalog": true
     },
     "01KSE5V73Z-Q0A0": {
@@ -44562,6 +47010,7 @@ window.DRAFT_BROWSER_DATA = {
     "decision_record",
     "domain",
     "drafting_session",
+    "edge_gateway_service",
     "host",
     "object_patch",
     "product_component",
@@ -44882,6 +47331,10 @@ window.DRAFT_BROWSER_DATA = {
         "path": "capabilities[0]"
       },
       {
+        "source": "01KSF29JTP-8YRX",
+        "path": "capabilities[0]"
+      },
+      {
         "source": "01KQQ4Q025-T7B7",
         "path": "externalInteractions[2].capabilities[0]"
       }
@@ -44968,6 +47421,68 @@ window.DRAFT_BROWSER_DATA = {
         "path": "requirements[3].relatedCapability"
       }
     ],
+    "01KQQ4Q026-S5J6": [
+      {
+        "source": "01KSF4NHSP-8HPP",
+        "path": "requirements[0].relatedCapability"
+      },
+      {
+        "source": "01KQQ4Q027-SGHR",
+        "path": "capabilities[3]"
+      }
+    ],
+    "01KQQ4Q026-RTWC": [
+      {
+        "source": "01KSF4NHSP-8HPP",
+        "path": "requirements[1].relatedCapability"
+      },
+      {
+        "source": "01KQQ4Q027-SGHR",
+        "path": "capabilities[2]"
+      }
+    ],
+    "01KQQ4Q026-QC9S": [
+      {
+        "source": "01KSF4NHSP-8HPP",
+        "path": "requirements[2].relatedCapability"
+      },
+      {
+        "source": "01KQQ4Q027-SGHR",
+        "path": "capabilities[0]"
+      }
+    ],
+    "01KQQ4Q026-58Q3": [
+      {
+        "source": "01KSF4NHSP-8HPP",
+        "path": "requirements[3].relatedCapability"
+      },
+      {
+        "source": "01KQQ4Q027-SGHR",
+        "path": "capabilities[1]"
+      }
+    ],
+    "01KQQ4Q026-9K8G": [
+      {
+        "source": "01KSF4NHSP-HCPX",
+        "path": "requirements[0].relatedCapability"
+      },
+      {
+        "source": "01KQQ4Q027-ZTHF",
+        "path": "capabilities[0]"
+      },
+      {
+        "source": "01KQQ4Q025-9NNQ",
+        "path": "target"
+      },
+      {
+        "source": "01KQQ4Q025-1XDE",
+        "path": "externalInteractions[0].capabilities[0]"
+      },
+      {
+        "source": "01KQQ4Q025-T7B7",
+        "path": "capabilities[0]"
+      }
+    ],
     "01KQQ4Q026-QM2X": [
       {
         "source": "01KQQ4Q027-THYN",
@@ -44996,79 +47511,41 @@ window.DRAFT_BROWSER_DATA = {
         "path": "target"
       }
     ],
-    "01KQQ4Q026-9K8G": [
-      {
-        "source": "01KQQ4Q027-ZTHF",
-        "path": "capabilities[0]"
-      },
-      {
-        "source": "01KQQ4Q025-9NNQ",
-        "path": "target"
-      },
-      {
-        "source": "01KQQ4Q025-1XDE",
-        "path": "externalInteractions[0].capabilities[0]"
-      },
-      {
-        "source": "01KQQ4Q025-T7B7",
-        "path": "capabilities[0]"
-      }
-    ],
-    "01KQQ4Q026-3ZWJ": [
-      {
-        "source": "01KQQ4Q027-ZTHF",
-        "path": "capabilities[3]"
-      }
-    ],
-    "01KQQ4Q026-GW5D": [
-      {
-        "source": "01KQQ4Q027-ZTHF",
-        "path": "capabilities[4]"
-      }
-    ],
     "01KQQ4Q026-NB1W": [
+      {
+        "source": "01KSF29JTP-SRVE",
+        "path": "requirements[0].relatedCapability"
+      },
       {
         "source": "01KQQ4Q027-C213",
         "path": "capabilities[3]"
       }
     ],
-    "01KQQ4Q026-QC9S": [
+    "01KQQ4Q026-GW5D": [
       {
-        "source": "01KQQ4Q027-SGHR",
-        "path": "capabilities[0]"
+        "source": "01KSF29JTP-SRVE",
+        "path": "requirements[1].relatedCapability"
+      },
+      {
+        "source": "01KQQ4Q027-ZTHF",
+        "path": "capabilities[4]"
       }
     ],
-    "01KQQ4Q026-58Q3": [
+    "01KQQ4Q026-3ZWJ": [
       {
-        "source": "01KQQ4Q027-SGHR",
-        "path": "capabilities[1]"
-      }
-    ],
-    "01KQQ4Q026-RTWC": [
+        "source": "01KSF29JTP-SRVE",
+        "path": "requirements[2].relatedCapability"
+      },
       {
-        "source": "01KQQ4Q027-SGHR",
-        "path": "capabilities[2]"
-      }
-    ],
-    "01KQQ4Q026-S5J6": [
-      {
-        "source": "01KQQ4Q027-SGHR",
+        "source": "01KQQ4Q027-ZTHF",
         "path": "capabilities[3]"
       }
     ],
-    "STCK00000F-TC0F": [
-      {
-        "source": "STCK00000F-HS0F",
-        "path": "computePlatformComponent"
-      }
-    ],
-    "01KQQ4Q025-T7B7": [
-      {
-        "source": "01KQQ4Q025-1XDE",
-        "path": "internalComponents[0].ref"
-      }
-    ],
     "STCK00000F-HS0F": [
+      {
+        "source": "01KSF29JTP-9HYA",
+        "path": "host"
+      },
       {
         "source": "STCK000008-RS08",
         "path": "host"
@@ -45148,6 +47625,28 @@ window.DRAFT_BROWSER_DATA = {
       {
         "source": "STCK000006-DAR6",
         "path": "host"
+      }
+    ],
+    "01KSF29JTP-8YRX": [
+      {
+        "source": "01KSF29JTP-9HYA",
+        "path": "primaryTechnologyComponent"
+      },
+      {
+        "source": "01KSF29JTP-9HYA",
+        "path": "internalComponents[0].ref"
+      }
+    ],
+    "STCK00000F-TC0F": [
+      {
+        "source": "STCK00000F-HS0F",
+        "path": "computePlatformComponent"
+      }
+    ],
+    "01KQQ4Q025-T7B7": [
+      {
+        "source": "01KQQ4Q025-1XDE",
+        "path": "internalComponents[0].ref"
       }
     ],
     "STCK000009-TC09": [
@@ -45601,6 +48100,38 @@ window.DRAFT_BROWSER_DATA = {
         "requirementCount": 5
       },
       {
+        "id": "01KSF4NHSP-8HPP",
+        "uid": "01KSF4NHSP-8HPP",
+        "name": "Engineering Quality Requirement Group",
+        "activation": "workspace",
+        "catalogStatus": "approved",
+        "provider": {},
+        "authority": {
+          "name": "DRAFT Framework",
+          "shortName": "DRAFT",
+          "source": "DRAFT Framework"
+        },
+        "active": false,
+        "description": "Optional checklist for ProductComponents covering build quality, test coverage, and performance validation practices. Activated per workspace; does not fire automatically.",
+        "requirementCount": 4
+      },
+      {
+        "id": "01KSF4NHSP-HCPX",
+        "uid": "01KSF4NHSP-HCPX",
+        "name": "Host Compute Profile Requirement Group",
+        "activation": "workspace",
+        "catalogStatus": "approved",
+        "provider": {},
+        "authority": {
+          "name": "DRAFT Framework",
+          "shortName": "DRAFT",
+          "source": "DRAFT Framework"
+        },
+        "active": false,
+        "description": "Optional checklist for Hosts covering compute type classification. Activated per workspace; does not fire automatically.",
+        "requirementCount": 1
+      },
+      {
         "id": "01KQQ4Q027-THYN",
         "uid": "01KQQ4Q027-THYN",
         "name": "Host Requirement Group",
@@ -45755,6 +48286,22 @@ window.DRAFT_BROWSER_DATA = {
         "active": false,
         "description": "Structured checklist of required questions and answers used to define complete and correct self-managed Runtime and Edge/Gateway Services; Data-at-Rest Services inherit these service behavior requirements.",
         "requirementCount": 10
+      },
+      {
+        "id": "01KSF29JTP-SRVE",
+        "uid": "01KSF29JTP-SRVE",
+        "name": "Service Engineering Practices Requirement Group",
+        "activation": "workspace",
+        "catalogStatus": "approved",
+        "provider": {},
+        "authority": {
+          "name": "DRAFT Framework",
+          "shortName": "DRAFT",
+          "source": "DRAFT Framework"
+        },
+        "active": false,
+        "description": "Optional checklist for self-managed Runtime and Edge/Gateway Services covering advanced observability and runtime patterns. Activated per workspace; does not fire automatically.",
+        "requirementCount": 3
       },
       {
         "id": "01KQQ4Q027-VK45",

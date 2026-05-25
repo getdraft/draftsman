@@ -54,6 +54,8 @@ architecturalDecisions:
   externalInteractionRationales:
     RabbitMQ Service: RabbitMQ is the broker itself. Internal management operations
       use the management API on the local cluster.
+    Keystone Identity: All API requests to the RabbitMQ management plugin are authenticated
+      via Keystone token validation when the OpenStack Keystone auth backend is configured.
 internalComponents:
 - ref: STCK00000D-TC0D
   role: Core AMQP message broker providing exchange and queue management, clustering,

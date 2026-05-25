@@ -1,0 +1,84 @@
+schemaVersion: '1.0'
+uid: 01KSF29JTP-SRVE
+type: requirement_group
+name: Service Engineering Practices Requirement Group
+description: Optional checklist for self-managed Runtime and Edge/Gateway Services covering advanced observability and runtime patterns. Activated per workspace; does not fire automatically.
+version: 1.0.0
+catalogStatus: approved
+owner:
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+authority:
+  name: DRAFT Framework
+  shortName: DRAFT
+  source: DRAFT Framework
+activation: workspace
+appliesTo:
+- runtime_service
+- edge_gateway_service
+requirements:
+- id: application-performance-monitoring
+  description: The service may declare how application performance and tracing data is captured.
+  rationale: APM tracing enables latency profiling, distributed trace correlation, and error root-cause analysis beyond what host-level metrics provide.
+  canBeSatisfiedBy:
+  - mechanism: externalInteraction
+    criteria:
+      capability: 01KQQ4Q026-NB1W
+    example: An APM platform such as a tracing backend or observability service referenced by externalInteractions.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KQQ4Q026-NB1W
+    example: An APM agent or instrumentation library installed as an internalComponent.
+  - mechanism: architecturalDecision
+    key: apm
+    example: A documented statement of the APM approach or a declaration that APM is not applicable.
+  minimumSatisfactions: 1
+  relatedCapability: 01KQQ4Q026-NB1W
+  requirementMode: mandatory
+  naAllowed: true
+  validAnswerTypes:
+  - architecturalDecision
+  - externalInteraction
+  - internalComponent
+- id: container-orchestration
+  description: The service may declare its container orchestration runtime when running in a containerized environment.
+  rationale: Container orchestration determines scheduling, scaling, and health management behavior for containerized services.
+  canBeSatisfiedBy:
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KQQ4Q026-GW5D
+    example: A container orchestration platform (Kubernetes, ECS, Nomad) declared as an internalComponent.
+  - mechanism: architecturalDecision
+    key: containerRuntime
+    example: A documented statement of the container runtime when it cannot be expressed as a catalog internalComponent.
+  minimumSatisfactions: 1
+  relatedCapability: 01KQQ4Q026-GW5D
+  requirementMode: mandatory
+  naAllowed: true
+  validAnswerTypes:
+  - architecturalDecision
+  - internalComponent
+- id: serverless-runtime
+  description: The service may declare its serverless execution runtime when using a function-as-a-service delivery model.
+  rationale: The serverless runtime determines cold start behavior, concurrency limits, execution duration, and billing model.
+  canBeSatisfiedBy:
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KQQ4Q026-3ZWJ
+    example: A serverless platform (AWS Lambda, Azure Functions, Google Cloud Run) declared as an internalComponent.
+  - mechanism: architecturalDecision
+    key: serverlessRuntime
+    example: A documented statement of the serverless execution environment when not catalog-modeled.
+  minimumSatisfactions: 1
+  relatedCapability: 01KQQ4Q026-3ZWJ
+  requirementMode: mandatory
+  naAllowed: true
+  validAnswerTypes:
+  - architecturalDecision
+  - internalComponent
+lifecycleStatus: candidate
+tags:
+- service
+- requirement-group
+- engineering
+- optional
