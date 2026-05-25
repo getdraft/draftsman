@@ -744,24 +744,21 @@ and capabilities.
 
 ## Pre-Write Review
 
-Before writing any proposal to the workspace, the Draftsman validates it against
-the framework schemas in a temporary copy of the workspace. A proposal is only
-written to disk when the preview validation passes.
-
-A review card for each proposal shows:
+Before applying proposals, the Draftsman runs a pre-flight check against the
+framework schemas in a temporary copy of the workspace and shows the user a
+review card for each proposal:
 
 - Artifact type, name, and target path
-- Schema-required fields present or missing
-- Validation status (pass / fail)
-- Actionable repair step for each failure
+- Validation status and any current gaps
+- Actionable repair step for each failure (from the Validation Repair Procedures
+  section below)
 
-If any proposal fails preview validation, all proposals in the batch are held.
-No files are written to the workspace. The Draftsman presents the failure and
-the applicable repair procedure from the Validation Repair Procedures section
-below, then re-drafts the corrected YAML before offering to apply again.
+Stub and draft objects are expected to have gaps — those appear as warnings and
+do not block the write. The pre-flight check is advisory: it shows the author
+the current state so they can decide whether to apply now or address gaps first.
 
-Do not silently apply proposals that would fail validation. The user must see
-the validation result before any file lands in the workspace.
+Do not present raw validator output to the user. Translate failures and warnings
+into plain-language summaries using the Validation Repair Procedures table.
 
 ## Validation Repair Procedures
 

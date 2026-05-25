@@ -186,7 +186,7 @@ class DraftsmanTests(unittest.TestCase):
         self.assertNotIn("content", public["proposals"][0])
 
 
-    def test_apply_proposals_blocked_when_content_would_fail_validator(self) -> None:
+    def test_apply_proposals_writes_draft_files_and_reports_validation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory) / "workspace"
             workspace.mkdir()
@@ -203,22 +203,22 @@ class DraftsmanTests(unittest.TestCase):
             session = engine.session_store.load(None)
             session["proposals"] = [
                 {
-                    "id": "bad-tech",
+                    "id": "stub-tech",
                     "action": "create",
                     "artifactType": "Technology Component",
-                    "name": "Bad Technology",
-                    "summary": "Missing required uid field.",
-                    "path": "catalog/technology-components/technology-bad.yaml",
+                    "name": "Stub Technology",
+                    "summary": "Incomplete stub — uid will be repaired before approval.",
+                    "path": "catalog/technology-components/technology-stub.yaml",
                     "content": textwrap.dedent(
                         """
                         schemaVersion: "1.0"
                         type: technology_component
-                        name: Bad Technology
+                        name: Stub Technology
                         vendor: Test Vendor
-                        productName: Bad Tech
+                        productName: Stub Tech
                         productVersion: "1"
                         classification: software
-                        catalogStatus: draft
+                        catalogStatus: stub
                         """
                     ).strip()
                     + "\n",
@@ -229,10 +229,10 @@ class DraftsmanTests(unittest.TestCase):
 
             result = engine.apply_proposals(session["id"])
 
-        self.assertTrue(result.get("preWriteFailure"))
-        self.assertFalse(result["validation"]["ok"])
-        target = workspace / "catalog" / "technology-components" / "technology-bad.yaml"
-        self.assertFalse(target.exists())
+            target = workspace / "catalog" / "technology-components" / "technology-stub.yaml"
+            self.assertTrue(target.exists())
+            self.assertFalse(result.get("preWriteFailure"))
+            self.assertEqual(len(result["applied"]), 1)
 
 
 if __name__ == "__main__":

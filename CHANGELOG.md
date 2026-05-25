@@ -7,15 +7,13 @@ notes, including patch releases.
 
 ### Added
 
-- **Deterministic Draftsman pre-write validation** (closes #5): `DraftsmanEngine`
-  now validates proposals in a temporary workspace copy before writing any file
-  to disk. `apply_proposals` calls `preview_proposals` first; if validation
-  fails the batch is blocked and `preWriteFailure: true` is returned with the
-  full validation output. No file is written until the workspace would pass
-  validation with the proposals applied.
-- Added `preview_proposals(session_id, proposal_ids)` method to `DraftsmanEngine`:
+- **Draftsman pre-flight validation** (closes #5): Added
+  `preview_proposals(session_id, proposal_ids)` method to `DraftsmanEngine`:
   copies the workspace to a temp directory, writes the selected proposals there,
-  runs the validator, and returns the result without touching the real workspace.
+  runs the validator, and returns the full result without touching the real
+  workspace. Callers use this as an advisory pre-flight check before calling
+  `apply_proposals`. `apply_proposals` continues to write files regardless of
+  validation state — stub and draft objects are expected to have gaps.
 - Added `resumptionContext` optional dict field to the Drafting Session schema
   (`framework/schemas/drafting-session.schema.yaml`): stores Draftsman-internal
   state (e.g. matched Reference Architecture UID, confirmed delivery models,
@@ -36,9 +34,9 @@ notes, including patch releases.
 
 ### Changed
 
-- `apply_proposals` now gates on `preview_proposals` before writing any file:
-  if the preview validation fails, the batch is returned with `preWriteFailure:
-  true` and no files are written to the workspace.
+- Pre-write review is advisory, not a gate: `apply_proposals` writes files
+  regardless of validation state. Stub and draft objects are expected to have
+  gaps; enforcement happens at the `approved` catalogStatus boundary.
 
 ### Fixed
 
@@ -47,12 +45,8 @@ notes, including patch releases.
 
 ### Compatibility Impact
 
-No breaking changes. `apply_proposals` behavior changes: calls that would write
-invalid YAML now return `{"applied": [], "preWriteFailure": true, "validation":
-{...}}` instead of writing the files and returning a post-write validation
-failure. Callers that check `validation.ok` continue to work; callers that
-expect files to be written before checking `validation.ok` need to handle the
-new `preWriteFailure` flag.
+No breaking changes. `apply_proposals` behavior is unchanged — files are written
+and validation runs after. `preview_proposals` is additive.
 
 ### Migration Notes
 

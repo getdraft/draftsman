@@ -84,15 +84,6 @@ class DraftsmanEngine:
         if not workspace_value:
             raise ValueError("No company DRAFT repo selected.")
         workspace = Path(workspace_value).expanduser()
-
-        preview = self.preview_proposals(session_id, proposal_ids)
-        if not preview["validation"]["ok"]:
-            return {
-                "applied": [],
-                "validation": preview["validation"],
-                "preWriteFailure": True,
-            }
-
         session = self.session_store.load(session_id)
         selected = set(proposal_ids or [])
         applied: list[dict[str, str]] = []
