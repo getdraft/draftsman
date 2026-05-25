@@ -251,3 +251,7 @@ data is written to `docs/assets/browser-data.js`, and framework-owned CSS,
 JavaScript, and default theme assets are copied from `framework/browser/`.
 The same generator renders `framework/docs/user-manual.md` to
 `docs/user-manual.html`.
+
+## License
+
+Copyright 2026 Dale Sackrider. Licensed under the [Apache License, Version 2.0](LICENSE).
