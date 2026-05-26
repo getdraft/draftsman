@@ -1,0 +1,37 @@
+schemaVersion: '1.0'
+uid: 01KSK1FMGV-JMTP
+type: system
+name: OpenStack Compute Platform
+description: Core OpenStack compute, networking, and storage services that together deliver IaaS capabilities to tenant workloads.
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+containers:
+- ref: STCK000001-RS01
+  role: Compute orchestration and instance lifecycle management
+- ref: STCK000004-RS04
+  role: Software-defined networking and tenant network isolation
+- ref: STCK000005-RS05
+  role: Block storage provisioning and volume management
+- ref: STCK000002-RS02
+  role: Identity and authentication for all service interactions
+- ref: STCK000001-DAR1
+  role: Persistence layer for Nova compute state
+- ref: STCK000004-DAR4
+  role: Persistence layer for Neutron networking state
+externalActors:
+- name: Tenant Workload
+  description: Virtual machines and containerized workloads provisioned by Nova and managed by tenants.
+  type: person
+- name: OpenStack Horizon Dashboard
+  description: Web UI for tenant and administrator interactions with the platform.
+  type: system
+- name: External Identity Provider
+  description: Enterprise identity provider integrated via Keystone federation for SSO.
+  type: system
+tags:
+- openstack
+- iaas
+- infrastructure

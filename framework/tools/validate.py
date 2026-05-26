@@ -3268,6 +3268,38 @@ def validate_service_group_refs(
     )
 
 
+SYSTEM_CONTAINER_TYPES = STANDARD_TYPES
+
+
+def validate_system(
+    obj: dict[str, Any],
+    path: Path,
+    catalog_by_id: dict[str, dict[str, Any]],
+    failures: list[str],
+    warnings: list[str],
+) -> None:
+    containers = obj.get("containers", [])
+    if not isinstance(containers, list):
+        return
+    for index, container in enumerate(containers):
+        if not isinstance(container, dict):
+            continue
+        ref = container.get("ref")
+        if not is_non_empty(ref):
+            continue
+        target = catalog_by_id.get(str(ref))
+        if not target:
+            failures.append(
+                f"{path}: containers[{index}].ref references unknown object '{ref}' — "
+                "add the referenced object to the catalog or correct the UID"
+            )
+        elif target.get("type") not in SYSTEM_CONTAINER_TYPES:
+            warnings.append(
+                f"{path}: containers[{index}].ref '{ref}' has type '{target.get('type')}' — "
+                f"system containers are typically deployable objects: {sorted(SYSTEM_CONTAINER_TYPES)}"
+            )
+
+
 def validate_relationship(
     obj: dict[str, Any],
     path: Path,
@@ -3359,6 +3391,8 @@ def main(argv: list[str] | None = None) -> int:
             validate_decision_record(obj, path, failures, warnings)
         if obj.get("type") == "relationship":
             validate_relationship(obj, path, catalog_by_id, failures)
+        if obj.get("type") == "system":
+            validate_system(obj, path, catalog_by_id, failures, warnings)
         if obj.get("type") == "environment_tier":
             validate_environment_tier(obj, path, failures, warnings)
         if obj.get("type") == "drafting_session":

@@ -3,6 +3,35 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.25.0 - 2026-05-26
+
+### Added
+
+- **`system` schema** (`framework/schemas/system.schema.yaml`): New object type for declaring named system boundaries. Groups deployable container objects and declares external actors (users, third-party systems). Enables C4 L1 Context scoping and Backstage System grouping. Fully additive — existing catalogs validate without modification.
+- **System validation** (`framework/tools/validate.py`): `validate_system` checks that `containers[].ref` UIDs resolve to existing catalog objects and warns when a container ref points to a non-deployable type.
+- **System browser support** (`framework/tools/generate_browser.py`): `systems` added to `CATALOG_FOLDERS` so system objects appear in list view and the reference graph automatically.
+- **System example** (`examples/catalog/systems/system-openstack-compute.yaml`): OpenStack Compute Platform system grouping six deployable objects and three external actors.
+- **Backstage exporter** (`framework/tools/generate_backstage.py`): Reads the DRAFT catalog and emits Backstage `catalog-info.yaml` entity files. Maps `domain`/`system` → `System`, service objects → `Component`, `technology_component` → `Resource`. Supports `--dry-run` and `--output`. Delivers value from existing objects with no relationship authoring required.
+- **C4 exporter** (`framework/tools/generate_c4.py`): Reads DRAFT objects, `relationship` objects, and `system` objects and emits C4 L2 Container diagrams in Structurizr DSL and Mermaid C4 syntax. One diagram per `system` object; falls back to a single diagram when no system objects are defined. Gracefully handles catalogs with no relationship data. Supports `--format`, `--dry-run`, and `--output`.
+- **Exporter documentation** (`framework/docs/exporters.md`): Usage guide for the Backstage and C4 exporters, object mapping tables, and a minimal template for writing custom catalog adapters.
+- **AI_INDEX.md**: System schema row, exporter tool rows, and exporter docs row added.
+
+### Changed
+
+No breaking changes to existing object schemas or validation behavior.
+
+### Fixed
+
+No bug fixes.
+
+### Compatibility Impact
+
+No migration required. Existing catalogs validate without modification. System authoring is opt-in and additive.
+
+### Migration Notes
+
+No migration required. Companies can pull this release and immediately run `generate_backstage.py` against their existing catalog. C4 diagrams improve as relationship objects are authored incrementally.
+
 ## 0.24.0 - 2026-05-26
 
 ### Added

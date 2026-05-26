@@ -1,0 +1,353 @@
+#!/usr/bin/env python3
+"""Generate C4 L2 Container diagrams from a DRAFT workspace catalog.
+
+Usage:
+    python3 framework/tools/generate_c4.py [--workspace PATH] [--output DIR] [--format {structurizr,mermaid,both}]
+
+The exporter reads the DRAFT catalog and emits C4 L2 Container diagrams.
+Without system objects, all deployable objects are placed in one implicit system.
+With system objects, one diagram is generated per system boundary.
+Relationship objects (type: relationship) are rendered as edges.
+
+Output formats:
+  structurizr  Structurizr DSL (.dsl) — use with structurizr.com or structurizr-cli
+  mermaid      Mermaid C4 syntax (.md) — embed in GitHub markdown, Confluence, etc.
+  both         Emit both formats (default)
+"""
+from __future__ import annotations
+
+import argparse
+import re
+import sys
+from pathlib import Path
+from typing import Any
+
+import yaml
+
+FRAMEWORK_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = FRAMEWORK_ROOT.parent
+WORKSPACE_ROOT = REPO_ROOT.parent if REPO_ROOT.name == ".draft" else REPO_ROOT
+DEFAULT_WORKSPACE_ROOT = WORKSPACE_ROOT if REPO_ROOT.name == ".draft" else REPO_ROOT / "examples"
+SKIP_DIRS = {"tools", "schemas", "docs", "adrs", ".github", ".git", ".draft"}
+
+CONTAINER_TYPES = {
+    "runtime_service",
+    "data_store_service",
+    "edge_gateway_service",
+    "product_component",
+}
+
+DATA_STORE_TYPES = {"data_store_service"}
+
+
+def discover_yaml_files(root: Path) -> list[Path]:
+    files: list[Path] = []
+    for path in sorted(root.rglob("*.yaml")):
+        if any(part in SKIP_DIRS for part in path.relative_to(root).parts):
+            continue
+        files.append(path)
+    return files
+
+
+def workspace_yaml_roots(workspace_root: Path) -> list[Path]:
+    roots = []
+    provider_root = workspace_root / ".draft" / "providers"
+    if provider_root.exists():
+        roots.extend(
+            provider_config
+            for provider_config in sorted(provider_root.glob("*/configurations"))
+            if provider_config.exists()
+        )
+    workspace_config = workspace_root / "configurations"
+    workspace_catalog = workspace_root / "catalog"
+    if workspace_config.exists():
+        roots.append(workspace_config)
+    if workspace_catalog.exists():
+        roots.append(workspace_catalog)
+    elif workspace_root.exists() and workspace_root.name == "catalog":
+        roots.append(workspace_root)
+    return roots
+
+
+def load_catalog(workspace_root: Path) -> dict[str, dict[str, Any]]:
+    catalog: dict[str, dict[str, Any]] = {}
+    seen: set[Path] = set()
+    for root in workspace_yaml_roots(workspace_root):
+        for path in discover_yaml_files(root):
+            resolved = path.resolve()
+            if resolved in seen:
+                continue
+            seen.add(resolved)
+            try:
+                with path.open("r", encoding="utf-8") as handle:
+                    data = yaml.safe_load(handle) or {}
+                if isinstance(data, dict) and data.get("uid") and data.get("type"):
+                    catalog[str(data["uid"])] = data
+            except Exception:
+                pass
+    return catalog
+
+
+def c4_id(uid: str) -> str:
+    return re.sub(r"[^a-zA-Z0-9_]", "_", uid)
+
+
+def c4_label(obj: dict[str, Any]) -> str:
+    return str(obj.get("name") or obj.get("uid") or "Unknown")
+
+
+def c4_technology(obj: dict[str, Any]) -> str:
+    tc = obj.get("primaryTechnologyComponent")
+    if not tc:
+        delivery = obj.get("deliveryModel", "")
+        if delivery:
+            return delivery
+    return ""
+
+
+def containers_for_system(
+    system: dict[str, Any] | None,
+    catalog: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    if system is None:
+        return [obj for obj in catalog.values() if obj.get("type") in CONTAINER_TYPES]
+    container_refs = {
+        str(c["ref"])
+        for c in (system.get("containers") or [])
+        if isinstance(c, dict) and c.get("ref")
+    }
+    return [catalog[ref] for ref in container_refs if ref in catalog]
+
+
+def relationships_for_containers(
+    container_uids: set[str],
+    catalog: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    return [
+        obj
+        for obj in catalog.values()
+        if obj.get("type") == "relationship"
+        and obj.get("source") in container_uids
+        and obj.get("target") in container_uids
+    ]
+
+
+def generate_structurizr(
+    system_name: str,
+    system_description: str,
+    containers: list[dict[str, Any]],
+    relationships: list[dict[str, Any]],
+    external_actors: list[dict[str, Any]],
+) -> str:
+    lines: list[str] = []
+    lines.append(f'workspace "{system_name}" {{')
+    lines.append("  model {")
+    lines.append(f'    {c4_id("system")} = softwareSystem "{system_name}" {{')
+    if system_description:
+        lines.append(f'      description "{system_description}"')
+
+    for obj in containers:
+        uid_id = c4_id(str(obj.get("uid") or ""))
+        label = c4_label(obj)
+        tech = c4_technology(obj)
+        desc = str(obj.get("description") or "").replace('"', "'").replace("\n", " ").strip()[:120]
+        tech_str = f' "{tech}"' if tech else ""
+        desc_str = f' "{desc}"' if desc else ""
+        lines.append(f'      {uid_id} = container "{label}"{tech_str}{desc_str}')
+
+    lines.append("    }")
+
+    for actor in external_actors:
+        actor_name = str(actor.get("name") or "External Actor")
+        actor_id = c4_id(actor_name)
+        actor_type = str(actor.get("type") or "person")
+        actor_desc = str(actor.get("description") or "").replace('"', "'").strip()[:80]
+        if actor_type == "person":
+            desc_str = f' "{actor_desc}"' if actor_desc else ""
+            lines.append(f'    {actor_id} = person "{actor_name}"{desc_str}')
+        else:
+            desc_str = f' "{actor_desc}"' if actor_desc else ""
+            lines.append(f'    {actor_id} = softwareSystem "{actor_name}"{desc_str} {{')
+            lines.append("      external true")
+            lines.append("    }")
+
+    for rel in relationships:
+        src_id = c4_id(str(rel.get("source") or ""))
+        tgt_id = c4_id(str(rel.get("target") or ""))
+        label = str(rel.get("label") or "uses").replace('"', "'")
+        tech = str(rel.get("technology") or "").replace('"', "'")
+        tech_str = f' "{tech}"' if tech else ""
+        lines.append(f'    {src_id} -> {tgt_id} "{label}"{tech_str}')
+
+    lines.append("  }")
+    lines.append("  views {")
+    lines.append(f'    container {c4_id("system")} {{')
+    lines.append("      include *")
+    lines.append("      autolayout lr")
+    lines.append("    }")
+    lines.append("  }")
+    lines.append("}")
+    return "\n".join(lines)
+
+
+def generate_mermaid(
+    system_name: str,
+    containers: list[dict[str, Any]],
+    relationships: list[dict[str, Any]],
+    external_actors: list[dict[str, Any]],
+) -> str:
+    lines: list[str] = ["```mermaid", "C4Container"]
+    lines.append(f'    title "{system_name}"')
+    lines.append("")
+
+    for actor in external_actors:
+        actor_name = str(actor.get("name") or "External Actor")
+        actor_id = c4_id(actor_name)
+        actor_desc = str(actor.get("description") or "").replace('"', "'").strip()[:80]
+        actor_type = str(actor.get("type") or "person")
+        desc_str = f', "{actor_desc}"' if actor_desc else ', ""'
+        if actor_type == "person":
+            lines.append(f'    Person_Ext({actor_id}, "{actor_name}"{desc_str})')
+        else:
+            lines.append(f'    System_Ext({actor_id}, "{actor_name}"{desc_str})')
+
+    if external_actors:
+        lines.append("")
+
+    for obj in containers:
+        uid_id = c4_id(str(obj.get("uid") or ""))
+        label = c4_label(obj)
+        tech = c4_technology(obj)
+        desc = str(obj.get("description") or "").replace('"', "'").replace("\n", " ").strip()[:80]
+        tech_str = f', "{tech}"' if tech else ', ""'
+        desc_str = f', "{desc}"' if desc else ', ""'
+        if obj.get("type") in DATA_STORE_TYPES:
+            lines.append(f'    ContainerDb({uid_id}, "{label}"{tech_str}{desc_str})')
+        else:
+            lines.append(f'    Container({uid_id}, "{label}"{tech_str}{desc_str})')
+
+    if relationships:
+        lines.append("")
+        for rel in relationships:
+            src_id = c4_id(str(rel.get("source") or ""))
+            tgt_id = c4_id(str(rel.get("target") or ""))
+            label = str(rel.get("label") or "uses").replace('"', "'")
+            tech = str(rel.get("technology") or "").replace('"', "'")
+            tech_str = f', "{tech}"' if tech else ""
+            lines.append(f'    Rel({src_id}, {tgt_id}, "{label}"{tech_str})')
+
+    lines.append("```")
+    return "\n".join(lines)
+
+
+def parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Export DRAFT catalog as C4 L2 Container diagrams."
+    )
+    parser.add_argument(
+        "--workspace",
+        type=Path,
+        default=DEFAULT_WORKSPACE_ROOT,
+        help="Workspace root containing catalog/ and configurations/. Defaults to examples/.",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=None,
+        help="Output directory for generated diagram files. Defaults to <workspace>/c4/.",
+    )
+    parser.add_argument(
+        "--format",
+        choices=["structurizr", "mermaid", "both"],
+        default="both",
+        help="Output format: structurizr DSL, Mermaid C4, or both (default: both).",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print generated diagrams to stdout instead of writing files.",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv or sys.argv[1:])
+    workspace_root = args.workspace.resolve()
+    output_dir = args.output.resolve() if args.output else workspace_root / "c4"
+
+    catalog = load_catalog(workspace_root)
+    if not catalog:
+        print("No catalog objects found. Check the workspace path.", file=sys.stderr)
+        return 1
+
+    systems = [obj for obj in catalog.values() if obj.get("type") == "system"]
+    all_containers = [obj for obj in catalog.values() if obj.get("type") in CONTAINER_TYPES]
+    all_relationships = [obj for obj in catalog.values() if obj.get("type") == "relationship"]
+
+    if not all_containers:
+        print("No deployable container objects found in catalog.", file=sys.stderr)
+        return 1
+
+    if not all_relationships:
+        print(
+            "Warning: no relationship objects found. Diagrams will show containers without edges. "
+            "Add relationship YAML files to catalog/relationships/ to show inter-service communication.",
+            file=sys.stderr,
+        )
+
+    diagrams: list[tuple[str, str, str]] = []
+
+    if systems:
+        for system in systems:
+            containers = containers_for_system(system, catalog)
+            if not containers:
+                continue
+            container_uids = {str(c.get("uid") or "") for c in containers}
+            rels = relationships_for_containers(container_uids, catalog)
+            actors = [
+                a for a in (system.get("externalActors") or [])
+                if isinstance(a, dict)
+            ]
+            system_name = str(system.get("name") or "System")
+            system_desc = str(system.get("description") or "")
+            slug = re.sub(r"[^a-z0-9-]+", "-", system_name.lower()).strip("-")
+
+            if args.format in ("structurizr", "both"):
+                dsl = generate_structurizr(system_name, system_desc, containers, rels, actors)
+                diagrams.append((f"{slug}.dsl", dsl, "Structurizr DSL"))
+
+            if args.format in ("mermaid", "both"):
+                md = generate_mermaid(system_name, containers, rels, actors)
+                diagrams.append((f"{slug}.md", md, "Mermaid C4"))
+    else:
+        system_name = "System"
+        container_uids = {str(c.get("uid") or "") for c in all_containers}
+        rels = relationships_for_containers(container_uids, all_relationships if all_relationships else [])
+
+        if args.format in ("structurizr", "both"):
+            dsl = generate_structurizr(system_name, "", all_containers, rels, [])
+            diagrams.append(("system.dsl", dsl, "Structurizr DSL"))
+
+        if args.format in ("mermaid", "both"):
+            md = generate_mermaid(system_name, all_containers, rels, [])
+            diagrams.append(("system.md", md, "Mermaid C4"))
+
+    if args.dry_run:
+        for filename, content, fmt in diagrams:
+            print(f"# {filename} ({fmt})")
+            print(content)
+            print()
+        return 0
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for filename, content, fmt in diagrams:
+        out_path = output_dir / filename
+        out_path.write_text(content, encoding="utf-8")
+        print(f"  Wrote {out_path} ({fmt})")
+
+    print(f"\nGenerated {len(diagrams)} diagram file(s) in {output_dir}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

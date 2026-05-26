@@ -59,6 +59,7 @@ CATALOG_FOLDERS = [
     "reference-architectures",
     "domains",
     "relationships",
+    "systems",
 ]
 LIFECYCLE_COLORS = {
     "preferred": "1f8a5b",

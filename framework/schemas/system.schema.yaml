@@ -1,0 +1,76 @@
+schemaVersion: '1.0'
+type: system
+requiredFields:
+- schemaVersion
+- uid
+- type
+- name
+- catalogStatus
+- lifecycleStatus
+optionalFields:
+- description
+- containers
+- externalActors
+- owner
+- tags
+- notes
+enumFields:
+  catalogStatus:
+  - stub
+  - incomplete
+  - complete
+  lifecycleStatus:
+  - candidate
+  - preferred
+  - existing-only
+  - deprecated
+  - retired
+fieldTypes:
+  containers: list
+  externalActors: list
+  tags: list
+  owner: dict
+collectionSchemas:
+  containers: systemContainer
+  externalActors: externalActor
+systemContainer:
+  requiredFields:
+  - ref
+  optionalFields:
+  - role
+  - notes
+  fieldTypes:
+    ref: str
+    role: str
+    notes: str
+  fieldDescriptions:
+    ref: UID of a deployable catalog object that is part of this system boundary (runtime_service, data_store_service, edge_gateway_service, product_component).
+    role: Optional label describing this container's role within the system boundary.
+    notes: Any additional context about this container's inclusion.
+externalActor:
+  requiredFields:
+  - name
+  optionalFields:
+  - description
+  - type
+  fieldTypes:
+    name: str
+    description: str
+    type: str
+  fieldDescriptions:
+    name: Human-readable name for the external actor or system (e.g. "End User", "Payment Gateway", "Identity Provider").
+    description: What this external actor does or why it interacts with this system.
+    type: Classify the actor as person, system, or organization.
+uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
+aiHint: A System defines a named boundary grouping deployable objects that work together to deliver a product or capability. Use it to declare C4 L1 context boundaries, group objects for Backstage System entities, and name external actors that interact with the boundary.
+fieldDescriptions:
+  schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
+  uid: Use the generated opaque UID for object identity. Do not edit it for display-name changes.
+  type: Use system exactly.
+  name: Use a clear human-readable name for the system boundary.
+  description: Describe what the system does and what business capability it delivers.
+  containers: List the deployable objects inside this system boundary.
+  externalActors: List external systems, services, or personas that interact with this system boundary from outside.
+  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition.
+  lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired for this system.
+  owner: Record the team or role responsible for this system boundary.

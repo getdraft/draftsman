@@ -48,6 +48,8 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/tools/apply_vocabulary_proposals.py | Materializes Draftsman vocabulary_proposal files into reviewable company vocabulary entries. |
 | framework/tools/repair_uids.py | Explicit repair utility that adds or replaces generated object UIDs and rewrites object references. |
 | framework/tools/generate_browser.py | Static GitHub Pages browser generator. |
+| framework/tools/generate_backstage.py | Backstage catalog exporter — reads DRAFT catalog and emits catalog-info.yaml entity files. |
+| framework/tools/generate_c4.py | C4 L2 Container diagram exporter — reads catalog and emits Structurizr DSL and Mermaid C4 output. |
 | install-draft-table.sh | Experimental local tooling installer retained for post-v1.0 work. |
 
 ## Framework Docs
@@ -59,6 +61,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/company-vocabulary.md | Company Vocabulary | Company vocabulary lists are optional governed lists in `.draft/workspace.yaml`. |
 | framework/docs/decision-records.md | Decision Records | Decision Records are first-class records for known risks, |
 | framework/docs/delivery-models.md | Delivery Models | Delivery models explain how a deployable service is operated. They apply to |
+| framework/docs/exporters.md | DRAFT Exporters | How to use the Backstage and C4 exporters, and how to write custom catalog adapters. |
 | framework/docs/drafting-sessions.md | Drafting Sessions | A Drafting Session is a machine-readable record of partial architecture work. |
 | framework/docs/draftsman-ai-configuration.md | Draftsman AI Guidance | DRAFT does not include a built-in AI runtime. The Draftsman is an external AI |
 | framework/docs/draftsman.md | Draftsman Instructions | The Draftsman is an AI architecture-authoring agent for DRAFT. It interviews the |
@@ -96,6 +99,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/schemas/reference-architecture.schema.yaml | reference_architecture | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus |
 | framework/schemas/requirement-group.schema.yaml | requirement_group | schemaVersion, uid, type, name, description, catalogStatus, owner, activation, appliesTo, requirements |
 | framework/schemas/relationship.schema.yaml | relationship | schemaVersion, uid, type, name, source, target, label, catalogStatus |
+| framework/schemas/system.schema.yaml | system | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus |
 | framework/schemas/runtime-service.schema.yaml | runtime_service | schemaVersion, uid, type, name, deliveryModel, catalogStatus, lifecycleStatus |
 | framework/schemas/software-deployment-pattern.schema.yaml | software_deployment_pattern | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus |
 | framework/schemas/technology-component.schema.yaml | technology_component | schemaVersion, uid, type, name, vendor, productName, productVersion, classification, catalogStatus |
