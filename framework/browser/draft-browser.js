@@ -318,9 +318,11 @@ function capabilityClass(capability) {
 
 function catalogStatusClass(status) {
   return ({
-    'approved': 'catalog-approved',
-    'draft': 'catalog-draft',
-    'stub': 'catalog-stub'
+    'approved':    'catalog-approved',
+    'complete':    'catalog-approved',
+    'draft':       'catalog-draft',
+    'incomplete':  'catalog-draft',
+    'stub':        'catalog-stub',
   }[status] || 'catalog-stub');
 }
 
@@ -3265,6 +3267,7 @@ function _sdpLifecycleSections(sdps) {
           <span class="home-tile-icon">🗺</span>
           <span class="home-tile-title">${escapeHtml(sdp.name || sdp.uid || '')}</span>
           ${sdp.description ? `<span class="home-tile-desc">${escapeHtml(sdp.description)}</span>` : ''}
+          ${sdp.catalogStatus ? `<span style="margin-top:auto;padding-top:10px">${catalogBadge(sdp.catalogStatus)}</span>` : ''}
         </div>
       `).join('');
 
