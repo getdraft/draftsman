@@ -73,6 +73,7 @@ STANDARD_TYPES = {
     "data_component",
 }
 SERVICE_TYPES = {"runtime_service", "data_store_service", "edge_gateway_service"}
+RELATIONSHIP_ENDPOINT_TYPES = STANDARD_TYPES | {"runtime_service", "data_store_service", "edge_gateway_service", "software_deployment_pattern", "reference_architecture", "technology_component", "host"}
 BUSINESS_PILLAR_ID_PATTERN = re.compile(r"^business-pillar\.[a-z0-9-]+$")
 UID_PATTERN = re.compile(UID_PATTERN_TEXT)
 WORKSPACE_DOCUMENT_TYPES = {"vocabulary", "vocabulary_proposal"}
@@ -3267,6 +3268,24 @@ def validate_service_group_refs(
     )
 
 
+def validate_relationship(
+    obj: dict[str, Any],
+    path: Path,
+    catalog_by_id: dict[str, dict[str, Any]],
+    failures: list[str],
+) -> None:
+    for field in ("source", "target"):
+        ref = obj.get(field)
+        if not is_non_empty(ref):
+            continue
+        target = catalog_by_id.get(str(ref))
+        if not target:
+            failures.append(
+                f"{path}: relationship {field} references unknown object '{ref}' — "
+                "add the referenced object to the catalog or correct the UID"
+            )
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     workspace_root = args.workspace.resolve()
@@ -3338,6 +3357,8 @@ def main(argv: list[str] | None = None) -> int:
             )
         if obj.get("type") == "decision_record":
             validate_decision_record(obj, path, failures, warnings)
+        if obj.get("type") == "relationship":
+            validate_relationship(obj, path, catalog_by_id, failures)
         if obj.get("type") == "environment_tier":
             validate_environment_tier(obj, path, failures, warnings)
         if obj.get("type") == "drafting_session":

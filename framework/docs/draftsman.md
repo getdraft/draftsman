@@ -819,6 +819,37 @@ resumptionContext:
 If the session's `sessionStatus` is `blocked`, surface the blocking reason from
 `unresolvedQuestions` or `nextSteps` before asking the user how to proceed.
 
+## Relationship Authoring
+
+Relationships record directed inter-object communication edges — how one deployable
+object calls, reads from, writes to, or sends events to another. They are additive
+and opt-in: existing catalogs are complete and valid without them.
+
+Author relationships when:
+
+- A user says "Service A calls Service B" or describes a data flow between objects.
+- A diagram or document shows directed connections between modeled objects.
+- The user asks about dependencies, impact analysis, or topology views.
+
+For each relationship:
+
+1. Identify the source and target objects from the catalog — both must already exist and have UIDs.
+2. Ask for a short label describing the interaction (e.g. "calls", "reads from", "writes to", "sends events to").
+3. Ask for the technology if known and not obvious (e.g. "HTTPS", "gRPC", "AMQP", "Kafka").
+4. Ask for the direction only when the interaction type implies it: request/response → `synchronous`; fire-and-forget → `asynchronous`; publish/subscribe or event-driven → `event`.
+
+Write the relationship object to `catalog/relationships/` using the naming convention
+`relationship-<source-name>-<verb>-<target-name>.yaml`.
+
+Do not ask about relationships unless the user brings up connections, dependencies,
+or topology. Do not block or delay drafting of other objects waiting for relationship
+completeness — relationships are always advisory enrichment.
+
+When reading source material (diagrams, SDPs, architecture docs), extract visible
+directed connections and propose relationship objects for each one. Surface them
+as a group at the end of the session rather than interrupting the main authoring
+flow with individual relationship questions.
+
 ## Output Contract
 
 The Draftsman may produce YAML internally for the backend to write, but the

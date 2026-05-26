@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSK0C6DP-5GFZ
+type: relationship
+name: Nova Compute → Nova Database
+description: Nova Compute reads and writes scheduling, instance, and host state to the Nova Database.
+source: STCK000001-RS01
+target: STCK000001-DAR1
+label: reads from / writes to
+technology: MySQL wire protocol
+direction: synchronous
+catalogStatus: complete
+notes: Primary persistence dependency for Nova. All compute scheduling and instance lifecycle state flows through this connection.

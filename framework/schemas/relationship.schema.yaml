@@ -1,0 +1,42 @@
+schemaVersion: '1.0'
+type: relationship
+requiredFields:
+- schemaVersion
+- uid
+- type
+- name
+- source
+- target
+- label
+- catalogStatus
+optionalFields:
+- description
+- technology
+- direction
+- notes
+- tags
+enumFields:
+  catalogStatus:
+  - stub
+  - incomplete
+  - complete
+  direction:
+  - synchronous
+  - asynchronous
+  - event
+fieldTypes:
+  tags: list
+uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
+aiHint: A Relationship records a directed inter-object communication edge. Use it to declare that one deployable object calls, reads from, writes to, or sends events to another. source and target must be UIDs of existing catalog objects.
+fieldDescriptions:
+  schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
+  uid: Use the generated opaque UID for object identity. Do not edit it for display-name changes.
+  type: Use relationship exactly.
+  name: Use a short human-readable name describing this relationship (e.g. "Auth Service → User DB").
+  source: UID of the object initiating the relationship (the caller or producer).
+  target: UID of the object receiving the relationship (the callee or consumer).
+  label: Short verb phrase describing the interaction — e.g. "calls", "reads from", "writes to", "sends events to".
+  technology: Optional protocol or technology used — e.g. "HTTPS", "gRPC", "AMQP", "PostgreSQL wire protocol".
+  direction: Use synchronous for request/response, asynchronous for fire-and-forget calls, or event for event-driven communication.
+  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition.
+  notes: Any additional context about why this relationship exists or how it is governed.

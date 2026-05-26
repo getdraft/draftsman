@@ -528,6 +528,10 @@ function applyRouteFromHash() {
     renderAcceptableUseView();
     return;
   }
+  if (view === 'topology') {
+    renderTopologyView();
+    return;
+  }
   if (view === 'object-types') {
     renderObjectTypesView();
     return;
@@ -651,6 +655,10 @@ function rerenderCurrentView() {
     renderAcceptableUseView();
     return;
   }
+  if (currentMode === 'topology') {
+    renderTopologyView();
+    return;
+  }
   if (currentMode === 'object-types') {
     renderObjectTypesView();
     return;
@@ -696,6 +704,11 @@ function attachTopNavHandlers() {
       }
       if (nav === 'acceptable-use') {
         renderAcceptableUseView();
+        return;
+      }
+      if (nav === 'topology') {
+        renderTopologyView();
+        return;
       }
     });
   });
@@ -3881,6 +3894,75 @@ function acceptableUseDomainMarkup(group) {
   `;
 }
 
+function renderTopologyView() {
+  currentMode = 'topology';
+  currentDetailId = null;
+  executiveDrilldown = null;
+  destroyDetailCy();
+  destroySdpGraphCy();
+  destroyImpactCy();
+  const edges = (window.DRAFT_BROWSER_DATA && window.DRAFT_BROWSER_DATA.topologyEdges) || [];
+  const lookup = window.DRAFT_BROWSER_DATA ? window.DRAFT_BROWSER_DATA.lookup : {};
+
+  function edgeRow(edge) {
+    const src = lookup[edge.source];
+    const tgt = lookup[edge.target];
+    const srcName = src ? escapeHtml(src.name || edge.source) : escapeHtml(edge.source);
+    const tgtName = tgt ? escapeHtml(tgt.name || edge.target) : escapeHtml(edge.target);
+    const srcLink = src ? `<span class="obj-link" data-uid="${escapeHtml(edge.source)}">${srcName}</span>` : `<span class="mono">${srcName}</span>`;
+    const tgtLink = tgt ? `<span class="obj-link" data-uid="${escapeHtml(edge.target)}">${tgtName}</span>` : `<span class="mono">${tgtName}</span>`;
+    const tech = edge.technology ? `<span class="badge" style="font-size:11px;padding:2px 6px;">${escapeHtml(edge.technology)}</span>` : '';
+    const dir = edge.direction ? `<span class="badge" style="font-size:11px;padding:2px 6px;background:#e8f0fe;color:#1a56db;">${escapeHtml(edge.direction)}</span>` : '';
+    return `<tr>
+      <td style="padding:8px 12px;">${srcLink}</td>
+      <td style="padding:8px 12px;color:#64748b;white-space:nowrap;">${escapeHtml(edge.label || '→')}</td>
+      <td style="padding:8px 12px;">${tgtLink}</td>
+      <td style="padding:8px 12px;">${tech}${dir}</td>
+    </tr>`;
+  }
+
+  const tableBody = edges.length
+    ? edges.map(edgeRow).join('')
+    : `<tr><td colspan="4" style="padding:24px;color:#64748b;">No relationship objects found. Add relationship YAML files to catalog/relationships/ to populate this view.</td></tr>`;
+
+  pageRoot.innerHTML = `
+    <div class="view-shell">
+      ${topNavMarkup()}
+      <section class="header-card">
+        <div class="header-top">
+          <div class="header-title">
+            <h2>Topology</h2>
+            <div class="object-id">Inter-service relationship map</div>
+          </div>
+          <div class="badges">
+            <span class="badge">${edges.length} relationship${edges.length === 1 ? '' : 's'}</span>
+          </div>
+        </div>
+        <div class="header-description">
+          Directed relationships between catalog objects. Each row is a <code>relationship</code> object declaring how one service calls, reads from, or communicates with another.
+        </div>
+      </section>
+      <div class="content-rows">
+        <section class="header-card" style="padding:0;overflow:hidden;">
+          <table style="width:100%;border-collapse:collapse;">
+            <thead>
+              <tr style="background:#f8fafc;border-bottom:1px solid #e2e8f0;">
+                <th style="padding:10px 12px;text-align:left;font-weight:600;color:#374151;">Source</th>
+                <th style="padding:10px 12px;text-align:left;font-weight:600;color:#374151;">Relationship</th>
+                <th style="padding:10px 12px;text-align:left;font-weight:600;color:#374151;">Target</th>
+                <th style="padding:10px 12px;text-align:left;font-weight:600;color:#374151;">Technology / Direction</th>
+              </tr>
+            </thead>
+            <tbody>${tableBody}</tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+  `;
+  attachTopNavHandlers();
+  attachObjectLinkHandlers(pageRoot);
+}
+
 function renderAcceptableUseView() {
   currentMode = 'acceptable-use';
   currentDetailId = null;
@@ -6871,6 +6953,7 @@ const SIDEBAR_NAV_ITEMS = [
   { id: 'list',           label: 'Drafting Table',  icon: '▤' },
   { section: true,        label: 'Tools' },
   { id: 'acceptable-use', label: 'Acceptable Use',  icon: '✓' },
+  { id: 'topology',       label: 'Topology',        icon: '⇄' },
   { id: 'object-types',   label: 'Object Types',    icon: '⬡' },
   { id: 'onboarding',     label: 'Onboarding',      icon: '◉' },
   { id: 'vocabulary',     label: 'Vocabulary',      icon: '≡', href: 'company-vocabulary.html' },
@@ -6905,6 +6988,7 @@ function initSidebarNav() {
       else if (navId === 'object-types') { destroyImpactCy(); renderObjectTypesView(); }
       else if (navId === 'onboarding') { destroyImpactCy(); renderCompanyOnboardingView(); }
       else if (navId === 'acceptable-use') { destroyImpactCy(); renderAcceptableUseView(); }
+      else if (navId === 'topology') { destroyImpactCy(); renderTopologyView(); }
     });
   });
 }
@@ -6917,6 +7001,7 @@ const PALETTE_VIEWS = [
   { id: 'executive',      label: 'Go to Overview',        icon: '⊞' },
   { id: 'list',           label: 'Go to Drafting Table',  icon: '▤' },
   { id: 'acceptable-use', label: 'Go to Acceptable Use',  icon: '✓' },
+  { id: 'topology',       label: 'Go to Topology',        icon: '⇄' },
   { id: 'object-types',   label: 'Go to Object Types',    icon: '⬡' },
   { id: 'onboarding',     label: 'Go to Onboarding',      icon: '◉' },
   { id: 'vocabulary',     label: 'Open Vocabulary Guide', icon: '≡', href: 'company-vocabulary.html' },

@@ -58,6 +58,7 @@ CATALOG_FOLDERS = [
     "software-deployment-patterns",
     "reference-architectures",
     "domains",
+    "relationships",
 ]
 LIFECYCLE_COLORS = {
     "preferred": "1f8a5b",
@@ -86,6 +87,7 @@ REF_CONTAINER_KEYS = {
     "relatedCapability",
     "requirementGroup",
     "target",
+    "source",
 }
 UID_PATTERN = re.compile(r"^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$")
 
@@ -802,6 +804,22 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
         if value in {"preferred", "existing-only", "candidate", "deprecated", "retired", "unknown"}
         else 999,
     )
+    topology_edges = [
+        {
+            "id": obj["uid"],
+            "source": obj.get("source", ""),
+            "target": obj.get("target", ""),
+            "label": obj.get("label", ""),
+            "technology": obj.get("technology", ""),
+            "direction": obj.get("direction", ""),
+            "name": obj.get("name", ""),
+        }
+        for obj in objects
+        if obj.get("type") == "relationship"
+        and obj.get("source")
+        and obj.get("target")
+    ]
+
     return {
         "objects": browser_objects,
         "lookup": browser_lookup,
@@ -817,6 +835,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
         "repoUrl": repository_web_url(workspace_root) or repository_web_url(REPO_ROOT),
         "catalogName": workspace_repository_name(workspace_root),
         "logoDataUri": logo_data_uri(),
+        "topologyEdges": topology_edges,
     }
 
 

@@ -3,6 +3,34 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.24.0 - 2026-05-26
+
+### Added
+
+- **`relationship` schema** (`framework/schemas/relationship.schema.yaml`): New first-class object type for recording directed inter-object communication edges. Fields: `source` (UID), `target` (UID), `label` (verb phrase), optional `technology`, optional `direction` (`synchronous` / `asynchronous` / `event`). Relationship objects live in `catalog/relationships/`.
+- **Relationship validation** (`framework/tools/validate.py`): `validate_relationship` function checks that `source` and `target` UIDs resolve to existing catalog objects. Dispatched for all `type: relationship` objects.
+- **Browser topology view** (`framework/browser/draft-browser.js`): New "Topology" view in the sidebar nav renders a table of all relationship objects with linked source/target objects and technology/direction badges. Accessible via the ⇄ nav item and the command palette.
+- **Browser topology data** (`framework/tools/generate_browser.py`): `topologyEdges` key added to the browser payload. `source` and `target` added to `REF_CONTAINER_KEYS` so the existing reference index tracks relationship endpoints. `relationships` added to `CATALOG_FOLDERS`.
+- **Draftsman relationship authoring guidance** (`framework/docs/draftsman.md`): New "Relationship Authoring" section describes when and how to author relationship objects during drafting sessions.
+- **Relationship example** (`examples/catalog/relationships/relationship-nova-reads-nova-database.yaml`): Nova Compute → Nova Database example demonstrating the schema.
+- **AI_INDEX.md**: Relationship schema row added to the schemas table.
+
+### Changed
+
+No breaking changes to existing object schemas.
+
+### Fixed
+
+No bug fixes.
+
+### Compatibility Impact
+
+No migration required. Existing catalogs validate without modification. Relationship authoring is opt-in and additive.
+
+### Migration Notes
+
+No migration required. Companies can pull this release and begin authoring relationships incrementally via the Draftsman without touching existing catalog objects.
+
 ## 0.23.1 - 2026-05-25
 
 ### Added
