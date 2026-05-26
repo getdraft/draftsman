@@ -532,6 +532,10 @@ function applyRouteFromHash() {
     renderTopologyView();
     return;
   }
+  if (view === 'diagrams') {
+    renderDiagramsView();
+    return;
+  }
   if (view === 'object-types') {
     renderObjectTypesView();
     return;
@@ -659,6 +663,10 @@ function rerenderCurrentView() {
     renderTopologyView();
     return;
   }
+  if (currentMode === 'diagrams') {
+    renderDiagramsView();
+    return;
+  }
   if (currentMode === 'object-types') {
     renderObjectTypesView();
     return;
@@ -708,6 +716,10 @@ function attachTopNavHandlers() {
       }
       if (nav === 'topology') {
         renderTopologyView();
+        return;
+      }
+      if (nav === 'diagrams') {
+        renderDiagramsView();
         return;
       }
     });
@@ -3894,6 +3906,158 @@ function acceptableUseDomainMarkup(group) {
   `;
 }
 
+function renderDiagramsView() {
+  currentMode = 'diagrams';
+  currentDetailId = null;
+  executiveDrilldown = null;
+  destroyDetailCy();
+  destroySdpGraphCy();
+  destroyImpactCy();
+
+  const CONTAINER_TYPES = new Set(['runtime_service', 'data_store_service', 'edge_gateway_service', 'product_component']);
+  const DATA_STORE_TYPES = new Set(['data_store_service']);
+  const edges = (window.DRAFT_BROWSER_DATA && window.DRAFT_BROWSER_DATA.topologyEdges) || [];
+  const systems = allObjects.filter(o => o.type === 'system');
+  const renderTs = Date.now();
+
+  function c4SafeId(uid) {
+    return String(uid).replace(/[^a-zA-Z0-9_]/g, '_');
+  }
+
+  function buildMermaidText(systemName, containers, rels, actors) {
+    const lines = ['C4Container', `    title "${systemName.replace(/"/g, "'")}"`, ''];
+    (actors || []).forEach(actor => {
+      const actorId = c4SafeId(actor.name || 'actor');
+      const actorName = (actor.name || 'Actor').replace(/"/g, "'");
+      const desc = (actor.description || '').replace(/"/g, "'").replace(/\n/g, ' ').slice(0, 80);
+      const descStr = desc ? `, "${desc}"` : ', ""';
+      if ((actor.type || 'person') === 'person') {
+        lines.push(`    Person_Ext(${actorId}, "${actorName}"${descStr})`);
+      } else {
+        lines.push(`    System_Ext(${actorId}, "${actorName}"${descStr})`);
+      }
+    });
+    if (actors && actors.length) lines.push('');
+    containers.forEach(obj => {
+      const id = c4SafeId(obj.id || obj.uid || '');
+      const label = (obj.name || obj.id || 'Unknown').replace(/"/g, "'");
+      const tech = (obj.primaryTechnologyComponent || obj.deliveryModel || '').replace(/"/g, "'");
+      const desc = (obj.description || '').replace(/"/g, "'").replace(/\n/g, ' ').slice(0, 80);
+      if (DATA_STORE_TYPES.has(obj.type)) {
+        lines.push(`    ContainerDb(${id}, "${label}", "${tech}", "${desc}")`);
+      } else {
+        lines.push(`    Container(${id}, "${label}", "${tech}", "${desc}")`);
+      }
+    });
+    if (rels.length) {
+      lines.push('');
+      rels.forEach(rel => {
+        const srcId = c4SafeId(rel.source || '');
+        const tgtId = c4SafeId(rel.target || '');
+        const label = (rel.label || 'uses').replace(/"/g, "'");
+        const tech = (rel.technology || '').replace(/"/g, "'");
+        const techStr = tech ? `, "${tech}"` : '';
+        lines.push(`    Rel(${srcId}, ${tgtId}, "${label}"${techStr})`);
+      });
+    }
+    return lines.join('\n');
+  }
+
+  const diagrams = [];
+
+  if (systems.length) {
+    systems.forEach(system => {
+      let systemDetail = {};
+      try { systemDetail = JSON.parse(system.detail || '{}'); } catch (e) {}
+      const containerRefs = new Set(
+        (systemDetail.containers || []).map(c => (typeof c === 'object' ? c.ref : c)).filter(Boolean)
+      );
+      const containers = [...containerRefs].map(ref => objectLookup[ref]).filter(c => c && CONTAINER_TYPES.has(c.type));
+      if (!containers.length) return;
+      const containerUids = new Set(containers.map(c => c.id || c.uid));
+      const rels = edges.filter(e => containerUids.has(e.source) && containerUids.has(e.target));
+      const actors = (systemDetail.externalActors || []).filter(a => typeof a === 'object' && a);
+      diagrams.push({ name: system.name || 'System', containers, rels, actors });
+    });
+  }
+
+  if (!diagrams.length) {
+    const containers = allObjects.filter(o => CONTAINER_TYPES.has(o.type));
+    if (containers.length) {
+      const containerUids = new Set(containers.map(c => c.id || c.uid));
+      const rels = edges.filter(e => containerUids.has(e.source) && containerUids.has(e.target));
+      diagrams.push({ name: 'System', containers, rels, actors: [] });
+    }
+  }
+
+  const diagramSlotsHtml = diagrams.length
+    ? diagrams.map((d, i) => `
+        <section class="header-card" style="margin-bottom:16px;">
+          <div style="font-weight:600;font-size:15px;color:#1e293b;margin-bottom:12px;">${escapeHtml(d.name)}</div>
+          <div id="c4-slot-${renderTs}-${i}" style="overflow-x:auto;min-height:60px;display:flex;align-items:center;justify-content:center;">
+            <span style="color:#94a3b8;font-size:13px;">Rendering…</span>
+          </div>
+        </section>`).join('')
+    : `<section class="header-card"><p style="color:#64748b;padding:4px 0;">No deployable containers found. Add <code>runtime_service</code>, <code>data_store_service</code>, or <code>product_component</code> catalog objects to see diagrams here.</p></section>`;
+
+  pageRoot.innerHTML = `
+    <div class="view-shell">
+      ${topNavMarkup()}
+      <section class="header-card">
+        <div class="header-top">
+          <div class="header-title">
+            <h2>Diagrams</h2>
+            <div class="object-id">C4 L2 Container diagrams</div>
+          </div>
+          <div class="badges">
+            <span class="badge">${diagrams.length} diagram${diagrams.length === 1 ? '' : 's'}</span>
+          </div>
+        </div>
+        <div class="header-description">
+          C4 L2 Container diagrams generated from catalog objects and relationship data.
+          Add <code>system</code> objects to define system boundaries, and <code>relationship</code> objects to show inter-service communication.
+        </div>
+      </section>
+      <div class="content-rows">
+        ${diagramSlotsHtml}
+      </div>
+    </div>
+  `;
+  attachTopNavHandlers();
+  attachObjectLinkHandlers(pageRoot);
+
+  if (!diagrams.length) return;
+
+  if (typeof mermaid === 'undefined') {
+    diagrams.forEach((d, i) => {
+      const slot = document.getElementById(`c4-slot-${renderTs}-${i}`);
+      if (slot) slot.innerHTML = '<span style="color:#94a3b8;font-size:13px;">Mermaid.js not loaded. Check your network connection.</span>';
+    });
+    return;
+  }
+
+  mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' });
+
+  diagrams.forEach(async (d, i) => {
+    const slot = document.getElementById(`c4-slot-${renderTs}-${i}`);
+    if (!slot) return;
+    const text = buildMermaidText(d.name, d.containers, d.rels, d.actors);
+    try {
+      const { svg } = await mermaid.render(`mermaid-c4-${renderTs}-${i}`, text);
+      if (document.getElementById(`c4-slot-${renderTs}-${i}`)) {
+        slot.innerHTML = svg;
+        slot.style.justifyContent = '';
+        slot.style.alignItems = '';
+      }
+    } catch (e) {
+      if (document.getElementById(`c4-slot-${renderTs}-${i}`)) {
+        slot.innerHTML = '<span style="color:#ef4444;font-size:13px;">Diagram rendering error — see browser console for details.</span>';
+      }
+      console.error('Mermaid render error:', d.name, e, '\nDiagram text:\n', text);
+    }
+  });
+}
+
 function renderTopologyView() {
   currentMode = 'topology';
   currentDetailId = null;
@@ -6954,6 +7118,7 @@ const SIDEBAR_NAV_ITEMS = [
   { section: true,        label: 'Tools' },
   { id: 'acceptable-use', label: 'Acceptable Use',  icon: '✓' },
   { id: 'topology',       label: 'Topology',        icon: '⇄' },
+  { id: 'diagrams',       label: 'Diagrams',        icon: '◫' },
   { id: 'object-types',   label: 'Object Types',    icon: '⬡' },
   { id: 'onboarding',     label: 'Onboarding',      icon: '◉' },
   { id: 'vocabulary',     label: 'Vocabulary',      icon: '≡', href: 'company-vocabulary.html' },
@@ -6989,6 +7154,7 @@ function initSidebarNav() {
       else if (navId === 'onboarding') { destroyImpactCy(); renderCompanyOnboardingView(); }
       else if (navId === 'acceptable-use') { destroyImpactCy(); renderAcceptableUseView(); }
       else if (navId === 'topology') { destroyImpactCy(); renderTopologyView(); }
+      else if (navId === 'diagrams') { destroyImpactCy(); renderDiagramsView(); }
     });
   });
 }
@@ -7002,6 +7168,7 @@ const PALETTE_VIEWS = [
   { id: 'list',           label: 'Go to Drafting Table',  icon: '▤' },
   { id: 'acceptable-use', label: 'Go to Acceptable Use',  icon: '✓' },
   { id: 'topology',       label: 'Go to Topology',        icon: '⇄' },
+  { id: 'diagrams',       label: 'Go to Diagrams',        icon: '◫' },
   { id: 'object-types',   label: 'Go to Object Types',    icon: '⬡' },
   { id: 'onboarding',     label: 'Go to Onboarding',      icon: '◉' },
   { id: 'vocabulary',     label: 'Open Vocabulary Guide', icon: '≡', href: 'company-vocabulary.html' },

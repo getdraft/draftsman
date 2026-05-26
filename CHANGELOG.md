@@ -3,6 +3,29 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.25.1 - 2026-05-26
+
+### Added
+
+- **Diagrams view** (`framework/browser/draft-browser.js`): New "Diagrams" sidebar entry (⌘K searchable) renders C4 L2 Container diagrams inline in the browser using Mermaid.js. One diagram per `system` object; falls back to a single diagram when no system objects are defined. Relationship edges are rendered as arrows between containers. External actors appear as `Person_Ext` / `System_Ext` nodes.
+- **Mermaid.js CDN** (`framework/browser/index.template.html`): Mermaid v10 loaded via CDN with `defer`, consistent with all other browser dependencies. Rendering uses the async `mermaid.render()` API so the main thread is never blocked.
+
+### Changed
+
+No breaking changes. The Diagrams view is additive — browsers with no `system` or `relationship` objects show a single auto-generated diagram from all deployable containers.
+
+### Fixed
+
+No bug fixes.
+
+### Compatibility Impact
+
+No migration required.
+
+### Migration Notes
+
+No migration required. Pull the release and regenerate the browser to see C4 diagrams inline. Diagrams improve automatically as `system` and `relationship` objects are added to the catalog.
+
 ## 0.25.0 - 2026-05-26
 
 ### Added
