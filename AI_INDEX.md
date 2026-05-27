@@ -205,7 +205,10 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | STCK000001-SDP1 | OpenStack IaaS Platform | software_deployment_pattern | software-deployment-pattern, openstack, iaas, cloud, platform | Full-stack self-managed OpenStack Infrastructure-as-a-Service deployment pattern covering the complete control plane... | examples/catalog/software-deployment-patterns/sdp-openstack-iaas-platform.yaml |
 | 01KSE5V73Z-Q0A0 | OpenStack Ops Console | product_component | product-component, openstack, operations, internal-tooling | Internal web-based operations console for platform engineering teams. Surfaces real-time service health, quota utiliz... | examples/catalog/product-components/product-component-openstack-ops-console.yaml |
 | 01KSE5V73Z-RTKZ | Platform Audit Schema | data_component | data-component, openstack, audit, compliance | Relational schema tracking platform-level audit events — control plane API calls, administrative actions, quota chang... | examples/catalog/data-components/data-component-platform-audit-schema.yaml |
+| 01KSF29JTP-DRHA | HAProxy Load Balancer Operational Architecture | decision_record | decision-record, openstack, load-balancer, haproxy | Documents the operational architecture decisions for the OpenStack API Load Balancer (HAProxy) — covering authenticat... | examples/catalog/decision-records/dr-haproxy-lb-operational-architecture.yaml |
 | 01KSE5V73Z-CRZV | No WAF Required — OpenStack Is Internal-Only | decision_record | decision-record, openstack, security, network-boundary | Documents the accepted decision that a Web Application Firewall (WAF) is not required for the OpenStack IaaS platform... | examples/catalog/decision-records/dr-openstack-no-waf-internal-only.yaml |
+| 01KSE5V73Z-DRSC | OpenStack Ops Console — Secrets Injection via Platform Secret Store | decision_record | decision-record, openstack, secrets, product-component | Documents the decision to inject application secrets into the OpenStack Ops Console at deploy time via the platform s... | examples/catalog/decision-records/dr-ops-console-secrets-injection.yaml |
+| 01KSF29JTP-SESS | Nova Compute Service — Availability and Scaling Architecture | drafting_session | drafting-session, openstack, nova, compute, availability | Open authoring session to resolve architecture questions about Nova compute service availability posture and horizont... | examples/catalog/sessions/session-nova-compute-runtime-service.yaml |
 | 01KSE5V73Z-VATZ | OpenStack HAProxy Edge Gateway Service | drafting_session | drafting-session, openstack, edge-gateway, haproxy | Incomplete authoring session for the HAProxy load balancer edge gateway service object. HAProxy fronts the OpenStack... | examples/catalog/sessions/session-openstack-ha-proxy-edge-service.yaml |
 
 ## Content Folder Counts
@@ -225,8 +228,8 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | examples/catalog/software-deployment-patterns | 1 |
 | examples/catalog/product-components | 1 |
 | examples/catalog/data-components | 1 |
-| examples/catalog/decision-records | 1 |
-| examples/catalog/sessions | 1 |
+| examples/catalog/decision-records | 3 |
+| examples/catalog/sessions | 2 |
 
 ## Templates
 
