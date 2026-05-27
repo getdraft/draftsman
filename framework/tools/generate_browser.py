@@ -632,9 +632,11 @@ def build_requirement_payload(registry: dict[str, dict[str, Any]], workspace_roo
     }
 
 
-def build_sdp_connections(obj: dict[str, Any]) -> list[dict[str, Any]]:
-    """Flatten inter-service connections from all serviceGroups into a single list."""
+def build_sdp_connections(obj: dict[str, Any], all_objects: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
+    """Flatten inter-service connections from serviceGroups.connections (legacy) and relationship objects."""
     connections: list[dict[str, Any]] = []
+
+    # Legacy: serviceGroups[].connections[] (deprecated since v0.26)
     for group in obj.get("serviceGroups", []):
         if not isinstance(group, dict):
             continue
@@ -655,6 +657,35 @@ def build_sdp_connections(obj: dict[str, Any]) -> list[dict[str, Any]]:
                 "label": str(conn.get("label", "")).strip(),
                 "serviceGroup": group_name,
             })
+
+    # Current: relationship objects where both endpoints are deployed in this SDP
+    if all_objects:
+        deployed_uids: set[str] = set()
+        for group in obj.get("serviceGroups", []):
+            if not isinstance(group, dict):
+                continue
+            for deployed in group.get("deployableObjects", []):
+                if isinstance(deployed, dict) and deployed.get("ref"):
+                    deployed_uids.add(str(deployed["ref"]))
+        existing = {(c["from"], c["to"]) for c in connections}
+        for rel in all_objects:
+            if rel.get("type") != "relationship":
+                continue
+            src = str(rel.get("source", "")).strip()
+            tgt = str(rel.get("target", "")).strip()
+            if not src or not tgt:
+                continue
+            if src in deployed_uids and tgt in deployed_uids and (src, tgt) not in existing:
+                connections.append({
+                    "from": src,
+                    "to": tgt,
+                    "protocol": str(rel.get("technology", "")).strip(),
+                    "direction": str(rel.get("direction", "outbound")).strip(),
+                    "port": "",
+                    "label": str(rel.get("label", "")).strip(),
+                    "serviceGroup": "",
+                })
+
     return connections
 
 
@@ -753,7 +784,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
                 "inherits": obj.get("inherits", ""),
                 "scalingUnits": obj.get("scalingUnits", []),
                 "networkZones": obj.get("networkZones", []),
-                "sdpConnections": build_sdp_connections(obj) if obj.get("type") == "software_deployment_pattern" else [],
+                "sdpConnections": build_sdp_connections(obj, objects) if obj.get("type") == "software_deployment_pattern" else [],
                 "serviceGroups": obj.get("serviceGroups", []),
                 "tierVariants": obj.get("tierVariants", []),
                 "tierId": obj.get("tierId", ""),

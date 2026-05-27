@@ -132,12 +132,74 @@ def relationships_for_containers(
     ]
 
 
+def group_containers_by_sdp(
+    containers: list[dict[str, Any]],
+    catalog: dict[str, dict[str, Any]],
+) -> list[tuple[str, list[dict[str, Any]]]] | None:
+    """Return [(group_name, [container_objs])] derived from SDP service groups.
+
+    Returns None when no grouping is found (caller falls back to flat rendering).
+    Only returns a value when two or more distinct groups are found.
+    """
+    container_uids = {str(c.get("uid") or "") for c in containers}
+    uid_to_group: dict[str, str] = {}
+    group_order: list[str] = []
+
+    for obj in catalog.values():
+        if obj.get("type") != "software_deployment_pattern":
+            continue
+        for group in obj.get("serviceGroups", []):
+            if not isinstance(group, dict):
+                continue
+            group_name = str(group.get("name", "")).strip()
+            if not group_name:
+                continue
+            for deployed in group.get("deployableObjects", []):
+                if not isinstance(deployed, dict):
+                    continue
+                ref = str(deployed.get("ref", "")).strip()
+                if ref in container_uids and ref not in uid_to_group:
+                    uid_to_group[ref] = group_name
+                    if group_name not in group_order:
+                        group_order.append(group_name)
+
+    if not uid_to_group:
+        return None
+
+    groups: dict[str, list[dict[str, Any]]] = {name: [] for name in group_order}
+    ungrouped: list[dict[str, Any]] = []
+    for container in containers:
+        uid = str(container.get("uid") or "")
+        group_name = uid_to_group.get(uid)
+        if group_name:
+            groups[group_name].append(container)
+        else:
+            ungrouped.append(container)
+
+    result = [(name, groups[name]) for name in group_order if groups[name]]
+    if ungrouped:
+        result.append(("Other", ungrouped))
+
+    return result if len(result) > 1 else None
+
+
+def _structurizr_container_line(obj: dict[str, Any], indent: str) -> str:
+    uid_id = c4_id(str(obj.get("uid") or ""))
+    label = c4_label(obj)
+    tech = c4_technology(obj)
+    desc = str(obj.get("description") or "").replace('"', "'").replace("\n", " ").strip()[:120]
+    tech_str = f' "{tech}"' if tech else ""
+    desc_str = f' "{desc}"' if desc else ""
+    return f'{indent}{uid_id} = container "{label}"{tech_str}{desc_str}'
+
+
 def generate_structurizr(
     system_name: str,
     system_description: str,
     containers: list[dict[str, Any]],
     relationships: list[dict[str, Any]],
     external_actors: list[dict[str, Any]],
+    groups: list[tuple[str, list[dict[str, Any]]]] | None = None,
 ) -> str:
     lines: list[str] = []
     lines.append(f'workspace "{system_name}" {{')
@@ -146,14 +208,15 @@ def generate_structurizr(
     if system_description:
         lines.append(f'      description "{system_description}"')
 
-    for obj in containers:
-        uid_id = c4_id(str(obj.get("uid") or ""))
-        label = c4_label(obj)
-        tech = c4_technology(obj)
-        desc = str(obj.get("description") or "").replace('"', "'").replace("\n", " ").strip()[:120]
-        tech_str = f' "{tech}"' if tech else ""
-        desc_str = f' "{desc}"' if desc else ""
-        lines.append(f'      {uid_id} = container "{label}"{tech_str}{desc_str}')
+    if groups:
+        for group_name, group_containers in groups:
+            lines.append(f'      group "{group_name}" {{')
+            for obj in group_containers:
+                lines.append(_structurizr_container_line(obj, "        "))
+            lines.append("      }")
+    else:
+        for obj in containers:
+            lines.append(_structurizr_container_line(obj, "      "))
 
     lines.append("    }")
 
@@ -190,11 +253,24 @@ def generate_structurizr(
     return "\n".join(lines)
 
 
+def _mermaid_container_line(obj: dict[str, Any], indent: str) -> str:
+    uid_id = c4_id(str(obj.get("uid") or ""))
+    label = c4_label(obj)
+    tech = c4_technology(obj)
+    desc = str(obj.get("description") or "").replace('"', "'").replace("\n", " ").strip()[:80]
+    tech_str = f', "{tech}"' if tech else ', ""'
+    desc_str = f', "{desc}"' if desc else ', ""'
+    if obj.get("type") in DATA_STORE_TYPES:
+        return f'{indent}ContainerDb({uid_id}, "{label}"{tech_str}{desc_str})'
+    return f'{indent}Container({uid_id}, "{label}"{tech_str}{desc_str})'
+
+
 def generate_mermaid(
     system_name: str,
     containers: list[dict[str, Any]],
     relationships: list[dict[str, Any]],
     external_actors: list[dict[str, Any]],
+    groups: list[tuple[str, list[dict[str, Any]]]] | None = None,
 ) -> str:
     lines: list[str] = ["```mermaid", "C4Container"]
     lines.append(f'    title "{system_name}"')
@@ -214,20 +290,20 @@ def generate_mermaid(
     if external_actors:
         lines.append("")
 
-    for obj in containers:
-        uid_id = c4_id(str(obj.get("uid") or ""))
-        label = c4_label(obj)
-        tech = c4_technology(obj)
-        desc = str(obj.get("description") or "").replace('"', "'").replace("\n", " ").strip()[:80]
-        tech_str = f', "{tech}"' if tech else ', ""'
-        desc_str = f', "{desc}"' if desc else ', ""'
-        if obj.get("type") in DATA_STORE_TYPES:
-            lines.append(f'    ContainerDb({uid_id}, "{label}"{tech_str}{desc_str})')
-        else:
-            lines.append(f'    Container({uid_id}, "{label}"{tech_str}{desc_str})')
+    if groups:
+        for i, (group_name, group_containers) in enumerate(groups):
+            boundary_id = f"b{i}"
+            lines.append(f'    Boundary({boundary_id}, "{group_name}") {{')
+            for obj in group_containers:
+                lines.append(_mermaid_container_line(obj, "        "))
+            lines.append("    }")
+            lines.append("")
+    else:
+        for obj in containers:
+            lines.append(_mermaid_container_line(obj, "    "))
+        lines.append("")
 
     if relationships:
-        lines.append("")
         for rel in relationships:
             src_id = c4_id(str(rel.get("source") or ""))
             tgt_id = c4_id(str(rel.get("target") or ""))
@@ -311,25 +387,27 @@ def main(argv: list[str] | None = None) -> int:
             system_name = str(system.get("name") or "System")
             system_desc = str(system.get("description") or "")
             slug = re.sub(r"[^a-z0-9-]+", "-", system_name.lower()).strip("-")
+            groups = group_containers_by_sdp(containers, catalog)
 
             if args.format in ("structurizr", "both"):
-                dsl = generate_structurizr(system_name, system_desc, containers, rels, actors)
+                dsl = generate_structurizr(system_name, system_desc, containers, rels, actors, groups)
                 diagrams.append((f"{slug}.dsl", dsl, "Structurizr DSL"))
 
             if args.format in ("mermaid", "both"):
-                md = generate_mermaid(system_name, containers, rels, actors)
+                md = generate_mermaid(system_name, containers, rels, actors, groups)
                 diagrams.append((f"{slug}.md", md, "Mermaid C4"))
     else:
         system_name = "System"
         container_uids = {str(c.get("uid") or "") for c in all_containers}
         rels = relationships_for_containers(container_uids, all_relationships if all_relationships else [])
+        groups = group_containers_by_sdp(all_containers, catalog)
 
         if args.format in ("structurizr", "both"):
-            dsl = generate_structurizr(system_name, "", all_containers, rels, [])
+            dsl = generate_structurizr(system_name, "", all_containers, rels, [], groups)
             diagrams.append(("system.dsl", dsl, "Structurizr DSL"))
 
         if args.format in ("mermaid", "both"):
-            md = generate_mermaid(system_name, all_containers, rels, [])
+            md = generate_mermaid(system_name, all_containers, rels, [], groups)
             diagrams.append(("system.md", md, "Mermaid C4"))
 
     if args.dry_run:
