@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG003-G3Q2
+name: Horizon Dashboard → Nova Compute Service
+catalogStatus: incomplete
+source: STCK000006-RS06
+label: calls
+target: STCK000001-RS01
+notes: Horizon calls Nova APIs to display and manage compute instances, flavors, key
+  pairs, and virtual console access.

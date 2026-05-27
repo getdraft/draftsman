@@ -1,0 +1,11 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWFZZW-2BN8
+name: Swift Storage Cluster → Backup Service
+catalogStatus: stub
+source: STCK000006-DAR6
+label: calls
+externalTarget: Backup Service
+notes: Swift cluster itself serves as an object storage target for OpenStack service
+  backups. Cross-region Swift replication is used for off-site durability of critical
+  object data.

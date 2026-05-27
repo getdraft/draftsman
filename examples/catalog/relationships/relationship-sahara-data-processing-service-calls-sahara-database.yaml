@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG00E-56JG
+name: Sahara Data Processing Service → Sahara Database
+catalogStatus: incomplete
+source: STCK00000B-RS0B
+label: calls
+target: STCK000007-DAR7
+notes: Sahara persists cluster templates, node group templates, job templates, and
+  cluster state to the shared OpenStack MariaDB schema.

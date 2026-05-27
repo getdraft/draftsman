@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG00F-XS1H
+name: Trove Database Service → Keystone Identity
+catalogStatus: incomplete
+source: STCK00000A-RS0A
+label: calls
+target: STCK000002-RS02
+notes: All Trove API requests are authenticated via Keystone token validation. Trove
+  service account is registered in the Keystone service catalog.

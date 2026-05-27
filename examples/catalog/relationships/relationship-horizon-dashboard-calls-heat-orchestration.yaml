@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG005-P4TK
+name: Horizon Dashboard → Heat Orchestration
+catalogStatus: incomplete
+source: STCK000006-RS06
+label: calls
+target: STCK000007-RS07
+notes: Horizon calls Heat APIs to display and launch infrastructure stacks defined
+  as Heat Orchestration Templates.

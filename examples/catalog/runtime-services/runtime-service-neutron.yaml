@@ -61,18 +61,4 @@ internalComponents:
 - ref: STCK000004-TC04
   role: Core networking service providing neutron-api, ML2 plugin, and distributed
     networking agents (L2, L3, DHCP, metadata).
-externalInteractions:
-- name: Keystone Identity
-  capabilities: []
-  notes: All Neutron API requests are authenticated via Keystone token validation.
-    Neutron service account is registered in the Keystone service catalog.
-- name: RabbitMQ Message Broker
-  capabilities: []
-  notes: Neutron uses RabbitMQ AMQP messaging for ML2 plugin-to-agent communication
-    for network provisioning events on compute and network nodes.
-- name: Neutron Database
-  capabilities: []
-  notes: Neutron persists all network topology data including networks, subnets, ports,
-    routers, floating IPs, and security groups to the Neutron MariaDB schema.
-requirementGroups: []
 requirementImplementations: []

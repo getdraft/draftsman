@@ -1,0 +1,11 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG00D-2AYJ
+name: RabbitMQ Message Broker Service → Keystone Identity
+catalogStatus: incomplete
+source: STCK00000D-RS0D
+label: calls
+target: STCK000002-RS02
+notes: All API requests authenticated via Keystone token validation. RabbitMQ management
+  API uses its own credential model; service connections use AMQP credentials configured
+  per service.

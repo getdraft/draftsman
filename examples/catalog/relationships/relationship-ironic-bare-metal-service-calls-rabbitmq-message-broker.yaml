@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG006-8HH7
+name: Ironic Bare Metal Service → RabbitMQ Message Broker
+catalogStatus: incomplete
+source: STCK000009-RS09
+label: calls
+target: STCK00000D-RS0D
+notes: Ironic uses RabbitMQ AMQP messaging for ironic-conductor RPC calls and provisioning
+  workflow coordination.

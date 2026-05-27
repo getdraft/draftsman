@@ -1,0 +1,9 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWFZZX-JWP6
+name: AWS Lambda Runtime → Amazon CloudWatch Logs
+catalogStatus: stub
+source: 01KQQ4Q025-T7B7
+label: sends events to
+externalTarget: Amazon CloudWatch Logs
+notes: Function logs are emitted to CloudWatch Logs for adopter visibility.

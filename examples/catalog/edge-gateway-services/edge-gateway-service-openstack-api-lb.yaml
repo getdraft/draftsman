@@ -55,11 +55,4 @@ internalComponents:
 - ref: 01KSF29JTP-8YRX
   role: HAProxy Community Edition providing load balancing, health checking, and
     connection management for the OpenStack control plane.
-externalInteractions:
-- name: OpenStack API Backends
-  capabilities: []
-  notes: HAProxy forwards requests to Nova, Keystone, Glance, Neutron, Cinder, Heat,
-    Horizon, and other API services running on the same controller nodes. Backend
-    health is checked on a 2-second interval.
-requirementGroups: []
 requirementImplementations: []

@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG00E-NC3H
+name: Swift Proxy Service → Keystone Identity
+catalogStatus: incomplete
+source: STCK00000C-RS0C
+label: calls
+target: STCK000002-RS02
+notes: All Swift API requests are authenticated via Keystone token validation using
+  the keystoneauth WSGI middleware in the proxy pipeline.

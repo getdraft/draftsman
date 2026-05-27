@@ -67,30 +67,4 @@ architecturalDecisions:
 internalComponents:
 - ref: STCK000007-TC07
   role: Core dashboard application providing the Django-based web UI served via nginx.
-externalInteractions:
-- name: Keystone Identity
-  capabilities: []
-  notes: All API requests authenticated via Keystone token validation. Horizon submits
-    user credentials to Keystone and uses the resulting scoped token for all API calls.
-- name: Nova Compute Service
-  capabilities: []
-  notes: Horizon calls Nova APIs to display and manage compute instances, flavors,
-    key pairs, and virtual console access.
-- name: Glance Image Service
-  capabilities: []
-  notes: Horizon calls Glance APIs to display and manage VM disk images available
-    for instance provisioning.
-- name: Neutron Networking
-  capabilities: []
-  notes: Horizon calls Neutron APIs to display and manage virtual networks, subnets,
-    routers, floating IPs, and security groups.
-- name: Cinder Block Storage
-  capabilities: []
-  notes: Horizon calls Cinder APIs to display and manage persistent block volumes
-    and snapshots.
-- name: Heat Orchestration
-  capabilities: []
-  notes: Horizon calls Heat APIs to display and launch infrastructure stacks defined
-    as Heat Orchestration Templates.
-requirementGroups: []
 requirementImplementations: []

@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG000-G0N1
+name: Glance Image Service → Keystone Identity
+catalogStatus: incomplete
+source: STCK000003-RS03
+label: calls
+target: STCK000002-RS02
+notes: All Glance API requests are authenticated via Keystone token validation. Glance
+  service account is registered in the Keystone service catalog.

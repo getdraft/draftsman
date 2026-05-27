@@ -66,10 +66,4 @@ internalComponents:
 - ref: STCK00000E-TC0E
   role: MariaDB Galera cluster providing the relational database engine for the Glance
     image metadata schema.
-externalInteractions:
-- name: Backup Service
-  capabilities: []
-  notes: Point-in-time backups via Percona XtraBackup automated backup tooling writing
-    to object storage.
-requirementGroups: []
 requirementImplementations: []

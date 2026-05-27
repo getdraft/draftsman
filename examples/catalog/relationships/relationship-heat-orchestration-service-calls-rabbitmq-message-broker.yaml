@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG002-5JSY
+name: Heat Orchestration Service → RabbitMQ Message Broker
+catalogStatus: incomplete
+source: STCK000007-RS07
+label: calls
+target: STCK00000D-RS0D
+notes: Heat uses RabbitMQ AMQP messaging for communication between heat-api and distributed
+  heat-engine workers for stack operation processing.

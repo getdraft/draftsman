@@ -59,14 +59,4 @@ internalComponents:
 - ref: STCK000006-TC06
   role: Proxy server providing HTTP API gateway and Keystone auth middleware for the
     Swift object storage cluster.
-externalInteractions:
-- name: Keystone Identity
-  capabilities: []
-  notes: All Swift API requests are authenticated via Keystone token validation using
-    the keystoneauth WSGI middleware in the proxy pipeline.
-- name: Swift Storage Cluster
-  capabilities: []
-  notes: The proxy routes all object storage operations to the underlying Swift account,
-    container, and object storage nodes using consistent hashing for node selection.
-requirementGroups: []
 requirementImplementations: []

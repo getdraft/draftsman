@@ -68,32 +68,6 @@ internalComponents:
 - ref: STCK000001-TC01
   role: Core compute service providing nova-api, nova-scheduler, nova-conductor, nova-consoleauth,
     and nova-compute subcomponents.
-externalInteractions:
-- name: Keystone Identity
-  capabilities: []
-  notes: All Nova API requests are authenticated via Keystone token validation. Nova
-    service accounts are registered in the Keystone service catalog.
-- name: RabbitMQ Message Broker
-  capabilities: []
-  notes: Nova uses RabbitMQ AMQP messaging for all inter-subcomponent communication
-    including scheduling requests, conductor coordination, and compute agent RPC calls.
-- name: Nova Database
-  capabilities: []
-  notes: Nova persists instance state, flavor definitions, host aggregates, and scheduler
-    data to the Nova MariaDB schema.
-- name: Glance Image Service
-  capabilities: []
-  notes: Nova retrieves bootable disk images from Glance when provisioning new instances.
-- name: Neutron Networking
-  capabilities: []
-  notes: Nova calls Neutron APIs to create and attach virtual network interfaces during
-    instance provisioning and deletion.
-- name: Cinder Block Storage
-  capabilities: []
-  notes: Nova calls Cinder APIs to attach and detach persistent block volumes to running
-    instances.
-requirementGroups:
-- 01KQQ4Q027-T3CA
 requirementImplementations:
 - requirementGroup: 01KQQ4Q027-T3CA
   requirementId: CC.SecurityCompliance.04.3.1

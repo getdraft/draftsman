@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG004-C8QW
+name: Horizon Dashboard → Glance Image Service
+catalogStatus: incomplete
+source: STCK000006-RS06
+label: calls
+target: STCK000003-RS03
+notes: Horizon calls Glance APIs to display and manage VM disk images available for
+  instance provisioning.

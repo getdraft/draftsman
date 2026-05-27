@@ -62,22 +62,4 @@ internalComponents:
 - ref: STCK00000A-TC0A
   role: Core bare metal service providing ironic-api and ironic-conductor with multi-driver
     BMC support.
-externalInteractions:
-- name: Keystone Identity
-  capabilities: []
-  notes: All Ironic API requests are authenticated via Keystone token validation.
-    Ironic service account is registered in the Keystone service catalog.
-- name: RabbitMQ Message Broker
-  capabilities: []
-  notes: Ironic uses RabbitMQ AMQP messaging for ironic-conductor RPC calls and provisioning
-    workflow coordination.
-- name: Ironic Database
-  capabilities: []
-  notes: Ironic persists node enrollment data, driver configuration, provisioning
-    state, and BMC credentials to the shared OpenStack MariaDB schema.
-- name: Nova Compute Service
-  capabilities: []
-  notes: Ironic integrates with nova-conductor to expose enrolled bare metal nodes
-    as schedulable compute resources via the Nova ironic virt driver.
-requirementGroups: []
 requirementImplementations: []

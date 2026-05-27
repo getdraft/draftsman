@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWFZZX-NE4F
+name: AWS Lambda Runtime → Amazon CloudWatch Metrics
+catalogStatus: stub
+source: 01KQQ4Q025-T7B7
+label: calls
+externalTarget: Amazon CloudWatch Metrics
+notes: Runtime health and operational telemetry are observed through CloudWatch metrics
+  and alarms.

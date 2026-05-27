@@ -1,0 +1,11 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG001-WJHM
+name: Heat Orchestration Service → Keystone Identity
+catalogStatus: incomplete
+source: STCK000007-RS07
+label: calls
+target: STCK000002-RS02
+notes: All Heat API requests are authenticated via Keystone token validation. Heat
+  uses Keystone trust tokens for deferred engine operations performed on behalf of
+  users.

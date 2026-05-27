@@ -58,15 +58,4 @@ internalComponents:
 - ref: STCK000009-TC09
   role: Core telemetry service providing metering collection, alarm evaluation, and
     notification dispatch.
-externalInteractions:
-- name: Keystone Identity
-  capabilities: []
-  notes: All Ceilometer API requests are authenticated via Keystone token validation.
-    Ceilometer service account is registered in the Keystone service catalog.
-- name: RabbitMQ Message Broker
-  capabilities: []
-  notes: Ceilometer subscribes to the OpenStack notification bus on RabbitMQ to consume
-    metering events and notifications emitted by Nova, Neutron, Cinder, and other
-    platform services.
-requirementGroups: []
 requirementImplementations: []

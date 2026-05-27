@@ -61,18 +61,4 @@ internalComponents:
 - ref: STCK000005-TC05
   role: Core block storage service providing cinder-api, cinder-scheduler, and cinder-volume
     with iSCSI backend.
-externalInteractions:
-- name: Keystone Identity
-  capabilities: []
-  notes: All Cinder API requests are authenticated via Keystone token validation.
-    Cinder service account is registered in the Keystone service catalog.
-- name: RabbitMQ Message Broker
-  capabilities: []
-  notes: Cinder uses RabbitMQ AMQP messaging for volume operation dispatching between
-    cinder-api, cinder-scheduler, and cinder-volume.
-- name: Cinder Database
-  capabilities: []
-  notes: Cinder persists all volume state including volume metadata, attachment records,
-    snapshots, and quotas to the Cinder MariaDB schema.
-requirementGroups: []
 requirementImplementations: []

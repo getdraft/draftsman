@@ -21,20 +21,6 @@ productVersion: managed
 networkPlacement: vpc-private
 patchingOwner: provider-managed
 authenticationModel: iam
-complianceCerts: []
-externalInteractions:
-- name: AWS IAM
-  capabilities:
-  - 01KQQ4Q026-MHJM
-  notes: Lambda function and administrative access is controlled through AWS IAM.
-- name: Amazon CloudWatch Logs
-  capabilities:
-  - 01KQQ4Q026-D04B
-  notes: Function logs are emitted to CloudWatch Logs for adopter visibility.
-- name: Amazon CloudWatch Metrics
-  capabilities:
-  - 01KQQ4Q026-98VD
-  notes: Runtime health and operational telemetry are observed through CloudWatch metrics and alarms.
 architecturalDecisions:
   resilienceModel: Inherently multi-tenant and highly available within the AWS Lambda managed execution fabric.
   authenticationAccessModel: AWS IAM controls administrative access, function execution roles, and service-to-service authorization.

@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG00F-87Z3
+name: Swift Proxy Service → Swift Storage Cluster
+catalogStatus: incomplete
+source: STCK00000C-RS0C
+label: calls
+target: STCK000006-DAR6
+notes: The proxy routes all object storage operations to the underlying Swift account,
+  container, and object storage nodes using consistent hashing for node selection.

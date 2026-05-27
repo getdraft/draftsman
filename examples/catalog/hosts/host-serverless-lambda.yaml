@@ -29,8 +29,3 @@ internalComponents:
 - ref: 01KQQ4Q025-T7B7
   role: managed-runtime
   notes: AWS-managed serverless execution environment. Blackbox host.
-externalInteractions:
-- name: AWS Lambda Service
-  notes: The Lambda service itself provides the execution environment.
-  capabilities:
-  - 01KQQ4Q026-9K8G

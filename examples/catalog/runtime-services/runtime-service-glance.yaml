@@ -53,18 +53,4 @@ internalComponents:
 - ref: STCK000003-TC03
   role: Core image service providing glance-api and glance-registry for image lifecycle
     management.
-externalInteractions:
-- name: Keystone Identity
-  capabilities: []
-  notes: All Glance API requests are authenticated via Keystone token validation.
-    Glance service account is registered in the Keystone service catalog.
-- name: Glance Database
-  capabilities: []
-  notes: Glance persists image metadata including name, format, size, checksum, and
-    visibility to the Glance MariaDB schema.
-- name: Swift Object Storage
-  capabilities: []
-  notes: Glance stores raw image binary data in Swift. Swift provides durable, replicated
-    storage for all registered images.
-requirementGroups: []
 requirementImplementations: []

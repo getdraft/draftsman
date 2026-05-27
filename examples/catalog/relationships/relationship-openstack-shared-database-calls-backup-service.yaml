@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWFZZV-A346
+name: OpenStack Shared Database → Backup Service
+catalogStatus: stub
+source: STCK000007-DAR7
+label: calls
+externalTarget: Backup Service
+notes: Point-in-time backups via Percona XtraBackup automated backup tooling with
+  per-schema logical exports writing to object storage.

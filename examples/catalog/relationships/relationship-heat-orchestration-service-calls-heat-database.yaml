@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG002-BKKF
+name: Heat Orchestration Service → Heat Database
+catalogStatus: incomplete
+source: STCK000007-RS07
+label: calls
+target: STCK000007-DAR7
+notes: Heat persists stack definitions, resource mappings, operation history, and
+  trust token references to the shared OpenStack MariaDB schema.

@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG00D-V0KN
+name: Sahara Data Processing Service → Keystone Identity
+catalogStatus: incomplete
+source: STCK00000B-RS0B
+label: calls
+target: STCK000002-RS02
+notes: All Sahara API requests are authenticated via Keystone token validation. Sahara
+  service account is registered in the Keystone service catalog.

@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG00F-PV05
+name: Trove Database Service → RabbitMQ Message Broker
+catalogStatus: incomplete
+source: STCK00000A-RS0A
+label: calls
+target: STCK00000D-RS0D
+notes: Trove uses RabbitMQ AMQP messaging for task dispatching between trove-api,
+  trove-taskmanager, and guest agents running inside provisioned database instances.

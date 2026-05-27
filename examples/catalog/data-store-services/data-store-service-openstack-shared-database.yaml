@@ -84,10 +84,4 @@ internalComponents:
 - ref: STCK00000E-TC0E
   role: MariaDB Galera cluster providing the shared relational database engine for
     Heat, Ironic, Trove, Sahara, and Ceilometer schemas.
-externalInteractions:
-- name: Backup Service
-  capabilities: []
-  notes: Point-in-time backups via Percona XtraBackup automated backup tooling with
-    per-schema logical exports writing to object storage.
-requirementGroups: []
 requirementImplementations: []

@@ -60,11 +60,4 @@ internalComponents:
 - ref: STCK00000D-TC0D
   role: Core AMQP message broker providing exchange and queue management, clustering,
     and quorum queue durability for all OpenStack services.
-externalInteractions:
-- name: Keystone Identity
-  capabilities: []
-  notes: All API requests authenticated via Keystone token validation. RabbitMQ management
-    API uses its own credential model; service connections use AMQP credentials configured
-    per service.
-requirementGroups: []
 requirementImplementations: []

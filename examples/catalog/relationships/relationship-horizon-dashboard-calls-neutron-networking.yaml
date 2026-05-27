@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG004-0E34
+name: Horizon Dashboard → Neutron Networking
+catalogStatus: incomplete
+source: STCK000006-RS06
+label: calls
+target: STCK000004-RS04
+notes: Horizon calls Neutron APIs to display and manage virtual networks, subnets,
+  routers, floating IPs, and security groups.

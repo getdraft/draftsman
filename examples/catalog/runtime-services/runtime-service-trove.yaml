@@ -60,18 +60,4 @@ architecturalDecisions:
 internalComponents:
 - ref: STCK00000B-TC0B
   role: Core database service providing trove-api, trove-conductor, and trove-taskmanager.
-externalInteractions:
-- name: Keystone Identity
-  capabilities: []
-  notes: All Trove API requests are authenticated via Keystone token validation. Trove
-    service account is registered in the Keystone service catalog.
-- name: RabbitMQ Message Broker
-  capabilities: []
-  notes: Trove uses RabbitMQ AMQP messaging for task dispatching between trove-api,
-    trove-taskmanager, and guest agents running inside provisioned database instances.
-- name: Trove Database
-  capabilities: []
-  notes: Trove persists all database instance metadata, configuration, and operational
-    state to the shared OpenStack MariaDB schema.
-requirementGroups: []
 requirementImplementations: []

@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG005-PQGD
+name: Ironic Bare Metal Service → Keystone Identity
+catalogStatus: incomplete
+source: STCK000009-RS09
+label: calls
+target: STCK000002-RS02
+notes: All Ironic API requests are authenticated via Keystone token validation. Ironic
+  service account is registered in the Keystone service catalog.

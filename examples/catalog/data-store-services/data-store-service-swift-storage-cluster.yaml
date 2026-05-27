@@ -84,11 +84,4 @@ internalComponents:
 - ref: STCK000006-TC06
   role: Swift storage cluster providing distributed object storage with account, container,
     and object daemons across all storage nodes.
-externalInteractions:
-- name: Backup Service
-  capabilities: []
-  notes: Swift cluster itself serves as an object storage target for OpenStack service
-    backups. Cross-region Swift replication is used for off-site durability of critical
-    object data.
-requirementGroups: []
 requirementImplementations: []

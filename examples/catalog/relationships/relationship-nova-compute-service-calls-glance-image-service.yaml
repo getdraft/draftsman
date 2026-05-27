@@ -1,0 +1,9 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG00B-1Z27
+name: Nova Compute Service → Glance Image Service
+catalogStatus: incomplete
+source: STCK000001-RS01
+label: calls
+target: STCK000003-RS03
+notes: Nova retrieves bootable disk images from Glance when provisioning new instances.

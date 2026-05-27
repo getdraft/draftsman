@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG00G-07D0
+name: Trove Database Service → Trove Database
+catalogStatus: incomplete
+source: STCK00000A-RS0A
+label: calls
+target: STCK000007-DAR7
+notes: Trove persists all database instance metadata, configuration, and operational
+  state to the shared OpenStack MariaDB schema.

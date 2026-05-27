@@ -45,5 +45,4 @@ scheduledJobs:
   description: Moves audit_events rows older than 13 months to Swift cold storage
     and hard-deletes them from the active table.
   purpose: archival
-requirementGroups: []
 requirementImplementations: []

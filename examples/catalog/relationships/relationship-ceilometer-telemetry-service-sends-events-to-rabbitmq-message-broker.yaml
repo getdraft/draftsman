@@ -1,0 +1,11 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWFZZY-501S
+name: Ceilometer Telemetry Service → RabbitMQ Message Broker
+catalogStatus: incomplete
+source: STCK000008-RS08
+label: sends events to
+target: STCK00000D-RS0D
+notes: Ceilometer subscribes to the OpenStack notification bus on RabbitMQ to consume
+  metering events and notifications emitted by Nova, Neutron, Cinder, and other platform
+  services.

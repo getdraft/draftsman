@@ -2466,17 +2466,21 @@ def validate_software_deployment_pattern(
             warnings,
         )
 
-    has_additional_interactions = any(
-        isinstance(group, dict)
-        and isinstance(group.get("externalInteractions"), list)
-        and len(group.get("externalInteractions", [])) > 0
-        for group in service_groups
-    ) or (isinstance(obj.get("externalInteractions"), list) and len(obj.get("externalInteractions", [])) > 0)
+    has_additional_interactions = (
+        is_non_empty(architectural_decisions.get("externalDependencies"))
+        or any(
+            isinstance(group, dict)
+            and isinstance(group.get("externalInteractions"), list)
+            and len(group.get("externalInteractions", [])) > 0
+            for group in service_groups
+        )
+        or (isinstance(obj.get("externalInteractions"), list) and len(obj.get("externalInteractions", [])) > 0)
+    )
     if not has_additional_interactions and not is_non_empty(architectural_decisions.get("noAdditionalInteractions")):
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add an external interaction or architecturalDecisions.noAdditionalInteractions to satisfy requirement-group.software-deployment-pattern requirement 'additional-interactions'",
+            f"[{object_id}] Add architecturalDecisions.externalDependencies (documenting external dependencies as relationship objects) or architecturalDecisions.noAdditionalInteractions to satisfy requirement-group.software-deployment-pattern requirement 'additional-interactions'",
             failures,
             warnings,
         )
@@ -3049,22 +3053,6 @@ def validate_requirement_implementations(
     requirement_groups_field = obj.get("requirementGroups", []) or []
     declared_group_ids = {str(group_id) for group_id in requirement_groups_field} if isinstance(requirement_groups_field, list) else set()
 
-    if require_active_group_disposition:
-        missing_active = sorted(
-            group_id
-            for group_id in active_group_ids
-            if group_id not in declared_group_ids
-            and requirement_group_applies_to_object(requirement_groups.get(group_id, {}), obj)
-        )
-        if missing_active:
-            record_requirement_gap(
-                obj,
-                path,
-                f"[{object_label(obj)}] Add requirementGroups entries for active requirement groups {missing_active} or record not-applicable dispositions",
-                failures,
-                warnings,
-            )
-
     implementations = obj.get("requirementImplementations", [])
     if implementations is None:
         implementations = []
@@ -3087,8 +3075,8 @@ def validate_requirement_implementations(
         if not group:
             failures.append(f"{context}: Set requirementGroup to an existing requirement_group UID")
             continue
-        if group.get("activation") == "workspace" and str(group_id) not in declared_group_ids:
-            failures.append(f"{context}: Add '{group_id}' to requirementGroups before recording evidence")
+        if group.get("activation") == "workspace" and str(group_id) not in active_group_ids:
+            failures.append(f"{context}: Set requirementGroup to an active workspace requirement_group UID ('{group_id}' is not active)")
             continue
         requirement = find_requirement(group, str(requirement_id), requirement_groups)
         if not requirement or not requirement_applies_to_object(requirement, obj):

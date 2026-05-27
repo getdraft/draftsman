@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG005-5P08
+name: Horizon Dashboard → Cinder Block Storage
+catalogStatus: incomplete
+source: STCK000006-RS06
+label: calls
+target: STCK000005-RS05
+notes: Horizon calls Cinder APIs to display and manage persistent block volumes and
+  snapshots.

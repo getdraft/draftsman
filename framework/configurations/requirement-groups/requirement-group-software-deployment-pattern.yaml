@@ -74,13 +74,12 @@ requirements:
   validAnswerTypes:
   - architecturalDecision
 - id: additional-interactions
-  description: Any external systems this product interacts with beyond what its component deployable objects declare must be documented — or explicitly stated as none.
+  description: Any external systems this product interacts with beyond what its component deployable objects declare must be documented via relationship objects — or explicitly stated as none.
   rationale: Product-specific integrations are invisible to the architecture without explicit declaration.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
-    criteria:
-      capability: any
-    example: Product-specific SaaS integration, partner API
+  - mechanism: architecturalDecision
+    key: externalDependencies
+    example: External dependencies are documented as relationship objects in catalog/relationships/
   - mechanism: architecturalDecision
     key: noAdditionalInteractions
     example: No additional interactions beyond component deployable objects
@@ -89,7 +88,6 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architecturalDecision
-  - externalInteraction
 - id: data-classification
   description: The type of data this product stores or processes must be documented.
   rationale: Data classification drives security posture requirements and compliance obligations.
@@ -133,19 +131,18 @@ requirements:
   description: >
     Primary inter-service communication paths that cross a tier boundary
     (e.g. presentation→application) or a network zone boundary must be
-    documented in serviceGroups[].connections, or the pattern must explicitly
-    state that no cross-boundary connections exist.
+    documented as relationship objects in the catalog, or the pattern must
+    explicitly state that no cross-boundary connections exist.
   rationale: >
     Service-to-service communication across tiers and zones is an architecture
     decision with security, performance, and compliance implications. Without
     explicit connection records the architecture cannot be analyzed for data-flow
     compliance, blast-radius, or network policy conformance.
   canBeSatisfiedBy:
-  - mechanism: field
-    key: serviceGroups[].connections
+  - mechanism: architecturalDecision
+    key: interServiceConnections
     example: >
-      At least one connection entry per tier or zone crossing represented in the
-      deployment — from: <ref>, to: <ref>, protocol: REST, direction: outbound
+      Cross-boundary connections documented as relationship objects in catalog/relationships/
   - mechanism: architecturalDecision
     key: noCrossBoundaryConnections
     example: All services in this pattern communicate only within the same tier and zone

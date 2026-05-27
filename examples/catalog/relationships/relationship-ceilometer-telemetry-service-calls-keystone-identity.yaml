@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWFZZY-FS6X
+name: Ceilometer Telemetry Service → Keystone Identity
+catalogStatus: incomplete
+source: STCK000008-RS08
+label: calls
+target: STCK000002-RS02
+notes: All Ceilometer API requests are authenticated via Keystone token validation.
+  Ceilometer service account is registered in the Keystone service catalog.

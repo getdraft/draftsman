@@ -51,9 +51,28 @@ architecturalDecisions:
     Galera and Swift satisfy the data tier. No WAF is required; the deployment is
     internal-only and access-controlled by network boundary and VPN/ZTNA. See decision
     record 01KSE5V73Z-CRZV.
-requirementGroups:
-- 01KQQ4Q027-T3CA
+  interServiceConnections: Cross-tier and cross-zone communication paths are documented
+    as relationship objects in examples/catalog/relationships/. Key tier crossings include
+    API LB → Nova/Neutron/Keystone (presentation→application), all services →
+    RabbitMQ (application→utility AMQP), all services → Keystone (application→application
+    auth), and all services → MariaDB databases (application→data).
+  externalDependencies: External dependencies are documented as relationship objects.
+    Keystone optionally federates with an LDAP Directory for enterprise identity. All
+    MariaDB schemas and Swift storage depend on an external Backup Service for point-in-time
+    recovery.
 requirementImplementations:
+- requirementGroup: 01KQQ4Q027-VK45
+  requirementId: additional-interactions
+  status: satisfied
+  mechanism: architecturalDecision
+  key: externalDependencies
+  notes: External dependencies documented as relationship objects; see architecturalDecisions.externalDependencies.
+- requirementGroup: 01KQQ4Q027-VK45
+  requirementId: inter-service-connections
+  status: satisfied
+  mechanism: architecturalDecision
+  key: interServiceConnections
+  notes: Cross-boundary connections documented as relationship objects; see architecturalDecisions.interServiceConnections.
 - requirementGroup: 01KQQ4Q027-T3CA
   requirementId: CC.SecurityCompliance.10.1.1
   status: satisfied
@@ -176,134 +195,6 @@ serviceGroups:
     intent: ha
     notes: Swift proxy service. Runs active-active behind load balancer. Fully stateless
       — provides the object storage API gateway.
-  connections:
-  - from: STCK000006-RS06
-    to: STCK000001-RS01
-    protocol: REST
-    direction: outbound
-    label: Dashboard compute API
-  - from: STCK000006-RS06
-    to: STCK000002-RS02
-    protocol: REST
-    direction: outbound
-    label: Dashboard authentication
-  - from: STCK000006-RS06
-    to: STCK000003-RS03
-    protocol: REST
-    direction: outbound
-    label: Dashboard image management
-  - from: STCK000006-RS06
-    to: STCK000004-RS04
-    protocol: REST
-    direction: outbound
-    label: Dashboard network management
-  - from: STCK000006-RS06
-    to: STCK000005-RS05
-    protocol: REST
-    direction: outbound
-    label: Dashboard volume management
-  - from: STCK000006-RS06
-    to: STCK000007-RS07
-    protocol: REST
-    direction: outbound
-    label: Dashboard orchestration
-  - from: STCK000001-RS01
-    to: STCK000002-RS02
-    protocol: REST
-    direction: outbound
-    label: Token validation
-  - from: STCK000001-RS01
-    to: STCK00000D-RS0D
-    protocol: AMQP
-    direction: outbound
-    label: Compute scheduling and conductor messaging
-  - from: STCK000001-RS01
-    to: STCK000003-RS03
-    protocol: REST
-    direction: outbound
-    label: Image retrieval for instance provisioning
-  - from: STCK000001-RS01
-    to: STCK000004-RS04
-    protocol: REST
-    direction: outbound
-    label: Network interface provisioning
-  - from: STCK000001-RS01
-    to: STCK000005-RS05
-    protocol: REST
-    direction: outbound
-    label: Volume attachment
-  - from: STCK000003-RS03
-    to: STCK000006-DAR6
-    protocol: other
-    direction: outbound
-    label: Image binary storage backend
-  - from: STCK000004-RS04
-    to: STCK00000D-RS0D
-    protocol: AMQP
-    direction: outbound
-    label: Agent plugin messaging
-  - from: STCK000005-RS05
-    to: STCK00000D-RS0D
-    protocol: AMQP
-    direction: outbound
-    label: Volume operations dispatching
-  - from: STCK000007-RS07
-    to: STCK000002-RS02
-    protocol: REST
-    direction: outbound
-    label: Orchestration auth token refresh
-  - from: STCK000007-RS07
-    to: STCK00000D-RS0D
-    protocol: AMQP
-    direction: outbound
-    label: Engine/worker messaging
-  - from: STCK000008-RS08
-    to: STCK00000D-RS0D
-    protocol: AMQP
-    direction: outbound
-    label: Metrics collection from notification bus
-  - from: STCK000008-RS08
-    to: STCK000002-RS02
-    protocol: REST
-    direction: outbound
-    label: Telemetry auth
-  - from: STCK000009-RS09
-    to: STCK000001-RS01
-    protocol: REST
-    direction: outbound
-    label: Bare metal provisioning integration
-  - from: STCK000009-RS09
-    to: STCK00000D-RS0D
-    protocol: AMQP
-    direction: outbound
-    label: Bare metal conductor messaging
-  - from: STCK00000A-RS0A
-    to: STCK00000D-RS0D
-    protocol: AMQP
-    direction: outbound
-    label: Database service task messaging
-  - from: STCK00000B-RS0B
-    to: STCK000002-RS02
-    protocol: REST
-    direction: outbound
-    label: Data processing auth
-  - from: STCK00000C-RS0C
-    to: STCK000002-RS02
-    protocol: REST
-    direction: outbound
-    label: Object storage auth
-  externalInteractions:
-  - name: CLI Clients & Cloud Management Tools
-    type: external
-    notes: Operators and tenants access OpenStack APIs via CLI tools (nova, cinder,
-      neutron, openstack CLI) and automation tooling (Terraform, Ansible). API endpoints
-      are exposed on the public network zone via the load balancer.
-  - name: LDAP Directory
-    type: external
-    notes: Optional enterprise identity federation. When configured, Keystone delegates
-      user and group lookups to the external LDAP directory, allowing enterprise credentials
-      to be used for OpenStack authentication.
-
 - name: Data Infrastructure
   deploymentTarget: openstack-controller
   deployableObjects:
@@ -352,5 +243,3 @@ serviceGroups:
     intent: ha
     notes: RabbitMQ 3-node cluster providing shared AMQP message transport for all
       OpenStack services. Quorum queues ensure message durability.
-  connections: []
-  externalInteractions: []

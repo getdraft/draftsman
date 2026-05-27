@@ -60,19 +60,4 @@ internalComponents:
 - ref: STCK000002-TC02
   role: Core identity service providing token issuance, project and user management,
     and service endpoint catalog.
-externalInteractions:
-- name: Keystone Identity
-  capabilities: []
-  notes: Keystone is the identity service itself. Intra-service admin operations use
-    the admin endpoint with bootstrap credentials.
-- name: Keystone Database
-  capabilities: []
-  notes: Keystone persists all identity data including users, projects, roles, assignments,
-    and service endpoints to the Keystone MariaDB schema.
-- name: LDAP Directory
-  capabilities: []
-  notes: Optional LDAP backend for enterprise identity federation. When configured,
-    Keystone delegates user and group lookups to the LDAP directory while retaining
-    role assignments locally.
-requirementGroups: []
 requirementImplementations: []

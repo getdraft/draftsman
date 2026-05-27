@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG006-9TPR
+name: Ironic Bare Metal Service → Ironic Database
+catalogStatus: incomplete
+source: STCK000009-RS09
+label: calls
+target: STCK000007-DAR7
+notes: Ironic persists node enrollment data, driver configuration, provisioning state,
+  and BMC credentials to the shared OpenStack MariaDB schema.

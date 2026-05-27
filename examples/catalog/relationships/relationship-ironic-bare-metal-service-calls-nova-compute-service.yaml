@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG007-6VBX
+name: Ironic Bare Metal Service → Nova Compute Service
+catalogStatus: incomplete
+source: STCK000009-RS09
+label: calls
+target: STCK000001-RS01
+notes: Ironic integrates with nova-conductor to expose enrolled bare metal nodes as
+  schedulable compute resources via the Nova ironic virt driver.

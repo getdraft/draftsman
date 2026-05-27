@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWFZZT-1511
+name: Keystone Database → Backup Service
+catalogStatus: stub
+source: STCK000002-DAR2
+label: calls
+externalTarget: Backup Service
+notes: Point-in-time backups via Percona XtraBackup automated backup tooling with
+  hourly incremental backups writing to object storage.

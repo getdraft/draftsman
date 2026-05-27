@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG003-9EKX
+name: Horizon Dashboard → Keystone Identity
+catalogStatus: incomplete
+source: STCK000006-RS06
+label: calls
+target: STCK000002-RS02
+notes: All API requests authenticated via Keystone token validation. Horizon submits
+  user credentials to Keystone and uses the resulting scoped token for all API calls.

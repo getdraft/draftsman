@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWFZZS-73X6
+name: Glance Database → Backup Service
+catalogStatus: stub
+source: STCK000003-DAR3
+label: calls
+externalTarget: Backup Service
+notes: Point-in-time backups via Percona XtraBackup automated backup tooling writing
+  to object storage.

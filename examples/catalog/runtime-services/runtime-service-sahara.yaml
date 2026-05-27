@@ -56,14 +56,4 @@ internalComponents:
 - ref: STCK00000C-TC0C
   role: Core data processing service providing sahara-api and sahara-all for Hadoop/Spark
     cluster lifecycle management.
-externalInteractions:
-- name: Keystone Identity
-  capabilities: []
-  notes: All Sahara API requests are authenticated via Keystone token validation.
-    Sahara service account is registered in the Keystone service catalog.
-- name: Sahara Database
-  capabilities: []
-  notes: Sahara persists cluster templates, node group templates, job templates, and
-    cluster state to the shared OpenStack MariaDB schema.
-requirementGroups: []
 requirementImplementations: []

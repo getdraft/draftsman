@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG000-9Q1R
+name: Glance Image Service → Glance Database
+catalogStatus: incomplete
+source: STCK000003-RS03
+label: calls
+target: STCK000003-DAR3
+notes: Glance persists image metadata including name, format, size, checksum, and
+  visibility to the Glance MariaDB schema.

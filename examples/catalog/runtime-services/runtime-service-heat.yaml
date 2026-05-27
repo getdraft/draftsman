@@ -59,19 +59,4 @@ architecturalDecisions:
 internalComponents:
 - ref: STCK000008-TC08
   role: Core orchestration service providing heat-api, heat-api-cfn, and heat-engine.
-externalInteractions:
-- name: Keystone Identity
-  capabilities: []
-  notes: All Heat API requests are authenticated via Keystone token validation. Heat
-    uses Keystone trust tokens for deferred engine operations performed on behalf
-    of users.
-- name: RabbitMQ Message Broker
-  capabilities: []
-  notes: Heat uses RabbitMQ AMQP messaging for communication between heat-api and
-    distributed heat-engine workers for stack operation processing.
-- name: Heat Database
-  capabilities: []
-  notes: Heat persists stack definitions, resource mappings, operation history, and
-    trust token references to the shared OpenStack MariaDB schema.
-requirementGroups: []
 requirementImplementations: []

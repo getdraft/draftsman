@@ -1,0 +1,11 @@
+schemaVersion: '1.0'
+type: relationship
+uid: 01KSKWG008-3RQB
+name: Keystone Identity Service → LDAP Directory
+catalogStatus: stub
+source: STCK000002-RS02
+label: calls
+externalTarget: LDAP Directory
+notes: Optional LDAP backend for enterprise identity federation. When configured,
+  Keystone delegates user and group lookups to the LDAP directory while retaining
+  role assignments locally.
