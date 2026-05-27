@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSKQNTCH-RVA5
+type: relationship
+name: API Load Balancer → Keystone Identity
+description: HAProxy distributes inbound HTTPS identity and authentication requests across keystone-api instances running on controller nodes. TLS is terminated at the load balancer; backend traffic uses HTTP on the control plane network.
+source: 01KSF29JTP-9HYA
+target: STCK000002-RS02
+label: proxies authentication requests
+technology: HTTPS / HTTP
+direction: synchronous
+catalogStatus: complete
+notes: keystone-api listens on ports 5000 (public) and 35357 (admin) on the control plane network. HAProxy fronts both endpoints. This is the entry point for all token issuance and service catalog lookups.

@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSKKS001-DAR2
+type: relationship
+name: Keystone Identity → Keystone Database
+description: Keystone persists all identity data to the Keystone MariaDB schema including users, projects, roles, role assignments, service endpoints, and application credentials.
+source: STCK000002-RS02
+target: STCK000002-DAR2
+label: persists identity data
+technology: MySQL wire protocol
+direction: synchronous
+catalogStatus: complete
+notes: Keystone is the highest blast-radius dependency in the platform. Loss of the Keystone DB renders the entire OpenStack control plane inaccessible as no token validation can succeed. MariaDB Galera replication provides HA for this dependency.

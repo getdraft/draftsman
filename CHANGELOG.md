@@ -3,6 +3,29 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.25.2 - 2026-05-26
+
+### Added
+
+- **OpenStack relationship objects** (14 new files in `examples/catalog/relationships/`): Full inter-service dependency graph for the OpenStack IaaS example. Covers Nova→Keystone, Nova→Neutron, Nova→Cinder, Nova→RabbitMQ, Neutron→Keystone, Neutron→NeutronDB, Neutron→RabbitMQ, Cinder→Keystone, Cinder→CinderDB, Cinder→RabbitMQ, Keystone→KeystoneDB, and API LB→Nova/Neutron/Keystone. Each relationship includes protocol/technology and rationale notes.
+- **Expanded OpenStack system boundary** (`examples/catalog/systems/system-openstack-compute.yaml`): Added RabbitMQ, Keystone Database, Cinder Database, and the API Load Balancer to the container list. The system now covers all 10 objects involved in the relationship graph.
+
+### Changed
+
+- **Browser Diagrams view tech label fix** (`framework/browser/draft-browser.js`): Resolved the `primaryTechnologyComponent` UID ref via `internalComponents[role='function']` → `objectLookup` lookup so Container nodes display the resolved technology component name (e.g. "OpenStack Nova") instead of the generic delivery model value ("self-managed").
+
+### Fixed
+
+No bug fixes.
+
+### Compatibility Impact
+
+No migration required. All changes are additive example content and a browser rendering improvement.
+
+### Migration Notes
+
+No migration required.
+
 ## 0.25.1 - 2026-05-26
 
 ### Added

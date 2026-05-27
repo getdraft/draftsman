@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSKN0V01-NTN1
+type: relationship
+name: Nova Compute → Neutron Networking
+description: Nova calls Neutron APIs to create, attach, and detach virtual network interfaces during instance provisioning and deletion. Network port lifecycle is tightly coupled to instance lifecycle.
+source: STCK000001-RS01
+target: STCK000004-RS04
+label: provisions network ports
+technology: HTTP (Neutron API)
+direction: synchronous
+catalogStatus: complete
+notes: nova-compute calls neutron-server to allocate ports and bind them to the hypervisor during instance boot. Port deletion is triggered on instance termination.

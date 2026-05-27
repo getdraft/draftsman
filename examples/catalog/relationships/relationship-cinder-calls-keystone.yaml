@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSKCDR01-KST1
+type: relationship
+name: Cinder Block Storage → Keystone Identity
+description: Cinder validates every incoming API request by verifying the caller's Keystone token. Cinder's service account is registered in the Keystone service catalog.
+source: STCK000005-RS05
+target: STCK000002-RS02
+label: validates tokens
+technology: HTTP (Keystone API)
+direction: synchronous
+catalogStatus: complete
+notes: All Cinder API requests require a valid Keystone token. Volume operations are scoped to the tenant project associated with the token.

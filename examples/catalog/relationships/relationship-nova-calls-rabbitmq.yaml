@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSKN0V01-RMQ1
+type: relationship
+name: Nova Compute → RabbitMQ Message Broker
+description: Nova uses RabbitMQ AMQP messaging for all inter-subcomponent communication including scheduling requests from nova-api to nova-scheduler, conductor coordination, and compute agent RPC calls from nova-conductor to nova-compute.
+source: STCK000001-RS01
+target: STCK00000D-RS0D
+label: publishes and consumes RPC messages
+technology: AMQP
+direction: asynchronous
+catalogStatus: complete
+notes: Nova's internal microservice architecture is entirely AMQP-driven. Loss of RabbitMQ connectivity causes nova-scheduler and nova-conductor to queue work locally until connectivity is restored.

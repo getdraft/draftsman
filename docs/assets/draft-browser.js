@@ -3941,7 +3941,9 @@ function renderDiagramsView() {
     containers.forEach(obj => {
       const id = c4SafeId(obj.id || obj.uid || '');
       const label = (obj.name || obj.id || 'Unknown').replace(/"/g, "'");
-      const tech = (obj.primaryTechnologyComponent || obj.deliveryModel || '').replace(/"/g, "'");
+      const funcComp = (obj.internalComponents || []).find(c => c.role === 'function');
+      const resolvedTech = funcComp && objectLookup[funcComp.ref] ? objectLookup[funcComp.ref].name : '';
+      const tech = (resolvedTech || obj.deliveryModel || '').replace(/"/g, "'");
       const desc = (obj.description || '').replace(/"/g, "'").replace(/\n/g, ' ').slice(0, 80);
       if (DATA_STORE_TYPES.has(obj.type)) {
         lines.push(`    ContainerDb(${id}, "${label}", "${tech}", "${desc}")`);

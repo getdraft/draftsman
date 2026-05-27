@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSKNTN01-KST1
+type: relationship
+name: Neutron Networking → Keystone Identity
+description: Neutron validates every incoming API request by verifying the caller's Keystone token. Neutron's service account is registered in the Keystone service catalog.
+source: STCK000004-RS04
+target: STCK000002-RS02
+label: validates tokens
+technology: HTTP (Keystone API)
+direction: synchronous
+catalogStatus: complete
+notes: All Neutron API requests require a valid Keystone token. Admin and tenant network operations are authorised through Keystone role assignments.

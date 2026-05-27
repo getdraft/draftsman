@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSKNTN01-DAR4
+type: relationship
+name: Neutron Networking → Neutron Database
+description: Neutron persists all network state to the Neutron MariaDB schema including networks, subnets, ports, routers, security groups, and floating IPs.
+source: STCK000004-RS04
+target: STCK000004-DAR4
+label: persists network state
+technology: MySQL wire protocol
+direction: synchronous
+catalogStatus: complete
+notes: neutron-server reads and writes all tenant and provider network topology to the Neutron DB. Database loss results in loss of network topology metadata; data plane forwarding state in OVS/OVN is separate.

@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSKQNTCH-M6JX
+type: relationship
+name: API Load Balancer → Neutron Networking
+description: HAProxy distributes inbound HTTPS networking API requests across neutron-server instances running on controller nodes. TLS is terminated at the load balancer; backend traffic uses HTTP on the control plane network.
+source: 01KSF29JTP-9HYA
+target: STCK000004-RS04
+label: proxies networking API requests
+technology: HTTPS / HTTP
+direction: synchronous
+catalogStatus: complete
+notes: neutron-server listens on port 9696 on the control plane network. HAProxy frontend accepts HTTPS on the public endpoint and forwards to neutron-server backends using HTTP.

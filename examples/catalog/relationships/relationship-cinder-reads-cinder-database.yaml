@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSKCDR01-DAR5
+type: relationship
+name: Cinder Block Storage → Cinder Database
+description: Cinder persists all volume state to the Cinder MariaDB schema including volume records, snapshots, volume type definitions, and backend driver assignments.
+source: STCK000005-RS05
+target: STCK000005-DAR5
+label: persists volume state
+technology: MySQL wire protocol
+direction: synchronous
+catalogStatus: complete
+notes: cinder-api and cinder-scheduler read and write all volume lifecycle state to the Cinder DB. cinder-volume also writes backend driver status and attachment records.

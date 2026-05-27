@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSKNTN01-RMQ1
+type: relationship
+name: Neutron Networking → RabbitMQ Message Broker
+description: Neutron uses RabbitMQ AMQP messaging for communication between neutron-server and neutron-agent subcomponents including the L2 agent, L3 agent, and DHCP agent running on compute and network nodes.
+source: STCK000004-RS04
+target: STCK00000D-RS0D
+label: publishes and consumes agent RPC messages
+technology: AMQP
+direction: asynchronous
+catalogStatus: complete
+notes: neutron-server dispatches network provisioning instructions to neutron-l2-agent and neutron-l3-agent via RabbitMQ RPC. Agent heartbeats are also reported via the message bus.

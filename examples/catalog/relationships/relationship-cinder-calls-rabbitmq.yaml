@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSKCDR01-RMQ1
+type: relationship
+name: Cinder Block Storage → RabbitMQ Message Broker
+description: Cinder uses RabbitMQ AMQP messaging for communication between cinder-api, cinder-scheduler, and cinder-volume subcomponents. Volume provisioning requests flow from cinder-scheduler to the appropriate cinder-volume backend via the message bus.
+source: STCK000005-RS05
+target: STCK00000D-RS0D
+label: publishes and consumes RPC messages
+technology: AMQP
+direction: asynchronous
+catalogStatus: complete
+notes: cinder-scheduler selects the target storage backend and dispatches provisioning work to cinder-volume via RabbitMQ RPC. Loss of RabbitMQ prevents new volume operations but does not affect existing attached volumes.

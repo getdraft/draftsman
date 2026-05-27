@@ -21,6 +21,14 @@ containers:
   role: Persistence layer for Nova compute state
 - ref: STCK000004-DAR4
   role: Persistence layer for Neutron networking state
+- ref: STCK000002-DAR2
+  role: Persistence layer for Keystone identity data
+- ref: STCK000005-DAR5
+  role: Persistence layer for Cinder block storage state
+- ref: STCK00000D-RS0D
+  role: AMQP message bus for all inter-subcomponent RPC communication
+- ref: 01KSF29JTP-9HYA
+  role: TLS-terminating entry point distributing API traffic across controller nodes
 externalActors:
 - name: Tenant Workload
   description: Virtual machines and containerized workloads provisioned by Nova and managed by tenants.

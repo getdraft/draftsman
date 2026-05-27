@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSKN0V01-CDR1
+type: relationship
+name: Nova Compute → Cinder Block Storage
+description: Nova calls Cinder APIs to attach and detach persistent block volumes to running instances. Volume attachment is initiated by nova-compute on the hypervisor host.
+source: STCK000001-RS01
+target: STCK000005-RS05
+label: attaches block volumes
+technology: HTTP (Cinder API)
+direction: synchronous
+catalogStatus: complete
+notes: nova-compute requests volume attachment via cinder-api. Cinder coordinates with the backend storage driver to present the volume to the hypervisor via iSCSI or NFS.

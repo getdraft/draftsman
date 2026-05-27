@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSKN0V01-KST1
+type: relationship
+name: Nova Compute → Keystone Identity
+description: Nova validates every incoming API request by verifying the caller's Keystone token. Nova service-to-service calls use scoped service account tokens issued by Keystone.
+source: STCK000001-RS01
+target: STCK000002-RS02
+label: validates tokens
+technology: HTTP (Keystone API)
+direction: synchronous
+catalogStatus: complete
+notes: All Nova API requests require a valid Keystone token. Nova registers its service endpoints in the Keystone service catalog during installation.

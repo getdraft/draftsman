@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSKQNTCH-QHJC
+type: relationship
+name: API Load Balancer → Nova Compute
+description: HAProxy distributes inbound HTTPS compute API requests across nova-api instances running on controller nodes. TLS is terminated at the load balancer; backend traffic uses HTTP on the control plane network.
+source: 01KSF29JTP-9HYA
+target: STCK000001-RS01
+label: proxies compute API requests
+technology: HTTPS / HTTP
+direction: synchronous
+catalogStatus: complete
+notes: nova-api listens on port 8774 on the control plane network. HAProxy frontend accepts HTTPS on the public endpoint and forwards to nova-api backends using HTTP.
