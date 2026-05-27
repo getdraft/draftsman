@@ -1,5 +1,6 @@
 schemaVersion: '1.0'
 type: reference_architecture
+defaultOwnerRole: draft-admin
 requiredFields:
 - schemaVersion
 - uid

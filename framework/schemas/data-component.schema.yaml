@@ -13,11 +13,11 @@ requiredFields:
 - containsPII
 - catalogStatus
 - lifecycleStatus
+defaultOwnerRole: engineer
 optionalFields:
 - aliases
 - description
 - version
-- ownerRole
 - tags
 - tables
 - storedProcedures
@@ -25,13 +25,8 @@ optionalFields:
 - retentionPolicy
 - architecturalDecisions
 - notes
-- requirementGroups
 - requirementImplementations
 enumFields:
-  ownerRole:
-  - engineer
-  - technology-admin
-  - draft-admin
   catalogStatus:
   - stub
   - incomplete

@@ -709,7 +709,11 @@ def select_schema(obj: dict[str, Any], schemas: list[dict[str, Any]]) -> dict[st
 
 def matches_conditions(obj: dict[str, Any], conditions: dict[str, Any]) -> bool:
     for key, expected in conditions.items():
-        if obj.get(key) != expected:
+        value = obj.get(key)
+        if isinstance(expected, list):
+            if value not in expected:
+                return False
+        elif value != expected:
             return False
     return True
 
@@ -720,6 +724,7 @@ def validate_schema_section(
     context: str,
     failures: list[str],
     root_schema: dict[str, Any] | None = None,
+    warnings: list[str] | None = None,
 ) -> None:
     root_schema = root_schema or schema
     field_descriptions = schema.get("fieldDescriptions") if isinstance(schema.get("fieldDescriptions"), dict) else {}
@@ -766,6 +771,13 @@ def validate_schema_section(
                     hint = field_descriptions.get(field, "Populate this conditional field because the matching condition is present.")
                     failures.append(f"{context}: Add required field '{field}' — {hint}")
 
+    if warnings is not None:
+        for field in schema.get("deprecatedFields", []) or []:
+            if is_non_empty(node.get(field)):
+                warnings.append(
+                    f"{context}: Remove deprecated field '{field}' — use relationship objects to model dependencies"
+                )
+
     for field, section_name in (schema.get("collectionSchemas") or {}).items():
         if field not in node or node.get(field) is None:
             continue
@@ -780,7 +792,19 @@ def validate_schema_section(
             if not isinstance(item, dict):
                 failures.append(f"{context}: Change '{field}[{index}]' to a mapping")
                 continue
-            validate_schema_section(item, child_schema, f"{context}: {field}[{index}]", failures, root_schema)
+            validate_schema_section(item, child_schema, f"{context}: {field}[{index}]", failures, root_schema, warnings)
+
+    for field, section_name in (schema.get("dictSubSchemas") or {}).items():
+        value = node.get(field)
+        if value is None:
+            continue
+        if not isinstance(value, dict):
+            failures.append(f"{context}: Change field '{field}' to a mapping")
+            continue
+        child_schema = schema.get(section_name) or root_schema.get(section_name)
+        if not isinstance(child_schema, dict):
+            continue
+        validate_schema_section(value, child_schema, f"{context}.{field}", failures, root_schema, warnings)
 
 
 def resolve_requirement_group_requirements(
@@ -1529,12 +1553,18 @@ def validate_unrequired_dependency_rationales(
             )
 
 
-def validate_against_schema(obj: dict[str, Any], path: Path, schemas: list[dict[str, Any]], failures: list[str]) -> None:
+def validate_against_schema(
+    obj: dict[str, Any],
+    path: Path,
+    schemas: list[dict[str, Any]],
+    failures: list[str],
+    warnings: list[str] | None = None,
+) -> None:
     schema = select_schema(obj, schemas)
     if schema is None:
         failures.append(f"{path}: no schema found for type '{obj.get('type')}'")
         return
-    validate_schema_section(obj, schema, str(path), failures)
+    validate_schema_section(obj, schema, str(path), failures, warnings=warnings)
 
 
 def record_requirement_gap(
@@ -1798,11 +1828,19 @@ def validate_vocabulary_proposal(
             warnings.append(f"{path}: proposedId '{proposed_id}' is already an approved {vocabulary_key} value")
 
 
-def validate_architectural_decisions(obj: dict[str, Any], path: Path, failures: list[str]) -> None:
+def validate_architectural_decisions(
+    obj: dict[str, Any], path: Path, failures: list[str], warnings: list[str] | None = None
+) -> None:
     decision_sets: list[dict[str, Any]] = []
     direct_decisions = obj.get("architecturalDecisions", {})
     if isinstance(direct_decisions, dict) and direct_decisions:
         decision_sets.append(direct_decisions)
+
+    if warnings is not None and isinstance(direct_decisions, dict) and direct_decisions and obj.get("catalogStatus") == "complete":
+        warnings.append(
+            f"{path}: [{object_label(obj)}] architecturalDecisions are inline — promote each decision to a "
+            "decision_record object and reference it via decisionRecords for complete catalog objects"
+        )
 
     for decisions in decision_sets:
         for key, allowed_values in DECISION_ENUMS.items():
@@ -1825,6 +1863,7 @@ def validate_external_interaction_refs(
     path: Path,
     catalog_by_id: dict[str, dict[str, Any]],
     failures: list[str],
+    warnings: list[str] | None = None,
 ) -> None:
     interactions = obj.get("externalInteractions", [])
     if not isinstance(interactions, list):
@@ -2080,11 +2119,20 @@ def validate_standard(
         target = catalog_by_id.get(runs_on) if runs_on else None
         if runs_on and (not target or target.get("type") != "data_store_service"):
             failures.append(f"{path}: runsOn must reference a DataStoreService (got '{runs_on}')")
-    if object_type in SERVICE_TYPES and obj.get("deliveryModel") == "saas":
-        if "dataLeavesInfrastructure" in obj and not isinstance(obj.get("dataLeavesInfrastructure"), bool):
-            failures.append(f"{path}: dataLeavesInfrastructure must be true or false")
-        if obj.get("dataLeavesInfrastructure") is True and not is_non_empty(obj.get("dpaNotes")):
-            warnings.append(f"{path}: SaaS-delivered services with dataLeavesInfrastructure=true should document dpaNotes")
+    if object_type in SERVICE_TYPES and obj.get("deliveryModel") in {"saas", "paas", "appliance"}:
+        vendor_gov = obj.get("vendorGovernance") or {}
+        if not isinstance(vendor_gov, dict):
+            vendor_gov = {}
+        data_leaves = vendor_gov.get("dataLeavesInfrastructure")
+        if data_leaves is True and not is_non_empty(vendor_gov.get("dataResidencyCommitment")) and not is_non_empty(vendor_gov.get("dpaNotes")):
+            warnings.append(
+                f"{path}: vendorGovernance.dataLeavesInfrastructure=true — document dataResidencyCommitment or dpaNotes"
+            )
+        for old_field in ("dataLeavesInfrastructure", "dataResidencyCommitment", "dpaNotes", "vendorSLA", "incidentNotificationProcess"):
+            if old_field in obj:
+                warnings.append(
+                    f"{path}: Move top-level field '{old_field}' into vendorGovernance sub-object"
+                )
 
     validate_classified_component_refs(obj, path, catalog_by_id, failures)
     deployment_configurations = obj.get("deploymentConfigurations", [])
@@ -2106,7 +2154,7 @@ def validate_standard(
                             failures.append(
                                 f"{path}: deploymentConfigurations[{index}].addressesQualities contains invalid values {invalid}"
                             )
-    validate_architectural_decisions(obj, path, failures)
+    validate_architectural_decisions(obj, path, failures, warnings)
 
 
 def _sdp_deployable_objects(
@@ -2931,17 +2979,17 @@ def validate_applicable_requirements(
     if declared is None:
         declared = []
     if not isinstance(declared, list):
-        failures.append(f"{path}: Change requirementGroups to a list of requirement_group UIDs")
+        warnings.append(f"{path}: Remove deprecated field 'requirementGroups' — requirement groups are now applied via workspace activation")
         declared = []
+    elif declared:
+        warnings.append(
+            f"{path}: Remove deprecated field 'requirementGroups' — requirement groups are now applied via workspace activation and appliesTo rules"
+        )
     declared_group_ids = {str(group_id) for group_id in declared if is_non_empty(group_id)}
     for group_id in sorted(declared_group_ids):
         group = requirement_groups.get(group_id)
         if not group:
-            failures.append(f"{path}: Replace unknown requirement group '{group_id}' with an existing requirement_group UID")
-        elif group.get("activation") == "workspace" and group_id not in active_group_ids:
-            failures.append(
-                f"{path}: Activate requirement group '{group_id}' in .draft/workspace.yaml or remove the object claim"
-            )
+            warnings.append(f"{path}: requirementGroups references unknown group '{group_id}' — remove this field")
 
     applicable_group_ids = applicable_requirement_group_ids(
         obj,
@@ -3121,6 +3169,7 @@ def validate_service_group_structure(
     catalog_by_id: dict[str, dict[str, Any]],
     failures: list[str],
     require_deployment_target: bool = True,
+    warnings: list[str] | None = None,
 ) -> None:
     scaling_units = obj.get("scalingUnits", [])
     service_groups = obj.get("serviceGroups", [])
@@ -3232,6 +3281,11 @@ def validate_service_group_structure(
             if intent and intent not in {"ha", "sa"}:
                 failures.append(f"{path}: serviceGroup '{group_name}' deployable object '{entry_label}' has invalid intent '{intent}'")
 
+        if warnings is not None and group.get("externalInteractions"):
+            warnings.append(
+                f"{path}: serviceGroup '{group_name}' externalInteractions is deprecated — "
+                "model each dependency as a relationship object instead"
+            )
         for interaction in group.get("externalInteractions", []) or []:
             if not isinstance(interaction, dict):
                 continue
@@ -3241,6 +3295,11 @@ def validate_service_group_structure(
                     failures.append(
                         f"{path}: serviceGroup '{group_name}' internal interaction '{interaction.get('name', 'unnamed')}' must reference a valid service group name"
                     )
+        if warnings is not None and group.get("connections"):
+            warnings.append(
+                f"{path}: serviceGroup '{group_name}' connections is deprecated — "
+                "model each dependency as a relationship object instead"
+            )
 
 
 def validate_service_group_refs(
@@ -3250,6 +3309,7 @@ def validate_service_group_refs(
     catalog_by_id: dict[str, dict[str, Any]],
     failures: list[str],
     require_deployment_target: bool = True,
+    warnings: list[str] | None = None,
 ) -> None:
     for risk in obj.get("decisionRecords", []):
         if not isinstance(risk, dict):
@@ -3265,6 +3325,7 @@ def validate_service_group_refs(
         catalog_by_id,
         failures,
         require_deployment_target=require_deployment_target,
+        warnings=warnings,
     )
 
 
@@ -3306,16 +3367,23 @@ def validate_relationship(
     catalog_by_id: dict[str, dict[str, Any]],
     failures: list[str],
 ) -> None:
-    for field in ("source", "target"):
-        ref = obj.get(field)
-        if not is_non_empty(ref):
-            continue
-        target = catalog_by_id.get(str(ref))
-        if not target:
-            failures.append(
-                f"{path}: relationship {field} references unknown object '{ref}' — "
-                "add the referenced object to the catalog or correct the UID"
-            )
+    has_external_target = is_non_empty(obj.get("externalTarget"))
+    target_ref = obj.get("target")
+    if not has_external_target and not is_non_empty(target_ref):
+        failures.append(
+            f"{path}: relationship must have either target (catalog UID) or externalTarget (external system name)"
+        )
+    source_ref = obj.get("source")
+    if is_non_empty(source_ref) and source_ref not in catalog_by_id:
+        failures.append(
+            f"{path}: relationship source references unknown object '{source_ref}' — "
+            "add the referenced object to the catalog or correct the UID"
+        )
+    if is_non_empty(target_ref) and target_ref not in catalog_by_id:
+        failures.append(
+            f"{path}: relationship target references unknown object '{target_ref}' — "
+            "add the referenced object to the catalog or correct the UID"
+        )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -3367,8 +3435,8 @@ def main(argv: list[str] | None = None) -> int:
         if obj.get("type") == "vocabulary_proposal":
             validate_vocabulary_proposal(obj, path, workspace_vocabulary, failures, warnings)
             continue
-        validate_against_schema(obj, path, schemas, failures)
-        validate_external_interaction_refs(obj, path, catalog_by_id, failures)
+        validate_against_schema(obj, path, schemas, failures, warnings)
+        validate_external_interaction_refs(obj, path, catalog_by_id, failures, warnings)
         validate_internal_component_configuration_refs(obj, path, catalog_by_id, failures)
         validate_product_service_architecture_refs(obj, path, failures)
         if obj.get("type") == "capability":
@@ -3440,6 +3508,7 @@ def main(argv: list[str] | None = None) -> int:
                 catalog_by_id,
                 failures,
                 require_deployment_target=False,
+                warnings=warnings,
             )
         if obj.get("type") == "software_deployment_pattern":
             validate_software_deployment_pattern(
@@ -3454,7 +3523,7 @@ def main(argv: list[str] | None = None) -> int:
                 active_group_ids,
                 require_active_group_disposition,
             )
-            validate_service_group_refs(obj, path, decision_record_ids, catalog_by_id, failures)
+            validate_service_group_refs(obj, path, decision_record_ids, catalog_by_id, failures, warnings=warnings)
 
     failing_paths = {entry.split(":", 1)[0] for entry in failures}
     for path in files:

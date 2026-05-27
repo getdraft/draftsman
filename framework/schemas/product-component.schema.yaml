@@ -10,11 +10,11 @@ requiredFields:
 - classification
 - catalogStatus
 - lifecycleStatus
+defaultOwnerRole: engineer
 optionalFields:
 - aliases
 - description
 - version
-- ownerRole
 - tags
 - runsOn
 - language
@@ -23,13 +23,8 @@ optionalFields:
 - environmentConfiguration
 - architecturalDecisions
 - notes
-- requirementGroups
 - requirementImplementations
 enumFields:
-  ownerRole:
-  - engineer
-  - technology-admin
-  - draft-admin
   catalogStatus:
   - stub
   - incomplete

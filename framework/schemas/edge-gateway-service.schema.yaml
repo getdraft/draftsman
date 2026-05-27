@@ -8,11 +8,13 @@ requiredFields:
 - deliveryModel
 - catalogStatus
 - lifecycleStatus
+defaultOwnerRole: technology-admin
+deprecatedFields:
+- externalInteractions
 optionalFields:
 - aliases
 - description
 - version
-- ownerRole
 - owner
 - tags
 - host
@@ -27,22 +29,22 @@ optionalFields:
 - configurations
 - networkPlacement
 - patchingOwner
-- dataLeavesInfrastructure
-- dataResidencyCommitment
-- dpaNotes
-- vendorSLA
 - authenticationModel
-- complianceCerts
-- incidentNotificationProcess
+- vendorGovernance
 - architecturalDecisions
 - notes
-- requirementGroups
 - requirementImplementations
+conditionalRequired:
+- when:
+    deliveryModel:
+    - saas
+    - paas
+    - appliance
+  require:
+  - vendor
+  - productName
+  - productVersion
 enumFields:
-  ownerRole:
-  - engineer
-  - technology-admin
-  - draft-admin
   catalogStatus:
   - stub
   - incomplete
@@ -83,9 +85,8 @@ fieldTypes:
   deploymentConfigurations: list
   capabilities: list
   configurations: list
-  complianceCerts: list
-  dataLeavesInfrastructure: bool
   architecturalDecisions: dict
+  vendorGovernance: dict
   requirementGroups: list
   requirementImplementations: list
 collectionSchemas:
@@ -94,6 +95,8 @@ collectionSchemas:
   deploymentConfigurations: deploymentConfiguration
   configurations: configuration
   requirementImplementations: requirementImplementation
+dictSubSchemas:
+  vendorGovernance: vendorGovernance
 internalComponent:
   requiredFields:
   - ref
@@ -181,7 +184,22 @@ requirementImplementation:
     - field
   fieldTypes:
     criteria: dict
-aiHint: An Edge/Gateway Service defines deployable boundary, traffic-routing, gateway, firewall, WAF, ingress, or API gateway behavior.
+vendorGovernance:
+  optionalFields:
+  - dataLeavesInfrastructure
+  - dataResidencyCommitment
+  - dpaNotes
+  - vendorSLA
+  - incidentNotificationProcess
+  fieldTypes:
+    dataLeavesInfrastructure: bool
+  fieldDescriptions:
+    dataLeavesInfrastructure: Set true when data processed by this service leaves organization-controlled infrastructure.
+    dataResidencyCommitment: Describe the vendor's data residency commitment (e.g., EU-only, US-only, configurable).
+    dpaNotes: Record DPA (Data Processing Agreement) notes, reference, or status for this vendor service.
+    vendorSLA: Document the vendor-committed SLA for this service (e.g., 99.9% uptime, 4-hour response).
+    incidentNotificationProcess: Describe how the vendor notifies the organization of incidents or outages.
+aiHint: An Edge/Gateway Service defines deployable boundary, traffic-routing, gateway, firewall, WAF, ingress, or API gateway behavior. Use vendorGovernance for data-residency and SLA fields when deliveryModel is saas, paas, or appliance.
 fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name, product-name, or taxonomy changes.

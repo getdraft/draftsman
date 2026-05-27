@@ -1,5 +1,6 @@
 schemaVersion: '1.0'
 type: capability
+defaultOwnerRole: draft-admin
 aiHint: A Capability is a first-class architecture capability that an AI resolves to the company owner and approved Technology Component implementations before recommending a standard answer.
 requiredFields:
 - schemaVersion

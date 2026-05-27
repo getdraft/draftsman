@@ -12116,7 +12116,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -12141,11 +12140,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -12290,7 +12284,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -12315,11 +12308,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -12454,7 +12442,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -12479,11 +12466,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -12629,7 +12611,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -12654,11 +12635,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -12838,7 +12814,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -12863,11 +12838,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -13008,7 +12978,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -13033,11 +13002,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -13176,7 +13140,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -13201,11 +13164,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -13344,7 +13302,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -13369,11 +13326,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -13513,7 +13465,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -13538,11 +13489,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -13682,7 +13628,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -13707,11 +13652,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -13851,7 +13791,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -13876,11 +13815,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -14020,7 +13954,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -14045,11 +13978,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -14189,7 +14117,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -14214,11 +14141,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -14357,7 +14279,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -14382,11 +14303,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -14526,7 +14442,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -14551,11 +14466,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -14702,7 +14612,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -14727,11 +14636,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -14871,7 +14775,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -14896,11 +14799,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -15063,7 +14961,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -15088,11 +14985,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -15232,7 +15124,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -15257,11 +15148,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -15389,7 +15275,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -15414,11 +15299,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -15616,7 +15496,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -15631,16 +15510,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -15652,18 +15525,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -15926,10 +15793,8 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
-          "requirementGroups",
           "architecturalDecisions",
           "operatingSystemComponent",
           "computePlatformComponent",
@@ -15950,11 +15815,6 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -16118,10 +15978,8 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
-          "requirementGroups",
           "architecturalDecisions",
           "operatingSystemComponent",
           "computePlatformComponent",
@@ -16142,11 +16000,6 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -16332,7 +16185,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -16347,16 +16199,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -16368,18 +16214,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -16594,7 +16434,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -16609,16 +16448,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -16630,18 +16463,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -16881,7 +16708,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -16896,16 +16722,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -16917,18 +16737,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -17148,7 +16962,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -17163,16 +16976,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -17184,18 +16991,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -17415,7 +17216,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -17430,16 +17230,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -17451,18 +17245,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -17705,7 +17493,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -17720,16 +17507,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -17741,18 +17522,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -17978,7 +17753,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -17993,16 +17767,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -18014,18 +17782,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -18270,7 +18032,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -18285,16 +18046,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -18306,18 +18061,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -18562,7 +18311,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -18577,16 +18325,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -18598,18 +18340,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -18895,7 +18631,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -18910,16 +18645,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -18931,18 +18660,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -19167,7 +18890,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -19182,16 +18904,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -19203,18 +18919,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -19429,7 +19139,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -19444,16 +19153,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -19465,18 +19168,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -19691,7 +19388,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -19706,16 +19402,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -19727,18 +19417,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -19958,7 +19642,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -19973,16 +19656,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -19994,18 +19671,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -20238,7 +19909,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -20253,16 +19923,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -20274,18 +19938,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -20510,7 +20168,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -20525,16 +20182,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -20546,18 +20197,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -20790,7 +20435,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -20805,16 +20449,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -20826,18 +20464,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -21070,7 +20702,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -21085,16 +20716,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -21106,18 +20731,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -21405,7 +21024,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -21420,16 +21038,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -21441,18 +21053,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -21684,7 +21290,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -21699,16 +21304,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -21720,18 +21319,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -21954,7 +21547,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -21969,16 +21561,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -21990,18 +21576,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -22187,7 +21767,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "tags",
           "runsOn",
           "language",
@@ -22196,7 +21775,6 @@ window.DRAFT_BROWSER_DATA = {
           "environmentConfiguration",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -22212,11 +21790,6 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -22366,7 +21939,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "tags",
           "tables",
           "storedProcedures",
@@ -22374,7 +21946,6 @@ window.DRAFT_BROWSER_DATA = {
           "retentionPolicy",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -22391,11 +21962,6 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -23634,7 +23200,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "businessContext",
@@ -23645,7 +23210,6 @@ window.DRAFT_BROWSER_DATA = {
           "serviceGroups",
           "externalInteractions",
           "decisionRecords",
-          "requirementGroups",
           "requirementImplementations",
           "tierVariants"
         ],
@@ -23657,11 +23221,6 @@ window.DRAFT_BROWSER_DATA = {
           "architecturalDecisions": "dict"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -23790,19 +23349,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -23814,6 +23377,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -23923,19 +23491,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -23947,6 +23519,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -24056,19 +23633,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -24080,6 +23661,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -24189,19 +23775,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -24213,6 +23803,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -24322,19 +23917,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -24346,6 +23945,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -24455,19 +24059,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -24479,6 +24087,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -24588,19 +24201,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -24612,6 +24229,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -24721,19 +24343,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -24745,6 +24371,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -24854,19 +24485,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -24878,6 +24513,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -24987,19 +24627,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -25011,6 +24655,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -25120,19 +24769,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -25144,6 +24797,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -25253,19 +24911,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -25277,6 +24939,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -25386,19 +25053,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -25410,6 +25081,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -25519,19 +25195,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -25543,6 +25223,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -25652,19 +25337,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -25676,6 +25365,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -37982,7 +37676,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -38007,11 +37700,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -38156,7 +37844,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -38181,11 +37868,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -38320,7 +38002,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -38345,11 +38026,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -38495,7 +38171,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -38520,11 +38195,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -38704,7 +38374,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -38729,11 +38398,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -38874,7 +38538,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -38899,11 +38562,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -39042,7 +38700,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -39067,11 +38724,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -39210,7 +38862,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -39235,11 +38886,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -39379,7 +39025,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -39404,11 +39049,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -39548,7 +39188,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -39573,11 +39212,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -39717,7 +39351,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -39742,11 +39375,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -39886,7 +39514,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -39911,11 +39538,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -40055,7 +39677,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -40080,11 +39701,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -40223,7 +39839,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -40248,11 +39863,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -40392,7 +40002,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -40417,11 +40026,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -40568,7 +40172,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -40593,11 +40196,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -40737,7 +40335,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -40762,11 +40359,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -40929,7 +40521,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -40954,11 +40545,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -41098,7 +40684,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -41123,11 +40708,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -41255,7 +40835,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "subtype",
@@ -41280,11 +40859,6 @@ window.DRAFT_BROWSER_DATA = {
           "controlReferences": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -41482,7 +41056,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -41497,16 +41070,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -41518,18 +41085,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -41792,10 +41353,8 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
-          "requirementGroups",
           "architecturalDecisions",
           "operatingSystemComponent",
           "computePlatformComponent",
@@ -41816,11 +41375,6 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -41984,10 +41538,8 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
-          "requirementGroups",
           "architecturalDecisions",
           "operatingSystemComponent",
           "computePlatformComponent",
@@ -42008,11 +41560,6 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -42198,7 +41745,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -42213,16 +41759,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -42234,18 +41774,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -42460,7 +41994,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -42475,16 +42008,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -42496,18 +42023,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -42747,7 +42268,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -42762,16 +42282,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -42783,18 +42297,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -43014,7 +42522,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -43029,16 +42536,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -43050,18 +42551,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -43281,7 +42776,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -43296,16 +42790,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -43317,18 +42805,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -43571,7 +43053,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -43586,16 +43067,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -43607,18 +43082,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -43844,7 +43313,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -43859,16 +43327,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -43880,18 +43342,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -44136,7 +43592,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -44151,16 +43606,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -44172,18 +43621,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -44428,7 +43871,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -44443,16 +43885,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -44464,18 +43900,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -44761,7 +44191,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -44776,16 +44205,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -44797,18 +44220,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -45033,7 +44450,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -45048,16 +44464,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -45069,18 +44479,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -45295,7 +44699,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -45310,16 +44713,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -45331,18 +44728,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -45557,7 +44948,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -45572,16 +44962,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -45593,18 +44977,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -45824,7 +45202,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -45839,16 +45216,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -45860,18 +45231,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -46104,7 +45469,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -46119,16 +45483,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -46140,18 +45498,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -46376,7 +45728,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -46391,16 +45742,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -46412,18 +45757,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -46656,7 +45995,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -46671,16 +46009,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -46692,18 +46024,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -46936,7 +46262,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -46951,16 +46276,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -46972,18 +46291,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -47271,7 +46584,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -47286,16 +46598,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -47307,18 +46613,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -47550,7 +46850,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -47565,16 +46864,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -47586,18 +46879,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -47820,7 +47107,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "host",
@@ -47835,16 +47121,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations",
           "networkPlacement",
           "patchingOwner",
-          "dataLeavesInfrastructure",
-          "dataResidencyCommitment",
-          "dpaNotes",
-          "vendorSLA",
           "authenticationModel",
-          "complianceCerts",
-          "incidentNotificationProcess",
+          "vendorGovernance",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -47856,18 +47136,12 @@ window.DRAFT_BROWSER_DATA = {
           "deploymentConfigurations": "list",
           "capabilities": "list",
           "configurations": "list",
-          "complianceCerts": "list",
-          "dataLeavesInfrastructure": "bool",
           "architecturalDecisions": "dict",
+          "vendorGovernance": "dict",
           "requirementGroups": "list",
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -48053,7 +47327,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "tags",
           "runsOn",
           "language",
@@ -48062,7 +47335,6 @@ window.DRAFT_BROWSER_DATA = {
           "environmentConfiguration",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -48078,11 +47350,6 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -48232,7 +47499,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "tags",
           "tables",
           "storedProcedures",
@@ -48240,7 +47506,6 @@ window.DRAFT_BROWSER_DATA = {
           "retentionPolicy",
           "architecturalDecisions",
           "notes",
-          "requirementGroups",
           "requirementImplementations"
         ],
         "fieldTypes": {
@@ -48257,11 +47522,6 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -49500,7 +48760,6 @@ window.DRAFT_BROWSER_DATA = {
           "aliases",
           "description",
           "version",
-          "ownerRole",
           "owner",
           "tags",
           "businessContext",
@@ -49511,7 +48770,6 @@ window.DRAFT_BROWSER_DATA = {
           "serviceGroups",
           "externalInteractions",
           "decisionRecords",
-          "requirementGroups",
           "requirementImplementations",
           "tierVariants"
         ],
@@ -49523,11 +48781,6 @@ window.DRAFT_BROWSER_DATA = {
           "architecturalDecisions": "dict"
         },
         "enumFields": {
-          "ownerRole": [
-            "engineer",
-            "technology-admin",
-            "draft-admin"
-          ],
           "catalogStatus": [
             "stub",
             "incomplete",
@@ -49656,19 +48909,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -49680,6 +48937,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -49789,19 +49051,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -49813,6 +49079,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -49922,19 +49193,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -49946,6 +49221,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -50055,19 +49335,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -50079,6 +49363,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -50188,19 +49477,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -50212,6 +49505,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -50321,19 +49619,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -50345,6 +49647,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -50454,19 +49761,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -50478,6 +49789,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -50587,19 +49903,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -50611,6 +49931,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -50720,19 +50045,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -50744,6 +50073,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -50853,19 +50187,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -50877,6 +50215,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -50986,19 +50329,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -51010,6 +50357,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -51119,19 +50471,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -51143,6 +50499,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -51252,19 +50613,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -51276,6 +50641,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -51385,19 +50755,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -51409,6 +50783,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},
@@ -51518,19 +50897,23 @@ window.DRAFT_BROWSER_DATA = {
           "type",
           "name",
           "source",
-          "target",
           "label",
           "catalogStatus"
         ],
         "optionalFields": [
           "description",
+          "target",
+          "externalTarget",
           "technology",
           "direction",
+          "flow",
+          "capabilities",
           "notes",
           "tags"
         ],
         "fieldTypes": {
-          "tags": "list"
+          "tags": "list",
+          "capabilities": "list"
         },
         "enumFields": {
           "catalogStatus": [
@@ -51542,6 +50925,11 @@ window.DRAFT_BROWSER_DATA = {
             "synchronous",
             "asynchronous",
             "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
           ]
         },
         "enumListFields": {},

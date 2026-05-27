@@ -7,14 +7,15 @@ requiredFields:
 - name
 - catalogStatus
 - lifecycleStatus
+defaultOwnerRole: technology-admin
+deprecatedFields:
+- externalInteractions
 optionalFields:
 - aliases
 - description
 - version
-- ownerRole
 - owner
 - tags
-- requirementGroups
 - architecturalDecisions
 - operatingSystemComponent
 - computePlatformComponent
@@ -23,10 +24,6 @@ optionalFields:
 - deploymentConfigurations
 - requirementImplementations
 enumFields:
-  ownerRole:
-  - engineer
-  - technology-admin
-  - draft-admin
   catalogStatus:
   - stub
   - incomplete

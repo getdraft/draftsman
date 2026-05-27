@@ -1,5 +1,6 @@
 schemaVersion: '1.0'
 type: domain
+defaultOwnerRole: draft-admin
 requiredFields:
 - schemaVersion
 - uid

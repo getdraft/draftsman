@@ -257,33 +257,34 @@ lifecycle list. If a SaaS or managed platform is governed by lifecycle, model
 the vendor product and version as a Technology Component, then compose the
 architecture-facing deployable object from it.
 
-When the answer is an `externalInteraction` for a shared enterprise platform
-such as central logging, identity, monitoring, security monitoring, patching, or
-secrets management, search for a modeled deployable object first. If it exists, set
-`externalInteractions[].ref` to that object. If it does not exist and the user
-can identify the platform, create the appropriate Runtime Service,
+When modeling a dependency on a shared enterprise platform such as central
+logging, identity, monitoring, security monitoring, patching, or secrets
+management, search for a modeled deployable object first. If it exists, author
+a relationship object with that object as the `target`. If it does not exist
+and the user can identify the platform, create the appropriate Runtime Service,
 Data-at-Rest Service, or Edge/Gateway Service with the correct `deliveryModel`
-instead of leaving a permanent bare name.
+before writing the relationship. For external systems with no catalog
+representation, use `externalTarget` on the relationship instead.
+
+Do not write `externalInteractions` on service or host objects — this field is
+deprecated. Use relationship objects to model all dependencies.
 
 Do not convert a capability question into team ownership unless the requirement
 explicitly asks for ownership. For example, host patch management asks what
-platform, installed component, Technology Component configuration, external
-interaction, or architectural decision applies patches. It does not ask which
+platform, installed component, Technology Component configuration, relationship
+target, or architectural decision applies patches. It does not ask which
 team owns patching.
 
 ## Dependency Rationale
 
-When adding `internalComponents` or `externalInteractions`, verify that each
-entry directly satisfies an applicable Requirement Group requirement. The entry
-is direct evidence only when it matches a `canBeSatisfiedBy` mechanism for an
-applicable requirement, or when a valid `requirementImplementations` entry
-points at that mechanism.
+When adding `internalComponents`, verify that each entry directly satisfies an
+applicable Requirement Group requirement. The entry is direct evidence only when
+it matches a `canBeSatisfiedBy` mechanism for an applicable requirement, or when
+a valid `requirementImplementations` entry points at that mechanism.
 
 If the dependency is real but does not directly satisfy a requirement, ask why
 it belongs on the object and record the answer as an architectural decision:
 
-- `architecturalDecisions.externalInteractionRationales` for external systems
-  and platforms
 - `architecturalDecisions.internalComponentRationales` for local components
 - `architecturalDecisions.dependencyRationales` when a shared dependency
   rationale is clearer
@@ -590,15 +591,20 @@ otherwise.
 
 **Recording connections:**
 
-For each confirmed crossing, write one `serviceConnection` entry per (from,
-to) pair identified in Round B, using the protocol from Round C and
-`direction: outbound` as the default. Do not ask about `port` or `label`.
+For each confirmed crossing, write one relationship object per (from, to) pair
+identified in Round B, using the protocol from Round C as the `technology` field
+and `flow: outbound` as the default. Set `direction` to `synchronous` for
+REST/gRPC/HTTPS calls, `asynchronous` for fire-and-forget, and `event` for
+event-driven or pub/sub. Do not ask about `port` or `label`. Write relationship
+files to `catalog/relationships/` using the naming convention
+`relationship-<source-name>-<verb>-<target-name>.yaml`.
 
 **Same-tier connections:**
 
 Do not ask about same-tier connections during the initial session. If the
-engineer volunteers a same-tier connection record it. Otherwise record in the
-Drafting Session that same-tier connections have not been reviewed.
+engineer volunteers a same-tier connection record it as a relationship object.
+Otherwise record in the Drafting Session that same-tier connections have not
+been reviewed.
 
 **Zone-boundary crossings:**
 
@@ -775,9 +781,12 @@ output to the user.
 | `Set catalogStatus: deprecated` | A Technology Component in the object's graph has passed its vendor end-of-support date | Set `catalogStatus: deprecated` and add `architecturalDecisions.lifecycleRationale` explaining the transition plan |
 | `deliveryModel must be one of` | An invalid delivery model value was used | Replace with one of `self-managed`, `saas`, `paas`, `appliance`, `serverless` |
 | `classification must be one of` (technology_component) | Invalid classification field | Replace with one of `software`, `agent`, `operating-system`, `compute-platform` |
-| `externalInteractions[N].ref references unknown object` | An external interaction references a non-existent catalog object | Correct the ref to an existing catalog UID or remove the ref and use a bare name |
+| `Remove deprecated field 'externalInteractions'` | The object has externalInteractions which is deprecated | Convert each entry to a relationship object using `migrate_interactions.py` or manually |
+| `externalInteractions[N].ref references unknown object` | An externalInteraction ref points to a non-existent catalog object | Correct the ref or remove the interaction and author a relationship object instead |
+| `relationship must have either target or externalTarget` | A relationship object has neither a catalog target nor an externalTarget name | Set `target` to a catalog UID or `externalTarget` to the external system name |
+| `relationship source references unknown object` | Relationship source UID not found in catalog | Fix the source UID or add the missing object |
+| `relationship target references unknown object` | Relationship target UID not found in catalog | Fix the target UID or add the missing object |
 | `internalComponentRationales['...']` + `does not directly satisfy any applicable requirement` | An internal component is present but does not satisfy a requirement and no rationale explains why | Add `architecturalDecisions.internalComponentRationales.<uid>` explaining the reason |
-| `externalInteractionRationales['...']` + `does not directly satisfy any applicable requirement` | An external interaction is present but does not satisfy a requirement and no rationale explains why | Add `architecturalDecisions.externalInteractionRationales.<name>` explaining the reason |
 
 ## Resuming a Drafting Session
 
@@ -821,29 +830,41 @@ If the session's `sessionStatus` is `blocked`, surface the blocking reason from
 
 ## Relationship Authoring
 
-Relationships record directed inter-object communication edges — how one deployable
-object calls, reads from, writes to, or sends events to another. They are additive
-and opt-in: existing catalogs are complete and valid without them.
+Relationships are the primary way to model inter-object communication edges —
+how one deployable object calls, reads from, writes to, or sends events to
+another. Do not use `externalInteractions` on service or host objects; that
+field is deprecated. Use relationship objects instead.
 
 Author relationships when:
 
 - A user says "Service A calls Service B" or describes a data flow between objects.
 - A diagram or document shows directed connections between modeled objects.
 - The user asks about dependencies, impact analysis, or topology views.
+- An object has `externalInteractions` values — convert each entry to a
+  relationship object.
 
 For each relationship:
 
-1. Identify the source and target objects from the catalog — both must already exist and have UIDs.
-2. Ask for a short label describing the interaction (e.g. "calls", "reads from", "writes to", "sends events to").
-3. Ask for the technology if known and not obvious (e.g. "HTTPS", "gRPC", "AMQP", "Kafka").
-4. Ask for the direction only when the interaction type implies it: request/response → `synchronous`; fire-and-forget → `asynchronous`; publish/subscribe or event-driven → `event`.
+1. Set `source` to the UID of the calling or producing object.
+2. Set `target` to the UID of the receiving catalog object, **or** set
+   `externalTarget` to the free-text name of an external system with no catalog
+   representation (e.g. `"LDAP Directory"`, `"Stripe Payment API"`). Use
+   `externalTarget` when the dependency exists but has no catalog UID.
+3. Set `label` to a short verb phrase: "calls", "reads from", "writes to",
+   "sends events to", "authenticates via".
+4. Set `technology` when known and not obvious: "HTTPS", "gRPC", "AMQP",
+   "PostgreSQL wire protocol".
+5. Set `direction` to `synchronous` for request/response, `asynchronous` for
+   fire-and-forget, or `event` for publish/subscribe or event-driven.
+6. Set `flow` to `outbound` (default), `inbound`, or `bidirectional` from the
+   source object's perspective.
 
-Write the relationship object to `catalog/relationships/` using the naming convention
-`relationship-<source-name>-<verb>-<target-name>.yaml`.
+Write the relationship object to `catalog/relationships/` using the naming
+convention `relationship-<source-name>-<verb>-<target-name>.yaml`.
 
 Do not ask about relationships unless the user brings up connections, dependencies,
 or topology. Do not block or delay drafting of other objects waiting for relationship
-completeness — relationships are always advisory enrichment.
+completeness.
 
 When reading source material (diagrams, SDPs, architecture docs), extract visible
 directed connections and propose relationship objects for each one. Surface them

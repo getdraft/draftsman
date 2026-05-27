@@ -7,11 +7,11 @@ requiredFields:
 - name
 - catalogStatus
 - lifecycleStatus
+defaultOwnerRole: engineer
 optionalFields:
 - aliases
 - description
 - version
-- ownerRole
 - owner
 - tags
 - businessContext
@@ -22,14 +22,9 @@ optionalFields:
 - serviceGroups
 - externalInteractions
 - decisionRecords
-- requirementGroups
 - requirementImplementations
 - tierVariants
 enumFields:
-  ownerRole:
-  - engineer
-  - technology-admin
-  - draft-admin
   catalogStatus:
   - stub
   - incomplete

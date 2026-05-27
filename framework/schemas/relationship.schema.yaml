@@ -1,20 +1,29 @@
 schemaVersion: '1.0'
 type: relationship
+defaultOwnerRole: technology-admin
 requiredFields:
 - schemaVersion
 - uid
 - type
 - name
 - source
-- target
 - label
 - catalogStatus
 optionalFields:
 - description
+- target
+- externalTarget
 - technology
 - direction
+- flow
+- capabilities
 - notes
 - tags
+conditionalRequired:
+- when:
+    externalTarget: null
+  require:
+  - target
 enumFields:
   catalogStatus:
   - stub
@@ -24,19 +33,31 @@ enumFields:
   - synchronous
   - asynchronous
   - event
+  flow:
+  - outbound
+  - inbound
+  - bidirectional
 fieldTypes:
   tags: list
+  capabilities: list
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
-aiHint: A Relationship records a directed inter-object communication edge. Use it to declare that one deployable object calls, reads from, writes to, or sends events to another. source and target must be UIDs of existing catalog objects.
+aiHint: >
+  A Relationship records a directed inter-object communication edge — the structured replacement for externalInteractions.
+  Use source and target for catalog UIDs; use externalTarget (free string) when the dependency is an external system with no catalog object.
+  The direction field captures the communication pattern (synchronous/asynchronous/event); flow captures traffic direction (outbound/inbound/bidirectional).
+  Use capabilities to list capability UIDs that this relationship enables or satisfies.
 fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name changes.
   type: Use relationship exactly.
   name: Use a short human-readable name describing this relationship (e.g. "Auth Service → User DB").
-  source: UID of the object initiating the relationship (the caller or producer).
-  target: UID of the object receiving the relationship (the callee or consumer).
+  source: UID of the catalog object initiating the relationship (the caller or producer).
+  target: UID of the catalog object receiving the relationship (the callee or consumer). Required when externalTarget is not set.
+  externalTarget: Name of an external system or service not represented as a catalog object (e.g. "LDAP Directory", "Stripe Payment API"). Use when the dependency target has no catalog UID.
   label: Short verb phrase describing the interaction — e.g. "calls", "reads from", "writes to", "sends events to".
-  technology: Optional protocol or technology used — e.g. "HTTPS", "gRPC", "AMQP", "PostgreSQL wire protocol".
-  direction: Use synchronous for request/response, asynchronous for fire-and-forget calls, or event for event-driven communication.
+  technology: Protocol or technology used — e.g. "HTTPS", "gRPC", "AMQP", "PostgreSQL wire protocol".
+  direction: Communication pattern — synchronous for request/response, asynchronous for fire-and-forget, event for event-driven.
+  flow: Traffic flow direction from the source object's perspective — outbound, inbound, or bidirectional.
+  capabilities: List of capability UIDs that this relationship enables or satisfies.
   catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition.
   notes: Any additional context about why this relationship exists or how it is governed.

@@ -1,5 +1,6 @@
 schemaVersion: '1.0'
 type: requirement_group
+defaultOwnerRole: draft-admin
 aiHint: A Requirement Group is the unified authoring and validation contract an AI uses for always-on object requirements and workspace-activated compliance requirements.
 requiredFields:
 - schemaVersion

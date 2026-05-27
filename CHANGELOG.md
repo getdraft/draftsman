@@ -3,6 +3,74 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.26.0 - 2026-05-26
+
+### Added
+
+- **`defaultOwnerRole` schema field**: All 15 object-type schemas now declare `defaultOwnerRole` with a static mapping: `engineer` for `product_component`, `data_component`, and `software_deployment_pattern`; `technology-admin` for all service types, `host`, `technology_component`, `decision_record`, and `relationship`; `draft-admin` for `domain`, `capability`, `requirement_group`, `reference_architecture`, and `drafting_session`. Ownership is now schema-driven rather than per-object-authored.
+
+- **`deprecatedFields` schema mechanism** (`validate.py`): Schemas may now list deprecated field names in a top-level `deprecatedFields` array. The validator emits a warning for any object that still has a value in a deprecated field. Service schemas declare `externalInteractions` as deprecated.
+
+- **`dictSubSchemas` schema mechanism** (`validate.py`): Schemas may map dict-typed fields to named sub-schemas via a top-level `dictSubSchemas` mapping. The validator recursively validates dict field values against their sub-schema. Used for `vendorGovernance` in all three service schemas.
+
+- **`vendorGovernance` sub-object** (runtime-service, data-store-service, edge-gateway-service schemas): Groups the vendor accountability fields `dataLeavesInfrastructure`, `dataResidencyCommitment`, `dpaNotes`, `vendorSLA`, and `incidentNotificationProcess` under a single sub-object. Applies only to objects with `deliveryModel: saas`, `paas`, or `appliance`.
+
+- **`conditionalRequired` for vendor fields** (runtime-service, data-store-service, edge-gateway-service schemas): `vendor`, `productName`, and `productVersion` are now required when `deliveryModel` is one of `saas`, `paas`, or `appliance`.
+
+- **`conditionalRequired` for relationship `target`** (relationship schema): `target` is now required only when `externalTarget` is not set. `externalTarget` (free-text external system name) and `flow` (outbound/inbound/bidirectional) added as optional fields.
+
+- **`migrate_interactions.py`** (`framework/tools/`): New script that reads a workspace, finds objects with deprecated `externalInteractions` entries, and generates stub relationship YAML files. Entries with a `ref` to an existing catalog object get `target`; bare-name entries get `externalTarget`. Supports `--dry-run`.
+
+- **`architecturalDecisions` promotion warning**: The validator now warns when a `catalogStatus: complete` object has inline `architecturalDecisions` content, recommending promotion to `decision_record` objects.
+
+### Changed
+
+- **`matches_conditions`** (`validate.py`): `conditionalRequired` condition values may now be lists; the condition matches when the field value is in the list. Previously only exact equality was supported.
+
+- **`requirementGroups` field deprecated**: Removed from all object schema `optionalFields` lists. The validator now emits a warning (not a failure) when an object contains `requirementGroups`, directing authors to remove the field. Requirement groups are applied via workspace activation and `appliesTo` rules, not per-object claims.
+
+- **`externalInteractions` and `connections` deprecated on service group objects** (`software_deployment_pattern` schema): The validator now warns when a service group still uses these fields. Use relationship objects to model topology instead.
+
+- **Relationship validation** (`validate.py`): `validate_relationship` now validates `source` and `target` independently. Fails when neither `target` nor `externalTarget` is set; skips target catalog lookup when `externalTarget` is provided.
+
+- **Draftsman guidance** (`framework/docs/draftsman.md`): Updated to direct authors toward relationship objects for all dependency modeling. Deprecated `externalInteractions` authoring guidance removed. Connection elicitation procedure updated to generate relationship objects instead of `serviceConnection` entries. Validator error table updated for relationship-related messages.
+
+- **`validate_against_schema` and `validate_schema_section`** now accept an optional `warnings` list so schema-level deprecation warnings surface alongside custom validator warnings.
+
+### Removed
+
+- **`ownerRole` field**: Removed from `optionalFields` and `enumFields` on all object-type schemas. Use the schema-declared `defaultOwnerRole` instead.
+- **`requirementGroups` field**: Removed from `optionalFields` on all object-type schemas. Objects that still have this field receive a deprecation warning.
+- **Top-level vendor accountability fields** (`dataLeavesInfrastructure`, `dataResidencyCommitment`, `dpaNotes`, `vendorSLA`, `incidentNotificationProcess`): Removed from top-level `optionalFields` on service schemas. These fields now live inside the `vendorGovernance` sub-object. The validator warns when any of these are found at the top level.
+
+### Compatibility Impact
+
+**Pre-1.0 breaking changes** (allowed per the framework contract):
+
+| Removed field | Schema type(s) | Replacement |
+|---|---|---|
+| `ownerRole` | All object types | Schema `defaultOwnerRole` (inferred, no authoring required) |
+| `requirementGroups` | All standard object types | Workspace activation + schema `appliesTo` |
+| `dataLeavesInfrastructure` (top-level) | runtime_service, data_store_service, edge_gateway_service | `vendorGovernance.dataLeavesInfrastructure` |
+| `dataResidencyCommitment` (top-level) | runtime_service, data_store_service, edge_gateway_service | `vendorGovernance.dataResidencyCommitment` |
+| `dpaNotes` (top-level) | runtime_service, data_store_service, edge_gateway_service | `vendorGovernance.dpaNotes` |
+| `vendorSLA` (top-level) | runtime_service, data_store_service, edge_gateway_service | `vendorGovernance.vendorSLA` |
+| `incidentNotificationProcess` (top-level) | runtime_service, data_store_service, edge_gateway_service | `vendorGovernance.incidentNotificationProcess` |
+| `externalInteractions` | All service and host types (deprecated warning only) | `relationship` objects |
+| `connections` | SDP serviceGroups (deprecated warning only) | `relationship` objects |
+
+### Migration Notes
+
+1. **Remove `ownerRole`** from any catalog objects that still declare it. The field is ignored but will generate an "unknown field" warning in future schema-aware tools.
+
+2. **Remove `requirementGroups`** from any catalog objects that declare it. Run `validate.py` to identify files; each will show a deprecation warning.
+
+3. **Move vendor accountability fields** into a `vendorGovernance:` sub-object on any service object with `deliveryModel: saas`, `paas`, or `appliance`.
+
+4. **Convert `externalInteractions`** to relationship objects. Run `python3 framework/tools/migrate_interactions.py --workspace <path> --dry-run` to preview generated stubs, then without `--dry-run` to write them. Remove `externalInteractions` from each source object after verifying the relationship files.
+
+5. **Convert SDP `serviceGroup.connections` and `serviceGroup.externalInteractions`** to relationship objects using the same migration script or manually.
+
 ## 0.25.2 - 2026-05-26
 
 ### Added
