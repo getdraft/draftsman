@@ -2,10 +2,10 @@ schemaVersion: '1.0'
 uid: STCK000004-RS04
 type: runtime_service
 name: Neutron Networking Service
-description: 'Self-managed deployment of OpenStack Neutron providing software-defined networking for the
-  OpenStack platform. Runs neutron-api, neutron-plugin (ML2), and neutron-agents (L2 agent, L3 agent,
-  DHCP agent, metadata agent) subcomponents. Manages virtual networks, subnets, routers, floating IPs,
-  and security groups. Uses RabbitMQ for agent coordination and MariaDB for network state persistence.
+description: 'Self-managed deployment of OpenStack Neutron providing software-defined networking for the OpenStack platform.
+  Runs neutron-api, neutron-plugin (ML2), and neutron-agents (L2 agent, L3 agent, DHCP agent, metadata agent) subcomponents.
+  Manages virtual networks, subnets, routers, floating IPs, and security groups. Uses RabbitMQ for agent coordination and
+  MariaDB for network state persistence.
 
   '
 version: 1.0.0
@@ -25,42 +25,33 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000004-TC04
 architectureNotes:
-  serviceAuthentication: All Neutron API requests are authenticated via Keystone token validation. Neutron
-    service account is registered in the Keystone service catalog. Neutron agents authenticate with the
-    neutron-api using service tokens.
-  secretsManagement: Database credentials and RabbitMQ credentials are stored in neutron.conf managed
-    by configuration management tooling.
-  serviceLogging: Neutron API and agents emit logs to /var/log/neutron/. Logs are shipped to the centralised
-    log aggregation platform. L3 agent logs are especially important for routing troubleshooting.
-  healthWelfareMonitoring: neutron-api health is verified via HTTP endpoint polling. Agent liveness is
-    monitored via agent heartbeat checks (neutron agent-list). RabbitMQ queue depth for network events
-    is monitored.
-  availabilityModel: neutron-api runs active-active across controller nodes behind a load balancer. L3
-    agents and DHCP agents can be configured in HA mode using VRRP. Failure of a network agent affects
-    only the network resources it manages.
-  scalabilityModel: neutron-api scales horizontally. Network agent capacity scales by deploying additional
-    network nodes.
-  recoverabilityModel: API processes recovered via systemd restart. Network state recovered from MariaDB
-    Galera. Virtual network configuration is re-applied from database state on agent restart.
-  failureDomain: Failure of neutron-api prevents new network provisioning operations. Failure of L3 agents
-    affects routing for floating IPs and router-attached subnets. Existing instance connectivity on L2
-    (VXLAN/VLAN) is unaffected by control plane failure.
+  serviceAuthentication: All Neutron API requests are authenticated via Keystone token validation. Neutron service 
+    account is registered in the Keystone service catalog. Neutron agents authenticate with the neutron-api using 
+    service tokens.
+  secretsManagement: Database credentials and RabbitMQ credentials are stored in neutron.conf managed by configuration 
+    management tooling.
+  serviceLogging: Neutron API and agents emit logs to /var/log/neutron/. Logs are shipped to the centralised log 
+    aggregation platform. L3 agent logs are especially important for routing troubleshooting.
+  healthWelfareMonitoring: neutron-api health is verified via HTTP endpoint polling. Agent liveness is monitored via 
+    agent heartbeat checks (neutron agent-list). RabbitMQ queue depth for network events is monitored.
+  availabilityModel: neutron-api runs active-active across controller nodes behind a load balancer. L3 agents and DHCP 
+    agents can be configured in HA mode using VRRP. Failure of a network agent affects only the network resources it 
+    manages.
+  scalabilityModel: neutron-api scales horizontally. Network agent capacity scales by deploying additional network 
+    nodes.
+  recoverabilityModel: API processes recovered via systemd restart. Network state recovered from MariaDB Galera. Virtual
+    network configuration is re-applied from database state on agent restart.
+  failureDomain: Failure of neutron-api prevents new network provisioning operations. Failure of L3 agents affects 
+    routing for floating IPs and router-attached subnets. Existing instance connectivity on L2 (VXLAN/VLAN) is 
+    unaffected by control plane failure.
   externalInteractionRationales:
-    Keystone Identity: All Neutron API requests require Keystone token validation. Modeled to show the
-      authentication dependency.
-    RabbitMQ Message Broker: Neutron uses RabbitMQ for ML2 plugin messaging to distributed L2 agents on
-      compute and network nodes. Modeled as a critical distributed messaging dependency.
-    Neutron Database: Neutron persists all network topology state to MariaDB. Modeled as a critical stateful
+    Keystone Identity: All Neutron API requests require Keystone token validation. Modeled to show the authentication 
       dependency.
+    RabbitMQ Message Broker: Neutron uses RabbitMQ for ML2 plugin messaging to distributed L2 agents on compute and 
+      network nodes. Modeled as a critical distributed messaging dependency.
+    Neutron Database: Neutron persists all network topology state to MariaDB. Modeled as a critical stateful dependency.
   secrets_management: Database credentials and RabbitMQ credentials are stored in neutron.
 internalComponents:
 - ref: STCK000004-TC04
-  role: Core networking service providing neutron-api, ML2 plugin, and distributed networking agents (L2,
-    L3, DHCP, metadata).
-requirementImplementations:
-- requirementGroup: 01KQQ4Q027-T3CA
-  requirementId: CC.SecurityCompliance.04.3.1
-  status: satisfied
-  mechanism: architectureNote
-  key: secrets_management
-  notes: Secrets management documented in architectureNotes.secrets_management.
+  role: Core networking service providing neutron-api, ML2 plugin, and distributed networking agents (L2, L3, DHCP, 
+    metadata).

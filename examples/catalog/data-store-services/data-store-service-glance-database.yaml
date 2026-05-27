@@ -2,10 +2,10 @@ schemaVersion: '1.0'
 uid: STCK000003-DAR3
 type: data_store_service
 name: Glance Database
-description: 'MariaDB database schema dedicated to OpenStack Glance for persisting virtual machine image
-  metadata. Stores image records including name, format, size, checksum, visibility (public/private/shared),
-  and storage location references. Image binary data is stored separately in the Swift storage cluster.
-  Loss of this database orphans image binaries in Swift but does not destroy binary data.
+description: 'MariaDB database schema dedicated to OpenStack Glance for persisting virtual machine image metadata. Stores
+  image records including name, format, size, checksum, visibility (public/private/shared), and storage location references.
+  Image binary data is stored separately in the Swift storage cluster. Loss of this database orphans image binaries in Swift
+  but does not destroy binary data.
 
   '
 version: 1.0.0
@@ -26,27 +26,24 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000E-TC0E
 architectureNotes:
-  serviceAuthentication: Glance connects to its database schema using a dedicated MariaDB service account
-    with credentials configured in glance-api.conf.
-  secretsManagement: Database credentials stored in glance-api.conf managed by configuration management
-    tooling.
-  serviceLogging: MariaDB slow query logs and error logs for the Glance schema are shipped to the centralised
-    log aggregation platform.
-  healthWelfareMonitoring: MariaDB Galera cluster health monitored via wsrep status. Image count and metadata
-    query latency are tracked as health indicators.
-  availabilityModel: Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt
-    availability.
-  scalabilityModel: The Glance schema is typically low-volume (image metadata only). Scales within the
-    shared Galera cluster.
-  recoverabilityModel: Data recovered from MariaDB Galera replication. Schema migrations applied via glance-manage
+  serviceAuthentication: Glance connects to its database schema using a dedicated MariaDB service account with 
+    credentials configured in glance-api.conf.
+  secretsManagement: Database credentials stored in glance-api.conf managed by configuration management tooling.
+  serviceLogging: MariaDB slow query logs and error logs for the Glance schema are shipped to the centralised log 
+    aggregation platform.
+  healthWelfareMonitoring: MariaDB Galera cluster health monitored via wsrep status. Image count and metadata query 
+    latency are tracked as health indicators.
+  availabilityModel: Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.
+  scalabilityModel: The Glance schema is typically low-volume (image metadata only). Scales within the shared Galera 
+    cluster.
+  recoverabilityModel: Data recovered from MariaDB Galera replication. Schema migrations applied via glance-manage 
     db_sync.
-  failureDomain: Loss of the Glance database prevents image metadata operations. Image binary data in
-    Swift is unaffected. Nova instance provisioning fails as it cannot look up image metadata.
+  failureDomain: Loss of the Glance database prevents image metadata operations. Image binary data in Swift is 
+    unaffected. Nova instance provisioning fails as it cannot look up image metadata.
   backup:
-    strategy: Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups.
-      Backups written to object storage.
-    platform: Percona XtraBackup writing to Swift object storage on the openstack-controller deployment
-      target.
+    strategy: Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to
+      object storage.
+    platform: Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.
     rto: 2 hours for full restore; near-zero for Galera node failure.
     rpo: 4 hours maximum; near-zero for Galera replication.
   ha:
@@ -56,38 +53,12 @@ architectureNotes:
   accessControl:
     model: Role-based database access. Glance service account has DML access to the glance schema only.
   externalInteractionRationales:
-    Backup Service: Percona XtraBackup automated backup writes point-in-time backups to Swift object storage.
-      Modeled to show the external backup platform dependency.
-  access_control_model: Role-based database access. Glance service account has DML access to the glance
-    schema only. Credentials managed by Ansible configuration management.
-  backup_strategy: Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups
-    written to Swift object storage. RTO 2h, RPO 4h.
+    Backup Service: Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to
+      show the external backup platform dependency.
+  access_control_model: Role-based database access. Glance service account has DML access to the glance schema only. 
+    Credentials managed by Ansible configuration management.
+  backup_strategy: Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups written to 
+    Swift object storage. RTO 2h, RPO 4h.
 internalComponents:
 - ref: STCK00000E-TC0E
-  role: MariaDB Galera cluster providing the relational database engine for the Glance image metadata
-    schema.
-requirementImplementations:
-- requirementGroup: 01KQQ4Q027-T3CA
-  requirementId: CC.SecurityCompliance.04.4.1.access-control-model
-  status: satisfied
-  mechanism: architectureNote
-  key: access_control_model
-  notes: Database access control model documented in architectureNotes.access_control_model.
-- requirementGroup: 01KQQ4Q027-T3CA
-  requirementId: CC.SecurityCompliance.00.2.1.access-control-model
-  status: satisfied
-  mechanism: architectureNote
-  key: access_control_model
-  notes: Database data classification context documented in architectureNotes.access_control_model.
-- requirementGroup: 01KQQ4Q027-T3CA
-  requirementId: CC.SecurityCompliance.04.1.1
-  status: satisfied
-  mechanism: architectureNote
-  key: access_control_model
-  notes: Database access control model documented in architectureNotes.access_control_model.
-- requirementGroup: 01KQQ4Q027-T3CA
-  requirementId: CC.SecurityCompliance.10.2.1
-  status: satisfied
-  mechanism: architectureNote
-  key: backup_strategy
-  notes: Backup strategy documented in architectureNotes.backup_strategy.
+  role: MariaDB Galera cluster providing the relational database engine for the Glance image metadata schema.

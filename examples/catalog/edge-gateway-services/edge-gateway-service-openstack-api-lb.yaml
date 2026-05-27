@@ -2,10 +2,9 @@ schemaVersion: '1.0'
 uid: 01KSF29JTP-9HYA
 type: edge_gateway_service
 name: OpenStack API Load Balancer
-description: HAProxy load balancer co-located on OpenStack controller nodes. Distributes
-  inbound API and dashboard traffic across all active controller nodes in the active-active
-  control plane cluster. Provides health checking, connection queuing, and SSL termination
-  for the OpenStack public network zone.
+description: HAProxy load balancer co-located on OpenStack controller nodes. Distributes inbound API and dashboard 
+  traffic across all active controller nodes in the active-active control plane cluster. Provides health checking, 
+  connection queuing, and SSL termination for the OpenStack public network zone.
 version: 1.0.0
 catalogStatus: complete
 lifecycleStatus: existing-only
@@ -22,39 +21,26 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: 01KSF29JTP-8YRX
 architectureNotes:
-  serviceAuthentication: HAProxy does not authenticate requests itself. Authentication
-    is delegated to backend services (Keystone for API requests, nginx/Django for
-    Horizon). HAProxy operates in pass-through mode; backends receive X-Forwarded-For
-    headers.
-  secretsManagement: HAProxy configuration and SSL certificates are managed by
-    Ansible. Certificate private keys reside in the OS certificate store on each
-    controller node. No application-level secrets are held by HAProxy.
-  secrets_management: Ansible-managed configuration; SSL private keys in OS cert
-    store; no application secrets held by HAProxy. See decision record 01KSF29JTP-DRHA.
-  serviceLogging: HAProxy logs all connections to syslog including client IP, backend
-    selected, response code, and latency. Forwarded to the centralised log aggregation
-    platform via local log shipper.
-  availabilityModel: HAProxy runs on all three controller nodes. A shared VIP managed
-    by Keepalived provides a single entry point. VIP migrates to a standby within
-    2 seconds on master failure.
-  scalabilityModel: HAProxy is stateless; scaling is achieved by adding controller
-    nodes. Connection limits are tunable per backend.
-  recoverabilityModel: HAProxy process is managed by systemd and restarts automatically
-    on failure. Configuration is reapplied via Ansible within minutes.
-  failureDomain: Loss of the active HAProxy instance causes a 2-second VIP failover
-    via Keepalived. Loss of all controller nodes renders the control plane unavailable;
-    data plane continues unaffected.
+  serviceAuthentication: HAProxy does not authenticate requests itself. Authentication is delegated to backend services 
+    (Keystone for API requests, nginx/Django for Horizon). HAProxy operates in pass-through mode; backends receive 
+    X-Forwarded-For headers.
+  secretsManagement: HAProxy configuration and SSL certificates are managed by Ansible. Certificate private keys reside 
+    in the OS certificate store on each controller node. No application-level secrets are held by HAProxy.
+  secrets_management: Ansible-managed configuration; SSL private keys in OS cert store; no application secrets held by 
+    HAProxy. See decision record 01KSF29JTP-DRHA.
+  serviceLogging: HAProxy logs all connections to syslog including client IP, backend selected, response code, and 
+    latency. Forwarded to the centralised log aggregation platform via local log shipper.
+  availabilityModel: HAProxy runs on all three controller nodes. A shared VIP managed by Keepalived provides a single 
+    entry point. VIP migrates to a standby within 2 seconds on master failure.
+  scalabilityModel: HAProxy is stateless; scaling is achieved by adding controller nodes. Connection limits are tunable 
+    per backend.
+  recoverabilityModel: HAProxy process is managed by systemd and restarts automatically on failure. Configuration is 
+    reapplied via Ansible within minutes.
+  failureDomain: Loss of the active HAProxy instance causes a 2-second VIP failover via Keepalived. Loss of all 
+    controller nodes renders the control plane unavailable; data plane continues unaffected.
 decisionRecords:
 - ref: 01KSF29JTP-DRHA
 internalComponents:
 - ref: 01KSF29JTP-8YRX
-  role: HAProxy Community Edition providing load balancing, health checking, and
-    connection management for the OpenStack control plane.
-requirementImplementations:
-- requirementGroup: 01KQQ4Q027-T3CA
-  requirementId: CC.SecurityCompliance.04.3.1
-  status: satisfied
-  mechanism: architectureNote
-  key: secrets_management
-  notes: Ansible-managed configuration; SSL private keys in OS cert store; no
-    application secrets held by HAProxy. See decision record 01KSF29JTP-DRHA.
+  role: HAProxy Community Edition providing load balancing, health checking, and connection management for the OpenStack
+    control plane.

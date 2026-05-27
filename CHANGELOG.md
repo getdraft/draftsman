@@ -3,6 +3,32 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.28.1 - 2026-05-27
+
+### Added
+
+- None.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- **`architectureNote` rejected as `requirementImplementations` mechanism**: `validate_requirement_implementations` now fails any implementation entry that sets `mechanism: architectureNote`. Inline notes are scratchpad, not evidence — proper mechanisms (`externalInteraction`, `technologyComponentConfiguration`, `field`, etc.) or a promoted `decision_record` are required. All 26 example catalog objects that carried `mechanism: architectureNote` implementation entries have been corrected: entries were removed (requirements remain automatically satisfied via `canBeSatisfiedBy` group scanning against `architectureNotes` keys) or replaced with valid mechanisms. The `validate_architectural_decisions` inline-notes suppression added in 0.28.0 is reverted — the warning is correct and should fire.
+
+- **SDP `decisionRecords` reference added**: The `sdp-openstack-iaas-platform` object is `complete` and has inline `architectureNotes`; it now declares `decisionRecords: [{ref: 01KSE5V73Z-CRZV}]` to resolve the inline-notes promotion warning.
+
+### Compatibility Impact
+
+No schema changes. Behavioral change: `mechanism: architectureNote` in `requirementImplementations` is now a validation failure (was silently accepted in 0.28.0). Workspaces that authored implementation entries with `mechanism: architectureNote` must remove those entries or migrate to structural mechanism types.
+
+### Migration Notes
+
+1. **Remove `mechanism: architectureNote` from `requirementImplementations`**: Requirements that were documented with `mechanism: architectureNote` can be satisfied automatically — if the corresponding `architectureNotes` key is present on the object, the requirement group scanner resolves it via `canBeSatisfiedBy`. No manual implementation entry is needed.
+
+2. **Promote inline decisions to `decision_record` objects** for complete objects that want to suppress the inline-notes warning without a `decisionRecords` reference.
+
 ## 0.28.0 - 2026-05-27
 
 ### Added

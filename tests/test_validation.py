@@ -279,11 +279,11 @@ class ValidationTests(unittest.TestCase):
                         requirementMode: mandatory
                         naAllowed: false
                         canBeSatisfiedBy:
-                          - mechanism: architectureNote
-                            key: missingDecision
+                          - mechanism: field
+                            key: architectureNotes.companyEvidence
                         minimumSatisfactions: 1
                         validAnswerTypes:
-                          - architectureNote
+                          - field
                     """
                 ).strip()
                 + "\n",
@@ -312,8 +312,8 @@ class ValidationTests(unittest.TestCase):
                       - requirementGroup: requirement-group.company-control
                         requirementId: company-required-field
                         status: satisfied
-                        mechanism: architectureNote
-                        key: companyEvidence
+                        mechanism: field
+                        key: architectureNotes.companyEvidence
                     """
                 ).strip()
                 + "\n",

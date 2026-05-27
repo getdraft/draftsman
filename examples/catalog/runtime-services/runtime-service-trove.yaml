@@ -2,10 +2,10 @@ schemaVersion: '1.0'
 uid: STCK00000A-RS0A
 type: runtime_service
 name: Trove Database Service
-description: 'Self-managed deployment of OpenStack Trove providing database-as-a-service on top of the
-  OpenStack compute platform. Runs trove-api, trove-conductor, and trove-taskmanager subcomponents. Trove
-  provisions database instances (MySQL, PostgreSQL, MongoDB, etc.) as Nova virtual machines with pre-configured
-  database software, offering tenants a managed DBaaS experience without exposing the underlying infrastructure.
+description: 'Self-managed deployment of OpenStack Trove providing database-as-a-service on top of the OpenStack compute platform.
+  Runs trove-api, trove-conductor, and trove-taskmanager subcomponents. Trove provisions database instances (MySQL, PostgreSQL,
+  MongoDB, etc.) as Nova virtual machines with pre-configured database software, offering tenants a managed DBaaS experience
+  without exposing the underlying infrastructure.
 
   '
 version: 1.0.0
@@ -24,40 +24,31 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000B-TC0B
 architectureNotes:
-  serviceAuthentication: All Trove API requests are authenticated via Keystone token validation. Trove
-    service account is registered in the Keystone service catalog. Guest agents running in database instances
-    authenticate back to the Trove conductor via RabbitMQ with per-instance credentials.
-  secretsManagement: Database credentials and RabbitMQ credentials are stored in trove.conf managed by
-    configuration management tooling. Per-instance guest agent credentials are injected at instance provisioning
-    time.
-  serviceLogging: Trove emits logs to /var/log/trove/. Logs are shipped to the centralised log aggregation
-    platform.
-  healthWelfareMonitoring: trove-api health is verified via HTTP endpoint polling. Instance health is
-    monitored via guest agent heartbeats. Database instance availability is checked via Trove health checks.
-  availabilityModel: trove-api runs active-active behind a load balancer. trove-taskmanager and trove-conductor
-    run on controller nodes with RabbitMQ providing work distribution. Database instance HA depends on
-    the database engine and Trove replication configuration.
-  scalabilityModel: trove-api scales horizontally. trove-taskmanager scales by adding additional workers.
-    Database capacity scales by provisioning additional Trove instances.
-  recoverabilityModel: Control plane processes recovered via systemd restart. Trove state recovered from
-    MariaDB. Database instance data recovery depends on the instance backup configuration.
-  failureDomain: Failure of Trove control plane prevents provisioning new database instances. Existing
-    database instances continue to operate as they run as independent Nova VMs.
+  serviceAuthentication: All Trove API requests are authenticated via Keystone token validation. Trove service account 
+    is registered in the Keystone service catalog. Guest agents running in database instances authenticate back to the 
+    Trove conductor via RabbitMQ with per-instance credentials.
+  secretsManagement: Database credentials and RabbitMQ credentials are stored in trove.conf managed by configuration 
+    management tooling. Per-instance guest agent credentials are injected at instance provisioning time.
+  serviceLogging: Trove emits logs to /var/log/trove/. Logs are shipped to the centralised log aggregation platform.
+  healthWelfareMonitoring: trove-api health is verified via HTTP endpoint polling. Instance health is monitored via 
+    guest agent heartbeats. Database instance availability is checked via Trove health checks.
+  availabilityModel: trove-api runs active-active behind a load balancer. trove-taskmanager and trove-conductor run on 
+    controller nodes with RabbitMQ providing work distribution. Database instance HA depends on the database engine and 
+    Trove replication configuration.
+  scalabilityModel: trove-api scales horizontally. trove-taskmanager scales by adding additional workers. Database 
+    capacity scales by provisioning additional Trove instances.
+  recoverabilityModel: Control plane processes recovered via systemd restart. Trove state recovered from MariaDB. 
+    Database instance data recovery depends on the instance backup configuration.
+  failureDomain: Failure of Trove control plane prevents provisioning new database instances. Existing database 
+    instances continue to operate as they run as independent Nova VMs.
   externalInteractionRationales:
-    Keystone Identity: All Trove API requests require Keystone token validation. Modeled to show the authentication
+    Keystone Identity: All Trove API requests require Keystone token validation. Modeled to show the authentication 
       dependency.
-    RabbitMQ Message Broker: Trove uses RabbitMQ for task messaging between trove-api, trove-taskmanager,
-      and guest agents running in database VMs. Modeled as a critical distributed messaging dependency.
-    Trove Database: Trove persists all database instance metadata and configuration to MariaDB. Modeled
-      as a critical stateful dependency.
+    RabbitMQ Message Broker: Trove uses RabbitMQ for task messaging between trove-api, trove-taskmanager, and guest 
+      agents running in database VMs. Modeled as a critical distributed messaging dependency.
+    Trove Database: Trove persists all database instance metadata and configuration to MariaDB. Modeled as a critical 
+      stateful dependency.
   secrets_management: Database credentials and RabbitMQ credentials are stored in trove.
 internalComponents:
 - ref: STCK00000B-TC0B
   role: Core database service providing trove-api, trove-conductor, and trove-taskmanager.
-requirementImplementations:
-- requirementGroup: 01KQQ4Q027-T3CA
-  requirementId: CC.SecurityCompliance.04.3.1
-  status: satisfied
-  mechanism: architectureNote
-  key: secrets_management
-  notes: Secrets management documented in architectureNotes.secrets_management.

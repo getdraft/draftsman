@@ -1837,13 +1837,9 @@ def validate_architectural_decisions(
         decision_sets.append(direct_decisions)
 
     has_decision_records = bool(obj.get("decisionRecords"))
-    notes_used_in_impls = any(
-        isinstance(impl, dict) and impl.get("mechanism") == "architectureNote"
-        for impl in obj.get("requirementImplementations", []) or []
-    )
     if (warnings is not None and isinstance(direct_decisions, dict) and direct_decisions
             and obj.get("catalogStatus") == "complete"
-            and not has_decision_records and not notes_used_in_impls):
+            and not has_decision_records):
         warnings.append(
             f"{path}: [{object_label(obj)}] architectureNotes are inline — promote each decision to a "
             "decision_record object and reference it via decisionRecords for complete catalog objects"
@@ -3112,6 +3108,14 @@ def validate_requirement_implementations(
         mechanism = implementation.get("mechanism")
         valid_answer_types = requirement.get("validAnswerTypes", [])
         label = requirement_display_label(group, requirement)
+        if mechanism == "architectureNote":
+            failures.append(
+                f"{context}: architectureNote is not a valid implementation mechanism — "
+                "use a structural mechanism (externalInteraction, technologyComponentConfiguration, field, etc.); "
+                "inline notes are scratchpad, not evidence"
+            )
+            implementations_by_key[(str(group_id), str(requirement_id))] = implementation
+            continue
         if mechanism and mechanism not in valid_answer_types:
             failures.append(
                 f"{context}: Set mechanism to one of {valid_answer_types} for {label}"

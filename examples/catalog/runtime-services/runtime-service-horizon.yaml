@@ -2,10 +2,10 @@ schemaVersion: '1.0'
 uid: STCK000006-RS06
 type: runtime_service
 name: Horizon Dashboard
-description: 'Self-managed deployment of OpenStack Horizon providing the web-based management dashboard
-  for the OpenStack platform. Served via nginx as a Django WSGI application. Provides self-service tenant
-  portals and operator administrative interfaces. Horizon consumes Nova, Keystone, Glance, Neutron, Cinder,
-  and Heat APIs to present a unified management experience accessible from the public internet.
+description: 'Self-managed deployment of OpenStack Horizon providing the web-based management dashboard for the OpenStack
+  platform. Served via nginx as a Django WSGI application. Provides self-service tenant portals and operator administrative
+  interfaces. Horizon consumes Nova, Keystone, Glance, Neutron, Cinder, and Heat APIs to present a unified management experience
+  accessible from the public internet.
 
   '
 version: 1.0.0
@@ -25,44 +25,37 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000007-TC07
 architectureNotes:
-  serviceAuthentication: Horizon authenticates users via Keystone credential submission. The dashboard
-    itself does not issue tokens; it passes user credentials to Keystone and stores the returned scoped
-    token in the user's browser session.
-  secretsManagement: Horizon SECRET_KEY is stored in local_settings.py managed by configuration management.
-    Keystone admin credentials are not stored by Horizon; all operations use user-scoped tokens.
-  serviceLogging: Horizon emits application logs via Django logging to /var/log/horizon/. nginx access
-    and error logs are captured separately. All logs are shipped to the centralised log aggregation platform.
-  healthWelfareMonitoring: nginx health is monitored via HTTP endpoint polling. Django application health
-    is monitored via uwsgi worker metrics. Browser session errors are surfaced via application logging.
-  availabilityModel: Horizon runs active-active across multiple controller nodes behind a load balancer
-    with sticky sessions or shared session storage. nginx handles TLS termination and upstream proxying.
-  scalabilityModel: Horizon scales horizontally by adding Django/uwsgi workers. It is stateless in terms
-    of OpenStack data (all state is in the OpenStack API layer).
-  recoverabilityModel: nginx and uwsgi processes are recovered via systemd restart. No persistent state
-    is held by Horizon; recovery is immediate upon process restart.
-  failureDomain: Failure of Horizon prevents web UI access but does not affect the OpenStack API layer.
-    CLI tools and automated tooling remain fully operational during a Horizon outage.
+  serviceAuthentication: Horizon authenticates users via Keystone credential submission. The dashboard itself does not 
+    issue tokens; it passes user credentials to Keystone and stores the returned scoped token in the user's browser 
+    session.
+  secretsManagement: Horizon SECRET_KEY is stored in local_settings.py managed by configuration management. Keystone 
+    admin credentials are not stored by Horizon; all operations use user-scoped tokens.
+  serviceLogging: Horizon emits application logs via Django logging to /var/log/horizon/. nginx access and error logs 
+    are captured separately. All logs are shipped to the centralised log aggregation platform.
+  healthWelfareMonitoring: nginx health is monitored via HTTP endpoint polling. Django application health is monitored 
+    via uwsgi worker metrics. Browser session errors are surfaced via application logging.
+  availabilityModel: Horizon runs active-active across multiple controller nodes behind a load balancer with sticky 
+    sessions or shared session storage. nginx handles TLS termination and upstream proxying.
+  scalabilityModel: Horizon scales horizontally by adding Django/uwsgi workers. It is stateless in terms of OpenStack 
+    data (all state is in the OpenStack API layer).
+  recoverabilityModel: nginx and uwsgi processes are recovered via systemd restart. No persistent state is held by 
+    Horizon; recovery is immediate upon process restart.
+  failureDomain: Failure of Horizon prevents web UI access but does not affect the OpenStack API layer. CLI tools and 
+    automated tooling remain fully operational during a Horizon outage.
   externalInteractionRationales:
-    Nova Compute Service: Horizon calls Nova APIs to display and manage instances, flavors, key pairs,
-      and server console access. Modeled to show the compute API dependency.
-    Keystone Identity: Horizon submits user credentials to Keystone for token issuance. All subsequent
-      API calls use the resulting scoped token. Modeled as the primary authentication dependency.
-    Glance Image Service: Horizon calls Glance APIs to display and manage VM images. Modeled to show the
-      image management dependency.
-    Neutron Networking: Horizon calls Neutron APIs to display and manage networks, subnets, routers, and
-      security groups. Modeled to show the networking management dependency.
-    Cinder Block Storage: Horizon calls Cinder APIs to display and manage volumes and snapshots. Modeled
-      to show the storage management dependency.
-    Heat Orchestration: Horizon calls Heat APIs to display and launch orchestration stacks. Modeled to
-      show the orchestration management dependency.
+    Nova Compute Service: Horizon calls Nova APIs to display and manage instances, flavors, key pairs, and server 
+      console access. Modeled to show the compute API dependency.
+    Keystone Identity: Horizon submits user credentials to Keystone for token issuance. All subsequent API calls use the
+      resulting scoped token. Modeled as the primary authentication dependency.
+    Glance Image Service: Horizon calls Glance APIs to display and manage VM images. Modeled to show the image 
+      management dependency.
+    Neutron Networking: Horizon calls Neutron APIs to display and manage networks, subnets, routers, and security 
+      groups. Modeled to show the networking management dependency.
+    Cinder Block Storage: Horizon calls Cinder APIs to display and manage volumes and snapshots. Modeled to show the 
+      storage management dependency.
+    Heat Orchestration: Horizon calls Heat APIs to display and launch orchestration stacks. Modeled to show the 
+      orchestration management dependency.
   secrets_management: Horizon SECRET_KEY is stored in local_settings.
 internalComponents:
 - ref: STCK000007-TC07
   role: Core dashboard application providing the Django-based web UI served via nginx.
-requirementImplementations:
-- requirementGroup: 01KQQ4Q027-T3CA
-  requirementId: CC.SecurityCompliance.04.3.1
-  status: satisfied
-  mechanism: architectureNote
-  key: secrets_management
-  notes: Secrets management documented in architectureNotes.secrets_management.
