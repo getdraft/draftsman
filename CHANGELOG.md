@@ -17,7 +17,7 @@ notes, including patch releases.
 
 ### Changed
 
-- **`architectureNotes` inline warning suppressed when `decisionRecords` present**: `validate_architectural_decisions` no longer warns about inline `architectureNotes` on complete objects that already declare `decisionRecords` references. Objects that have promoted their narrative to decision records but retain minimal `architectureNotes` for requirement satisfaction are no longer flagged.
+- **`architectureNotes` inline warning suppressed when requirement evidence is present**: `validate_architectural_decisions` no longer warns about inline `architectureNotes` when the object has `decisionRecords` references OR when any `requirementImplementations` entry uses `mechanism: architectureNote`. Objects whose notes serve as requirement satisfaction evidence are no longer prompted to promote those keys — doing so would remove the only satisfaction mechanism for those requirements. Closes #31.: `validate_architectural_decisions` no longer warns about inline `architectureNotes` on complete objects that already declare `decisionRecords` references. Objects that have promoted their narrative to decision records but retain minimal `architectureNotes` for requirement satisfaction are no longer flagged.
 
 - **Examples workspace `requireActiveRequirementGroupDisposition` enabled**: The examples workspace now sets `requireActiveRequirementGroupDisposition: true`, requiring all objects to have explicit dispositions for every requirement in the active security compliance requirement group. The workspace validates with zero failures and zero warnings at 159 catalog objects.
 

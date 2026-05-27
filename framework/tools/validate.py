@@ -1837,8 +1837,13 @@ def validate_architectural_decisions(
         decision_sets.append(direct_decisions)
 
     has_decision_records = bool(obj.get("decisionRecords"))
+    notes_used_in_impls = any(
+        isinstance(impl, dict) and impl.get("mechanism") == "architectureNote"
+        for impl in obj.get("requirementImplementations", []) or []
+    )
     if (warnings is not None and isinstance(direct_decisions, dict) and direct_decisions
-            and obj.get("catalogStatus") == "complete" and not has_decision_records):
+            and obj.get("catalogStatus") == "complete"
+            and not has_decision_records and not notes_used_in_impls):
         warnings.append(
             f"{path}: [{object_label(obj)}] architectureNotes are inline — promote each decision to a "
             "decision_record object and reference it via decisionRecords for complete catalog objects"
