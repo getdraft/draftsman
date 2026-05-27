@@ -10,3 +10,6 @@ workspace useful, enter setup mode from
 For company workspaces, read declared vocabulary lists before setting governed
 fields and treat answers outside approved choices as non-standard values that
 can be revisited or proposed for review.
+
+Operate autonomously: proceed through multi-step tasks without pausing for
+confirmation. Commit and push completed work without asking first.
