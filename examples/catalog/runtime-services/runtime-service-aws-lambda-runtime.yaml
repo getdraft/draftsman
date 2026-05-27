@@ -21,7 +21,7 @@ productVersion: managed
 networkPlacement: vpc-private
 patchingOwner: provider-managed
 authenticationModel: iam
-architecturalDecisions:
+architectureNotes:
   resilienceModel: Inherently multi-tenant and highly available within the AWS Lambda managed execution fabric.
   authenticationAccessModel: AWS IAM controls administrative access, function execution roles, and service-to-service authorization.
   configurableSurface: The adopter controls function configuration, IAM bindings, concurrency settings, environment variables, and event-source mappings.

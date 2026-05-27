@@ -58,7 +58,7 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-MHJM
     example: An Operating System Technology Component configuration that defines the authentication model.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: authenticationApproach
     example: A documented local or federated authentication model when the dependency is not expressed as a platform interaction.
   minimumSatisfactions: 1
@@ -66,7 +66,7 @@ requirements:
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - externalInteraction
   - internalComponent
   - technologyComponentConfiguration
@@ -86,7 +86,7 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-D04B
     example: An Operating System Technology Component configuration that redirects logs to a dedicated volume or forwarding path.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: loggingApproach
     example: A documented log shipping design for cases where the platform is described indirectly.
   minimumSatisfactions: 1
@@ -94,7 +94,7 @@ requirements:
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - externalInteraction
   - internalComponent
   - technologyComponentConfiguration
@@ -114,7 +114,7 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-98VD
     example: A Technology Component configuration that enables local health telemetry or metrics export.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: healthWelfareMonitoringApproach
     example: A documented explanation of the host monitoring pattern when the implementation is not captured directly.
   minimumSatisfactions: 1
@@ -122,7 +122,7 @@ requirements:
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - externalInteraction
   - internalComponent
   - technologyComponentConfiguration
@@ -142,7 +142,7 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-JW52
     example: A Technology Component configuration that enables local security telemetry or runtime protection behavior.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: securityMonitoringApproach
     example: A documented statement of the host security monitoring pattern.
   minimumSatisfactions: 1
@@ -150,7 +150,7 @@ requirements:
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - externalInteraction
   - internalComponent
   - technologyComponentConfiguration
@@ -170,7 +170,7 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-BH6E
     example: A Technology Component configuration that defines how the platform is patched without a separate external orchestrator.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: patchManagementApproach
     example: A documented patch orchestration model when a platform interaction is not explicitly modeled.
   minimumSatisfactions: 1
@@ -178,7 +178,7 @@ requirements:
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - externalInteraction
   - internalComponent
   - technologyComponentConfiguration

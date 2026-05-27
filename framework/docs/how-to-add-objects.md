@@ -50,11 +50,11 @@ points at that mechanism.
 
 When a dependency is present for another reason, document the reason under:
 
-- `architecturalDecisions.externalInteractionRationales` for external systems
+- `architectureNotes.externalInteractionRationales` for external systems
   and platforms
-- `architecturalDecisions.internalComponentRationales` for locally composed
+- `architectureNotes.internalComponentRationales` for locally composed
   Technology Components
-- `architecturalDecisions.dependencyRationales` when one shared rationale is
+- `architectureNotes.dependencyRationales` when one shared rationale is
   clearer than separate buckets
 
 Use the interaction name, component `ref`, `enabledBy`, role, or list-form
@@ -75,7 +75,7 @@ evidence instead of adding rationale.
 6. Add `capabilities` if the Technology Component itself satisfies reusable host capabilities.
 7. Add `configurations` if a named Technology Component configuration satisfies reusable host capabilities.
 8. Fill in any remaining Technology Component-specific metadata such as vendor lifecycle and optional platform dependency.
-9. If the Technology Component is classified as `agent`, make sure any deployable object that uses it also documents the corresponding external interaction or an architectural decision exception under `architecturalDecisions.agentInteractionExceptions`.
+9. If the Technology Component is classified as `agent`, make sure any deployable object that uses it also documents the corresponding external interaction or an architectural decision exception under `architectureNotes.agentInteractionExceptions`.
 10. Run validation.
 
 Technology Components should be specific. If you cannot name the product version clearly, you probably are not ready to create the object yet.
@@ -86,7 +86,7 @@ Technology Components should be specific. If you cannot name the product version
 2. Reference the Operating System and Compute Platform Technology Components explicitly.
 3. Add any Agent Technology Components or other internal components that physically live on the host.
 4. Document `externalInteractions` for identity, logging, security, monitoring, patching, or other platforms.
-5. Add `architecturalDecisions` when the host must answer a Requirement Group or compliance question that is not expressed directly in the object, or when an internal component or external interaction exists for a reason outside the applicable Host requirements.
+5. Add `architectureNotes` when the host must answer a Requirement Group or compliance question that is not expressed directly in the object, or when an internal component or external interaction exists for a reason outside the applicable Host requirements.
 6. Add `requirementGroups` only for Requirement Groups the host explicitly claims to
    satisfy, then add valid `requirementImplementations` for every applicable
    control in each declared profile.
@@ -103,8 +103,8 @@ Technology Components should be specific. If you cannot name the product version
 4. Document the decisions that describe scaling, health, secrets handling, and, for Data-at-Rest Services, durability and protection.
    Data-at-Rest Services must document backup strategy, backup platform, RTO,
    and RPO; use an `externalInteractions` entry for a separate backup platform
-   or `architecturalDecisions.backup.platform` for provider-managed backups.
-5. Use `architecturalDecisions` whenever the service must answer a Requirement Group or compliance question that is not expressed directly in the object, or when an internal component or external interaction exists for a reason outside the applicable service requirements.
+   or `architectureNotes.backup.platform` for provider-managed backups.
+5. Use `architectureNotes` whenever the service must answer a Requirement Group or compliance question that is not expressed directly in the object, or when an internal component or external interaction exists for a reason outside the applicable service requirements.
 6. Add `requirementGroups` only for Requirement Groups the service explicitly claims
    to satisfy, then add valid `requirementImplementations` for every applicable
    control in each declared profile.
@@ -133,7 +133,7 @@ Keep the requirements focused on architecture outcomes rather than implementatio
 2. Add or repair the generated `uid`; choose a clear human `name`.
 3. Populate `serviceGroups` with the reusable building blocks that define the deployment pattern.
 4. Set `diagramTier` on every deployable object entry and cluster related functionality into the right service group.
-5. Add `architecturalDecisions` that explain what non-functional qualities the pattern is meant to deliver and how.
+5. Add `architectureNotes` that explain what non-functional qualities the pattern is meant to deliver and how.
 6. Make sure the file satisfies the Reference Architecture Requirement Group by documenting `patternType`, tiered service groups, and deployment-quality decisions.
 
 A Reference Architecture should be generic enough to guide many products, not just one.
@@ -149,7 +149,7 @@ A Reference Architecture should be generic enough to guide many products, not ju
    Product Service is not a starting-point Requirement Group object; use it here only when the Software Deployment Pattern needs to express a distinct first-party runtime-behavior component deployed on a substrate.
 7. Set `diagramTier` on every deployable object entry using one of `presentation`, `application`, `data`, or `utility`.
 8. Use `intent` only when the architect is explicitly deviating from the Reference Architecture or when no Reference Architecture exists.
-9. Add product-level `architecturalDecisions`, including availability requirement and data classification, so the Software Deployment Pattern satisfies the Software Deployment Pattern Requirement Group.
+9. Add product-level `architectureNotes`, including availability requirement and data classification, so the Software Deployment Pattern satisfies the Software Deployment Pattern Requirement Group.
 
 ## Add A Drafting Session
 
@@ -195,7 +195,7 @@ A Reference Architecture should be generic enough to guide many products, not ju
    declared.
 5. Confirm every modeled internal component and external interaction either
    satisfies a claimed or always-on requirement, or has dependency rationale in
-   `architecturalDecisions`.
+   `architectureNotes`.
 6. Run validation.
 
 Artifacts with no declared group are unclaimed inventory, not failed inventory.

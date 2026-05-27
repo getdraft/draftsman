@@ -26,7 +26,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000E-TC0E
-architecturalDecisions:
+architectureNotes:
   serviceAuthentication: Glance connects to its database schema using a dedicated
     MariaDB service account with credentials configured in glance-api.conf.
   secretsManagement: Database credentials stored in glance-api.conf managed by configuration

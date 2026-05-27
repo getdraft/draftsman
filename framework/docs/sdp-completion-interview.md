@@ -20,8 +20,8 @@ incomplete conditions:
 - `deployableObjects` entries with no `diagramTier`
 - No `connections` or `serviceConnections` declared anywhere in the SDP
 - No `externalInteractions` at any level
-- No `architecturalDecisions.dataClassification` or availability declaration
-- No `architecturalDecisions.failureDomain`
+- No `architectureNotes.dataClassification` or availability declaration
+- No `architectureNotes.failureDomain`
 - No `tierVariants` when environment tiers are declared in the workspace
 - `lifecycleStatus: draft` or `owner-interview-required` deployment targets
 
@@ -40,9 +40,9 @@ score and gap list to the user before asking any questions.
 | Network zones | NZ | `networkZones` declared, or an explicit architectural decision that no zone segmentation applies |
 | Connections | CN | At least one `serviceConnection` entry, or an explicit architectural decision that no cross-service connections exist |
 | External interactions | EI | At least one `externalInteractions` entry anywhere in the SDP |
-| Data classification | DC | `architecturalDecisions.dataClassification` present |
-| Availability | AV | `architecturalDecisions.availability` present |
-| Failure domain | FD | `architecturalDecisions.failureDomain` present |
+| Data classification | DC | `architectureNotes.dataClassification` present |
+| Availability | AV | `architectureNotes.availability` present |
+| Failure domain | FD | `architectureNotes.failureDomain` present |
 | Deployment targets resolved | DT | No `deploymentTarget` entries contain placeholder values such as `owner-interview-required` |
 | Requirement implementations | RA | `requirementImplementations` list present and non-empty for all active workspace Requirement Groups the SDP claims |
 
@@ -66,7 +66,7 @@ A score of 10/10 is the completion target. Present the score as:
 Before asking any question, do the following:
 
 1. Read the full SDP YAML, including all nested `serviceGroups`,
-   `deployableObjects`, `externalInteractions`, and `architecturalDecisions`.
+   `deployableObjects`, `externalInteractions`, and `architectureNotes`.
 2. Score all ten dimensions.
 3. List the gaps.
 4. Read `.draft/workspace.yaml` and `configurations/vocabulary/` for approved
@@ -211,7 +211,7 @@ classification values. Present the approved values:
 
 If the user's answer is not in the approved list, call it non-standard and ask
 whether to submit a vocabulary proposal or use a temporary label. Record the
-answer in `architecturalDecisions.dataClassification`.
+answer in `architectureNotes.dataClassification`.
 
 If the SDP processes personally identifiable information (PII), confirm whether
 any `data_component` objects are modeled for those data stores.
@@ -227,7 +227,7 @@ variants, infer the availability requirement from the highest-tier
 > [tier availabilityExpectation value]. Is that accurate, or does this product
 > have a different stated SLA?
 
-Record the answer in `architecturalDecisions.availability`.
+Record the answer in `architectureNotes.availability`.
 
 ### Step 4.3 — Failure domain (gap: FD)
 
@@ -239,7 +239,7 @@ Ask:
 
 Present workspace vocabulary choices if declared. If no list exists, accept a
 plain-language answer and record it in
-`architecturalDecisions.failureDomain`.
+`architectureNotes.failureDomain`.
 
 ## Phase 5 — Tier Variants (gap: DT or per-tier architectural deltas)
 

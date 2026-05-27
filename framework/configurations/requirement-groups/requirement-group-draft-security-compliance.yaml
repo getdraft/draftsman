@@ -43,13 +43,13 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-MHJM
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: authentication
   minimumSatisfactions: 1
   validAnswerTypes:
   - externalInteraction
   - technologyComponentConfiguration
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-MHJM
   externalReference: https://controls.example.com/security-compliance/04.2.2
 - id: CC.SecurityCompliance.04.4.1
@@ -68,13 +68,13 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-MHJM
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: authentication
   minimumSatisfactions: 1
   validAnswerTypes:
   - externalInteraction
   - technologyComponentConfiguration
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-MHJM
   externalReference: https://controls.example.com/security-compliance/04.4.1
 - id: CC.SecurityCompliance.04.4.1.access-control-model
@@ -93,13 +93,13 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-4JR6
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: access_control_model
   minimumSatisfactions: 1
   validAnswerTypes:
   - externalInteraction
   - technologyComponentConfiguration
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-4JR6
   externalReference: https://controls.example.com/security-compliance/04.4.1
 - id: CC.SecurityCompliance.06.1.1
@@ -118,13 +118,13 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-D04B
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: log_management
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponentConfiguration
   - externalInteraction
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-D04B
   externalReference: https://controls.example.com/security-compliance/06.1.1
 - id: CC.SecurityCompliance.06.2.1
@@ -146,14 +146,14 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-98VD
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: health_welfare_monitoring
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - technologyComponentConfiguration
   - externalInteraction
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-98VD
   externalReference: https://controls.example.com/security-compliance/06.2.1
 - id: CC.SecurityCompliance.06.3.1
@@ -175,14 +175,14 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-JW52
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: security_monitoring
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - technologyComponentConfiguration
   - externalInteraction
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-JW52
   externalReference: https://controls.example.com/security-compliance/06.3.1
 - id: CC.SecurityCompliance.03.1.1
@@ -201,13 +201,13 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-BH6E
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: patch_management
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - externalInteraction
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-BH6E
   externalReference: https://controls.example.com/security-compliance/03.1.1
 - id: CC.SecurityCompliance.03.2.1
@@ -226,13 +226,13 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-BH6E
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: patch_management
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - externalInteraction
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-BH6E
   externalReference: https://controls.example.com/security-compliance/03.2.1
 - id: CC.SecurityCompliance.10.1.1
@@ -246,13 +246,13 @@ requirements:
   naAllowed: false
   canBeSatisfiedBy:
   - mechanism: field
-    key: architecturalDecisions.reference_architecture_conformance
-  - mechanism: architecturalDecision
+    key: architectureNotes.reference_architecture_conformance
+  - mechanism: architectureNote
     key: reference_architecture_conformance
   minimumSatisfactions: 1
   validAnswerTypes:
   - field
-  - architecturalDecision
+  - architectureNote
   externalReference: https://controls.example.com/security-compliance/10.1.1
 - id: CC.SecurityCompliance.10.1.2
   externalControlId: CC.SecurityCompliance.10.1.2
@@ -265,13 +265,13 @@ requirements:
   naAllowed: false
   canBeSatisfiedBy:
   - mechanism: field
-    key: architecturalDecisions.availability_requirement
-  - mechanism: architecturalDecision
+    key: architectureNotes.availability_requirement
+  - mechanism: architectureNote
     key: availability_requirement
   minimumSatisfactions: 1
   validAnswerTypes:
   - field
-  - architecturalDecision
+  - architectureNote
   externalReference: https://controls.example.com/security-compliance/10.1.2
 - id: CC.SecurityCompliance.00.2.1
   externalControlId: CC.SecurityCompliance.00.2.1
@@ -284,13 +284,13 @@ requirements:
   naAllowed: false
   canBeSatisfiedBy:
   - mechanism: field
-    key: architecturalDecisions.data_classification
-  - mechanism: architecturalDecision
+    key: architectureNotes.data_classification
+  - mechanism: architectureNote
     key: data_classification
   minimumSatisfactions: 1
   validAnswerTypes:
   - field
-  - architecturalDecision
+  - architectureNote
   externalReference: https://controls.example.com/security-compliance/00.2.1
 - id: CC.SecurityCompliance.00.2.1.access-control-model
   externalControlId: CC.SecurityCompliance.00.2.1
@@ -303,13 +303,13 @@ requirements:
   naAllowed: false
   canBeSatisfiedBy:
   - mechanism: field
-    key: architecturalDecisions.access_control_model
-  - mechanism: architecturalDecision
+    key: architectureNotes.access_control_model
+  - mechanism: architectureNote
     key: access_control_model
   minimumSatisfactions: 1
   validAnswerTypes:
   - field
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-4JR6
   externalReference: https://controls.example.com/security-compliance/00.2.1
 - id: CC.SecurityCompliance.10.2.1
@@ -323,13 +323,13 @@ requirements:
   naAllowed: false
   canBeSatisfiedBy:
   - mechanism: field
-    key: architecturalDecisions.backup_strategy
-  - mechanism: architecturalDecision
+    key: architectureNotes.backup_strategy
+  - mechanism: architectureNote
     key: backup_strategy
   minimumSatisfactions: 1
   validAnswerTypes:
   - field
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-7T2H
   externalReference: https://controls.example.com/security-compliance/10.2.1
 - id: CC.SecurityCompliance.04.1.1
@@ -348,13 +348,13 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-4JR6
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: access_control_model
   minimumSatisfactions: 1
   validAnswerTypes:
   - externalInteraction
   - technologyComponentConfiguration
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-4JR6
   externalReference: https://controls.example.com/security-compliance/04.1.1
 - id: CC.SecurityCompliance.04.3.1
@@ -374,13 +374,13 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-DTJJ
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: secrets_management
   minimumSatisfactions: 1
   validAnswerTypes:
   - externalInteraction
   - technologyComponentConfiguration
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-DTJJ
   externalReference: https://controls.example.com/security-compliance/04.3.1
 - id: CC.SecurityCompliance.04.3.1.product_component
@@ -395,13 +395,13 @@ requirements:
   canBeSatisfiedBy:
   - mechanism: externalInteraction
   - mechanism: technologyComponentConfiguration
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: product_component
   minimumSatisfactions: 1
   validAnswerTypes:
   - externalInteraction
   - technologyComponentConfiguration
-  - architecturalDecision
+  - architectureNote
   externalReference: https://controls.example.com/security-compliance/04.3.1
 lifecycleStatus: existing-only
 tags:

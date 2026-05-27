@@ -16,7 +16,7 @@ optionalFields:
 - version
 - owner
 - tags
-- architecturalDecisions
+- architectureNotes
 - operatingSystemComponent
 - computePlatformComponent
 - internalComponents
@@ -38,7 +38,7 @@ fieldTypes:
   aliases: list
   owner: dict
   tags: list
-  architecturalDecisions: dict
+  architectureNotes: dict
   internalComponents: list
   externalInteractions: list
   deploymentConfigurations: list
@@ -124,7 +124,7 @@ requirementImplementation:
     - deploymentConfiguration
     - externalInteraction
     - internalComponent
-    - architecturalDecision
+    - architectureNote
     - field
   fieldTypes:
     criteria: dict

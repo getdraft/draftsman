@@ -25,7 +25,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000006-TC06
-architecturalDecisions:
+architectureNotes:
   serviceAuthentication: All access to Swift storage nodes is via the swift-proxy-server
     which enforces Keystone authentication. Direct access to storage nodes is restricted
     at the network level to the proxy tier only.

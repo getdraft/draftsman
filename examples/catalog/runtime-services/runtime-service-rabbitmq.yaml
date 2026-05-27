@@ -24,7 +24,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000D-TC0D
-architecturalDecisions:
+architectureNotes:
   serviceAuthentication: OpenStack services authenticate to RabbitMQ using per-service
     AMQP credentials (username and password) configured in each service's conf file.
     The RabbitMQ management interface is protected by separate admin credentials.

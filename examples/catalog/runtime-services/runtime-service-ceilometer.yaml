@@ -26,7 +26,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000009-TC09
-architecturalDecisions:
+architectureNotes:
   serviceAuthentication: All Ceilometer API requests are authenticated via Keystone
     token validation. Ceilometer service account is registered in the Keystone service
     catalog.

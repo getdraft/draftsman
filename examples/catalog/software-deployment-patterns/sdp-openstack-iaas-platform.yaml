@@ -27,7 +27,7 @@ tags:
 businessContext:
   pillar: business-pillar.infrastructure
   productFamily: Cloud Infrastructure
-architecturalDecisions:
+architectureNotes:
   availabilityTarget: "99.9%"
   availabilityRequirement: All control plane services target 99.9% availability via
     active-active deployment on a minimum 3-node controller cluster with HAProxy for
@@ -64,34 +64,34 @@ requirementImplementations:
 - requirementGroup: 01KQQ4Q027-VK45
   requirementId: additional-interactions
   status: satisfied
-  mechanism: architecturalDecision
+  mechanism: architectureNote
   key: externalDependencies
-  notes: External dependencies documented as relationship objects; see architecturalDecisions.externalDependencies.
+  notes: External dependencies documented as relationship objects; see architectureNotes.externalDependencies.
 - requirementGroup: 01KQQ4Q027-VK45
   requirementId: inter-service-connections
   status: satisfied
-  mechanism: architecturalDecision
+  mechanism: architectureNote
   key: interServiceConnections
-  notes: Cross-boundary connections documented as relationship objects; see architecturalDecisions.interServiceConnections.
+  notes: Cross-boundary connections documented as relationship objects; see architectureNotes.interServiceConnections.
 - requirementGroup: 01KQQ4Q027-T3CA
   requirementId: CC.SecurityCompliance.10.1.1
   status: satisfied
   mechanism: field
-  key: architecturalDecisions.reference_architecture_conformance
-  notes: Conformance narrative is documented in architecturalDecisions.reference_architecture_conformance.
+  key: architectureNotes.reference_architecture_conformance
+  notes: Conformance narrative is documented in architectureNotes.reference_architecture_conformance.
 - requirementGroup: 01KQQ4Q027-T3CA
   requirementId: CC.SecurityCompliance.10.1.2
   status: satisfied
   mechanism: field
-  key: architecturalDecisions.availabilityTarget
-  notes: Availability target is 99.9% per architecturalDecisions.availabilityTarget.
+  key: architectureNotes.availabilityTarget
+  notes: Availability target is 99.9% per architectureNotes.availabilityTarget.
     Active-active controller cluster with HAProxy satisfies this requirement.
 - requirementGroup: 01KQQ4Q027-T3CA
   requirementId: CC.SecurityCompliance.00.2.1
   status: satisfied
   mechanism: field
-  key: architecturalDecisions.dataClassification
-  notes: Data classification is Internal per architecturalDecisions.dataClassification.
+  key: architectureNotes.dataClassification
+  notes: Data classification is Internal per architectureNotes.dataClassification.
     The platform does not process public or confidential data directly; tenant workloads
     inherit their own classification independently of this SDP.
 networkZones:

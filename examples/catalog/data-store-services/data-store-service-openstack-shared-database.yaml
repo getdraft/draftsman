@@ -30,7 +30,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000E-TC0E
-architecturalDecisions:
+architectureNotes:
   serviceAuthentication: Each OpenStack service (Heat, Ironic, Trove, Sahara, Ceilometer)
     connects to its own dedicated schema using a per-service MariaDB service account.
     Credentials are configured in each service's conf file. Schema isolation prevents

@@ -23,14 +23,14 @@ requirements:
   - mechanism: field
     key: followsReferenceArchitecture
     example: reference-architecture.dotnet.three-tier.ha
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: noApplicablePattern
     example: No applicable Reference Architecture exists yet for this deployment shape
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - field
 - id: service-groups
   description: The Software Deployment Pattern must declare the service groups that make up the deployed product.
@@ -53,80 +53,80 @@ requirements:
   description: Every service group must describe its deployment boundary or execution context at the level needed to understand ownership, isolation, and operational responsibility.
   rationale: Deployment reality is not complete until the architect can explain the boundary that matters for operating and governing each service group; that boundary may be an account, cluster, data center, customer site, tenant/environment boundary, SaaS context, or another architecture-relevant execution context.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: deploymentTargets
     example: Production services run in the Team_Accelify_Prod AWS account; shared services run in the Shared Services platform boundary.
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
 - id: availability-requirement
   description: The product availability tier must be documented.
   rationale: Availability requirements justify deployment posture and inform operational support models.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: availabilityRequirement
     example: 99.9%, business-hours, 24x7
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
 - id: additional-interactions
   description: Any external systems this product interacts with beyond what its component deployable objects declare must be documented via relationship objects — or explicitly stated as none.
   rationale: Product-specific integrations are invisible to the architecture without explicit declaration.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: externalDependencies
     example: External dependencies are documented as relationship objects in catalog/relationships/
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: noAdditionalInteractions
     example: No additional interactions beyond component deployable objects
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
 - id: data-classification
   description: The type of data this product stores or processes must be documented.
   rationale: Data classification drives security posture requirements and compliance obligations.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: dataClassification
     example: PII, student records, internal-only, public
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
 - id: failure-domain
   description: The Software Deployment Pattern must document the deployment-level failure domain of the product.
   rationale: Product-level impact boundaries cannot be inferred from component selections alone.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: failureDomain
     example: Shared services are cross-sub-environment dependencies; sub-environment failures are tenant-bounded
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
 - id: pattern-deviations
   description: Any intentional deviation from the selected Reference Architecture must be documented, or the Software Deployment Pattern must explicitly state that no deviations exist.
   rationale: The Software Deployment Pattern is where pattern intent becomes product deployment reality, so departures from the Reference Architecture must be visible.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: patternDeviations
     example: Shared ingestion remains centralized rather than per-sub-environment
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: noPatternDeviations
     example: No intentional deviations from the selected Reference Architecture
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
 - id: inter-service-connections
   description: >
     Primary inter-service communication paths that cross a tier boundary
@@ -139,11 +139,11 @@ requirements:
     explicit connection records the architecture cannot be analyzed for data-flow
     compliance, blast-radius, or network policy conformance.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: interServiceConnections
     example: >
       Cross-boundary connections documented as relationship objects in catalog/relationships/
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: noCrossBoundaryConnections
     example: All services in this pattern communicate only within the same tier and zone
   minimumSatisfactions: 1
@@ -152,7 +152,7 @@ requirements:
   naRationale: Acceptable when the deployment has only a single tier and no network zones.
   validAnswerTypes:
   - field
-  - architecturalDecision
+  - architectureNote
   interviewHint: >
     Use the propose-and-confirm pattern. Ask one yes/no question per tier crossing
     (presentation→application, application→data, application→utility). For each

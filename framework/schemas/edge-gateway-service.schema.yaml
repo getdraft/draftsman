@@ -31,7 +31,7 @@ optionalFields:
 - patchingOwner
 - authenticationModel
 - vendorGovernance
-- architecturalDecisions
+- architectureNotes
 - notes
 - requirementImplementations
 conditionalRequired:
@@ -85,7 +85,7 @@ fieldTypes:
   deploymentConfigurations: list
   capabilities: list
   configurations: list
-  architecturalDecisions: dict
+  architectureNotes: dict
   vendorGovernance: dict
   requirementGroups: list
   requirementImplementations: list
@@ -180,7 +180,7 @@ requirementImplementation:
     - deploymentConfiguration
     - externalInteraction
     - internalComponent
-    - architecturalDecision
+    - architectureNote
     - field
   fieldTypes:
     criteria: dict

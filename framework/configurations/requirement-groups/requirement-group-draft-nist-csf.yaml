@@ -43,13 +43,13 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-MHJM
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: authentication
   minimumSatisfactions: 1
   validAnswerTypes:
   - externalInteraction
   - technologyComponentConfiguration
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-MHJM
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: DE.CM
@@ -71,14 +71,14 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-D04B
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: log_management
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - technologyComponentConfiguration
   - externalInteraction
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-D04B
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: DE.CM.health-welfare-monitoring
@@ -100,14 +100,14 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-98VD
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: health_welfare_monitoring
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - technologyComponentConfiguration
   - externalInteraction
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-98VD
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: DE.CM.security-monitoring
@@ -129,14 +129,14 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-JW52
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: security_monitoring
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - technologyComponentConfiguration
   - externalInteraction
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-JW52
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: PR.PS
@@ -155,13 +155,13 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-BH6E
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: patch_management
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - externalInteraction
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-BH6E
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: PR.AA.access-control-model
@@ -180,13 +180,13 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-4JR6
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: access_control_model
   minimumSatisfactions: 1
   validAnswerTypes:
   - externalInteraction
   - technologyComponentConfiguration
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-4JR6
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: PR.DS
@@ -200,17 +200,17 @@ requirements:
   naAllowed: false
   canBeSatisfiedBy:
   - mechanism: field
-    key: architecturalDecisions.encryption_at_rest
+    key: architectureNotes.encryption_at_rest
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-H3B5
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: encryption_at_rest
   minimumSatisfactions: 1
   validAnswerTypes:
   - field
   - technologyComponentConfiguration
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-H3B5
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: RC.RP
@@ -224,13 +224,13 @@ requirements:
   naAllowed: false
   canBeSatisfiedBy:
   - mechanism: field
-    key: architecturalDecisions.backup_strategy
-  - mechanism: architecturalDecision
+    key: architectureNotes.backup_strategy
+  - mechanism: architectureNote
     key: backup_strategy
   minimumSatisfactions: 1
   validAnswerTypes:
   - field
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-7T2H
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: PR.AA.secrets-management
@@ -250,13 +250,13 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-DTJJ
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: secrets_management
   minimumSatisfactions: 1
   validAnswerTypes:
   - externalInteraction
   - technologyComponentConfiguration
-  - architecturalDecision
+  - architectureNote
   relatedCapability: 01KQQ4Q026-DTJJ
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: PR.AA.product_component
@@ -271,13 +271,13 @@ requirements:
   canBeSatisfiedBy:
   - mechanism: externalInteraction
   - mechanism: technologyComponentConfiguration
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: product_component
   minimumSatisfactions: 1
   validAnswerTypes:
   - externalInteraction
   - technologyComponentConfiguration
-  - architecturalDecision
+  - architectureNote
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: PR.DS.data-classification
   externalControlId: PR.DS
@@ -290,13 +290,13 @@ requirements:
   naAllowed: false
   canBeSatisfiedBy:
   - mechanism: field
-    key: architecturalDecisions.data_classification
-  - mechanism: architecturalDecision
+    key: architectureNotes.data_classification
+  - mechanism: architectureNote
     key: data_classification
   minimumSatisfactions: 1
   validAnswerTypes:
   - field
-  - architecturalDecision
+  - architectureNote
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: RC.RP.availability-requirement
   externalControlId: RC.RP
@@ -309,13 +309,13 @@ requirements:
   naAllowed: false
   canBeSatisfiedBy:
   - mechanism: field
-    key: architecturalDecisions.availability_requirement
-  - mechanism: architecturalDecision
+    key: architectureNotes.availability_requirement
+  - mechanism: architectureNote
     key: availability_requirement
   minimumSatisfactions: 1
   validAnswerTypes:
   - field
-  - architecturalDecision
+  - architectureNote
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 lifecycleStatus: preferred
 tags:

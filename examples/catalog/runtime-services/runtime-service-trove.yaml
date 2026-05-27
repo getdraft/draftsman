@@ -24,7 +24,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000B-TC0B
-architecturalDecisions:
+architectureNotes:
   serviceAuthentication: All Trove API requests are authenticated via Keystone token
     validation. Trove service account is registered in the Keystone service catalog.
     Guest agents running in database instances authenticate back to the Trove conductor

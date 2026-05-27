@@ -285,8 +285,8 @@ a valid `requirementImplementations` entry points at that mechanism.
 If the dependency is real but does not directly satisfy a requirement, ask why
 it belongs on the object and record the answer as an architectural decision:
 
-- `architecturalDecisions.internalComponentRationales` for local components
-- `architecturalDecisions.dependencyRationales` when a shared dependency
+- `architectureNotes.internalComponentRationales` for local components
+- `architectureNotes.dependencyRationales` when a shared dependency
   rationale is clearer
 
 Do not treat adjacent capabilities as equivalent. For example, an APM agent or
@@ -446,7 +446,7 @@ edge/gateway products, only the `preferred` one is proposed.
 When an SDP legitimately cannot satisfy an RA constraint (internal-only
 deployment, operator-accepted deviation, etc.) the author should:
 
-1. Document the exception in `architecturalDecisions.reference_architecture_conformance`.
+1. Document the exception in `architectureNotes.reference_architecture_conformance`.
 2. Reference a Decision Record explaining the rationale.
 3. Note that the validator will still report a failure unless the constraint is
    structurally satisfied — the exception is architectural documentation, not a
@@ -625,11 +625,11 @@ overall intake, but it is not sufficient provenance for every generated object.
 For repository discovery:
 
 - Product Services should record their direct repository evidence in
-  `architecturalDecisions.sourceRepository`, `repositoryName`,
+  `architectureNotes.sourceRepository`, `repositoryName`,
   `repositoryPrimaryLanguage`, `observedRuntimeSignals`, and
   `observedManifestPaths` when those facts are available.
 - Software Deployment Patterns generated from repositories should aggregate the
-  contributing repositories in `architecturalDecisions.sourceRepositories`.
+  contributing repositories in `architectureNotes.sourceRepositories`.
   Each entry should include the Product Service ref, repository name, repository
   URL, primary language, and runtime signals.
 - If one Software Deployment Pattern groups multiple repositories, record every
@@ -778,7 +778,7 @@ output to the user.
 | `Replace malformed uid '...' with generated value` | uid exists but does not match the Crockford Base32 pattern | Run `repair_uids.py` with the suggested generated value |
 | `RA constraint '...' violated` | An SDP following an RA is missing a required object type in a service group | Add a deployable object entry of the required `objectType` and `diagramTier` to the appropriate service group, then resolve the specific catalog object using the Capability Lookup procedure |
 | `Satisfy ... / ...` | An active workspace Requirement Group requires evidence not yet present | Add a `requirementImplementations` entry with `status: satisfied` citing the applicable mechanism, or mark it `not-applicable` if the requirement does not apply |
-| `Set catalogStatus: deprecated` | A Technology Component in the object's graph has passed its vendor end-of-support date | Set `catalogStatus: deprecated` and add `architecturalDecisions.lifecycleRationale` explaining the transition plan |
+| `Set catalogStatus: deprecated` | A Technology Component in the object's graph has passed its vendor end-of-support date | Set `catalogStatus: deprecated` and add `architectureNotes.lifecycleRationale` explaining the transition plan |
 | `deliveryModel must be one of` | An invalid delivery model value was used | Replace with one of `self-managed`, `saas`, `paas`, `appliance`, `serverless` |
 | `classification must be one of` (technology_component) | Invalid classification field | Replace with one of `software`, `agent`, `operating-system`, `compute-platform` |
 | `Remove deprecated field 'externalInteractions'` | The object has externalInteractions which is deprecated | Convert each entry to a relationship object using `migrate_interactions.py` or manually |
@@ -786,7 +786,7 @@ output to the user.
 | `relationship must have either target or externalTarget` | A relationship object has neither a catalog target nor an externalTarget name | Set `target` to a catalog UID or `externalTarget` to the external system name |
 | `relationship source references unknown object` | Relationship source UID not found in catalog | Fix the source UID or add the missing object |
 | `relationship target references unknown object` | Relationship target UID not found in catalog | Fix the target UID or add the missing object |
-| `internalComponentRationales['...']` + `does not directly satisfy any applicable requirement` | An internal component is present but does not satisfy a requirement and no rationale explains why | Add `architecturalDecisions.internalComponentRationales.<uid>` explaining the reason |
+| `internalComponentRationales['...']` + `does not directly satisfy any applicable requirement` | An internal component is present but does not satisfy a requirement and no rationale explains why | Add `architectureNotes.internalComponentRationales.<uid>` explaining the reason |
 
 ## Resuming a Drafting Session
 

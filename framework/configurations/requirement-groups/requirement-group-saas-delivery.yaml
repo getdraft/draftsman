@@ -97,12 +97,12 @@ requirements:
   description: What logging, audit, or event visibility does the consumer have into this service?
   rationale: Blackbox services must still define what operational and security evidence is visible to the adopter.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: auditVisibility
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   minimumSatisfactions: 1
 - id: health-status-visibility
   description: How can the consumer observe the health, status, or incident state of this service?
@@ -111,24 +111,24 @@ requirements:
   - mechanism: field
     key: incidentNotificationProcess
     example: 'incidentNotificationProcess: Vendor status page plus email incident notifications'
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: healthStatusVisibility
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - field
   minimumSatisfactions: 1
 - id: failure-domain
   description: What is the failure domain of this SaaS dependency?
   rationale: Shared vendor dependencies can create large failure domains and that scope must be explicit.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: failureDomain
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   minimumSatisfactions: 1
 - id: vendor-sla
   description: What is the vendor's SLA commitment?

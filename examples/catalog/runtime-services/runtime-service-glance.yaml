@@ -24,7 +24,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000003-TC03
-architecturalDecisions:
+architectureNotes:
   serviceAuthentication: All Glance API requests are authenticated via Keystone token
     validation. Glance service account is registered in the Keystone service catalog.
   secretsManagement: Database credentials and Swift access credentials are stored

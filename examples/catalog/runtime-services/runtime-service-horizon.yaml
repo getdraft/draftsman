@@ -25,7 +25,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000007-TC07
-architecturalDecisions:
+architectureNotes:
   serviceAuthentication: Horizon authenticates users via Keystone credential submission.
     The dashboard itself does not issue tokens; it passes user credentials to Keystone
     and stores the returned scoped token in the user's browser session.

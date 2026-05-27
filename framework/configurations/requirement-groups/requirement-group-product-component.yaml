@@ -47,7 +47,7 @@ requirements:
   - mechanism: field
     key: runtimeRequirement
     example: Node 20, Python 3.12, Java 17, .NET 8, or Go 1.22
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: runtimeRequirement
     example: A documented decision when the runtime requirement cannot be expressed as a single version string.
   minimumSatisfactions: 1
@@ -55,7 +55,7 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - field
-  - architecturalDecision
+  - architectureNote
 - id: classification
   description: The ProductComponent must declare its component classification.
   rationale: Classification drives how the component is composed into a RuntimeService and what operational patterns apply to it.

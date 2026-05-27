@@ -42,13 +42,13 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-MHJM
     example: A named appliance configuration defines the authentication model.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: authenticationAccessModel
     example: Administrator access is federated through SAML SSO; service access uses appliance-managed mTLS.
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - externalInteraction
   - technologyComponentConfiguration
   minimumSatisfactions: 1
@@ -64,13 +64,13 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-D04B
     example: A named appliance configuration enables audit export or log forwarding.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: logAuditVisibility
     example: Administrative actions are exported to CloudTrail and retained in the enterprise SIEM.
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - externalInteraction
   - technologyComponentConfiguration
   minimumSatisfactions: 1
@@ -86,13 +86,13 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-98VD
     example: A named appliance configuration enables health checks, status endpoints, or metrics export.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: healthStatusVisibility
     example: Health is observed through managed service status, target health checks, and alert rules.
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - externalInteraction
   - technologyComponentConfiguration
   minimumSatisfactions: 1
@@ -111,13 +111,13 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-BH6E
     example: A named appliance configuration defines update windows or managed update policy.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: patchUpdateModel
     example: Firmware and hidden host updates are vendor-managed; the adopter controls only maintenance windows.
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - externalInteraction
   - field
   - technologyComponentConfiguration
@@ -126,13 +126,13 @@ requirements:
   description: "What is the resilience model of this appliance \u2014 is it inherently highly available, single instance, or clustered?\n"
   rationale: A blackbox appliance still needs an explicit answer for the resilience posture the adopter is depending on.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: resilienceModel
     example: Inherently highly available within the managed service control plane
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   minimumSatisfactions: 1
 - id: network-placement
   description: Where does this appliance sit in the network topology?
@@ -164,25 +164,25 @@ requirements:
     '
   rationale: The object should capture what the adopter can actually configure rather than pretending the hidden host is visible.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: configurableSurface
     example: Listener rules, target groups, and TLS certificates are customer-managed
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   minimumSatisfactions: 1
 - id: failure-domain
   description: What failure domain does this appliance introduce?
   rationale: Blackbox shared components can create broad impact boundaries that must be explicit.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: failureDomain
     example: Shared dependency for all traffic entering the protected application path
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   minimumSatisfactions: 1
 - id: compliance-posture
   description: What compliance certifications does this appliance carry?

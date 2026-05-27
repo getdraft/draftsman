@@ -21,7 +21,7 @@ optionalFields:
 - interfaces
 - networkBindings
 - environmentConfiguration
-- architecturalDecisions
+- architectureNotes
 - notes
 - requirementImplementations
 enumFields:
@@ -50,7 +50,7 @@ fieldTypes:
   interfaces: list
   networkBindings: list
   environmentConfiguration: list
-  architecturalDecisions: dict
+  architectureNotes: dict
   requirementGroups: list
   requirementImplementations: list
 collectionSchemas:
@@ -151,7 +151,7 @@ requirementImplementation:
     - not-applicable
     - not-compliant
     mechanism:
-    - architecturalDecision
+    - architectureNote
     - field
   fieldTypes:
     criteria: dict

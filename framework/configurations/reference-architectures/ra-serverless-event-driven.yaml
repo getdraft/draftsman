@@ -21,10 +21,10 @@ applicableDefinitionChecklist:
   with no affinity to a running instance.
 - All durable state must be stored in external data store services, not in function
   memory or ephemeral local storage.
-- Cold start latency characteristics must be documented in architecturalDecisions
+- Cold start latency characteristics must be documented in architectureNotes
   for any user-facing function path.
 - Event sources, routing rules, and trigger conditions must be documented in service
-  group connections or architecturalDecisions.
+  group connections or architectureNotes.
 - Functions must not carry coordination state between invocations. Cross-invocation
   coordination must use an external data store or queue.
 serviceGroups:
@@ -51,7 +51,7 @@ serviceGroups:
       database, object store, cache, or queue depending on the access pattern. Functions
       must treat this as the sole source of durable state. DataComponents are deployed
       onto this service.
-architecturalDecisions:
+architectureNotes:
   patternRationale: Serverless patterns eliminate persistent compute management at
     the cost of cold start latency and per-invocation billing. They are well-suited
     for event-driven workloads, background jobs, and APIs with irregular traffic patterns.

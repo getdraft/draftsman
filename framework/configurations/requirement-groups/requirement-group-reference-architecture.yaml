@@ -23,7 +23,7 @@ requirements:
   - mechanism: field
     key: patternType
     example: multi-tier
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: patternType
     example: multi-tier
   minimumSatisfactions: 1
@@ -31,7 +31,7 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - field
-  - architecturalDecision
+  - architectureNote
 - id: service-groups
   description: How are the required services clustered into service groups and diagram tiers to realize this deployment pattern?
   rationale: The Reference Architecture should guide downstream Software Deployment Patterns and application teams with the same service-group and tier structure they will use in a real deployment.
@@ -54,17 +54,17 @@ requirements:
   rationale: A Reference Architecture exists to guide application teams toward supported deployment choices that meet availability, recoverability, security, and similar non-functional requirements.
   canBeSatisfiedBy:
   - mechanism: field
-    key: architecturalDecisions
+    key: architectureNotes
     example: all tiers HA, autoscaling on web tier, AlwaysOn on data tier
-  - mechanism: architecturalDecision
-    key: architecturalDecisions
+  - mechanism: architectureNote
+    key: architectureNotes
     example: all tiers HA, autoscaling on web tier, AlwaysOn on data tier
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
   - field
-  - architecturalDecision
+  - architectureNote
 lifecycleStatus: preferred
 tags:
 - reference-architecture

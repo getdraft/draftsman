@@ -103,7 +103,7 @@ AI agents should treat DRAFT as a deterministic authoring system:
 - Record source provenance on each generated or materially updated artifact,
   not only in a shared Drafting Session. For repository discovery, Software
   Deployment Patterns should aggregate contributing repositories in
-  `architecturalDecisions.sourceRepositories`.
+  `architectureNotes.sourceRepositories`.
 - For Software Deployment Patterns, resolve workspace business taxonomy from
   `.draft/workspace.yaml` before setting `businessContext.pillar`; do not
   invent company pillar values in tags or architecture domains.

@@ -34,13 +34,13 @@ requirements:
   description: "What is the resilience model of this service \u2014 is it inherently highly available within the region, or does it require multi-region config?\n"
   rationale: Adopters must know the managed availability baseline.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: resilienceModel
     example: Inherently multi-AZ within the AWS region.
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   minimumSatisfactions: 1
 - id: authentication-model
   description: How is access to this service authenticated?
@@ -58,25 +58,25 @@ requirements:
   description: What configuration surface does the organization control?
   rationale: Captures the customer-managed portion of the managed platform.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: configurableSurface
     example: Bucket policies, encryption settings, and lifecycle rules.
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   minimumSatisfactions: 1
 - id: failure-domain
   description: What is the failure domain of this platform dependency?
   rationale: Required to understand the blast radius of a vendor-managed outage.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: failureDomain
     example: Scoped to the AWS region and account.
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   minimumSatisfactions: 1
 lifecycleStatus: preferred
 tags:

@@ -58,7 +58,7 @@ VALID_REQUIREMENT_ANSWER_TYPES = {
     "deploymentConfiguration",
     "externalInteraction",
     "internalComponent",
-    "architecturalDecision",
+    "architectureNote",
     "field",
 }
 VALID_REQUIREMENT_MODES = {"mandatory", "conditional"}
@@ -919,8 +919,8 @@ def mechanism_description(mechanism: dict[str, Any]) -> str:
     if mechanism_type == "deploymentConfiguration":
         quality = mechanism.get("criteria", {}).get("quality", "unknown")
         return f"deploymentConfiguration(quality={quality})"
-    if mechanism_type == "architecturalDecision":
-        return f"architecturalDecision({mechanism.get('key', 'unknown')})"
+    if mechanism_type == "architectureNote":
+        return f"architectureNote({mechanism.get('key', 'unknown')})"
     return str(mechanism_type)
 
 
@@ -1153,9 +1153,9 @@ def mechanism_satisfied(obj: dict[str, Any], mechanism: dict[str, Any], catalog_
                 if isinstance(caps, list) and capability in caps:
                     return True
         return False
-    if mechanism_type == "architecturalDecision":
+    if mechanism_type == "architectureNote":
         key = mechanism.get("key", "")
-        decisions = obj.get("architecturalDecisions", {})
+        decisions = obj.get("architectureNotes", {})
         if isinstance(decisions, dict):
             value = get_nested_value(decisions, key)
             if is_non_empty(value):
@@ -1440,7 +1440,7 @@ def rationale_bucket_matches(value: Any, candidates: list[str]) -> bool:
 
 
 def dependency_rationale_present(obj: dict[str, Any], kind: str, entry: dict[str, Any], context: str) -> bool:
-    decisions = obj.get("architecturalDecisions", {})
+    decisions = obj.get("architectureNotes", {})
     if not isinstance(decisions, dict):
         return False
     candidates = entry_rationale_candidates(entry, context, kind)
@@ -1455,7 +1455,7 @@ def dependency_rationale_present(obj: dict[str, Any], kind: str, entry: dict[str
 def dependency_rationale_guidance(kind: str, entry: dict[str, Any], context: str) -> str:
     bucket = "externalInteractionRationales" if kind == "external" else "internalComponentRationales"
     key = entry.get("name") or entry.get("ref") or entry.get("enabledBy") or entry.get("role") or context
-    return f"architecturalDecisions.{bucket}[{key!r}]"
+    return f"architectureNotes.{bucket}[{key!r}]"
 
 
 def validate_unrequired_dependency_rationales(
@@ -1758,13 +1758,13 @@ def validate_workspace_vocabulary_references(
 
         if obj.get("type") not in deployable_or_pattern_types:
             continue
-        decisions = obj.get("architecturalDecisions") or {}
+        decisions = obj.get("architectureNotes") or {}
         if not isinstance(decisions, dict):
             continue
         validate_vocabulary_value(
             obj,
             path,
-            "architecturalDecisions.dataClassification",
+            "architectureNotes.dataClassification",
             decisions.get("dataClassification"),
             data_vocabulary,
             failures,
@@ -1773,7 +1773,7 @@ def validate_workspace_vocabulary_references(
         validate_vocabulary_value(
             obj,
             path,
-            "architecturalDecisions.availabilityRequirement",
+            "architectureNotes.availabilityRequirement",
             decisions.get("availabilityRequirement"),
             availability_vocabulary,
             failures,
@@ -1782,7 +1782,7 @@ def validate_workspace_vocabulary_references(
         validate_vocabulary_value(
             obj,
             path,
-            "architecturalDecisions.failureDomain",
+            "architectureNotes.failureDomain",
             decisions.get("failureDomain"),
             failure_vocabulary,
             failures,
@@ -1832,13 +1832,13 @@ def validate_architectural_decisions(
     obj: dict[str, Any], path: Path, failures: list[str], warnings: list[str] | None = None
 ) -> None:
     decision_sets: list[dict[str, Any]] = []
-    direct_decisions = obj.get("architecturalDecisions", {})
+    direct_decisions = obj.get("architectureNotes", {})
     if isinstance(direct_decisions, dict) and direct_decisions:
         decision_sets.append(direct_decisions)
 
     if warnings is not None and isinstance(direct_decisions, dict) and direct_decisions and obj.get("catalogStatus") == "complete":
         warnings.append(
-            f"{path}: [{object_label(obj)}] architecturalDecisions are inline — promote each decision to a "
+            f"{path}: [{object_label(obj)}] architectureNotes are inline — promote each decision to a "
             "decision_record object and reference it via decisionRecords for complete catalog objects"
         )
 
@@ -1847,13 +1847,13 @@ def validate_architectural_decisions(
             if key in decisions and decisions[key] not in allowed_values:
                 allowed_text = ", ".join(sorted(allowed_values))
                 failures.append(
-                    f'{path}: [{object_label(obj)}] architecturalDecisions.{key} must be one of: '
+                    f'{path}: [{object_label(obj)}] architectureNotes.{key} must be one of: '
                     f'{allowed_text} — got "{decisions[key]}"'
                 )
 
         if "minNodes" in decisions and not isinstance(decisions["minNodes"], int):
             failures.append(
-                f'{path}: [{object_label(obj)}] architecturalDecisions.minNodes must be an integer — '
+                f'{path}: [{object_label(obj)}] architectureNotes.minNodes must be an integer — '
                 f'got "{decisions["minNodes"]}"'
             )
 
@@ -1989,7 +1989,7 @@ def validate_component(
 
 
 def agent_interaction_exception(obj: dict[str, Any], abb_id: str) -> bool:
-    decisions = obj.get("architecturalDecisions", {})
+    decisions = obj.get("architectureNotes", {})
     if not isinstance(decisions, dict):
         return False
     exceptions = decisions.get("agentInteractionExceptions")
@@ -2058,7 +2058,7 @@ def validate_classified_component_refs(
         if target.get("classification") == "agent":
             if not has_enabled_external_interaction(obj, ref) and not agent_interaction_exception(obj, ref):
                 failures.append(
-                    f"{path}: agent Technology Component '{ref}' requires an externalInteraction enabledBy that Technology Component or architecturalDecisions.agentInteractionExceptions"
+                    f"{path}: agent Technology Component '{ref}' requires an externalInteraction enabledBy that Technology Component or architectureNotes.agentInteractionExceptions"
                 )
 
 
@@ -2281,14 +2281,14 @@ def validate_ra(
             for ref, mainstream_end, support_end in extended_support_technologies
         )
         failures.append(
-            f"{path}: Set lifecycleStatus: deprecated by default, or existing-only with architecturalDecisions.lifecycleRationale, on Reference Architecture '{object_id}' because it includes Technology Components in extended support: {details}"
+            f"{path}: Set lifecycleStatus: deprecated by default, or existing-only with architectureNotes.lifecycleRationale, on Reference Architecture '{object_id}' because it includes Technology Components in extended support: {details}"
         )
     if extended_support_technologies and obj.get("lifecycleStatus") == "existing-only":
-        decisions = obj.get("architecturalDecisions") or {}
+        decisions = obj.get("architectureNotes") or {}
         if not isinstance(decisions, dict) or not is_non_empty(decisions.get("lifecycleRationale")):
             details = ", ".join(f"{ref} mainstreamSupportEnd {mainstream_end.isoformat()}" for ref, mainstream_end, _ in extended_support_technologies)
             failures.append(
-                f"{path}: Add architecturalDecisions.lifecycleRationale to explain why Reference Architecture '{object_id}' remains existing-only while these Technology Components are in extended support: {details}"
+                f"{path}: Add architectureNotes.lifecycleRationale to explain why Reference Architecture '{object_id}' remains existing-only while these Technology Components are in extended support: {details}"
             )
 
     if not is_non_empty(obj.get("patternType")):
@@ -2324,11 +2324,11 @@ def validate_ra(
                 warnings,
             )
 
-    if not is_non_empty(obj.get("architecturalDecisions")):
+    if not is_non_empty(obj.get("architectureNotes")):
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add architecturalDecisions to satisfy requirement-group.reference-architecture requirement 'deployment-qualities'",
+            f"[{object_id}] Add architectureNotes to satisfy requirement-group.reference-architecture requirement 'deployment-qualities'",
             failures,
             warnings,
         )
@@ -2417,11 +2417,11 @@ def validate_software_deployment_pattern(
 
     object_id = object_label(obj)
     ra_uid = obj.get("followsReferenceArchitecture")
-    if not is_non_empty(ra_uid) and not is_non_empty(obj.get("architecturalDecisions", {}).get("noApplicablePattern") if isinstance(obj.get("architecturalDecisions"), dict) else None):
+    if not is_non_empty(ra_uid) and not is_non_empty(obj.get("architectureNotes", {}).get("noApplicablePattern") if isinstance(obj.get("architectureNotes"), dict) else None):
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add followsReferenceArchitecture or architecturalDecisions.noApplicablePattern to satisfy requirement-group.software-deployment-pattern requirement 'reference-architecture-conformance'",
+            f"[{object_id}] Add followsReferenceArchitecture or architectureNotes.noApplicablePattern to satisfy requirement-group.software-deployment-pattern requirement 'reference-architecture-conformance'",
             failures,
             warnings,
         )
@@ -2444,7 +2444,7 @@ def validate_software_deployment_pattern(
             warnings,
         )
 
-    architectural_decisions = obj.get("architecturalDecisions", {})
+    architectural_decisions = obj.get("architectureNotes", {})
     if not isinstance(architectural_decisions, dict):
         architectural_decisions = {}
 
@@ -2452,7 +2452,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Describe deployment boundary or execution context in architecturalDecisions.deploymentTargets to satisfy DRAFT Software Deployment Pattern / deployment-targets",
+            f"[{object_id}] Describe deployment boundary or execution context in architectureNotes.deploymentTargets to satisfy DRAFT Software Deployment Pattern / deployment-targets",
             failures,
             warnings,
         )
@@ -2461,7 +2461,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add architecturalDecisions.availabilityRequirement to satisfy requirement-group.software-deployment-pattern requirement 'availability-requirement'",
+            f"[{object_id}] Add architectureNotes.availabilityRequirement to satisfy requirement-group.software-deployment-pattern requirement 'availability-requirement'",
             failures,
             warnings,
         )
@@ -2480,7 +2480,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add architecturalDecisions.externalDependencies (documenting external dependencies as relationship objects) or architecturalDecisions.noAdditionalInteractions to satisfy requirement-group.software-deployment-pattern requirement 'additional-interactions'",
+            f"[{object_id}] Add architectureNotes.externalDependencies (documenting external dependencies as relationship objects) or architectureNotes.noAdditionalInteractions to satisfy requirement-group.software-deployment-pattern requirement 'additional-interactions'",
             failures,
             warnings,
         )
@@ -2489,7 +2489,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add architecturalDecisions.dataClassification to satisfy requirement-group.software-deployment-pattern requirement 'data-classification'",
+            f"[{object_id}] Add architectureNotes.dataClassification to satisfy requirement-group.software-deployment-pattern requirement 'data-classification'",
             failures,
             warnings,
         )
@@ -2498,7 +2498,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add architecturalDecisions.failureDomain to satisfy requirement-group.software-deployment-pattern requirement 'failure-domain'",
+            f"[{object_id}] Add architectureNotes.failureDomain to satisfy requirement-group.software-deployment-pattern requirement 'failure-domain'",
             failures,
             warnings,
         )
@@ -2507,7 +2507,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add architecturalDecisions.patternDeviations or noPatternDeviations to satisfy requirement-group.software-deployment-pattern requirement 'pattern-deviations'",
+            f"[{object_id}] Add architectureNotes.patternDeviations or noPatternDeviations to satisfy requirement-group.software-deployment-pattern requirement 'pattern-deviations'",
             failures,
             warnings,
         )
@@ -2755,9 +2755,9 @@ def implementation_resolves(
     if mechanism == "field":
         key = implementation.get("key")
         return is_non_empty(key) and is_non_empty(get_nested_value(obj, str(key)))
-    if mechanism == "architecturalDecision":
+    if mechanism == "architectureNote":
         key = implementation.get("key")
-        decisions = obj.get("architecturalDecisions", {})
+        decisions = obj.get("architectureNotes", {})
         return is_non_empty(key) and isinstance(decisions, dict) and is_non_empty(get_nested_value(decisions, str(key)))
     if mechanism == "externalInteraction":
         return find_external_interaction(obj, implementation)

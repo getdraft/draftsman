@@ -51,7 +51,7 @@ environmentConfiguration:
   description: URL for the enterprise SAML identity provider metadata document.
   required: true
   sensitive: false
-architecturalDecisions:
+architectureNotes:
   product_component: Application secrets (OPS_CONSOLE_SECRET_KEY, SAML credentials)
     are injected at deploy time from the platform secret store. No secrets are present
     in source code or container images.
@@ -59,7 +59,7 @@ requirementImplementations:
 - requirementGroup: 01KQQ4Q027-T3CA
   requirementId: CC.SecurityCompliance.04.3.1.product_component
   status: satisfied
-  mechanism: architecturalDecision
+  mechanism: architectureNote
   key: product_component
   notes: Secrets injection via platform secret store at deploy time. Documented in
-    architecturalDecisions.product_component.
+    architectureNotes.product_component.

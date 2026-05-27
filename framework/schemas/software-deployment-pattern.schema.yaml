@@ -16,7 +16,7 @@ optionalFields:
 - tags
 - businessContext
 - followsReferenceArchitecture
-- architecturalDecisions
+- architectureNotes
 - scalingUnits
 - networkZones
 - serviceGroups
@@ -40,8 +40,8 @@ fieldTypes:
   owner: dict
   tags: list
   businessContext: dict
-  architecturalDecisions: dict
-architecturalDecisions:
+  architectureNotes: dict
+architectureNotes:
   optionalFields:
   - availabilityTarget
   - availabilityRequirement
@@ -277,7 +277,7 @@ requirementImplementation:
     - deploymentConfiguration
     - externalInteraction
     - internalComponent
-    - architecturalDecision
+    - architectureNote
     - field
   fieldTypes:
     criteria: dict

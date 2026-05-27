@@ -26,7 +26,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000C-TC0C
-architecturalDecisions:
+architectureNotes:
   serviceAuthentication: All Sahara API requests are authenticated via Keystone token
     validation. Sahara service account is registered in the Keystone service catalog.
     Sahara uses the requesting user's scoped token to provision Nova instances on

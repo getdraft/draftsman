@@ -92,7 +92,7 @@ workspace disposition is enabled.
 `internalComponents` and `externalInteractions` are also evidence only when
 they map to an applicable requirement. If one of those dependencies is modeled
 for a reason that does not directly satisfy an applicable requirement, the
-object must document that reason in `architecturalDecisions` using
+object must document that reason in `architectureNotes` using
 `externalInteractionRationales`, `internalComponentRationales`, or
 `dependencyRationales`.
 

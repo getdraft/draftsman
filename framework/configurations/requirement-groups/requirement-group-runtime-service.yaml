@@ -59,14 +59,14 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-MHJM
     example: A named configuration on the function Technology Component that defines the service authentication model.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: serviceAuthentication
     example: A documented service authentication pattern when the implementation is not expressed directly.
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - externalInteraction
   - internalComponent
   - technologyComponentConfiguration
@@ -86,7 +86,7 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-DTJJ
     example: A function Technology Component configuration that defines how service secrets are sourced.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: secretsManagement
     example: A documented statement of the service-level secrets pattern.
   minimumSatisfactions: 1
@@ -94,7 +94,7 @@ requirements:
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - externalInteraction
   - internalComponent
   - technologyComponentConfiguration
@@ -114,14 +114,14 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-D04B
     example: A function Technology Component configuration that defines service log collection and export.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: serviceLogging
     example: A documented service logging pattern when modeled indirectly.
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - externalInteraction
   - internalComponent
   - technologyComponentConfiguration
@@ -141,7 +141,7 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-98VD
     example: A function Technology Component configuration that enables service-level health telemetry.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: healthWelfareMonitoring
     example: A documented monitoring and telemetry approach for the service.
   minimumSatisfactions: 1
@@ -149,7 +149,7 @@ requirements:
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - externalInteraction
   - internalComponent
   - technologyComponentConfiguration
@@ -161,14 +161,14 @@ requirements:
     criteria:
       quality: availability
     example: A high-availability deployment configuration on the Runtime or Edge/Gateway Service.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: availabilityModel
     example: A documented statement of the service availability model.
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - deploymentConfiguration
 - id: scalability
   description: The service must state its scalability model.
@@ -178,14 +178,14 @@ requirements:
     criteria:
       quality: scalability
     example: An autoscaling deployment configuration on the Runtime or Edge/Gateway Service.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: scalabilityModel
     example: A documented statement of the service scalability model.
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - deploymentConfiguration
 - id: recoverability
   description: The service must state its recoverability model.
@@ -195,27 +195,27 @@ requirements:
     criteria:
       quality: recoverability
     example: A deployment configuration that captures failover or restoration behavior.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: recoverabilityModel
     example: A documented statement of the service recovery model.
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - deploymentConfiguration
 - id: failure-domain
   description: The service must state its failure domain.
   rationale: A service is incomplete until the scope of impact from its failure is explicit.
   canBeSatisfiedBy:
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: failureDomain
     example: A documented description of the service failure domain, such as per host, per shard, or shared across products.
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
 lifecycleStatus: existing-only
 tags:
 - service

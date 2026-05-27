@@ -29,7 +29,7 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-NB1W
     example: An APM agent or instrumentation library installed as an internalComponent.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: apm
     example: A documented statement of the APM approach or a declaration that APM is not applicable.
   minimumSatisfactions: 1
@@ -37,7 +37,7 @@ requirements:
   requirementMode: mandatory
   naAllowed: true
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - externalInteraction
   - internalComponent
 - id: container-orchestration
@@ -48,7 +48,7 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-GW5D
     example: A container orchestration platform (Kubernetes, ECS, Nomad) declared as an internalComponent.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: containerRuntime
     example: A documented statement of the container runtime when it cannot be expressed as a catalog internalComponent.
   minimumSatisfactions: 1
@@ -56,7 +56,7 @@ requirements:
   requirementMode: mandatory
   naAllowed: true
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - internalComponent
 - id: serverless-runtime
   description: The service may declare its serverless execution runtime when using a function-as-a-service delivery model.
@@ -66,7 +66,7 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-3ZWJ
     example: A serverless platform (AWS Lambda, Azure Functions, Google Cloud Run) declared as an internalComponent.
-  - mechanism: architecturalDecision
+  - mechanism: architectureNote
     key: serverlessRuntime
     example: A documented statement of the serverless execution environment when not catalog-modeled.
   minimumSatisfactions: 1
@@ -74,7 +74,7 @@ requirements:
   requirementMode: mandatory
   naAllowed: true
   validAnswerTypes:
-  - architecturalDecision
+  - architectureNote
   - internalComponent
 lifecycleStatus: candidate
 tags:

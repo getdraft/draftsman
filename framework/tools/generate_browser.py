@@ -746,7 +746,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
                 "ardCategory": obj.get("category", "") if obj.get("type") == "decision_record" else "",
                 "internalComponents": internal_component_refs(obj),
                 "externalInteractions": obj.get("externalInteractions", []),
-                "architecturalDecisions": obj.get("architecturalDecisions", {}),
+                "architectureNotes": obj.get("architectureNotes", {}),
                 "requirements": obj.get("requirements", []),
                 "implementations": obj.get("implementations", []),
                 "appliesTo": obj.get("appliesTo", {}),

@@ -176,7 +176,7 @@ class ValidationTests(unittest.TestCase):
                     deliveryModel: self-managed
                     catalogStatus: complete
                     lifecycleStatus: candidate
-                    architecturalDecisions:
+                    architectureNotes:
                       serviceAuthentication: Uses centralized identity.
                       secretsManagement: Uses managed secrets injection.
                       serviceLogging: Emits logs to the central logging platform.
@@ -228,7 +228,7 @@ class ValidationTests(unittest.TestCase):
                     name: Host Ref Pattern
                     catalogStatus: incomplete
                     lifecycleStatus: candidate
-                    architecturalDecisions:
+                    architectureNotes:
                       noApplicablePattern: Test fixture.
                       deploymentTargets: Test target.
                       availabilityRequirement: Test availability.
@@ -279,11 +279,11 @@ class ValidationTests(unittest.TestCase):
                         requirementMode: mandatory
                         naAllowed: false
                         canBeSatisfiedBy:
-                          - mechanism: architecturalDecision
+                          - mechanism: architectureNote
                             key: missingDecision
                         minimumSatisfactions: 1
                         validAnswerTypes:
-                          - architecturalDecision
+                          - architectureNote
                     """
                 ).strip()
                 + "\n",
@@ -306,13 +306,13 @@ class ValidationTests(unittest.TestCase):
                     lifecycleStatus: existing-only
                     requirementGroups:
                       - requirement-group.company-control
-                    architecturalDecisions:
+                    architectureNotes:
                       companyEvidence: Provided by explicit object-level evidence.
                     requirementImplementations:
                       - requirementGroup: requirement-group.company-control
                         requirementId: company-required-field
                         status: satisfied
-                        mechanism: architecturalDecision
+                        mechanism: architectureNote
                         key: companyEvidence
                     """
                 ).strip()
@@ -562,7 +562,7 @@ externalInteractions:
     capabilities:
       - 01KQQ4Q026-BH6E
 {apm_interaction.rstrip()}
-architecturalDecisions:
+architectureNotes:
 {decision_lines}
 requirementGroups:
   - 01KQQ4Q027-THYN
@@ -610,7 +610,7 @@ requirementGroups:
                     networkPlacement: public-facing
                     patchingOwner: aws-managed
                     complianceCerts: []
-                    architecturalDecisions:
+                    architectureNotes:
                       resilienceModel: Managed multi-AZ control plane.
                       configurableSurface: Listeners, rules, certificates, and target groups.
                       failureDomain: Shared ingress dependency for the protected application path.
@@ -772,7 +772,7 @@ requirementGroups:
                         role: host
                       - ref: 01KQS0TF61-DBMS
                         role: function
-                    architecturalDecisions:
+                    architectureNotes:
                       serviceAuthentication: Uses centralized identity.
                       secretsManagement: Uses managed secrets injection.
                       serviceLogging: Emits logs to the central logging platform.
@@ -866,7 +866,7 @@ requirementGroups:
                       - name: Test Backup Vault
                         capabilities:
                           - 01KQQ4Q026-7T2H
-                    architecturalDecisions:
+                    architectureNotes:
                       serviceAuthentication: Uses centralized identity.
                       secretsManagement: Uses managed secrets injection.
                       serviceLogging: Emits logs to the central logging platform.
@@ -1121,7 +1121,7 @@ requirementGroups:
                       - ref: 01KQS0TF66-RBMQ
                         role: broker-client
                         configuration: amqp-listener
-                    architecturalDecisions:
+                    architectureNotes:
                       internalComponentRationales:
                         01KQS0TF66-RBMQ: Required broker client dependency for queue-mediated message publishing.
                     """
@@ -1497,7 +1497,7 @@ requirementGroups:
                     catalogStatus: incomplete
                     lifecycleStatus: candidate
                     followsReferenceArchitecture: 01KQS0TF71-RAXC
-                    architecturalDecisions:
+                    architectureNotes:
                       deploymentTargets: Test environment.
                       availabilityRequirement: Single instance.
                       dataClassification: Internal.
@@ -1562,6 +1562,9 @@ requirementGroups:
                     type: edge_gateway_service
                     name: Test Edge Gateway
                     deliveryModel: appliance
+                    vendor: Test Vendor
+                    productName: Test Gateway
+                    productVersion: "1.0"
                     catalogStatus: incomplete
                     lifecycleStatus: preferred
                     """
@@ -1579,6 +1582,9 @@ requirementGroups:
                     type: runtime_service
                     name: Test Runtime Service
                     deliveryModel: paas
+                    vendor: Test Vendor
+                    productName: Test Runtime
+                    productVersion: "1.0"
                     catalogStatus: incomplete
                     lifecycleStatus: candidate
                     """
@@ -1598,7 +1604,7 @@ requirementGroups:
                     catalogStatus: incomplete
                     lifecycleStatus: candidate
                     followsReferenceArchitecture: 01KQS0TF72-RAXC
-                    architecturalDecisions:
+                    architectureNotes:
                       deploymentTargets: Test environment.
                       availabilityRequirement: Single instance.
                       dataClassification: Internal.
@@ -1665,7 +1671,7 @@ requirementGroups:
                 name: Vocabulary Test Pattern
                 catalogStatus: incomplete
                 lifecycleStatus: candidate
-                architecturalDecisions:
+                architectureNotes:
                   noApplicablePattern: Test fixture.
                   deploymentTargets: Test target.
                   availabilityRequirement: Test availability.

@@ -23,7 +23,7 @@ optionalFields:
 - storedProcedures
 - scheduledJobs
 - retentionPolicy
-- architecturalDecisions
+- architectureNotes
 - notes
 - requirementImplementations
 enumFields:
@@ -62,7 +62,7 @@ fieldTypes:
   storedProcedures: list
   scheduledJobs: list
   containsPII: bool
-  architecturalDecisions: dict
+  architectureNotes: dict
   requirementGroups: list
   requirementImplementations: list
 collectionSchemas:
@@ -134,7 +134,7 @@ requirementImplementation:
     - not-applicable
     - not-compliant
     mechanism:
-    - architecturalDecision
+    - architectureNote
     - field
   fieldTypes:
     criteria: dict

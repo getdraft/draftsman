@@ -24,7 +24,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000001-TC01
-architecturalDecisions:
+architectureNotes:
   serviceAuthentication: All Nova API requests are validated via Keystone token authentication.
     Service-to-service calls use service accounts with scoped tokens issued by Keystone.
   secretsManagement: Service credentials and database passwords are stored in nova.conf,
@@ -72,7 +72,7 @@ requirementImplementations:
 - requirementGroup: 01KQQ4Q027-T3CA
   requirementId: CC.SecurityCompliance.04.3.1
   status: satisfied
-  mechanism: architecturalDecision
+  mechanism: architectureNote
   key: secrets_management
   notes: Service credentials are managed in nova.conf via configuration management
-    tooling. Secrets rotation requires planned maintenance. See architecturalDecisions.secretsManagement.
+    tooling. Secrets rotation requires planned maintenance. See architectureNotes.secretsManagement.

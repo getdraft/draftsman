@@ -15,7 +15,7 @@ optionalFields:
 - owner
 - tags
 - patternType
-- architecturalDecisions
+- architectureNotes
 - applicableDefinitionChecklist
 - scalingUnits
 - serviceGroups
@@ -37,7 +37,7 @@ fieldTypes:
   aliases: list
   owner: dict
   tags: list
-  architecturalDecisions: dict
+  architectureNotes: dict
   scalingUnits: list
   serviceGroups: list
   requirementGroups: list
@@ -147,7 +147,7 @@ requirementImplementation:
     - deploymentConfiguration
     - externalInteraction
     - internalComponent
-    - architecturalDecision
+    - architectureNote
     - field
   fieldTypes:
     criteria: dict

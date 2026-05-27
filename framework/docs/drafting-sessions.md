@@ -55,7 +55,7 @@ Common optional fields include:
 - `primaryObjectUid`
 - `assumptions`
 - `nextSteps`
-- `architecturalDecisions`
+- `architectureNotes`
 
 ## How To Use It
 

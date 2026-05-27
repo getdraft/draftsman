@@ -213,7 +213,7 @@ Runtime Service, DataStoreService, and Edge/Gateway Service objects describe reu
 
 For Runtime, DataStoreService, and Edge/Gateway Services, the primary Technology Component is the main functional component. Do not add a separate dependency rationale for the primary component when it is the object core.
 
-DataStoreServices should document backup strategy, backup platform, RTO, and RPO. Use an external interaction for a separate backup platform, or use `architecturalDecisions.backup.platform` when the backup capability is provider-managed inside the service.
+DataStoreServices should document backup strategy, backup platform, RTO, and RPO. Use an external interaction for a separate backup platform, or use `architectureNotes.backup.platform` when the backup capability is provider-managed inside the service.
 
 #### 3a.8 Modeling ProductComponents {#modeling-product-components}
 
@@ -310,14 +310,14 @@ Every `internalComponents` entry and `externalInteractions` entry must either di
 
 Use these machine-readable buckets:
 
-- `architecturalDecisions.externalInteractionRationales`
-- `architecturalDecisions.internalComponentRationales`
-- `architecturalDecisions.dependencyRationales`
+- `architectureNotes.externalInteractionRationales`
+- `architectureNotes.internalComponentRationales`
+- `architectureNotes.dependencyRationales`
 
 Use stable keys such as the interaction name, component `ref`, `enabledBy`, role, or capability ID.
 
 ```yaml
-architecturalDecisions:
+architectureNotes:
   externalInteractionRationales:
     Dynatrace Platform: Dynatrace is modeled because the local agent sends telemetry to the platform; it does not satisfy the host health monitoring requirement by itself.
 ```
@@ -326,7 +326,7 @@ If the dependency is intended to satisfy a requirement, add the matching capabil
 
 #### 3b.4 Agent rule {#agent-rule}
 
-Agent Technology Components have an additional rule: any deployable object that includes an agent must document the corresponding external interaction for the agent's platform or record an exception under `architecturalDecisions.agentInteractionExceptions`.
+Agent Technology Components have an additional rule: any deployable object that includes an agent must document the corresponding external interaction for the agent's platform or record an exception under `architectureNotes.agentInteractionExceptions`.
 
 ---
 

@@ -24,7 +24,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000E-TC0E
-architecturalDecisions:
+architectureNotes:
   serviceAuthentication: Nova connects to its database schema using a dedicated MariaDB
     service account with credentials configured in nova.conf. Access is restricted
     to the Nova service account; no shared credentials with other OpenStack services.
@@ -84,26 +84,26 @@ requirementImplementations:
   requirementId: CC.SecurityCompliance.00.2.1.access-control-model
   status: satisfied
   mechanism: field
-  key: architecturalDecisions.accessControl.model
+  key: architectureNotes.accessControl.model
   notes: Access control model is role-based; Nova service account has DML-only access
-    to the nova schema. Documented in architecturalDecisions.accessControl.
+    to the nova schema. Documented in architectureNotes.accessControl.
 - requirementGroup: 01KQQ4Q027-T3CA
   requirementId: CC.SecurityCompliance.10.2.1
   status: satisfied
   mechanism: field
-  key: architecturalDecisions.backup.strategy
-  notes: Backup strategy, RTO (2h), and RPO (4h) are documented in architecturalDecisions.backup.
+  key: architectureNotes.backup.strategy
+  notes: Backup strategy, RTO (2h), and RPO (4h) are documented in architectureNotes.backup.
 - requirementGroup: 01KQQ4Q027-T3CA
   requirementId: CC.SecurityCompliance.04.1.1
   status: satisfied
-  mechanism: architecturalDecision
+  mechanism: architectureNote
   key: access_control_model
-  notes: Database access control model is documented in architecturalDecisions.accessControl.
+  notes: Database access control model is documented in architectureNotes.accessControl.
     MariaDB role-based access restricts the Nova service account to its own schema.
 - requirementGroup: 01KQQ4Q027-T3CA
   requirementId: CC.SecurityCompliance.04.4.1.access-control-model
   status: satisfied
-  mechanism: architecturalDecision
+  mechanism: architectureNote
   key: access_control_model
   notes: MariaDB user model enforces schema-level isolation. Service accounts for
     each OpenStack service are scoped to their own schema only.

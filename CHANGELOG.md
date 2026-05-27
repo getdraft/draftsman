@@ -43,6 +43,10 @@ notes, including patch releases.
 - **`requirementGroups` field**: Removed from `optionalFields` on all object-type schemas. Objects that still have this field receive a deprecation warning.
 - **Top-level vendor accountability fields** (`dataLeavesInfrastructure`, `dataResidencyCommitment`, `dpaNotes`, `vendorSLA`, `incidentNotificationProcess`): Removed from top-level `optionalFields` on service schemas. These fields now live inside the `vendorGovernance` sub-object. The validator warns when any of these are found at the top level.
 
+### Fixed
+
+- **`validate_requirement_implementations` workspace-group gate**: The validator previously rejected `requirementImplementations` entries pointing to a workspace-activated requirement group unless the object also declared that group in `requirementGroups`. Since `requirementGroups` is now deprecated and removed from schemas, any object with pre-existing `requirementImplementations` evidence would fail. The check now gates on the workspace's active group set rather than the deprecated per-object declaration.
+
 ### Compatibility Impact
 
 **Pre-1.0 breaking changes** (allowed per the framework contract):

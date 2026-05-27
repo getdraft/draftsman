@@ -92,7 +92,7 @@ vocabulary:
 ```
 
 When declared, validation checks
-`architecturalDecisions.dataClassification` on Software Deployment Patterns and
+`architectureNotes.dataClassification` on Software Deployment Patterns and
 deployable service objects.
 
 ### Teams
@@ -124,7 +124,7 @@ vocabulary:
 ```
 
 When declared, validation checks
-`architecturalDecisions.availabilityRequirement` on Software Deployment
+`architectureNotes.availabilityRequirement` on Software Deployment
 Patterns and deployable service objects.
 
 ### Failure Domains
@@ -140,7 +140,7 @@ vocabulary:
         name: Shared Platform
 ```
 
-When declared, validation checks `architecturalDecisions.failureDomain` on
+When declared, validation checks `architectureNotes.failureDomain` on
 Software Deployment Patterns and deployable service objects.
 
 ### Connection Protocols

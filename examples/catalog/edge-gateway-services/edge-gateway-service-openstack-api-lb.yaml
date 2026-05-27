@@ -21,7 +21,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: 01KSF29JTP-8YRX
-architecturalDecisions:
+architectureNotes:
   serviceAuthentication: HAProxy does not authenticate requests itself. Authentication
     is delegated to backend services (Keystone for API requests, nginx/Django for
     Horizon). HAProxy operates in pass-through mode for TLS; backends receive forwarded
