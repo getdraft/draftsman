@@ -2,11 +2,10 @@ schemaVersion: '1.0'
 uid: STCK000002-DAR2
 type: data_store_service
 name: Keystone Database
-description: 'MariaDB database schema dedicated to OpenStack Keystone for persisting
-  all identity service data. Stores users, groups, projects, domains, roles, role
-  assignments, service endpoints, credentials, and Fernet key metadata. This is the
-  highest-criticality database schema in the OpenStack platform; its loss renders
-  all services inaccessible.
+description: 'MariaDB database schema dedicated to OpenStack Keystone for persisting all identity service
+  data. Stores users, groups, projects, domains, roles, role assignments, service endpoints, credentials,
+  and Fernet key metadata. This is the highest-criticality database schema in the OpenStack platform;
+  its loss renders all services inaccessible.
 
   '
 version: 1.0.0
@@ -27,55 +26,74 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000E-TC0E
 architectureNotes:
-  serviceAuthentication: Keystone connects to its database schema using a dedicated
-    MariaDB service account with credentials configured in keystone.conf. Access is
-    restricted to the Keystone service account.
-  secretsManagement: Database credentials are stored in keystone.conf managed by
-    configuration management tooling. Fernet signing keys are managed separately
-    and rotated on a scheduled basis.
-  serviceLogging: MariaDB slow query logs and error logs for the Keystone schema are
-    shipped to the centralised log aggregation platform. High-volume read operations
-    on the token/endpoint tables are tracked.
-  healthWelfareMonitoring: MariaDB Galera cluster health is monitored via wsrep status
-    variables. Keystone DB health is verified by keystone-manage doctor. Endpoint
-    table access latency is a key health indicator.
-  availabilityModel: The Keystone database is hosted in the 3-node MariaDB Galera
-    cluster. Loss of one node does not interrupt availability. The Keystone DB is
-    the most critical schema — Galera quorum is non-negotiable.
-  scalabilityModel: Read load on the Keystone schema is high as all services validate
-    tokens. Read scaling is achieved via ProxySQL read replicas or caching layers
-    (e.g. Memcached for token validation).
-  recoverabilityModel: Data recovered from MariaDB Galera replication. Point-in-time
-    recovery from automated backups. Schema migrations applied via keystone-manage
-    db_sync.
-  failureDomain: Loss of the Keystone database is a platform-wide outage. All other
-    OpenStack services lose the ability to validate tokens and refuse new API requests.
-    This schema has the highest blast radius of any database in the platform.
+  serviceAuthentication: Keystone connects to its database schema using a dedicated MariaDB service account
+    with credentials configured in keystone.conf. Access is restricted to the Keystone service account.
+  secretsManagement: Database credentials are stored in keystone.conf managed by configuration management
+    tooling. Fernet signing keys are managed separately and rotated on a scheduled basis.
+  serviceLogging: MariaDB slow query logs and error logs for the Keystone schema are shipped to the centralised
+    log aggregation platform. High-volume read operations on the token/endpoint tables are tracked.
+  healthWelfareMonitoring: MariaDB Galera cluster health is monitored via wsrep status variables. Keystone
+    DB health is verified by keystone-manage doctor. Endpoint table access latency is a key health indicator.
+  availabilityModel: The Keystone database is hosted in the 3-node MariaDB Galera cluster. Loss of one
+    node does not interrupt availability. The Keystone DB is the most critical schema — Galera quorum
+    is non-negotiable.
+  scalabilityModel: Read load on the Keystone schema is high as all services validate tokens. Read scaling
+    is achieved via ProxySQL read replicas or caching layers (e.g. Memcached for token validation).
+  recoverabilityModel: Data recovered from MariaDB Galera replication. Point-in-time recovery from automated
+    backups. Schema migrations applied via keystone-manage db_sync.
+  failureDomain: Loss of the Keystone database is a platform-wide outage. All other OpenStack services
+    lose the ability to validate tokens and refuse new API requests. This schema has the highest blast
+    radius of any database in the platform.
   backup:
-    strategy: Automated daily full backup using Percona XtraBackup with binlog-based
-      incremental backups every hour (higher frequency than other schemas due to criticality).
-      Backups are written to object storage and replicated off-site.
-    platform: Percona XtraBackup writing to Swift object storage with off-site replication.
-      Higher-frequency and replicated due to Keystone's platform-critical status.
+    strategy: Automated daily full backup using Percona XtraBackup with binlog-based incremental backups
+      every hour (higher frequency than other schemas due to criticality). Backups are written to object
+      storage and replicated off-site.
+    platform: Percona XtraBackup writing to Swift object storage with off-site replication. Higher-frequency
+      and replicated due to Keystone's platform-critical status.
     rto: 1 hour for full schema restore; near-zero for Galera node failure.
     rpo: 1 hour maximum data loss; near-zero for Galera replication failure.
   ha:
-    mechanism: MariaDB Galera cluster with 3 synchronous replicas and HAProxy. Quorum
-      requires at least 2 of 3 nodes.
+    mechanism: MariaDB Galera cluster with 3 synchronous replicas and HAProxy. Quorum requires at least
+      2 of 3 nodes.
   encryption:
-    atRest: MariaDB data-at-rest encryption enabled. Keystone schema tablespace-level
-      encryption applied. Credential fields additionally encrypted at application
-      layer by Keystone.
+    atRest: MariaDB data-at-rest encryption enabled. Keystone schema tablespace-level encryption applied.
+      Credential fields additionally encrypted at application layer by Keystone.
   accessControl:
-    model: Role-based database access control. Keystone service account has DML access
-      to the keystone schema only. DBA team access via SSH-tunnelled connections with
-      MFA required.
+    model: Role-based database access control. Keystone service account has DML access to the keystone
+      schema only. DBA team access via SSH-tunnelled connections with MFA required.
   externalInteractionRationales:
-    Backup Service: Percona XtraBackup automated backup writes point-in-time backups
-      to Swift object storage with off-site replication. Keystone is the highest-criticality
-      schema; backup frequency and replication are elevated accordingly.
+    Backup Service: Percona XtraBackup automated backup writes point-in-time backups to Swift object storage
+      with off-site replication. Keystone is the highest-criticality schema; backup frequency and replication
+      are elevated accordingly.
+  access_control_model: Role-based database access. Keystone service account has DML access to the keystone
+    schema only. Highest-criticality schema — credential rotation requires coordinated service restart.
+  backup_strategy: Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups
+    written to Swift object storage. RTO 2h, RPO 4h.
 internalComponents:
 - ref: STCK00000E-TC0E
-  role: MariaDB Galera cluster providing the relational database engine for the Keystone
-    identity schema.
-requirementImplementations: []
+  role: MariaDB Galera cluster providing the relational database engine for the Keystone identity schema.
+requirementImplementations:
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.04.4.1.access-control-model
+  status: satisfied
+  mechanism: architectureNote
+  key: access_control_model
+  notes: Database access control model documented in architectureNotes.access_control_model.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.00.2.1.access-control-model
+  status: satisfied
+  mechanism: architectureNote
+  key: access_control_model
+  notes: Database data classification context documented in architectureNotes.access_control_model.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.04.1.1
+  status: satisfied
+  mechanism: architectureNote
+  key: access_control_model
+  notes: Database access control model documented in architectureNotes.access_control_model.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.10.2.1
+  status: satisfied
+  mechanism: architectureNote
+  key: backup_strategy
+  notes: Backup strategy documented in architectureNotes.backup_strategy.

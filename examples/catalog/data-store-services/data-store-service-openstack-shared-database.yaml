@@ -2,11 +2,10 @@ schemaVersion: '1.0'
 uid: STCK000007-DAR7
 type: data_store_service
 name: OpenStack Shared Database
-description: 'Shared MariaDB database cluster hosting the schemas for OpenStack services
-  that do not warrant dedicated database objects at this modeling granularity: Heat,
-  Ironic, Trove, Sahara, and Ceilometer. Each service maintains its own isolated
-  schema (database) within the shared cluster. This consolidation is appropriate
-  for medium-scale deployments; large-scale deployments may separate schemas to dedicated
+description: 'Shared MariaDB database cluster hosting the schemas for OpenStack services that do not warrant
+  dedicated database objects at this modeling granularity: Heat, Ironic, Trove, Sahara, and Ceilometer.
+  Each service maintains its own isolated schema (database) within the shared cluster. This consolidation
+  is appropriate for medium-scale deployments; large-scale deployments may separate schemas to dedicated
   clusters.
 
   '
@@ -31,57 +30,79 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000E-TC0E
 architectureNotes:
-  serviceAuthentication: Each OpenStack service (Heat, Ironic, Trove, Sahara, Ceilometer)
-    connects to its own dedicated schema using a per-service MariaDB service account.
-    Credentials are configured in each service's conf file. Schema isolation prevents
-    cross-service data access at the database layer.
-  secretsManagement: Per-service database credentials are stored in each service's
-    conf file managed by configuration management tooling. All credentials are distinct;
-    compromise of one service's credentials does not expose other schemas.
-  serviceLogging: MariaDB slow query logs and error logs are aggregated across schemas
-    and shipped to the centralised log aggregation platform. Per-schema query patterns
-    are monitored separately.
-  healthWelfareMonitoring: MariaDB Galera cluster health monitored via wsrep status
-    variables. Per-schema query latency and connection counts are tracked. Galera
-    replication lag across all three nodes is monitored.
-  availabilityModel: The shared cluster runs as a 3-node MariaDB Galera cluster with
-    synchronous multi-master replication. Loss of one node does not interrupt availability.
-    All five service schemas share the same Galera quorum.
-  scalabilityModel: Each schema grows independently with its service's workload.
-    The Ceilometer schema tends to be the highest-volume due to metric collection.
-    Schema separation within the cluster allows per-schema tuning and archival policies.
-  recoverabilityModel: Data recovered from MariaDB Galera replication. Each schema
-    is backed up independently. Schema migrations are applied per service (heat-manage
-    db_sync, ironic-dbsync, etc.).
-  failureDomain: Loss of this database cluster affects Heat, Ironic, Trove, Sahara,
-    and Ceilometer simultaneously. In-progress orchestration stacks, bare metal provisioning,
-    and database service operations are disrupted. Running Nova instances, networks,
-    and Cinder volumes are not affected.
+  serviceAuthentication: Each OpenStack service (Heat, Ironic, Trove, Sahara, Ceilometer) connects to
+    its own dedicated schema using a per-service MariaDB service account. Credentials are configured in
+    each service's conf file. Schema isolation prevents cross-service data access at the database layer.
+  secretsManagement: Per-service database credentials are stored in each service's conf file managed by
+    configuration management tooling. All credentials are distinct; compromise of one service's credentials
+    does not expose other schemas.
+  serviceLogging: MariaDB slow query logs and error logs are aggregated across schemas and shipped to
+    the centralised log aggregation platform. Per-schema query patterns are monitored separately.
+  healthWelfareMonitoring: MariaDB Galera cluster health monitored via wsrep status variables. Per-schema
+    query latency and connection counts are tracked. Galera replication lag across all three nodes is
+    monitored.
+  availabilityModel: The shared cluster runs as a 3-node MariaDB Galera cluster with synchronous multi-master
+    replication. Loss of one node does not interrupt availability. All five service schemas share the
+    same Galera quorum.
+  scalabilityModel: Each schema grows independently with its service's workload. The Ceilometer schema
+    tends to be the highest-volume due to metric collection. Schema separation within the cluster allows
+    per-schema tuning and archival policies.
+  recoverabilityModel: Data recovered from MariaDB Galera replication. Each schema is backed up independently.
+    Schema migrations are applied per service (heat-manage db_sync, ironic-dbsync, etc.).
+  failureDomain: Loss of this database cluster affects Heat, Ironic, Trove, Sahara, and Ceilometer simultaneously.
+    In-progress orchestration stacks, bare metal provisioning, and database service operations are disrupted.
+    Running Nova instances, networks, and Cinder volumes are not affected.
   backup:
-    strategy: Automated daily full backup using Percona XtraBackup for all schemas
-      in this cluster, with 4-hourly incremental backups. Backups written to object
-      storage. Each schema is exported as a separate logical backup for granular restore.
-    platform: Percona XtraBackup writing to Swift object storage on the openstack-controller
-      deployment target. Per-schema logical exports allow targeted restore without
-      full cluster recovery.
-    rto: 2 hours for full cluster restore; per-schema restore in 30-60 minutes; near-zero
-      for Galera node failure.
+    strategy: Automated daily full backup using Percona XtraBackup for all schemas in this cluster, with
+      4-hourly incremental backups. Backups written to object storage. Each schema is exported as a separate
+      logical backup for granular restore.
+    platform: Percona XtraBackup writing to Swift object storage on the openstack-controller deployment
+      target. Per-schema logical exports allow targeted restore without full cluster recovery.
+    rto: 2 hours for full cluster restore; per-schema restore in 30-60 minutes; near-zero for Galera node
+      failure.
     rpo: 4 hours maximum; near-zero for Galera replication failure.
   ha:
-    mechanism: MariaDB Galera cluster with 3 synchronous replicas and HAProxy for
-      connection routing. Quorum requires at least 2 of 3 nodes.
+    mechanism: MariaDB Galera cluster with 3 synchronous replicas and HAProxy for connection routing.
+      Quorum requires at least 2 of 3 nodes.
   encryption:
-    atRest: MariaDB data-at-rest encryption enabled with tablespace-level encryption
-      across all schemas in this cluster.
+    atRest: MariaDB data-at-rest encryption enabled with tablespace-level encryption across all schemas
+      in this cluster.
   accessControl:
-    model: Role-based database access control with schema-level isolation. Each service
-      has a dedicated account with DML access to its own schema only. Cross-schema
-      access is denied at the DB grant level.
+    model: Role-based database access control with schema-level isolation. Each service has a dedicated
+      account with DML access to its own schema only. Cross-schema access is denied at the DB grant level.
   externalInteractionRationales:
-    Backup Service: Percona XtraBackup automated backup writes per-schema logical
-      backups to Swift object storage. Modeled to show the external backup platform dependency.
+    Backup Service: Percona XtraBackup automated backup writes per-schema logical backups to Swift object
+      storage. Modeled to show the external backup platform dependency.
+  access_control_model: Role-based database access. Each service (Heat, Ironic, Trove, Sahara, Ceilometer)
+    has a dedicated schema and service account with DML access to its own schema only.
+  backup_strategy: Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups
+    written to Swift object storage. RTO 2h, RPO 4h.
 internalComponents:
 - ref: STCK00000E-TC0E
-  role: MariaDB Galera cluster providing the shared relational database engine for
-    Heat, Ironic, Trove, Sahara, and Ceilometer schemas.
-requirementImplementations: []
+  role: MariaDB Galera cluster providing the shared relational database engine for Heat, Ironic, Trove,
+    Sahara, and Ceilometer schemas.
+requirementImplementations:
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.04.4.1.access-control-model
+  status: satisfied
+  mechanism: architectureNote
+  key: access_control_model
+  notes: Database access control model documented in architectureNotes.access_control_model.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.00.2.1.access-control-model
+  status: satisfied
+  mechanism: architectureNote
+  key: access_control_model
+  notes: Database data classification context documented in architectureNotes.access_control_model.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.04.1.1
+  status: satisfied
+  mechanism: architectureNote
+  key: access_control_model
+  notes: Database access control model documented in architectureNotes.access_control_model.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.10.2.1
+  status: satisfied
+  mechanism: architectureNote
+  key: backup_strategy
+  notes: Backup strategy documented in architectureNotes.backup_strategy.

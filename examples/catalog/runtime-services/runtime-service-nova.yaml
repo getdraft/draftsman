@@ -2,11 +2,10 @@ schemaVersion: '1.0'
 uid: STCK000001-RS01
 type: runtime_service
 name: Nova Compute Service
-description: 'Self-managed deployment of OpenStack Nova providing virtual machine
-  lifecycle management across the platform. Runs nova-api, nova-scheduler, nova-conductor,
-  nova-consoleauth, and nova-compute subcomponents. Coordinates with Neutron for
-  networking, Cinder for volumes, and Glance for images. Uses RabbitMQ for internal
-  messaging and MariaDB for state persistence.
+description: 'Self-managed deployment of OpenStack Nova providing virtual machine lifecycle management
+  across the platform. Runs nova-api, nova-scheduler, nova-conductor, nova-consoleauth, and nova-compute
+  subcomponents. Coordinates with Neutron for networking, Cinder for volumes, and Glance for images. Uses
+  RabbitMQ for internal messaging and MariaDB for state persistence.
 
   '
 version: 1.0.0
@@ -25,54 +24,49 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000001-TC01
 architectureNotes:
-  serviceAuthentication: All Nova API requests are validated via Keystone token authentication.
-    Service-to-service calls use service accounts with scoped tokens issued by Keystone.
-  secretsManagement: Service credentials and database passwords are stored in nova.conf,
-    managed by configuration management tooling (Ansible/Puppet). Secrets rotation
-    requires service restart.
-  serviceLogging: Nova subcomponents emit logs to /var/log/nova/. Logs are shipped
-    to the centralised log aggregation platform via a local log shipper agent.
-  healthWelfareMonitoring: nova-api health is checked via HTTP endpoint polling. Process
-    health is monitored via systemd and node-level monitoring agents. RabbitMQ queue
-    depth and nova-compute agent heartbeats are monitored for scheduler health.
-  availabilityModel: nova-api and nova-scheduler run in active-active HA behind a
-    load balancer. nova-conductor runs active-active. nova-compute runs on each compute
-    node independently. Failure of a single nova-compute node affects only instances
-    on that hypervisor.
-  scalabilityModel: nova-api and nova-scheduler scale horizontally. nova-compute is
-    scaled by adding additional compute nodes. Cell architecture (nova cells) is available
-    for large-scale deployments.
-  recoverabilityModel: Control plane components are recovered via systemd service
-    restart. Compute node failures trigger evacuation workflows if shared storage
-    is configured. Nova DB is recovered from MariaDB Galera replication.
-  failureDomain: Failure of nova-scheduler or nova-conductor affects all new instance
-    provisioning but does not impact running instances. Failure of a compute node
-    affects only instances resident on that host.
-  secrets_management: Service credentials and database passwords are stored in nova.conf,
-    managed by configuration management tooling (Ansible/Puppet). Secrets rotation
-    requires service restart. No secrets are stored in source control or container images.
+  serviceAuthentication: All Nova API requests are validated via Keystone token authentication. Service-to-service
+    calls use service accounts with scoped tokens issued by Keystone.
+  secretsManagement: Service credentials and database passwords are stored in nova.conf, managed by configuration
+    management tooling (Ansible/Puppet). Secrets rotation requires service restart.
+  serviceLogging: Nova subcomponents emit logs to /var/log/nova/. Logs are shipped to the centralised
+    log aggregation platform via a local log shipper agent.
+  healthWelfareMonitoring: nova-api health is checked via HTTP endpoint polling. Process health is monitored
+    via systemd and node-level monitoring agents. RabbitMQ queue depth and nova-compute agent heartbeats
+    are monitored for scheduler health.
+  availabilityModel: nova-api and nova-scheduler run in active-active HA behind a load balancer. nova-conductor
+    runs active-active. nova-compute runs on each compute node independently. Failure of a single nova-compute
+    node affects only instances on that hypervisor.
+  scalabilityModel: nova-api and nova-scheduler scale horizontally. nova-compute is scaled by adding additional
+    compute nodes. Cell architecture (nova cells) is available for large-scale deployments.
+  recoverabilityModel: Control plane components are recovered via systemd service restart. Compute node
+    failures trigger evacuation workflows if shared storage is configured. Nova DB is recovered from MariaDB
+    Galera replication.
+  failureDomain: Failure of nova-scheduler or nova-conductor affects all new instance provisioning but
+    does not impact running instances. Failure of a compute node affects only instances resident on that
+    host.
+  secrets_management: Service credentials and database passwords are stored in nova.
   externalInteractionRationales:
-    Keystone Identity: All Nova API requests require Keystone token validation. Modeled
-      to show the hard authentication dependency.
-    RabbitMQ Message Broker: Nova uses RabbitMQ for all internal subcomponent messaging
-      (scheduler, conductor, compute). Modeled as a critical infrastructure dependency.
-    Nova Database: Nova persists all compute state to MariaDB. Modeled to show the
-      stateful dependency and recovery boundary.
-    Glance Image Service: Nova retrieves VM images from Glance during instance provisioning.
-      Modeled to show cross-service dependency at boot time.
-    Neutron Networking: Nova calls Neutron APIs to attach network interfaces to instances.
-      Modeled to show the network provisioning dependency.
-    Cinder Block Storage: Nova calls Cinder APIs to attach volumes to instances. Modeled
-      to show the storage attachment dependency.
+    Keystone Identity: All Nova API requests require Keystone token validation. Modeled to show the hard
+      authentication dependency.
+    RabbitMQ Message Broker: Nova uses RabbitMQ for all internal subcomponent messaging (scheduler, conductor,
+      compute). Modeled as a critical infrastructure dependency.
+    Nova Database: Nova persists all compute state to MariaDB. Modeled to show the stateful dependency
+      and recovery boundary.
+    Glance Image Service: Nova retrieves VM images from Glance during instance provisioning. Modeled to
+      show cross-service dependency at boot time.
+    Neutron Networking: Nova calls Neutron APIs to attach network interfaces to instances. Modeled to
+      show the network provisioning dependency.
+    Cinder Block Storage: Nova calls Cinder APIs to attach volumes to instances. Modeled to show the storage
+      attachment dependency.
 internalComponents:
 - ref: STCK000001-TC01
-  role: Core compute service providing nova-api, nova-scheduler, nova-conductor, nova-consoleauth,
-    and nova-compute subcomponents.
+  role: Core compute service providing nova-api, nova-scheduler, nova-conductor, nova-consoleauth, and
+    nova-compute subcomponents.
 requirementImplementations:
 - requirementGroup: 01KQQ4Q027-T3CA
   requirementId: CC.SecurityCompliance.04.3.1
   status: satisfied
   mechanism: architectureNote
   key: secrets_management
-  notes: Service credentials are managed in nova.conf via configuration management
-    tooling. Secrets rotation requires planned maintenance. See architectureNotes.secretsManagement.
+  notes: Service credentials are managed in nova.conf via configuration management tooling. Secrets rotation
+    requires planned maintenance. See architectureNotes.secretsManagement.

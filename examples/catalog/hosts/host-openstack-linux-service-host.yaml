@@ -19,3 +19,63 @@ tags:
 - linux
 operatingSystemComponent: 01KQQ4Q025-3HXA
 computePlatformComponent: STCK00000F-TC0F
+architectureNotes:
+  authentication: Centralized authentication via enterprise LDAP/Active Directory
+    integrated with PAM. SSH key-based access only for service accounts; password
+    auth disabled. Sudo access restricted to named platform-engineering team members
+    via sudoers managed by Ansible.
+  health_welfare_monitoring: Host health monitored via Prometheus node_exporter.
+    CPU, memory, disk, and network metrics collected and forwarded to the centralised
+    monitoring platform. Alerting configured for resource exhaustion and node
+    unreachability.
+  security_monitoring: CrowdStrike Falcon agent deployed on all OpenStack Linux
+    hosts for EDR and security event collection. Events forwarded to SIEM.
+  patch_management: OS and package patching managed by Ansible playbooks on a
+    monthly cadence for routine patches. Emergency patches applied within 72 hours
+    of critical CVE disclosure. Patch execution requires platform-engineering approval
+    and is performed during maintenance windows.
+  log_management: System logs (syslog, auth.log, kernel) and OpenStack service
+    logs forwarded to the centralised log aggregation platform via Fluentd.
+requirementImplementations:
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.04.2.2
+  status: satisfied
+  mechanism: architectureNote
+  key: authentication
+  notes: Centralized LDAP/AD authentication via PAM. SSH key-based access only.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.04.4.1
+  status: satisfied
+  mechanism: architectureNote
+  key: authentication
+  notes: Password auth disabled. Access policy enforced via sudoers managed by Ansible.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.06.1.1
+  status: satisfied
+  mechanism: architectureNote
+  key: log_management
+  notes: System and service logs forwarded to centralised log aggregation via Fluentd.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.06.2.1
+  status: satisfied
+  mechanism: architectureNote
+  key: health_welfare_monitoring
+  notes: Prometheus node_exporter metrics collected and forwarded to monitoring platform.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.06.3.1
+  status: satisfied
+  mechanism: architectureNote
+  key: security_monitoring
+  notes: CrowdStrike Falcon agent deployed for EDR and SIEM event forwarding.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.03.1.1
+  status: satisfied
+  mechanism: architectureNote
+  key: patch_management
+  notes: Monthly OS patching via Ansible. Emergency patches within 72h of critical CVE.
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.03.2.1
+  status: satisfied
+  mechanism: architectureNote
+  key: patch_management
+  notes: Patch execution requires platform-engineering approval during maintenance windows.

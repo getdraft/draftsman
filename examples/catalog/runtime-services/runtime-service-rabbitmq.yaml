@@ -2,11 +2,10 @@ schemaVersion: '1.0'
 uid: STCK00000D-RS0D
 type: runtime_service
 name: RabbitMQ Message Broker Service
-description: 'Self-managed deployment of RabbitMQ serving as the shared AMQP message
-  broker for the OpenStack control plane. Provides the message transport layer for
-  Nova, Neutron, Cinder, Heat, Ceilometer, Ironic, and Trove. Deployed as a 3-node
-  RabbitMQ cluster with quorum queues for durability. All OpenStack services connect
-  to RabbitMQ using dedicated virtual hosts and credentials.
+description: 'Self-managed deployment of RabbitMQ serving as the shared AMQP message broker for the OpenStack
+  control plane. Provides the message transport layer for Nova, Neutron, Cinder, Heat, Ceilometer, Ironic,
+  and Trove. Deployed as a 3-node RabbitMQ cluster with quorum queues for durability. All OpenStack services
+  connect to RabbitMQ using dedicated virtual hosts and credentials.
 
   '
 version: 1.0.0
@@ -25,39 +24,45 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000D-TC0D
 architectureNotes:
-  serviceAuthentication: OpenStack services authenticate to RabbitMQ using per-service
-    AMQP credentials (username and password) configured in each service's conf file.
-    The RabbitMQ management interface is protected by separate admin credentials.
-  secretsManagement: RabbitMQ service credentials are stored in each OpenStack service's
-    conf file, managed by configuration management tooling. RabbitMQ admin credentials
-    are stored in the platform secrets vault.
-  serviceLogging: RabbitMQ emits logs to /var/log/rabbitmq/. Logs are shipped to
-    the centralised log aggregation platform. Queue depth and connection metrics are
-    captured via the RabbitMQ management plugin.
-  healthWelfareMonitoring: RabbitMQ cluster health is monitored via the management
-    API. Queue depth, consumer counts, connection counts, and node membership are
-    monitored. Alerts fire when queues exceed depth thresholds or when cluster nodes
-    are lost.
-  availabilityModel: RabbitMQ runs as a 3-node cluster with quorum queues for message
-    durability. The cluster tolerates loss of one node (majority quorum). All OpenStack
-    services reconnect automatically on node failure.
-  scalabilityModel: RabbitMQ capacity scales by adding nodes to the cluster. Message
-    throughput scales with additional queue sharding. OpenStack services use connection
-    pools to distribute load across cluster nodes.
-  recoverabilityModel: RabbitMQ cluster nodes are recovered via systemd restart.
-    Quorum queue state is automatically resynchronised on node rejoin. Messages published
-    with delivery guarantees are not lost during single-node failure.
-  failureDomain: Loss of RabbitMQ quorum (majority of cluster nodes) causes all OpenStack
-    services using AMQP to stop processing background tasks. nova-api, neutron-api,
-    cinder-api, and other REST endpoints continue to function for read-only operations
-    but write operations that require background processing are queued or fail.
+  serviceAuthentication: OpenStack services authenticate to RabbitMQ using per-service AMQP credentials
+    (username and password) configured in each service's conf file. The RabbitMQ management interface
+    is protected by separate admin credentials.
+  secretsManagement: RabbitMQ service credentials are stored in each OpenStack service's conf file, managed
+    by configuration management tooling. RabbitMQ admin credentials are stored in the platform secrets
+    vault.
+  serviceLogging: RabbitMQ emits logs to /var/log/rabbitmq/. Logs are shipped to the centralised log aggregation
+    platform. Queue depth and connection metrics are captured via the RabbitMQ management plugin.
+  healthWelfareMonitoring: RabbitMQ cluster health is monitored via the management API. Queue depth, consumer
+    counts, connection counts, and node membership are monitored. Alerts fire when queues exceed depth
+    thresholds or when cluster nodes are lost.
+  availabilityModel: RabbitMQ runs as a 3-node cluster with quorum queues for message durability. The
+    cluster tolerates loss of one node (majority quorum). All OpenStack services reconnect automatically
+    on node failure.
+  scalabilityModel: RabbitMQ capacity scales by adding nodes to the cluster. Message throughput scales
+    with additional queue sharding. OpenStack services use connection pools to distribute load across
+    cluster nodes.
+  recoverabilityModel: RabbitMQ cluster nodes are recovered via systemd restart. Quorum queue state is
+    automatically resynchronised on node rejoin. Messages published with delivery guarantees are not lost
+    during single-node failure.
+  failureDomain: Loss of RabbitMQ quorum (majority of cluster nodes) causes all OpenStack services using
+    AMQP to stop processing background tasks. nova-api, neutron-api, cinder-api, and other REST endpoints
+    continue to function for read-only operations but write operations that require background processing
+    are queued or fail.
   externalInteractionRationales:
-    RabbitMQ Service: RabbitMQ is the broker itself. Internal management operations
-      use the management API on the local cluster.
-    Keystone Identity: All API requests to the RabbitMQ management plugin are authenticated
-      via Keystone token validation when the OpenStack Keystone auth backend is configured.
+    RabbitMQ Service: RabbitMQ is the broker itself. Internal management operations use the management
+      API on the local cluster.
+    Keystone Identity: All API requests to the RabbitMQ management plugin are authenticated via Keystone
+      token validation when the OpenStack Keystone auth backend is configured.
+  secrets_management: RabbitMQ service credentials are stored in each OpenStack service's conf file, managed
+    by configuration management tooling.
 internalComponents:
 - ref: STCK00000D-TC0D
-  role: Core AMQP message broker providing exchange and queue management, clustering,
-    and quorum queue durability for all OpenStack services.
-requirementImplementations: []
+  role: Core AMQP message broker providing exchange and queue management, clustering, and quorum queue
+    durability for all OpenStack services.
+requirementImplementations:
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.04.3.1
+  status: satisfied
+  mechanism: architectureNote
+  key: secrets_management
+  notes: Secrets management documented in architectureNotes.secrets_management.

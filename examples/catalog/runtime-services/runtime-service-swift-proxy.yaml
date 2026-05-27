@@ -2,11 +2,10 @@ schemaVersion: '1.0'
 uid: STCK00000C-RS0C
 type: runtime_service
 name: Swift Proxy Service
-description: 'Self-managed deployment of the OpenStack Swift proxy-server providing
-  the API gateway for all object storage operations. The swift-proxy-server handles
-  client requests, authenticates via Keystone, routes requests to appropriate swift-account,
-  swift-container, and swift-object storage nodes, and applies middleware for features
-  like rate limiting and bulk operations. The proxy layer is stateless and scales
+description: 'Self-managed deployment of the OpenStack Swift proxy-server providing the API gateway for
+  all object storage operations. The swift-proxy-server handles client requests, authenticates via Keystone,
+  routes requests to appropriate swift-account, swift-container, and swift-object storage nodes, and applies
+  middleware for features like rate limiting and bulk operations. The proxy layer is stateless and scales
   horizontally.
 
   '
@@ -27,36 +26,38 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000006-TC06
 architectureNotes:
-  serviceAuthentication: All Swift API requests are authenticated via the Keystone
-    auth middleware configured in the Swift proxy pipeline. Requests include a Keystone
-    token that is validated against the Keystone service before the request is routed
-    to storage nodes.
-  secretsManagement: Swift proxy configuration including Keystone credentials for
-    token validation are stored in proxy-server.conf managed by configuration management
-    tooling.
-  serviceLogging: Swift proxy emits access and error logs to /var/log/swift/. Logs
-    are shipped to the centralised log aggregation platform.
-  healthWelfareMonitoring: swift-proxy-server health is verified via HTTP endpoint
-    polling. Proxy response time and error rate are monitored. Storage node reachability
-    from the proxy is monitored.
-  availabilityModel: swift-proxy-server runs active-active across multiple proxy nodes
-    behind a load balancer. The proxy layer is fully stateless. Loss of a proxy node
-    does not affect data availability.
-  scalabilityModel: Proxy capacity scales horizontally by adding additional proxy
-    nodes. Throughput scales with the number of proxy workers and underlying network
-    bandwidth.
-  recoverabilityModel: Proxy processes recovered via systemd restart. No persistent
-    state is held at the proxy layer; recovery is immediate.
-  failureDomain: Failure of all proxy nodes prevents Swift API access. Data remains
-    intact and accessible once proxy is restored. A single proxy node failure is masked
-    by the load balancer.
+  serviceAuthentication: All Swift API requests are authenticated via the Keystone auth middleware configured
+    in the Swift proxy pipeline. Requests include a Keystone token that is validated against the Keystone
+    service before the request is routed to storage nodes.
+  secretsManagement: Swift proxy configuration including Keystone credentials for token validation are
+    stored in proxy-server.conf managed by configuration management tooling.
+  serviceLogging: Swift proxy emits access and error logs to /var/log/swift/. Logs are shipped to the
+    centralised log aggregation platform.
+  healthWelfareMonitoring: swift-proxy-server health is verified via HTTP endpoint polling. Proxy response
+    time and error rate are monitored. Storage node reachability from the proxy is monitored.
+  availabilityModel: swift-proxy-server runs active-active across multiple proxy nodes behind a load balancer.
+    The proxy layer is fully stateless. Loss of a proxy node does not affect data availability.
+  scalabilityModel: Proxy capacity scales horizontally by adding additional proxy nodes. Throughput scales
+    with the number of proxy workers and underlying network bandwidth.
+  recoverabilityModel: Proxy processes recovered via systemd restart. No persistent state is held at the
+    proxy layer; recovery is immediate.
+  failureDomain: Failure of all proxy nodes prevents Swift API access. Data remains intact and accessible
+    once proxy is restored. A single proxy node failure is masked by the load balancer.
   externalInteractionRationales:
-    Keystone Identity: Swift proxy validates all requests against Keystone using the
-      keystoneauth middleware. Modeled as a critical authentication dependency.
-    Swift Storage Cluster: The proxy routes all object, container, and account operations
-      to the underlying storage cluster. Modeled as the primary backend dependency.
+    Keystone Identity: Swift proxy validates all requests against Keystone using the keystoneauth middleware.
+      Modeled as a critical authentication dependency.
+    Swift Storage Cluster: The proxy routes all object, container, and account operations to the underlying
+      storage cluster. Modeled as the primary backend dependency.
+  secrets_management: Swift proxy configuration including Keystone credentials for token validation are
+    stored in proxy-server.
 internalComponents:
 - ref: STCK000006-TC06
-  role: Proxy server providing HTTP API gateway and Keystone auth middleware for the
-    Swift object storage cluster.
-requirementImplementations: []
+  role: Proxy server providing HTTP API gateway and Keystone auth middleware for the Swift object storage
+    cluster.
+requirementImplementations:
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.04.3.1
+  status: satisfied
+  mechanism: architectureNote
+  key: secrets_management
+  notes: Secrets management documented in architectureNotes.secrets_management.

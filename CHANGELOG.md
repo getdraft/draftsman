@@ -3,6 +3,52 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.28.0 - 2026-05-27
+
+### Added
+
+- **`decisionRecords` field on service, host, and product schemas**: `runtime_service`, `edge_gateway_service`, `data_store_service`, `host`, `product_component`, and `data_component` schemas now declare `decisionRecords` as an optional list field with `decisionRecordRef` collection schema. Objects of these types can now reference `decision_record` objects directly.
+
+- **Decision records for HAProxy and Ops Console**: Two new `decision_record` objects added to the examples catalog — `dr-haproxy-lb-operational-architecture.yaml` (01KSF29JTP-DRHA) documenting HAProxy's pass-through auth, Ansible-managed secrets, and VIP failover decisions, and `dr-ops-console-secrets-injection.yaml` (01KSE5V73Z-DRSC) documenting the Ops Console's deploy-time secrets injection approach.
+
+- **Open drafting session example**: `session-nova-compute-runtime-service.yaml` added to demonstrate an in-progress authoring session with unresolved questions about Nova scheduler election and conductor failover behavior.
+
+- **Security compliance evidence across the examples catalog**: All 14 runtime services, 7 data-store-services, the edge gateway, the OpenStack host, and the Lambda host now carry `architectureNotes` keys that satisfy active `Security and Security Compliance Requirement Group` requirements, plus corresponding `requirementImplementations` entries.
+
+### Changed
+
+- **`architectureNotes` inline warning suppressed when `decisionRecords` present**: `validate_architectural_decisions` no longer warns about inline `architectureNotes` on complete objects that already declare `decisionRecords` references. Objects that have promoted their narrative to decision records but retain minimal `architectureNotes` for requirement satisfaction are no longer flagged.
+
+- **Examples workspace `requireActiveRequirementGroupDisposition` enabled**: The examples workspace now sets `requireActiveRequirementGroupDisposition: true`, requiring all objects to have explicit dispositions for every requirement in the active security compliance requirement group. The workspace validates with zero failures and zero warnings at 159 catalog objects.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+No breaking changes. New `decisionRecords` field is optional on all affected schemas; existing objects require no changes.
+
+### Migration Notes
+
+1. **Add `decisionRecords` references** to any complete service, host, or product objects that have inline `architectureNotes` to suppress the inline-notes warning. The decision record content can be authored incrementally — the warning only fires when the object has neither inline decisions nor linked records.
+
+2. **Add compliance `architectureNotes` keys** (e.g. `secrets_management`, `access_control_model`, `backup_strategy`) to objects that should satisfy active security compliance requirement groups. Existing camelCase `architectureNotes` keys (e.g. `secretsManagement`) are not automatically recognized by compliance requirements that use snake_case keys.
+
+## 0.27.0 - 2026-05-27
+
+### Added
+
+- None.
+
+### Changed
+
+- **`architecturalDecisions` renamed to `architectureNotes`**: The inline scratchpad field for architectural context is renamed across all 67 files (schemas, validator, requirement groups, docs, examples, tests). The `architecturalDecision` mechanism type in requirement group `validAnswerTypes` and `canBeSatisfiedBy` entries is renamed to `architectureNote`.
+
+### Fixed
+
+- **Pre-existing test failures**: Added missing `Fixed` section to CHANGELOG 0.26.0 entry (required by `test_release_notes`). Fixed `test_ra_constraint_satisfied_passes_sdp` fixture objects to include vendor fields required by `conditionalRequired` when `deliveryModel` is `paas` or `appliance`.
+
 ## 0.26.0 - 2026-05-26
 
 ### Added

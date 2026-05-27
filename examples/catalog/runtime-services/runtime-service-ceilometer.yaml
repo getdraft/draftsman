@@ -2,12 +2,11 @@ schemaVersion: '1.0'
 uid: STCK000008-RS08
 type: runtime_service
 name: Ceilometer Telemetry Service
-description: 'Self-managed deployment of OpenStack Ceilometer providing metering
-  and telemetry data collection across the OpenStack platform. Runs ceilometer-api,
-  ceilometer-collector, ceilometer-agent-notification, ceilometer-alarm-evaluator,
-  and ceilometer-alarm-notifier subcomponents. Ceilometer consumes notifications from
-  the RabbitMQ bus emitted by Nova, Neutron, Cinder, and other services to build
-  a unified metering database for billing, monitoring, and capacity planning.
+description: 'Self-managed deployment of OpenStack Ceilometer providing metering and telemetry data collection
+  across the OpenStack platform. Runs ceilometer-api, ceilometer-collector, ceilometer-agent-notification,
+  ceilometer-alarm-evaluator, and ceilometer-alarm-notifier subcomponents. Ceilometer consumes notifications
+  from the RabbitMQ bus emitted by Nova, Neutron, Cinder, and other services to build a unified metering
+  database for billing, monitoring, and capacity planning.
 
   '
 version: 1.0.0
@@ -27,35 +26,37 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000009-TC09
 architectureNotes:
-  serviceAuthentication: All Ceilometer API requests are authenticated via Keystone
-    token validation. Ceilometer service account is registered in the Keystone service
-    catalog.
-  secretsManagement: Database credentials and RabbitMQ credentials are stored in
-    ceilometer.conf managed by configuration management tooling.
-  serviceLogging: Ceilometer emits logs to /var/log/ceilometer/. Logs are shipped
-    to the centralised log aggregation platform.
-  healthWelfareMonitoring: ceilometer-api health is verified via HTTP endpoint polling.
-    Collector queue depth in RabbitMQ is monitored. Alarm evaluator job execution
-    is monitored via periodic health checks.
-  availabilityModel: ceilometer-api runs active-active behind a load balancer. ceilometer-collector
-    runs active-active with RabbitMQ providing message distribution. Alarm evaluator
-    uses Tooz coordination for leader election.
-  scalabilityModel: ceilometer-api and ceilometer-collector scale horizontally. Collector
-    throughput scales with RabbitMQ capacity and additional worker processes.
-  recoverabilityModel: All processes recovered via systemd restart. Metering data
-    stored in the shared OpenStack DB. Metrics collected during collector downtime
-    are lost if not buffered upstream.
-  failureDomain: Failure of Ceilometer does not affect instance or network operations.
-    Impact is limited to metering data collection gaps and alarm evaluation delays.
-    Alarm notifications may be missed during evaluator outage.
+  serviceAuthentication: All Ceilometer API requests are authenticated via Keystone token validation.
+    Ceilometer service account is registered in the Keystone service catalog.
+  secretsManagement: Database credentials and RabbitMQ credentials are stored in ceilometer.conf managed
+    by configuration management tooling.
+  serviceLogging: Ceilometer emits logs to /var/log/ceilometer/. Logs are shipped to the centralised log
+    aggregation platform.
+  healthWelfareMonitoring: ceilometer-api health is verified via HTTP endpoint polling. Collector queue
+    depth in RabbitMQ is monitored. Alarm evaluator job execution is monitored via periodic health checks.
+  availabilityModel: ceilometer-api runs active-active behind a load balancer. ceilometer-collector runs
+    active-active with RabbitMQ providing message distribution. Alarm evaluator uses Tooz coordination
+    for leader election.
+  scalabilityModel: ceilometer-api and ceilometer-collector scale horizontally. Collector throughput scales
+    with RabbitMQ capacity and additional worker processes.
+  recoverabilityModel: All processes recovered via systemd restart. Metering data stored in the shared
+    OpenStack DB. Metrics collected during collector downtime are lost if not buffered upstream.
+  failureDomain: Failure of Ceilometer does not affect instance or network operations. Impact is limited
+    to metering data collection gaps and alarm evaluation delays. Alarm notifications may be missed during
+    evaluator outage.
   externalInteractionRationales:
-    Keystone Identity: All Ceilometer API requests require Keystone token validation.
-      Modeled to show the authentication dependency.
-    RabbitMQ Message Broker: Ceilometer subscribes to the OpenStack notification bus
-      on RabbitMQ to collect metering events from all platform services. Modeled as
-      the primary data collection mechanism.
+    Keystone Identity: All Ceilometer API requests require Keystone token validation. Modeled to show
+      the authentication dependency.
+    RabbitMQ Message Broker: Ceilometer subscribes to the OpenStack notification bus on RabbitMQ to collect
+      metering events from all platform services. Modeled as the primary data collection mechanism.
+  secrets_management: Database credentials and RabbitMQ credentials are stored in ceilometer.
 internalComponents:
 - ref: STCK000009-TC09
-  role: Core telemetry service providing metering collection, alarm evaluation, and
-    notification dispatch.
-requirementImplementations: []
+  role: Core telemetry service providing metering collection, alarm evaluation, and notification dispatch.
+requirementImplementations:
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.04.3.1
+  status: satisfied
+  mechanism: architectureNote
+  key: secrets_management
+  notes: Secrets management documented in architectureNotes.secrets_management.

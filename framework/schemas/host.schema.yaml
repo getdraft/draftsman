@@ -22,6 +22,7 @@ optionalFields:
 - internalComponents
 - externalInteractions
 - deploymentConfigurations
+- decisionRecords
 - requirementImplementations
 enumFields:
   catalogStatus:
@@ -43,11 +44,13 @@ fieldTypes:
   externalInteractions: list
   deploymentConfigurations: list
   requirementGroups: list
+  decisionRecords: list
   requirementImplementations: list
 collectionSchemas:
   internalComponents: internalComponent
   externalInteractions: externalInteraction
   deploymentConfigurations: deploymentConfiguration
+  decisionRecords: decisionRecordRef
   requirementImplementations: requirementImplementation
 internalComponent:
   requiredFields:

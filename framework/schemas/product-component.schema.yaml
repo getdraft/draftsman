@@ -23,6 +23,7 @@ optionalFields:
 - environmentConfiguration
 - architectureNotes
 - notes
+- decisionRecords
 - requirementImplementations
 enumFields:
   catalogStatus:
@@ -52,11 +53,13 @@ fieldTypes:
   environmentConfiguration: list
   architectureNotes: dict
   requirementGroups: list
+  decisionRecords: list
   requirementImplementations: list
 collectionSchemas:
   interfaces: interface
   networkBindings: networkBinding
   environmentConfiguration: environmentVariable
+  decisionRecords: decisionRecordRef
   requirementImplementations: requirementImplementation
 interface:
   requiredFields:

@@ -25,6 +25,7 @@ optionalFields:
 - retentionPolicy
 - architectureNotes
 - notes
+- decisionRecords
 - requirementImplementations
 enumFields:
   catalogStatus:
@@ -64,11 +65,13 @@ fieldTypes:
   containsPII: bool
   architectureNotes: dict
   requirementGroups: list
+  decisionRecords: list
   requirementImplementations: list
 collectionSchemas:
   tables: tableDefinition
   storedProcedures: storedProcedure
   scheduledJobs: scheduledJob
+  decisionRecords: decisionRecordRef
   requirementImplementations: requirementImplementation
 tableDefinition:
   requiredFields:

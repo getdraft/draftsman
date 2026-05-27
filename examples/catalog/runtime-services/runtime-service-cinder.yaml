@@ -2,11 +2,10 @@ schemaVersion: '1.0'
 uid: STCK000005-RS05
 type: runtime_service
 name: Cinder Block Storage Service
-description: 'Self-managed deployment of OpenStack Cinder providing persistent block
-  storage volumes for compute instances. Runs cinder-api, cinder-scheduler, and cinder-volume
-  subcomponents. Supports iSCSI as the primary storage backend with optional integration
-  to SAN/NAS appliances. Uses RabbitMQ for internal messaging and MariaDB for volume
-  state persistence.
+description: 'Self-managed deployment of OpenStack Cinder providing persistent block storage volumes for
+  compute instances. Runs cinder-api, cinder-scheduler, and cinder-volume subcomponents. Supports iSCSI
+  as the primary storage backend with optional integration to SAN/NAS appliances. Uses RabbitMQ for internal
+  messaging and MariaDB for volume state persistence.
 
   '
 version: 1.0.0
@@ -25,40 +24,41 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000005-TC05
 architectureNotes:
-  serviceAuthentication: All Cinder API requests are authenticated via Keystone token
-    validation. Cinder service account is registered in the Keystone service catalog.
-  secretsManagement: Database credentials, RabbitMQ credentials, and storage backend
-    credentials are stored in cinder.conf managed by configuration management tooling.
-  serviceLogging: Cinder emits logs to /var/log/cinder/. Logs are shipped to the
-    centralised log aggregation platform. Volume operation logs are critical for troubleshooting
-    attachment failures.
-  healthWelfareMonitoring: cinder-api health is verified via HTTP endpoint polling.
-    cinder-volume service health is monitored via cinder service-list. Storage backend
-    connectivity is monitored via driver-level health checks.
-  availabilityModel: cinder-api and cinder-scheduler run active-active behind a load
-    balancer. cinder-volume can be configured active-active with distributed lock
-    manager (DLM) for supported backends. HA depends on the underlying storage backend
-    capability.
-  scalabilityModel: cinder-api and cinder-scheduler scale horizontally. Storage capacity
-    scales by expanding the storage backend (adding iSCSI targets, LUNs, or storage
-    appliance capacity).
-  recoverabilityModel: Control plane processes recovered via systemd restart. Volume
-    state is recovered from MariaDB Galera. Actual volume data recovery depends on
-    the storage backend's own resilience mechanisms.
-  failureDomain: Failure of cinder-api prevents new volume operations. Failure of
-    cinder-volume affects volume attachment operations. Existing attached volumes
-    continue to function as they are presented directly via iSCSI from the storage
-    layer.
+  serviceAuthentication: All Cinder API requests are authenticated via Keystone token validation. Cinder
+    service account is registered in the Keystone service catalog.
+  secretsManagement: Database credentials, RabbitMQ credentials, and storage backend credentials are stored
+    in cinder.conf managed by configuration management tooling.
+  serviceLogging: Cinder emits logs to /var/log/cinder/. Logs are shipped to the centralised log aggregation
+    platform. Volume operation logs are critical for troubleshooting attachment failures.
+  healthWelfareMonitoring: cinder-api health is verified via HTTP endpoint polling. cinder-volume service
+    health is monitored via cinder service-list. Storage backend connectivity is monitored via driver-level
+    health checks.
+  availabilityModel: cinder-api and cinder-scheduler run active-active behind a load balancer. cinder-volume
+    can be configured active-active with distributed lock manager (DLM) for supported backends. HA depends
+    on the underlying storage backend capability.
+  scalabilityModel: cinder-api and cinder-scheduler scale horizontally. Storage capacity scales by expanding
+    the storage backend (adding iSCSI targets, LUNs, or storage appliance capacity).
+  recoverabilityModel: Control plane processes recovered via systemd restart. Volume state is recovered
+    from MariaDB Galera. Actual volume data recovery depends on the storage backend's own resilience mechanisms.
+  failureDomain: Failure of cinder-api prevents new volume operations. Failure of cinder-volume affects
+    volume attachment operations. Existing attached volumes continue to function as they are presented
+    directly via iSCSI from the storage layer.
   externalInteractionRationales:
-    Keystone Identity: All Cinder API requests require Keystone token validation.
-      Modeled to show the authentication dependency.
-    RabbitMQ Message Broker: Cinder uses RabbitMQ for messaging between cinder-api,
-      cinder-scheduler, and cinder-volume. Modeled as a critical distributed messaging
-      dependency.
-    Cinder Database: Cinder persists all volume state to MariaDB. Modeled as a critical
-      stateful dependency.
+    Keystone Identity: All Cinder API requests require Keystone token validation. Modeled to show the
+      authentication dependency.
+    RabbitMQ Message Broker: Cinder uses RabbitMQ for messaging between cinder-api, cinder-scheduler,
+      and cinder-volume. Modeled as a critical distributed messaging dependency.
+    Cinder Database: Cinder persists all volume state to MariaDB. Modeled as a critical stateful dependency.
+  secrets_management: Database credentials, RabbitMQ credentials, and storage backend credentials are
+    stored in cinder.
 internalComponents:
 - ref: STCK000005-TC05
-  role: Core block storage service providing cinder-api, cinder-scheduler, and cinder-volume
-    with iSCSI backend.
-requirementImplementations: []
+  role: Core block storage service providing cinder-api, cinder-scheduler, and cinder-volume with iSCSI
+    backend.
+requirementImplementations:
+- requirementGroup: 01KQQ4Q027-T3CA
+  requirementId: CC.SecurityCompliance.04.3.1
+  status: satisfied
+  mechanism: architectureNote
+  key: secrets_management
+  notes: Secrets management documented in architectureNotes.secrets_management.

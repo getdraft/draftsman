@@ -33,6 +33,7 @@ optionalFields:
 - vendorGovernance
 - architectureNotes
 - notes
+- decisionRecords
 - requirementImplementations
 conditionalRequired:
 - when:
@@ -88,12 +89,14 @@ fieldTypes:
   architectureNotes: dict
   vendorGovernance: dict
   requirementGroups: list
+  decisionRecords: list
   requirementImplementations: list
 collectionSchemas:
   internalComponents: internalComponent
   externalInteractions: externalInteraction
   deploymentConfigurations: deploymentConfiguration
   configurations: configuration
+  decisionRecords: decisionRecordRef
   requirementImplementations: requirementImplementation
 dictSubSchemas:
   vendorGovernance: vendorGovernance

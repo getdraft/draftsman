@@ -1,0 +1,42 @@
+schemaVersion: '1.0'
+uid: 01KSF29JTP-DRHA
+type: decision_record
+name: HAProxy Load Balancer Operational Architecture
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+tags:
+- decision-record
+- openstack
+- load-balancer
+- haproxy
+linkedObject: 01KSF29JTP-9HYA
+description: Documents the operational architecture decisions for the OpenStack API
+  Load Balancer (HAProxy) — covering authentication delegation, secrets management,
+  logging, health checking, availability, scalability, recoverability, and failure
+  domain.
+decisionRationale: "HAProxy operates in pass-through mode: it does not authenticate
+  requests itself. Authentication is delegated to backend services (Keystone for API
+  requests, nginx/Django for Horizon). This avoids duplicating token validation logic
+  and keeps the load balancer stateless.\n\nSSL certificates and HAProxy configuration
+  are managed by Ansible configuration management. Certificate private keys reside
+  in the OS certificate store on each controller node. No application-level secrets
+  are held by HAProxy, avoiding a secrets management dependency in the critical request
+  path.\n\nHAProxy performs active health checks on all backends (nova-api, keystone,
+  glance, neutron, cinder, horizon) on a 2-second interval, automatically removing
+  unhealthy backends from rotation. A shared virtual IP (VIP) managed by Keepalived
+  provides a single entry point with 2-second failover if the active master fails.\n\nHAProxy
+  is stateless; horizontal scaling is achieved by adding controller nodes. The process
+  is managed by systemd and restarts automatically on failure. Configuration is reapplied
+  via Ansible within minutes. Loss of all controller nodes renders the control plane
+  unavailable; the data plane (running instances) continues unaffected."
+impact: Pass-through authentication, Keepalived VIP failover, and Ansible-managed
+  configuration are the operational accountability boundaries for this load balancer.
+  Any future deployment that adds HAProxy-level authentication or secrets holding
+  must revisit this decision.
+relatedDecisionRecords:
+- 01KSE5V73Z-CRZV

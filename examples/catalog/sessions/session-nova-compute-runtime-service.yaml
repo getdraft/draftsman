@@ -1,0 +1,82 @@
+schemaVersion: '1.0'
+uid: 01KSF29JTP-SESS
+type: drafting_session
+name: Nova Compute Service — Availability and Scaling Architecture
+sessionStatus: open
+catalogStatus: incomplete
+lifecycleStatus: candidate
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+tags:
+- drafting-session
+- openstack
+- nova
+- compute
+- availability
+description: Open authoring session to resolve architecture questions about Nova
+  compute service availability posture and horizontal scaling approach. The Nova
+  runtime service object exists but lacks deployment configuration detail for
+  availability and scalability qualities. This session captures open questions
+  before those decisions are promoted to decision records.
+primaryObjectType: runtime_service
+primaryObjectUid: STCK000001-RS01
+sourceArtifacts:
+- name: runtime-service-nova.yaml
+  type: catalog-object
+  location: examples/catalog/runtime-services/runtime-service-nova.yaml
+  notes: Current Nova runtime service object. architectureNotes document the
+    availability and scalability model at a high level but deployment configuration
+    entries have not been authored.
+- name: OpenStack Nova Administration Guide
+  type: external-reference
+  location: https://docs.openstack.org/nova/latest/admin/
+  notes: Upstream documentation for nova-api, nova-scheduler, nova-conductor,
+    and nova-compute deployment and HA configuration.
+generatedObjects:
+- name: Nova Compute Service — Deployment Configurations
+  type: runtime_service
+  status: proposed
+  ref: STCK000001-RS01
+  notes: Pending resolution of Q1-Q3. Will add deploymentConfigurations entries
+    for availability and scalability qualities to the existing Nova runtime service
+    object once architecture questions are answered.
+unresolvedQuestions:
+- id: Q1
+  question: Does nova-scheduler run active-active across all three controller nodes,
+    or is leader election used to ensure only one scheduler processes requests at
+    a time?
+  status: open
+- id: Q2
+  question: What is the failover behavior if a nova-conductor instance becomes
+    unavailable mid-operation — does the in-flight RPC call fail or does another
+    conductor pick it up?
+  status: open
+- id: Q3
+  question: Is there a maximum number of concurrent live migrations configured,
+    and is this limit enforced at the scheduler or conductor level?
+  status: open
+assumptions:
+- id: A1
+  statement: Nova API runs active-active behind HAProxy on all three controller
+    nodes per the SDP service group definition.
+  rationale: Consistent with the SDP presentation and application tier configuration.
+  impact: If Nova API is not active-active, the availability model for the Nova
+    runtime service object requires revision.
+nextSteps:
+- id: NS1
+  action: Confirm nova-scheduler leader election behavior with the platform-engineering
+    team and document the answer in an architectureNotes.schedulerElection key
+    on the Nova runtime service.
+  status: open
+  owner: platform-engineering
+- id: NS2
+  action: Once Q1-Q3 are answered, author deploymentConfigurations entries for
+    availability and scalability qualities on the Nova runtime service object.
+  status: open
+  owner: platform-engineering
+- id: NS3
+  action: Promote resolved availability decision to a decision_record object
+    linked to the Nova runtime service.
+  status: open
+  owner: platform-engineering

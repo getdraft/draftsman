@@ -2,17 +2,14 @@ workspace:
   name: draftsman-examples
   displayName: Draftsman Examples
   companyName: Draftsman
-
 businessTaxonomy:
   pillars:
   - id: business-pillar.infrastructure
     name: Infrastructure
-
 requirements:
   activeRequirementGroups:
   - 01KQQ4Q027-T3CA
-  requireActiveRequirementGroupDisposition: false
-
+  requireActiveRequirementGroupDisposition: true
 vocabulary:
   deploymentTargets:
     source: configurations/vocabulary/deployment-targets.yaml
