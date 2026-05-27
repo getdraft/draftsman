@@ -23017,7 +23017,386 @@ window.DRAFT_BROWSER_DATA = {
           "description": "Internal tier hosting relational databases (MariaDB Galera), message broker (RabbitMQ), and object storage (Swift). Accessible only from control plane services."
         }
       ],
-      "sdpConnections": [],
+      "sdpConnections": [
+        {
+          "from": "01KSF29JTP-9HYA",
+          "to": "STCK000002-RS02",
+          "protocol": "HTTPS / HTTP",
+          "direction": "synchronous",
+          "port": "",
+          "label": "proxies authentication requests",
+          "serviceGroup": ""
+        },
+        {
+          "from": "01KSF29JTP-9HYA",
+          "to": "STCK000004-RS04",
+          "protocol": "HTTPS / HTTP",
+          "direction": "synchronous",
+          "port": "",
+          "label": "proxies networking API requests",
+          "serviceGroup": ""
+        },
+        {
+          "from": "01KSF29JTP-9HYA",
+          "to": "STCK000001-RS01",
+          "protocol": "HTTPS / HTTP",
+          "direction": "synchronous",
+          "port": "",
+          "label": "proxies compute API requests",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000008-RS08",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000008-RS08",
+          "to": "STCK00000D-RS0D",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "sends events to",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000005-RS05",
+          "to": "STCK000002-RS02",
+          "protocol": "HTTP (Keystone API)",
+          "direction": "synchronous",
+          "port": "",
+          "label": "validates tokens",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000005-RS05",
+          "to": "STCK00000D-RS0D",
+          "protocol": "AMQP",
+          "direction": "asynchronous",
+          "port": "",
+          "label": "publishes and consumes RPC messages",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000005-RS05",
+          "to": "STCK000005-DAR5",
+          "protocol": "MySQL wire protocol",
+          "direction": "synchronous",
+          "port": "",
+          "label": "persists volume state",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000003-RS03",
+          "to": "STCK000003-DAR3",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000003-RS03",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000003-RS03",
+          "to": "STCK000006-DAR6",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000007-RS07",
+          "to": "STCK000007-DAR7",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000007-RS07",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000007-RS07",
+          "to": "STCK00000D-RS0D",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000006-RS06",
+          "to": "STCK000005-RS05",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000006-RS06",
+          "to": "STCK000003-RS03",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000006-RS06",
+          "to": "STCK000007-RS07",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000006-RS06",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000006-RS06",
+          "to": "STCK000004-RS04",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000006-RS06",
+          "to": "STCK000001-RS01",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000009-RS09",
+          "to": "STCK000007-DAR7",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000009-RS09",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000009-RS09",
+          "to": "STCK000001-RS01",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000009-RS09",
+          "to": "STCK00000D-RS0D",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000002-RS02",
+          "to": "STCK000002-DAR2",
+          "protocol": "MySQL wire protocol",
+          "direction": "synchronous",
+          "port": "",
+          "label": "persists identity data",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000004-RS04",
+          "to": "STCK000002-RS02",
+          "protocol": "HTTP (Keystone API)",
+          "direction": "synchronous",
+          "port": "",
+          "label": "validates tokens",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000004-RS04",
+          "to": "STCK00000D-RS0D",
+          "protocol": "AMQP",
+          "direction": "asynchronous",
+          "port": "",
+          "label": "publishes and consumes agent RPC messages",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000004-RS04",
+          "to": "STCK000004-DAR4",
+          "protocol": "MySQL wire protocol",
+          "direction": "synchronous",
+          "port": "",
+          "label": "persists network state",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000001-RS01",
+          "to": "STCK000005-RS05",
+          "protocol": "HTTP (Cinder API)",
+          "direction": "synchronous",
+          "port": "",
+          "label": "attaches block volumes",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000001-RS01",
+          "to": "STCK000002-RS02",
+          "protocol": "HTTP (Keystone API)",
+          "direction": "synchronous",
+          "port": "",
+          "label": "validates tokens",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000001-RS01",
+          "to": "STCK00000D-RS0D",
+          "protocol": "AMQP",
+          "direction": "asynchronous",
+          "port": "",
+          "label": "publishes and consumes RPC messages",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000001-RS01",
+          "to": "STCK000003-RS03",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000001-RS01",
+          "to": "STCK000004-RS04",
+          "protocol": "HTTP (Neutron API)",
+          "direction": "synchronous",
+          "port": "",
+          "label": "provisions network ports",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000001-RS01",
+          "to": "STCK000001-DAR1",
+          "protocol": "MySQL wire protocol",
+          "direction": "synchronous",
+          "port": "",
+          "label": "reads from / writes to",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000D-RS0D",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000B-RS0B",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000B-RS0B",
+          "to": "STCK000007-DAR7",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000C-RS0C",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000C-RS0C",
+          "to": "STCK000006-DAR6",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000A-RS0A",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000A-RS0A",
+          "to": "STCK00000D-RS0D",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000A-RS0A",
+          "to": "STCK000007-DAR7",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        }
+      ],
       "serviceGroups": [
         {
           "name": "Presentation & API Layer",
@@ -54199,7 +54578,386 @@ window.DRAFT_BROWSER_DATA = {
           "description": "Internal tier hosting relational databases (MariaDB Galera), message broker (RabbitMQ), and object storage (Swift). Accessible only from control plane services."
         }
       ],
-      "sdpConnections": [],
+      "sdpConnections": [
+        {
+          "from": "01KSF29JTP-9HYA",
+          "to": "STCK000002-RS02",
+          "protocol": "HTTPS / HTTP",
+          "direction": "synchronous",
+          "port": "",
+          "label": "proxies authentication requests",
+          "serviceGroup": ""
+        },
+        {
+          "from": "01KSF29JTP-9HYA",
+          "to": "STCK000004-RS04",
+          "protocol": "HTTPS / HTTP",
+          "direction": "synchronous",
+          "port": "",
+          "label": "proxies networking API requests",
+          "serviceGroup": ""
+        },
+        {
+          "from": "01KSF29JTP-9HYA",
+          "to": "STCK000001-RS01",
+          "protocol": "HTTPS / HTTP",
+          "direction": "synchronous",
+          "port": "",
+          "label": "proxies compute API requests",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000008-RS08",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000008-RS08",
+          "to": "STCK00000D-RS0D",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "sends events to",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000005-RS05",
+          "to": "STCK000002-RS02",
+          "protocol": "HTTP (Keystone API)",
+          "direction": "synchronous",
+          "port": "",
+          "label": "validates tokens",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000005-RS05",
+          "to": "STCK00000D-RS0D",
+          "protocol": "AMQP",
+          "direction": "asynchronous",
+          "port": "",
+          "label": "publishes and consumes RPC messages",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000005-RS05",
+          "to": "STCK000005-DAR5",
+          "protocol": "MySQL wire protocol",
+          "direction": "synchronous",
+          "port": "",
+          "label": "persists volume state",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000003-RS03",
+          "to": "STCK000003-DAR3",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000003-RS03",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000003-RS03",
+          "to": "STCK000006-DAR6",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000007-RS07",
+          "to": "STCK000007-DAR7",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000007-RS07",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000007-RS07",
+          "to": "STCK00000D-RS0D",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000006-RS06",
+          "to": "STCK000005-RS05",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000006-RS06",
+          "to": "STCK000003-RS03",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000006-RS06",
+          "to": "STCK000007-RS07",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000006-RS06",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000006-RS06",
+          "to": "STCK000004-RS04",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000006-RS06",
+          "to": "STCK000001-RS01",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000009-RS09",
+          "to": "STCK000007-DAR7",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000009-RS09",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000009-RS09",
+          "to": "STCK000001-RS01",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000009-RS09",
+          "to": "STCK00000D-RS0D",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000002-RS02",
+          "to": "STCK000002-DAR2",
+          "protocol": "MySQL wire protocol",
+          "direction": "synchronous",
+          "port": "",
+          "label": "persists identity data",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000004-RS04",
+          "to": "STCK000002-RS02",
+          "protocol": "HTTP (Keystone API)",
+          "direction": "synchronous",
+          "port": "",
+          "label": "validates tokens",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000004-RS04",
+          "to": "STCK00000D-RS0D",
+          "protocol": "AMQP",
+          "direction": "asynchronous",
+          "port": "",
+          "label": "publishes and consumes agent RPC messages",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000004-RS04",
+          "to": "STCK000004-DAR4",
+          "protocol": "MySQL wire protocol",
+          "direction": "synchronous",
+          "port": "",
+          "label": "persists network state",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000001-RS01",
+          "to": "STCK000005-RS05",
+          "protocol": "HTTP (Cinder API)",
+          "direction": "synchronous",
+          "port": "",
+          "label": "attaches block volumes",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000001-RS01",
+          "to": "STCK000002-RS02",
+          "protocol": "HTTP (Keystone API)",
+          "direction": "synchronous",
+          "port": "",
+          "label": "validates tokens",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000001-RS01",
+          "to": "STCK00000D-RS0D",
+          "protocol": "AMQP",
+          "direction": "asynchronous",
+          "port": "",
+          "label": "publishes and consumes RPC messages",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000001-RS01",
+          "to": "STCK000003-RS03",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000001-RS01",
+          "to": "STCK000004-RS04",
+          "protocol": "HTTP (Neutron API)",
+          "direction": "synchronous",
+          "port": "",
+          "label": "provisions network ports",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK000001-RS01",
+          "to": "STCK000001-DAR1",
+          "protocol": "MySQL wire protocol",
+          "direction": "synchronous",
+          "port": "",
+          "label": "reads from / writes to",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000D-RS0D",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000B-RS0B",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000B-RS0B",
+          "to": "STCK000007-DAR7",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000C-RS0C",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000C-RS0C",
+          "to": "STCK000006-DAR6",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000A-RS0A",
+          "to": "STCK000002-RS02",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000A-RS0A",
+          "to": "STCK00000D-RS0D",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        },
+        {
+          "from": "STCK00000A-RS0A",
+          "to": "STCK000007-DAR7",
+          "protocol": "",
+          "direction": "outbound",
+          "port": "",
+          "label": "calls",
+          "serviceGroup": ""
+        }
+      ],
       "serviceGroups": [
         {
           "name": "Presentation & API Layer",
