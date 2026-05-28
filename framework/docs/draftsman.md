@@ -199,6 +199,16 @@ satisfaction mechanism criteria capability. Draft capabilities may be created
 while authoring, but the Draftsman must either connect them to a requirement
 before approval or leave them as draft.
 
+A Capability names a technology architecture outcome — such as Data Persistence,
+Container Orchestration, Secrets Management, or CI/CD Pipeline. It is never a
+product name, product line, business process label, organizational unit, or
+business domain. This distinction is especially critical during bulk generation
+or workspace migrations, where source material may contain named products (ERP,
+HCM, SIS) or business domains (Recruiting & Hiring, Inventory Management) that
+look like candidates. Do not generate Capability objects from that material —
+only generate capabilities that represent technology architecture outcomes a
+Requirement Group would reference.
+
 Always use this named lookup procedure when a requirement has
 `relatedCapability`:
 

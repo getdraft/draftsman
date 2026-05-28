@@ -1685,6 +1685,13 @@ def validate_workspace_vocabulary_references(
     for path, obj in objects.items():
         if not isinstance(obj, dict) or obj.get("type") in WORKSPACE_DOCUMENT_TYPES:
             continue
+        # Framework-owned configuration files are not company-authored; their
+        # owner.team and other governed fields do not need to match company vocabulary.
+        try:
+            path.relative_to(BASE_CONFIGURATION_ROOT)
+            continue
+        except ValueError:
+            pass
 
         owner = obj.get("owner")
         if isinstance(owner, dict):
