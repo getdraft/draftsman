@@ -1753,19 +1753,21 @@
           <div class="chapter-num">3b.3</div>
           <h3>Dependency rationale rule</h3>
           <p>
-            Every <code>internalComponents</code> entry and <code>externalInteractions</code>
-            entry must either directly satisfy an applicable requirement or have an architectural
-            decision explaining why it is modeled.
+            Every <code>internalComponents</code> entry must either directly satisfy an applicable
+            requirement or have an architectural decision explaining why it is modeled.
           </p>
           <p>Use these machine-readable buckets:</p>
           <ul>
-            <li><code>architecturalDecisions.externalInteractionRationales</code></li>
             <li><code>architecturalDecisions.internalComponentRationales</code></li>
             <li><code>architecturalDecisions.dependencyRationales</code></li>
           </ul>
           <p>
-            Use stable keys such as the interaction name, component <code>ref</code>,
-            <code>enabledBy</code>, role, or capability ID.
+            Use stable keys such as the component <code>ref</code>, <code>enabledBy</code>,
+            role, or capability ID.
+          </p>
+          <p>
+            External dependencies are modeled as standalone <code>relationship</code> objects
+            in the catalog rather than inline lists on service or host objects.
           </p>
           <div class="code-block block-gap">
             <div class="code-block-header">
@@ -1773,8 +1775,8 @@
               <button class="copy-btn" aria-label="Copy code">Copy</button>
             </div>
             <pre><code>architecturalDecisions:
-  externalInteractionRationales:
-    Dynatrace Platform: Dynatrace is modeled because the local agent sends telemetry to the platform; it does not satisfy the host health monitoring requirement by itself.</code></pre>
+  internalComponentRationales:
+    01KQS0TF60-STVW: Dynatrace agent is included because the local agent sends telemetry to the APM platform.</code></pre>
           </div>
           <div class="callout is-rule">
             <span class="callout-badge" aria-hidden="true">ℹ</span>
@@ -1793,7 +1795,7 @@
             <span class="callout-badge" aria-hidden="true">ℹ</span>
             <div class="callout-content">
               <div class="callout-label">Rule</div>
-              <p class="callout-body">Agent Technology Components have an additional rule: any deployable object that includes an agent must document the corresponding external interaction for the agent's platform or record an exception under <code>architecturalDecisions.agentInteractionExceptions</code>.</p>
+              <p class="callout-body">Agent Technology Components have an additional rule: any deployable object that includes an agent must have a relationship object where this object is the source, or record an exception under <code>architecturalDecisions.agentInteractionExceptions</code>.</p>
             </div>
           </div>
         </div>

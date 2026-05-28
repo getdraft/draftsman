@@ -1395,33 +1395,6 @@ function technologyRefConfigurationSatisfiesCriteria(ref, criteria) {
   );
 }
 
-function externalInteractionSatisfiesMechanism(interaction, mechanism) {
-  if (mechanism?.mechanism !== 'externalInteraction') {
-    return false;
-  }
-  const capability = mechanism.criteria?.capability;
-  if (capability === 'any') {
-    return true;
-  }
-  return Boolean(capability && interactionCapabilities(interaction).includes(capability));
-}
-
-function externalInteractionSatisfiesImplementation(interaction, implementation) {
-  if (implementation?.status !== 'satisfied' || implementation?.mechanism !== 'externalInteraction') {
-    return false;
-  }
-  const ref = implementation.ref;
-  const capabilities = interactionCapabilities(interaction);
-  if (ref && [interaction.ref, interaction.name, ...capabilities].includes(ref)) {
-    return true;
-  }
-  const criteria = implementation.criteria && typeof implementation.criteria === 'object' ? implementation.criteria : {};
-  const expected = Array.isArray(criteria.capabilities)
-    ? criteria.capabilities
-    : criteria.capability ? [criteria.capability] : [];
-  return expected.some(capability => capabilities.includes(capability));
-}
-
 function internalComponentSatisfiesMechanism(object, component, mechanism) {
   const ref = component?.ref;
   if (!ref) {
@@ -1449,13 +1422,6 @@ function internalComponentSatisfiesMechanism(object, component, mechanism) {
   }
   if (mechanism?.mechanism === 'technologyComponentConfiguration') {
     return technologyRefConfigurationSatisfiesCriteria(ref, mechanism.criteria || {});
-  }
-  if (mechanism?.mechanism === 'externalInteraction') {
-    return (object?.externalInteractions || []).some(interaction =>
-      interaction
-      && interaction.enabledBy === ref
-      && externalInteractionSatisfiesMechanism(interaction, mechanism)
-    );
   }
   return false;
 }
@@ -1485,26 +1451,16 @@ function internalComponentSatisfiesImplementation(object, component, implementat
     }
     return technologyRefConfigurationSatisfiesCriteria(ref, implementation.criteria || {});
   }
-  if (mechanism === 'externalInteraction') {
-    return (object?.externalInteractions || []).some(interaction =>
-      interaction
-      && interaction.enabledBy === ref
-      && externalInteractionSatisfiesImplementation(interaction, implementation)
-    );
-  }
   return false;
 }
 
-function entryRationaleCandidates(entry, context, kind) {
+function entryRationaleCandidates(entry, context) {
   const candidates = [context];
   ['id', 'name', 'ref', 'enabledBy', 'role'].forEach(key => {
     if (entry?.[key]) {
       candidates.push(String(entry[key]));
     }
   });
-  if (kind === 'external') {
-    interactionCapabilities(entry).forEach(capability => candidates.push(capability));
-  }
   return Array.from(new Set(candidates));
 }
 
@@ -1550,29 +1506,25 @@ function rationaleEntriesForCandidates(bucketValue, candidates) {
   return Array.from(new Set(entries));
 }
 
-function dependencyRationales(object, kind, entry, context) {
+function dependencyRationales(object, entry, context) {
   const decisions = object?.architecturalDecisions;
   if (!decisions || typeof decisions !== 'object') {
     return [];
   }
-  const candidates = entryRationaleCandidates(entry, context, kind);
-  const bucketNames = kind === 'external'
-    ? ['externalInteractionRationales', 'dependencyRationales']
-    : ['internalComponentRationales', 'dependencyRationales'];
+  const candidates = entryRationaleCandidates(entry, context);
+  const bucketNames = ['internalComponentRationales', 'dependencyRationales'];
   return Array.from(new Set(
     bucketNames.flatMap(bucketName => rationaleEntriesForCandidates(decisions[bucketName], candidates))
   ));
 }
 
-function dependencyRequirementMatches(object, entry, kind, context) {
+function dependencyRequirementMatches(object, entry, context) {
   const matches = new Map();
   applicableRequirementEntries(object).forEach(({ group, requirement }) => {
     const mechanisms = Array.isArray(requirement?.canBeSatisfiedBy) ? requirement.canBeSatisfiedBy : [];
     const satisfiedByMechanism = mechanisms.some(mechanism => {
       if (!mechanism || typeof mechanism !== 'object') return false;
-      return kind === 'external'
-        ? externalInteractionSatisfiesMechanism(entry, mechanism)
-        : internalComponentSatisfiesMechanism(object, entry, mechanism);
+      return internalComponentSatisfiesMechanism(object, entry, mechanism);
     });
     if (satisfiedByMechanism) {
       matches.set(`${group.id}:${requirement.id || requirement.externalControlId || requirement.name}`, {
@@ -1584,9 +1536,7 @@ function dependencyRequirementMatches(object, entry, kind, context) {
 
   (object.requirementImplementations || []).forEach(implementation => {
     if (!implementation || typeof implementation !== 'object') return;
-    const matchesImplementation = kind === 'external'
-      ? externalInteractionSatisfiesImplementation(entry, implementation)
-      : internalComponentSatisfiesImplementation(object, entry, implementation);
+    const matchesImplementation = internalComponentSatisfiesImplementation(object, entry, implementation);
     if (!matchesImplementation) {
       return;
     }
@@ -1631,26 +1581,13 @@ function dependencyJustificationMarkup(justification) {
   `;
 }
 
-function dependencyJustificationForExternalInteraction(object, interaction, index) {
-  const context = `externalInteractions[${index}]`;
-  const requirementMatches = dependencyRequirementMatches(object, interaction, 'external', context);
-  if (requirementMatches.length) {
-    return { type: 'requirement', items: requirementMatches };
-  }
-  const rationales = dependencyRationales(object, 'external', interaction, context);
-  if (rationales.length) {
-    return { type: 'decision', items: rationales };
-  }
-  return { type: 'gap', items: [] };
-}
-
 function dependencyJustificationForInternalComponent(object, component, index) {
   const context = `internalComponents[${index}]`;
-  const requirementMatches = dependencyRequirementMatches(object, component, 'internal', context);
+  const requirementMatches = dependencyRequirementMatches(object, component, context);
   if (requirementMatches.length) {
     return { type: 'requirement', items: requirementMatches };
   }
-  const rationales = dependencyRationales(object, 'internal', component, context);
+  const rationales = dependencyRationales(object, component, context);
   if (rationales.length) {
     return { type: 'decision', items: rationales };
   }
@@ -4402,32 +4339,36 @@ function sourceRepositoryMarkup(object) {
 }
 
 function interactionMarkup(object) {
-  const interactions = object.externalInteractions || [];
-  if (!interactions.length) {
-    return '<div class="empty-card">No external interactions are documented for this object.</div>';
+  const outbound = object.outboundRelationships || [];
+  const inbound = object.inboundRelationships || [];
+  if (!outbound.length && !inbound.length) {
+    return '<div class="empty-card">No relationships are documented for this object.</div>';
   }
+  const renderRel = (rel, direction) => {
+    const peerUid = direction === 'outbound' ? rel.targetUid : (rel.sourceUid || '');
+    const peerName = direction === 'outbound' ? rel.targetName : (rel.sourceName || '');
+    const peerObj = peerUid && objectLookup[peerUid] ? objectLookup[peerUid] : null;
+    const peerLink = peerObj
+      ? `<span class="ard-link" data-object-link="${escapeHtml(peerObj.id)}">${escapeHtml(peerObj.name || peerName || peerUid)}</span>`
+      : escapeHtml(peerName || peerUid || 'External target');
+    const caps = Array.isArray(rel.capabilities) ? rel.capabilities : [];
+    return `
+      <article class="interaction-card">
+        <div class="interaction-top">
+          <div class="interaction-heading">
+            <div class="interaction-name">${escapeHtml(rel.name || rel.label || '')} ${peerLink}</div>
+            <span class="requirement-badge">${escapeHtml(direction)}</span>
+            ${capabilityLabelsMarkup(caps)}
+          </div>
+        </div>
+        ${rel.technology ? `<div class="interaction-notes">${escapeHtml(rel.technology)}</div>` : ''}
+      </article>
+    `;
+  };
   return `
     <div class="interactions-list">
-      ${interactions.map((interaction, index) => {
-        const justification = dependencyJustificationForExternalInteraction(object, interaction, index);
-        const target = interaction.ref && objectLookup[interaction.ref] ? objectLookup[interaction.ref] : null;
-        const interactionName = target
-          ? `<span class="ard-link" data-object-link="${escapeHtml(target.id)}">${escapeHtml(interaction.name || target.name || 'External Interaction')}</span>`
-          : escapeHtml(interaction.name || 'External Interaction');
-        return `
-        <article class="interaction-card">
-          <div class="interaction-top">
-            <div class="interaction-heading">
-              <div class="interaction-name">${interactionName}</div>
-              ${capabilityLabelsMarkup(interaction.capabilities)}
-            </div>
-          </div>
-          ${dependencyJustificationMarkup(justification)}
-          ${interaction.notes ? `<div class="interaction-notes">${escapeHtml(interaction.notes)}</div>` : ''}
-          ${interaction.ref ? `<div class="interaction-ref">${escapeHtml(interaction.ref)}</div>` : ''}
-        </article>
-      `;
-      }).join('')}
+      ${outbound.map(rel => renderRel(rel, 'outbound')).join('')}
+      ${inbound.map(rel => renderRel(rel, 'inbound')).join('')}
     </div>
   `;
 }
@@ -4608,8 +4549,6 @@ function sdmServiceGroupsMarkup(object) {
       <div class="section-stack">
         ${groups.map(group => {
           const scalingUnit = group.scalingUnit ? scalingUnits.get(group.scalingUnit) : null;
-          const externalInteractions = (group.externalInteractions || []).filter(item => (item.type || 'external') !== 'internal');
-          const internalInteractions = (group.externalInteractions || []).filter(item => (item.type || 'external') === 'internal');
           const deployableEntries = group.deployableObjects || [];
           const productCount = deployableEntries.filter(entry => objectLookup[entry.ref]?.type === 'product_component').length;
           const paasCount = deployableEntries.filter(entry => objectLookup[entry.ref]?.deliveryModel === 'paas').length;
@@ -4629,8 +4568,6 @@ function sdmServiceGroupsMarkup(object) {
                 ${applianceCount ? applianceBadge() : ''}
                 ${saasCount ? saasBadge() : ''}
               </div>
-              ${externalInteractions.length ? `<div class="interaction-notes"><strong>External:</strong> ${escapeHtml(externalInteractions.map(item => item.name).join(', '))}</div>` : ''}
-              ${internalInteractions.length ? `<div class="interaction-notes"><strong>Internal:</strong> ${escapeHtml(internalInteractions.map(item => `${item.name} → ${item.ref || 'unknown'}`).join(', '))}</div>` : ''}
             </article>
           `;
         }).join('')}
@@ -4663,8 +4600,8 @@ function productServiceDetailMarkup(object) {
 }
 
 function preferredInteractionSource(object, fallbackObject) {
-  const ownInteractions = object?.externalInteractions || [];
-  if (ownInteractions.length) {
+  const ownRelationships = (object?.outboundRelationships || []).concat(object?.inboundRelationships || []);
+  if (ownRelationships.length) {
     return object;
   }
   return fallbackObject;
@@ -5122,9 +5059,6 @@ function serviceGroupSectionMarkup(group, tier) {
     return '';
   }
 
-  const internalInteractions = (group.externalInteractions || []).filter(item => (item.type || 'external') === 'internal');
-  const externalInteractions = (group.externalInteractions || []).filter(item => (item.type || 'external') !== 'internal');
-
   const substrateBar = substrateObj ? `
     <div class="service-group-substrate-bar">
       <span class="substrate-bar-icon">${objectIconSvg('gear')}</span>
@@ -5146,12 +5080,6 @@ function serviceGroupSectionMarkup(group, tier) {
       <div class="node-grid">
         ${topologyNodes.join('')}
       </div>
-      ${(internalInteractions.length || externalInteractions.length) ? `
-        <div class="service-group-support">
-          ${internalInteractions.map(interaction => `<div class="topology-internal-link">${escapeHtml(interaction.name || 'Internal interaction')} → ${escapeHtml(interaction.ref || 'unknown')}</div>`).join('')}
-          ${externalInteractions.map(interaction => `<div class="topology-internal-link">${escapeHtml(interaction.name || 'External interaction')} • ${escapeHtml(interaction.capability || 'other')}</div>`).join('')}
-        </div>
-      ` : ''}
     </section>
   `;
 }
@@ -6344,7 +6272,6 @@ function _sdpGroupsMarkup(object, vm) {
   </div>`;
   const groupCards = groups.map((sg, gi) => {
     const entries = sg.deployableObjects || [];
-    const ext = (sg.externalInteractions || []).filter(x => (x.type || 'external') !== 'internal');
     const rowsHtml = entries.map(e => {
       const svc = objectLookup[e.ref] || { name: e.ref };
       const zone = vm.zones.find(z => z.id === e.networkZone) || { id: e.networkZone || '', name: e.networkZone || '' };
@@ -6359,13 +6286,6 @@ function _sdpGroupsMarkup(object, vm) {
         <span class="notes">${escapeHtml(e.notes || '')}</span>
       </div>`;
     }).join('');
-    const extHtml = ext.length ? `<div class="ext-block">
-      <h4>External Interactions</h4>
-      ${ext.map(x => `<div class="ext-item">
-        <span class="name">${escapeHtml(x.name)}</span>
-        <span class="desc">${escapeHtml(x.notes || '')}</span>
-      </div>`).join('')}
-    </div>` : '';
     return `<div class="group-card${gi === 0 ? ' open' : ''}" data-group-idx="${gi}">
       <div class="group-head">
         <div>
@@ -6376,7 +6296,6 @@ function _sdpGroupsMarkup(object, vm) {
       </div>
       <div class="group-body">
         ${entries.length ? `<div class="group-table">${rowsHtml}</div>` : ''}
-        ${extHtml}
       </div>
     </div>`;
   }).join('');
