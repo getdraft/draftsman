@@ -21,7 +21,7 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-NB1W
-    example: An APM platform such as a tracing backend or observability service referenced by externalInteractions.
+    example: A relationship object where source is this service and the relationship has the apm capability, pointing to a modeled APM or tracing backend service.
   - mechanism: internalComponent
     criteria:
       capability: 01KQQ4Q026-NB1W

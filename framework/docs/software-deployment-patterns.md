@@ -77,8 +77,6 @@ Each service group includes:
 - `deploymentTarget`
 - optional `scalingUnit`
 - optional `deployableObjects`
-- optional `externalInteractions`
-
 Each deployable object entry should declare:
 
 - `ref`

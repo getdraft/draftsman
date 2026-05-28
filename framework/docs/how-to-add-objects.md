@@ -41,27 +41,27 @@ python3 .draft/framework/tools/repair_uids.py --workspace .
 
 ## Dependency Rationale Rule
 
-Every `internalComponents` entry and `externalInteractions` entry must either
-directly satisfy an applicable Requirement Group requirement or have an explicit
-architectural decision explaining why the dependency is modeled. Direct
-satisfaction means the entry matches an applicable requirement's
-`canBeSatisfiedBy` mechanism, or a valid `requirementImplementations` entry
-points at that mechanism.
+Every `internalComponents` entry must either directly satisfy an applicable
+Requirement Group requirement or have an explicit architectural decision
+explaining why the dependency is modeled. Direct satisfaction means the entry
+matches an applicable requirement's `canBeSatisfiedBy` mechanism, or a valid
+`requirementImplementations` entry points at that mechanism.
 
-When a dependency is present for another reason, document the reason under:
+External dependencies (outbound calls, data reads, platform integrations) are
+modeled as standalone `relationship` objects in the catalog. Set `source` to
+the calling object's UID and `target` to the receiving object's UID (or
+`externalTarget` for systems with no catalog representation).
 
-- `architectureNotes.externalInteractionRationales` for external systems
-  and platforms
+When an internal component is present for a reason outside the applicable
+requirements, document the reason under:
+
 - `architectureNotes.internalComponentRationales` for locally composed
   Technology Components
 - `architectureNotes.dependencyRationales` when one shared rationale is
   clearer than separate buckets
 
-Use the interaction name, component `ref`, `enabledBy`, role, or list-form
-fields as the rationale key. For example, an APM platform on a Host whose
-Host Requirement Group only asks for host health monitoring needs a rationale
-because APM is not the same requirement as host health and welfare monitoring.
-If the dependency is actually intended to satisfy a requirement, update the
+Use the component `ref`, `enabledBy`, role, or capability ID as the rationale
+key. If the dependency is actually intended to satisfy a requirement, update the
 entry with the matching capability or add valid `requirementImplementations`
 evidence instead of adding rationale.
 
@@ -85,8 +85,8 @@ Technology Components should be specific. If you cannot name the product version
 1. Create the file in `catalog/hosts/`, `catalog/runtime-services/`, or `catalog/data-at-rest-services/`.
 2. Reference the Operating System and Compute Platform Technology Components explicitly.
 3. Add any Agent Technology Components or other internal components that physically live on the host.
-4. Document `externalInteractions` for identity, logging, security, monitoring, patching, or other platforms.
-5. Add `architectureNotes` when the host must answer a Requirement Group or compliance question that is not expressed directly in the object, or when an internal component or external interaction exists for a reason outside the applicable Host requirements.
+4. Create relationship objects for identity, logging, security, monitoring, patching, or other platform dependencies.
+5. Add `architectureNotes` when the host must answer a Requirement Group or compliance question that is not expressed directly in the object, or when an internal component exists for a reason outside the applicable Host requirements.
 6. Add `requirementGroups` only for Requirement Groups the host explicitly claims to
    satisfy, then add valid `requirementImplementations` for every applicable
    control in each declared profile.
@@ -99,12 +99,12 @@ Technology Components should be specific. If you cannot name the product version
 2. Reference exactly one `host` and one `primaryTechnologyComponent`; the
    primary Technology Component is the service's required function component,
    not an optional dependency that needs separate rationale.
-3. Add service-level external interactions that go beyond the host baseline.
+3. Create relationship objects for service-level dependencies that go beyond the host baseline.
 4. Document the decisions that describe scaling, health, secrets handling, and, for Data-at-Rest Services, durability and protection.
    Data-at-Rest Services must document backup strategy, backup platform, RTO,
-   and RPO; use an `externalInteractions` entry for a separate backup platform
-   or `architectureNotes.backup.platform` for provider-managed backups.
-5. Use `architectureNotes` whenever the service must answer a Requirement Group or compliance question that is not expressed directly in the object, or when an internal component or external interaction exists for a reason outside the applicable service requirements.
+   and RPO; create a relationship object pointing to a separate backup platform
+   or use `architectureNotes.backup.platform` for provider-managed backups.
+5. Use `architectureNotes` whenever the service must answer a Requirement Group or compliance question that is not expressed directly in the object, or when an internal component exists for a reason outside the applicable service requirements.
 6. Add `requirementGroups` only for Requirement Groups the service explicitly claims
    to satisfy, then add valid `requirementImplementations` for every applicable
    control in each declared profile.

@@ -306,27 +306,28 @@ Requirements can be satisfied by mechanisms such as:
 
 #### 3b.3 Dependency rationale rule {#dependency-rationale}
 
-Every `internalComponents` entry and `externalInteractions` entry must either directly satisfy an applicable requirement or have an architectural decision explaining why it is modeled.
+Every `internalComponents` entry must either directly satisfy an applicable requirement or have an architectural decision explaining why it is modeled.
 
 Use these machine-readable buckets:
 
-- `architectureNotes.externalInteractionRationales`
 - `architectureNotes.internalComponentRationales`
 - `architectureNotes.dependencyRationales`
 
-Use stable keys such as the interaction name, component `ref`, `enabledBy`, role, or capability ID.
+Use stable keys such as the component `ref`, `enabledBy`, role, or capability ID.
 
 ```yaml
 architectureNotes:
-  externalInteractionRationales:
-    Dynatrace Platform: Dynatrace is modeled because the local agent sends telemetry to the platform; it does not satisfy the host health monitoring requirement by itself.
+  internalComponentRationales:
+    01KQS0TF60-STVW: Dynatrace agent is included because the local agent sends telemetry to the APM platform; it satisfies the optional APM requirement.
 ```
 
 If the dependency is intended to satisfy a requirement, add the matching capability or `requirementImplementations` evidence instead of adding rationale.
 
+External dependencies are modeled as standalone `relationship` objects in the catalog rather than inline lists on service or host objects. See [3b.5 Relationship objects](#relationship-objects) for how to model outbound service dependencies.
+
 #### 3b.4 Agent rule {#agent-rule}
 
-Agent Technology Components have an additional rule: any deployable object that includes an agent must document the corresponding external interaction for the agent's platform or record an exception under `architectureNotes.agentInteractionExceptions`.
+Agent Technology Components have an additional rule: any deployable object that includes an agent must have a relationship object where this object is the source, or record an exception under `architectureNotes.agentInteractionExceptions`.
 
 ---
 

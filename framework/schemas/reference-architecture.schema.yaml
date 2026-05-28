@@ -66,13 +66,10 @@ serviceGroup:
   - deploymentTarget
   - scalingUnit
   - deployableObjects
-  - externalInteractions
   fieldTypes:
     deployableObjects: list
-    externalInteractions: list
   collectionSchemas:
     deployableObjects: deployableObjectEntry
-    externalInteractions: externalInteraction
 deployableObjectEntry:
   requiredFields: []
   optionalFields:
@@ -106,20 +103,6 @@ deployableObjectEntry:
     objectType: Declare the expected catalog object type when no specific ref is provided.
       Use in framework-level or community RAs where the company catalog defines which
       specific objects satisfy the role. Provide ref or objectType; both may be present.
-externalInteraction:
-  requiredFields:
-  - name
-  optionalFields:
-  - type
-  - ref
-  - capabilities
-  - notes
-  enumFields:
-    type:
-    - internal
-    - external
-  fieldTypes:
-    capabilities: list
 requirementImplementation:
   requiredFields:
   - requirementGroup

@@ -9,8 +9,6 @@ requiredFields:
 - catalogStatus
 - lifecycleStatus
 defaultOwnerRole: technology-admin
-deprecatedFields:
-- externalInteractions
 optionalFields:
 - aliases
 - description
@@ -20,7 +18,6 @@ optionalFields:
 - host
 - primaryTechnologyComponent
 - internalComponents
-- externalInteractions
 - deploymentConfigurations
 - vendor
 - productName
@@ -82,7 +79,6 @@ fieldTypes:
   owner: dict
   tags: list
   internalComponents: list
-  externalInteractions: list
   deploymentConfigurations: list
   capabilities: list
   configurations: list
@@ -93,7 +89,6 @@ fieldTypes:
   requirementImplementations: list
 collectionSchemas:
   internalComponents: internalComponent
-  externalInteractions: externalInteraction
   deploymentConfigurations: deploymentConfiguration
   configurations: configuration
   decisionRecords: decisionRecordRef
@@ -117,16 +112,6 @@ internalComponent:
     role: Describe the component role inside this service.
     configuration: Reference a configuration id on the referenced Technology Component when this service uses a specific named variant.
     notes: Add context that does not belong in role or configuration.
-externalInteraction:
-  requiredFields:
-  - capabilities
-  optionalFields:
-  - name
-  - ref
-  - notes
-  - enabledBy
-  fieldTypes:
-    capabilities: list
 deploymentConfiguration:
   requiredFields:
   - id

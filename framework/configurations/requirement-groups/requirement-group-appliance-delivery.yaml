@@ -56,7 +56,7 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-D04B
-    example: The appliance forwards audit events to a modeled central logging service or SIEM platform referenced by externalInteractions.ref.
+    example: A relationship object where source is this appliance and the relationship has the log-management capability, pointing to a modeled central logging service or SIEM platform.
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-D04B

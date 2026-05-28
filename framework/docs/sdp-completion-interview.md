@@ -19,7 +19,7 @@ incomplete conditions:
 - No `serviceGroups` or service groups with no `deployableObjects`
 - `deployableObjects` entries with no `diagramTier`
 - No `connections` or `serviceConnections` declared anywhere in the SDP
-- No `externalInteractions` at any level
+- No relationship objects with this SDP's objects as source
 - No `architectureNotes.dataClassification` or availability declaration
 - No `architectureNotes.failureDomain`
 - No `tierVariants` when environment tiers are declared in the workspace
@@ -39,7 +39,7 @@ score and gap list to the user before asking any questions.
 | Deployable objects | DO | Every service group has at least one entry with a resolved catalog `ref` and `diagramTier` |
 | Network zones | NZ | `networkZones` declared, or an explicit architectural decision that no zone segmentation applies |
 | Connections | CN | At least one `serviceConnection` entry, or an explicit architectural decision that no cross-service connections exist |
-| External interactions | EI | At least one `externalInteractions` entry anywhere in the SDP |
+| External interactions | EI | At least one relationship object with a deployed object as source |
 | Data classification | DC | `architectureNotes.dataClassification` present |
 | Availability | AV | `architectureNotes.availability` present |
 | Failure domain | FD | `architectureNotes.failureDomain` present |
@@ -66,7 +66,7 @@ A score of 10/10 is the completion target. Present the score as:
 Before asking any question, do the following:
 
 1. Read the full SDP YAML, including all nested `serviceGroups`,
-   `deployableObjects`, `externalInteractions`, and `architectureNotes`.
+   `deployableObjects`, and `architectureNotes`.
 2. Score all ten dimensions.
 3. List the gaps.
 4. Read `.draft/workspace.yaml` and `configurations/vocabulary/` for approved
@@ -155,12 +155,12 @@ Ask one question per platform category. Present each as a yes/no:
 
 For each **yes**, search the catalog for the deployable object that represents
 that platform (Runtime Service, Data-at-Rest Service, or Edge/Gateway Service
-with a matching `deliveryModel`). If found, set `externalInteractions[].ref`.
+with a matching `deliveryModel`). If found, create a relationship object with
+`source` set to the dependent service and `target` set to the platform UID.
 If not found and the user can name the platform, draft the appropriate service
-object.
+object first, then create the relationship.
 
-Record each confirmed external interaction at the service group level where the
-dependency originates.
+Record each confirmed external dependency as a relationship object in the catalog.
 
 ### Step 2.2 — Third-party APIs and data feeds
 
@@ -171,12 +171,13 @@ Ask:
 > SMS/email gateways, state agency data feeds. (yes / no)
 
 For each **yes**, ask the user to name the vendor or service. Check whether a
-Technology Component or Edge/Gateway Service already models it. If yes, use
-that ref. If not, create a bare `externalInteraction` with the vendor name and
-note that a catalog object should be created later.
+Technology Component or Edge/Gateway Service already models it. If yes, create
+a relationship object with `source` set to the calling service and `target` set
+to the catalog UID. If not, create a relationship object using `externalTarget`
+with the vendor name, and note that a catalog object should be created later.
 
-Stop after three external interaction questions per round. If more may exist,
-record in the Drafting Session that external-interaction elicitation is
+Stop after three external dependency questions per round. If more may exist,
+record in the Drafting Session that external-dependency elicitation is
 incomplete.
 
 ## Phase 3 — Network Zones and Connections (gaps: NZ and CN)

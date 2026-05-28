@@ -20,7 +20,7 @@ applicableDefinitionChecklist:
   flows through the presentation tier.
 - Data tier services must only accept connections from the application tier, not from
   the presentation tier or external sources.
-- All cross-tier connections must be documented in service group connections or externalInteractions.
+- All cross-tier connections must be documented as relationship objects or service group connections.
 - Backup strategy, RTO, and RPO must be documented on the data tier service.
 serviceGroups:
 - name: Presentation Tier

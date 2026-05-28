@@ -276,8 +276,7 @@ Data-at-Rest Service, or Edge/Gateway Service with the correct `deliveryModel`
 before writing the relationship. For external systems with no catalog
 representation, use `externalTarget` on the relationship instead.
 
-Do not write `externalInteractions` on service or host objects — this field is
-deprecated. Use relationship objects to model all dependencies.
+Use relationship objects to model all outbound dependencies from service or host objects.
 
 Do not convert a capability question into team ownership unless the requirement
 explicitly asks for ownership. For example, host patch management asks what
@@ -791,8 +790,6 @@ output to the user.
 | `Set catalogStatus: deprecated` | A Technology Component in the object's graph has passed its vendor end-of-support date | Set `catalogStatus: deprecated` and add `architectureNotes.lifecycleRationale` explaining the transition plan |
 | `deliveryModel must be one of` | An invalid delivery model value was used | Replace with one of `self-managed`, `saas`, `paas`, `appliance`, `serverless` |
 | `classification must be one of` (technology_component) | Invalid classification field | Replace with one of `software`, `agent`, `operating-system`, `compute-platform` |
-| `Remove deprecated field 'externalInteractions'` | The object has externalInteractions which is deprecated | Convert each entry to a relationship object using `migrate_interactions.py` or manually |
-| `externalInteractions[N].ref references unknown object` | An externalInteraction ref points to a non-existent catalog object | Correct the ref or remove the interaction and author a relationship object instead |
 | `relationship must have either target or externalTarget` | A relationship object has neither a catalog target nor an externalTarget name | Set `target` to a catalog UID or `externalTarget` to the external system name |
 | `relationship source references unknown object` | Relationship source UID not found in catalog | Fix the source UID or add the missing object |
 | `relationship target references unknown object` | Relationship target UID not found in catalog | Fix the target UID or add the missing object |
@@ -842,16 +839,13 @@ If the session's `sessionStatus` is `blocked`, surface the blocking reason from
 
 Relationships are the primary way to model inter-object communication edges —
 how one deployable object calls, reads from, writes to, or sends events to
-another. Do not use `externalInteractions` on service or host objects; that
-field is deprecated. Use relationship objects instead.
+another. Use relationship objects to model all outbound dependencies.
 
 Author relationships when:
 
 - A user says "Service A calls Service B" or describes a data flow between objects.
 - A diagram or document shows directed connections between modeled objects.
 - The user asks about dependencies, impact analysis, or topology views.
-- An object has `externalInteractions` values — convert each entry to a
-  relationship object.
 
 For each relationship:
 

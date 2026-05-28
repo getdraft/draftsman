@@ -20,7 +20,6 @@ optionalFields:
 - scalingUnits
 - networkZones
 - serviceGroups
-- externalInteractions
 - decisionRecords
 - requirementImplementations
 - tierVariants
@@ -79,7 +78,6 @@ architectureNotes:
   scalingUnits: list
   networkZones: list
   serviceGroups: list
-  externalInteractions: list
   decisionRecords: list
   requirementGroups: list
   requirementImplementations: list
@@ -88,7 +86,6 @@ collectionSchemas:
   scalingUnits: scalingUnit
   networkZones: networkZone
   serviceGroups: serviceGroup
-  externalInteractions: externalInteraction
   decisionRecords: decisionRecordRef
   requirementImplementations: requirementImplementation
   tierVariants: tierVariant
@@ -137,16 +134,13 @@ serviceGroup:
   - substrate
   - scalingUnit
   - deployableObjects
-  - externalInteractions
   - connections
   fieldTypes:
     substrate: str
     deployableObjects: list
-    externalInteractions: list
     connections: list
   collectionSchemas:
     deployableObjects: deployableObjectEntry
-    externalInteractions: externalInteraction
     connections: serviceConnection
   fieldDescriptions:
     substrate: >
@@ -233,20 +227,6 @@ serviceConnection:
     propose-and-confirm pattern: infer likely crossings from zone topology, ask yes/no
     per zone crossing, then multi-select the specific services involved, then ask
     protocol once per crossing.
-externalInteraction:
-  requiredFields:
-  - name
-  optionalFields:
-  - type
-  - ref
-  - capabilities
-  - notes
-  enumFields:
-    type:
-    - internal
-    - external
-  fieldTypes:
-    capabilities: list
 decisionRecordRef:
   requiredFields:
   - ref

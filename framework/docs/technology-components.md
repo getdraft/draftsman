@@ -81,9 +81,10 @@ objects:
   operating answers on the service object.
 
 When an Agent Technology Component is used inside a deployable object, the
-deployable object must also declare the corresponding `externalInteractions`
-that the agent depends on, unless an architectural decision explains why the
-interaction is intentionally omitted.
+deployable object must also have a relationship object (with this object as
+source) that represents the agent's platform dependency, unless an architectural
+decision explains why the interaction is intentionally omitted via
+`architectureNotes.agentInteractionExceptions`.
 
 ## Appliance Products
 

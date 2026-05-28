@@ -1092,17 +1092,16 @@ def mechanism_satisfied(obj: dict[str, Any], mechanism: dict[str, Any], catalog_
         return is_non_empty(value)
     if mechanism_type == "externalInteraction":
         capability = mechanism.get("criteria", {}).get("capability")
-        interactions = list(obj.get("externalInteractions", []) or [])
-        for service_group in obj.get("serviceGroups", []) or []:
-            if isinstance(service_group, dict):
-                interactions.extend(service_group.get("externalInteractions", []) or [])
+        obj_uid = obj.get("uid")
+        outbound_rels = [
+            v for v in catalog_by_id.values()
+            if isinstance(v, dict) and v.get("type") == "relationship"
+            and is_non_empty(obj_uid) and v.get("source") == obj_uid
+        ]
         if capability == "any":
-            return bool(interactions)
-        # Check if any interaction has the required capability in its capabilities list
-        for interaction in interactions:
-            if not isinstance(interaction, dict):
-                continue
-            caps = interaction.get("capabilities", [])
+            return bool(outbound_rels)
+        for rel in outbound_rels:
+            caps = rel.get("capabilities", [])
             if isinstance(caps, list) and capability in caps:
                 return True
         return False
@@ -1291,15 +1290,6 @@ def technology_ref_configuration_satisfies_criteria(
     return False
 
 
-def external_interaction_satisfies_mechanism(interaction: dict[str, Any], mechanism: dict[str, Any]) -> bool:
-    if mechanism.get("mechanism") != "externalInteraction":
-        return False
-    capability = mechanism.get("criteria", {}).get("capability")
-    if capability == "any":
-        return True
-    return bool(capability and capability in interaction_capabilities(interaction))
-
-
 def internal_component_satisfies_mechanism(
     obj: dict[str, Any],
     component: dict[str, Any],
@@ -1329,29 +1319,7 @@ def internal_component_satisfies_mechanism(
     if mechanism_type == "technologyComponentConfiguration":
         criteria = mechanism.get("criteria", {}) if isinstance(mechanism.get("criteria"), dict) else {}
         return technology_ref_configuration_satisfies_criteria(ref, criteria, catalog_by_id)
-    if mechanism_type == "externalInteraction":
-        interactions = obj.get("externalInteractions", [])
-        if not isinstance(interactions, list):
-            return False
-        return any(
-            isinstance(interaction, dict)
-            and interaction.get("enabledBy") == ref
-            and external_interaction_satisfies_mechanism(interaction, mechanism)
-            for interaction in interactions
-        )
     return False
-
-
-def external_interaction_satisfies_implementation(interaction: dict[str, Any], implementation: dict[str, Any]) -> bool:
-    if implementation.get("status") != "satisfied" or implementation.get("mechanism") != "externalInteraction":
-        return False
-    ref = implementation.get("ref")
-    caps = interaction_capabilities(interaction)
-    if ref and ref in {interaction.get("ref"), interaction.get("name"), *caps}:
-        return True
-    criteria = implementation.get("criteria", {}) if isinstance(implementation.get("criteria"), dict) else {}
-    capabilities = criteria.get("capabilities") or ([criteria.get("capability")] if criteria.get("capability") else [])
-    return bool(capabilities and any(capability in caps for capability in capabilities))
 
 
 def internal_component_satisfies_implementation(
@@ -1380,27 +1348,15 @@ def internal_component_satisfies_implementation(
             return False
         criteria = implementation.get("criteria", {}) if isinstance(implementation.get("criteria"), dict) else {}
         return technology_ref_configuration_satisfies_criteria(ref, criteria, catalog_by_id)
-    if mechanism == "externalInteraction":
-        interactions = obj.get("externalInteractions", [])
-        if not isinstance(interactions, list):
-            return False
-        return any(
-            isinstance(interaction, dict)
-            and interaction.get("enabledBy") == ref
-            and external_interaction_satisfies_implementation(interaction, implementation)
-            for interaction in interactions
-        )
     return False
 
 
-def entry_rationale_candidates(entry: dict[str, Any], context: str, kind: str) -> list[str]:
+def entry_rationale_candidates(entry: dict[str, Any], context: str) -> list[str]:
     candidates = [context]
     for key in ("id", "name", "ref", "enabledBy", "role"):
         value = entry.get(key)
         if is_non_empty(value):
             candidates.append(str(value))
-    if kind == "external":
-        candidates.extend(interaction_capabilities(entry))
     return list(dict.fromkeys(candidates))
 
 
@@ -1439,23 +1395,18 @@ def rationale_bucket_matches(value: Any, candidates: list[str]) -> bool:
     return False
 
 
-def dependency_rationale_present(obj: dict[str, Any], kind: str, entry: dict[str, Any], context: str) -> bool:
+def dependency_rationale_present(obj: dict[str, Any], entry: dict[str, Any], context: str) -> bool:
     decisions = obj.get("architectureNotes", {})
     if not isinstance(decisions, dict):
         return False
-    candidates = entry_rationale_candidates(entry, context, kind)
-    bucket_names = (
-        ("externalInteractionRationales", "dependencyRationales")
-        if kind == "external"
-        else ("internalComponentRationales", "dependencyRationales")
-    )
+    candidates = entry_rationale_candidates(entry, context)
+    bucket_names = ("internalComponentRationales", "dependencyRationales")
     return any(rationale_bucket_matches(decisions.get(bucket_name), candidates) for bucket_name in bucket_names)
 
 
-def dependency_rationale_guidance(kind: str, entry: dict[str, Any], context: str) -> str:
-    bucket = "externalInteractionRationales" if kind == "external" else "internalComponentRationales"
+def dependency_rationale_guidance(entry: dict[str, Any], context: str) -> str:
     key = entry.get("name") or entry.get("ref") or entry.get("enabledBy") or entry.get("role") or context
-    return f"architectureNotes.{bucket}[{key!r}]"
+    return f"architectureNotes.internalComponentRationales[{key!r}]"
 
 
 def validate_unrequired_dependency_rationales(
@@ -1479,30 +1430,6 @@ def validate_unrequired_dependency_rationales(
         for implementation in obj.get("requirementImplementations", []) or []
         if isinstance(implementation, dict)
     ]
-
-    interactions = obj.get("externalInteractions", [])
-    if isinstance(interactions, list):
-        for index, interaction in enumerate(interactions):
-            if not isinstance(interaction, dict):
-                continue
-            context = f"externalInteractions[{index}]"
-            satisfies_requirement = any(
-                external_interaction_satisfies_mechanism(interaction, mechanism)
-                for _, _, requirement in applicable_requirements
-                for mechanism in requirement.get("canBeSatisfiedBy", []) or []
-                if isinstance(mechanism, dict)
-            ) or any(external_interaction_satisfies_implementation(interaction, implementation) for implementation in implementations)
-            if satisfies_requirement or dependency_rationale_present(obj, "external", interaction, context):
-                continue
-            record_requirement_gap(
-                obj,
-                path,
-                f"[{object_label(obj)}] Add {dependency_rationale_guidance('external', interaction, context)} "
-                f"to explain why {context} is modeled, or update it to satisfy a specific applicable requirement; "
-                "it does not directly satisfy any applicable requirement",
-                failures,
-                warnings,
-            )
 
     components = obj.get("internalComponents", [])
     if isinstance(components, list):
@@ -1528,24 +1455,12 @@ def validate_unrequired_dependency_rationales(
                 for mechanism in requirement.get("canBeSatisfiedBy", []) or []
                 if isinstance(mechanism, dict)
             ) or any(internal_component_satisfies_implementation(obj, component, implementation, catalog_by_id) for implementation in implementations)
-            if satisfies_requirement or dependency_rationale_present(obj, "internal", component, context):
-                continue
-            enabled_interaction_has_rationale = (
-                is_non_empty(ref)
-                and isinstance(interactions, list)
-                and any(
-                    isinstance(interaction, dict)
-                    and interaction.get("enabledBy") == ref
-                    and dependency_rationale_present(obj, "external", interaction, f"externalInteractions[{interaction_index}]")
-                    for interaction_index, interaction in enumerate(interactions)
-                )
-            )
-            if enabled_interaction_has_rationale:
+            if satisfies_requirement or dependency_rationale_present(obj, component, context):
                 continue
             record_requirement_gap(
                 obj,
                 path,
-                f"[{object_label(obj)}] Add {dependency_rationale_guidance('internal', component, context)} "
+                f"[{object_label(obj)}] Add {dependency_rationale_guidance(component, context)} "
                 f"to explain why {context} is modeled, or update it to satisfy a specific applicable requirement; "
                 "it does not directly satisfy any applicable requirement",
                 failures,
@@ -1861,28 +1776,6 @@ def validate_architectural_decisions(
             )
 
 
-def validate_external_interaction_refs(
-    obj: dict[str, Any],
-    path: Path,
-    catalog_by_id: dict[str, dict[str, Any]],
-    failures: list[str],
-    warnings: list[str] | None = None,
-) -> None:
-    interactions = obj.get("externalInteractions", [])
-    if not isinstance(interactions, list):
-        return
-    for index, interaction in enumerate(interactions):
-        if not isinstance(interaction, dict):
-            continue
-        ref = interaction.get("ref")
-        if ref and ref not in catalog_by_id:
-            failures.append(
-                f"{path}: externalInteractions[{index}].ref references unknown object '{ref}' — "
-                "model the interacted platform as a Host, RuntimeService, DataStoreService, Edge/Gateway Service, or Technology Component, "
-                "or remove ref until the target object exists"
-            )
-
-
 def technology_configuration_ids(obj: dict[str, Any]) -> set[str]:
     configurations = obj.get("configurations", [])
     if not isinstance(configurations, list):
@@ -2004,16 +1897,6 @@ def agent_interaction_exception(obj: dict[str, Any], abb_id: str) -> bool:
     return False
 
 
-def has_enabled_external_interaction(obj: dict[str, Any], abb_id: str) -> bool:
-    interactions = obj.get("externalInteractions", [])
-    if not isinstance(interactions, list):
-        return False
-    return any(
-        isinstance(interaction, dict) and interaction.get("enabledBy") == abb_id
-        for interaction in interactions
-    )
-
-
 def validate_classified_component_refs(
     obj: dict[str, Any],
     path: Path,
@@ -2059,9 +1942,18 @@ def validate_classified_component_refs(
         if not target or target.get("type") != "technology_component":
             continue
         if target.get("classification") == "agent":
-            if not has_enabled_external_interaction(obj, ref) and not agent_interaction_exception(obj, ref):
+            obj_uid = obj.get("uid")
+            has_outbound_rel = (
+                is_non_empty(obj_uid)
+                and any(
+                    v.get("type") == "relationship" and v.get("source") == obj_uid
+                    for v in catalog_by_id.values()
+                    if isinstance(v, dict)
+                )
+            )
+            if not has_outbound_rel and not agent_interaction_exception(obj, ref):
                 failures.append(
-                    f"{path}: agent Technology Component '{ref}' requires an externalInteraction enabledBy that Technology Component or architectureNotes.agentInteractionExceptions"
+                    f"{path}: agent Technology Component '{ref}' requires a relationship object with source == this object or architectureNotes.agentInteractionExceptions"
                 )
 
 
@@ -2469,15 +2361,16 @@ def validate_software_deployment_pattern(
             warnings,
         )
 
+    obj_uid = obj.get("uid")
     has_additional_interactions = (
         is_non_empty(architectural_decisions.get("externalDependencies"))
-        or any(
-            isinstance(group, dict)
-            and isinstance(group.get("externalInteractions"), list)
-            and len(group.get("externalInteractions", [])) > 0
-            for group in service_groups
+        or (
+            is_non_empty(obj_uid)
+            and any(
+                isinstance(v, dict) and v.get("type") == "relationship" and v.get("source") == obj_uid
+                for v in catalog_by_id.values()
+            )
         )
-        or (isinstance(obj.get("externalInteractions"), list) and len(obj.get("externalInteractions", [])) > 0)
     )
     if not has_additional_interactions and not is_non_empty(architectural_decisions.get("noAdditionalInteractions")):
         record_requirement_gap(
@@ -2675,20 +2568,29 @@ def object_scope(obj: dict[str, Any]) -> str | None:
     return None
 
 
-def find_external_interaction(obj: dict[str, Any], implementation: dict[str, Any]) -> bool:
-    interactions = obj.get("externalInteractions", [])
-    if not isinstance(interactions, list):
+def find_relationship_for_implementation(
+    obj: dict[str, Any],
+    implementation: dict[str, Any],
+    catalog_by_id: dict[str, dict[str, Any]],
+) -> bool:
+    """Return True when a relationship object satisfies an externalInteraction implementation."""
+    obj_uid = obj.get("uid")
+    if not is_non_empty(obj_uid):
         return False
     ref = implementation.get("ref")
     criteria = implementation.get("criteria", {}) if isinstance(implementation.get("criteria"), dict) else {}
     capabilities = criteria.get("capabilities") or ([criteria.get("capability")] if criteria.get("capability") else [])
-    for interaction in interactions:
-        if not isinstance(interaction, dict):
+    for v in catalog_by_id.values():
+        if not isinstance(v, dict) or v.get("type") != "relationship":
             continue
-        interaction_caps = interaction.get("capabilities", [])
-        if ref and ref in {interaction.get("ref"), interaction.get("name")} | set(interaction_caps):
+        if v.get("source") != obj_uid:
+            continue
+        rel_caps = v.get("capabilities", [])
+        if not isinstance(rel_caps, list):
+            rel_caps = []
+        if ref and ref in {v.get("target"), v.get("externalTarget"), v.get("name")} | set(rel_caps):
             return True
-        if capabilities and any(cap in interaction_caps for cap in capabilities):
+        if capabilities and any(cap in rel_caps for cap in capabilities):
             return True
     return False
 
@@ -2763,7 +2665,7 @@ def implementation_resolves(
         decisions = obj.get("architectureNotes", {})
         return is_non_empty(key) and isinstance(decisions, dict) and is_non_empty(get_nested_value(decisions, str(key)))
     if mechanism == "externalInteraction":
-        return find_external_interaction(obj, implementation)
+        return find_relationship_for_implementation(obj, implementation, catalog_by_id)
     if mechanism == "deploymentConfiguration":
         return find_deployment_configuration(obj, implementation)
     if mechanism == "technologyComponent":
@@ -3280,20 +3182,6 @@ def validate_service_group_structure(
             if intent and intent not in {"ha", "sa"}:
                 failures.append(f"{path}: serviceGroup '{group_name}' deployable object '{entry_label}' has invalid intent '{intent}'")
 
-        if warnings is not None and group.get("externalInteractions"):
-            warnings.append(
-                f"{path}: serviceGroup '{group_name}' externalInteractions is deprecated — "
-                "model each dependency as a relationship object instead"
-            )
-        for interaction in group.get("externalInteractions", []) or []:
-            if not isinstance(interaction, dict):
-                continue
-            if interaction.get("type", "external") == "internal":
-                ref = interaction.get("ref")
-                if not ref or ref not in service_group_names:
-                    failures.append(
-                        f"{path}: serviceGroup '{group_name}' internal interaction '{interaction.get('name', 'unnamed')}' must reference a valid service group name"
-                    )
         if warnings is not None and group.get("connections"):
             warnings.append(
                 f"{path}: serviceGroup '{group_name}' connections is deprecated — "
@@ -3435,7 +3323,6 @@ def main(argv: list[str] | None = None) -> int:
             validate_vocabulary_proposal(obj, path, workspace_vocabulary, failures, warnings)
             continue
         validate_against_schema(obj, path, schemas, failures, warnings)
-        validate_external_interaction_refs(obj, path, catalog_by_id, failures, warnings)
         validate_internal_component_configuration_refs(obj, path, catalog_by_id, failures)
         validate_product_service_architecture_refs(obj, path, failures)
         if obj.get("type") == "capability":

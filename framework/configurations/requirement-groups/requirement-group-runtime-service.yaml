@@ -102,7 +102,7 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-D04B
-    example: A modeled central logging Runtime Service, Edge/Gateway Service, PaaS-delivered service, or SIEM platform referenced by externalInteractions.ref.
+    example: A relationship object where source is this service and the relationship has the log-management capability, pointing to a modeled central logging Runtime Service, Edge/Gateway Service, or PaaS-delivered service.
   - mechanism: internalComponent
     criteria:
       capability: 01KQQ4Q026-D04B

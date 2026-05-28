@@ -438,7 +438,7 @@ class ValidationTests(unittest.TestCase):
         self,
         workspace: Path,
         include_rationale: bool,
-        rationale_kind: str = "external",
+        rationale_kind: str = "internal",
         include_apm_interaction: bool = True,
         apm_classification: str = "agent",
     ) -> None:
@@ -500,28 +500,25 @@ class ValidationTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-        if include_rationale and rationale_kind == "internal":
-            decisions = (
+        base_notes = textwrap.dedent(
+            """\
+            authenticationApproach: Federated via enterprise identity platform.
+            loggingApproach: Log forwarding to centralized logging platform.
+            healthWelfareMonitoringApproach: Host telemetry shipped to monitoring platform.
+            agentInteractionExceptions:
+              01KQS0TF60-JKMX: Security agent platform interaction is implicit in enterprise security posture.
+              01KQS0TF60-NPQR: Patch agent platform interaction is implicit in enterprise patch management posture.\
+            """
+        )
+        if include_rationale:
+            extra_note = (
                 "internalComponentRationales:\n"
                 "  01KQS0TF60-STVW: Included as optional application performance telemetry for runtimes deployed on this host standard."
             )
-        elif include_rationale:
-            decisions = (
-                "externalInteractionRationales:\n"
-                "  Dynatrace Platform: Included as optional application performance telemetry for runtimes deployed on this host standard."
-            )
         else:
-            decisions = "lifecycleRationale: Test approved host fixture."
-        decision_lines = textwrap.indent(decisions, "  ")
-        apm_interaction = (
-            """  - name: Dynatrace Platform
-    enabledBy: 01KQS0TF60-STVW
-    capabilities:
-      - 01KQQ4Q026-NB1W
-"""
-            if include_apm_interaction
-            else ""
-        )
+            extra_note = "lifecycleRationale: Test approved host fixture."
+        all_notes = base_notes + "\n" + extra_note
+        decision_lines = textwrap.indent(all_notes, "  ")
         (host_dir / "host-test-complete.yaml").write_text(
             f"""schemaVersion: "1.0"
 uid: 01KQS0TF60-XYZ1
@@ -543,25 +540,6 @@ internalComponents:
     role: agent
   - ref: 01KQS0TF60-STVW
     role: agent
-externalInteractions:
-  - name: Identity Platform
-    capabilities:
-      - 01KQQ4Q026-MHJM
-  - name: Logging Platform
-    capabilities:
-      - 01KQQ4Q026-D04B
-  - name: Health Monitoring Platform
-    capabilities:
-      - 01KQQ4Q026-98VD
-  - name: Security Monitoring Platform
-    enabledBy: 01KQS0TF60-JKMX
-    capabilities:
-      - 01KQQ4Q026-JW52
-  - name: Patch Management Platform
-    enabledBy: 01KQS0TF60-NPQR
-    capabilities:
-      - 01KQQ4Q026-BH6E
-{apm_interaction.rstrip()}
 architectureNotes:
 {decision_lines}
 requirementGroups:
@@ -603,10 +581,6 @@ requirementGroups:
                         description: Publishes target and appliance health.
                         capabilities:
                           - capability.health-welfare-monitoring
-                    externalInteractions:
-                      - name: Centralized logging
-                        capabilities:
-                          - capability.log-management
                     networkPlacement: public-facing
                     patchingOwner: aws-managed
                     complianceCerts: []
@@ -624,61 +598,6 @@ requirementGroups:
             result = validate_workspace(workspace)
 
         self.assertTrue(result.ok, result.stdout + result.stderr)
-
-    def test_external_interaction_ref_must_resolve(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            workspace = Path(directory)
-            host_dir = workspace / "catalog" / "hosts"
-            host_dir.mkdir(parents=True)
-            (workspace / "configurations").mkdir()
-            (host_dir / "host-test.yaml").write_text(
-                textwrap.dedent(
-                    """
-                    schemaVersion: "1.0"
-                    id: host.test
-                    type: host
-                    name: Test Host
-                    catalogStatus: stub
-                    lifecycleStatus: existing-only
-                    externalInteractions:
-                      - name: Missing Logging Service
-                        ref: service.missing.logging
-                        capabilities:
-                          - capability.log-management
-                    """
-                ).strip()
-                + "\n",
-                encoding="utf-8",
-            )
-            self._repair_workspace_uids(workspace)
-
-            result = validate_workspace(workspace)
-
-        self.assertFalse(result.ok, result.stdout + result.stderr)
-        self.assertIn("externalInteractions[0].ref references unknown object", result.stdout)
-
-    def test_unrequired_host_external_interaction_requires_architectural_decision(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            workspace = Path(directory)
-            ensure_workspace_layout(workspace)
-            self._write_complete_host_with_extra_apm_interaction(workspace, include_rationale=False)
-
-            result = validate_workspace(workspace)
-
-        self.assertFalse(result.ok, result.stdout + result.stderr)
-        self.assertIn("externalInteractionRationales['Dynatrace Platform']", result.stdout)
-        self.assertIn("does not directly satisfy any applicable requirement", result.stdout)
-
-    def test_unrequired_host_external_interaction_with_architectural_decision_validates(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            workspace = Path(directory)
-            ensure_workspace_layout(workspace)
-            self._write_complete_host_with_extra_apm_interaction(workspace, include_rationale=True)
-
-            result = validate_workspace(workspace)
-
-        self.assertTrue(result.ok, result.stdout + result.stderr)
-        self.assertNotIn("does not directly satisfy any applicable requirement", result.stdout)
 
     def test_unrequired_host_internal_component_requires_architectural_decision(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -804,16 +723,18 @@ requirementGroups:
         self.assertNotIn("internalComponentRationales['01KQS0TF61-DBMS']", result.stdout)
         self.assertNotIn("does not directly satisfy any applicable requirement", result.stdout)
 
-    def test_backup_platform_external_interaction_satisfies_data_store_requirement(self) -> None:
+    def test_backup_platform_relationship_satisfies_data_store_requirement(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
             ensure_workspace_layout(workspace)
             tech_dir = workspace / "catalog" / "technology-components"
             host_dir = workspace / "catalog" / "hosts"
             data_dir = workspace / "catalog" / "data-store-services"
+            rel_dir = workspace / "catalog" / "relationships"
             tech_dir.mkdir(parents=True, exist_ok=True)
             host_dir.mkdir(parents=True, exist_ok=True)
             data_dir.mkdir(parents=True, exist_ok=True)
+            rel_dir.mkdir(parents=True, exist_ok=True)
             (tech_dir / "technology-db-test.yaml").write_text(
                 textwrap.dedent(
                     """
@@ -862,10 +783,6 @@ requirementGroups:
                         role: host
                       - ref: 01KQS0TF62-DBMS
                         role: function
-                    externalInteractions:
-                      - name: Test Backup Vault
-                        capabilities:
-                          - 01KQQ4Q026-7T2H
                     architectureNotes:
                       serviceAuthentication: Uses centralized identity.
                       secretsManagement: Uses managed secrets injection.
@@ -890,11 +807,29 @@ requirementGroups:
                 + "\n",
                 encoding="utf-8",
             )
+            (rel_dir / "rel-backup-vault.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF62-RR1A
+                    type: relationship
+                    name: Test Data Service to Test Backup Vault
+                    catalogStatus: stub
+                    source: 01KQS0TF62-DATA
+                    externalTarget: Test Backup Vault
+                    label: backs up to
+                    direction: synchronous
+                    capabilities:
+                      - 01KQQ4Q026-7T2H
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
 
             result = validate_workspace(workspace)
 
         self.assertTrue(result.ok, result.stdout + result.stderr)
-        self.assertNotIn("externalInteractionRationales['Test Backup Vault']", result.stdout)
         self.assertNotIn("does not directly satisfy any applicable requirement", result.stdout)
 
     def test_technology_component_configuration_accepts_network_bindings(self) -> None:

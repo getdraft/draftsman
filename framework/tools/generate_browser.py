@@ -776,7 +776,6 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
                 "tags": obj.get("tags", []),
                 "ardCategory": obj.get("category", "") if obj.get("type") == "decision_record" else "",
                 "internalComponents": internal_component_refs(obj),
-                "externalInteractions": obj.get("externalInteractions", []),
                 "architectureNotes": obj.get("architectureNotes", {}),
                 "requirements": obj.get("requirements", []),
                 "implementations": obj.get("implementations", []),
@@ -817,6 +816,37 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
                 "existsInCatalog": True,
             }
         )
+
+    # Build per-object outbound/inbound relationship data from topology_edges
+    outbound_rels_by_uid: dict[str, list[dict[str, Any]]] = {}
+    inbound_rels_by_uid: dict[str, list[dict[str, Any]]] = {}
+    for rel_obj in objects:
+        if rel_obj.get("type") != "relationship":
+            continue
+        src = str(rel_obj.get("source", "")).strip()
+        tgt = str(rel_obj.get("target", "")).strip()
+        ext_tgt = str(rel_obj.get("externalTarget", "")).strip()
+        if not src:
+            continue
+        rel_entry = {
+            "uid": rel_obj.get("uid", ""),
+            "name": rel_obj.get("name", ""),
+            "label": rel_obj.get("label", ""),
+            "technology": rel_obj.get("technology", ""),
+            "direction": rel_obj.get("direction", ""),
+            "targetUid": tgt,
+            "targetName": registry.get(tgt, {}).get("name", "") if tgt else ext_tgt,
+            "capabilities": rel_obj.get("capabilities", []),
+        }
+        outbound_rels_by_uid.setdefault(src, []).append(rel_entry)
+        if tgt:
+            inbound_entry = {**rel_entry, "sourceUid": src, "sourceName": registry.get(src, {}).get("name", "")}
+            inbound_rels_by_uid.setdefault(tgt, []).append(inbound_entry)
+
+    for browser_obj in browser_objects:
+        uid = browser_obj["uid"]
+        browser_obj["outboundRelationships"] = outbound_rels_by_uid.get(uid, [])
+        browser_obj["inboundRelationships"] = inbound_rels_by_uid.get(uid, [])
 
     browser_lookup = {obj["uid"]: obj for obj in browser_objects}
     filter_values = sorted({obj["type"] for obj in objects})
