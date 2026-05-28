@@ -3,6 +3,38 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.29.0 - 2026-05-28
+
+### Added
+
+- None.
+
+### Changed
+
+- **`owner` is now optional on `requirement_group`**: Framework-provided requirement groups are not owned by any company team; the field was moved from `requiredFields` to `optionalFields`. Company-authored requirement groups may still declare `owner` and are encouraged to do so for accountability. No existing valid objects are affected.
+
+- **`capability` `aiHint` strengthened**: The schema hint now states both what a capability IS (a technology architecture outcome such as Data Persistence, Container Orchestration, CI/CD Pipeline) and what it IS NOT (a product name, business process, organizational unit, or business domain label). The distinction is called out explicitly for bulk-generation and migration contexts where product labels are most likely to be mistaken for capabilities. Closes #32.
+
+- **`draftsman.md` capability migration guard added**: A paragraph immediately after the existing "do not add or approve a Capability" prohibition now spells out the technology-outcome vs. product-label distinction with migration-specific language. Closes #32.
+
+### Fixed
+
+- **Framework configuration files no longer carry placeholder `owner.team`**: All 21 framework-owned requirement group and reference architecture files had `owner.team: cloud-architecture`, a placeholder value that produced unresolvable vocabulary warnings in company workspaces with a governed teams list. The `owner` block has been removed from all affected files. The vocabulary warning was correct; the data was wrong. Closes #33.
+
+- **SDP topology curvy lines restored**: `build_sdp_connections` now sources connections from `relationship` objects (introduced in 0.26.0) in addition to the deprecated `serviceGroups[].connections[]` field. SDPs that migrated to standalone relationship objects had empty `sdpConnections`, causing the SVG connection overlay to render nothing. Both sources are merged with deduplication; legacy connections are preserved for backward compatibility.
+
+- **C4 diagram structure**: `generate_c4.py` now groups containers into `Boundary` blocks (Mermaid) and `group` blocks (Structurizr DSL) derived from the SDP service group names. Previously all containers were emitted in a flat list with no visual structure. Falls back to flat output when no SDP grouping can be found.
+
+### Compatibility Impact
+
+Schema change: `owner` moved from required to optional on `requirement_group`. No existing valid objects are affected — objects with `owner` set continue to validate normally; framework-provided objects that omit it now also validate normally. Workspaces that relied on the validator to enforce `owner` presence on requirement groups will no longer see that enforcement.
+
+### Migration Notes
+
+1. **No action required for existing requirement groups**: Objects with `owner` set are unaffected. The change only removes the hard requirement so framework-provided groups can omit the field.
+
+2. **Remove placeholder `owner` blocks from framework-provided files if syncing manually**: Any workspace that vendored or forked framework configuration files should remove the `owner: {team: cloud-architecture, contact: ...}` block from framework requirement groups and reference architectures to eliminate vocabulary warnings.
+
 ## 0.28.1 - 2026-05-27
 
 ### Added
