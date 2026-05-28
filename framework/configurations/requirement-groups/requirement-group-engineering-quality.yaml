@@ -20,7 +20,7 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-S5J6
-    example: A load testing platform or service referenced as an externalInteraction.
+    example: A load testing platform or service referenced via a relationship object.
   - mechanism: architectureNote
     key: performanceTesting
     example: A documented statement of the load or performance testing approach, or a declaration that it is not applicable.
@@ -38,7 +38,7 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-RTWC
-    example: A CI/CD platform or quality gate service referenced as an externalInteraction.
+    example: A CI/CD platform or quality gate service referenced via a relationship object.
   - mechanism: architectureNote
     key: qualityGates
     example: A documented statement of the quality gate criteria and enforcement mechanism.
@@ -56,7 +56,7 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-QC9S
-    example: A test management or specification platform referenced as an externalInteraction.
+    example: A test management or specification platform referenced via a relationship object.
   - mechanism: architectureNote
     key: testAuthoring
     example: A documented statement of the test framework, coverage targets, and authoring ownership.
@@ -74,7 +74,7 @@ requirements:
   - mechanism: externalInteraction
     criteria:
       capability: 01KQQ4Q026-58Q3
-    example: A CI platform or test execution service referenced as an externalInteraction.
+    example: A CI platform or test execution service referenced via a relationship object.
   - mechanism: architectureNote
     key: testExecution
     example: A documented statement of the test execution environment and trigger model.

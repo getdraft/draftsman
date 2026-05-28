@@ -41,7 +41,7 @@ architectureNotes:
     In-progress provisioning operations may need to be retried after conductor failure.
   failureDomain: Failure of Ironic prevents bare metal node provisioning and deprovisioning. Already-provisioned nodes 
     continue to operate independently. Nova scheduling for bare metal flavors is suspended during Ironic outage.
-  externalInteractionRationales:
+  relationshipRationales:
     Keystone Identity: All Ironic API requests require Keystone token validation. Modeled to show the authentication 
       dependency.
     RabbitMQ Message Broker: Ironic uses RabbitMQ for conductor RPC messaging. Modeled as a critical distributed 

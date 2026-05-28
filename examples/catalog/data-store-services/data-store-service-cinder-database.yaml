@@ -53,7 +53,7 @@ architectureNotes:
       encryption keys are managed by Barbican (when deployed).
   accessControl:
     model: Role-based database access. Cinder service account has DML access to the cinder schema only.
-  externalInteractionRationales:
+  relationshipRationales:
     Backup Service: Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to
       show the external backup platform dependency.
   access_control_model: Role-based database access. Cinder service account has DML access to the cinder schema only. 

@@ -41,7 +41,7 @@ architectureNotes:
     Metrics collected during collector downtime are lost if not buffered upstream.
   failureDomain: Failure of Ceilometer does not affect instance or network operations. Impact is limited to metering 
     data collection gaps and alarm evaluation delays. Alarm notifications may be missed during evaluator outage.
-  externalInteractionRationales:
+  relationshipRationales:
     Keystone Identity: All Ceilometer API requests require Keystone token validation. Modeled to show the authentication
       dependency.
     RabbitMQ Message Broker: Ceilometer subscribes to the OpenStack notification bus on RabbitMQ to collect metering 

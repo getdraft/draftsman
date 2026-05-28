@@ -40,7 +40,7 @@ architectureNotes:
     Galera. In-progress stack operations may need manual remediation after engine failure.
   failureDomain: Failure of Heat prevents stack creation and update operations. Existing provisioned resources 
     (instances, networks, volumes) continue to operate independently of Heat availability.
-  externalInteractionRationales:
+  relationshipRationales:
     Keystone Identity: Heat requires Keystone for API authentication and for issuing trust tokens used by heat-engine 
       for deferred operations. Modeled as a critical authentication dependency.
     RabbitMQ Message Broker: Heat uses RabbitMQ for communication between heat-api and heat-engine workers. Modeled as a

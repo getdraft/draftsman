@@ -41,7 +41,7 @@ architectureNotes:
     Database instance data recovery depends on the instance backup configuration.
   failureDomain: Failure of Trove control plane prevents provisioning new database instances. Existing database 
     instances continue to operate as they run as independent Nova VMs.
-  externalInteractionRationales:
+  relationshipRationales:
     Keystone Identity: All Trove API requests require Keystone token validation. Modeled to show the authentication 
       dependency.
     RabbitMQ Message Broker: Trove uses RabbitMQ for task messaging between trove-api, trove-taskmanager, and guest 

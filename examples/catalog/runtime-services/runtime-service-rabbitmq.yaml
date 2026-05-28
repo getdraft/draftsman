@@ -43,7 +43,7 @@ architectureNotes:
   failureDomain: Loss of RabbitMQ quorum (majority of cluster nodes) causes all OpenStack services using AMQP to stop 
     processing background tasks. nova-api, neutron-api, cinder-api, and other REST endpoints continue to function for 
     read-only operations but write operations that require background processing are queued or fail.
-  externalInteractionRationales:
+  relationshipRationales:
     RabbitMQ Service: RabbitMQ is the broker itself. Internal management operations use the management API on the local 
       cluster.
     Keystone Identity: All API requests to the RabbitMQ management plugin are authenticated via Keystone token 

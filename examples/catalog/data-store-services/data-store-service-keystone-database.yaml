@@ -58,7 +58,7 @@ architectureNotes:
   accessControl:
     model: Role-based database access control. Keystone service account has DML access to the keystone schema only. DBA 
       team access via SSH-tunnelled connections with MFA required.
-  externalInteractionRationales:
+  relationshipRationales:
     Backup Service: Percona XtraBackup automated backup writes point-in-time backups to Swift object storage with 
       off-site replication. Keystone is the highest-criticality schema; backup frequency and replication are elevated 
       accordingly.

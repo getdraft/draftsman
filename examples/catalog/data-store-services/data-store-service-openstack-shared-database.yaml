@@ -66,7 +66,7 @@ architectureNotes:
   accessControl:
     model: Role-based database access control with schema-level isolation. Each service has a dedicated account with DML
       access to its own schema only. Cross-schema access is denied at the DB grant level.
-  externalInteractionRationales:
+  relationshipRationales:
     Backup Service: Percona XtraBackup automated backup writes per-schema logical backups to Swift object storage. 
       Modeled to show the external backup platform dependency.
   access_control_model: Role-based database access. Each service (Heat, Ironic, Trove, Sahara, Ceilometer) has a 

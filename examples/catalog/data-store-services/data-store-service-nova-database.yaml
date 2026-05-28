@@ -62,7 +62,7 @@ architectureNotes:
       is restricted to DBA team members via SSH-tunnelled connections.
   access_control_model: Role-based database access. Nova service account has DML access to the nova and nova_api schemas
     only. Credentials managed by Ansible configuration management.
-  externalInteractionRationales:
+  relationshipRationales:
     Backup Service: Percona XtraBackup automated backup writes point-in-time backups to object storage. Modeled to show 
       the external backup dependency and recovery boundary.
   backup_strategy: Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups written to 

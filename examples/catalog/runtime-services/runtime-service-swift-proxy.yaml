@@ -42,7 +42,7 @@ architectureNotes:
     recovery is immediate.
   failureDomain: Failure of all proxy nodes prevents Swift API access. Data remains intact and accessible once proxy is 
     restored. A single proxy node failure is masked by the load balancer.
-  externalInteractionRationales:
+  relationshipRationales:
     Keystone Identity: Swift proxy validates all requests against Keystone using the keystoneauth middleware. Modeled as
       a critical authentication dependency.
     Swift Storage Cluster: The proxy routes all object, container, and account operations to the underlying storage 

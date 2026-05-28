@@ -41,7 +41,7 @@ architectureNotes:
   failureDomain: Failure of cinder-api prevents new volume operations. Failure of cinder-volume affects volume 
     attachment operations. Existing attached volumes continue to function as they are presented directly via iSCSI from 
     the storage layer.
-  externalInteractionRationales:
+  relationshipRationales:
     Keystone Identity: All Cinder API requests require Keystone token validation. Modeled to show the authentication 
       dependency.
     RabbitMQ Message Broker: Cinder uses RabbitMQ for messaging between cinder-api, cinder-scheduler, and cinder-volume.

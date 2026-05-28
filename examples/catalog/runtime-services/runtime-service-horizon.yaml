@@ -42,7 +42,7 @@ architectureNotes:
     Horizon; recovery is immediate upon process restart.
   failureDomain: Failure of Horizon prevents web UI access but does not affect the OpenStack API layer. CLI tools and 
     automated tooling remain fully operational during a Horizon outage.
-  externalInteractionRationales:
+  relationshipRationales:
     Nova Compute Service: Horizon calls Nova APIs to display and manage instances, flavors, key pairs, and server 
       console access. Modeled to show the compute API dependency.
     Keystone Identity: Horizon submits user credentials to Keystone for token issuance. All subsequent API calls use the

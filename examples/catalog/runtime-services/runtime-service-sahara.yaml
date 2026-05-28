@@ -41,7 +41,7 @@ architectureNotes:
     In-progress cluster provisioning operations may need to be retried after service failure.
   failureDomain: Failure of Sahara prevents cluster provisioning and management operations. Running Hadoop/Spark 
     clusters on Nova instances continue to operate independently.
-  externalInteractionRationales:
+  relationshipRationales:
     Keystone Identity: All Sahara API requests require Keystone token validation. Modeled to show the authentication 
       dependency.
     Sahara Database: Sahara persists cluster templates, node group templates, and cluster operational state to MariaDB. 

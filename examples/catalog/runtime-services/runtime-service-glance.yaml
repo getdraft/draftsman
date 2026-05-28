@@ -37,7 +37,7 @@ architectureNotes:
     binaries are durable via Swift replication.
   failureDomain: Failure of Glance prevents new instance provisioning and image management operations. Running instances
     are not affected.
-  externalInteractionRationales:
+  relationshipRationales:
     Keystone Identity: All Glance API requests require Keystone token validation. Modeled to show the authentication 
       dependency.
     Glance Database: Glance persists image metadata to MariaDB. Modeled as a critical stateful dependency.

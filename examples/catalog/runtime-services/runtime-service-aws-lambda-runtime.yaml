@@ -29,7 +29,7 @@ architectureNotes:
   configurableSurface: The adopter controls function configuration, IAM bindings, concurrency settings, environment 
     variables, and event-source mappings.
   failureDomain: Shared serverless runtime dependency for the functions bound to this Lambda execution environment.
-  externalInteractionRationales:
+  relationshipRationales:
     AWS IAM: IAM is modeled as an external dependency because it controls Lambda access even though the PaaS requirement
       is satisfied by authenticationModel.
     Amazon CloudWatch Logs: CloudWatch Logs is modeled to show adopter-visible function log delivery outside the core 

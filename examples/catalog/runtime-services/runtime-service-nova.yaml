@@ -42,7 +42,7 @@ architectureNotes:
   failureDomain: Failure of nova-scheduler or nova-conductor affects all new instance provisioning but does not impact 
     running instances. Failure of a compute node affects only instances resident on that host.
   secrets_management: Service credentials and database passwords are stored in nova.
-  externalInteractionRationales:
+  relationshipRationales:
     Keystone Identity: All Nova API requests require Keystone token validation. Modeled to show the hard authentication 
       dependency.
     RabbitMQ Message Broker: Nova uses RabbitMQ for all internal subcomponent messaging (scheduler, conductor, compute).

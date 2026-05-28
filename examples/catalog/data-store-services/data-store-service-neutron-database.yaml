@@ -52,7 +52,7 @@ architectureNotes:
     atRest: MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Neutron schema.
   accessControl:
     model: Role-based database access. Neutron service account has DML access to the neutron schema only.
-  externalInteractionRationales:
+  relationshipRationales:
     Backup Service: Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to
       show the external backup platform dependency.
   access_control_model: Role-based database access. Neutron service account has DML access to the neutron schema only. 

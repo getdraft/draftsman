@@ -44,7 +44,7 @@ architectureNotes:
   failureDomain: Failure of neutron-api prevents new network provisioning operations. Failure of L3 agents affects 
     routing for floating IPs and router-attached subnets. Existing instance connectivity on L2 (VXLAN/VLAN) is 
     unaffected by control plane failure.
-  externalInteractionRationales:
+  relationshipRationales:
     Keystone Identity: All Neutron API requests require Keystone token validation. Modeled to show the authentication 
       dependency.
     RabbitMQ Message Broker: Neutron uses RabbitMQ for ML2 plugin messaging to distributed L2 agents on compute and 

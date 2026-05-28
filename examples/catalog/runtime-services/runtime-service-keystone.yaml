@@ -42,7 +42,7 @@ architectureNotes:
     Galera replication. Fernet key loss requires re-issuance of all active tokens.
   failureDomain: Failure of Keystone renders the entire OpenStack control plane inaccessible as all other services 
     depend on token validation. This is the highest-blast-radius component in the platform.
-  externalInteractionRationales:
+  relationshipRationales:
     Keystone Identity: Keystone is the identity service itself. Intra-service admin operations use the admin endpoint 
       for initial setup and service catalog registration.
     Keystone Database: Keystone persists all identity data (users, projects, roles, endpoints, tokens for UUID mode) to 

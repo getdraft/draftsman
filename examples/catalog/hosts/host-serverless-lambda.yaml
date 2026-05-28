@@ -37,7 +37,7 @@ architectureNotes:
   internalComponentRationales:
     01KQQ4Q025-T7B7: The AWS Lambda Runtime is modeled as the managed execution component that makes the serverless host
       understandable even though standard host requirements do not apply.
-  externalInteractionRationales:
+  relationshipRationales:
     AWS Lambda Service: The AWS Lambda control plane is modeled to show the managed service boundary for the blackbox 
       serverless host.
 internalComponents:
