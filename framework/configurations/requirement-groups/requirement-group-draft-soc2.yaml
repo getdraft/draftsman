@@ -7,9 +7,6 @@ description: 'Initial SOC 2 requirement group based on the AICPA Trust Services 
   '
 version: 2017.0.0
 catalogStatus: stub
-owner:
-  team: cloud-architecture
-  contact: cloud-architecture@example.com
 activation: workspace
 appliesTo:
 - data_store_service

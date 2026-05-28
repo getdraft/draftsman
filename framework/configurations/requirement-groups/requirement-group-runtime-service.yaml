@@ -5,9 +5,6 @@ name: Service Behavior Requirement Group
 description: Structured checklist of required questions and answers used to define complete and correct self-managed Runtime and Edge/Gateway Services; Data-at-Rest Services inherit these service behavior requirements.
 version: 3.0.0
 catalogStatus: complete
-owner:
-  team: cloud-architecture
-  contact: cloud-architecture@example.com
 authority:
   name: DRAFT Framework
   shortName: DRAFT

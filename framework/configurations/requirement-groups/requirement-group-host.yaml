@@ -5,9 +5,6 @@ name: Host Requirement Group
 description: Structured checklist of required questions and answers used to define a complete and correct Host.
 version: 3.0.0
 catalogStatus: complete
-owner:
-  team: cloud-architecture
-  contact: cloud-architecture@example.com
 authority:
   name: DRAFT Framework
   shortName: DRAFT

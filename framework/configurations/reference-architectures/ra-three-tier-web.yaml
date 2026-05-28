@@ -9,9 +9,6 @@ description: Standard pattern for web-facing applications with a presentation ti
 patternType: three-tier
 catalogStatus: complete
 lifecycleStatus: preferred
-owner:
-  team: cloud-architecture
-  contact: cloud-architecture@example.com
 tags:
 - reference-architecture
 - three-tier

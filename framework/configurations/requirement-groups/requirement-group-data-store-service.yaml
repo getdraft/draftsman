@@ -5,9 +5,6 @@ name: DataStoreService Requirement Group
 description: Additional DataStoreService checklist items extending the service behavior Requirement Group for durable data, recovery, and access control.
 version: 3.0.0
 catalogStatus: complete
-owner:
-  team: cloud-architecture
-  contact: cloud-architecture@example.com
 authority:
   name: DRAFT Framework
   shortName: DRAFT

@@ -5,9 +5,6 @@ name: Data Component Requirement Group
 description: Built-in checklist for first-party data artifacts deployed onto Data Store Services. Establishes what must be known about a DataComponent — including data classification, PII declaration, and data ownership — before it is considered architecturally complete. Backup and recovery requirements belong on the DataStoreService, not here.
 version: 1.0.0
 catalogStatus: complete
-owner:
-  team: cloud-architecture
-  contact: cloud-architecture@example.com
 authority:
   name: DRAFT Framework
   shortName: DRAFT

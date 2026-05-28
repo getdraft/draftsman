@@ -5,9 +5,6 @@ name: SaaS Delivery Requirement Group
 description: Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service is consumed as a vendor-managed external service.
 version: 1.0.0
 catalogStatus: complete
-owner:
-  team: cloud-architecture
-  contact: cloud-architecture@example.com
 authority:
   name: DRAFT Framework
   shortName: DRAFT

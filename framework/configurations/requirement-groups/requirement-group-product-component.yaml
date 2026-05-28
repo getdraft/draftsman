@@ -5,9 +5,6 @@ name: Product Component Requirement Group
 description: Built-in checklist for first-party code components deployed onto Runtime Services. Establishes what must be known about a ProductComponent before it is considered architecturally complete.
 version: 1.0.0
 catalogStatus: complete
-owner:
-  team: cloud-architecture
-  contact: cloud-architecture@example.com
 authority:
   name: DRAFT Framework
   shortName: DRAFT

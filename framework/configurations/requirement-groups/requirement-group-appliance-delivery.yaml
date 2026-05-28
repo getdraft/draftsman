@@ -5,9 +5,6 @@ name: Appliance Delivery Requirement Group
 description: Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service uses appliance delivery and the underlying host is blackbox to the adopter.
 version: 1.1.0
 catalogStatus: complete
-owner:
-  team: cloud-architecture
-  contact: cloud-architecture@example.com
 authority:
   name: DRAFT Framework
   shortName: DRAFT

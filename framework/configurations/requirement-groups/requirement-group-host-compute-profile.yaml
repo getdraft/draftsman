@@ -5,9 +5,6 @@ name: Host Compute Profile Requirement Group
 description: Optional checklist for Hosts covering compute type classification. Activated per workspace; does not fire automatically.
 version: 1.0.0
 catalogStatus: complete
-owner:
-  team: cloud-architecture
-  contact: cloud-architecture@example.com
 authority:
   name: DRAFT Framework
   shortName: DRAFT

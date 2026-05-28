@@ -5,9 +5,6 @@ name: Service Engineering Practices Requirement Group
 description: Optional checklist for self-managed Runtime and Edge/Gateway Services covering advanced observability and runtime patterns. Activated per workspace; does not fire automatically.
 version: 1.0.0
 catalogStatus: complete
-owner:
-  team: cloud-architecture
-  contact: cloud-architecture@example.com
 authority:
   name: DRAFT Framework
   shortName: DRAFT

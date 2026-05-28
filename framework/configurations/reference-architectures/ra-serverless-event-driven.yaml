@@ -9,9 +9,6 @@ description: Deployment pattern for event-driven applications using serverless c
 patternType: serverless
 catalogStatus: complete
 lifecycleStatus: preferred
-owner:
-  team: cloud-architecture
-  contact: cloud-architecture@example.com
 tags:
 - reference-architecture
 - serverless

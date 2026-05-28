@@ -8,9 +8,6 @@ description: Deployment pattern for software-as-a-service products that serve mu
 patternType: multi-tenant
 catalogStatus: complete
 lifecycleStatus: preferred
-owner:
-  team: cloud-architecture
-  contact: cloud-architecture@example.com
 tags:
 - reference-architecture
 - multi-tenant

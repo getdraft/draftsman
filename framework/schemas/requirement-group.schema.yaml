@@ -9,7 +9,6 @@ requiredFields:
 - name
 - description
 - catalogStatus
-- owner
 - activation
 - appliesTo
 - requirements
@@ -17,6 +16,7 @@ optionalFields:
 - aliases
 - version
 - tags
+- owner
 - lifecycleStatus
 - provider
 - authority
