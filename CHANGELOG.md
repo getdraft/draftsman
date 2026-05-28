@@ -3,6 +3,34 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.28.5 - 2026-05-28
+
+### Added
+
+- None.
+
+### Changed
+
+- **`externalInteractions` field fully removed**: The deprecated `externalInteractions` field (plural) is removed from all service, host, and SDP schemas, all framework configurations, all example catalog objects, all documentation, and the `migrate_interactions.py` tool (deleted). The `externalInteraction` mechanism name (singular) is retained in requirement groups and the validator — it now resolves against outbound `relationship` objects where the relationship carries the required capability. Closes #34.
+
+- **`architectureNotes.externalInteractionRationales` renamed to `relationshipRationales`**: The machine-readable dependency rationale key inside `architectureNotes` has been renamed to match the relationship object model. All 22 affected example catalog objects updated.
+
+- **Detail view now shows relationship objects**: The browser detail view for services and hosts renders outbound and inbound relationship data instead of the removed `externalInteractions` field.
+
+### Fixed
+
+- **`externalInteraction` mechanism satisfaction now resolves against relationship objects**: `implementation_resolves` in `validate.py` previously only checked the deprecated `externalInteractions` field, making it impossible to complete the migration without losing requirement coverage. It now checks relationship objects where `source == obj.uid` and the relationship carries the required capability. Closes #34.
+
+### Compatibility Impact
+
+Breaking change for workspaces that have not yet migrated `externalInteractions` to relationship objects: removing the field from schemas means those objects will fail schema validation. Run `migrate_interactions.py` before upgrading, or migrate manually. Workspaces already on relationship objects are unaffected.
+
+### Migration Notes
+
+1. **Migrate `externalInteractions` to relationship objects before upgrading**: Use the last available version of `migrate_interactions.py` (removed in this release) to generate relationship stubs, or create them manually. Each entry needs a `relationship` YAML file with `source`, `target` or `externalTarget`, `label`, `technology`, and `capabilities` (list of capability UIDs the relationship satisfies).
+
+2. **Rename `architectureNotes.externalInteractionRationales` to `relationshipRationales`** in any workspace objects that use this key.
+
 ## 0.28.4 - 2026-05-28
 
 ### Added
