@@ -3,7 +3,7 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
-## 0.29.0 - 2026-05-28
+## 0.28.2 - 2026-05-28
 
 ### Added
 
