@@ -4,7 +4,7 @@ argument-hint: ""
 allowed-tools: [Bash, Read, Write, Edit, AskUserQuestion]
 ---
 
-# /update-framework Command
+# /draft-updateframework Command
 
 > **Draft Admin only.** This command modifies the vendored framework copy at
 > `.draft/framework/` and updates `.draft/framework.lock`. It must not be run
@@ -199,7 +199,7 @@ After the PR is merged, remind the Draft Admin:
 > ln -sf ../../.draft/framework/commands/draftsman.md .claude/commands/draftsman.md
 > ln -sf ../../.draft/framework/commands/draft-session.md .claude/commands/draft-session.md
 > ln -sf ../../.draft/framework/commands/validate-catalog.md .claude/commands/validate-catalog.md
-> ln -sf ../../.draft/framework/commands/update-framework.md .claude/commands/update-framework.md
+> ln -sf ../../.draft/framework/commands/draft-updateframework.md .claude/commands/draft-updateframework.md
 > ```
 >
 > Review the CHANGELOG for any new setup steps or configuration changes

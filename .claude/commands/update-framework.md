@@ -1,1 +1,0 @@
-../../framework/commands/update-framework.md

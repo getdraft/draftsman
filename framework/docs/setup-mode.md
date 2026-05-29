@@ -194,7 +194,7 @@ Question:
 DRAFT is AI-agnostic. The Draftsman role can be fulfilled by any capable AI
 assistant. This step wires DRAFT's built-in workflow commands into whichever
 IDE the team uses so `/draftsman`, `/draft-session`, `/validate-catalog`,
-and `/update-framework` are available as first-class invocable commands
+and `/draft-updateframework` are available as first-class invocable commands
 rather than role-activation phrases.
 
 Ask the team which AI IDE(s) they use and follow the relevant sub-steps. More
@@ -209,7 +209,7 @@ mkdir -p .claude/commands
 ln -sf ../../.draft/framework/commands/draftsman.md .claude/commands/draftsman.md
 ln -sf ../../.draft/framework/commands/draft-session.md .claude/commands/draft-session.md
 ln -sf ../../.draft/framework/commands/validate-catalog.md .claude/commands/validate-catalog.md
-ln -sf ../../.draft/framework/commands/update-framework.md .claude/commands/update-framework.md
+ln -sf ../../.draft/framework/commands/draft-updateframework.md .claude/commands/draft-updateframework.md
 ```
 
 On Windows (PowerShell as Administrator, or with Developer Mode enabled):
@@ -222,8 +222,8 @@ New-Item -ItemType SymbolicLink -Path .claude\commands\draft-session.md `
   -Target ..\..\draft\framework\commands\draft-session.md -Force
 New-Item -ItemType SymbolicLink -Path .claude\commands\validate-catalog.md `
   -Target ..\..\draft\framework\commands\validate-catalog.md -Force
-New-Item -ItemType SymbolicLink -Path .claude\commands\update-framework.md `
-  -Target ..\..\draft\framework\commands\update-framework.md -Force
+New-Item -ItemType SymbolicLink -Path .claude\commands\draft-updateframework.md `
+  -Target ..\..\draft\framework\commands\draft-updateframework.md -Force
 ```
 
 The symlinks follow the vendored framework copy, so updating the framework
