@@ -1,5 +1,12 @@
 # Draftsman Setup Mode
 
+> **Audience: Draft Admins only.**
+> Setup mode is for the person standing up and configuring a DRAFT workspace
+> for their company. Engineers and Technology Admins do not use setup mode —
+> they connect their AI tool to an already-configured workspace and start a
+> regular Draftsman session. If you are an engineer wanting to document a
+> service, see [Draftsman Instructions](draftsman.md) instead.
+
 Setup mode is the first-run Draftsman conversation for a company DRAFT
 workspace. It exists so enterprise architecture teams can make the Drafting
 workspace useful without turning onboarding into a long form-filling exercise.

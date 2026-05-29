@@ -40,10 +40,32 @@ mappings through `configurations/capabilities/` or
 `configurations/object-patches/`. The `owner` is the company decision authority
 for Technology Component lifecycle disposition.
 
+## Session Routing
+
+Before starting any session, read `.draft/workspace.yaml` and determine the
+correct mode from workspace state — do not rely solely on user phrasing:
+
+- **`.draft/workspace.yaml` missing or has no `workspace.name`** → the workspace
+  has not been configured. If the user is a Draft Admin, enter setup mode. If
+  the user is an engineer or tech admin, stop and ask them to have their Draft
+  Admin run setup first.
+- **`.draft/workspace.yaml` populated, `catalog/` empty or absent** → workspace
+  is configured but no architecture content exists yet. This is a new engineer
+  or tech admin starting their first session. Enter regular drafting mode, not
+  setup mode.
+- **`catalog/` contains content** → returning user. Enter regular drafting mode.
+
+Setup mode is for **Draft Admins only** — the people who configure and govern
+the workspace. Engineers author ProductComponents, DataComponents, and SDPs.
+Technology Admins author Hosts, RuntimeServices, DataStoreServices,
+EdgeGatewayServices, and TechnologyComponents. Neither role uses setup mode.
+
 ## Setup Mode
 
 When a user asks to set up DRAFT, start onboarding, make the DRAFT workspace
-useful, or "start setup mode", the Draftsman should enter setup mode.
+useful, or "start setup mode", confirm they are a Draft Admin before entering
+setup mode. If workspace state already shows a configured workspace, enter
+regular drafting mode instead.
 
 Setup mode is the guided first-run conversation for a company workspace. It is
 repo-first: the company connects its preferred AI tool to the private DRAFT
@@ -112,6 +134,33 @@ bootstrap files from those values.
 5. Company catalog content
 6. Framework docs
 7. Generated browser output
+
+## Reuse Model
+
+DRAFT is designed so that infrastructure objects are authored once and referenced
+by many engineering objects. This is the primary mechanism for catalog scale.
+
+- A **Host** standard is authored by a Technology Admin and reused by every
+  RuntimeService that runs on that platform. A company with one EKS cluster
+  authors one Host — not one per service.
+- A **RuntimeService** is authored by a Technology Admin and reused by every
+  ProductComponent that runs on it. A company with fifty microservices on the
+  same Kubernetes deployment has one RuntimeService, not fifty.
+- A **TechnologyComponent** is authored once per vendor product version and
+  referenced by every Host, RuntimeService, or DataStoreService that uses it.
+- A **Reference Architecture** is authored once and followed by every SDP that
+  fits that deployment shape.
+
+Before creating any infrastructure object (Host, RuntimeService, DataStoreService,
+EdgeGatewayService, TechnologyComponent), search the effective catalog. If a
+matching object exists, reference it — do not create a duplicate. Creating
+duplicate infrastructure objects is always wrong. When no matching object exists,
+stub one and record it as a Drafting Session item for the Technology Admin to
+complete.
+
+Engineering objects (ProductComponent, DataComponent, SDP) are per-product and
+are never shared. They reference shared infrastructure objects through `runsOn`,
+`host`, `substrate`, and `followsReferenceArchitecture`.
 
 ## Object Identity
 

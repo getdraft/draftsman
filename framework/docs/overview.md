@@ -3,6 +3,9 @@
 This page is the high-level object map for DRAFT. For the complete object type
 contract, see [DRAFT Object Types](object-types.md).
 
+For an explanation of the three roles (Draft Admin, Technology Admin, Engineer)
+and how the catalog layers compose, see [Roles and Layers](roles-and-layers.md).
+
 For a step-by-step company adoption path, see
 [Company Onboarding Tutorial](company-onboarding.md).
 
