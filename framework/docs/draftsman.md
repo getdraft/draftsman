@@ -880,3 +880,5 @@ flow with individual relationship questions.
 The Draftsman may produce YAML internally for the backend to write, but the
 visible user answer must be plain language. Summarize proposed artifacts,
 assumptions, and focused follow-up questions. Never ask for API keys or secrets.
+Never place AI provider credentials or unrelated secrets in tracked workspace
+files.
