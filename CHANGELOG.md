@@ -3,6 +3,54 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.29.0 - 2026-05-29
+
+### Added
+
+- **Roles and Layers document** (`framework/docs/roles-and-layers.md`): New document explaining the three roles (Draft Admin, Technology Admin, Engineer), the three catalog layers (Governance, Infrastructure, Product), and the reuse scale model. Clarifies that 50 services on a shared platform produces ~60 objects, not hundreds, because infrastructure objects are authored once and referenced by many.
+
+- **Design Principles document** (`framework/docs/design-principles.md`): Seven principles explaining the reasoning behind DRAFT's opinions — reuse over invention, stubs as progress, binary governance, automation-first catalog, compliance as authoring, AI owns the YAML, and uncertainty as first-class. Linked from `overview.md`.
+
+- **Capability domain ownership templates**: Four object-patch template files added to `templates/workspace/configurations/object-patches/` covering all 19 framework capabilities grouped by domain (Compute & Runtime, Security & Identity, Observability, Data & Engineering Quality). Each template contains stub patches targeting framework capability UIDs with `owner` and `implementations` placeholders. The Draftsman generates individual patch files from these during setup mode step 5.
+
+- **Session routing rule in `draftsman.md`**: The Draftsman now determines the correct mode from workspace state (`.draft/workspace.yaml` presence and catalog content) rather than relying solely on user phrasing.
+
+- **Reuse Model section in `draftsman.md`**: Explicit documentation that infrastructure objects are authored once and referenced by many engineering objects. "Creating duplicate infrastructure objects is always wrong" is now a stated rule.
+
+### Changed
+
+- **`externalInteraction` mechanism renamed to `relationship`** across all requirement groups, schemas, and the validator. Any workspace `requirementImplementations` entry using `mechanism: externalInteraction` must be updated to `mechanism: relationship`. The underlying validation logic is unchanged — the mechanism resolves against outbound relationship objects where source matches the object UID and the relationship carries the required capability.
+
+- **`serviceGroup.connections` removed from the SDP schema**: The inline `serviceConnections` field and the `serviceConnection` sub-schema have been removed. The validator now fails (not warns) when a service group contains a `connections` list. Relationship objects in `catalog/relationships/` are the only supported connection model. The browser's `build_sdp_connections` function has been updated to source topology edges from relationship objects only.
+
+- **`setup-mode.md` step 5 reframed as domain standard ownership**: The step now explicitly surfaces the 19 framework capabilities as domain standards requiring designated owners, grouped by domain. Unassigned owners are recorded as `TBD` so gaps are visible immediately.
+
+- **`setup-mode.md` audience declaration added**: A prominent callout at the top clarifies that setup mode is for Draft Admins only. Engineers and Technology Admins connect to an already-configured workspace and start a regular Draftsman session.
+
+- **`AGENTS.md` reduced from 187 to 70 lines**: Removed seven sections duplicated in `draftsman.md` — Source Of Truth Order, AI Agent Contract, Compliance Claims, Overlapping Requirements, Capability Lookup, SDP Walkdown, and the condensed Draftsman behavior summary. AGENTS.md now contains only what is needed before `draftsman.md` is read: bootstrap sequence, activation phrases, repository-mode structural facts, and editing rules.
+
+- **Object model diagram updated**: The SDP box display fields now show `deploymentTargets · relationships` instead of `connections · deploymentTargets`.
+
+### Fixed
+
+- **Stale `catalogStatus` vocabulary in documentation**: Three documents (`capabilities.md`, `how-to-add-objects.md`, `sdp-completion-interview.md`) referenced an old status vocabulary (`stub/draft/approved`) instead of the current valid values (`stub/incomplete/complete`). All corrected.
+
+- **`sdp-completion-interview.md` invalid `lifecycleStatus: draft` reference removed**: The incomplete conditions list referenced `lifecycleStatus: draft`, which is not a valid value. Replaced with plain-language description of unresolved placeholder deployment targets.
+
+### Compatibility Impact
+
+Two breaking changes:
+
+1. **`mechanism: externalInteraction` in `requirementImplementations`** — any workspace object using this mechanism value will now fail schema validation. Rename to `mechanism: relationship`.
+
+2. **`serviceGroup.connections`** — any SDP with inline `connections` entries will now fail validation (previously a warning). Migrate each entry to a relationship object file in `catalog/relationships/`.
+
+### Migration Notes
+
+1. **Rename `externalInteraction` to `relationship`** in any `requirementImplementations` entries across your workspace catalog. Search for `mechanism: externalInteraction` and replace with `mechanism: relationship`.
+
+2. **Migrate inline `serviceGroup.connections` to relationship objects**: For each connection entry, create a file in `catalog/relationships/` with `type: relationship`, `source` set to the `from` UID, `target` set to the `to` UID, `technology` set to the protocol, and `label: calls`. Then remove the `connections` list from the service group. See the migration guide in `framework/docs/software-deployment-patterns.md`.
+
 ## 0.28.5 - 2026-05-28
 
 ### Added
