@@ -91,7 +91,7 @@ objectTypes:
     height: 72
     displayFields:
       - serviceGroups · deployableObjects
-      - connections · deploymentTargets
+      - deploymentTargets · relationships
       - businessContext · decisions
 
   product_component:
