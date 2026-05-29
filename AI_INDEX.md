@@ -69,9 +69,10 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/overview.md | Framework Overview | This page is the high-level object map for DRAFT. For the complete object type |
 | framework/docs/reference-architectures.md | Reference Architectures | The DRAFT framework ships a set of baseline Reference Architectures in |
 | framework/docs/requirement-groups.md | Requirement Groups | A Requirement Group is the unified DRAFT requirement model. It replaces the old |
+| framework/docs/roles-and-layers.md | Roles and Layers | DRAFT recognizes three roles. Each role owns a different layer of the catalog |
 | framework/docs/sdp-completion-interview.md | SDP Completion Interview | The SDP Completion Interview is a structured protocol for enriching an existing |
 | framework/docs/security-and-compliance-controls.md | Security And Compliance Requirement Groups | DRAFT treats compliance as an explicitly activated authoring and validation layer. |
-| framework/docs/setup-mode.md | Draftsman Setup Mode | Setup mode is the first-run Draftsman conversation for a company DRAFT |
+| framework/docs/setup-mode.md | Draftsman Setup Mode | > **Audience: Draft Admins only.** |
 | framework/docs/software-deployment-patterns.md | Software Deployment Patterns | A Software Deployment Pattern is a declaration that a specific product is intended |
 | framework/docs/standards.md | Deployable Objects | DRAFT previously used the word "Standard" for reusable deployable building |
 | framework/docs/technology-components.md | Technology Components | A Technology Component is a discrete vendor product object. It records one |
