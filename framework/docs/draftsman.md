@@ -90,8 +90,14 @@ The minimum useful setup path is:
 4. define enough business taxonomy for catalog navigation
 5. declare first company vocabulary lists in advisory mode
 6. choose the initial active Requirement Groups
-7. identify capability owners for mapped capabilities
-8. seed acceptable-use Technology Components for common standards
+7. assign domain standard owners to the 19 framework capabilities — for each
+   capability, ask which company team owns that domain, then generate one
+   object-patch file in `configurations/object-patches/` setting `owner`; use
+   `owner.team: TBD` for any capability the user cannot assign today so the gap
+   is visible rather than silent; use the templates in
+   `.draft/framework/templates/workspace/configurations/object-patches/` as the
+   starting structure
+8. seed acceptable-use Technology Components for owned capabilities
 9. draft baseline deployable standards
 10. start one real Drafting Session from a product, system, repository, diagram,
    or source document

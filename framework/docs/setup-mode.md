@@ -136,14 +136,48 @@ Question:
 > Which governance baseline should new objects address first: DRAFT-only,
 > SOC 2, TX-RAMP, NIST CSF, or a company-specific group?
 
-### 5. Acceptable-Use Technology
+### 5. Domain Standard Ownership
 
-Seed the standards people will select from during interviews.
+DRAFT ships with 19 capability definitions covering the core technology
+architecture domains every company must govern — Authentication, Log Management,
+Patch Management, Secrets Management, and so on. These are the equivalent of
+enterprise domain standards. Each one needs a designated owner at your company:
+the team with authority to say "this is our approved tool for this domain."
 
-Question:
+Without owners, the Draftsman cannot present governance-grounded choices during
+interviews. With owners, engineers get pre-approved multiple-choice answers
+instead of open-ended questions.
 
-> Which enterprise standards should we seed first for identity, logging,
-> monitoring, patching, backup, compute, operating systems, database, and edge?
+For each domain below, identify which team at your company owns it. Then for
+each owned domain, name the approved Technology Component (if known) — the
+Draftsman will create the component and map the capability implementation.
+
+**Compute & Runtime** — Operating System, Compute Platform, Container
+Orchestration, Serverless Runtime, Patch Management, General Purpose Compute
+
+**Security & Identity** — Authentication, Access Control Model, Secrets
+Management, Security Monitoring, Encryption At Rest
+
+**Observability** — Log Management, Health & Welfare Monitoring, Application
+Performance Monitoring
+
+**Data** — Backup Strategy
+
+**Engineering Quality** — Quality Gates, Test Authoring, Test Execution,
+Performance Testing
+
+Questions:
+
+> For each domain group, which team is the owner — the team that approves
+> which products are used?
+
+> For each domain your team owns today, what is the currently approved or
+> preferred product?
+
+The Draftsman will generate one object-patch file per capability in
+`configurations/object-patches/`, setting `owner` and creating approved
+Technology Component implementations. Domains with no known owner are patched
+with `owner: TBD` so the gap is visible in the catalog immediately.
 
 ### 6. Baseline Deployable Standards
 
