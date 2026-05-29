@@ -244,11 +244,11 @@ python3 framework/tools/generate_browser.py
 
 `catalogStatus` should be treated as a maturity progression, not as a cosmetic label.
 
-- `stub` means the object exists but is skeletal.
-- `draft` means the structure and major fields are present and the object is ready for review.
-- `approved` means the object is complete enough to be trusted by other engineers.
+- `stub` means the object exists but is skeletal — enough to be referenced, not enough to validate completely.
+- `incomplete` means the structure and major fields are present but some required facts are still missing or unresolved.
+- `complete` means the object is fully authored and all applicable Requirement Group requirements are satisfied.
 
-For deployable objects, approved means the applicable Requirement Group requirements are satisfied. For every object type, it also means the description, ownership, lifecycle, and relationships are clear enough that another engineer could use the object without guessing what it means.
+For deployable objects, `complete` means the applicable Requirement Group requirements are satisfied. For every object type, it also means the description, ownership, lifecycle, and relationships are clear enough that another engineer could use the object without guessing what it means.
 
 The catalog uses flat folders by object family inside `catalog/`. Do not create
 nested taxonomy folders under `catalog/technology-components/` or `catalog/hosts/`, `catalog/runtime-services/`, or `catalog/data-at-rest-services/`; the YAML

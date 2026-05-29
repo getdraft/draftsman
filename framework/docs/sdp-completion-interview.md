@@ -22,7 +22,7 @@ incomplete conditions:
 - No `architectureNotes.dataClassification` or availability declaration
 - No `architectureNotes.failureDomain`
 - No `tierVariants` when environment tiers are declared in the workspace
-- `lifecycleStatus: draft` or `owner-interview-required` deployment targets
+- Service groups with unresolved placeholder deployment targets such as `owner-interview-required` or `drafting-interview-required`
 
 Do not run this protocol for a net-new SDP with no content yet — use the
 standard Draftsman SDP session from `draftsman.md` instead.

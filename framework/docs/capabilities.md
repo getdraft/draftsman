@@ -40,11 +40,11 @@ moving Technology Components through `candidate`, `preferred`, `existing-only`,
 DRAFT is requirement-first. Requirements create demand for capabilities, and
 capabilities provide the reusable vocabulary for satisfying that demand.
 
-A Capability may be created as `stub` or `draft` while a Requirement Group is
-still being shaped. A Capability must not be marked `approved` until at least
+A Capability may be created as `stub` or `incomplete` while a Requirement Group is
+still being shaped. A Capability must not be marked `complete` until at least
 one Requirement Group requirement references it through `relatedCapability` or
-a satisfaction mechanism criteria capability. The validator warns on draft
-orphan capabilities and fails approved orphan capabilities.
+a satisfaction mechanism criteria capability. The validator warns on incomplete
+orphan capabilities and fails complete orphan capabilities.
 
 This preserves a many-to-many model: one requirement can point to a capability,
 and one capability can satisfy requirements in multiple groups. A capability
