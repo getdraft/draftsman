@@ -12,9 +12,15 @@ allowed-tools: [Read, Glob, Grep, Bash, Write]
 
 ## Step 1: Staleness Check
 
-Read `framework/reviews/review-log.yaml`. Find the most recent entry and read
-its `frameworkVersion`. Then read `draft-framework.yaml` for the current
-`version`.
+Current state is pre-loaded:
+
+```
+Review log:    !`cat framework/reviews/review-log.yaml`
+Framework ver: !`grep "^version:" draft-framework.yaml`
+```
+
+From the pre-loaded data, find the most recent entry's `frameworkVersion` and
+the current `version` from `draft-framework.yaml`.
 
 Parse both as semantic versions (`MAJOR.MINOR.PATCH`). If the current minor
 version is 2 or more ahead of the last reviewed minor version, open with:

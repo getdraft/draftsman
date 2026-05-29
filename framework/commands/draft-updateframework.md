@@ -1,7 +1,7 @@
 ---
 description: Check for DRAFT framework updates and guide a safe upgrade through branch, validate, and PR
 argument-hint: ""
-allowed-tools: [Bash, Read, Write, Edit, AskUserQuestion]
+allowed-tools: [Bash, Read, Write, Edit]
 ---
 
 # /draft-updateframework Command

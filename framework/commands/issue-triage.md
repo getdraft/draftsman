@@ -11,18 +11,21 @@ table, and work through whichever the user picks.
 
 ## Step 1: Fetch Open Issues
 
-```bash
-gh issue list --state open --limit 50 --json number,title,labels,createdAt,assignees
+Issues are pre-loaded at command start:
+
+```
+!`gh issue list --state open --limit 50 --json number,title,labels,createdAt,assignees 2>&1`
 ```
 
-If the command fails (no GitHub CLI, not authenticated, no remote), report:
+If the output contains an error (no GitHub CLI, not authenticated, no remote),
+report:
 
 > Could not reach GitHub. Make sure `gh` is installed and authenticated
 > (`gh auth status`), and that this repository has a GitHub remote.
 
-Stop if the command fails.
+Stop if the output is an error.
 
-If there are no open issues:
+If the output is an empty array (`[]`):
 
 > No open issues found. The backlog is clear.
 
