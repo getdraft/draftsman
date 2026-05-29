@@ -3,6 +3,32 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.29.2 - 2026-05-29
+
+### Added
+
+- **`/framework-review` slash command** (`framework/commands/framework-review.md`): On-demand expert consultant review command for framework maintainers. Establishes an enterprise architect persona (TOGAF, COBIT, Zachman, data architecture), reads design-principles.md and roles-and-layers.md for DRAFT context, supports configurable scope (full, schemas, ai-instructions, requirement-groups, docs, onboarding), presents all findings as a numbered table before exploring any, and works through each finding interactively with implement/discuss/defer/drop disposition. Checks whether the framework has advanced 2+ minor versions since the last logged review and prompts the maintainer if so.
+
+- **`framework/reviews/review-log.yaml`**: Structured log of framework review sessions. Each entry records date, framework version, scope, and per-finding outcomes using controlled vocabulary (`implemented`, `discussed`, `dropped`, `deferred`). Committed to git so review history is visible alongside code changes. Seeded with the first review session (0.28.5 → 0.29.1, 10 findings, full scope).
+
+- **`/framework-review` symlink** added to `.claude/commands/` in this repo.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+No breaking changes.
+
+### Migration Notes
+
+None.
+
 ## 0.29.1 - 2026-05-29
 
 ### Added

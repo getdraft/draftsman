@@ -1,0 +1,52 @@
+schemaVersion: "1.0"
+description: >
+  Log of /framework-review sessions. Each entry records the framework version,
+  scope, and disposition of every finding explored. Commit this file after each
+  session so the review history is visible in git.
+
+  Valid outcome values: implemented | discussed | dropped | deferred
+
+reviews:
+- date: 2026-05-29
+  frameworkVersion: "0.28.5"
+  scope: full
+  reviewedBy: framework maintainer
+  findingsGenerated: 10
+  findings:
+  - title: Dual connection model
+    severity: High
+    outcome: implemented
+  - title: Object model depth creates population paralysis
+    severity: High
+    outcome: dropped
+    note: Stub/defer model already handles this by design; reuse model makes population cost much lower than initial analysis suggested
+  - title: Three-dimension status taxonomy
+    severity: Medium
+    outcome: dropped
+    note: Each dimension serves a different audience; Draftsman manages catalogStatus automatically; lifecycleStatus and requirementImplementation.status are intentionally separate
+  - title: externalInteraction mechanism orphaned
+    severity: Medium
+    outcome: implemented
+  - title: AI instruction surface fragile and overlapping
+    severity: Medium
+    outcome: implemented
+  - title: Onboarding 9-step barrier
+    severity: High
+    outcome: dropped
+    note: Setup mode is for Draft Admins only, not engineers; 9 steps are appropriate for that audience; framing and audience declaration added instead
+  - title: Schema redundancy across 6 schemas
+    severity: Low
+    outcome: dropped
+    note: Maintenance cost of occasional multi-file edit is lower than complexity cost of consolidation; fix is documentation not code
+  - title: PaaS/SaaS fast-path absent
+    severity: Medium
+    outcome: dropped
+    note: Stub-and-defer model already handles missing infrastructure objects; not a real blocker
+  - title: Capability governance one-directional
+    severity: Low
+    outcome: dropped
+    note: Conditional approvals are intentionally excluded by design; binary governance is a stated principle
+  - title: No value ladder or progressive disclosure story
+    severity: Medium
+    outcome: dropped
+    note: Roles-and-layers document and design principles address this; no separate value ladder needed
