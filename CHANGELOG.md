@@ -3,6 +3,28 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.29.1 - 2026-05-29
+
+### Added
+
+- None.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- **SaaS Delivery requirement group field keys now match `vendorGovernance` schema structure**: All five vendor governance fields (`dataLeavesInfrastructure`, `dataResidencyCommitment`, `dpaNotes`, `vendorSLA`, `incidentNotificationProcess`) were referenced as flat top-level keys in the requirement group but are nested under `vendorGovernance` in the schema. Updated all keys to use dotted paths (`vendorGovernance.fieldName`) that `resolve_field_path` already supports. Closes #35.
+
+### Compatibility Impact
+
+No breaking changes. SaaS service objects that previously placed fields at the top level to satisfy the requirement group (the only working workaround) will now need to move those fields under `vendorGovernance` to satisfy both the requirement group and the schema structure validator.
+
+### Migration Notes
+
+1. For any SaaS service objects using the workaround of top-level `dataLeavesInfrastructure`, `dataResidencyCommitment`, `dpaNotes`, `vendorSLA`, or `incidentNotificationProcess` fields: move them under a `vendorGovernance:` sub-object.
+
 ## 0.29.0 - 2026-05-29
 
 ### Added
