@@ -3,6 +3,28 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.29.3 - 2026-05-29
+
+### Added
+
+- **`/issue-triage` slash command** (`framework/commands/issue-triage.md`): Fetches open GitHub issues, presents them as a numbered selection table with title, labels, and age, and works through whichever the user picks. Supports optional filters (`bugs`, `features`, `docs`, `all`). For each selected issue: summarises the issue type, offers to work on it, skip, or close as won't fix. Creates a branch, implements the fix, and opens a PR with the issue reference. Works in any repository with a GitHub remote and an authenticated `gh` CLI.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+No breaking changes.
+
+### Migration Notes
+
+None.
+
 ## 0.29.2 - 2026-05-29
 
 ### Added
