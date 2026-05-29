@@ -32,8 +32,8 @@ requirements:
   rationale: The data boundary determines whether the service is modeled as SaaS and what governance obligations follow.
   canBeSatisfiedBy:
   - mechanism: field
-    key: dataLeavesInfrastructure
-    example: 'dataLeavesInfrastructure: true'
+    key: vendorGovernance.dataLeavesInfrastructure
+    example: 'vendorGovernance: {dataLeavesInfrastructure: true}'
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
@@ -46,8 +46,8 @@ requirements:
   rationale: Data residency commitments are required before regulated or sensitive workloads can depend on a blackbox vendor platform.
   canBeSatisfiedBy:
   - mechanism: field
-    key: dataResidencyCommitment
-    example: 'dataResidencyCommitment: US-only, AWS us-east-1'
+    key: vendorGovernance.dataResidencyCommitment
+    example: 'vendorGovernance: {dataResidencyCommitment: US-only}'
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
@@ -58,8 +58,8 @@ requirements:
   rationale: A SaaS dependency that handles organizational data requires explicit contractual treatment.
   canBeSatisfiedBy:
   - mechanism: field
-    key: dpaNotes
-    example: 'dpaNotes: DPA signed 2024-03, covers FERPA and COPPA'
+    key: vendorGovernance.dpaNotes
+    example: 'vendorGovernance: {dpaNotes: DPA signed 2024-03, covers FERPA and COPPA}'
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
@@ -106,8 +106,8 @@ requirements:
   rationale: Vendor-managed services require an explicit answer for how outages or degradations are detected by the adopter.
   canBeSatisfiedBy:
   - mechanism: field
-    key: incidentNotificationProcess
-    example: 'incidentNotificationProcess: Vendor status page plus email incident notifications'
+    key: vendorGovernance.incidentNotificationProcess
+    example: 'vendorGovernance: {incidentNotificationProcess: Vendor status page plus email incident notifications}'
   - mechanism: architectureNote
     key: healthStatusVisibility
   requirementMode: mandatory
@@ -132,8 +132,8 @@ requirements:
   rationale: SaaS service quality must be defined in terms available to the adopter, not hidden internal design.
   canBeSatisfiedBy:
   - mechanism: field
-    key: vendorSLA
-    example: 'vendorSLA: 99.99% uptime, 24x7 support'
+    key: vendorGovernance.vendorSLA
+    example: 'vendorGovernance: {vendorSLA: 99.99% uptime, 24x7 support}'
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
