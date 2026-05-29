@@ -263,6 +263,10 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | templates/workspace/CODEOWNERS.tmpl | DRAFT Workspace — CODEOWNERS |
 | templates/workspace/GEMINI.md.tmpl | Gemini Instructions |
 | templates/workspace/README.md.tmpl | Company DRAFT Workspace |
+| templates/workspace/configurations/object-patches/capability-ownership-compute-runtime.yaml.tmpl | Capability Ownership — Compute & Runtime Domain |
+| templates/workspace/configurations/object-patches/capability-ownership-data-engineering-quality.yaml.tmpl | Capability Ownership — Data & Engineering Quality Domains |
+| templates/workspace/configurations/object-patches/capability-ownership-observability.yaml.tmpl | Capability Ownership — Observability & Monitoring Domain |
+| templates/workspace/configurations/object-patches/capability-ownership-security-identity.yaml.tmpl | Capability Ownership — Security & Identity Domain |
 | templates/workspace/llms.txt.tmpl | Company DRAFT Workspace |
 
 ## Validation
