@@ -1656,20 +1656,6 @@ def validate_workspace_vocabulary_references(
                                 failures,
                                 warnings,
                             )
-                    connections = service_group.get("connections") or []
-                    if isinstance(connections, list):
-                        for connection_index, connection in enumerate(connections):
-                            if not isinstance(connection, dict):
-                                continue
-                            validate_vocabulary_value(
-                                obj,
-                                path,
-                                f"serviceGroups[{index}].connections[{connection_index}].protocol",
-                                connection.get("protocol"),
-                                connection_protocol_vocabulary,
-                                failures,
-                                warnings,
-                            )
 
         if obj.get("type") not in deployable_or_pattern_types:
             continue
@@ -3182,10 +3168,11 @@ def validate_service_group_structure(
             if intent and intent not in {"ha", "sa"}:
                 failures.append(f"{path}: serviceGroup '{group_name}' deployable object '{entry_label}' has invalid intent '{intent}'")
 
-        if warnings is not None and group.get("connections"):
-            warnings.append(
-                f"{path}: serviceGroup '{group_name}' connections is deprecated — "
-                "model each dependency as a relationship object instead"
+        if group.get("connections"):
+            failures.append(
+                f"{path}: serviceGroup '{group_name}' contains inline connections — "
+                "serviceGroup.connections was removed in favour of relationship objects; "
+                "migrate each entry to a relationship file in catalog/relationships/"
             )
 
 

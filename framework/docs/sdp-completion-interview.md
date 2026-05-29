@@ -18,8 +18,7 @@ incomplete conditions:
 
 - No `serviceGroups` or service groups with no `deployableObjects`
 - `deployableObjects` entries with no `diagramTier`
-- No `connections` or `serviceConnections` declared anywhere in the SDP
-- No relationship objects with this SDP's objects as source
+- No relationship objects with this SDP's deployed objects as source
 - No `architectureNotes.dataClassification` or availability declaration
 - No `architectureNotes.failureDomain`
 - No `tierVariants` when environment tiers are declared in the workspace
@@ -38,8 +37,8 @@ score and gap list to the user before asking any questions.
 | Service groups | SG | At least one `serviceGroup` with a name and `deploymentTarget` |
 | Deployable objects | DO | Every service group has at least one entry with a resolved catalog `ref` and `diagramTier` |
 | Network zones | NZ | `networkZones` declared, or an explicit architectural decision that no zone segmentation applies |
-| Connections | CN | At least one `serviceConnection` entry, or an explicit architectural decision that no cross-service connections exist |
-| External interactions | EI | At least one relationship object with a deployed object as source |
+| Connections | CN | At least one relationship object where both source and target are deployed in this SDP, or an explicit architectural decision that no cross-service connections exist |
+| External interactions | EI | At least one relationship object where source is deployed in this SDP and target is external or in a different catalog object |
 | Data classification | DC | `architectureNotes.dataClassification` present |
 | Availability | AV | `architectureNotes.availability` present |
 | Failure domain | FD | `architectureNotes.failureDomain` present |

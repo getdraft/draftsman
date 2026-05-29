@@ -171,10 +171,10 @@ vocabulary:
     source: .draft/framework/configurations/vocabulary/connection-protocols.yaml
 ```
 
-When declared, validation checks `serviceGroups[].connections[].protocol` on
-Software Deployment Patterns. The Draftsman presents approved values as a
-multiple-choice list during connection elicitation. Values not in the list are
-recorded as non-standard and may be submitted as vocabulary proposals.
+When declared, validation checks `relationship.technology` on relationship
+objects. The Draftsman presents approved values as a multiple-choice list
+during connection elicitation. Values not in the list are recorded as
+non-standard and may be submitted as vocabulary proposals.
 
 The framework ships a default source file at
 `configurations/vocabulary/connection-protocols.yaml` covering REST, gRPC,

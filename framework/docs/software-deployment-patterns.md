@@ -20,10 +20,9 @@ organized around:
 - `architectureNotes`
 - `decisionRecords`
 
-Each service group can contain deployable object references and group-local
-external interactions. This is a better fit for real
-architecture interview data because it preserves operational grouping and
-deployment intent.
+Each service group contains deployable object references. Inter-service
+dependencies are modeled as standalone relationship objects in
+`catalog/relationships/`, not as inline fields on the service group.
 
 Within those service groups, the primary visual objects in the topology are the
 deployed object entries themselves.
@@ -225,14 +224,13 @@ When the deployment boundary is not known, do not substitute a guessed cloud
 region or generic placeholder. Preserve the uncertainty through the normal
 drafting workflow and revisit it with the accountable owner.
 
-Internal and external interactions remain attached to the owning service group:
-
-- `type: internal` means another service group in the same Software Deployment Pattern
-- `type: external` means a system outside the Software Deployment Pattern boundary
-
-Internal interactions must reference another service-group name in the same
-Software Deployment Pattern. External interactions stay attached to the service group that owns them;
-they should not be hoisted to the Software Deployment Pattern top level.
+Inter-service dependencies are modeled as relationship objects in
+`catalog/relationships/`, not as inline fields inside the SDP. A relationship
+object carries a `source` UID, a `target` UID (or `externalTarget` for systems
+with no catalog object), a `label`, `technology`, and optional `capabilities`
+that the validator uses as requirement evidence. The browser renders relationship
+objects whose both endpoints are deployed in the same SDP as connection edges in
+the topology view.
 
 ## How The Topology Should Read
 
@@ -284,3 +282,30 @@ In the long run, yes, if the product has meaningful architecture that needs to b
 ### What if my product does not fit any existing Reference Architecture?
 
 Do not force the product into an obviously wrong pattern. Treat that as a signal. Either the product is a legitimate exception that needs to be documented clearly, or the catalog is missing a Reference Architecture that should exist.
+
+## Migrating Inline Connections to Relationship Objects
+
+Earlier versions of DRAFT allowed service-to-service connections to be declared
+inline inside `serviceGroup.connections`. That field has been removed. The
+validator will now fail any SDP that still contains inline connections.
+
+For each inline connection entry, create a relationship file in
+`catalog/relationships/` following this shape:
+
+```yaml
+schemaVersion: '1.0'
+uid: <generated>
+type: relationship
+name: <source-name> calls <target-name>
+catalogStatus: complete
+source: <from-uid>
+target: <to-uid>
+label: calls
+technology: <protocol>        # was: connection.protocol
+direction: synchronous        # synchronous / asynchronous / event
+flow: outbound
+```
+
+Then remove the `connections` list from the service group. The browser and
+validator both resolve relationship objects automatically — no reference back
+to the SDP is needed on the relationship file itself.

@@ -3,7 +3,7 @@ uid: 01KS7ZZ1C5-1PFR
 type: vocabulary
 vocabulary: connectionProtocols
 name: Connection Protocols
-description: 'Approved inter-service communication protocols for use in serviceGroup.connections[].protocol. Companies may extend this list via vocabulary proposals. The Draftsman presents these as a multiple-choice list during connection elicitation; if the engineer''s answer is not in this list the Draftsman records it as a non-standard value and offers a vocabulary proposal.
+description: 'Approved inter-service communication protocols for use in relationship.technology. Companies may extend this list via vocabulary proposals. The Draftsman presents these as a multiple-choice list during connection elicitation; if the engineer''s answer is not in this list the Draftsman records it as a non-standard value and offers a vocabulary proposal.
 
   '
 values:

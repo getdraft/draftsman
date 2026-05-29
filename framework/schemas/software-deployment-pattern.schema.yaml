@@ -134,14 +134,11 @@ serviceGroup:
   - substrate
   - scalingUnit
   - deployableObjects
-  - connections
   fieldTypes:
     substrate: str
     deployableObjects: list
-    connections: list
   collectionSchemas:
     deployableObjects: deployableObjectEntry
-    connections: serviceConnection
   fieldDescriptions:
     substrate: >
       UID of the RuntimeService, Host, or EdgeGatewayService that hosts the
@@ -151,7 +148,7 @@ serviceGroup:
       ProductComponents (and any DataComponents) in deployableObjects. Omit
       substrate when this service group is a data-tier group whose primary object
       is a DataStoreService — DataStoreServices remain in deployableObjects because
-      they are connection targets for other groups.
+      they are relationship targets for other groups.
     deploymentTarget: >
       Workspace vocabulary value identifying the physical or logical deployment
       target for this service group (e.g. aws-us-east-1, openstack-controller).
@@ -165,7 +162,7 @@ serviceGroup:
     ProductComponents in deployableObjects rather than repeating the runtime
     alongside them. For data-tier groups whose primary object is a DataStoreService,
     leave substrate unset and include the DataStoreService in deployableObjects so
-    other groups can reference it in connections.
+    other groups can reference it as a relationship target.
 deployableObjectEntry:
   requiredFields:
   - ref
@@ -184,49 +181,6 @@ deployableObjectEntry:
       ID of a networkZone declared on this SDP. The zone's tier classification
       determines which tier requirements apply to this service. Required for
       topology diagram rendering.
-serviceConnection:
-  requiredFields:
-  - from
-  - to
-  - protocol
-  optionalFields:
-  - direction
-  - port
-  - label
-  enumFields:
-    protocol:
-    - REST
-    - gRPC
-    - AMQP
-    - JDBC
-    - SQL
-    - WebSocket
-    - HTTPS
-    - GraphQL
-    - other
-    direction:
-    - outbound
-    - inbound
-    - bidirectional
-  fieldDescriptions:
-    from: UID of a deployable object ref declared in this serviceGroup's deployableObjects.
-    to: >
-      UID of a deployable object ref anywhere in this SDP (may be in another
-      serviceGroup), or the substrate UID of another serviceGroup. Use the
-      substrate UID when connecting to a DataStoreService that is declared as
-      substrate rather than in deployableObjects — but prefer keeping
-      DataStoreServices in deployableObjects so the connection target is
-      unambiguous.
-    protocol: Communication protocol. Use workspace vocabulary list connectionProtocols for approved values.
-    direction: Direction from the perspective of the `from` object. Defaults to outbound.
-    port: Optional port or port range. Do not ask the engineer for this during a Draftsman session; capture only if volunteered.
-    label: Optional human label for this edge. Do not ask during a Draftsman session; capture only if volunteered.
-  aiHint: >
-    Capture only primary paths that cross a zone boundary. Do not attempt to enumerate
-    all internal same-zone connections during a single Draftsman session. Use the
-    propose-and-confirm pattern: infer likely crossings from zone topology, ask yes/no
-    per zone crossing, then multi-select the specific services involved, then ask
-    protocol once per crossing.
 decisionRecordRef:
   requiredFields:
   - ref

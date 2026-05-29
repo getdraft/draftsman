@@ -633,58 +633,37 @@ def build_requirement_payload(registry: dict[str, dict[str, Any]], workspace_roo
 
 
 def build_sdp_connections(obj: dict[str, Any], all_objects: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
-    """Flatten inter-service connections from serviceGroups.connections (legacy) and relationship objects."""
+    """Build inter-service connections from relationship objects where both endpoints are deployed in this SDP."""
     connections: list[dict[str, Any]] = []
 
-    # Legacy: serviceGroups[].connections[] (deprecated since v0.26)
+    if not all_objects:
+        return connections
+
+    deployed_uids: set[str] = set()
     for group in obj.get("serviceGroups", []):
         if not isinstance(group, dict):
             continue
-        group_name = str(group.get("name", ""))
-        for conn in group.get("connections", []):
-            if not isinstance(conn, dict):
-                continue
-            from_ref = str(conn.get("from", "")).strip()
-            to_ref = str(conn.get("to", "")).strip()
-            if not from_ref or not to_ref:
-                continue
-            connections.append({
-                "from": from_ref,
-                "to": to_ref,
-                "protocol": str(conn.get("protocol", "")).strip(),
-                "direction": str(conn.get("direction", "outbound")).strip(),
-                "port": str(conn.get("port", "")).strip(),
-                "label": str(conn.get("label", "")).strip(),
-                "serviceGroup": group_name,
-            })
+        for deployed in group.get("deployableObjects", []):
+            if isinstance(deployed, dict) and deployed.get("ref"):
+                deployed_uids.add(str(deployed["ref"]))
 
-    # Current: relationship objects where both endpoints are deployed in this SDP
-    if all_objects:
-        deployed_uids: set[str] = set()
-        for group in obj.get("serviceGroups", []):
-            if not isinstance(group, dict):
-                continue
-            for deployed in group.get("deployableObjects", []):
-                if isinstance(deployed, dict) and deployed.get("ref"):
-                    deployed_uids.add(str(deployed["ref"]))
-        existing = {(c["from"], c["to"]) for c in connections}
-        for rel in all_objects:
-            if rel.get("type") != "relationship":
-                continue
-            src = str(rel.get("source", "")).strip()
-            tgt = str(rel.get("target", "")).strip()
-            if not src or not tgt:
-                continue
-            if src in deployed_uids and tgt in deployed_uids and (src, tgt) not in existing:
-                connections.append({
-                    "from": src,
-                    "to": tgt,
-                    "protocol": str(rel.get("technology", "")).strip(),
-                    "direction": str(rel.get("direction", "outbound")).strip(),
-                    "port": "",
-                    "label": str(rel.get("label", "")).strip(),
-                    "serviceGroup": "",
-                })
+    for rel in all_objects:
+        if rel.get("type") != "relationship":
+            continue
+        src = str(rel.get("source", "")).strip()
+        tgt = str(rel.get("target", "")).strip()
+        if not src or not tgt:
+            continue
+        if src in deployed_uids and tgt in deployed_uids:
+            connections.append({
+                "from": src,
+                "to": tgt,
+                "protocol": str(rel.get("technology", "")).strip(),
+                "direction": str(rel.get("direction", "outbound")).strip(),
+                "port": "",
+                "label": str(rel.get("label", "")).strip(),
+                "serviceGroup": "",
+            })
 
     return connections
 
