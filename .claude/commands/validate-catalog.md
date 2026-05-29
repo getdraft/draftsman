@@ -1,0 +1,1 @@
+../../framework/commands/validate-catalog.md
