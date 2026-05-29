@@ -32,7 +32,7 @@ requirements:
   description: The Data-at-Rest service must document the backup platform, vault, or managed service responsible for storing or managing backups.
   rationale: Backup strategy says what recovery posture is expected; the backup platform makes the operational dependency explicit.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-7T2H
     example: An enterprise backup vault, backup service, object store, or managed provider backup capability.
@@ -45,7 +45,7 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
 - id: recovery-time-objective
   description: The Data-at-Rest service must document its recovery time objective.
   rationale: Recovery time must be explicit so operators and product teams understand the recovery expectation.
@@ -99,7 +99,7 @@ requirements:
   description: The Data-at-Rest service must document its administrative and application access control model.
   rationale: Database access boundaries must be understandable to engineering, security, and operations teams.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-MHJM
     example: Active Directory integration for data service administrators and service identities.
@@ -112,7 +112,7 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
 lifecycleStatus: existing-only
 tags:
 - service

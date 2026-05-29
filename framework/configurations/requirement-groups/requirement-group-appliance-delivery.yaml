@@ -31,7 +31,7 @@ requirements:
   description: How is administrative, user, or service access to the appliance authenticated?
   rationale: A blackbox appliance still needs an explicit access-control answer because it provides a deployed capability without inheriting the host or service Requirement Group baseline.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-MHJM
     example: The appliance authenticates administrators through an enterprise identity platform.
@@ -46,14 +46,14 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
   - technologyComponentConfiguration
   minimumSatisfactions: 1
 - id: log-audit-visibility
   description: What operational logs, audit records, or events are visible to the adopter, and where do they go?
   rationale: A blackbox appliance must state the log or audit visibility the adopter can rely on because hidden host logs are not modeled.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-D04B
     example: A relationship object where source is this appliance and the relationship has the log-management capability, pointing to a modeled central logging service or SIEM platform.
@@ -68,14 +68,14 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
   - technologyComponentConfiguration
   minimumSatisfactions: 1
 - id: health-status-visibility
   description: How does the adopter observe appliance health, status, incidents, or operational telemetry?
   rationale: The appliance provides a service-like capability, so consumers need to know how health and status are observed even though the internal host is hidden.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-98VD
     example: The appliance publishes health metrics to the enterprise monitoring platform.
@@ -90,7 +90,7 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
   - technologyComponentConfiguration
   minimumSatisfactions: 1
 - id: patch-update-model
@@ -100,7 +100,7 @@ requirements:
   - mechanism: field
     key: patchingOwner
     example: 'patchingOwner: vendor-managed'
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-BH6E
     example: Updates are orchestrated through a vendor or cloud-provider patch service.
@@ -115,7 +115,7 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
   - field
   - technologyComponentConfiguration
   minimumSatisfactions: 1

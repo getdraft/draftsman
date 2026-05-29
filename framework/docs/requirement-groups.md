@@ -94,9 +94,9 @@ applicable requirement. If an internal component is modeled for a reason that
 does not directly satisfy an applicable requirement, the object must document
 that reason in `architectureNotes` using `internalComponentRationales` or
 `dependencyRationales`. External dependencies are modeled as standalone
-`relationship` objects; the `externalInteraction` mechanism in requirement
-groups is satisfied by relationship objects where this object is the source
-and the relationship has the required capability.
+`relationship` objects; use the `relationship` mechanism in requirement
+groups to point to a relationship object where this object is the source
+and the relationship carries the required capability.
 
 ## Draftsman Behavior
 

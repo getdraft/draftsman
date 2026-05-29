@@ -56,7 +56,7 @@ VALID_REQUIREMENT_ANSWER_TYPES = {
     "technologyComponent",
     "technologyComponentConfiguration",
     "deploymentConfiguration",
-    "externalInteraction",
+    "relationship",
     "internalComponent",
     "architectureNote",
     "field",
@@ -903,9 +903,9 @@ def mechanism_description(mechanism: dict[str, Any]) -> str:
         field = mechanism.get("key", "unknown")
         equals = mechanism.get("equals")
         return f"field({field}={equals})" if equals is not None else f"field({field})"
-    if mechanism_type == "externalInteraction":
+    if mechanism_type == "relationship":
         capability = mechanism.get("criteria", {}).get("capability", "unknown")
-        return f"externalInteraction(capability={capability})"
+        return f"relationship(capability={capability})"
     if mechanism_type == "internalComponent":
         criteria = mechanism.get("criteria", {})
         concern = criteria.get("concern")
@@ -1090,7 +1090,7 @@ def mechanism_satisfied(obj: dict[str, Any], mechanism: dict[str, Any], catalog_
         if mechanism.get("allowEmpty") is True:
             return value is not None
         return is_non_empty(value)
-    if mechanism_type == "externalInteraction":
+    if mechanism_type == "relationship":
         capability = mechanism.get("criteria", {}).get("capability")
         obj_uid = obj.get("uid")
         outbound_rels = [
@@ -2573,7 +2573,7 @@ def find_relationship_for_implementation(
     implementation: dict[str, Any],
     catalog_by_id: dict[str, dict[str, Any]],
 ) -> bool:
-    """Return True when a relationship object satisfies an externalInteraction implementation."""
+    """Return True when a relationship object satisfies a relationship implementation."""
     obj_uid = obj.get("uid")
     if not is_non_empty(obj_uid):
         return False
@@ -2664,7 +2664,7 @@ def implementation_resolves(
         key = implementation.get("key")
         decisions = obj.get("architectureNotes", {})
         return is_non_empty(key) and isinstance(decisions, dict) and is_non_empty(get_nested_value(decisions, str(key)))
-    if mechanism == "externalInteraction":
+    if mechanism == "relationship":
         return find_relationship_for_implementation(obj, implementation, catalog_by_id)
     if mechanism == "deploymentConfiguration":
         return find_deployment_configuration(obj, implementation)
@@ -3013,7 +3013,7 @@ def validate_requirement_implementations(
         if mechanism == "architectureNote":
             failures.append(
                 f"{context}: architectureNote is not a valid implementation mechanism — "
-                "use a structural mechanism (externalInteraction, technologyComponentConfiguration, field, etc.); "
+                "use a structural mechanism (relationship, technologyComponentConfiguration, field, etc.); "
                 "inline notes are scratchpad, not evidence"
             )
             implementations_by_key[(str(group_id), str(requirement_id))] = implementation

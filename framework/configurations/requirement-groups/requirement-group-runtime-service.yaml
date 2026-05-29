@@ -44,7 +44,7 @@ requirements:
   description: The service must address how service identities or administrators authenticate to the service.
   rationale: A service is incomplete until its service-level authentication model is explicit.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-MHJM
     example: Centralized identity or authentication service used by the workload.
@@ -64,14 +64,14 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
   - internalComponent
   - technologyComponentConfiguration
 - id: secrets-management
   description: The service must address how service-level secrets, keys, tokens, or certificates are stored and accessed.
   rationale: Secret handling is a baseline service capability and cannot be left implicit.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-DTJJ
     example: A secrets platform or certificate-management service used by the workload.
@@ -92,14 +92,14 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
   - internalComponent
   - technologyComponentConfiguration
 - id: service-logging
   description: The service must address how service-generated logs are produced and delivered beyond host-level logging.
   rationale: Service logs are distinct from host logs and are required for supportability and evidentiary review.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-D04B
     example: A relationship object where source is this service and the relationship has the log-management capability, pointing to a modeled central logging Runtime Service, Edge/Gateway Service, or PaaS-delivered service.
@@ -119,14 +119,14 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
   - internalComponent
   - technologyComponentConfiguration
 - id: health-welfare-monitoring
   description: The service must address how operators observe service health, welfare, and operational telemetry.
   rationale: A service is incomplete until the monitoring pattern for service-level health is explicit.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-98VD
     example: Centralized monitoring platform used for service telemetry and health evaluation.
@@ -147,7 +147,7 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
   - internalComponent
   - technologyComponentConfiguration
 - id: availability

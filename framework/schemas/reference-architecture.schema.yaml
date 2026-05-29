@@ -128,7 +128,7 @@ requirementImplementation:
     - technologyComponent
     - technologyComponentConfiguration
     - deploymentConfiguration
-    - externalInteraction
+    - relationship
     - internalComponent
     - architectureNote
     - field

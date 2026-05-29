@@ -43,7 +43,7 @@ requirements:
   description: The host must address how administrators and services authenticate to the platform.
   rationale: Identity control is a baseline host requirement because unmanaged access breaks supportability and auditability.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-MHJM
     example: Active Directory or another enterprise identity platform.
@@ -64,14 +64,14 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
   - internalComponent
   - technologyComponentConfiguration
 - id: log-management
   description: The host must address how logs leave the host and reach an operationally supported logging destination.
   rationale: Logging is required for troubleshooting, security response, and evidentiary review.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-D04B
     example: A relationship object where source is this host and the relationship has the log-management capability, pointing to a modeled central logging Runtime Service, Edge/Gateway Service, or PaaS-delivered service.
@@ -92,14 +92,14 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
   - internalComponent
   - technologyComponentConfiguration
 - id: health-welfare-monitoring
   description: The host must address health and welfare monitoring for performance, availability, and operational telemetry.
   rationale: Hosts must show how operators know whether the platform is healthy and supportable.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-98VD
     example: Dynatrace, Nagios, or another host monitoring platform.
@@ -120,14 +120,14 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
   - internalComponent
   - technologyComponentConfiguration
 - id: security-monitoring
   description: The host must address endpoint security or runtime security monitoring.
   rationale: Hosts must show how they are protected and observed by a security control plane.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-JW52
     example: CrowdStrike Falcon Platform or Wiz Cloud Security.
@@ -148,14 +148,14 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
   - internalComponent
   - technologyComponentConfiguration
 - id: patch-management
   description: The host must address how patching is orchestrated and what operational mechanism applies updates.
   rationale: Patching is a governance control, not an implementation detail that can be left implicit.
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-BH6E
     example: Automox Patch Management.
@@ -176,7 +176,7 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - architectureNote
-  - externalInteraction
+  - relationship
   - internalComponent
   - technologyComponentConfiguration
 lifecycleStatus: existing-only

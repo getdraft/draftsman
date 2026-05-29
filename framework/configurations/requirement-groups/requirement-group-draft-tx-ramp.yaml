@@ -34,7 +34,7 @@ requirements:
   requirementMode: conditional
   naAllowed: true
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-MHJM
   - mechanism: technologyComponentConfiguration
@@ -44,7 +44,7 @@ requirements:
     key: authentication
   minimumSatisfactions: 1
   validAnswerTypes:
-  - externalInteraction
+  - relationship
   - technologyComponentConfiguration
   - architectureNote
   relatedCapability: 01KQQ4Q026-MHJM
@@ -68,7 +68,7 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-D04B
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-D04B
   - mechanism: architectureNote
@@ -76,7 +76,7 @@ requirements:
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponentConfiguration
-  - externalInteraction
+  - relationship
   - architectureNote
   relatedCapability: 01KQQ4Q026-D04B
   applicability:
@@ -102,7 +102,7 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-JW52
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-JW52
   - mechanism: architectureNote
@@ -111,7 +111,7 @@ requirements:
   validAnswerTypes:
   - technologyComponent
   - technologyComponentConfiguration
-  - externalInteraction
+  - relationship
   - architectureNote
   relatedCapability: 01KQQ4Q026-JW52
   applicability:
@@ -134,7 +134,7 @@ requirements:
   - mechanism: technologyComponent
     criteria:
       capability: 01KQQ4Q026-BH6E
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-BH6E
   - mechanism: architectureNote
@@ -142,7 +142,7 @@ requirements:
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
-  - externalInteraction
+  - relationship
   - architectureNote
   relatedCapability: 01KQQ4Q026-BH6E
   applicability:
@@ -192,7 +192,7 @@ requirements:
   requirementMode: conditional
   naAllowed: true
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-4JR6
   - mechanism: technologyComponentConfiguration
@@ -202,7 +202,7 @@ requirements:
     key: access_control_model
   minimumSatisfactions: 1
   validAnswerTypes:
-  - externalInteraction
+  - relationship
   - technologyComponentConfiguration
   - architectureNote
   relatedCapability: 01KQQ4Q026-4JR6
@@ -250,7 +250,7 @@ requirements:
   requirementMode: conditional
   naAllowed: true
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-DTJJ
   - mechanism: technologyComponentConfiguration
@@ -260,7 +260,7 @@ requirements:
     key: secrets_management
   minimumSatisfactions: 1
   validAnswerTypes:
-  - externalInteraction
+  - relationship
   - technologyComponentConfiguration
   - architectureNote
   relatedCapability: 01KQQ4Q026-DTJJ
@@ -281,13 +281,13 @@ requirements:
   requirementMode: conditional
   naAllowed: true
   canBeSatisfiedBy:
-  - mechanism: externalInteraction
+  - mechanism: relationship
   - mechanism: technologyComponentConfiguration
   - mechanism: architectureNote
     key: product_component
   minimumSatisfactions: 1
   validAnswerTypes:
-  - externalInteraction
+  - relationship
   - technologyComponentConfiguration
   - architectureNote
   applicability:
