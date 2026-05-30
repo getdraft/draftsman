@@ -81,19 +81,28 @@ tool-specific layer.
 
 ## Workflow Commands
 
-The following commands are available in any IDE that has been wired up per
-setup-mode step 7:
+The following command names are canonical. Tools with native slash-command
+support can register them directly; Codex and other generic tools treat them as
+typed command phrases routed by the workspace bootstrap instructions.
 
 | Command | Purpose |
 |---|---|
+| `/draft-help` | List available DRAFT commands |
 | `/draftsman [intent]` | Activate the Draftsman for authoring or workspace setup |
 | `/draft-session [topic]` | Start or resume a guided DraftingSession |
-| `/validate-catalog` | Run the validator and report issues with fix guidance |
+| `/draft-validate` | Run the validator and report issues with fix guidance |
+| `/draft-updateframework` | Check for framework updates and guide a safe upgrade |
+| `/draft-triage` | Pull open framework GitHub issues and work through selected ones |
+| `/draft-review` | Review the DRAFT framework for simplification and adoption |
 
 Command files live in `.draft/framework/commands/`. They include Claude Code
 frontmatter (`description`, `argument-hint`, `allowed-tools`) which other AI
 tools skip — the instruction content that follows works for any AI without
 modification.
+
+`/validate-catalog` is retained only as a compatibility alias for older
+workspace references. New bootstrap files and integrations should advertise
+`/draft-validate`.
 
 ## IDE Integration
 
@@ -108,7 +117,7 @@ templates include command invocation guidance for each supported tool:
 | Windsurf | `.windsurfrules` | setup-mode step 7c |
 | GitHub Copilot | `.github/copilot-instructions.md` block | setup-mode step 7d |
 | Gemini CLI | `GEMINI.md` (workspace bootstrap) | included automatically |
-| OpenAI Codex / generic | `AGENTS.md` (workspace bootstrap) | included automatically |
+| OpenAI Codex / generic | `AGENTS.md` command-phrase routing | included automatically |
 
 See `framework/docs/setup-mode.md` step 7 for full instructions.
 

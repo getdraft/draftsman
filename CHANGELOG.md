@@ -3,6 +3,50 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.32.3 - 2026-05-30
+
+Clarifies DRAFT command integration across Codex, generic AI tools, and
+IDE-specific bootstrap files, and resolves the validation command naming
+mismatch without changing the architecture object contract.
+
+### Added
+
+- **`/validate-catalog` compatibility alias**: added
+  `framework/commands/validate-catalog.md` so older workspace references and
+  symlinks resolve to the canonical `/draft-validate` workflow instead of
+  pointing at a missing command file.
+
+### Changed
+
+- **Canonical validation command guidance**: updated workspace templates,
+  Cursor/Windsurf integrations, setup-mode docs, and AI configuration docs to
+  advertise `/draft-validate` as the canonical validation command.
+- **Codex and generic AI wording**: clarified that `AGENTS.md` provides
+  command-phrase routing for tools such as OpenAI Codex and does not create
+  native slash-command menu entries or autocomplete by itself.
+- **Workspace command inventories**: aligned bootstrap command tables with the
+  command files under `framework/commands/`, including help, triage,
+  framework-update, and review commands.
+
+### Fixed
+
+- **Broken validation command references**: removed live bootstrap and
+  integration references that routed `/validate-catalog` to a missing command
+  file, while preserving the old command as an explicit alias.
+
+### Compatibility Impact
+
+No schema, RequirementGroup, capability, domain, validation-contract, or catalog
+object change. Existing workspaces that still invoke `/validate-catalog`
+continue to work through the compatibility alias; newly generated workspaces
+advertise `/draft-validate`.
+
+### Migration Notes
+
+No action is required for existing workspaces. Workspace owners may refresh
+generated bootstrap or IDE integration files if they want user-facing command
+tables and guidance to show `/draft-validate` as the canonical name.
+
 ## 0.32.2 - 2026-05-30
 
 Documents the branch-protection policy now enforced on `main`. This is a
