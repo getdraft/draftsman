@@ -3,6 +3,28 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.30.1 - 2026-05-30
+
+### Added
+
+- None.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- **Vendored template paths corrected in docs**: Setup mode, the Draftsman role doc, and the workspaces doc referenced workspace templates at `.draft/framework/templates/...`, but the framework update flow vendors them to `.draft/templates/`. Updated the `CODEOWNERS.tmpl` copy command (`setup-mode.md`), the object-patch template path (`draftsman.md`), and the generic template reference (`workspaces.md`) so they point at the location the vendoring command actually produces. Without this fix, the setup-mode `cp` command for CODEOWNERS failed and the object-patch template lookup resolved to a nonexistent path in vendored company workspaces.
+
+### Compatibility Impact
+
+No breaking changes. Documentation-only fix; no schema, requirement group, or catalog content changed.
+
+### Migration Notes
+
+No action required for existing catalogs. Draft Admins who copied the previous `.draft/framework/templates/...` paths into local setup scripts or runbooks should update them to `.draft/templates/...` to match the location the framework update flow produces.
+
 ## 0.30.0 - 2026-05-30
 
 ### Added

@@ -190,7 +190,7 @@ proposal file shape, and Draftsman interview behavior.
 The default workspace workflow is source based:
 
 1. Create or update YAML in `catalog/` or `configurations/`.
-2. Use the matching template from `.draft/framework/templates/` when creating a new object.
+2. Use the matching template from `.draft/templates/` when creating a new object.
 3. Read the relevant schema and Requirement Group before filling in fields.
 4. Preserve unresolved facts in `catalog/sessions/` as Drafting Sessions.
 5. Run `python3 .draft/framework/tools/validate.py --workspace /path/to/workspace`.

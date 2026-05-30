@@ -95,7 +95,7 @@ The minimum useful setup path is:
    object-patch file in `configurations/object-patches/` setting `owner`; use
    `owner.team: TBD` for any capability the user cannot assign today so the gap
    is visible rather than silent; use the templates in
-   `.draft/framework/templates/workspace/configurations/object-patches/` as the
+   `.draft/templates/workspace/configurations/object-patches/` as the
    starting structure
 8. seed acceptable-use Technology Components for owned capabilities
 9. draft baseline deployable standards

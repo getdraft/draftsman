@@ -294,7 +294,7 @@ does not yet exist, generate it from the template and fill in your GitHub org
 slug and team handles:
 
 ```bash
-cp .draft/framework/templates/workspace/CODEOWNERS.tmpl .github/CODEOWNERS
+cp .draft/templates/workspace/CODEOWNERS.tmpl .github/CODEOWNERS
 ```
 
 Edit `.github/CODEOWNERS`:
