@@ -70,3 +70,37 @@ reviews:
     severity: Medium
     outcome: deferred
 
+- date: 2026-05-30
+  frameworkVersion: "0.32.0"
+  scope: [full, docs, onboarding]
+  findingsGenerated: 7
+  findings:
+  - title: Vendored template paths are broken
+    severity: High
+    outcome: implemented
+    note: Shipped 0.30.1; CODEOWNERS and object-patch template paths corrected
+  - title: Catalog folder names differ across sources
+    severity: High
+    outcome: implemented
+    note: network-services routing 0.30.2 plus scaffold taxonomy realignment 0.31.2
+  - title: '"Data-at-Rest Service" vs "DataStoreService" drift'
+    severity: Medium
+    outcome: implemented
+    note: Shipped 0.31.0 as spaced "Data Store Service"; later superseded by finding 7's uniform PascalCase in 0.32.0
+  - title: Conversation-cadence instructions contradict
+    severity: Medium
+    outcome: implemented
+    note: Shipped 0.31.1; record in session, do not display a running backlog
+  - title: Workspace template scaffolds retired concepts
+    severity: Medium
+    outcome: implemented
+    note: Shipped 0.31.2; scaffold catalog/configuration tree realigned to examples
+  - title: draftsman.md is a 939-line monolith (residual)
+    severity: Low
+    outcome: dropped
+    note: Maintainer chose to keep the single canonical role document
+  - title: 'Object-type labels: PascalCase vs spaced (all types)'
+    severity: Medium
+    outcome: implemented
+    note: Spawned from finding 3; shipped 0.32.0 as uniform PascalCase across the entire framework
+
