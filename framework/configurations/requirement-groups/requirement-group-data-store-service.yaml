@@ -1,8 +1,8 @@
 schemaVersion: '1.0'
 uid: 01KQQ4Q027-VBF0
 type: requirement_group
-name: DataStoreService Requirement Group
-description: Additional DataStoreService checklist items extending the service behavior Requirement Group for durable data, recovery, and access control.
+name: Data Store Service Requirement Group
+description: Additional Data Store Service checklist items extending the service behavior Requirement Group for durable data, recovery, and access control.
 version: 3.0.0
 catalogStatus: complete
 authority:
@@ -16,8 +16,8 @@ appliesToQualifiers:
   deliveryModel: self-managed
 requirements:
 - id: backup-strategy
-  description: The Data-at-Rest service must document its backup strategy.
-  rationale: A data-at-rest platform is not governable unless its backup model is explicit.
+  description: The Data Store service must document its backup strategy.
+  rationale: A data store platform is not governable unless its backup model is explicit.
   canBeSatisfiedBy:
   - mechanism: architectureNote
     key: backup.strategy
@@ -29,7 +29,7 @@ requirements:
   validAnswerTypes:
   - architectureNote
 - id: backup-platform
-  description: The Data-at-Rest service must document the backup platform, vault, or managed service responsible for storing or managing backups.
+  description: The Data Store service must document the backup platform, vault, or managed service responsible for storing or managing backups.
   rationale: Backup strategy says what recovery posture is expected; the backup platform makes the operational dependency explicit.
   canBeSatisfiedBy:
   - mechanism: relationship
@@ -47,7 +47,7 @@ requirements:
   - architectureNote
   - relationship
 - id: recovery-time-objective
-  description: The Data-at-Rest service must document its recovery time objective.
+  description: The Data Store service must document its recovery time objective.
   rationale: Recovery time must be explicit so operators and product teams understand the recovery expectation.
   canBeSatisfiedBy:
   - mechanism: architectureNote
@@ -59,7 +59,7 @@ requirements:
   validAnswerTypes:
   - architectureNote
 - id: recovery-point-objective
-  description: The Data-at-Rest service must document its recovery point objective.
+  description: The Data Store service must document its recovery point objective.
   rationale: Recovery point must be explicit so durability expectations are clear.
   canBeSatisfiedBy:
   - mechanism: architectureNote
@@ -71,7 +71,7 @@ requirements:
   validAnswerTypes:
   - architectureNote
 - id: ha-replication-mechanism
-  description: The Data-at-Rest service must document its high-availability or replication mechanism.
+  description: The Data Store service must document its high-availability or replication mechanism.
   rationale: Database resilience depends on an explicit clustering, replication, or standalone posture.
   canBeSatisfiedBy:
   - mechanism: architectureNote
@@ -83,7 +83,7 @@ requirements:
   validAnswerTypes:
   - architectureNote
 - id: encryption-at-rest
-  description: The Data-at-Rest service must document how data is encrypted at rest.
+  description: The Data Store service must document how data is encrypted at rest.
   rationale: Storage protection is a core control for regulated and business-critical data.
   canBeSatisfiedBy:
   - mechanism: architectureNote
@@ -96,7 +96,7 @@ requirements:
   validAnswerTypes:
   - architectureNote
 - id: access-control-model
-  description: The Data-at-Rest service must document its administrative and application access control model.
+  description: The Data Store service must document its administrative and application access control model.
   rationale: Database access boundaries must be understandable to engineering, security, and operations teams.
   canBeSatisfiedBy:
   - mechanism: relationship

@@ -3,6 +3,37 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.31.0 - 2026-05-30
+
+Converges the human-readable name of the `data_store_service` object on **Data
+Store Service**, matching its machine type (`data_store_service`) and catalog
+folder (`catalog/data-store-services/`). The framework previously used the
+deprecated "Data-at-Rest Service" term across ~14 docs and the delivery
+requirement-group descriptions. Released as a minor because requirement-group
+definitions (the contract surface) changed, though only their display names and
+descriptions were edited.
+
+### Added
+
+- None.
+
+### Changed
+
+- **Standardized the data store object display name on "Data Store Service"**: replaced all "Data-at-Rest Service" occurrences across framework docs, the SaaS/PaaS/Appliance/Runtime/Data Store delivery requirement-group descriptions, and the browser user manual. Renamed the lone PascalCase outlier "DataStoreService Requirement Group" to "Data Store Service Requirement Group" to match the spaced RG-name convention. (The frozen `migrations/0.10.0/` script retains the old term intentionally.)
+
+### Fixed
+
+- **Broken schema link in `yaml-schema-reference.md`**: the data store row linked `data-at-rest-service.schema.yaml`, which does not exist; repointed to `data-store-service.schema.yaml`.
+- **Wrong catalog folder in docs**: `how-to-add-objects.md` and `yaml-schema-reference.md` told authors to use `catalog/data-at-rest-services/`, but CODEOWNERS, the browser, and the scaffold all use `catalog/data-store-services/`. Authoring to the documented folder meant no review routing and no browser rendering. Corrected to `catalog/data-store-services/`.
+
+### Compatibility Impact
+
+No breaking changes. Documentation and display-name alignment only; no schema type, UID, requirement ID, or catalog object content changed. The machine identifiers (`data_store_service`, `data-store-service.schema.yaml`, `data-store-services/`) are unchanged.
+
+### Migration Notes
+
+No action required. The compact PascalCase object-type label "DataStoreService" (used alongside "RuntimeService", "EdgeGatewayService", etc.) was intentionally left as-is; the broader PascalCase-vs-spaced object-type label convention is tracked as a separate decision.
+
 ## 0.30.2 - 2026-05-30
 
 Completes the 0.30.0 capability-domain restructure and network-infrastructure

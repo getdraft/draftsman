@@ -260,7 +260,7 @@ the company wants to manage framework updates manually.
 The end goal is deployable architecture. Catalog objects should capture facts
 that can later inform pipeline and infrastructure automation:
 
-- Hosts, Runtime Services, Data-at-Rest Services, Edge/Gateway Services, and
+- Hosts, Runtime Services, Data Store Services, Edge/Gateway Services, and
   Product Services describe reusable deployable building blocks.
 - Reference Architectures describe deployable patterns.
 - Software Deployment Patterns describe product deployment reality.

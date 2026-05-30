@@ -104,7 +104,7 @@ and ask:
 > the component or service name and I'll match it.
 
 Search the catalog for matching Product Services, Runtime Services,
-Data-at-Rest Services, and Edge/Gateway Services. Present the top matches as
+Data Store Services, and Edge/Gateway Services. Present the top matches as
 a numbered list. If an exact match exists, confirm it. If multiple plausible
 matches exist, ask the user to choose.
 
@@ -113,7 +113,7 @@ For each resolved catalog object:
 1. Set `diagramTier` based on the object type:
    - Product Service → infer from component role (API = application, UI =
      presentation, worker = application)
-   - Data-at-Rest Service → data
+   - Data Store Service → data
    - Edge/Gateway Service → presentation or utility
    - Runtime Service → utility
    - Ask the user to confirm or correct the inferred tier.
@@ -153,7 +153,7 @@ Ask one question per platform category. Present each as a yes/no:
 > secrets manager, or feature-flag service? (yes / no)
 
 For each **yes**, search the catalog for the deployable object that represents
-that platform (Runtime Service, Data-at-Rest Service, or Edge/Gateway Service
+that platform (Runtime Service, Data Store Service, or Edge/Gateway Service
 with a matching `deliveryModel`). If found, create a relationship object with
 `source` set to the dependent service and `target` set to the platform UID.
 If not found and the user can name the platform, draft the appropriate service

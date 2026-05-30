@@ -62,7 +62,7 @@ preferred, candidate, existing-only, deprecated, or retired.
 A Technology Component is not a deployment artifact. It does not say where or
 how many times a product is deployed.
 
-A Technology Component is not a Host, Runtime Service, Data-at-Rest Service,
+A Technology Component is not a Host, Runtime Service, Data Store Service,
 Edge/Gateway Service, Product Service, or Software Deployment Pattern. Those
 objects describe deployable behavior. Technology Components describe the vendor
 products those deployable objects use.
@@ -74,7 +74,7 @@ objects:
 
 - A Host uses an Operating System Technology Component and a Compute Platform
   Technology Component.
-- A Runtime Service or Data-at-Rest Service references one primary Technology
+- A Runtime Service or Data Store Service references one primary Technology
   Component that provides the service capability, such as IIS or SQL Server.
 - An Edge/Gateway Service with `deliveryModel: appliance` may reference the
   appliance product Technology Component while carrying the service-like
@@ -90,7 +90,7 @@ decision explains why the interaction is intentionally omitted via
 
 When a vendor appliance or appliance-like product delivers useful architecture
 behavior, model the vendor product/version as a Technology Component and model
-the deployable behavior as a Runtime Service, Data-at-Rest Service, or
+the deployable behavior as a Runtime Service, Data Store Service, or
 Edge/Gateway Service with `deliveryModel: appliance`.
 
 This preserves the Technology Component as the product lifecycle object and

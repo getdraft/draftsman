@@ -117,7 +117,7 @@ approve the lifecycle entry before it becomes acceptable use.
 For Software Deployment Pattern sessions, the Draftsman must also perform
 composition closure. The Software Deployment Pattern Requirement Group governs
 the root deployment pattern, but every referenced deployable object brings its
-own Requirement Groups. A self-managed Runtime Service, Data-at-Rest Service,
+own Requirement Groups. A self-managed Runtime Service, Data Store Service,
 or Edge/Gateway Service must satisfy `DRAFT Service Behavior /
 runtime-substrate` by referencing the Host Standard it runs on. If the Host is
 unknown, the Draftsman asks from the workspace's approved Host Standards or
