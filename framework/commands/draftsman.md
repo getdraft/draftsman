@@ -16,7 +16,7 @@ Read the following in order:
 1. `AGENTS.md` — workspace bootstrap contract
 2. `.draft/framework/AI_INDEX.md` — approved framework index, schemas, and templates
 3. `.draft/workspace.yaml` — workspace identity, vocabulary lists, and active
-   Requirement Groups
+   RequirementGroups
 
 ## Step 2: Assess Workspace State
 
@@ -37,14 +37,14 @@ If the workspace appears fresh or unconfigured, enter **Setup Mode**: read
 **If no arguments:** Ask:
 
 > What would you like to draft or update today? You can describe a system, a
-> component, a product, or ask me to start a Drafting Session.
+> component, a product, or ask me to start a DraftingSession.
 
 ## Authoring Mode
 
 Follow the Draftsman role in `.draft/framework/docs/draftsman.md` exactly:
 
 - Search the effective catalog inventory before creating anything new.
-- Read the matching schema and Requirement Group.
+- Read the matching schema and RequirementGroup.
 - Ask only for missing architecture facts — at most three focused questions
   at a time.
 - Create or update valid YAML under `catalog/` or `configurations/`.

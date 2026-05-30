@@ -1,7 +1,7 @@
 schemaVersion: '1.0'
 uid: 01KQQ4Q027-T3CA
 type: requirement_group
-name: Security and Security Compliance Requirement Group
+name: Security and Security Compliance RequirementGroup
 description: 'Baseline security and compliance requirement group bundled with DRAFT. Requirements are applied to matching object types based on their target scope.
 
   '
@@ -234,8 +234,8 @@ requirements:
   externalReference: https://controls.example.com/security-compliance/03.2.1
 - id: CC.SecurityCompliance.10.1.1
   externalControlId: CC.SecurityCompliance.10.1.1
-  name: Reference Architecture Conformance
-  description: Reference Architecture Conformance
+  name: ReferenceArchitecture Conformance
+  description: ReferenceArchitecture Conformance
   rationale: Record how this object satisfies CC.SecurityCompliance.10.1.1 for Security and Security Compliance Requirements.
   appliesTo:
   - software_deployment_pattern

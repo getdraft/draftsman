@@ -1,7 +1,7 @@
 schemaVersion: '1.0'
 uid: 01KQQ4Q027-69VY
 type: requirement_group
-name: NIST Cybersecurity Framework Requirement Group
+name: NIST Cybersecurity Framework RequirementGroup
 description: 'Initial NIST Cybersecurity Framework (CSF) 2.0 requirement group scoped to the outcomes that can be meaningfully answered by DRAFT objects.
 
   '
@@ -320,6 +320,6 @@ tags:
 - nist
 - starter-pack
 - requirement-group
-notes: 'These entries are DRAFT applicability mappings for public NIST CSF 2.0 outcomes. They intentionally cover only the subset of CSF outcomes that can be answered by deployable objects, Software Deployment Patterns, and related architecture objects.
+notes: 'These entries are DRAFT applicability mappings for public NIST CSF 2.0 outcomes. They intentionally cover only the subset of CSF outcomes that can be answered by deployable objects, SoftwareDeploymentPatterns, and related architecture objects.
 
   '

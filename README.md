@@ -73,7 +73,7 @@ repo-first workflow is stable.
 framework/              # Core schemas, tools, docs, and base configurations
 framework/browser/      # Static browser shell, CSS, JavaScript, and theme assets
 framework/configurations/
-                        # Base capabilities, Requirement Groups, and domains
+                        # Base capabilities, RequirementGroups, and domains
 examples/catalog/       # Sample content used to validate and demo the framework
 templates/              # Object and company repo templates
 docs/index.html         # Generated static browser for the example workspace
@@ -92,7 +92,7 @@ A company private DRAFT repo should use this shape:
 .draft/workspace.yaml  # Tracked workspace metadata
 .draft/framework.lock  # Upstream source and synced framework commit
 catalog/                # Company architecture content
-configurations/         # Company Requirement Group, compliance, domain, and patch overlays
+configurations/         # Company RequirementGroup, compliance, domain, and patch overlays
 configurations/vocabulary/
                         # Optional company governed vocabulary source files
 configurations/vocabulary-proposals/
@@ -161,20 +161,20 @@ does not, it should prepare local changes and give exact review steps.
 - [Deployable objects](framework/docs/standards.md)
 - [Delivery models](framework/docs/delivery-models.md)
 - [Product Service](framework/docs/product-service.md)
-- [Reference Architectures](framework/docs/reference-architectures.md)
-- [Software Deployment Patterns](framework/docs/software-deployment-patterns.md)
+- [ReferenceArchitectures](framework/docs/reference-architectures.md)
+- [SoftwareDeploymentPatterns](framework/docs/software-deployment-patterns.md)
 
 ### Supporting Model Objects
 
-- [Technology Components](framework/docs/technology-components.md)
-- [Decision Records](framework/docs/decision-records.md)
-- [Drafting Sessions](framework/docs/drafting-sessions.md)
+- [TechnologyComponents](framework/docs/technology-components.md)
+- [DecisionRecords](framework/docs/decision-records.md)
+- [DraftingSessions](framework/docs/drafting-sessions.md)
 - [Capabilities](framework/docs/capabilities.md)
 
 ### Extensible Framework Content
 
-- [Requirement Groups](framework/docs/requirement-groups.md)
-- [Requirement Groups and Compliance](framework/docs/security-and-compliance-controls.md)
+- [RequirementGroups](framework/docs/requirement-groups.md)
+- [RequirementGroups and Compliance](framework/docs/security-and-compliance-controls.md)
 
 ## Validate And Generate
 
@@ -224,7 +224,7 @@ python3 framework/tools/check_release_notes.py
 
 ## Compliance Claims
 
-Workspace-mode Requirement Groups can be supplied by the DRAFT framework,
+Workspace-mode RequirementGroups can be supplied by the DRAFT framework,
 third-party providers, or the company workspace. The company activates the
 groups it architects against in `.draft/workspace.yaml`.
 

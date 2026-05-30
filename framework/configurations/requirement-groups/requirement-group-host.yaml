@@ -1,7 +1,7 @@
 schemaVersion: '1.0'
 uid: 01KQQ4Q027-THYN
 type: requirement_group
-name: Host Requirement Group
+name: Host RequirementGroup
 description: Structured checklist of required questions and answers used to define a complete and correct Host.
 version: 3.0.0
 catalogStatus: complete
@@ -14,7 +14,7 @@ appliesTo:
 - host
 requirements:
 - id: operating-system
-  description: The host must declare the Operating System Technology Component that defines the operating system baseline.
+  description: The host must declare the Operating System TechnologyComponent that defines the operating system baseline.
   rationale: A host is not complete until the operating system product baseline is explicit.
   canBeSatisfiedBy:
   - mechanism: field
@@ -27,7 +27,7 @@ requirements:
   validAnswerTypes:
   - field
 - id: compute-platform
-  description: The host must declare the Compute Platform Technology Component that defines the physical or virtual compute substrate.
+  description: The host must declare the Compute Platform TechnologyComponent that defines the physical or virtual compute substrate.
   rationale: A host is not complete until the compute substrate is explicit.
   canBeSatisfiedBy:
   - mechanism: field
@@ -50,11 +50,11 @@ requirements:
   - mechanism: internalComponent
     criteria:
       capability: 01KQQ4Q026-MHJM
-    example: A Technology Component installed locally that provides host authentication behavior.
+    example: A TechnologyComponent installed locally that provides host authentication behavior.
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-MHJM
-    example: An Operating System Technology Component configuration that defines the authentication model.
+    example: An Operating System TechnologyComponent configuration that defines the authentication model.
   - mechanism: architectureNote
     key: authenticationApproach
     example: A documented local or federated authentication model when the dependency is not expressed as a platform interaction.
@@ -74,15 +74,15 @@ requirements:
   - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-D04B
-    example: A relationship object where source is this host and the relationship has the log-management capability, pointing to a modeled central logging Runtime Service, Edge/Gateway Service, or PaaS-delivered service.
+    example: A relationship object where source is this host and the relationship has the log-management capability, pointing to a modeled central logging RuntimeService, EdgeGatewayService, or PaaS-delivered service.
   - mechanism: internalComponent
     criteria:
       capability: 01KQQ4Q026-D04B
-    example: A locally installed Technology Component that implements host log management.
+    example: A locally installed TechnologyComponent that implements host log management.
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-D04B
-    example: An Operating System Technology Component configuration that redirects logs to a dedicated volume or forwarding path.
+    example: An Operating System TechnologyComponent configuration that redirects logs to a dedicated volume or forwarding path.
   - mechanism: architectureNote
     key: loggingApproach
     example: A documented log shipping design for cases where the platform is described indirectly.
@@ -106,11 +106,11 @@ requirements:
   - mechanism: internalComponent
     criteria:
       capability: 01KQQ4Q026-98VD
-    example: A locally installed Technology Component that exports host health telemetry.
+    example: A locally installed TechnologyComponent that exports host health telemetry.
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-98VD
-    example: A Technology Component configuration that enables local health telemetry or metrics export.
+    example: A TechnologyComponent configuration that enables local health telemetry or metrics export.
   - mechanism: architectureNote
     key: healthWelfareMonitoringApproach
     example: A documented explanation of the host monitoring pattern when the implementation is not captured directly.
@@ -134,11 +134,11 @@ requirements:
   - mechanism: internalComponent
     criteria:
       capability: 01KQQ4Q026-JW52
-    example: An installed Technology Component that provides endpoint or runtime security monitoring.
+    example: An installed TechnologyComponent that provides endpoint or runtime security monitoring.
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-JW52
-    example: A Technology Component configuration that enables local security telemetry or runtime protection behavior.
+    example: A TechnologyComponent configuration that enables local security telemetry or runtime protection behavior.
   - mechanism: architectureNote
     key: securityMonitoringApproach
     example: A documented statement of the host security monitoring pattern.
@@ -162,11 +162,11 @@ requirements:
   - mechanism: internalComponent
     criteria:
       capability: 01KQQ4Q026-BH6E
-    example: An installed Technology Component that performs or coordinates patch execution.
+    example: An installed TechnologyComponent that performs or coordinates patch execution.
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-BH6E
-    example: A Technology Component configuration that defines how the platform is patched without a separate external orchestrator.
+    example: A TechnologyComponent configuration that defines how the platform is patched without a separate external orchestrator.
   - mechanism: architectureNote
     key: patchManagementApproach
     example: A documented patch orchestration model when a platform interaction is not explicitly modeled.

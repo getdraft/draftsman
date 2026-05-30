@@ -108,9 +108,9 @@ internalComponent:
     configuration: str
     notes: str
   fieldDescriptions:
-    ref: Reference the Technology Component, Host, or deployable object included inside this service.
+    ref: Reference the TechnologyComponent, Host, or deployable object included inside this service.
     role: Describe the component role inside this service.
-    configuration: Reference a configuration id on the referenced Technology Component when this service uses a specific named variant.
+    configuration: Reference a configuration id on the referenced TechnologyComponent when this service uses a specific named variant.
     notes: Add context that does not belong in role or configuration.
 deploymentConfiguration:
   requiredFields:
@@ -195,8 +195,8 @@ fieldDescriptions:
   name: Use a clear human-readable name for the DataStoreService capability.
   deliveryModel: Use self-managed, paas, saas, or appliance to state who operates the underlying platform.
   host: For self-managed DataStoreServices, reference the Host this service runs on.
-  primaryTechnologyComponent: For self-managed DataStoreServices, reference the main Technology Component that provides persistence.
-  internalComponents: List additional Technology Components that run inside the DataStoreService.
+  primaryTechnologyComponent: For self-managed DataStoreServices, reference the main TechnologyComponent that provides persistence.
+  internalComponents: List additional TechnologyComponents that run inside the DataStoreService.
   catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition.
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired for this deployable service pattern.
   aliases: List prior or alternate human-readable names that should resolve to this object.

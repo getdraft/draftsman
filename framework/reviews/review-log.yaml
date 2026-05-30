@@ -50,3 +50,23 @@ reviews:
     severity: Medium
     outcome: dropped
     note: Roles-and-layers document and design principles address this; no separate value ladder needed
+
+- date: 2026-05-30
+  frameworkVersion: "0.31.2"
+  scope: full
+  reviewedBy: framework maintainer
+  findingsGenerated: 4
+  findings:
+  - title: Redundant lifecycleStatus on First-Party Code
+    severity: High
+    outcome: implemented
+  - title: Manual and Fragile Symlink Setup for IDEs
+    severity: Medium
+    outcome: deferred
+  - title: Lack of Directed Graph Cycle Check in runsOn
+    severity: Medium
+    outcome: deferred
+  - title: Unified All-or-Nothing Validation Fatigue
+    severity: Medium
+    outcome: deferred
+

@@ -150,7 +150,7 @@ raConstraint:
     when: Optional condition that must be true for this constraint to fire. If absent the constraint fires unconditionally.
     require: List of object characteristics that must be present in the SDP when the constraint fires.
     notes: Additional guidance for authors satisfying or documenting exceptions to this constraint.
-aiHint: A Reference Architecture defines a reusable deployment pattern that Software Deployment Patterns can follow.
+aiHint: A ReferenceArchitecture defines a reusable deployment pattern that SoftwareDeploymentPatterns can follow.
 fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   type: Use the exact object type declared by the matching schema.

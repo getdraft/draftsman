@@ -75,7 +75,7 @@ If `$ARGUMENTS` names a valid scope, use it. Otherwise ask:
 > A) **Full** — all schemas, AI instructions, requirement groups, docs, and templates
 > B) **Schemas** — object schemas and the validator
 > C) **AI Instructions** — Draftsman instructions, commands, and agent bootstrap
-> D) **Requirement Groups** — base and compliance requirement group configurations
+> D) **RequirementGroups** — base and compliance requirement group configurations
 > E) **Docs** — framework documentation
 > F) **Onboarding** — setup mode, roles, company onboarding, and first-run experience
 
@@ -86,7 +86,7 @@ Multiple scopes may be selected. Read files accordingly:
 | Full | All files listed in other scopes |
 | Schemas | `framework/schemas/*.yaml`, `framework/tools/validate.py` |
 | AI Instructions | `AGENTS.md`, `framework/docs/draftsman.md`, `framework/commands/*.md`, `framework/docs/setup-mode.md` |
-| Requirement Groups | `framework/configurations/requirement-groups/*.yaml`, `framework/schemas/requirement-group.schema.yaml`, `framework/docs/requirement-groups.md` |
+| RequirementGroups | `framework/configurations/requirement-groups/*.yaml`, `framework/schemas/requirement-group.schema.yaml`, `framework/docs/requirement-groups.md` |
 | Docs | `framework/docs/*.md` |
 | Onboarding | `framework/docs/setup-mode.md`, `framework/docs/company-onboarding.md`, `framework/docs/roles-and-layers.md`, `framework/docs/draftsman.md` |
 

@@ -1411,7 +1411,7 @@ requirementGroups:
                     schemaVersion: "1.0"
                     uid: 01KQS0TF71-RSRV
                     type: runtime_service
-                    name: Test Runtime Service
+                    name: Test RuntimeService
                     deliveryModel: paas
                     catalogStatus: incomplete
                     lifecycleStatus: candidate
@@ -1515,7 +1515,7 @@ requirementGroups:
                     schemaVersion: "1.0"
                     uid: 01KQS0TF72-RSRV
                     type: runtime_service
-                    name: Test Runtime Service
+                    name: Test RuntimeService
                     deliveryModel: paas
                     vendor: Test Vendor
                     productName: Test Runtime

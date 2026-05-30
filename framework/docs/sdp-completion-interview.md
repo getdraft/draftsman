@@ -3,7 +3,7 @@
 ## Purpose
 
 The SDP Completion Interview is a structured protocol for enriching an existing
-Software Deployment Pattern that passes schema validation but is architecturally
+SoftwareDeploymentPattern that passes schema validation but is architecturally
 incomplete — missing deployable objects, connections, external interactions,
 data-flow decisions, or tier-variant details.
 
@@ -43,7 +43,7 @@ score and gap list to the user before asking any questions.
 | Availability | AV | `architectureNotes.availability` present |
 | Failure domain | FD | `architectureNotes.failureDomain` present |
 | Deployment targets resolved | DT | No `deploymentTarget` entries contain placeholder values such as `owner-interview-required` |
-| Requirement implementations | RA | `requirementImplementations` list present and non-empty for all active workspace Requirement Groups the SDP claims |
+| Requirement implementations | RA | `requirementImplementations` list present and non-empty for all active workspace RequirementGroups the SDP claims |
 
 Dimensions SG through DT use a binary score: 0 (missing or placeholder) or
 1 (present and resolved). Dimension RA uses a binary score: 0 if the SDP
@@ -58,7 +58,7 @@ A score of 10/10 is the completion target. Present the score as:
 > data classification), FD (no failure domain)
 >
 > I'll work through each gap with you. We can skip any item and record it in
-> the Drafting Session instead.
+> the DraftingSession instead.
 
 ## Phase 0 — Intake
 
@@ -103,8 +103,8 @@ and ask:
 > What runs inside [group name]? I'll look up catalog options — just give me
 > the component or service name and I'll match it.
 
-Search the catalog for matching Product Services, Runtime Services,
-Data Store Services, and Edge/Gateway Services. Present the top matches as
+Search the catalog for matching Product Services, RuntimeServices,
+DataStoreServices, and EdgeGatewayServices. Present the top matches as
 a numbered list. If an exact match exists, confirm it. If multiple plausible
 matches exist, ask the user to choose.
 
@@ -113,9 +113,9 @@ For each resolved catalog object:
 1. Set `diagramTier` based on the object type:
    - Product Service → infer from component role (API = application, UI =
      presentation, worker = application)
-   - Data Store Service → data
-   - Edge/Gateway Service → presentation or utility
-   - Runtime Service → utility
+   - DataStoreService → data
+   - EdgeGatewayService → presentation or utility
+   - RuntimeService → utility
    - Ask the user to confirm or correct the inferred tier.
 2. If the catalog object has no entry yet, note that you will draft it and
    continue.
@@ -130,7 +130,7 @@ approved tier's execution context.
 
 Do not invent a region or account value. If the user cannot name the target
 today, record `owner-interview-required` as a temporary placeholder and note
-it as an open Drafting Session item.
+it as an open DraftingSession item.
 
 ## Phase 2 — External Interactions (gap: EI)
 
@@ -153,7 +153,7 @@ Ask one question per platform category. Present each as a yes/no:
 > secrets manager, or feature-flag service? (yes / no)
 
 For each **yes**, search the catalog for the deployable object that represents
-that platform (Runtime Service, Data Store Service, or Edge/Gateway Service
+that platform (RuntimeService, DataStoreService, or EdgeGatewayService
 with a matching `deliveryModel`). If found, create a relationship object with
 `source` set to the dependent service and `target` set to the platform UID.
 If not found and the user can name the platform, draft the appropriate service
@@ -170,13 +170,13 @@ Ask:
 > SMS/email gateways, state agency data feeds. (yes / no)
 
 For each **yes**, ask the user to name the vendor or service. Check whether a
-Technology Component or Edge/Gateway Service already models it. If yes, create
+TechnologyComponent or EdgeGatewayService already models it. If yes, create
 a relationship object with `source` set to the calling service and `target` set
 to the catalog UID. If not, create a relationship object using `externalTarget`
 with the vendor name, and note that a catalog object should be created later.
 
 Stop after three external dependency questions per round. If more may exist,
-record in the Drafting Session that external-dependency elicitation is
+record in the DraftingSession that external-dependency elicitation is
 incomplete.
 
 ## Phase 3 — Network Zones and Connections (gaps: NZ and CN)
@@ -192,7 +192,7 @@ Phase 3 (connection elicitation) of that procedure.
 
 If both NZ and CN scored 0, run the full elicitation from Phase 1.
 
-Record the same-tier connection deferral note in the Drafting Session
+Record the same-tier connection deferral note in the DraftingSession
 regardless of whether connections were fully elicited.
 
 ## Phase 4 — Architectural Decisions (gaps: DC, AV, FD)
@@ -272,14 +272,14 @@ If the user chooses B, capture `min` and `max` replica counts and set
 `serviceGroupVariants`.
 
 Stop after two tier-variant questions per phase turn. Continue remaining tiers
-in the next exchange or Drafting Session.
+in the next exchange or DraftingSession.
 
 ## Phase 6 — Requirement Implementations (gap: RA)
 
 Run this phase if the SDP claims `requirementGroups` but the RA dimension
 scored 0.
 
-For each claimed Requirement Group, follow the **Requirement And Capability
+For each claimed RequirementGroup, follow the **Requirement And Capability
 Lookup** procedure from `draftsman.md`. Do not re-derive implementation
 evidence you already collected in earlier phases of this interview — map
 what was gathered to `requirementImplementations` entries first.
@@ -289,7 +289,7 @@ Keep questions catalog-grounded: cite the requirement label and present
 approved capability implementations as choices.
 
 Record any requirement that cannot be closed today as `not-applicable` with a
-rationale, or leave it open in the Drafting Session.
+rationale, or leave it open in the DraftingSession.
 
 ## Phase 7 — Session Close
 
@@ -298,7 +298,7 @@ After all targeted phases are complete:
 1. Re-score the SDP against the completeness rubric.
 2. Report the updated score.
 3. List any items still open.
-4. Write or update the Drafting Session object for this SDP:
+4. Write or update the DraftingSession object for this SDP:
    - record all open items as questions with `status: open`
    - record all deferred elicitation areas (same-tier connections,
      incomplete external-interaction review, unresolved deployment targets)
@@ -317,8 +317,8 @@ scenes and present a plain-language summary of what changed.
 - If the user asks to focus on a specific gap, jump to that phase and return
   to sequence after it completes.
 - Never run more than three focused questions per conversational turn.
-  Offer to continue in the next turn or defer to the Drafting Session.
+  Offer to continue in the next turn or defer to the DraftingSession.
 - Never ask for port numbers, raw UIDs, YAML keys, or internal framework
   terminology. Translate everything into plain deployment language.
-- Preserve unresolved items in the Drafting Session rather than forcing the
+- Preserve unresolved items in the DraftingSession rather than forcing the
   user to answer everything in one session.

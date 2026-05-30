@@ -30,8 +30,8 @@ class WebTests(unittest.TestCase):
         self.assertIn("What DRAFT Is", INDEX_HTML)
         self.assertIn("How To Navigate", INDEX_HTML)
         self.assertIn("How Content Gets Updated", INDEX_HTML)
-        self.assertIn("Technology Component", INDEX_HTML)
-        self.assertIn("Software Deployment Pattern", INDEX_HTML)
+        self.assertIn("TechnologyComponent", INDEX_HTML)
+        self.assertIn("SoftwareDeploymentPattern", INDEX_HTML)
 
 
 if __name__ == "__main__":

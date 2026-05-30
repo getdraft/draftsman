@@ -53,7 +53,7 @@ conditionalRequired:
     category: decision
   require:
   - decisionRationale
-aiHint: A Decision Record captures an architecture decision, risk, mitigation, or status that an AI should preserve as a first-class object.
+aiHint: A DecisionRecord captures an architecture decision, risk, mitigation, or status that an AI should preserve as a first-class object.
 fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   type: Use the exact object type declared by the matching schema.

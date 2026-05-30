@@ -11,7 +11,7 @@ An AI assistant acting as the Draftsman should:
 - read [AGENTS.md](../../AGENTS.md) first
 - use [AI_INDEX.md](../../AI_INDEX.md) for discovery
 - read the relevant schema in `framework/schemas/`
-- read the applicable Requirement Group in `framework/configurations/requirement-groups/`
+- read the applicable RequirementGroup in `framework/configurations/requirement-groups/`
 - read declared company vocabulary lists in `.draft/workspace.yaml` and any
   configured `configurations/vocabulary/*.yaml` sources
 - use templates from `templates/` for new objects
@@ -37,8 +37,7 @@ The AI should inspect all three layers before creating new objects. In a
 company repo, prefer `.draft/framework/docs/`, `.draft/framework/schemas/`, and
 `.draft/framework/configurations/` over the public upstream checkout because
 those files represent the framework version the company has approved. Reuse a
-matching existing object when one is already present, and create a Drafting
-Session when important architecture facts are missing.
+matching existing object when one is already present, and create a DraftingSession when important architecture facts are missing.
 
 Company architecture updates should go under `catalog/` or company-owned
 `configurations/`. Do not edit `.draft/framework/**` or `.draft/framework.lock`
@@ -88,7 +87,7 @@ setup-mode step 7:
 | Command | Purpose |
 |---|---|
 | `/draftsman [intent]` | Activate the Draftsman for authoring or workspace setup |
-| `/draft-session [topic]` | Start or resume a guided Drafting Session |
+| `/draft-session [topic]` | Start or resume a guided DraftingSession |
 | `/validate-catalog` | Run the validator and report issues with fix guidance |
 
 Command files live in `.draft/framework/commands/`. They include Claude Code

@@ -1,9 +1,9 @@
-# Requirement Groups
+# RequirementGroups
 
-## What A Requirement Group Is
+## What A RequirementGroup Is
 
-A Requirement Group is the unified DRAFT requirement model. It replaces the old
-Requirement Group model and the separate Requirement Groups plus Control
+A RequirementGroup is the unified DRAFT requirement model. It replaces the old
+RequirementGroup model and the separate RequirementGroups plus Control
 Enforcement Profile model.
 
 Every requirement is both:
@@ -15,7 +15,7 @@ There is no translation layer between authoring and validation.
 
 ## Activation
 
-Requirement Groups use one of two activation modes:
+RequirementGroups use one of two activation modes:
 
 - `always`: base object-definition requirements that apply whenever the object
   type is in scope
@@ -52,7 +52,7 @@ For external controls, DRAFT keeps the source control ID in
 `externalControlId`. When a source control ID appears more than once, the DRAFT
 requirement `id` is made unique while preserving `externalControlId`.
 
-Requirement Groups can also declare `authority.shortName` for human citation.
+RequirementGroups can also declare `authority.shortName` for human citation.
 The UID remains the machine reference, but generated UI and validation messages
 use the short name to make controls readable:
 
@@ -67,13 +67,12 @@ language. For example, a company-owned policy mapping can have
 
 ## Capability Demand
 
-Requirement Groups are the demand signal for capabilities. When a requirement
+RequirementGroups are the demand signal for capabilities. When a requirement
 expects an architecture capability such as authentication, logging, patching,
 monitoring, encryption, or testing, it should name that capability with
 `relatedCapability` or in a satisfaction mechanism criteria capability.
 
-Approved Capability objects must be referenced by at least one Requirement
-Group. Draft capabilities may exist before their requirement trace is finished,
+Approved Capability objects must be referenced by at least one RequirementGroup. Draft capabilities may exist before their requirement trace is finished,
 but validation warns until the capability is tied back to a requirement.
 
 ## Object-Level Evidence
@@ -111,14 +110,14 @@ lookup.
 
 The Draftsman may include "something else" as an exception path, but that path
 is not an approved standard. If the user chooses it, the Draftsman drafts or
-identifies the Technology Component and records that the capability owner must
+identifies the TechnologyComponent and records that the capability owner must
 approve the lifecycle entry before it becomes acceptable use.
 
-For Software Deployment Pattern sessions, the Draftsman must also perform
-composition closure. The Software Deployment Pattern Requirement Group governs
+For SoftwareDeploymentPattern sessions, the Draftsman must also perform
+composition closure. The SoftwareDeploymentPattern RequirementGroup governs
 the root deployment pattern, but every referenced deployable object brings its
-own Requirement Groups. A self-managed Runtime Service, Data Store Service,
-or Edge/Gateway Service must satisfy `DRAFT Service Behavior /
+own RequirementGroups. A self-managed RuntimeService, DataStoreService,
+or EdgeGatewayService must satisfy `DRAFT Service Behavior /
 runtime-substrate` by referencing the Host Standard it runs on. If the Host is
 unknown, the Draftsman asks from the workspace's approved Host Standards or
-records the missing substrate as an unresolved Drafting Session question.
+records the missing substrate as an unresolved DraftingSession question.

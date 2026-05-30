@@ -12,7 +12,7 @@ authoring requests.
 3. Use [framework/schemas/](framework/schemas/) as the authoritative object
    contract.
 4. Use [framework/configurations/](framework/configurations/) as the
-   authoritative base capability, Requirement Group, and domain model.
+   authoritative base capability, RequirementGroup, and domain model.
 5. Validate changes with `python3 framework/tools/validate.py`.
 
 ## Draftsman Activation
@@ -38,7 +38,7 @@ Company-specific artifacts belong in a private DRAFT repository:
 
 - `.draft/framework/` for the vendored framework copy used during normal drafting
 - `catalog/` for architecture content
-- `configurations/` for capability mappings, Requirement Groups, domains,
+- `configurations/` for capability mappings, RequirementGroups, domains,
   vocabulary sources, vocabulary proposals, and object-patch overlays
 - `.draft/workspace.yaml` and `.draft/framework.lock` for tracked workspace
   metadata and framework sync state
@@ -58,7 +58,7 @@ ordinary Git changes.
 ## Editing Rules
 
 - Keep generated files current by running `python3 framework/tools/generate_ai_index.py`
-  when framework docs, schemas, Requirement Groups, templates, or catalog YAML changes.
+  when framework docs, schemas, RequirementGroups, templates, or catalog YAML changes.
 - Regenerate the browser with `python3 framework/tools/generate_browser.py` when YAML
   catalog content changes.
 - If validation reports missing, malformed, duplicate, or legacy object

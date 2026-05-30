@@ -31,10 +31,10 @@ class DraftsmanTests(unittest.TestCase):
             save_config({"framework_repo_path": str(REPO_ROOT)}, config_path)
             engine = DraftsmanEngine(config_path, DraftsmanSessionStore(Path(directory) / "sessions"))
 
-            response = engine.chat("What is a Technology Component?")
+            response = engine.chat("What is a TechnologyComponent?")
 
         self.assertFalse(response.provider_used)
-        self.assertIn("Technology Component", response.answer)
+        self.assertIn("TechnologyComponent", response.answer)
         self.assertFalse(response.proposals)
 
     def test_answers_catalog_usage_question_without_provider(self) -> None:
@@ -110,7 +110,7 @@ class DraftsmanTests(unittest.TestCase):
     def test_prompt_guides_host_patch_management_as_mechanism_not_team_owner(self) -> None:
         prompt = build_draftsman_prompt(REPO_ROOT, None, "Build a Windows Server Host.", {"uploads": []})
 
-        self.assertIn("For Host Requirement Group patch management", prompt)
+        self.assertIn("For Host RequirementGroup patch management", prompt)
         self.assertIn("patch platform, installed component", prompt)
         self.assertIn("do not ask which", prompt)
         self.assertIn("team owns patching", prompt)
@@ -124,7 +124,7 @@ class DraftsmanTests(unittest.TestCase):
         self.assertIn("Ask no more than three questions", prompt)
 
     def test_prompt_explains_appliance_delivery_service_like_capability_answers(self) -> None:
-        prompt = build_draftsman_prompt(REPO_ROOT, None, "Build an appliance-delivered Edge/Gateway Service.", {"uploads": []})
+        prompt = build_draftsman_prompt(REPO_ROOT, None, "Build an appliance-delivered EdgeGatewayService.", {"uploads": []})
 
         self.assertIn("deliveryModel appliance", prompt)
         self.assertIn("vendor-product", prompt)
@@ -205,7 +205,7 @@ class DraftsmanTests(unittest.TestCase):
                 {
                     "id": "stub-tech",
                     "action": "create",
-                    "artifactType": "Technology Component",
+                    "artifactType": "TechnologyComponent",
                     "name": "Stub Technology",
                     "summary": "Incomplete stub — uid will be repaired before approval.",
                     "path": "catalog/technology-components/technology-stub.yaml",

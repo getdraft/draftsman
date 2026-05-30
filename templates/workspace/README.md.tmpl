@@ -40,7 +40,7 @@ all other tools respond when you type them in chat.
 | Command | What it does |
 |---|---|
 | `/draftsman [intent]` | Start a Draftsman session. Provide an optional intent or leave it blank to be prompted. |
-| `/draft-session [topic]` | Start or resume a guided Drafting Session for a specific system or product area. |
+| `/draft-session [topic]` | Start or resume a guided DraftingSession for a specific system or product area. |
 | `/validate-catalog` | Run the DRAFT validator and get a grouped, actionable report of any errors or warnings. |
 
 If your AI tool does not respond to slash commands, phrase the request naturally —
@@ -50,12 +50,11 @@ If your AI tool does not respond to slash commands, phrase the request naturally
 ## How This Workspace Works
 
 - `AGENTS.md` is the canonical bootstrap for AI assistants.
-- `.draft/workspace.yaml` declares workspace metadata, active Requirement
-  Groups, business taxonomy, and optional company vocabulary lists.
+- `.draft/workspace.yaml` declares workspace metadata, active RequirementGroups, business taxonomy, and optional company vocabulary lists.
 - `.draft/framework/` is the vendored framework copy and is read-only during
   normal Draftsman authoring.
 - `catalog/` contains {{company_name}} architecture inventory.
-- `configurations/` contains {{company_name}} capabilities, Requirement Groups,
+- `configurations/` contains {{company_name}} capabilities, RequirementGroups,
   domains, vocabulary source files, vocabulary proposals, and object patches.
 - `docs/index.html` is the generated architecture browser when this workspace
   publishes one.

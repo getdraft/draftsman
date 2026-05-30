@@ -165,7 +165,7 @@ output. Group errors by the catalog file they affect:
 >
 > **catalog/runtime-services/kubernetes.yaml**
 > — `primary-technology-component`: required field is now mandatory in A.B.C.
->    Add a reference to the Kubernetes Technology Component.
+>    Add a reference to the Kubernetes TechnologyComponent.
 
 Then offer to fix them:
 
@@ -196,10 +196,13 @@ After the PR is merged, remind the Draft Admin:
 > setup to pick up any new commands shipped with A.B.C:
 >
 > ```bash
+> ln -sf ../../.draft/framework/commands/draft-help.md .claude/commands/draft-help.md
 > ln -sf ../../.draft/framework/commands/draftsman.md .claude/commands/draftsman.md
 > ln -sf ../../.draft/framework/commands/draft-session.md .claude/commands/draft-session.md
 > ln -sf ../../.draft/framework/commands/draft-validate.md .claude/commands/draft-validate.md
 > ln -sf ../../.draft/framework/commands/draft-updateframework.md .claude/commands/draft-updateframework.md
+> ln -sf ../../.draft/framework/commands/draft-triage.md .claude/commands/draft-triage.md
+> ln -sf ../../.draft/framework/commands/draft-review.md .claude/commands/draft-review.md
 > ```
 >
 > Review the CHANGELOG for any new setup steps or configuration changes

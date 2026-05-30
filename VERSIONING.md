@@ -27,7 +27,7 @@ Rules:
   cleanup.
 - Patch releases must not intentionally change the object contract.
 - Every release, including patch releases, requires release notes.
-- Every object, schema, Requirement Group, compliance, or validation contract
+- Every object, schema, RequirementGroup, compliance, or validation contract
   change requires a compatibility statement.
 
 ## AI Release Decision Procedure
@@ -35,7 +35,7 @@ Rules:
 Every AI agent, human maintainer, and automation workflow must classify a
 framework change before committing it. Use this decision tree in order:
 
-1. If the change alters schemas, Requirement Groups, Capability definitions,
+1. If the change alters schemas, RequirementGroups, Capability definitions,
    domain definitions, object contracts, or validation behavior, use the next
    pre-1.0 minor release: `0.(MINOR+1).0`.
 2. If the change alters generated browser behavior, generated browser assets,
@@ -101,7 +101,7 @@ The checker enforces these rules when a base ref is available:
 - release-impacting framework changes must advance `draft-framework.yaml`
 - pre-1.0 contract changes must use the next `0.MINOR.0`
 - pre-1.0 non-contract framework changes must use the next patch release
-- patch releases must not include schema, Requirement Group, Capability, domain,
+- patch releases must not include schema, RequirementGroup, Capability, domain,
   or validation contract changes
 - every numbered release must include meaningful `Compatibility Impact`,
   `Added`, `Changed`, `Fixed`, and `Migration Notes` sections

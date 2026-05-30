@@ -7,7 +7,7 @@ and interacts with the Draftsman differently.
 
 | Role | What they own | How they start |
 |---|---|---|
-| **Draft Admin** | Workspace configuration — vocabulary lists, Requirement Groups, business taxonomy, governance rules | Run setup mode once to configure the workspace |
+| **Draft Admin** | Workspace configuration — vocabulary lists, RequirementGroups, business taxonomy, governance rules | Run setup mode once to configure the workspace |
 | **Technology Admin** | Shared infrastructure — Hosts, RuntimeServices, DataStoreServices, EdgeGatewayServices, TechnologyComponents | Regular Draftsman session; author reusable building blocks |
 | **Engineer** | Product content — ProductComponents, DataComponents, SDPs | Regular Draftsman session; describe their service and the Draftsman handles the rest |
 
@@ -53,7 +53,7 @@ The total catalog size for fifty services on a shared platform is roughly:
 - 1 Host (EKS cluster standard)
 - 1 RuntimeService (Kubernetes deployment)
 - 2–4 TechnologyComponents (OS, compute, runtime)
-- 1 Reference Architecture (shared deployment pattern)
+- 1 ReferenceArchitecture (shared deployment pattern)
 - 5–10 SDPs (one per distinct deployment pattern, shared across related services)
 - 50 ProductComponents (one per service)
 
@@ -68,7 +68,7 @@ Runs setup mode once when the workspace is first created. After that, their
 ongoing work is governance maintenance:
 
 - Declaring and updating vocabulary lists
-- Activating Requirement Groups for new compliance obligations
+- Activating RequirementGroups for new compliance obligations
 - Reviewing vocabulary proposals submitted by engineers
 - Maintaining business taxonomy as the company evolves
 - Updating capability owner assignments when teams change

@@ -1,7 +1,7 @@
 schemaVersion: '1.0'
 uid: 01KSF4NHSP-8HPP
 type: requirement_group
-name: Engineering Quality Requirement Group
+name: Engineering Quality RequirementGroup
 description: Optional checklist for ProductComponents covering build quality, test coverage, and performance validation practices. Activated per workspace; does not fire automatically.
 version: 1.0.0
 catalogStatus: complete

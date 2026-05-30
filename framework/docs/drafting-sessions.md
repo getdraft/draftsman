@@ -1,8 +1,8 @@
-# Drafting Sessions
+# DraftingSessions
 
-## What A Drafting Session Is
+## What A DraftingSession Is
 
-A Drafting Session is a machine-readable record of partial architecture work.
+A DraftingSession is a machine-readable record of partial architecture work.
 
 Use it when the Draftsman or a human architect has enough information to start
 building DRAFT content, but not enough to finish every downstream object in one
@@ -22,7 +22,7 @@ questions for TX-ERP” possible without relying on chat history.
 
 ## When To Use One
 
-Create a Drafting Session when:
+Create a DraftingSession when:
 
 - source material is incomplete or ambiguous
 - a diagram or intake only partially answers the needed questions
@@ -30,8 +30,7 @@ Create a Drafting Session when:
 - downstream stubs or provisional objects are created
 - unresolved questions need to be revisited later in a structured way
 
-Do not use a Drafting Session as a replacement for a Software Deployment
-Pattern, Reference Architecture, or deployable object. It is a working object
+Do not use a DraftingSession as a replacement for a SoftwareDeploymentPattern, ReferenceArchitecture, or deployable object. It is a working object
 that wraps incomplete authoring state.
 
 ## YAML Shape
@@ -39,7 +38,7 @@ that wraps incomplete authoring state.
 The authoritative schema is
 [drafting-session.schema.yaml](../schemas/drafting-session.schema.yaml).
 
-At minimum, a Drafting Session includes:
+At minimum, a DraftingSession includes:
 
 - `uid`
 - `type: drafting_session`
@@ -71,16 +70,16 @@ The normal pattern is:
 
 That keeps the draft moving without pretending uncertainty does not exist.
 
-## Relationship To Software Deployment Patterns
+## Relationship To SoftwareDeploymentPatterns
 
-Drafting Sessions are especially useful for Software Deployment Patterns because Software Deployment Pattern authoring often
+DraftingSessions are especially useful for SoftwareDeploymentPatterns because SoftwareDeploymentPattern authoring often
 starts before all downstream runtime details are known.
 
 In that case:
 
-- the Software Deployment Pattern can still be created and validated
+- the SoftwareDeploymentPattern can still be created and validated
 - provisional assumptions can be made explicit
-- unresolved runtime questions can be tracked outside the Software Deployment Pattern itself
+- unresolved runtime questions can be tracked outside the SoftwareDeploymentPattern itself
 
-This prevents the Software Deployment Pattern from turning into a dumping ground for half-finished
+This prevents the SoftwareDeploymentPattern from turning into a dumping ground for half-finished
 notes while still preserving the work that remains.

@@ -1,8 +1,8 @@
 schemaVersion: '1.0'
 uid: 01KQQ4Q027-TPWG
 type: requirement_group
-name: PaaS Delivery Requirement Group
-description: Structured requirements used when a Runtime, Data Store, or Edge/Gateway Service is vendor-managed inside the organization's cloud boundary.
+name: PaaS Delivery RequirementGroup
+description: Structured requirements used when a Runtime, Data Store, or EdgeGatewayService is vendor-managed inside the organization's cloud boundary.
 version: 1.0.0
 catalogStatus: complete
 authority:

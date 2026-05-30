@@ -118,7 +118,7 @@ fieldDescriptions:
   networkTopology: Describe what network segments, zones, or routing domains this device defines or creates.
   protocols: List the network protocols this device participates in — BGP, OSPF, VLAN, MPLS, etc.
   host: For self-managed services, reference the Host this service runs on.
-  primaryTechnologyComponent: Reference the main Technology Component that provides the network service function.
+  primaryTechnologyComponent: Reference the main TechnologyComponent that provides the network service function.
   catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition.
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired for this network service.
   aliases: List prior or alternate human-readable names that should resolve to this object.

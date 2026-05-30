@@ -1,17 +1,17 @@
-# Software Deployment Patterns
+# SoftwareDeploymentPatterns
 
-## What A Software Deployment Pattern Is
+## What A SoftwareDeploymentPattern Is
 
-A Software Deployment Pattern is a declaration that a specific product is intended
+A SoftwareDeploymentPattern is a declaration that a specific product is intended
 to be distributed and deployed according to a particular pattern.
 
-Unlike a Reference Architecture, which is generic, a Software Deployment Pattern
+Unlike a ReferenceArchitecture, which is generic, a SoftwareDeploymentPattern
 is tied to a named product. It answers the question “what does this product
 deploy?” rather than “what does this class of solution usually require?”
 
-## What A Software Deployment Pattern Contains
+## What A SoftwareDeploymentPattern Contains
 
-The defining structure in a Software Deployment Pattern is no longer a flat deployment list. A Software Deployment Pattern is
+The defining structure in a SoftwareDeploymentPattern is no longer a flat deployment list. A SoftwareDeploymentPattern is
 organized around:
 
 - `scalingUnits`
@@ -44,9 +44,9 @@ unit, model it directly rather than forcing it into a placeholder group.
 
 ## YAML Shape
 
-The canonical schema notes for Software Deployment Patterns live in [software-deployment-pattern.schema.yaml](../schemas/software-deployment-pattern.schema.yaml).
+The canonical schema notes for SoftwareDeploymentPatterns live in [software-deployment-pattern.schema.yaml](../schemas/software-deployment-pattern.schema.yaml).
 
-At minimum, a Software Deployment Pattern includes:
+At minimum, a SoftwareDeploymentPattern includes:
 
 - `uid`
 - `type: software_deployment_pattern`
@@ -54,7 +54,7 @@ At minimum, a Software Deployment Pattern includes:
 - `catalogStatus`
 - `lifecycleStatus`
 
-The main Software Deployment Pattern structure is:
+The main SoftwareDeploymentPattern structure is:
 
 - optional `followsReferenceArchitecture`
 - optional `businessContext`
@@ -86,7 +86,7 @@ Each deployable object entry should declare:
 
 ## Business Context
 
-Software Deployment Patterns may include `businessContext` so a company can
+SoftwareDeploymentPatterns may include `businessContext` so a company can
 quickly see which business pillar, portfolio, or product family a pattern
 belongs to. This is intentionally workspace-owned. The framework defines the
 field and validation behavior, but the company declares the actual taxonomy in
@@ -108,56 +108,55 @@ If `.draft/workspace.yaml` defines `businessTaxonomy.pillars`, validation checks
 that `businessContext.pillar` and any `additionalPillars` use declared pillar
 IDs. A workspace can also set
 `businessTaxonomy.requireSoftwareDeploymentPatternPillar: true` to require every
-Software Deployment Pattern to declare a primary pillar.
+SoftwareDeploymentPattern to declare a primary pillar.
 
 ## What `followsReferenceArchitecture` Means
 
-The `followsReferenceArchitecture` field tells the reader which Reference Architecture the deployment claims to follow.
+The `followsReferenceArchitecture` field tells the reader which ReferenceArchitecture the deployment claims to follow.
 
 This field is metadata only. It is useful because it says whether the product is aligned to a recognized pattern, but it is not itself a deployed object and should not be rendered as a node in a deployment diagram.
 
-If no suitable Reference Architecture exists yet, that gap should be made
+If no suitable ReferenceArchitecture exists yet, that gap should be made
 explicit through an architectural decision entry rather than hidden.
 
-## Requirement Group Expectations
+## RequirementGroup Expectations
 
-The Software Deployment Pattern Requirement Group is the deployment-reality checklist. It requires the architect to
+The SoftwareDeploymentPattern RequirementGroup is the deployment-reality checklist. It requires the architect to
 document:
 
-- the selected Reference Architecture, or why no applicable Reference Architecture exists
+- the selected ReferenceArchitecture, or why no applicable ReferenceArchitecture exists
 - the deployed service-group structure
 - the deployment boundary or execution context used by those service groups
 - the product availability requirement
 - any product-specific interactions beyond the component deployable object baseline
 - the governing data classification
 - the deployment-level failure domain
-- any intentional deviations from the selected Reference Architecture, or an explicit statement
+- any intentional deviations from the selected ReferenceArchitecture, or an explicit statement
   that none exist
 
-The Software Deployment Pattern checklist is only the root checklist. DRAFT
+The SoftwareDeploymentPattern checklist is only the root checklist. DRAFT
 drafting must also close the composition graph below it. Every deployable object
-referenced by a service group brings its own Requirement Groups. A
-self-managed Runtime Service, Data Store Service, or Edge/Gateway Service
+referenced by a service group brings its own RequirementGroups. A
+self-managed RuntimeService, DataStoreService, or EdgeGatewayService
 must identify the Host Standard that provides its execution substrate. If the
 Draftsman does not know whether a service is self-managed, PaaS, SaaS,
 appliance, or serverless, that delivery model is the next architecture question.
 
 ## RA-Guided Drafting
 
-Reference Architectures are used as pattern guidance for the Draftsman. The
+ReferenceArchitectures are used as pattern guidance for the Draftsman. The
 Draftsman should infer the likely deployment shape, search for candidate
-Reference Architectures, and explain the closest match in plain language. The
-user should not be expected to know or name the Reference Architecture UID.
+ReferenceArchitectures, and explain the closest match in plain language. The
+user should not be expected to know or name the ReferenceArchitecture UID.
 
-If no Reference Architecture covers the shape, the Draftsman should continue
-drafting the Software Deployment Pattern as a candidate and record the missing
-Reference Architecture as a gap. It should not invent a Reference Architecture
+If no ReferenceArchitecture covers the shape, the Draftsman should continue
+drafting the SoftwareDeploymentPattern as a candidate and record the missing
+ReferenceArchitecture as a gap. It should not invent a ReferenceArchitecture
 match or proceed as if the pattern is approved.
 
 ## Composition Closure
 
-Composition closure means every deployable object referenced by the Software
-Deployment Pattern is resolved enough to make deployment intent explicit.
+Composition closure means every deployable object referenced by the SoftwareDeploymentPattern is resolved enough to make deployment intent explicit.
 
 For each service group, the Draftsman should:
 
@@ -167,18 +166,18 @@ For each service group, the Draftsman should:
 4. For self-managed service objects, select or ask for the Host Standard.
 5. For PaaS, SaaS, appliance, or serverless objects, record why no
    self-managed Host is required.
-6. Record unresolved substrate choices in a Drafting Session rather than
+6. Record unresolved substrate choices in a DraftingSession rather than
    assuming a platform.
 
 ## Intent Versus Current State
 
 The `intent` field on deployed object entries exists only for explicit
 architecture choice. It should be populated when the architect is intentionally
-deviating from the Reference Architecture, or when no Reference Architecture
+deviating from the ReferenceArchitecture, or when no ReferenceArchitecture
 exists.
 
 It should not be used as a shorthand way to restate current production state.
-Current state capabilities belong in Decision Records and notes.
+Current state capabilities belong in DecisionRecords and notes.
 
 ## Structure Rules
 
@@ -234,7 +233,7 @@ the topology view.
 
 ## How The Topology Should Read
 
-The Software Deployment Pattern topology is a service-first placement view.
+The SoftwareDeploymentPattern topology is a service-first placement view.
 
 - `serviceGroup` is the primary container because it answers what a set of
   deployed components does.
@@ -252,36 +251,35 @@ layout.
 
 ## Long-Term Placement
 
-The v1 catalog contains example Software Deployment Patterns in this central repository because the framework needs real examples.
+The v1 catalog contains example SoftwareDeploymentPatterns in this central repository because the framework needs real examples.
 
-Long term, that is not the target operating model. Product-specific Software
-Deployment Patterns belong closest to the product that owns them, which usually
+Long term, that is not the target operating model. Product-specific SoftwareDeploymentPatterns belong closest to the product that owns them, which usually
 means the product repository. The central catalog should define reusable
 building blocks and reference patterns. Product repos should eventually own the
 declarations that map those deployable objects to live product estates.
 
-## Partial Software Deployment Pattern Drafting
+## Partial SoftwareDeploymentPattern Drafting
 
-When a Software Deployment Pattern interview is incomplete, do not force every unresolved note into the
-Software Deployment Pattern itself. Use a Drafting Session to hold:
+When a SoftwareDeploymentPattern interview is incomplete, do not force every unresolved note into the
+SoftwareDeploymentPattern itself. Use a DraftingSession to hold:
 
 - source pages and interview context
-- provisional assumptions that let the Software Deployment Pattern validate
+- provisional assumptions that let the SoftwareDeploymentPattern validate
 - unresolved questions that still need answers
 - next steps for the follow-up pass
 
-That lets the Software Deployment Pattern stay deployable and reviewable while the open questions remain
+That lets the SoftwareDeploymentPattern stay deployable and reviewable while the open questions remain
 easy to revisit later.
 
 ## FAQ
 
-### Does every product need a Software Deployment Pattern?
+### Does every product need a SoftwareDeploymentPattern?
 
-In the long run, yes, if the product has meaningful architecture that needs to be reviewed, supported, or governed. A missing Software Deployment Pattern should usually be treated as a gap to close, not as proof that the framework does not apply.
+In the long run, yes, if the product has meaningful architecture that needs to be reviewed, supported, or governed. A missing SoftwareDeploymentPattern should usually be treated as a gap to close, not as proof that the framework does not apply.
 
-### What if my product does not fit any existing Reference Architecture?
+### What if my product does not fit any existing ReferenceArchitecture?
 
-Do not force the product into an obviously wrong pattern. Treat that as a signal. Either the product is a legitimate exception that needs to be documented clearly, or the catalog is missing a Reference Architecture that should exist.
+Do not force the product into an obviously wrong pattern. Treat that as a signal. Either the product is a legitimate exception that needs to be documented clearly, or the catalog is missing a ReferenceArchitecture that should exist.
 
 ## Migrating Inline Connections to Relationship Objects
 

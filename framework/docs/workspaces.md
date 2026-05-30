@@ -12,7 +12,7 @@ repo so normal Draftsman use is private, deterministic, and reviewable.
 The upstream framework repo owns:
 
 - `framework/schemas/` for object contracts
-- `framework/configurations/` for base capabilities, Requirement Groups, domains,
+- `framework/configurations/` for base capabilities, RequirementGroups, domains,
   and object-patchable configuration
 - `framework/tools/` for validation and generation
 - `templates/` for object and company repo templates
@@ -27,7 +27,7 @@ A company private DRAFT repo owns:
 - `.draft/framework.lock` for the reviewed upstream framework source and synced commit
 - `README.md` with a copy/paste Draftsman start prompt for connected AI tools
 - `catalog/` for architecture content
-- `configurations/` for company capability mappings, Requirement Groups, and object patches
+- `configurations/` for company capability mappings, RequirementGroups, and object patches
 
 The workspace metadata should include a stable machine name and a human-readable
 label. Workspace templates use these values to make first-run README and AI
@@ -62,7 +62,7 @@ Patch files live under `configurations/object-patches/`.
 
 Workspace requirement activation lives in `.draft/workspace.yaml`, not in the
 presence of YAML files. A framework, provider, or company may publish many
-workspace-mode Requirement Groups, but the company must explicitly activate the
+workspace-mode RequirementGroups, but the company must explicitly activate the
 groups it architects against:
 
 ```yaml
@@ -80,7 +80,7 @@ record disposition against every active group.
 
 Framework base capability files ship with empty `implementations` and a
 `definitionOwner`. Company workspaces own the capability `owner` and the mapping
-from capability to approved Technology Components by adding capability overlays
+from capability to approved TechnologyComponents by adding capability overlays
 or object patches under `configurations/`. Validation requires `owner.team` in
 the effective capability whenever implementations are assigned.
 
@@ -89,7 +89,7 @@ The distinction matters:
 - `definitionOwner` says who maintains the capability definition and vocabulary.
 - `owner` says which company team can approve lifecycle disposition for vendor
   products that satisfy the capability.
-- `implementations` list only Technology Components, because lifecycle
+- `implementations` list only TechnologyComponents, because lifecycle
   disposition applies to a discrete vendor product and version.
 
 ## Business Taxonomy
@@ -97,7 +97,7 @@ The distinction matters:
 Companies can declare their own business pillars, portfolios, or product
 groupings in `.draft/workspace.yaml`. The framework does not ship company
 business taxonomy values; it only validates and renders the workspace values
-when Software Deployment Patterns reference them.
+when SoftwareDeploymentPatterns reference them.
 
 Example:
 
@@ -116,7 +116,7 @@ businessTaxonomy:
       name: Business Operations
 ```
 
-Software Deployment Patterns reference those values through
+SoftwareDeploymentPatterns reference those values through
 `businessContext.pillar`. Use `businessContext.additionalPillars` only when a
 pattern materially spans more than one business pillar; the primary `pillar`
 drives browser grouping.
@@ -191,8 +191,8 @@ The default workspace workflow is source based:
 
 1. Create or update YAML in `catalog/` or `configurations/`.
 2. Use the matching template from `.draft/templates/` when creating a new object.
-3. Read the relevant schema and Requirement Group before filling in fields.
-4. Preserve unresolved facts in `catalog/sessions/` as Drafting Sessions.
+3. Read the relevant schema and RequirementGroup before filling in fields.
+4. Preserve unresolved facts in `catalog/sessions/` as DraftingSessions.
 5. Run `python3 .draft/framework/tools/validate.py --workspace /path/to/workspace`.
 6. Review and commit the workspace changes through normal Git workflow.
 
@@ -218,7 +218,7 @@ The generated browser is read-only. Catalog changes are made in YAML and then
 validated.
 
 The browser's Acceptable Use Technology view is generated from the effective
-Capability model. It groups Technology Component lifecycle mappings by domain,
+Capability model. It groups TechnologyComponent lifecycle mappings by domain,
 shows which capability each product satisfies, and lists the company capability
 owner/contact for change requests.
 
@@ -260,13 +260,13 @@ the company wants to manage framework updates manually.
 The end goal is deployable architecture. Catalog objects should capture facts
 that can later inform pipeline and infrastructure automation:
 
-- Hosts, Runtime Services, Data Store Services, Edge/Gateway Services, and
+- Hosts, RuntimeServices, DataStoreServices, EdgeGatewayServices, and
   Product Services describe reusable deployable building blocks.
-- Reference Architectures describe deployable patterns.
-- Software Deployment Patterns describe product deployment reality.
+- ReferenceArchitectures describe deployable patterns.
+- SoftwareDeploymentPatterns describe product deployment reality.
 - Capabilities describe architecture outcomes, company decision owners, and
-  approved Technology Component implementations.
-- Requirement Groups describe required authoring and compliance answers.
+  approved TechnologyComponent implementations.
+- RequirementGroups describe required authoring and compliance answers.
 - Future automation mappings can translate approved objects into pipeline and
   IaC inputs.
 

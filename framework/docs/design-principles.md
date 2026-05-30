@@ -32,13 +32,13 @@ completeness before capturing anything captures nothing.
 
 ## 3. Governance is binary
 
-Approvals are yes or no. A Technology Component is either the company's
+Approvals are yes or no. A TechnologyComponent is either the company's
 approved choice for a capability or it is not. Conditional approvals — approved
 only for certain services, only until a certain date, only under certain
 conditions — create governance overhead that is rarely maintained and usually
 ignored.
 
-When context or constraints matter, record them in a Decision Record. That is
+When context or constraints matter, record them in a DecisionRecord. That is
 where architectural rationale lives. The lifecycle status is the governance
 signal — keep it clean.
 
@@ -59,7 +59,7 @@ cannot act on prose; it can act on structured facts.
 
 ## 5. Compliance is authoring, not auditing
 
-Requirement Groups embed compliance questions into the normal architecture
+RequirementGroups embed compliance questions into the normal architecture
 interview. Evidence is captured as a byproduct of describing what was built,
 not as a separate audit exercise run after the fact.
 
@@ -84,12 +84,12 @@ job.
 
 ## 7. Uncertainty is first-class
 
-Unresolved facts belong in Drafting Sessions, not hidden in prose or forced to
+Unresolved facts belong in DraftingSessions, not hidden in prose or forced to
 premature closure. When the answer to an architecture question is genuinely
 unknown, recording that uncertainty explicitly is more valuable than inventing
 a plausible answer.
 
 A catalog with visible, tracked gaps is more trustworthy than one with hidden
-assumptions. Drafting Sessions make uncertainty actionable — they preserve
+assumptions. DraftingSessions make uncertainty actionable — they preserve
 context, identify who needs to answer what, and make it possible to resume work
 without re-interviewing.

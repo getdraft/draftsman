@@ -1,7 +1,7 @@
 schemaVersion: '1.0'
 uid: 01KSWVZSZ5-B146
 type: requirement_group
-name: Network Service Requirement Group
+name: NetworkService RequirementGroup
 description: >
   Base requirements for NetworkService objects covering network function declaration,
   topology definition, and protocol governance. Delivery model requirement groups

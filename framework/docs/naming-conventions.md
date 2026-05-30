@@ -1,5 +1,24 @@
 # Naming Conventions
 
+## Object Type Names
+
+When a DRAFT object type is referred to by name in prose, headings, schema
+hints, requirement-group names, validation messages, and the browser, write it
+in PascalCase: `TechnologyComponent`, `Host`, `RuntimeService`,
+`DataStoreService`, `EdgeGatewayService`, `NetworkService`, `ProductComponent`,
+`DataComponent`, `ReferenceArchitecture`, `SoftwareDeploymentPattern`,
+`Capability`, `RequirementGroup`, `Domain`, `DecisionRecord`, `DraftingSession`,
+and `ObjectPatch`. Single-word types such as `Host`, `Capability`, and `Domain`
+are unaffected. There are no spaces and no slash in `EdgeGatewayService`.
+
+This is the display convention only. The machine identifier for each type stays
+snake_case (`technology_component`, `data_store_service`, `edge_gateway_service`,
+`reference_architecture`), and schema filenames and catalog folder names keep
+their existing kebab-case form (`data-store-service.schema.yaml`,
+`catalog/edge-gateway-services/`). When a type name appears as an ordinary
+lowercase common noun inside a sentence ("the runtime service tier"), no
+PascalCase is required.
+
 ## UID, Name, And Aliases
 
 DRAFT first-class objects use an opaque generated `uid` for machine identity and
@@ -20,8 +39,7 @@ alias, file path, close name match, and only then UID.
 ## What Still Uses Local IDs
 
 Some nested values still use local `id` fields because they are not first-class
-objects. Examples include Requirement Group requirement IDs, Technology
-Component configuration IDs, Drafting Session question IDs, provider IDs, and
+objects. Examples include RequirementGroup requirement IDs, TechnologyComponent configuration IDs, DraftingSession question IDs, provider IDs, and
 company business pillar IDs.
 
 These local IDs are scoped to the object or workspace section that contains

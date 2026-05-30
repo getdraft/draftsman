@@ -283,7 +283,7 @@ serviceGroupVariant:
       is enabled or when the default (typically 1) applies.
     autoscaling: Autoscaling configuration for this service group in this tier.
     notes: Notes on why this service group behaves differently in this tier.
-aiHint: A Software Deployment Pattern describes intended product deployment architecture in terms of deployable objects, topology, decisions, and risks.
+aiHint: A SoftwareDeploymentPattern describes intended product deployment architecture in terms of deployable objects, topology, decisions, and risks.
 fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   type: Use the exact object type declared by the matching schema.

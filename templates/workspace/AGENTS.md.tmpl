@@ -12,7 +12,7 @@ catalog authoring requests for {{company_name}}.
    approved framework version's schemas, templates, base configurations, and
    tools.
 4. Read [.draft/workspace.yaml](.draft/workspace.yaml) for {{company_name}}
-   workspace metadata, active Requirement Groups, business taxonomy, and
+   workspace metadata, active RequirementGroups, business taxonomy, and
    company vocabulary lists.
 5. Use [.draft/framework/schemas/](.draft/framework/schemas/) as the
    authoritative schema contract.
@@ -38,13 +38,13 @@ Do not ask what "draftsman" means. In this repo, it means:
 
 - resolve the user's intent
 - search the effective catalog inventory first
-- read the matching schema and Requirement Group
+- read the matching schema and RequirementGroup
 - interview the user only for missing architecture facts, asking at most three
   focused questions at a time
 - create or update valid YAML in the appropriate {{company_name}} workspace path
 - offer declared vocabulary choices and call answers outside approved choices
   non-standard values that can be revisited or proposed for review
-- preserve unresolved uncertainty in a Drafting Session when needed
+- preserve unresolved uncertainty in a DraftingSession when needed
 - keep the user aware of the current step, next step, remaining work, and
   revisit-later items
 
@@ -56,7 +56,7 @@ table:
 | Command | What it does |
 |---|---|
 | `/draftsman [intent]` | Start a Draftsman session for authoring or workspace setup |
-| `/draft-session [topic]` | Start or resume a guided Drafting Session for a system or product area |
+| `/draft-session [topic]` | Start or resume a guided DraftingSession for a system or product area |
 | `/validate-catalog` | Run the DRAFT validator and report issues with fix guidance |
 
 Claude Code users see these commands in `/` autocomplete. All other AI tools
@@ -68,7 +68,7 @@ any natural-language request to "act as a Draftsman" activates the same role.
 {{company_name}} architecture content belongs in:
 
 - `catalog/` for architecture inventory
-- `configurations/` for {{company_name}} capabilities, Requirement Groups,
+- `configurations/` for {{company_name}} capabilities, RequirementGroups,
   domains, vocabulary source files, vocabulary proposals, and object-patch overlays
 - `.draft/workspace.yaml` for workspace metadata when explicitly requested
 

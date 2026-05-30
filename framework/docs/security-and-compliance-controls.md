@@ -1,4 +1,4 @@
-# Security And Compliance Requirement Groups
+# Security And Compliance RequirementGroups
 
 ## What This Layer Does
 
@@ -24,7 +24,7 @@ in-scope object to record disposition for every active workspace-mode group.
 
 ## Provider And Authority
 
-A workspace-mode Requirement Group may be authored by the framework, a company,
+A workspace-mode RequirementGroup may be authored by the framework, a company,
 or a third-party provider. Use `provider` to identify who authored the DRAFT
 mapping and `authority` to identify the external source or program.
 
@@ -48,7 +48,7 @@ Objects use `requirementGroups` to claim a workspace-mode group and
 
 When a requirement has `relatedCapability`, the Draftsman resolves the capability
 object, reads the company capability owner, and recommends `preferred` or
-`existing-only` Technology Component implementations as concrete choices before
+`existing-only` TechnologyComponent implementations as concrete choices before
 asking the user. If `relatedCapability` is absent but a satisfaction mechanism
 criteria names a capability, the Draftsman uses that capability for the same
 lookup. This means compliance questions are grounded in the same capability
@@ -56,7 +56,7 @@ model as base object-definition questions.
 
 Compliance interviews should cite the resolved requirement label and then offer
 the company's current acceptable-use options. "Something else" is an exception
-path that creates or identifies a candidate Technology Component for capability
+path that creates or identifies a candidate TechnologyComponent for capability
 owner review; it is not treated as compliant evidence until the requirement can
 be satisfied by an approved implementation or another valid mechanism.
 
@@ -81,7 +81,7 @@ workspace-mode requirement.
 
 ## Browser Behavior
 
-The GitHub Pages browser is read-only. It shows Requirement Groups as framework
+The GitHub Pages browser is read-only. It shows RequirementGroups as framework
 content and shows declared requirement groups on object detail pages. It does
 not provide a runtime compliance display filter or selector. Activation is a
 build-time workspace configuration decision in `.draft/workspace.yaml`.

@@ -68,7 +68,7 @@ constraints:
   require:
   - objectType: edge_gateway_service
     diagramTier: presentation
-    notes: Add an edge/gateway service to the presentation tier. The company catalog defines which specific WAF, ADC, or load balancer objects satisfy this role. Internal-only SDPs that operate behind a network boundary without a software edge gateway should document the exception in architectureNotes.reference_architecture_conformance and reference a Decision Record.
+    notes: Add an edge/gateway service to the presentation tier. The company catalog defines which specific WAF, ADC, or load balancer objects satisfy this role. Internal-only SDPs that operate behind a network boundary without a software edge gateway should document the exception in architectureNotes.reference_architecture_conformance and reference a DecisionRecord.
 - id: data-tier-requires-data-store-service
   description: All SDPs with a data-tier service must model persistent data using data_store_service objects, not runtime services.
   rationale: Modelling persistent data as a data_store_service ensures that backup strategy, encryption-at-rest, and access-control requirements are governed through the data store requirement group. Using a runtime_service for data persistence bypasses data-tier governance controls.

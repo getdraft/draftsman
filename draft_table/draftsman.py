@@ -206,13 +206,13 @@ def answer_locally(message: str, workspace: Path | None, framework_root: Path) -
     if is_setup_mode_request(lowered):
         return setup_mode_response(workspace, framework_root)
     if is_framework_definition_question(lowered, "technology component"):
-        return LocalAnswer(read_doc_section(framework_root / "docs" / "technology-components.md", "What A Technology Component Is"), [], [])
+        return LocalAnswer(read_doc_section(framework_root / "docs" / "technology-components.md", "What A TechnologyComponent Is"), [], [])
     if any(
         is_framework_definition_question(lowered, term)
         for term in (
             "host",
             "runtime service",
-            "data-at-rest service",
+            "data store service",
             "edge/gateway service",
             "object type",
             "host standard",
@@ -253,7 +253,7 @@ def setup_mode_response(workspace: Path | None, framework_root: Path) -> LocalAn
                 "",
                 "Current step: select or create the private company DRAFT repo.",
                 "Next: run `draft-table onboard`, or tell me the local path or Git URL for the company DRAFT repo.",
-                "Left after that: business taxonomy, active Requirement Groups, capability owners, acceptable-use technology, baseline deployable standards, and the first real drafting session.",
+                "Left after that: business taxonomy, active RequirementGroups, capability owners, acceptable-use technology, baseline deployable standards, and the first real drafting session.",
                 "Can revisit later: every governance choice. We only need enough to make the first catalog review useful.",
             ]
         )
@@ -282,13 +282,13 @@ def setup_mode_response(workspace: Path | None, framework_root: Path) -> LocalAn
             f"- Workspace: {workspace_root}",
             f"- Framework copy: {status['frameworkCopy']}",
             f"- Business taxonomy: {status['businessTaxonomy']}",
-            f"- Active Requirement Groups: {status['activeRequirementGroups']}",
+            f"- Active RequirementGroups: {status['activeRequirementGroups']}",
             f"- Capability ownership: {status['capabilityOwnership']}",
             f"- Company catalog baseline: {status['catalogBaseline']}",
             "",
             f"Next: {next_step}",
             "",
-            "Left after that: finish the acceptable-use technology baseline, draft common Host/Runtime/Data-at-Rest/Edge standards, pick one real product or system, and validate the generated catalog.",
+            "Left after that: finish the acceptable-use technology baseline, draft common Host/Runtime/DataStore/Edge standards, pick one real product or system, and validate the generated catalog.",
             "Can revisit later: taxonomy names, active governance groups, lifecycle choices, and incomplete object details. We will capture uncertainty instead of forcing perfect answers up front.",
         ]
     )
@@ -336,7 +336,7 @@ def workspace_setup_status(workspace: Path, framework_root: Path) -> dict[str, s
         "mappedCapabilityCount": len(capabilities),
         "ownedCapabilityCount": len(owned_capabilities),
         "catalogBaseline": (
-            f"{catalog_counts.get('technology_component', 0)} Technology Components, "
+            f"{catalog_counts.get('technology_component', 0)} TechnologyComponents, "
             f"{deployable_count} deployable standards or patterns"
         ),
         "technologyComponentCount": catalog_counts.get("technology_component", 0),
@@ -378,14 +378,14 @@ def setup_next_step(status: dict[str, Any]) -> str:
     if int(status.get("businessPillarCount") or 0) == 0:
         return "define the initial business taxonomy in `.draft/workspace.yaml`."
     if int(status.get("activeRequirementGroupCount") or 0) == 0:
-        return "choose the first active Requirement Groups for new drafting work."
+        return "choose the first active RequirementGroups for new drafting work."
     if int(status.get("mappedCapabilityCount") or 0) == 0:
         return "seed the first acceptable-use capability mappings and owners."
     if int(status.get("technologyComponentCount") or 0) == 0:
-        return "add the first standard Technology Components the company already uses."
+        return "add the first standard TechnologyComponents the company already uses."
     if int(status.get("deployableCount") or 0) == 0:
         return "draft the first reusable deployable standards before modeling a full product pattern."
-    return "pick one real product, diagram, repository, or source document and start the first focused Drafting Session."
+    return "pick one real product, diagram, repository, or source document and start the first focused DraftingSession."
 
 
 def setup_questions_for_status(status: dict[str, Any]) -> list[str]:
@@ -398,12 +398,18 @@ def setup_questions_for_status(status: dict[str, Any]) -> list[str]:
     if int(status.get("mappedCapabilityCount") or 0) == 0:
         return ["Which few enterprise standards should we seed first, such as identity, logging, monitoring, patching, backup, compute, and operating systems?"]
     if int(status.get("deployableCount") or 0) == 0:
-        return ["Which common deployable standard should we draft first: Host, Runtime Service, DataStoreService, or Edge/Gateway Service?"]
-    return ["Which real product, system, diagram, or repository should we use for the first guided Drafting Session?"]
+        return ["Which common deployable standard should we draft first: Host, RuntimeService, DataStoreService, or EdgeGatewayService?"]
+    return ["Which real product, system, diagram, or repository should we use for the first guided DraftingSession?"]
 
 
 def is_framework_definition_question(lowered: str, term: str) -> bool:
-    return term in lowered and any(prefix in lowered for prefix in ("what is", "what's", "explain", "define"))
+    if not any(prefix in lowered for prefix in ("what is", "what's", "explain", "define")):
+        return False
+    if term in lowered:
+        return True
+    # Tolerate PascalCase / unspaced object-type names (e.g. "TechnologyComponent").
+    squash = lambda value: value.replace(" ", "").replace("/", "").replace("-", "")
+    return squash(term) in squash(lowered)
 
 
 def answer_usage_question(message: str, workspace: Path | None, framework_root: Path) -> LocalAnswer:
@@ -464,7 +470,7 @@ def build_draftsman_prompt(framework_root: Path, workspace: Path | None, message
         ("Workspace Model", framework_root / "docs" / "workspaces.md"),
         ("Schema Reference", framework_root / "docs" / "yaml-schema-reference.md"),
         ("Object Types", framework_root / "docs" / "object-types.md"),
-        ("Requirement Groups", framework_root / "docs" / "requirement-groups.md"),
+        ("RequirementGroups", framework_root / "docs" / "requirement-groups.md"),
         ("Capabilities", framework_root / "docs" / "capabilities.md"),
     ]
     doc_context = "\n\n".join(f"## {title}\n{path.read_text(encoding='utf-8')[:5000]}" for title, path in docs if path.exists())
@@ -482,12 +488,12 @@ Rules:
 - Do not show raw YAML to the user.
 - Reuse existing artifacts when possible.
 - Separate observed facts from assumptions.
-- Ask focused follow-up questions for missing Requirement Group facts.
+- Ask focused follow-up questions for missing RequirementGroup facts.
 - When the user asks to set up DRAFT, start setup mode: explain the current step,
   the next step, what remains, and what can be revisited later before asking questions.
 - In setup mode, optimize for the minimum useful catalog: workspace repo, business
-  taxonomy, active Requirement Groups, capability owners, acceptable-use technology,
-  baseline deployable standards, and one real first Drafting Session.
+  taxonomy, active RequirementGroups, capability owners, acceptable-use technology,
+  baseline deployable standards, and one real first DraftingSession.
 - Keep every interview lightweight. Ask no more than three questions at a time,
   prefer one question when possible, explain why each question matters, and keep
   a visible backlog of unanswered or revisit-later items instead of forcing closure.
@@ -498,36 +504,35 @@ Rules:
 - Use requirements.activeRequirementGroups in .draft/workspace.yaml as the source for
   which workspace-activated requirement groups to push during interviews. Do not enforce an
   available workspace-mode group just because its YAML exists.
-- Preserve provider identity on workspace-activated Requirement Groups so DRAFT-provided,
+- Preserve provider identity on workspace-activated RequirementGroups so DRAFT-provided,
   third-party-provided, and company-provided control interpretations remain distinct.
 - First-class objects use generated uid values for machine identity. Do not ask
   humans to invent semantic object ids. Use names and aliases in conversation,
   and keep uid stable through renames.
-- For Requirement Group entries with relatedCapability, resolve the capability object first,
+- For RequirementGroup entries with relatedCapability, resolve the capability object first,
   check workspace capability implementations, prefer implementations with lifecycleStatus preferred,
   and ask a multiple-choice question using those options instead of an open-ended question.
 - If a requirement lacks relatedCapability but a satisfaction mechanism criteria names a capability,
   resolve that capability and ask the same catalog-grounded multiple-choice question.
 - Include "something else" only as an exception path; if the user chooses it, identify or draft
-  the Technology Component and state that the capability owner must approve it before it becomes
+  the TechnologyComponent and state that the capability owner must approve it before it becomes
   acceptable use.
 - For capability requirements, ask what mechanism satisfies the capability:
-  field, internal component, Technology Component configuration, external interaction, deployment
+  field, internal component, TechnologyComponent configuration, external interaction, deployment
   configuration, or architectural decision.
-- For Software Deployment Pattern sessions, search candidate Reference Architectures and explain the
-  closest match in plain language; do not ask the user to name a Reference Architecture UID.
-- After drafting Software Deployment Pattern service groups, perform composition closure: resolve each
-  deployable object, resolve ProductComponent runsOn, classify each Runtime Service, Data-at-Rest
-  Service, and Edge/Gateway Service delivery model, and for every self-managed service resolve the
+- For SoftwareDeploymentPattern sessions, search candidate ReferenceArchitectures and explain the
+  closest match in plain language; do not ask the user to name a ReferenceArchitecture UID.
+- After drafting SoftwareDeploymentPattern service groups, perform composition closure: resolve each
+  deployable object, resolve ProductComponent runsOn, classify each RuntimeService, DataStoreService, and EdgeGatewayService delivery model, and for every self-managed service resolve the
   Host substrate from approved Host Standards or ask a catalog-grounded multiple-choice question.
 - Do not assume EKS, EC2, Lambda, VM, physical, or container placement without source evidence or
-  user confirmation; record unresolved substrate choices in the Drafting Session.
+  user confirmation; record unresolved substrate choices in the DraftingSession.
 - Do not turn capability requirements into team ownership questions unless the
-  applicable Requirement Group explicitly asks for ownership.
-- For Host Requirement Group patch management, ask what patch platform, installed component,
-  Technology Component configuration, or architectural decision applies updates; do not ask which
+  applicable RequirementGroup explicitly asks for ownership.
+- For Host RequirementGroup patch management, ask what patch platform, installed component,
+  TechnologyComponent configuration, or architectural decision applies updates; do not ask which
   team owns patching as the capability answer.
-- For Runtime Service, DataStoreService, or Edge/Gateway Service objects with
+- For RuntimeService, DataStoreService, or EdgeGatewayService objects with
   deliveryModel appliance, remember that the service maps directly to a vendor-product
   identity but carries service-like operating capability answers because there
   is no Host wrapper to inherit host requirements.
@@ -563,7 +568,7 @@ Return JSON only with this shape:
     {{
       "id": "short proposal id",
       "action": "create|update",
-      "artifactType": "Technology Component|Host|Runtime Service|DataStoreService|Edge/Gateway Service|ProductComponent|Reference Architecture|Software Deployment Pattern|Capability|Requirement Group|Decision Record|Drafting Session",
+      "artifactType": "TechnologyComponent|Host|RuntimeService|DataStoreService|EdgeGatewayService|ProductComponent|ReferenceArchitecture|SoftwareDeploymentPattern|Capability|RequirementGroup|DecisionRecord|DraftingSession",
       "name": "artifact name",
       "summary": "plain-language summary",
       "path": "relative file path under the company DRAFT repo",

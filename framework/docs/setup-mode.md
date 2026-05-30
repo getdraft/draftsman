@@ -41,13 +41,13 @@ deliberately queued:
 3. Business taxonomy defined well enough for catalog navigation.
 4. First company vocabulary lists declared in advisory mode, or deliberately
    queued for later.
-5. Initial active Requirement Groups selected.
+5. Initial active RequirementGroups selected.
 6. Capability owners identified for the first mapped capabilities.
-7. Acceptable-use Technology Components seeded for the most common standards.
-8. Baseline deployable objects started for common Host, Runtime Service,
+7. Acceptable-use TechnologyComponents seeded for the most common standards.
+8. Baseline deployable objects started for common Host, RuntimeService,
    DataStoreService, and Edge/Gateway patterns.
 9. One real product, system, diagram, repository, or source document selected
-   for the first guided Drafting Session.
+   for the first guided DraftingSession.
 
 Setup mode should stop once the team can draft and validate one real system. It
 should not wait until every platform, capability, or compliance interpretation
@@ -62,7 +62,7 @@ Every setup or drafting session should feel like a guided conversation:
 - Ask only for the missing fact needed for the current step.
 - Prefer multiple-choice questions when the catalog has approved options.
 - Avoid displaying walls of text or lists of remaining/revisit-later steps during active onboarding.
-- Mark uncertain answers as assumptions or Drafting Session questions behind the scenes.
+- Mark uncertain answers as assumptions or DraftingSession questions behind the scenes.
 - Summarize only the immediate, key change and validation status in 1-2 brief sentences.
 
 Audience matters. Architects can answer governance, lifecycle, and pattern
@@ -128,7 +128,7 @@ Question:
 
 ### 4. Governance Baseline
 
-Choose the first active Requirement Groups. Start narrow if the company is
+Choose the first active RequirementGroups. Start narrow if the company is
 migrating an existing inventory.
 
 Question:
@@ -149,7 +149,7 @@ interviews. With owners, engineers get pre-approved multiple-choice answers
 instead of open-ended questions.
 
 For each domain below, identify which team at your company owns it. Then for
-each owned domain, name the approved Technology Component (if known) — the
+each owned domain, name the approved TechnologyComponent (if known) — the
 Draftsman will create the component and map the capability implementation.
 
 **Compute & Runtime** — Operating System, Compute Platform, Container
@@ -180,7 +180,7 @@ Questions:
 
 The Draftsman will generate one object-patch file per capability in
 `configurations/object-patches/`, setting `owner` and creating approved
-Technology Component implementations. Domains with no known owner are patched
+TechnologyComponent implementations. Domains with no known owner are patched
 with `owner: TBD` so the gap is visible in the catalog immediately.
 
 ### 6. Baseline Deployable Standards
@@ -191,7 +191,7 @@ standards instead of inventing everything.
 Question:
 
 > Which common deployable standard should we draft first: Host, Runtime
-> Service, DataStoreService, or Edge/Gateway Service?
+> Service, DataStoreService, or EdgeGatewayService?
 
 ### 7. IDE Integration
 
@@ -210,16 +210,21 @@ Run once from the workspace root:
 
 ```bash
 mkdir -p .claude/commands
+ln -sf ../../.draft/framework/commands/draft-help.md .claude/commands/draft-help.md
 ln -sf ../../.draft/framework/commands/draftsman.md .claude/commands/draftsman.md
 ln -sf ../../.draft/framework/commands/draft-session.md .claude/commands/draft-session.md
 ln -sf ../../.draft/framework/commands/draft-validate.md .claude/commands/draft-validate.md
 ln -sf ../../.draft/framework/commands/draft-updateframework.md .claude/commands/draft-updateframework.md
+ln -sf ../../.draft/framework/commands/draft-triage.md .claude/commands/draft-triage.md
+ln -sf ../../.draft/framework/commands/draft-review.md .claude/commands/draft-review.md
 ```
 
 On Windows (PowerShell as Administrator, or with Developer Mode enabled):
 
 ```powershell
 New-Item -ItemType Directory -Force -Path .claude\commands
+New-Item -ItemType SymbolicLink -Path .claude\commands\draft-help.md `
+  -Target ..\..\draft\framework\commands\draft-help.md -Force
 New-Item -ItemType SymbolicLink -Path .claude\commands\draftsman.md `
   -Target ..\..\draft\framework\commands\draftsman.md -Force
 New-Item -ItemType SymbolicLink -Path .claude\commands\draft-session.md `
@@ -228,6 +233,10 @@ New-Item -ItemType SymbolicLink -Path .claude\commands\draft-validate.md `
   -Target ..\..\draft\framework\commands\draft-validate.md -Force
 New-Item -ItemType SymbolicLink -Path .claude\commands\draft-updateframework.md `
   -Target ..\..\draft\framework\commands\draft-updateframework.md -Force
+New-Item -ItemType SymbolicLink -Path .claude\commands\draft-triage.md `
+  -Target ..\..\draft\framework\commands\draft-triage.md -Force
+New-Item -ItemType SymbolicLink -Path .claude\commands\draft-review.md `
+  -Target ..\..\draft\framework\commands\draft-review.md -Force
 ```
 
 The symlinks follow the vendored framework copy, so updating the framework
@@ -344,14 +353,14 @@ Once branch protection is active, the Draftsman will automatically create a
 branch for each session and open a pull request at the end. CODEOWNERS routes
 that PR to the correct reviewers without any additional configuration.
 
-### 9. First Real Drafting Session
+### 9. First Real DraftingSession
 
 Start with one real product or system and capture gaps as work in progress.
 
 Question:
 
 > Which product, system, diagram, repository, or source document should we use
-> for the first guided Drafting Session?
+> for the first guided DraftingSession?
 
 ## Good Setup Output
 

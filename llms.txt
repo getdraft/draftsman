@@ -16,34 +16,34 @@ vendor a reviewed framework copy under `.draft/framework/`.
 - v1.0 roadmap: ROADMAP.md
 - Framework index: AI_INDEX.md
 - Schema reference: framework/docs/yaml-schema-reference.md
-- Requirement Groups: framework/docs/requirement-groups.md
+- RequirementGroups: framework/docs/requirement-groups.md
 - Capabilities: framework/docs/capabilities.md
 - Validation command: python3 framework/tools/validate.py
 
 ## Core Concepts
 
-- Technology Component: a third-party product, operating system, platform,
+- TechnologyComponent: a third-party product, operating system, platform,
   software, or agent object.
 - Host: an operational platform that combines an operating system, compute
   platform, and required host capabilities.
-- Runtime Service: reusable runtime behavior such as web, app, cache, worker,
+- RuntimeService: reusable runtime behavior such as web, app, cache, worker,
   messaging, or serverless runtime.
-- Data-at-Rest Service: durable data behavior such as database, file, object,
+- DataStoreService: durable data behavior such as database, file, object,
   search, analytics, or storage.
-- Edge/Gateway Service: boundary behavior such as WAF, firewall, API gateway,
+- EdgeGatewayService: boundary behavior such as WAF, firewall, API gateway,
   load balancer, ingress, proxy, or traffic inspection.
 - Delivery Model: self-managed, PaaS, SaaS, and appliance are delivery models
   for service objects, not separate object types.
-- Reference Architecture: a reusable deployment pattern.
-- Software Deployment Pattern: a product-specific intended deployment shape.
-- Requirement Group: the unified interview, completeness, and control evidence
+- ReferenceArchitecture: a reusable deployment pattern.
+- SoftwareDeploymentPattern: a product-specific intended deployment shape.
+- RequirementGroup: the unified interview, completeness, and control evidence
   model.
 - Capability: an architecture capability that resolves to company-approved
-  Technology Component implementations.
+  TechnologyComponent implementations.
 - Company Vocabulary: optional workspace lists for deployment targets, data
   classifications, team IDs, availability tiers, and failure domains.
-- Decision Record: a deployment risk or architecture decision.
-- Drafting Session: resumable state for incomplete authoring work.
+- DecisionRecord: a deployment risk or architecture decision.
+- DraftingSession: resumable state for incomplete authoring work.
 - Effective Model: vendored framework base configurations plus private company
   configurations plus private company catalog content.
 

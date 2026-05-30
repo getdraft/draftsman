@@ -3,7 +3,7 @@
 ## Purpose
 
 Delivery models explain how a deployable service is operated. They apply to
-Runtime Service, Data Store Service, and Edge/Gateway Service objects.
+RuntimeService, DataStoreService, and EdgeGatewayService objects.
 
 Delivery models are not object types.
 
@@ -11,7 +11,7 @@ Delivery models are not object types.
 
 | Delivery model | Meaning |
 |---|---|
-| `self-managed` | The company operates the service on a Host. The object must identify the Host and primary Technology Component. |
+| `self-managed` | The company operates the service on a Host. The object must identify the Host and primary TechnologyComponent. |
 | `paas` | A provider-managed platform delivers the service inside the company's cloud or infrastructure boundary. |
 | `saas` | A vendor-managed service may operate outside the company's infrastructure boundary. |
 | `appliance` | The service maps directly to a vendor appliance or appliance-like product and must answer service-like operating requirements because there is no Host wrapper. |
@@ -23,7 +23,7 @@ model second.
 
 Examples:
 
-- Amazon ECS Service is a Runtime Service with `deliveryModel: paas`.
-- Amazon RDS PostgreSQL is a Data Store Service with `deliveryModel: paas`.
-- Snowflake is a Data Store Service with `deliveryModel: saas`.
-- F5 BIG-IP WAF is an Edge/Gateway Service with `deliveryModel: appliance`.
+- Amazon ECS Service is a RuntimeService with `deliveryModel: paas`.
+- Amazon RDS PostgreSQL is a DataStoreService with `deliveryModel: paas`.
+- Snowflake is a DataStoreService with `deliveryModel: saas`.
+- F5 BIG-IP WAF is an EdgeGatewayService with `deliveryModel: appliance`.

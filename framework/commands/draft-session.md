@@ -1,12 +1,12 @@
 ---
-description: Start or resume a guided Drafting Session for a system or product
+description: Start or resume a guided DraftingSession for a system or product
 argument-hint: "[system name or topic]"
 allowed-tools: [Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion]
 ---
 
 # /draft-session Command
 
-Start or resume a Drafting Session. A Drafting Session captures in-progress
+Start or resume a DraftingSession. A DraftingSession captures in-progress
 architecture work, interviews the user for missing facts, and produces valid
 DRAFT catalog content.
 

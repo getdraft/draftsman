@@ -1,7 +1,7 @@
 schemaVersion: '1.0'
 uid: 01KQQ4Q027-HHA4
 type: requirement_group
-name: Drafting Session Requirement Group
+name: DraftingSession RequirementGroup
 description: Structured checklist used to capture partial architecture-authoring sessions, generated outputs, and unresolved follow-up questions in a machine-readable way.
 version: 1.0.0
 catalogStatus: complete

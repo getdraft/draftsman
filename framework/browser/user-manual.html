@@ -1019,7 +1019,7 @@
           <span class="audience-ordinal">02</span>
           <div class="audience-label">For compliance</div>
           <div class="audience-headline">Compliance <em>by design,</em> by default.</div>
-          <p class="audience-body">Requirement Groups ask mandatory questions at authoring time. Objects cannot be approved until evidence is present.</p>
+          <p class="audience-body">RequirementGroups ask mandatory questions at authoring time. Objects cannot be approved until evidence is present.</p>
         </div>
         <div class="audience-card" role="listitem">
           <span class="audience-ordinal">03</span>
@@ -1106,7 +1106,7 @@
         <a class="sidebar-sub-link" href="#architecture-objects">Architecture objects</a>
         <a class="sidebar-sub-link" href="#governance-objects">Governance objects</a>
         <a class="sidebar-sub-link" href="#repo-ownership">Repository ownership</a>
-        <a class="sidebar-sub-link" href="#modeling-technology-components">Technology Components</a>
+        <a class="sidebar-sub-link" href="#modeling-technology-components">TechnologyComponents</a>
         <a class="sidebar-sub-link" href="#modeling-hosts-services">Hosts and Services</a>
         <a class="sidebar-sub-link" href="#modeling-product-services">ProductComponents</a>
         <a class="sidebar-sub-link" href="#modeling-sdps">Deployment Patterns</a>
@@ -1181,17 +1181,17 @@
                 <tr>
                   <td>Framework rules</td>
                   <td><code>.draft/framework/</code> in company workspaces, <code>framework/</code> upstream</td>
-                  <td>Schemas, base capabilities, Requirement Groups, docs, and tools.</td>
+                  <td>Schemas, base capabilities, RequirementGroups, docs, and tools.</td>
                 </tr>
                 <tr>
                   <td>Company architecture</td>
                   <td><code>catalog/</code></td>
-                  <td>Hosts, services, ProductComponents, Software Deployment Patterns, and other architecture inventory.</td>
+                  <td>Hosts, services, ProductComponents, SoftwareDeploymentPatterns, and other architecture inventory.</td>
                 </tr>
                 <tr>
                   <td>Company extensions</td>
                   <td><code>configurations/</code></td>
-                  <td>Capability mappings, object patches, company Requirement Groups, and local domains.</td>
+                  <td>Capability mappings, object patches, company RequirementGroups, and local domains.</td>
                 </tr>
                 <tr>
                   <td>Generated views</td>
@@ -1213,7 +1213,7 @@
               <span class="diagram-sub">UML · framework-generated</span>
             </div>
             <div class="diagram-body">
-              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing architecture objects (Technology Component, Host, Runtime Service, DataStoreService, Edge/Gateway Service, ProductComponent, Software Deployment Pattern, Reference Architecture) and governance objects (Capability, Requirement Group, Domain, Decision Record, Drafting Session, Object Patch) and their relationships">
+              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing architecture objects (TechnologyComponent, Host, RuntimeService, DataStoreService, EdgeGatewayService, ProductComponent, SoftwareDeploymentPattern, ReferenceArchitecture) and governance objects (Capability, RequirementGroup, Domain, DecisionRecord, DraftingSession, ObjectPatch) and their relationships">
             </div>
           </div>
         </div>
@@ -1230,7 +1230,7 @@
           </p>
           <p>
             <strong>Security and compliance teams</strong> get requirement evidence recorded at
-            authoring time, not assembled after an audit. Requirement Groups ask mandatory
+            authoring time, not assembled after an audit. RequirementGroups ask mandatory
             questions; objects cannot be marked approved until the evidence is present.
           </p>
           <p>
@@ -1279,7 +1279,7 @@
             <li>Start from the closest template or nearby approved object.</li>
             <li>Fill in required schema fields.</li>
             <li>Add relationships to existing objects by UID.</li>
-            <li>Add Requirement Group evidence or architectural decisions.</li>
+            <li>Add RequirementGroup evidence or architectural decisions.</li>
             <li>Run validation.</li>
             <li>Regenerate the browser and manual.</li>
             <li>Review source and generated diffs.</li>
@@ -1321,7 +1321,7 @@
             <li>framework <code>AGENTS.md</code></li>
             <li><code>framework/docs/draftsman.md</code></li>
             <li><code>AI_INDEX.md</code></li>
-            <li>schemas, templates, capabilities, Requirement Groups, and nearby catalog examples</li>
+            <li>schemas, templates, capabilities, RequirementGroups, and nearby catalog examples</li>
           </ol>
           <p>AI assistants should:</p>
           <ul>
@@ -1385,7 +1385,7 @@
               <span class="diagram-sub">UML · framework-generated</span>
             </div>
             <div class="diagram-body">
-              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing architecture objects (Technology Component, Host, Runtime Service, DataStoreService, Edge/Gateway Service, ProductComponent, Software Deployment Pattern, Reference Architecture) and governance objects (Capability, Requirement Group, Domain, Decision Record, Drafting Session, Object Patch) and their relationships">
+              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing architecture objects (TechnologyComponent, Host, RuntimeService, DataStoreService, EdgeGatewayService, ProductComponent, SoftwareDeploymentPattern, ReferenceArchitecture) and governance objects (Capability, RequirementGroup, Domain, DecisionRecord, DraftingSession, ObjectPatch) and their relationships">
             </div>
           </div>
         </div>
@@ -1400,7 +1400,7 @@
             <div class="object-grid">
               <div class="object-card">
                 <div class="object-card-eyebrow">Architecture Object</div>
-                <h5>Technology Component</h5>
+                <h5>TechnologyComponent</h5>
                 <p>A governed vendor product, operating system, compute platform, agent, appliance product, software package, or product/version building block.</p>
               </div>
               <div class="object-card">
@@ -1410,7 +1410,7 @@
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Architecture Object</div>
-                <h5>Runtime Service</h5>
+                <h5>RuntimeService</h5>
                 <p>Reusable runtime behavior such as web, app, cache, worker, messaging, or serverless runtime.</p>
               </div>
               <div class="object-card">
@@ -1420,27 +1420,27 @@
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Architecture Object</div>
-                <h5>Edge/Gateway Service</h5>
+                <h5>EdgeGatewayService</h5>
                 <p>Boundary behavior such as WAF, firewall, API gateway, load balancer, ingress, proxy, or traffic inspection.</p>
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Architecture Object</div>
                 <h5>ProductComponent</h5>
-                <p>First-party deployable runtime behavior that runs on a selected Host, Runtime Service, DataStoreService, Edge/Gateway Service, or equivalent deployable object.</p>
+                <p>First-party deployable runtime behavior that runs on a selected Host, RuntimeService, DataStoreService, EdgeGatewayService, or equivalent deployable object.</p>
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Architecture Object</div>
-                <h5>Software Deployment Pattern</h5>
+                <h5>SoftwareDeploymentPattern</h5>
                 <p>The intended assembly of deployable objects for a product or product capability.</p>
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Architecture Object</div>
-                <h5>Reference Architecture</h5>
-                <p>A reusable deployment approach that Software Deployment Patterns may follow.</p>
+                <h5>ReferenceArchitecture</h5>
+                <p>A reusable deployment approach that SoftwareDeploymentPatterns may follow.</p>
               </div>
             </div>
             <p class="content-col" style="font-size:0.875rem;color:var(--subtle);">
-              Technology Components are governed building blocks. They are deployed as ingredients
+              TechnologyComponents are governed building blocks. They are deployed as ingredients
               inside hosts and services, but they are not usually the service boundary you review
               on their own.
             </p>
@@ -1462,7 +1462,7 @@
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Governance Object</div>
-                <h5>Requirement Group</h5>
+                <h5>RequirementGroup</h5>
                 <p>A requirement set that asks questions, defines acceptable evidence, and validates object completeness.</p>
               </div>
               <div class="object-card">
@@ -1472,17 +1472,17 @@
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Governance Object</div>
-                <h5>Decision Record</h5>
+                <h5>DecisionRecord</h5>
                 <p>A record of a known risk, accepted decision, mitigation, or follow-up.</p>
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Governance Object</div>
-                <h5>Drafting Session</h5>
+                <h5>DraftingSession</h5>
                 <p>A machine-readable work-in-progress record for partial authoring sessions.</p>
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Governance Object</div>
-                <h5>Object Patch</h5>
+                <h5>ObjectPatch</h5>
                 <p>A workspace overlay that deep-merges selected company fields into a framework-owned object.</p>
               </div>
             </div>
@@ -1507,11 +1507,11 @@
                 <td><code>catalog/</code></td>
               </tr>
               <tr>
-                <td>Map a framework capability to company-approved Technology Components</td>
+                <td>Map a framework capability to company-approved TechnologyComponents</td>
                 <td><code>configurations/object-patches/</code> or company-owned <code>configurations/capabilities/</code></td>
               </tr>
               <tr>
-                <td>Add a company Requirement Group</td>
+                <td>Add a company RequirementGroup</td>
                 <td><code>configurations/requirement-groups/</code></td>
               </tr>
               <tr>
@@ -1537,13 +1537,13 @@
         <!-- 3a.5 -->
         <div class="chapter content-col" id="modeling-technology-components">
           <div class="chapter-num">3a.5</div>
-          <h3>Modeling Technology Components</h3>
+          <h3>Modeling TechnologyComponents</h3>
           <p>
-            Create a Technology Component when you need to govern a specific product, product
+            Create a TechnologyComponent when you need to govern a specific product, product
             family, product version, operating system, compute platform, agent, appliance, or
             software package.
           </p>
-          <p>A Technology Component should usually include:</p>
+          <p>A TechnologyComponent should usually include:</p>
           <ul>
             <li><code>vendor</code></li>
             <li><code>productName</code></li>
@@ -1559,7 +1559,7 @@
             the capability.
           </p>
           <p>
-            <strong>Network Bindings.</strong> Technology Component configurations can include
+            <strong>Network Bindings.</strong> TechnologyComponent configurations can include
             <code>networkBindings</code> for known ports, protocols, and traffic direction. Use
             this for component-level facts such as a database engine listening on TCP 1433 or a
             message broker listening on AMQP 5672.
@@ -1600,12 +1600,12 @@
           <h3>Modeling Hosts and Services</h3>
           <p>
             Hosts describe operational platforms. A useful Host normally references operating
-            system and compute Technology Components, then documents required host capabilities
+            system and compute TechnologyComponents, then documents required host capabilities
             such as monitoring, logging, patching, identity integration, backup, and security
             tooling.
           </p>
           <p>
-            Runtime Service, DataStoreService, and Edge/Gateway Service objects describe
+            RuntimeService, DataStoreService, and EdgeGatewayService objects describe
             reusable behavior delivered through a delivery model:
           </p>
           <ul>
@@ -1615,8 +1615,7 @@
             <li><code>appliance</code></li>
           </ul>
           <p>
-            For Runtime, Data Store, and Edge/Gateway Services, the primary Technology
-            Component is the main functional component. Do not add a separate dependency
+            For Runtime, Data Store, and EdgeGatewayServices, the primary TechnologyComponent is the main functional component. Do not add a separate dependency
             rationale for the primary component when it is the object core.
           </p>
           <p>
@@ -1646,9 +1645,9 @@
             <dt>name</dt>
             <dd>Human-readable name used in the catalog browser and cross-references.</dd>
             <dt>product</dt>
-            <dd>The product this service is part of — used for grouping and Software Deployment Pattern references.</dd>
+            <dd>The product this service is part of — used for grouping and SoftwareDeploymentPattern references.</dd>
             <dt>runsOn</dt>
-            <dd>Reference to the Host, Runtime Service, or equivalent deployable object this service runs on.</dd>
+            <dd>Reference to the Host, RuntimeService, or equivalent deployable object this service runs on.</dd>
             <dt>catalogStatus</dt>
             <dd>The catalog lifecycle state of this object (e.g., draft, active, deprecated).</dd>
             <dt>lifecycleStatus</dt>
@@ -1667,7 +1666,7 @@
             <span class="callout-badge" aria-hidden="true">⚑</span>
             <div class="callout-content">
               <div class="callout-label">Note</div>
-              <p class="callout-body">Don't elevate static assets, database schemas, build scripts, or simple product configuration to ProductComponent just because they are deployable by CI/CD. The boundary is first-party runtime behavior that a Software Deployment Pattern needs to communicate.</p>
+              <p class="callout-body">Don't elevate static assets, database schemas, build scripts, or simple product configuration to ProductComponent just because they are deployable by CI/CD. The boundary is first-party runtime behavior that a SoftwareDeploymentPattern needs to communicate.</p>
             </div>
           </div>
         </div>
@@ -1675,12 +1674,12 @@
         <!-- 3a.8 -->
         <div class="chapter content-col" id="modeling-sdps">
           <div class="chapter-num">3a.8</div>
-          <h3>Modeling Software Deployment Patterns</h3>
+          <h3>Modeling SoftwareDeploymentPatterns</h3>
           <p>
-            A Software Deployment Pattern is the product-level assembly. It answers what a product
+            A SoftwareDeploymentPattern is the product-level assembly. It answers what a product
             deploys and how those objects relate.
           </p>
-          <p>A good Software Deployment Pattern includes:</p>
+          <p>A good SoftwareDeploymentPattern includes:</p>
           <ul>
             <li>product or capability name</li>
             <li>service groups</li>
@@ -1694,7 +1693,7 @@
             <span class="callout-badge" aria-hidden="true">⚑</span>
             <div class="callout-content">
               <div class="callout-label">Note</div>
-              <p class="callout-body">Don't stop when the Software Deployment Pattern validates. Walk the full object graph and make sure every referenced Host, Service, ProductComponent, Technology Component, and dependency is valid enough for review.</p>
+              <p class="callout-body">Don't stop when the SoftwareDeploymentPattern validates. Walk the full object graph and make sure every referenced Host, Service, ProductComponent, TechnologyComponent, and dependency is valid enough for review.</p>
             </div>
           </div>
         </div>
@@ -1709,26 +1708,26 @@
         <!-- 3b.1 -->
         <div class="chapter content-col" id="capabilities-requirement-groups">
           <div class="chapter-num">3b.1</div>
-          <h3>Capabilities and Requirement Groups</h3>
+          <h3>Capabilities and RequirementGroups</h3>
           <p>
-            Capabilities describe what an architecture must be able to do. Requirement Groups
+            Capabilities describe what an architecture must be able to do. RequirementGroups
             describe which questions must be answered and which mechanisms can satisfy them.
           </p>
-          <p>Requirement Groups can be:</p>
+          <p>RequirementGroups can be:</p>
           <ul>
             <li>always-on for matching object types</li>
             <li>workspace-mode groups activated in <code>.draft/workspace.yaml</code></li>
             <li>company or compliance groups declared by specific objects in <code>requirementGroups</code></li>
           </ul>
           <p>
-            An object that declares a Requirement Group must provide valid
+            An object that declares a RequirementGroup must provide valid
             <code>requirementImplementations</code> for the applicable requirements before it can
             be treated as approved for that group.
           </p>
           <p>
             When validation says a requirement is missing, either add the evidence that directly
             satisfies it or record an explicit disposition such as <code>not-applicable</code> or
-            <code>not-compliant</code> when the schema and Requirement Group allow it.
+            <code>not-compliant</code> when the schema and RequirementGroup allow it.
           </p>
         </div>
 
@@ -1738,8 +1737,8 @@
           <h3>Acceptable evidence</h3>
           <p>Requirements can be satisfied by mechanisms such as:</p>
           <ul>
-            <li>a Technology Component</li>
-            <li>a named Technology Component configuration</li>
+            <li>a TechnologyComponent</li>
+            <li>a named TechnologyComponent configuration</li>
             <li>an internal component</li>
             <li>an external interaction</li>
             <li>a deployment configuration</li>
@@ -1795,7 +1794,7 @@
             <span class="callout-badge" aria-hidden="true">ℹ</span>
             <div class="callout-content">
               <div class="callout-label">Rule</div>
-              <p class="callout-body">Agent Technology Components have an additional rule: any deployable object that includes an agent must have a relationship object where this object is the source, or record an exception under <code>architecturalDecisions.agentInteractionExceptions</code>.</p>
+              <p class="callout-body">Agent TechnologyComponents have an additional rule: any deployable object that includes an agent must have a relationship object where this object is the source, or record an exception under <code>architecturalDecisions.agentInteractionExceptions</code>.</p>
             </div>
           </div>
         </div>
@@ -1829,17 +1828,17 @@
               <tr>
                 <td>Framework rules</td>
                 <td><code>.draft/framework/</code> in company workspaces, <code>framework/</code> upstream</td>
-                <td>Schemas, base capabilities, Requirement Groups, docs, and tools.</td>
+                <td>Schemas, base capabilities, RequirementGroups, docs, and tools.</td>
               </tr>
               <tr>
                 <td>Company architecture</td>
                 <td><code>catalog/</code></td>
-                <td>Hosts, services, ProductComponents, Software Deployment Patterns, and other architecture inventory.</td>
+                <td>Hosts, services, ProductComponents, SoftwareDeploymentPatterns, and other architecture inventory.</td>
               </tr>
               <tr>
                 <td>Company extensions</td>
                 <td><code>configurations/</code></td>
-                <td>Capability mappings, object patches, company Requirement Groups, and local domains.</td>
+                <td>Capability mappings, object patches, company RequirementGroups, and local domains.</td>
               </tr>
               <tr>
                 <td>Generated views</td>
@@ -1879,15 +1878,15 @@
             <li>private company repo selected and <code>.draft/framework/</code> present</li>
             <li>business taxonomy defined enough for navigation</li>
             <li>first company vocabulary lists declared in advisory mode, or queued for later</li>
-            <li>initial active Requirement Groups selected</li>
+            <li>initial active RequirementGroups selected</li>
             <li>capability owners identified for mapped capabilities</li>
-            <li>acceptable-use Technology Components seeded for common standards</li>
+            <li>acceptable-use TechnologyComponents seeded for common standards</li>
             <li>baseline deployable standards started</li>
-            <li>one real product, system, repository, diagram, or document selected for the first Drafting Session</li>
+            <li>one real product, system, repository, diagram, or document selected for the first DraftingSession</li>
           </ol>
           <p>
             The Draftsman should record uncertainty as assumptions, unresolved questions, or
-            Drafting Session next steps instead of forcing complete answers during setup.
+            DraftingSession next steps instead of forcing complete answers during setup.
           </p>
         </div>
 
@@ -2140,9 +2139,9 @@ python framework/tools/generate_ai_index.py</code></pre>
             <li>no duplicate object already exists</li>
             <li>required schema fields are present</li>
             <li>references point to real objects</li>
-            <li>Technology Components are specific enough to govern</li>
+            <li>TechnologyComponents are specific enough to govern</li>
             <li>ProductComponents represent first-party runtime behavior</li>
-            <li>Requirement Groups and implementations are coherent</li>
+            <li>RequirementGroups and implementations are coherent</li>
             <li>internal components and external interactions either satisfy requirements or have rationale</li>
             <li>generated docs were regenerated from source</li>
             <li>framework files were changed only when the change is intentionally a framework change</li>

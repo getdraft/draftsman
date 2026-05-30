@@ -456,7 +456,7 @@ def validate_software_deployment_business_context(
     if context is None:
         if require_pillar:
             failures.append(
-                f"{path}: Add businessContext.pillar because .draft/workspace.yaml requires Software Deployment Patterns to declare a business pillar"
+                f"{path}: Add businessContext.pillar because .draft/workspace.yaml requires SoftwareDeploymentPatterns to declare a business pillar"
             )
         return
     if not isinstance(context, dict):
@@ -576,9 +576,9 @@ def object_label(obj: dict[str, Any]) -> str:
     return str(obj.get("name") or obj.get("uid") or obj.get("id") or "unknown")
 
 
-def requirement_group_name(group: dict[str, Any], fallback: str = "Requirement Group") -> str:
+def requirement_group_name(group: dict[str, Any], fallback: str = "RequirementGroup") -> str:
     name = str(group.get("name") or fallback)
-    return re.sub(r"\s+Requirement Group$", "", name).strip() or fallback
+    return re.sub(r"\s+RequirementGroup$", "", name).strip() or fallback
 
 
 def requirement_authority_prefix(group: dict[str, Any]) -> str:
@@ -815,10 +815,10 @@ def resolve_requirement_group_requirements(
     stack: set[str] | None = None,
 ) -> list[dict[str, Any]]:
     if group_id not in requirement_groups:
-        raise KeyError(f"unknown Requirement Group '{group_id}'")
+        raise KeyError(f"unknown RequirementGroup '{group_id}'")
     stack = stack or set()
     if group_id in stack:
-        raise ValueError(f"cyclic Requirement Group inheritance detected at '{group_id}'")
+        raise ValueError(f"cyclic RequirementGroup inheritance detected at '{group_id}'")
     stack.add(group_id)
     group = requirement_groups[group_id]
     requirements: list[dict[str, Any]] = []
@@ -840,7 +840,7 @@ def requirement_group_applies_to_object(group: dict[str, Any], obj: dict[str, An
         for key, expected in qualifiers.items():
             if obj.get(key) != expected:
                 return False
-    if object_type == "host" and group.get("name") == "Host Requirement Group":
+    if object_type == "host" and group.get("name") == "Host RequirementGroup":
         tags = obj.get("tags") or []
         if isinstance(tags, list) and any(tag in {"serverless", "container"} for tag in tags):
             return False
@@ -1794,14 +1794,14 @@ def validate_internal_component_configuration_refs(
         target = catalog_by_id.get(str(ref)) if is_non_empty(ref) else None
         if not target or target.get("type") != "technology_component":
             failures.append(
-                f"{path}: internalComponents[{index}].configuration requires ref to an existing Technology Component; "
-                f"'{ref or 'missing'}' was not found as a Technology Component"
+                f"{path}: internalComponents[{index}].configuration requires ref to an existing TechnologyComponent; "
+                f"'{ref or 'missing'}' was not found as a TechnologyComponent"
             )
             continue
         if str(configuration) not in technology_configuration_ids(target):
             failures.append(
                 f"{path}: internalComponents[{index}].configuration references unknown configuration "
-                f"'{configuration}' on Technology Component '{ref}'"
+                f"'{configuration}' on TechnologyComponent '{ref}'"
             )
 
 
@@ -1828,7 +1828,7 @@ def validate_component(
     classification = obj.get("classification")
     if classification not in VALID_TECHNOLOGY_COMPONENT_CLASSIFICATIONS:
         failures.append(
-            f"{path}: Set Technology Component classification to one of {sorted(VALID_TECHNOLOGY_COMPONENT_CLASSIFICATIONS)}"
+            f"{path}: Set TechnologyComponent classification to one of {sorted(VALID_TECHNOLOGY_COMPONENT_CLASSIFICATIONS)}"
         )
     capabilities = obj.get("capabilities", [])
     if capabilities is not None:
@@ -1901,7 +1901,7 @@ def validate_classified_component_refs(
         target_classification = target.get("classification")
         if expected_classification and target_classification != expected_classification:
             failures.append(
-                f"{path}: {field} must reference a Technology Component classified as '{expected_classification}' — got '{target_classification or 'unknown'}'"
+                f"{path}: {field} must reference a TechnologyComponent classified as '{expected_classification}' — got '{target_classification or 'unknown'}'"
             )
 
     validate_ref("operatingSystemComponent", "operating-system")
@@ -1914,7 +1914,7 @@ def validate_classified_component_refs(
             classification = target.get("classification")
             if classification not in {"software", "agent"}:
                 failures.append(
-                    f"{path}: primaryTechnologyComponent must reference a Technology Component classified as 'software' or 'agent' — got '{classification or 'unknown'}'"
+                    f"{path}: primaryTechnologyComponent must reference a TechnologyComponent classified as 'software' or 'agent' — got '{classification or 'unknown'}'"
                 )
 
     components = obj.get("internalComponents", [])
@@ -1941,7 +1941,7 @@ def validate_classified_component_refs(
             )
             if not has_outbound_rel and not agent_interaction_exception(obj, ref):
                 failures.append(
-                    f"{path}: agent Technology Component '{ref}' requires a relationship object with source == this object or architectureNotes.agentInteractionExceptions"
+                    f"{path}: agent TechnologyComponent '{ref}' requires a relationship object with source == this object or architectureNotes.agentInteractionExceptions"
                 )
 
 
@@ -2122,7 +2122,7 @@ def evaluate_ra_constraints(
                 failures.append(
                     f"{path}: [{sdp_id}] RA constraint '{constraint_id}' violated — "
                     f"no service group entry satisfies {req_desc}. "
-                    f"Required by Reference Architecture '{ra_name}'. "
+                    f"Required by ReferenceArchitecture '{ra_name}'. "
                     f"See constraint description: {constraint.get('description') or constraint_id}"
                 )
 
@@ -2155,7 +2155,7 @@ def validate_ra(
     if expired_technologies and obj.get("lifecycleStatus") != "deprecated":
         details = ", ".join(f"{ref} extendedSupportEnd {support_end.isoformat()}" for ref, support_end in expired_technologies)
         failures.append(
-            f"{path}: Set lifecycleStatus: deprecated on Reference Architecture '{object_id}' because it includes end-of-support Technology Components: {details}"
+            f"{path}: Set lifecycleStatus: deprecated on ReferenceArchitecture '{object_id}' because it includes end-of-support TechnologyComponents: {details}"
         )
     if extended_support_technologies and obj.get("lifecycleStatus") == "preferred":
         details = ", ".join(
@@ -2164,14 +2164,14 @@ def validate_ra(
             for ref, mainstream_end, support_end in extended_support_technologies
         )
         failures.append(
-            f"{path}: Set lifecycleStatus: deprecated by default, or existing-only with architectureNotes.lifecycleRationale, on Reference Architecture '{object_id}' because it includes Technology Components in extended support: {details}"
+            f"{path}: Set lifecycleStatus: deprecated by default, or existing-only with architectureNotes.lifecycleRationale, on ReferenceArchitecture '{object_id}' because it includes TechnologyComponents in extended support: {details}"
         )
     if extended_support_technologies and obj.get("lifecycleStatus") == "existing-only":
         decisions = obj.get("architectureNotes") or {}
         if not isinstance(decisions, dict) or not is_non_empty(decisions.get("lifecycleRationale")):
             details = ", ".join(f"{ref} mainstreamSupportEnd {mainstream_end.isoformat()}" for ref, mainstream_end, _ in extended_support_technologies)
             failures.append(
-                f"{path}: Add architectureNotes.lifecycleRationale to explain why Reference Architecture '{object_id}' remains existing-only while these Technology Components are in extended support: {details}"
+                f"{path}: Add architectureNotes.lifecycleRationale to explain why ReferenceArchitecture '{object_id}' remains existing-only while these TechnologyComponents are in extended support: {details}"
             )
 
     if not is_non_empty(obj.get("patternType")):
@@ -2335,7 +2335,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Describe deployment boundary or execution context in architectureNotes.deploymentTargets to satisfy DRAFT Software Deployment Pattern / deployment-targets",
+            f"[{object_id}] Describe deployment boundary or execution context in architectureNotes.deploymentTargets to satisfy DRAFT SoftwareDeploymentPattern / deployment-targets",
             failures,
             warnings,
         )
@@ -2478,7 +2478,7 @@ def validate_environment_tier(obj: dict[str, Any], path: Path, failures: list[st
 
 def validate_decision_record(obj: dict[str, Any], path: Path, failures: list[str], warnings: list[str]) -> None:
     if obj.get("category") == "decision" and not is_non_empty(obj.get("decisionRationale")):
-        warnings.append(f"{path}: decision Decision Records should include decisionRationale")
+        warnings.append(f"{path}: decision DecisionRecords should include decisionRationale")
 
 
 def validate_drafting_session(
@@ -2700,7 +2700,7 @@ def validate_capability(
     capability_id = obj.get("uid")
     if is_non_empty(capability_id) and capability_id not in requirement_capability_refs:
         message = (
-            f"{path}: Add this Capability to at least one Requirement Group before approving it; "
+            f"{path}: Add this Capability to at least one RequirementGroup before approving it; "
             "approved capabilities must be traceable to a requirement demand signal"
         )
         if obj.get("catalogStatus") == "complete":
@@ -2709,13 +2709,13 @@ def validate_capability(
             warnings.append(message)
     implementations = obj.get("implementations", [])
     if not isinstance(implementations, list):
-        failures.append(f"{path}: Change implementations to a list of Technology Component mappings")
+        failures.append(f"{path}: Change implementations to a list of TechnologyComponent mappings")
         return
     owner = obj.get("owner")
     if implementations and not (isinstance(owner, dict) and is_non_empty(owner.get("team"))):
         failures.append(
             f"{path}: Add owner.team before assigning capability implementations; "
-            "the company capability owner approves Technology Component lifecycle decisions"
+            "the company capability owner approves TechnologyComponent lifecycle decisions"
         )
     for index, implementation in enumerate(implementations):
         context = f"{path}: implementations[{index}]"
@@ -2725,7 +2725,7 @@ def validate_capability(
         ref = implementation.get("ref")
         target = catalog_by_id.get(str(ref)) if is_non_empty(ref) else None
         if not target or target.get("type") != "technology_component":
-            failures.append(f"{context}: Set ref to an existing Technology Component UID; capability lifecycle applies only to discrete vendor product versions")
+            failures.append(f"{context}: Set ref to an existing TechnologyComponent UID; capability lifecycle applies only to discrete vendor product versions")
         lifecycle_status = implementation.get("lifecycleStatus")
         if lifecycle_status not in VALID_IMPLEMENTATION_STATUSES:
             failures.append(
@@ -2736,7 +2736,7 @@ def validate_capability(
             configs = target.get("configurations", [])
             if not any(isinstance(config, dict) and config.get("id") == configuration for config in configs):
                 failures.append(
-                    f"{context}: Set configuration to a configuration id that exists on Technology Component '{ref}'"
+                    f"{context}: Set configuration to a configuration id that exists on TechnologyComponent '{ref}'"
                 )
 
 
@@ -3154,7 +3154,7 @@ def validate_service_group_structure(
                     failures.append(
                         f"{path}: software deployment pattern serviceGroup '{group_name}' references {target_type} "
                         f"'{ref}' directly; serviceGroups must reference service-level deployable objects, "
-                        "and the Host or Technology Component must be modeled on that service object"
+                        "and the Host or TechnologyComponent must be modeled on that service object"
                     )
                 elif ref and target_type not in STANDARD_TYPES:
                     failures.append(f"{path}: serviceGroup '{group_name}' references unknown deployable object '{ref}'")
@@ -3165,7 +3165,7 @@ def validate_service_group_structure(
                 )
             risk_ref = entry.get("riskRef")
             if risk_ref and risk_ref not in decision_record_ids:
-                failures.append(f"{path}: serviceGroup '{group_name}' deployable object '{entry_label}' references unknown Decision Record '{risk_ref}'")
+                failures.append(f"{path}: serviceGroup '{group_name}' deployable object '{entry_label}' references unknown DecisionRecord '{risk_ref}'")
             intent = entry.get("intent")
             if intent and intent not in {"ha", "sa"}:
                 failures.append(f"{path}: serviceGroup '{group_name}' deployable object '{entry_label}' has invalid intent '{intent}'")
@@ -3192,7 +3192,7 @@ def validate_service_group_refs(
             continue
         ref = risk.get("ref")
         if ref and ref not in decision_record_ids:
-            failures.append(f"{path}: decisionRecords references unknown Decision Record '{ref}'")
+            failures.append(f"{path}: decisionRecords references unknown DecisionRecord '{ref}'")
 
     validate_service_group_structure(
         obj,

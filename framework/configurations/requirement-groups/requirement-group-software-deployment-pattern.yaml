@@ -1,7 +1,7 @@
 schemaVersion: '1.0'
 uid: 01KQQ4Q027-VK45
 type: requirement_group
-name: Software Deployment Pattern Requirement Group
+name: SoftwareDeploymentPattern RequirementGroup
 description: Structured checklist of required questions and answers used to define a complete and correct software deployment pattern.
 version: 1.0.0
 catalogStatus: complete
@@ -14,7 +14,7 @@ appliesTo:
 - software_deployment_pattern
 requirements:
 - id: reference-architecture-conformance
-  description: The Software Deployment Pattern must reference a valid Reference Architecture ID or explicitly document that no applicable Reference Architecture exists yet.
+  description: The SoftwareDeploymentPattern must reference a valid ReferenceArchitecture ID or explicitly document that no applicable ReferenceArchitecture exists yet.
   rationale: Connecting deployments to patterns enables governance discoverability and impact analysis.
   canBeSatisfiedBy:
   - mechanism: field
@@ -22,7 +22,7 @@ requirements:
     example: reference-architecture.dotnet.three-tier.ha
   - mechanism: architectureNote
     key: noApplicablePattern
-    example: No applicable Reference Architecture exists yet for this deployment shape
+    example: No applicable ReferenceArchitecture exists yet for this deployment shape
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
@@ -30,7 +30,7 @@ requirements:
   - architectureNote
   - field
 - id: service-groups
-  description: The Software Deployment Pattern must declare the service groups that make up the deployed product.
+  description: The SoftwareDeploymentPattern must declare the service groups that make up the deployed product.
   rationale: A deployment manifest is incomplete until the real deployed service group structure is explicit.
   canBeSatisfiedBy:
   - mechanism: field
@@ -98,7 +98,7 @@ requirements:
   validAnswerTypes:
   - architectureNote
 - id: failure-domain
-  description: The Software Deployment Pattern must document the deployment-level failure domain of the product.
+  description: The SoftwareDeploymentPattern must document the deployment-level failure domain of the product.
   rationale: Product-level impact boundaries cannot be inferred from component selections alone.
   canBeSatisfiedBy:
   - mechanism: architectureNote
@@ -110,15 +110,15 @@ requirements:
   validAnswerTypes:
   - architectureNote
 - id: pattern-deviations
-  description: Any intentional deviation from the selected Reference Architecture must be documented, or the Software Deployment Pattern must explicitly state that no deviations exist.
-  rationale: The Software Deployment Pattern is where pattern intent becomes product deployment reality, so departures from the Reference Architecture must be visible.
+  description: Any intentional deviation from the selected ReferenceArchitecture must be documented, or the SoftwareDeploymentPattern must explicitly state that no deviations exist.
+  rationale: The SoftwareDeploymentPattern is where pattern intent becomes product deployment reality, so departures from the ReferenceArchitecture must be visible.
   canBeSatisfiedBy:
   - mechanism: architectureNote
     key: patternDeviations
     example: Shared ingestion remains centralized rather than per-sub-environment
   - mechanism: architectureNote
     key: noPatternDeviations
-    example: No intentional deviations from the selected Reference Architecture
+    example: No intentional deviations from the selected ReferenceArchitecture
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false

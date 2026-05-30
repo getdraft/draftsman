@@ -1,8 +1,8 @@
 schemaVersion: '1.0'
 uid: 01KRWRRNM7-G642
 type: requirement_group
-name: Product Component Requirement Group
-description: Built-in checklist for first-party code components deployed onto Runtime Services. Establishes what must be known about a ProductComponent before it is considered architecturally complete.
+name: ProductComponent RequirementGroup
+description: Built-in checklist for first-party code components deployed onto RuntimeServices. Establishes what must be known about a ProductComponent before it is considered architecturally complete.
 version: 1.0.0
 catalogStatus: complete
 authority:
