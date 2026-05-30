@@ -210,16 +210,21 @@ Run once from the workspace root:
 
 ```bash
 mkdir -p .claude/commands
+ln -sf ../../.draft/framework/commands/draft-help.md .claude/commands/draft-help.md
 ln -sf ../../.draft/framework/commands/draftsman.md .claude/commands/draftsman.md
 ln -sf ../../.draft/framework/commands/draft-session.md .claude/commands/draft-session.md
 ln -sf ../../.draft/framework/commands/draft-validate.md .claude/commands/draft-validate.md
 ln -sf ../../.draft/framework/commands/draft-updateframework.md .claude/commands/draft-updateframework.md
+ln -sf ../../.draft/framework/commands/draft-triage.md .claude/commands/draft-triage.md
+ln -sf ../../.draft/framework/commands/draft-review.md .claude/commands/draft-review.md
 ```
 
 On Windows (PowerShell as Administrator, or with Developer Mode enabled):
 
 ```powershell
 New-Item -ItemType Directory -Force -Path .claude\commands
+New-Item -ItemType SymbolicLink -Path .claude\commands\draft-help.md `
+  -Target ..\..\draft\framework\commands\draft-help.md -Force
 New-Item -ItemType SymbolicLink -Path .claude\commands\draftsman.md `
   -Target ..\..\draft\framework\commands\draftsman.md -Force
 New-Item -ItemType SymbolicLink -Path .claude\commands\draft-session.md `
@@ -228,6 +233,10 @@ New-Item -ItemType SymbolicLink -Path .claude\commands\draft-validate.md `
   -Target ..\..\draft\framework\commands\draft-validate.md -Force
 New-Item -ItemType SymbolicLink -Path .claude\commands\draft-updateframework.md `
   -Target ..\..\draft\framework\commands\draft-updateframework.md -Force
+New-Item -ItemType SymbolicLink -Path .claude\commands\draft-triage.md `
+  -Target ..\..\draft\framework\commands\draft-triage.md -Force
+New-Item -ItemType SymbolicLink -Path .claude\commands\draft-review.md `
+  -Target ..\..\draft\framework\commands\draft-review.md -Force
 ```
 
 The symlinks follow the vendored framework copy, so updating the framework

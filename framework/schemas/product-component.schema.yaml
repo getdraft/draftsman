@@ -9,9 +9,9 @@ requiredFields:
 - owner
 - classification
 - catalogStatus
-- lifecycleStatus
 defaultOwnerRole: engineer
 optionalFields:
+- lifecycleStatus
 - aliases
 - description
 - version
