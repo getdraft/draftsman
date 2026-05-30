@@ -3,6 +3,31 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.31.1 - 2026-05-30
+
+Resolves a contradiction in the AI instruction surface about whether the
+Draftsman should show the user a running backlog of remaining work.
+
+### Added
+
+- None.
+
+### Changed
+
+- **Reconciled conversation-cadence guidance**: `draft-session.md` and `company-onboarding.md` told the Draftsman to "keep a visible list of what is next / what is left / revisit-later items," while `setup-mode.md` and `draftsman.md` told it to avoid displaying backlogs and checklists. Reworded the two former files to the intended behavior — *record* open questions, assumptions, and next steps in the Drafting Session for resumability, but keep the live conversation focused on the current step without displaying a running backlog. The session-resumption summary in `draftsman.md` (a brief recap on resume) is unchanged.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+No breaking changes. Documentation and command-guidance wording only; no schema, requirement group, or catalog content changed.
+
+### Migration Notes
+
+No action required. Workspaces that vendored an earlier framework copy will pick up the reconciled cadence guidance on their next framework refresh.
+
 ## 0.31.0 - 2026-05-30
 
 Converges the human-readable name of the `data_store_service` object on **Data

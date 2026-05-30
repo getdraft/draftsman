@@ -48,8 +48,9 @@ If no session exists:
 
 Follow the Draftsman role in `.draft/framework/docs/draftsman.md` throughout:
 
-- Keep a visible list of: current step, next step, remaining questions, and
-  revisit-later items.
+- Record open questions, assumptions, and next steps in the session file so the
+  work is resumable; keep the live conversation focused on the current step
+  rather than displaying a running backlog of remaining or revisit-later items.
 - Produce or update catalog YAML from session discoveries.
 - Validate with `python3 .draft/framework/tools/validate.py --workspace .`
   after each YAML update.
