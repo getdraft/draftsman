@@ -3,6 +3,36 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.32.1 - 2026-05-30
+
+Release-note correction. Commit `de67d90` was pushed directly to `main`
+(outside the normal branch + pull request flow) and relaxed two schema
+required-field lists without its own changelog entry or version bump. That
+change then shipped to users as part of `0.32.0` because the version bump in
+the PascalCase release sat on top of it. This entry backfills the missing
+release note so the contract change is traceable. No code or schema changes
+ship in `0.32.1` itself.
+
+### Added
+
+- None.
+
+### Changed
+
+- **Documented the `lifecycleStatus` relaxation that shipped in `0.32.0`**: `lifecycleStatus` was moved from `requiredFields` to `optionalFields` in the `product_component` and `data_component` schemas to reduce first-party intake friction, implementing the High-severity review finding "Redundant lifecycleStatus on First-Party Code." This was live on `main` from commit `de67d90` but was absent from the `0.32.0` changelog; it is recorded here.
+
+### Fixed
+
+- **Closed the release-record gap** created when a schema contract change reached `main` without a changelog entry or independent version bump.
+
+### Compatibility Impact
+
+No new behavior in `0.32.1`. The underlying `0.32.0` schema relaxation is backward compatible: objects that already set `lifecycleStatus` on a `product_component` or `data_component` continue to validate unchanged, and new objects may now omit the field. No object that previously validated becomes invalid.
+
+### Migration Notes
+
+No action required. Workspaces that want to keep `lifecycleStatus` mandatory for first-party components can continue to set it on every object; the framework no longer forces it. Tooling or documentation that described `lifecycleStatus` as required for `product_component`/`data_component` should be updated to reflect that it is now optional.
+
 ## 0.32.0 - 2026-05-30
 
 Standardizes how object types are *named in text* on a single PascalCase
