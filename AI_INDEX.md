@@ -94,6 +94,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/schemas/edge-gateway-service.schema.yaml | edge_gateway_service | schemaVersion, uid, type, name, deliveryModel, catalogStatus, lifecycleStatus |
 | framework/schemas/environment-tier.schema.yaml | environment_tier | schemaVersion, uid, type, name, tierId, purpose, availabilityExpectation, catalogStatus |
 | framework/schemas/host.schema.yaml | host | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus |
+| framework/schemas/network-service.schema.yaml | network_service | schemaVersion, uid, type, name, deliveryModel, catalogStatus, lifecycleStatus |
 | framework/schemas/object-patch.schema.yaml | object_patch | schemaVersion, uid, type, name, target, patch, catalogStatus, lifecycleStatus |
 | framework/schemas/product-component.schema.yaml | product_component | schemaVersion, uid, type, name, repoUrl, owner, classification, catalogStatus, lifecycleStatus |
 | framework/schemas/reference-architecture.schema.yaml | reference_architecture | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus |
@@ -113,13 +114,14 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KQQ4Q026-4JR6 | Access Control Model | capability |  | Authorization model that controls access to a service or data platform. | framework/configurations/capabilities/capability-access-control-model.yaml |
 | 01KQQ4Q026-NB1W | Application Performance Monitoring | capability |  | Tracing and performance analysis of application runtimes. | framework/configurations/capabilities/capability-apm.yaml |
 | 01KQQ4Q026-MHJM | Authentication | capability |  | Identity and access authentication capability for users, services, administrators, or workloads. | framework/configurations/capabilities/capability-authentication.yaml |
-| 01KQQ4Q026-7T2H | Backup Strategy | capability |  | Backup, restore, and recovery point capability for durable data stores. | framework/configurations/capabilities/capability-backup-strategy.yaml |
 | 01KQQ4Q026-1HZP | Compute Platform | capability |  | Compute substrate or virtualized platform used to run Hosts. | framework/configurations/capabilities/capability-compute-platform.yaml |
-| 01KQQ4Q026-9K8G | General Purpose Compute | capability |  | Provisioning and execution of arbitrary code on reusable compute substrates. | framework/configurations/capabilities/capability-compute.yaml |
 | 01KQQ4Q026-GW5D | Container Orchestration | capability |  | Management of containerized workload lifecycles. | framework/configurations/capabilities/capability-container-orchestration.yaml |
+| 01KQQ4Q026-7T2H | Data Resilience | capability |  | Resilience of data against loss or corruption through backup, restore, replication, and recovery capabilities. | framework/configurations/capabilities/capability-data-resilience.yaml |
 | 01KQQ4Q026-H3B5 | Encryption At Rest | capability |  | Protection of persisted data through encryption or equivalent storage safeguards. | framework/configurations/capabilities/capability-encryption-at-rest.yaml |
 | 01KQQ4Q026-98VD | Health and Welfare Monitoring | capability |  | Runtime health, uptime, metrics, and operational welfare visibility. | framework/configurations/capabilities/capability-health-welfare-monitoring.yaml |
 | 01KQQ4Q026-D04B | Log Management | capability |  | Aggregation, retention, searchability, and forwarding of system or application logs. | framework/configurations/capabilities/capability-log-management.yaml |
+| 01KSWVZSZ5-Q6HW | Network Connectivity | capability |  | Hosts and services can reach each other across the network fabric through approved switching and routing infrastructure. | framework/configurations/capabilities/capability-network-connectivity.yaml |
+| 01KSWVZSZ5-1RTH | Network Segmentation | capability |  | Traffic between network zones is isolated and controlled by policy through VLANs, micro-segmentation, or software-def... | framework/configurations/capabilities/capability-network-segmentation.yaml |
 | 01KQQ4Q026-QM2X | Operating System | capability |  | Supported operating system product used to define managed Hosts. | framework/configurations/capabilities/capability-operating-system.yaml |
 | 01KQQ4Q026-BH6E | Patch Management | capability |  | Patch orchestration and update application capability for managed runtime components. | framework/configurations/capabilities/capability-patch-management.yaml |
 | 01KQQ4Q026-S5J6 | Performance and Load Testing | capability |  | Capabilities to simulate load and measure system behavior under stress. | framework/configurations/capabilities/capability-performance-testing.yaml |
@@ -129,6 +131,8 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KQQ4Q026-3ZWJ | Serverless Function Runtime | capability |  | Event-driven, scale-to-zero compute runtime capability. | framework/configurations/capabilities/capability-serverless-runtime.yaml |
 | 01KQQ4Q026-QC9S | Test Authoring | capability |  | Tools and frameworks used to author automated tests. | framework/configurations/capabilities/capability-test-authoring.yaml |
 | 01KQQ4Q026-58Q3 | Test Execution and Automation | capability |  | Runtimes and orchestration services used to execute automated tests. | framework/configurations/capabilities/capability-test-execution.yaml |
+| 01KSWVZSZ5-M0FR | Traffic Management | capability |  | Application and network traffic is distributed, shaped, and controlled across services and infrastructure through app... | framework/configurations/capabilities/capability-traffic-management.yaml |
+| 01KSWVZSZ5-26F1 | WAN Connectivity | capability |  | Sites, data centers, and cloud environments are interconnected reliably through approved wide area network technology. | framework/configurations/capabilities/capability-wan-connectivity.yaml |
 | 01KQQ4Q027-DSDD | Appliance Delivery Requirement Group | requirement_group | appliance, requirement-group, definition | Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service uses appliance delivery and the un... | framework/configurations/requirement-groups/requirement-group-appliance-delivery.yaml |
 | 01KRWRRNM7-VJ5A | Data Component Requirement Group | requirement_group | data-component, requirement-group, definition | Built-in checklist for first-party data artifacts deployed onto Data Store Services. Establishes what must be known a... | framework/configurations/requirement-groups/requirement-group-data-component.yaml |
 | 01KQQ4Q027-VBF0 | DataStoreService Requirement Group | requirement_group | service, dbms, requirement-group, definition | Additional DataStoreService checklist items extending the service behavior Requirement Group for durable data, recove... | framework/configurations/requirement-groups/requirement-group-data-store-service.yaml |
@@ -140,6 +144,7 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KSF4NHSP-8HPP | Engineering Quality Requirement Group | requirement_group | product-component, requirement-group, engineering, quality, optional | Optional checklist for ProductComponents covering build quality, test coverage, and performance validation practices.... | framework/configurations/requirement-groups/requirement-group-engineering-quality.yaml |
 | 01KSF4NHSP-HCPX | Host Compute Profile Requirement Group | requirement_group | host, requirement-group, compute, optional | Optional checklist for Hosts covering compute type classification. Activated per workspace; does not fire automatically. | framework/configurations/requirement-groups/requirement-group-host-compute-profile.yaml |
 | 01KQQ4Q027-THYN | Host Requirement Group | requirement_group | host, requirement-group, definition | Structured checklist of required questions and answers used to define a complete and correct Host. | framework/configurations/requirement-groups/requirement-group-host.yaml |
+| 01KSWVZSZ5-B146 | Network Service Requirement Group | requirement_group | network, requirement-group, definition | Base requirements for NetworkService objects covering network function declaration, topology definition, and protocol... | framework/configurations/requirement-groups/requirement-group-network-service.yaml |
 | 01KQQ4Q027-TPWG | PaaS Delivery Requirement Group | requirement_group | paas, requirement-group, definition | Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service is vendor-managed inside the organ... | framework/configurations/requirement-groups/requirement-group-paas-delivery.yaml |
 | 01KRWRRNM7-G642 | Product Component Requirement Group | requirement_group | product-component, requirement-group, definition | Built-in checklist for first-party code components deployed onto Runtime Services. Establishes what must be known abo... | framework/configurations/requirement-groups/requirement-group-product-component.yaml |
 | 01KQQ4Q027-SS2K | Reference Architecture Requirement Group | requirement_group | reference-architecture, requirement-group, definition | Structured checklist of required questions and answers used to define a complete and correct Reference Architecture. | framework/configurations/requirement-groups/requirement-group-reference-architecture.yaml |
@@ -151,7 +156,11 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KS8N4KR4-SVED | Serverless Event-Driven | reference_architecture | reference-architecture, serverless, event-driven | Deployment pattern for event-driven applications using serverless compute runtimes. No persistent application-tier co... | framework/configurations/reference-architectures/ra-serverless-event-driven.yaml |
 | 01KS8N4KR2-3TWA | Three-Tier Web Application | reference_architecture | reference-architecture, three-tier, web | Standard pattern for web-facing applications with a presentation tier (edge/gateway services), an application tier (r... | framework/configurations/reference-architectures/ra-three-tier-web.yaml |
 | 01KQQ4Q027-ZTHF | Compute & Runtime | domain |  | Strategic domain covering application runtimes, serverless functions, and physical or virtual compute resources. | framework/configurations/domains/compute.yaml |
+| 01KSWVZSZ5-QHKZ | Data | domain |  | Strategic domain covering data protection and resilience. Capabilities in this domain are governed by the data and st... | framework/configurations/domains/data.yaml |
+| 01KSWVZSZ5-71PY | Identity & Access Management | domain |  | Strategic domain covering authentication and authorization. Capabilities in this domain are governed by the IAM team,... | framework/configurations/domains/identity.yaml |
+| 01KSWVZSZ5-4WKE | Network | domain |  | Strategic domain covering network fabric infrastructure, connectivity, and segmentation. Capabilities in this domain... | framework/configurations/domains/network.yaml |
 | 01KQQ4Q027-C213 | Observability & Monitoring | domain |  | Strategic domain covering logging, metrics, tracing, and health monitoring across infrastructure and application stacks. | framework/configurations/domains/observability.yaml |
+| 01KSWVZSZ5-GY67 | Security | domain |  | Strategic domain covering threat detection, security event monitoring, and secure credential management. Capabilities... | framework/configurations/domains/security.yaml |
 | 01KQQ4Q027-SGHR | Testing & Quality | domain |  | Strategic domain covering all aspects of software testing, quality assurance, and release gates. | framework/configurations/domains/testing.yaml |
 
 ## Example Catalog Inventory
@@ -217,10 +226,10 @@ These are sample catalog objects used to validate and demonstrate the framework.
 
 | Folder | YAML Count |
 |---|---|
-| framework/configurations/capabilities | 19 |
-| framework/configurations/requirement-groups | 18 |
+| framework/configurations/capabilities | 22 |
+| framework/configurations/requirement-groups | 19 |
 | framework/configurations/reference-architectures | 3 |
-| framework/configurations/domains | 3 |
+| framework/configurations/domains | 7 |
 | examples/catalog/technology-components | 20 |
 | examples/catalog/hosts | 2 |
 | examples/catalog/runtime-services | 14 |

@@ -10,7 +10,7 @@ window.DRAFT_BROWSER_DATA = {
       "filterType": "capability",
       "category": "",
       "deliveryModel": "",
-      "domain": "01KQQ4Q027-ZTHF",
+      "domain": "01KSWVZSZ5-71PY",
       "description": "Authorization model that controls access to a service or data platform.",
       "version": "1.0.0",
       "catalogStatus": "complete",
@@ -87,7 +87,7 @@ window.DRAFT_BROWSER_DATA = {
       "hasRiskRef": false,
       "outboundRefs": [
         {
-          "target": "01KQQ4Q027-ZTHF",
+          "target": "01KSWVZSZ5-71PY",
           "path": "domain"
         }
       ],
@@ -119,6 +119,10 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KQQ4Q027-1GHC",
           "path": "requirements[5].relatedCapability"
+        },
+        {
+          "source": "01KSWVZSZ5-71PY",
+          "path": "capabilities[1]"
         }
       ],
       "editorSchema": {
@@ -159,7 +163,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/capability.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-4JR6\",\n  \"type\": \"capability\",\n  \"name\": \"Access Control Model\",\n  \"description\": \"Authorization model that controls access to a service or data platform.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-ZTHF\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-access-control-model.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-4JR6\",\n  \"type\": \"capability\",\n  \"name\": \"Access Control Model\",\n  \"description\": \"Authorization model that controls access to a service or data platform.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-71PY\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-access-control-model.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -262,7 +266,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         {
           "source": "01KQQ4Q027-C213",
-          "path": "capabilities[3]"
+          "path": "capabilities[2]"
         }
       ],
       "editorSchema": {
@@ -318,7 +322,7 @@ window.DRAFT_BROWSER_DATA = {
       "filterType": "capability",
       "category": "",
       "deliveryModel": "",
-      "domain": "01KQQ4Q027-ZTHF",
+      "domain": "01KSWVZSZ5-71PY",
       "description": "Identity and access authentication capability for users, services, administrators, or workloads.",
       "version": "1.0.0",
       "catalogStatus": "complete",
@@ -395,7 +399,7 @@ window.DRAFT_BROWSER_DATA = {
       "hasRiskRef": false,
       "outboundRefs": [
         {
-          "target": "01KQQ4Q027-ZTHF",
+          "target": "01KSWVZSZ5-71PY",
           "path": "domain"
         }
       ],
@@ -423,6 +427,10 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KQQ4Q027-THYN",
           "path": "requirements[2].relatedCapability"
+        },
+        {
+          "source": "01KSWVZSZ5-71PY",
+          "path": "capabilities[0]"
         }
       ],
       "editorSchema": {
@@ -463,167 +471,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/capability.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-MHJM\",\n  \"type\": \"capability\",\n  \"name\": \"Authentication\",\n  \"description\": \"Identity and access authentication capability for users, services, administrators, or workloads.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-ZTHF\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-authentication.yaml\"\n}",
-      "existsInCatalog": true,
-      "outboundRelationships": [],
-      "inboundRelationships": []
-    },
-    {
-      "id": "01KQQ4Q026-7T2H",
-      "uid": "01KQQ4Q026-7T2H",
-      "name": "Backup Strategy",
-      "aliases": [],
-      "type": "capability",
-      "typeLabel": "Capability",
-      "filterType": "capability",
-      "category": "",
-      "deliveryModel": "",
-      "domain": "01KQQ4Q027-ZTHF",
-      "description": "Backup, restore, and recovery point capability for durable data stores.",
-      "version": "1.0.0",
-      "catalogStatus": "complete",
-      "lifecycleStatus": "unknown",
-      "status": "",
-      "businessContext": {},
-      "product": "",
-      "runsOn": "",
-      "subtype": "",
-      "vendor": "",
-      "productName": "",
-      "productVersion": "",
-      "classification": "",
-      "platformDependency": "",
-      "capabilities": [],
-      "configurations": [],
-      "networkPlacement": "",
-      "patchingOwner": "",
-      "complianceCerts": [],
-      "requirementGroups": [],
-      "requirementImplementations": [],
-      "dataLeavesInfrastructure": null,
-      "dataResidencyCommitment": "",
-      "dpaNotes": "",
-      "vendorSLA": "",
-      "authenticationModel": "",
-      "incidentNotificationProcess": "",
-      "owner": {},
-      "definitionOwner": {
-        "provider": "draft-framework",
-        "team": "cloud-architecture",
-        "contact": "cloud-architecture@example.com"
-      },
-      "provider": {},
-      "authority": {},
-      "shape": "ellipse",
-      "color": "#7a6e60",
-      "source": "framework/configurations/capabilities/capability-backup-strategy.yaml",
-      "tags": [],
-      "ardCategory": "",
-      "internalComponents": [],
-      "architectureNotes": {},
-      "requirements": [],
-      "implementations": [],
-      "appliesTo": {},
-      "inherits": "",
-      "scalingUnits": [],
-      "networkZones": [],
-      "sdpConnections": [],
-      "serviceGroups": [],
-      "tierVariants": [],
-      "tierId": "",
-      "purpose": "",
-      "availabilityExpectation": "",
-      "costPosture": "",
-      "complianceScope": [],
-      "parameterSurface": [],
-      "followsReferenceArchitecture": "",
-      "decisionRecords": [],
-      "affectedComponent": "",
-      "impact": "",
-      "mitigationPath": "",
-      "decisionRationale": "",
-      "relatedDecisionRecords": [],
-      "linkedObject": "",
-      "primaryObjectType": "",
-      "primaryObjectUid": "",
-      "generatedObjects": [],
-      "unresolvedQuestions": [],
-      "assumptions": [],
-      "nextSteps": [],
-      "defaultSelection": false,
-      "requirementCount": 0,
-      "hasRiskRef": false,
-      "outboundRefs": [
-        {
-          "target": "01KQQ4Q027-ZTHF",
-          "path": "domain"
-        }
-      ],
-      "referencedBy": [
-        {
-          "source": "01KQQ4Q027-VBF0",
-          "path": "requirements[0].relatedCapability"
-        },
-        {
-          "source": "01KQQ4Q027-VBF0",
-          "path": "requirements[1].relatedCapability"
-        },
-        {
-          "source": "01KQQ4Q027-69VY",
-          "path": "requirements[7].relatedCapability"
-        },
-        {
-          "source": "01KQQ4Q027-T3CA",
-          "path": "requirements[12].relatedCapability"
-        },
-        {
-          "source": "01KQQ4Q027-7JN2",
-          "path": "requirements[6].relatedCapability"
-        },
-        {
-          "source": "01KQQ4Q027-1GHC",
-          "path": "requirements[6].relatedCapability"
-        }
-      ],
-      "editorSchema": {
-        "requiredFields": [
-          "schemaVersion",
-          "uid",
-          "type",
-          "name",
-          "description",
-          "catalogStatus",
-          "definitionOwner",
-          "domain",
-          "implementations"
-        ],
-        "optionalFields": [
-          "aliases",
-          "version",
-          "tags",
-          "owner"
-        ],
-        "fieldTypes": {
-          "aliases": "list",
-          "definitionOwner": "dict",
-          "owner": "dict",
-          "tags": "list",
-          "implementations": "list"
-        },
-        "enumFields": {
-          "catalogStatus": [
-            "stub",
-            "incomplete",
-            "complete"
-          ]
-        },
-        "enumListFields": {},
-        "collectionSchemas": {
-          "implementations": "implementation"
-        },
-        "schemaPath": "framework/schemas/capability.schema.yaml"
-      },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-7T2H\",\n  \"type\": \"capability\",\n  \"name\": \"Backup Strategy\",\n  \"description\": \"Backup, restore, and recovery point capability for durable data stores.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-ZTHF\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-backup-strategy.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-MHJM\",\n  \"type\": \"capability\",\n  \"name\": \"Authentication\",\n  \"description\": \"Identity and access authentication capability for users, services, administrators, or workloads.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-71PY\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-authentication.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -734,12 +582,16 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "referencedBy": [
         {
+          "source": "01KSF4NHSP-HCPX",
+          "path": "requirements[0].relatedCapability"
+        },
+        {
           "source": "01KQQ4Q027-THYN",
           "path": "requirements[1].relatedCapability"
         },
         {
           "source": "01KQQ4Q027-ZTHF",
-          "path": "capabilities[2]"
+          "path": "capabilities[1]"
         },
         {
           "source": "01KQQ4Q025-X682",
@@ -785,171 +637,6 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/capability.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-1HZP\",\n  \"type\": \"capability\",\n  \"name\": \"Compute Platform\",\n  \"description\": \"Compute substrate or virtualized platform used to run Hosts.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-ZTHF\",\n  \"implementations\": [\n    {\n      \"ref\": \"01KQQ4Q025-9N4R\",\n      \"lifecycleStatus\": \"existing-only\",\n      \"notes\": \"Example workspace maps EC2 to the compute platform capability.\"\n    }\n  ],\n  \"_source\": \"framework/configurations/capabilities/capability-compute-platform.yaml\",\n  \"owner\": {\n    \"team\": \"example-architecture\",\n    \"contact\": \"architecture@example.com\"\n  }\n}",
-      "existsInCatalog": true,
-      "outboundRelationships": [],
-      "inboundRelationships": []
-    },
-    {
-      "id": "01KQQ4Q026-9K8G",
-      "uid": "01KQQ4Q026-9K8G",
-      "name": "General Purpose Compute",
-      "aliases": [],
-      "type": "capability",
-      "typeLabel": "Capability",
-      "filterType": "capability",
-      "category": "",
-      "deliveryModel": "",
-      "domain": "01KQQ4Q027-ZTHF",
-      "description": "Provisioning and execution of arbitrary code on reusable compute substrates.",
-      "version": "1.0.0",
-      "catalogStatus": "incomplete",
-      "lifecycleStatus": "unknown",
-      "status": "",
-      "businessContext": {},
-      "product": "",
-      "runsOn": "",
-      "subtype": "",
-      "vendor": "",
-      "productName": "",
-      "productVersion": "",
-      "classification": "",
-      "platformDependency": "",
-      "capabilities": [],
-      "configurations": [],
-      "networkPlacement": "",
-      "patchingOwner": "",
-      "complianceCerts": [],
-      "requirementGroups": [],
-      "requirementImplementations": [],
-      "dataLeavesInfrastructure": null,
-      "dataResidencyCommitment": "",
-      "dpaNotes": "",
-      "vendorSLA": "",
-      "authenticationModel": "",
-      "incidentNotificationProcess": "",
-      "owner": {
-        "team": "example-architecture",
-        "contact": "architecture@example.com"
-      },
-      "definitionOwner": {
-        "provider": "draft-framework",
-        "team": "cloud-architecture",
-        "contact": "cloud-architecture@example.com"
-      },
-      "provider": {},
-      "authority": {},
-      "shape": "ellipse",
-      "color": "#7a6e60",
-      "source": "framework/configurations/capabilities/capability-compute.yaml",
-      "tags": [],
-      "ardCategory": "",
-      "internalComponents": [],
-      "architectureNotes": {},
-      "requirements": [],
-      "implementations": [
-        {
-          "ref": "01KQQ4Q025-9N4R",
-          "lifecycleStatus": "existing-only",
-          "notes": "Example general-purpose compute implementation."
-        }
-      ],
-      "appliesTo": {},
-      "inherits": "",
-      "scalingUnits": [],
-      "networkZones": [],
-      "sdpConnections": [],
-      "serviceGroups": [],
-      "tierVariants": [],
-      "tierId": "",
-      "purpose": "",
-      "availabilityExpectation": "",
-      "costPosture": "",
-      "complianceScope": [],
-      "parameterSurface": [],
-      "followsReferenceArchitecture": "",
-      "decisionRecords": [],
-      "affectedComponent": "",
-      "impact": "",
-      "mitigationPath": "",
-      "decisionRationale": "",
-      "relatedDecisionRecords": [],
-      "linkedObject": "",
-      "primaryObjectType": "",
-      "primaryObjectUid": "",
-      "generatedObjects": [],
-      "unresolvedQuestions": [],
-      "assumptions": [],
-      "nextSteps": [],
-      "defaultSelection": false,
-      "requirementCount": 0,
-      "hasRiskRef": false,
-      "outboundRefs": [
-        {
-          "target": "01KQQ4Q027-ZTHF",
-          "path": "domain"
-        },
-        {
-          "target": "01KQQ4Q025-9N4R",
-          "path": "implementations[0].ref"
-        }
-      ],
-      "referencedBy": [
-        {
-          "source": "01KSF4NHSP-HCPX",
-          "path": "requirements[0].relatedCapability"
-        },
-        {
-          "source": "01KQQ4Q027-ZTHF",
-          "path": "capabilities[0]"
-        },
-        {
-          "source": "01KQQ4Q025-9NNQ",
-          "path": "target"
-        },
-        {
-          "source": "01KQQ4Q025-T7B7",
-          "path": "capabilities[0]"
-        }
-      ],
-      "editorSchema": {
-        "requiredFields": [
-          "schemaVersion",
-          "uid",
-          "type",
-          "name",
-          "description",
-          "catalogStatus",
-          "definitionOwner",
-          "domain",
-          "implementations"
-        ],
-        "optionalFields": [
-          "aliases",
-          "version",
-          "tags",
-          "owner"
-        ],
-        "fieldTypes": {
-          "aliases": "list",
-          "definitionOwner": "dict",
-          "owner": "dict",
-          "tags": "list",
-          "implementations": "list"
-        },
-        "enumFields": {
-          "catalogStatus": [
-            "stub",
-            "incomplete",
-            "complete"
-          ]
-        },
-        "enumListFields": {},
-        "collectionSchemas": {
-          "implementations": "implementation"
-        },
-        "schemaPath": "framework/schemas/capability.schema.yaml"
-      },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-9K8G\",\n  \"type\": \"capability\",\n  \"name\": \"General Purpose Compute\",\n  \"description\": \"Provisioning and execution of arbitrary code on reusable compute substrates.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-ZTHF\",\n  \"implementations\": [\n    {\n      \"ref\": \"01KQQ4Q025-9N4R\",\n      \"lifecycleStatus\": \"existing-only\",\n      \"notes\": \"Example general-purpose compute implementation.\"\n    }\n  ],\n  \"_source\": \"framework/configurations/capabilities/capability-compute.yaml\",\n  \"owner\": {\n    \"team\": \"example-architecture\",\n    \"contact\": \"architecture@example.com\"\n  }\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -1052,7 +739,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         {
           "source": "01KQQ4Q027-ZTHF",
-          "path": "capabilities[4]"
+          "path": "capabilities[3]"
         }
       ],
       "editorSchema": {
@@ -1099,6 +786,170 @@ window.DRAFT_BROWSER_DATA = {
       "inboundRelationships": []
     },
     {
+      "id": "01KQQ4Q026-7T2H",
+      "uid": "01KQQ4Q026-7T2H",
+      "name": "Data Resilience",
+      "aliases": [],
+      "type": "capability",
+      "typeLabel": "Capability",
+      "filterType": "capability",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "01KSWVZSZ5-QHKZ",
+      "description": "Resilience of data against loss or corruption through backup, restore, replication, and recovery capabilities.",
+      "version": "1.0.0",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {
+        "provider": "draft-framework",
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "provider": {},
+      "authority": {},
+      "shape": "ellipse",
+      "color": "#7a6e60",
+      "source": "framework/configurations/capabilities/capability-data-resilience.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSWVZSZ5-QHKZ",
+          "path": "domain"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KQQ4Q027-VBF0",
+          "path": "requirements[0].relatedCapability"
+        },
+        {
+          "source": "01KQQ4Q027-VBF0",
+          "path": "requirements[1].relatedCapability"
+        },
+        {
+          "source": "01KQQ4Q027-69VY",
+          "path": "requirements[7].relatedCapability"
+        },
+        {
+          "source": "01KQQ4Q027-T3CA",
+          "path": "requirements[12].relatedCapability"
+        },
+        {
+          "source": "01KQQ4Q027-7JN2",
+          "path": "requirements[6].relatedCapability"
+        },
+        {
+          "source": "01KQQ4Q027-1GHC",
+          "path": "requirements[6].relatedCapability"
+        },
+        {
+          "source": "01KSWVZSZ5-QHKZ",
+          "path": "capabilities[1]"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "definitionOwner",
+          "domain",
+          "implementations"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "owner"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "definitionOwner": "dict",
+          "owner": "dict",
+          "tags": "list",
+          "implementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "implementations": "implementation"
+        },
+        "schemaPath": "framework/schemas/capability.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-7T2H\",\n  \"type\": \"capability\",\n  \"name\": \"Data Resilience\",\n  \"description\": \"Resilience of data against loss or corruption through backup, restore, replication, and recovery capabilities.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-QHKZ\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-data-resilience.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
       "id": "01KQQ4Q026-H3B5",
       "uid": "01KQQ4Q026-H3B5",
       "name": "Encryption At Rest",
@@ -1108,7 +959,7 @@ window.DRAFT_BROWSER_DATA = {
       "filterType": "capability",
       "category": "",
       "deliveryModel": "",
-      "domain": "01KQQ4Q027-ZTHF",
+      "domain": "01KSWVZSZ5-QHKZ",
       "description": "Protection of persisted data through encryption or equivalent storage safeguards.",
       "version": "1.0.0",
       "catalogStatus": "complete",
@@ -1185,7 +1036,7 @@ window.DRAFT_BROWSER_DATA = {
       "hasRiskRef": false,
       "outboundRefs": [
         {
-          "target": "01KQQ4Q027-ZTHF",
+          "target": "01KSWVZSZ5-QHKZ",
           "path": "domain"
         }
       ],
@@ -1205,6 +1056,10 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KQQ4Q027-1GHC",
           "path": "requirements[4].relatedCapability"
+        },
+        {
+          "source": "01KSWVZSZ5-QHKZ",
+          "path": "capabilities[0]"
         }
       ],
       "editorSchema": {
@@ -1245,7 +1100,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/capability.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-H3B5\",\n  \"type\": \"capability\",\n  \"name\": \"Encryption At Rest\",\n  \"description\": \"Protection of persisted data through encryption or equivalent storage safeguards.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-ZTHF\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-encryption-at-rest.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-H3B5\",\n  \"type\": \"capability\",\n  \"name\": \"Encryption At Rest\",\n  \"description\": \"Protection of persisted data through encryption or equivalent storage safeguards.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-QHKZ\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-encryption-at-rest.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -1597,6 +1452,286 @@ window.DRAFT_BROWSER_DATA = {
       "inboundRelationships": []
     },
     {
+      "id": "01KSWVZSZ5-Q6HW",
+      "uid": "01KSWVZSZ5-Q6HW",
+      "name": "Network Connectivity",
+      "aliases": [],
+      "type": "capability",
+      "typeLabel": "Capability",
+      "filterType": "capability",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "01KSWVZSZ5-4WKE",
+      "description": "Hosts and services can reach each other across the network fabric through approved switching and routing infrastructure.",
+      "version": "1.0.0",
+      "catalogStatus": "incomplete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {
+        "provider": "draft-framework",
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "provider": {},
+      "authority": {},
+      "shape": "ellipse",
+      "color": "#7a6e60",
+      "source": "framework/configurations/capabilities/capability-network-connectivity.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSWVZSZ5-4WKE",
+          "path": "domain"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KSWVZSZ5-4WKE",
+          "path": "capabilities[0]"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "definitionOwner",
+          "domain",
+          "implementations"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "owner"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "definitionOwner": "dict",
+          "owner": "dict",
+          "tags": "list",
+          "implementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "implementations": "implementation"
+        },
+        "schemaPath": "framework/schemas/capability.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-Q6HW\",\n  \"type\": \"capability\",\n  \"name\": \"Network Connectivity\",\n  \"description\": \"Hosts and services can reach each other across the network fabric through approved switching and routing infrastructure.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-4WKE\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-network-connectivity.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KSWVZSZ5-1RTH",
+      "uid": "01KSWVZSZ5-1RTH",
+      "name": "Network Segmentation",
+      "aliases": [],
+      "type": "capability",
+      "typeLabel": "Capability",
+      "filterType": "capability",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "01KSWVZSZ5-4WKE",
+      "description": "Traffic between network zones is isolated and controlled by policy through VLANs, micro-segmentation, or software-defined networking.",
+      "version": "1.0.0",
+      "catalogStatus": "incomplete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {
+        "provider": "draft-framework",
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "provider": {},
+      "authority": {},
+      "shape": "ellipse",
+      "color": "#7a6e60",
+      "source": "framework/configurations/capabilities/capability-network-segmentation.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSWVZSZ5-4WKE",
+          "path": "domain"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KSWVZSZ5-4WKE",
+          "path": "capabilities[1]"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "definitionOwner",
+          "domain",
+          "implementations"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "owner"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "definitionOwner": "dict",
+          "owner": "dict",
+          "tags": "list",
+          "implementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "implementations": "implementation"
+        },
+        "schemaPath": "framework/schemas/capability.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-1RTH\",\n  \"type\": \"capability\",\n  \"name\": \"Network Segmentation\",\n  \"description\": \"Traffic between network zones is isolated and controlled by policy through VLANs, micro-segmentation, or software-defined networking.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-4WKE\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-network-segmentation.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
       "id": "01KQQ4Q026-QM2X",
       "uid": "01KQQ4Q026-QM2X",
       "name": "Operating System",
@@ -1707,7 +1842,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         {
           "source": "01KQQ4Q027-ZTHF",
-          "path": "capabilities[1]"
+          "path": "capabilities[0]"
         },
         {
           "source": "01KQQ4Q026-4AYD",
@@ -1872,6 +2007,10 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KQQ4Q027-THYN",
           "path": "requirements[6].relatedCapability"
+        },
+        {
+          "source": "01KQQ4Q027-ZTHF",
+          "path": "capabilities[4]"
         }
       ],
       "editorSchema": {
@@ -2215,7 +2354,7 @@ window.DRAFT_BROWSER_DATA = {
       "filterType": "capability",
       "category": "",
       "deliveryModel": "",
-      "domain": "01KQQ4Q027-ZTHF",
+      "domain": "01KSWVZSZ5-GY67",
       "description": "Secure storage, rotation, and access mediation for secrets and authenticators.",
       "version": "1.0.0",
       "catalogStatus": "complete",
@@ -2292,7 +2431,7 @@ window.DRAFT_BROWSER_DATA = {
       "hasRiskRef": false,
       "outboundRefs": [
         {
-          "target": "01KQQ4Q027-ZTHF",
+          "target": "01KSWVZSZ5-GY67",
           "path": "domain"
         }
       ],
@@ -2316,6 +2455,10 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KQQ4Q027-K5DR",
           "path": "requirements[3].relatedCapability"
+        },
+        {
+          "source": "01KSWVZSZ5-GY67",
+          "path": "capabilities[1]"
         }
       ],
       "editorSchema": {
@@ -2356,7 +2499,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/capability.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-DTJJ\",\n  \"type\": \"capability\",\n  \"name\": \"Secrets Management\",\n  \"description\": \"Secure storage, rotation, and access mediation for secrets and authenticators.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-ZTHF\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-secrets-management.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-DTJJ\",\n  \"type\": \"capability\",\n  \"name\": \"Secrets Management\",\n  \"description\": \"Secure storage, rotation, and access mediation for secrets and authenticators.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-GY67\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-secrets-management.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -2371,7 +2514,7 @@ window.DRAFT_BROWSER_DATA = {
       "filterType": "capability",
       "category": "",
       "deliveryModel": "",
-      "domain": "01KQQ4Q027-C213",
+      "domain": "01KSWVZSZ5-GY67",
       "description": "Threat detection, intrusion detection, security event monitoring, and audit telemetry.",
       "version": "1.0.0",
       "catalogStatus": "complete",
@@ -2457,7 +2600,7 @@ window.DRAFT_BROWSER_DATA = {
       "hasRiskRef": false,
       "outboundRefs": [
         {
-          "target": "01KQQ4Q027-C213",
+          "target": "01KSWVZSZ5-GY67",
           "path": "domain"
         },
         {
@@ -2487,8 +2630,8 @@ window.DRAFT_BROWSER_DATA = {
           "path": "requirements[5].relatedCapability"
         },
         {
-          "source": "01KQQ4Q027-C213",
-          "path": "capabilities[2]"
+          "source": "01KSWVZSZ5-GY67",
+          "path": "capabilities[0]"
         },
         {
           "source": "01KQQ4Q026-BQ87",
@@ -2537,7 +2680,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/capability.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-JW52\",\n  \"type\": \"capability\",\n  \"name\": \"Security Monitoring\",\n  \"description\": \"Threat detection, intrusion detection, security event monitoring, and audit telemetry.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-C213\",\n  \"implementations\": [\n    {\n      \"ref\": \"01KQQ4Q025-MQ3F\",\n      \"lifecycleStatus\": \"existing-only\",\n      \"notes\": \"Example endpoint security monitoring agent.\"\n    }\n  ],\n  \"_source\": \"framework/configurations/capabilities/capability-security-monitoring.yaml\",\n  \"owner\": {\n    \"team\": \"example-architecture\",\n    \"contact\": \"architecture@example.com\"\n  }\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-JW52\",\n  \"type\": \"capability\",\n  \"name\": \"Security Monitoring\",\n  \"description\": \"Threat detection, intrusion detection, security event monitoring, and audit telemetry.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-GY67\",\n  \"implementations\": [\n    {\n      \"ref\": \"01KQQ4Q025-MQ3F\",\n      \"lifecycleStatus\": \"existing-only\",\n      \"notes\": \"Example endpoint security monitoring agent.\"\n    }\n  ],\n  \"_source\": \"framework/configurations/capabilities/capability-security-monitoring.yaml\",\n  \"owner\": {\n    \"team\": \"example-architecture\",\n    \"contact\": \"architecture@example.com\"\n  }\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -2640,7 +2783,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         {
           "source": "01KQQ4Q027-ZTHF",
-          "path": "capabilities[3]"
+          "path": "capabilities[2]"
         }
       ],
       "editorSchema": {
@@ -2975,6 +3118,286 @@ window.DRAFT_BROWSER_DATA = {
       "inboundRelationships": []
     },
     {
+      "id": "01KSWVZSZ5-M0FR",
+      "uid": "01KSWVZSZ5-M0FR",
+      "name": "Traffic Management",
+      "aliases": [],
+      "type": "capability",
+      "typeLabel": "Capability",
+      "filterType": "capability",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "01KSWVZSZ5-4WKE",
+      "description": "Application and network traffic is distributed, shaped, and controlled across services and infrastructure through approved load balancing and traffic management technology.",
+      "version": "1.0.0",
+      "catalogStatus": "incomplete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {
+        "provider": "draft-framework",
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "provider": {},
+      "authority": {},
+      "shape": "ellipse",
+      "color": "#7a6e60",
+      "source": "framework/configurations/capabilities/capability-traffic-management.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSWVZSZ5-4WKE",
+          "path": "domain"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KSWVZSZ5-4WKE",
+          "path": "capabilities[2]"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "definitionOwner",
+          "domain",
+          "implementations"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "owner"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "definitionOwner": "dict",
+          "owner": "dict",
+          "tags": "list",
+          "implementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "implementations": "implementation"
+        },
+        "schemaPath": "framework/schemas/capability.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-M0FR\",\n  \"type\": \"capability\",\n  \"name\": \"Traffic Management\",\n  \"description\": \"Application and network traffic is distributed, shaped, and controlled across services and infrastructure through approved load balancing and traffic management technology.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-4WKE\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-traffic-management.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KSWVZSZ5-26F1",
+      "uid": "01KSWVZSZ5-26F1",
+      "name": "WAN Connectivity",
+      "aliases": [],
+      "type": "capability",
+      "typeLabel": "Capability",
+      "filterType": "capability",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "01KSWVZSZ5-4WKE",
+      "description": "Sites, data centers, and cloud environments are interconnected reliably through approved wide area network technology.",
+      "version": "1.0.0",
+      "catalogStatus": "incomplete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {
+        "provider": "draft-framework",
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "provider": {},
+      "authority": {},
+      "shape": "ellipse",
+      "color": "#7a6e60",
+      "source": "framework/configurations/capabilities/capability-wan-connectivity.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSWVZSZ5-4WKE",
+          "path": "domain"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KSWVZSZ5-4WKE",
+          "path": "capabilities[3]"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "definitionOwner",
+          "domain",
+          "implementations"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "owner"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "definitionOwner": "dict",
+          "owner": "dict",
+          "tags": "list",
+          "implementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "implementations": "implementation"
+        },
+        "schemaPath": "framework/schemas/capability.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-26F1\",\n  \"type\": \"capability\",\n  \"name\": \"WAN Connectivity\",\n  \"description\": \"Sites, data centers, and cloud environments are interconnected reliably through approved wide area network technology.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-4WKE\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-wan-connectivity.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
       "id": "01KQQ4Q027-DSDD",
       "uid": "01KQQ4Q027-DSDD",
       "name": "Appliance Delivery Requirement Group",
@@ -3211,42 +3634,6 @@ window.DRAFT_BROWSER_DATA = {
           "minimumSatisfactions": 1
         },
         {
-          "id": "network-placement",
-          "description": "Where does this appliance sit in the network topology?",
-          "rationale": "Placement defines exposure and traffic path.",
-          "canBeSatisfiedBy": [
-            {
-              "mechanism": "field",
-              "key": "networkPlacement",
-              "example": "networkPlacement: public-facing"
-            }
-          ],
-          "requirementMode": "mandatory",
-          "naAllowed": false,
-          "validAnswerTypes": [
-            "field"
-          ],
-          "minimumSatisfactions": 1
-        },
-        {
-          "id": "patching-ownership",
-          "description": "Who is responsible for firmware and software updates?",
-          "rationale": "A blackbox component still needs clear update ownership.",
-          "canBeSatisfiedBy": [
-            {
-              "mechanism": "field",
-              "key": "patchingOwner",
-              "example": "patchingOwner: aws-managed"
-            }
-          ],
-          "requirementMode": "mandatory",
-          "naAllowed": false,
-          "validAnswerTypes": [
-            "field"
-          ],
-          "minimumSatisfactions": 1
-        },
-        {
           "id": "configurable-surface",
           "description": "What configuration surface does the organization control on this appliance?\n",
           "rationale": "The object should capture what the adopter can actually configure rather than pretending the hidden host is visible.",
@@ -3335,7 +3722,7 @@ window.DRAFT_BROWSER_DATA = {
       "assumptions": [],
       "nextSteps": [],
       "defaultSelection": false,
-      "requirementCount": 11,
+      "requirementCount": 9,
       "hasRiskRef": false,
       "outboundRefs": [],
       "referencedBy": [],
@@ -3397,7 +3784,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/requirement-group.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-DSDD\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Appliance Delivery Requirement Group\",\n  \"description\": \"Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service uses appliance delivery and the underlying host is blackbox to the adopter.\",\n  \"version\": \"1.1.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"runtime_service\",\n    \"data_store_service\",\n    \"edge_gateway_service\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"function\",\n      \"description\": \"What capabilities does this appliance provide?\",\n      \"rationale\": \"The capabilities are the reason the appliance exists in the architecture.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"capabilities\",\n          \"example\": \"capabilities: [load-balancing]\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"authentication-access-model\",\n      \"description\": \"How is administrative, user, or service access to the appliance authenticated?\",\n      \"rationale\": \"A blackbox appliance still needs an explicit access-control answer because it provides a deployed capability without inheriting the host or service Requirement Group baseline.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"The appliance authenticates administrators through an enterprise identity platform.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"A named appliance configuration defines the authentication model.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"authenticationAccessModel\",\n          \"example\": \"Administrator access is federated through SAML SSO; service access uses appliance-managed mTLS.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"log-audit-visibility\",\n      \"description\": \"What operational logs, audit records, or events are visible to the adopter, and where do they go?\",\n      \"rationale\": \"A blackbox appliance must state the log or audit visibility the adopter can rely on because hidden host logs are not modeled.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          },\n          \"example\": \"A relationship object where source is this appliance and the relationship has the log-management capability, pointing to a modeled central logging service or SIEM platform.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          },\n          \"example\": \"A named appliance configuration enables audit export or log forwarding.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"logAuditVisibility\",\n          \"example\": \"Administrative actions are exported to CloudTrail and retained in the enterprise SIEM.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"health-status-visibility\",\n      \"description\": \"How does the adopter observe appliance health, status, incidents, or operational telemetry?\",\n      \"rationale\": \"The appliance provides a service-like capability, so consumers need to know how health and status are observed even though the internal host is hidden.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          },\n          \"example\": \"The appliance publishes health metrics to the enterprise monitoring platform.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          },\n          \"example\": \"A named appliance configuration enables health checks, status endpoints, or metrics export.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"healthStatusVisibility\",\n          \"example\": \"Health is observed through managed service status, target health checks, and alert rules.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"patch-update-model\",\n      \"description\": \"Who or what is responsible for appliance firmware, software, and hidden host updates, and what mechanism applies them?\",\n      \"rationale\": \"The hidden host prevents normal host patch-management modeling, so the appliance must document the update responsibility and mechanism directly.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"patchingOwner\",\n          \"example\": \"patchingOwner: vendor-managed\"\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          },\n          \"example\": \"Updates are orchestrated through a vendor or cloud-provider patch service.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          },\n          \"example\": \"A named appliance configuration defines update windows or managed update policy.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"patchUpdateModel\",\n          \"example\": \"Firmware and hidden host updates are vendor-managed; the adopter controls only maintenance windows.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"field\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"resilience-model\",\n      \"description\": \"What is the resilience model of this appliance \\u2014 is it inherently highly available, single instance, or clustered?\\n\",\n      \"rationale\": \"A blackbox appliance still needs an explicit answer for the resilience posture the adopter is depending on.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"resilienceModel\",\n          \"example\": \"Inherently highly available within the managed service control plane\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"network-placement\",\n      \"description\": \"Where does this appliance sit in the network topology?\",\n      \"rationale\": \"Placement defines exposure and traffic path.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"networkPlacement\",\n          \"example\": \"networkPlacement: public-facing\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"patching-ownership\",\n      \"description\": \"Who is responsible for firmware and software updates?\",\n      \"rationale\": \"A blackbox component still needs clear update ownership.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"patchingOwner\",\n          \"example\": \"patchingOwner: aws-managed\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"configurable-surface\",\n      \"description\": \"What configuration surface does the organization control on this appliance?\\n\",\n      \"rationale\": \"The object should capture what the adopter can actually configure rather than pretending the hidden host is visible.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"configurableSurface\",\n          \"example\": \"Listener rules, target groups, and TLS certificates are customer-managed\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"failure-domain\",\n      \"description\": \"What failure domain does this appliance introduce?\",\n      \"rationale\": \"Blackbox shared components can create broad impact boundaries that must be explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"failureDomain\",\n          \"example\": \"Shared dependency for all traffic entering the protected application path\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"compliance-posture\",\n      \"description\": \"What compliance certifications does this appliance carry?\",\n      \"rationale\": \"Compliance posture must be explicit when the underlying implementation is opaque.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"complianceCerts\",\n          \"allowEmpty\": true,\n          \"example\": \"complianceCerts: [SOC2, ISO27001]\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"appliance\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"appliesToQualifiers\": {\n    \"deliveryModel\": \"appliance\"\n  },\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-appliance-delivery.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-DSDD\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Appliance Delivery Requirement Group\",\n  \"description\": \"Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service uses appliance delivery and the underlying host is blackbox to the adopter.\",\n  \"version\": \"1.1.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"runtime_service\",\n    \"data_store_service\",\n    \"edge_gateway_service\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"function\",\n      \"description\": \"What capabilities does this appliance provide?\",\n      \"rationale\": \"The capabilities are the reason the appliance exists in the architecture.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"capabilities\",\n          \"example\": \"capabilities: [load-balancing]\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"authentication-access-model\",\n      \"description\": \"How is administrative, user, or service access to the appliance authenticated?\",\n      \"rationale\": \"A blackbox appliance still needs an explicit access-control answer because it provides a deployed capability without inheriting the host or service Requirement Group baseline.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"The appliance authenticates administrators through an enterprise identity platform.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"A named appliance configuration defines the authentication model.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"authenticationAccessModel\",\n          \"example\": \"Administrator access is federated through SAML SSO; service access uses appliance-managed mTLS.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"log-audit-visibility\",\n      \"description\": \"What operational logs, audit records, or events are visible to the adopter, and where do they go?\",\n      \"rationale\": \"A blackbox appliance must state the log or audit visibility the adopter can rely on because hidden host logs are not modeled.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          },\n          \"example\": \"A relationship object where source is this appliance and the relationship has the log-management capability, pointing to a modeled central logging service or SIEM platform.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          },\n          \"example\": \"A named appliance configuration enables audit export or log forwarding.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"logAuditVisibility\",\n          \"example\": \"Administrative actions are exported to CloudTrail and retained in the enterprise SIEM.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"health-status-visibility\",\n      \"description\": \"How does the adopter observe appliance health, status, incidents, or operational telemetry?\",\n      \"rationale\": \"The appliance provides a service-like capability, so consumers need to know how health and status are observed even though the internal host is hidden.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          },\n          \"example\": \"The appliance publishes health metrics to the enterprise monitoring platform.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          },\n          \"example\": \"A named appliance configuration enables health checks, status endpoints, or metrics export.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"healthStatusVisibility\",\n          \"example\": \"Health is observed through managed service status, target health checks, and alert rules.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"patch-update-model\",\n      \"description\": \"Who or what is responsible for appliance firmware, software, and hidden host updates, and what mechanism applies them?\",\n      \"rationale\": \"The hidden host prevents normal host patch-management modeling, so the appliance must document the update responsibility and mechanism directly.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"patchingOwner\",\n          \"example\": \"patchingOwner: vendor-managed\"\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          },\n          \"example\": \"Updates are orchestrated through a vendor or cloud-provider patch service.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          },\n          \"example\": \"A named appliance configuration defines update windows or managed update policy.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"patchUpdateModel\",\n          \"example\": \"Firmware and hidden host updates are vendor-managed; the adopter controls only maintenance windows.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"field\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"resilience-model\",\n      \"description\": \"What is the resilience model of this appliance \\u2014 is it inherently highly available, single instance, or clustered?\\n\",\n      \"rationale\": \"A blackbox appliance still needs an explicit answer for the resilience posture the adopter is depending on.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"resilienceModel\",\n          \"example\": \"Inherently highly available within the managed service control plane\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"configurable-surface\",\n      \"description\": \"What configuration surface does the organization control on this appliance?\\n\",\n      \"rationale\": \"The object should capture what the adopter can actually configure rather than pretending the hidden host is visible.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"configurableSurface\",\n          \"example\": \"Listener rules, target groups, and TLS certificates are customer-managed\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"failure-domain\",\n      \"description\": \"What failure domain does this appliance introduce?\",\n      \"rationale\": \"Blackbox shared components can create broad impact boundaries that must be explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"failureDomain\",\n          \"example\": \"Shared dependency for all traffic entering the protected application path\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"compliance-posture\",\n      \"description\": \"What compliance certifications does this appliance carry?\",\n      \"rationale\": \"Compliance posture must be explicit when the underlying implementation is opaque.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"complianceCerts\",\n          \"allowEmpty\": true,\n          \"example\": \"complianceCerts: [SOC2, ISO27001]\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"appliance\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"appliesToQualifiers\": {\n    \"deliveryModel\": \"appliance\"\n  },\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-appliance-delivery.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -7459,7 +7846,7 @@ window.DRAFT_BROWSER_DATA = {
             }
           ],
           "minimumSatisfactions": 1,
-          "relatedCapability": "01KQQ4Q026-9K8G",
+          "relatedCapability": "01KQQ4Q026-1HZP",
           "requirementMode": "mandatory",
           "naAllowed": true,
           "validAnswerTypes": [
@@ -7503,7 +7890,7 @@ window.DRAFT_BROWSER_DATA = {
       "hasRiskRef": false,
       "outboundRefs": [
         {
-          "target": "01KQQ4Q026-9K8G",
+          "target": "01KQQ4Q026-1HZP",
           "path": "requirements[0].relatedCapability"
         }
       ],
@@ -7566,7 +7953,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/requirement-group.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSF4NHSP-HCPX\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Host Compute Profile Requirement Group\",\n  \"description\": \"Optional checklist for Hosts covering compute type classification. Activated per workspace; does not fire automatically.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"workspace\",\n  \"appliesTo\": [\n    \"host\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"compute-type\",\n      \"description\": \"The host must declare its compute type or instance class when the compute profile is not captured by the compute-platform requirement alone.\",\n      \"rationale\": \"Compute type captures the general-purpose, memory-optimized, GPU, or bare-metal classification of the host's compute resources, which affects workload placement and capacity planning.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"computeType\",\n          \"example\": \"A documented statement of the compute type such as general-purpose, memory-optimized, GPU, or bare-metal.\"\n        },\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"computeType\",\n          \"example\": \"A field declaration of the compute type on the host object.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-9K8G\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"field\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"candidate\",\n  \"tags\": [\n    \"host\",\n    \"requirement-group\",\n    \"compute\",\n    \"optional\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-host-compute-profile.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSF4NHSP-HCPX\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Host Compute Profile Requirement Group\",\n  \"description\": \"Optional checklist for Hosts covering compute type classification. Activated per workspace; does not fire automatically.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"workspace\",\n  \"appliesTo\": [\n    \"host\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"compute-type\",\n      \"description\": \"The host must declare its compute type or instance class when the compute profile is not captured by the compute-platform requirement alone.\",\n      \"rationale\": \"Compute type captures the general-purpose, memory-optimized, GPU, or bare-metal classification of the host's compute resources, which affects workload placement and capacity planning.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"computeType\",\n          \"example\": \"A documented statement of the compute type such as general-purpose, memory-optimized, GPU, or bare-metal.\"\n        },\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"computeType\",\n          \"example\": \"A field declaration of the compute type on the host object.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-1HZP\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"field\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"candidate\",\n  \"tags\": [\n    \"host\",\n    \"requirement-group\",\n    \"compute\",\n    \"optional\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-host-compute-profile.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -8006,6 +8393,236 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/requirement-group.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-THYN\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Host Requirement Group\",\n  \"description\": \"Structured checklist of required questions and answers used to define a complete and correct Host.\",\n  \"version\": \"3.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"host\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"operating-system\",\n      \"description\": \"The host must declare the Operating System Technology Component that defines the operating system baseline.\",\n      \"rationale\": \"A host is not complete until the operating system product baseline is explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"operatingSystemComponent\",\n          \"example\": \"operatingSystemComponent: technology.os.microsoft-windowsserver-2022\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-QM2X\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"compute-platform\",\n      \"description\": \"The host must declare the Compute Platform Technology Component that defines the physical or virtual compute substrate.\",\n      \"rationale\": \"A host is not complete until the compute substrate is explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"computePlatformComponent\",\n          \"example\": \"computePlatformComponent: technology.compute.amazon-ec2-standard\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-1HZP\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"authentication\",\n      \"description\": \"The host must address how administrators and services authenticate to the platform.\",\n      \"rationale\": \"Identity control is a baseline host requirement because unmanaged access breaks supportability and auditability.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"Active Directory or another enterprise identity platform.\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"A Technology Component installed locally that provides host authentication behavior.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"An Operating System Technology Component configuration that defines the authentication model.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"authenticationApproach\",\n          \"example\": \"A documented local or federated authentication model when the dependency is not expressed as a platform interaction.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-MHJM\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"internalComponent\",\n        \"technologyComponentConfiguration\"\n      ]\n    },\n    {\n      \"id\": \"log-management\",\n      \"description\": \"The host must address how logs leave the host and reach an operationally supported logging destination.\",\n      \"rationale\": \"Logging is required for troubleshooting, security response, and evidentiary review.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          },\n          \"example\": \"A relationship object where source is this host and the relationship has the log-management capability, pointing to a modeled central logging Runtime Service, Edge/Gateway Service, or PaaS-delivered service.\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          },\n          \"example\": \"A locally installed Technology Component that implements host log management.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          },\n          \"example\": \"An Operating System Technology Component configuration that redirects logs to a dedicated volume or forwarding path.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"loggingApproach\",\n          \"example\": \"A documented log shipping design for cases where the platform is described indirectly.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-D04B\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"internalComponent\",\n        \"technologyComponentConfiguration\"\n      ]\n    },\n    {\n      \"id\": \"health-welfare-monitoring\",\n      \"description\": \"The host must address health and welfare monitoring for performance, availability, and operational telemetry.\",\n      \"rationale\": \"Hosts must show how operators know whether the platform is healthy and supportable.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          },\n          \"example\": \"Dynatrace, Nagios, or another host monitoring platform.\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          },\n          \"example\": \"A locally installed Technology Component that exports host health telemetry.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          },\n          \"example\": \"A Technology Component configuration that enables local health telemetry or metrics export.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"healthWelfareMonitoringApproach\",\n          \"example\": \"A documented explanation of the host monitoring pattern when the implementation is not captured directly.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-98VD\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"internalComponent\",\n        \"technologyComponentConfiguration\"\n      ]\n    },\n    {\n      \"id\": \"security-monitoring\",\n      \"description\": \"The host must address endpoint security or runtime security monitoring.\",\n      \"rationale\": \"Hosts must show how they are protected and observed by a security control plane.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          },\n          \"example\": \"CrowdStrike Falcon Platform or Wiz Cloud Security.\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          },\n          \"example\": \"An installed Technology Component that provides endpoint or runtime security monitoring.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          },\n          \"example\": \"A Technology Component configuration that enables local security telemetry or runtime protection behavior.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"securityMonitoringApproach\",\n          \"example\": \"A documented statement of the host security monitoring pattern.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-JW52\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"internalComponent\",\n        \"technologyComponentConfiguration\"\n      ]\n    },\n    {\n      \"id\": \"patch-management\",\n      \"description\": \"The host must address how patching is orchestrated and what operational mechanism applies updates.\",\n      \"rationale\": \"Patching is a governance control, not an implementation detail that can be left implicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          },\n          \"example\": \"Automox Patch Management.\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          },\n          \"example\": \"An installed Technology Component that performs or coordinates patch execution.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          },\n          \"example\": \"A Technology Component configuration that defines how the platform is patched without a separate external orchestrator.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"patchManagementApproach\",\n          \"example\": \"A documented patch orchestration model when a platform interaction is not explicitly modeled.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-BH6E\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"internalComponent\",\n        \"technologyComponentConfiguration\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"existing-only\",\n  \"tags\": [\n    \"host\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"appliesToQualifiers\": {\n    \"category\": \"host\"\n  },\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-host.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KSWVZSZ5-B146",
+      "uid": "01KSWVZSZ5-B146",
+      "name": "Network Service Requirement Group",
+      "aliases": [],
+      "type": "requirement_group",
+      "typeLabel": "Requirement Group",
+      "filterType": "requirement_group",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Base requirements for NetworkService objects covering network function declaration, topology definition, and protocol governance. Delivery model requirement groups (Appliance Delivery, SaaS Delivery, Service Behavior) apply on top of these base requirements based on how the network service is operated.\n",
+      "version": "1.0.0",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "preferred",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {
+        "name": "DRAFT Framework",
+        "shortName": "DRAFT",
+        "source": "DRAFT Framework"
+      },
+      "shape": "barrel",
+      "color": "#1f8a5b",
+      "source": "framework/configurations/requirement-groups/requirement-group-network-service.yaml",
+      "tags": [
+        "network",
+        "requirement-group",
+        "definition"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [
+        {
+          "id": "network-function",
+          "description": "The network service must declare what network function it performs.",
+          "rationale": "The network function is the architectural reason this device exists. Without it, the catalog cannot explain what role the device plays in the network architecture.\n",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "networkFunction",
+              "example": "networkFunction: Layer 3 routing between production and management segments"
+            },
+            {
+              "mechanism": "architectureNote",
+              "key": "networkFunction",
+              "example": "Core distribution switch providing VLAN trunking across the data center fabric."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field",
+            "architectureNote"
+          ]
+        },
+        {
+          "id": "network-topology-definition",
+          "description": "The network service must declare what network segments, zones, or routing domains it defines or manages.",
+          "rationale": "Network infrastructure objects that create topology are upstream of SDP network zone declarations. Documenting what zones or segments a device creates grounds the zone vocabulary that SDPs reference.\n",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "networkTopology",
+              "example": "networkTopology: Defines production VLAN (10), management VLAN (20), and storage VLAN (30)"
+            },
+            {
+              "mechanism": "architectureNote",
+              "key": "networkTopology",
+              "example": "Connects the AWS VPC to on-premises data centers via dedicated circuits."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "naRationale": "Acceptable when the network service does not create or define topology \u2014 for example a pure WAN transport device.",
+          "validAnswerTypes": [
+            "field",
+            "architectureNote"
+          ]
+        },
+        {
+          "id": "protocol-governance",
+          "description": "The network service must declare which network protocols it participates in.",
+          "rationale": "Protocol participation is an architectural decision with security and interoperability implications. Undocumented protocol use creates compliance and troubleshooting gaps.\n",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "protocols",
+              "example": "protocols: [BGP, OSPF, VLAN]"
+            },
+            {
+              "mechanism": "architectureNote",
+              "key": "protocols",
+              "example": "Runs BGP for external peering and OSPF internally. VLANs 10-50 are trunked."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field",
+            "architectureNote"
+          ]
+        }
+      ],
+      "implementations": [],
+      "appliesTo": [
+        "network_service"
+      ],
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 3,
+      "hasRiskRef": false,
+      "outboundRefs": [],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "activation",
+          "appliesTo",
+          "requirements"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "owner",
+          "lifecycleStatus",
+          "provider",
+          "authority",
+          "notes",
+          "inherits",
+          "appliesToQualifiers"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "provider": "dict",
+          "authority": "dict",
+          "appliesTo": "list",
+          "requirements": "list",
+          "appliesToQualifiers": "dict"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "activation": [
+            "always",
+            "workspace"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "requirements": "requirement"
+        },
+        "schemaPath": "framework/schemas/requirement-group.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-B146\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Network Service Requirement Group\",\n  \"description\": \"Base requirements for NetworkService objects covering network function declaration, topology definition, and protocol governance. Delivery model requirement groups (Appliance Delivery, SaaS Delivery, Service Behavior) apply on top of these base requirements based on how the network service is operated.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"network_service\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"network-function\",\n      \"description\": \"The network service must declare what network function it performs.\",\n      \"rationale\": \"The network function is the architectural reason this device exists. Without it, the catalog cannot explain what role the device plays in the network architecture.\\n\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"networkFunction\",\n          \"example\": \"networkFunction: Layer 3 routing between production and management segments\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"networkFunction\",\n          \"example\": \"Core distribution switch providing VLAN trunking across the data center fabric.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"architectureNote\"\n      ]\n    },\n    {\n      \"id\": \"network-topology-definition\",\n      \"description\": \"The network service must declare what network segments, zones, or routing domains it defines or manages.\",\n      \"rationale\": \"Network infrastructure objects that create topology are upstream of SDP network zone declarations. Documenting what zones or segments a device creates grounds the zone vocabulary that SDPs reference.\\n\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"networkTopology\",\n          \"example\": \"networkTopology: Defines production VLAN (10), management VLAN (20), and storage VLAN (30)\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"networkTopology\",\n          \"example\": \"Connects the AWS VPC to on-premises data centers via dedicated circuits.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"naRationale\": \"Acceptable when the network service does not create or define topology \\u2014 for example a pure WAN transport device.\",\n      \"validAnswerTypes\": [\n        \"field\",\n        \"architectureNote\"\n      ]\n    },\n    {\n      \"id\": \"protocol-governance\",\n      \"description\": \"The network service must declare which network protocols it participates in.\",\n      \"rationale\": \"Protocol participation is an architectural decision with security and interoperability implications. Undocumented protocol use creates compliance and troubleshooting gaps.\\n\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"protocols\",\n          \"example\": \"protocols: [BGP, OSPF, VLAN]\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"protocols\",\n          \"example\": \"Runs BGP for external peering and OSPF internally. VLANs 10-50 are trunked.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"architectureNote\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"network\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-network-service.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -10760,11 +11377,11 @@ window.DRAFT_BROWSER_DATA = {
       "classification": "",
       "platformDependency": "",
       "capabilities": [
-        "01KQQ4Q026-9K8G",
         "01KQQ4Q026-QM2X",
         "01KQQ4Q026-1HZP",
         "01KQQ4Q026-3ZWJ",
-        "01KQQ4Q026-GW5D"
+        "01KQQ4Q026-GW5D",
+        "01KQQ4Q026-BH6E"
       ],
       "configurations": [],
       "networkPlacement": "",
@@ -10823,53 +11440,33 @@ window.DRAFT_BROWSER_DATA = {
       "hasRiskRef": false,
       "outboundRefs": [
         {
-          "target": "01KQQ4Q026-9K8G",
+          "target": "01KQQ4Q026-QM2X",
           "path": "capabilities[0]"
         },
         {
-          "target": "01KQQ4Q026-QM2X",
+          "target": "01KQQ4Q026-1HZP",
           "path": "capabilities[1]"
         },
         {
-          "target": "01KQQ4Q026-1HZP",
+          "target": "01KQQ4Q026-3ZWJ",
           "path": "capabilities[2]"
         },
         {
-          "target": "01KQQ4Q026-3ZWJ",
+          "target": "01KQQ4Q026-GW5D",
           "path": "capabilities[3]"
         },
         {
-          "target": "01KQQ4Q026-GW5D",
+          "target": "01KQQ4Q026-BH6E",
           "path": "capabilities[4]"
         }
       ],
       "referencedBy": [
         {
-          "source": "01KQQ4Q026-4JR6",
-          "path": "domain"
-        },
-        {
-          "source": "01KQQ4Q026-MHJM",
-          "path": "domain"
-        },
-        {
-          "source": "01KQQ4Q026-7T2H",
-          "path": "domain"
-        },
-        {
           "source": "01KQQ4Q026-1HZP",
           "path": "domain"
         },
         {
-          "source": "01KQQ4Q026-9K8G",
-          "path": "domain"
-        },
-        {
           "source": "01KQQ4Q026-GW5D",
-          "path": "domain"
-        },
-        {
-          "source": "01KQQ4Q026-H3B5",
           "path": "domain"
         },
         {
@@ -10878,10 +11475,6 @@ window.DRAFT_BROWSER_DATA = {
         },
         {
           "source": "01KQQ4Q026-BH6E",
-          "path": "domain"
-        },
-        {
-          "source": "01KQQ4Q026-DTJJ",
           "path": "domain"
         },
         {
@@ -10913,7 +11506,424 @@ window.DRAFT_BROWSER_DATA = {
         "collectionSchemas": {},
         "schemaPath": "framework/schemas/domain.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-ZTHF\",\n  \"type\": \"domain\",\n  \"name\": \"Compute & Runtime\",\n  \"description\": \"Strategic domain covering application runtimes, serverless functions, and physical or virtual compute resources.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-9K8G\",\n    \"01KQQ4Q026-QM2X\",\n    \"01KQQ4Q026-1HZP\",\n    \"01KQQ4Q026-3ZWJ\",\n    \"01KQQ4Q026-GW5D\"\n  ],\n  \"_source\": \"framework/configurations/domains/compute.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-ZTHF\",\n  \"type\": \"domain\",\n  \"name\": \"Compute & Runtime\",\n  \"description\": \"Strategic domain covering application runtimes, serverless functions, and physical or virtual compute resources.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-QM2X\",\n    \"01KQQ4Q026-1HZP\",\n    \"01KQQ4Q026-3ZWJ\",\n    \"01KQQ4Q026-GW5D\",\n    \"01KQQ4Q026-BH6E\"\n  ],\n  \"_source\": \"framework/configurations/domains/compute.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KSWVZSZ5-QHKZ",
+      "uid": "01KSWVZSZ5-QHKZ",
+      "name": "Data",
+      "aliases": [],
+      "type": "domain",
+      "typeLabel": "Strategy Domain",
+      "filterType": "domain",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Strategic domain covering data protection and resilience. Capabilities in this domain are governed by the data and storage team, who owns the HOW decisions for encryption implementation and backup and recovery platforms.\n",
+      "version": "",
+      "catalogStatus": "",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [
+        "01KQQ4Q026-H3B5",
+        "01KQQ4Q026-7T2H"
+      ],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "framework/configurations/domains/data.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KQQ4Q026-H3B5",
+          "path": "capabilities[0]"
+        },
+        {
+          "target": "01KQQ4Q026-7T2H",
+          "path": "capabilities[1]"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KQQ4Q026-7T2H",
+          "path": "domain"
+        },
+        {
+          "source": "01KQQ4Q026-H3B5",
+          "path": "domain"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "capabilities"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {},
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/domain.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-QHKZ\",\n  \"type\": \"domain\",\n  \"name\": \"Data\",\n  \"description\": \"Strategic domain covering data protection and resilience. Capabilities in this domain are governed by the data and storage team, who owns the HOW decisions for encryption implementation and backup and recovery platforms.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-H3B5\",\n    \"01KQQ4Q026-7T2H\"\n  ],\n  \"_source\": \"framework/configurations/domains/data.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KSWVZSZ5-71PY",
+      "uid": "01KSWVZSZ5-71PY",
+      "name": "Identity & Access Management",
+      "aliases": [],
+      "type": "domain",
+      "typeLabel": "Strategy Domain",
+      "filterType": "domain",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Strategic domain covering authentication and authorization. Capabilities in this domain are governed by the IAM team, who owns the HOW decisions for identity provider selection and access control model.\n",
+      "version": "",
+      "catalogStatus": "",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [
+        "01KQQ4Q026-MHJM",
+        "01KQQ4Q026-4JR6"
+      ],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "framework/configurations/domains/identity.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KQQ4Q026-MHJM",
+          "path": "capabilities[0]"
+        },
+        {
+          "target": "01KQQ4Q026-4JR6",
+          "path": "capabilities[1]"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KQQ4Q026-4JR6",
+          "path": "domain"
+        },
+        {
+          "source": "01KQQ4Q026-MHJM",
+          "path": "domain"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "capabilities"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {},
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/domain.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-71PY\",\n  \"type\": \"domain\",\n  \"name\": \"Identity & Access Management\",\n  \"description\": \"Strategic domain covering authentication and authorization. Capabilities in this domain are governed by the IAM team, who owns the HOW decisions for identity provider selection and access control model.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-MHJM\",\n    \"01KQQ4Q026-4JR6\"\n  ],\n  \"_source\": \"framework/configurations/domains/identity.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KSWVZSZ5-4WKE",
+      "uid": "01KSWVZSZ5-4WKE",
+      "name": "Network",
+      "aliases": [],
+      "type": "domain",
+      "typeLabel": "Strategy Domain",
+      "filterType": "domain",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Strategic domain covering network fabric infrastructure, connectivity, and segmentation. Capabilities in this domain are governed by the network team, who owns the HOW decisions for switching, routing, WAN, and traffic management technology.\n",
+      "version": "",
+      "catalogStatus": "",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [
+        "01KSWVZSZ5-Q6HW",
+        "01KSWVZSZ5-1RTH",
+        "01KSWVZSZ5-M0FR",
+        "01KSWVZSZ5-26F1"
+      ],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "framework/configurations/domains/network.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSWVZSZ5-Q6HW",
+          "path": "capabilities[0]"
+        },
+        {
+          "target": "01KSWVZSZ5-1RTH",
+          "path": "capabilities[1]"
+        },
+        {
+          "target": "01KSWVZSZ5-M0FR",
+          "path": "capabilities[2]"
+        },
+        {
+          "target": "01KSWVZSZ5-26F1",
+          "path": "capabilities[3]"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KSWVZSZ5-Q6HW",
+          "path": "domain"
+        },
+        {
+          "source": "01KSWVZSZ5-1RTH",
+          "path": "domain"
+        },
+        {
+          "source": "01KSWVZSZ5-M0FR",
+          "path": "domain"
+        },
+        {
+          "source": "01KSWVZSZ5-26F1",
+          "path": "domain"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "capabilities"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {},
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/domain.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-4WKE\",\n  \"type\": \"domain\",\n  \"name\": \"Network\",\n  \"description\": \"Strategic domain covering network fabric infrastructure, connectivity, and segmentation. Capabilities in this domain are governed by the network team, who owns the HOW decisions for switching, routing, WAN, and traffic management technology.\\n\",\n  \"capabilities\": [\n    \"01KSWVZSZ5-Q6HW\",\n    \"01KSWVZSZ5-1RTH\",\n    \"01KSWVZSZ5-M0FR\",\n    \"01KSWVZSZ5-26F1\"\n  ],\n  \"_source\": \"framework/configurations/domains/network.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -10946,7 +11956,6 @@ window.DRAFT_BROWSER_DATA = {
       "capabilities": [
         "01KQQ4Q026-98VD",
         "01KQQ4Q026-D04B",
-        "01KQQ4Q026-JW52",
         "01KQQ4Q026-NB1W"
       ],
       "configurations": [],
@@ -11014,12 +12023,8 @@ window.DRAFT_BROWSER_DATA = {
           "path": "capabilities[1]"
         },
         {
-          "target": "01KQQ4Q026-JW52",
-          "path": "capabilities[2]"
-        },
-        {
           "target": "01KQQ4Q026-NB1W",
-          "path": "capabilities[3]"
+          "path": "capabilities[2]"
         }
       ],
       "referencedBy": [
@@ -11033,6 +12038,135 @@ window.DRAFT_BROWSER_DATA = {
         },
         {
           "source": "01KQQ4Q026-D04B",
+          "path": "domain"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "capabilities"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {},
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/domain.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-C213\",\n  \"type\": \"domain\",\n  \"name\": \"Observability & Monitoring\",\n  \"description\": \"Strategic domain covering logging, metrics, tracing, and health monitoring across infrastructure and application stacks.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-98VD\",\n    \"01KQQ4Q026-D04B\",\n    \"01KQQ4Q026-NB1W\"\n  ],\n  \"_source\": \"framework/configurations/domains/observability.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KSWVZSZ5-GY67",
+      "uid": "01KSWVZSZ5-GY67",
+      "name": "Security",
+      "aliases": [],
+      "type": "domain",
+      "typeLabel": "Strategy Domain",
+      "filterType": "domain",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Strategic domain covering threat detection, security event monitoring, and secure credential management. Capabilities in this domain are governed by the security team, who owns the HOW decisions for threat response and secrets governance.\n",
+      "version": "",
+      "catalogStatus": "",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [
+        "01KQQ4Q026-JW52",
+        "01KQQ4Q026-DTJJ"
+      ],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "framework/configurations/domains/security.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KQQ4Q026-JW52",
+          "path": "capabilities[0]"
+        },
+        {
+          "target": "01KQQ4Q026-DTJJ",
+          "path": "capabilities[1]"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KQQ4Q026-DTJJ",
           "path": "domain"
         },
         {
@@ -11064,7 +12198,7 @@ window.DRAFT_BROWSER_DATA = {
         "collectionSchemas": {},
         "schemaPath": "framework/schemas/domain.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-C213\",\n  \"type\": \"domain\",\n  \"name\": \"Observability & Monitoring\",\n  \"description\": \"Strategic domain covering logging, metrics, tracing, and health monitoring across infrastructure and application stacks.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-98VD\",\n    \"01KQQ4Q026-D04B\",\n    \"01KQQ4Q026-JW52\",\n    \"01KQQ4Q026-NB1W\"\n  ],\n  \"_source\": \"framework/configurations/domains/observability.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-GY67\",\n  \"type\": \"domain\",\n  \"name\": \"Security\",\n  \"description\": \"Strategic domain covering threat detection, security event monitoring, and secure credential management. Capabilities in this domain are governed by the security team, who owns the HOW decisions for threat response and secrets governance.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-JW52\",\n    \"01KQQ4Q026-DTJJ\"\n  ],\n  \"_source\": \"framework/configurations/domains/security.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -11216,146 +12350,6 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/domain.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-SGHR\",\n  \"type\": \"domain\",\n  \"name\": \"Testing & Quality\",\n  \"description\": \"Strategic domain covering all aspects of software testing, quality assurance, and release gates.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-QC9S\",\n    \"01KQQ4Q026-58Q3\",\n    \"01KQQ4Q026-RTWC\",\n    \"01KQQ4Q026-S5J6\"\n  ],\n  \"_source\": \"framework/configurations/domains/testing.yaml\"\n}",
-      "existsInCatalog": true,
-      "outboundRelationships": [],
-      "inboundRelationships": []
-    },
-    {
-      "id": "01KQQ4Q025-9NNQ",
-      "uid": "01KQQ4Q025-9NNQ",
-      "name": "Example capability.compute implementations",
-      "aliases": [],
-      "type": "object_patch",
-      "typeLabel": "Object Patch",
-      "filterType": "object_patch",
-      "category": "",
-      "deliveryModel": "",
-      "domain": "",
-      "description": "Example workspace-owned capability implementation mapping.",
-      "version": "1.0.0",
-      "catalogStatus": "incomplete",
-      "lifecycleStatus": "existing-only",
-      "status": "",
-      "businessContext": {},
-      "product": "",
-      "runsOn": "",
-      "subtype": "",
-      "vendor": "",
-      "productName": "",
-      "productVersion": "",
-      "classification": "",
-      "platformDependency": "",
-      "capabilities": [],
-      "configurations": [],
-      "networkPlacement": "",
-      "patchingOwner": "",
-      "complianceCerts": [],
-      "requirementGroups": [],
-      "requirementImplementations": [],
-      "dataLeavesInfrastructure": null,
-      "dataResidencyCommitment": "",
-      "dpaNotes": "",
-      "vendorSLA": "",
-      "authenticationModel": "",
-      "incidentNotificationProcess": "",
-      "owner": {},
-      "definitionOwner": {},
-      "provider": {},
-      "authority": {},
-      "shape": "round-rectangle",
-      "color": "#2a6fdb",
-      "source": "examples/configurations/object-patches/patch-compute-implementations.yaml",
-      "tags": [],
-      "ardCategory": "",
-      "internalComponents": [],
-      "architectureNotes": {},
-      "requirements": [],
-      "implementations": [],
-      "appliesTo": {},
-      "inherits": "",
-      "scalingUnits": [],
-      "networkZones": [],
-      "sdpConnections": [],
-      "serviceGroups": [],
-      "tierVariants": [],
-      "tierId": "",
-      "purpose": "",
-      "availabilityExpectation": "",
-      "costPosture": "",
-      "complianceScope": [],
-      "parameterSurface": [],
-      "followsReferenceArchitecture": "",
-      "decisionRecords": [],
-      "affectedComponent": "",
-      "impact": "",
-      "mitigationPath": "",
-      "decisionRationale": "",
-      "relatedDecisionRecords": [],
-      "linkedObject": "",
-      "primaryObjectType": "",
-      "primaryObjectUid": "",
-      "generatedObjects": [],
-      "unresolvedQuestions": [],
-      "assumptions": [],
-      "nextSteps": [],
-      "defaultSelection": false,
-      "requirementCount": 0,
-      "hasRiskRef": false,
-      "outboundRefs": [
-        {
-          "target": "01KQQ4Q026-9K8G",
-          "path": "target"
-        },
-        {
-          "target": "01KQQ4Q025-9N4R",
-          "path": "patch.implementations[0].ref"
-        }
-      ],
-      "referencedBy": [],
-      "editorSchema": {
-        "requiredFields": [
-          "schemaVersion",
-          "uid",
-          "type",
-          "name",
-          "target",
-          "patch",
-          "catalogStatus",
-          "lifecycleStatus"
-        ],
-        "optionalFields": [
-          "aliases",
-          "description",
-          "version",
-          "owner",
-          "tags",
-          "notes"
-        ],
-        "fieldTypes": {
-          "aliases": "list",
-          "owner": "dict",
-          "tags": "list",
-          "patch": "dict"
-        },
-        "enumFields": {
-          "catalogStatus": [
-            "stub",
-            "incomplete",
-            "complete"
-          ],
-          "lifecycleStatus": [
-            "candidate",
-            "preferred",
-            "existing-only",
-            "deprecated",
-            "retired"
-          ]
-        },
-        "enumListFields": {},
-        "collectionSchemas": {},
-        "schemaPath": "framework/schemas/object-patch.schema.yaml"
-      },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q025-9NNQ\",\n  \"type\": \"object_patch\",\n  \"name\": \"Example capability.compute implementations\",\n  \"description\": \"Example workspace-owned capability implementation mapping.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"target\": \"01KQQ4Q026-9K8G\",\n  \"patch\": {\n    \"owner\": {\n      \"team\": \"example-architecture\",\n      \"contact\": \"architecture@example.com\"\n    },\n    \"implementations\": [\n      {\n        \"ref\": \"01KQQ4Q025-9N4R\",\n        \"lifecycleStatus\": \"existing-only\",\n        \"notes\": \"Example general-purpose compute implementation.\"\n      }\n    ]\n  },\n  \"_source\": \"examples/configurations/object-patches/patch-compute-implementations.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -12180,14 +13174,6 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KQQ4Q026-1HZP",
           "path": "implementations[0].ref"
-        },
-        {
-          "source": "01KQQ4Q026-9K8G",
-          "path": "implementations[0].ref"
-        },
-        {
-          "source": "01KQQ4Q025-9NNQ",
-          "path": "patch.implementations[0].ref"
         },
         {
           "source": "01KQQ4Q025-X682",
@@ -16123,12 +17109,7 @@ window.DRAFT_BROWSER_DATA = {
       "defaultSelection": false,
       "requirementCount": 0,
       "hasRiskRef": false,
-      "outboundRefs": [
-        {
-          "target": "01KQQ4Q026-9K8G",
-          "path": "capabilities[0]"
-        }
-      ],
+      "outboundRefs": [],
       "referencedBy": [
         {
           "source": "01KQQ4Q025-1XDE",
@@ -32670,7 +33651,7 @@ window.DRAFT_BROWSER_DATA = {
       "filterType": "capability",
       "category": "",
       "deliveryModel": "",
-      "domain": "01KQQ4Q027-ZTHF",
+      "domain": "01KSWVZSZ5-71PY",
       "description": "Authorization model that controls access to a service or data platform.",
       "version": "1.0.0",
       "catalogStatus": "complete",
@@ -32747,7 +33728,7 @@ window.DRAFT_BROWSER_DATA = {
       "hasRiskRef": false,
       "outboundRefs": [
         {
-          "target": "01KQQ4Q027-ZTHF",
+          "target": "01KSWVZSZ5-71PY",
           "path": "domain"
         }
       ],
@@ -32779,6 +33760,10 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KQQ4Q027-1GHC",
           "path": "requirements[5].relatedCapability"
+        },
+        {
+          "source": "01KSWVZSZ5-71PY",
+          "path": "capabilities[1]"
         }
       ],
       "editorSchema": {
@@ -32819,7 +33804,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/capability.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-4JR6\",\n  \"type\": \"capability\",\n  \"name\": \"Access Control Model\",\n  \"description\": \"Authorization model that controls access to a service or data platform.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-ZTHF\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-access-control-model.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-4JR6\",\n  \"type\": \"capability\",\n  \"name\": \"Access Control Model\",\n  \"description\": \"Authorization model that controls access to a service or data platform.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-71PY\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-access-control-model.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -32922,7 +33907,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         {
           "source": "01KQQ4Q027-C213",
-          "path": "capabilities[3]"
+          "path": "capabilities[2]"
         }
       ],
       "editorSchema": {
@@ -32978,7 +33963,7 @@ window.DRAFT_BROWSER_DATA = {
       "filterType": "capability",
       "category": "",
       "deliveryModel": "",
-      "domain": "01KQQ4Q027-ZTHF",
+      "domain": "01KSWVZSZ5-71PY",
       "description": "Identity and access authentication capability for users, services, administrators, or workloads.",
       "version": "1.0.0",
       "catalogStatus": "complete",
@@ -33055,7 +34040,7 @@ window.DRAFT_BROWSER_DATA = {
       "hasRiskRef": false,
       "outboundRefs": [
         {
-          "target": "01KQQ4Q027-ZTHF",
+          "target": "01KSWVZSZ5-71PY",
           "path": "domain"
         }
       ],
@@ -33083,6 +34068,10 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KQQ4Q027-THYN",
           "path": "requirements[2].relatedCapability"
+        },
+        {
+          "source": "01KSWVZSZ5-71PY",
+          "path": "capabilities[0]"
         }
       ],
       "editorSchema": {
@@ -33123,167 +34112,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/capability.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-MHJM\",\n  \"type\": \"capability\",\n  \"name\": \"Authentication\",\n  \"description\": \"Identity and access authentication capability for users, services, administrators, or workloads.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-ZTHF\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-authentication.yaml\"\n}",
-      "existsInCatalog": true,
-      "outboundRelationships": [],
-      "inboundRelationships": []
-    },
-    "01KQQ4Q026-7T2H": {
-      "id": "01KQQ4Q026-7T2H",
-      "uid": "01KQQ4Q026-7T2H",
-      "name": "Backup Strategy",
-      "aliases": [],
-      "type": "capability",
-      "typeLabel": "Capability",
-      "filterType": "capability",
-      "category": "",
-      "deliveryModel": "",
-      "domain": "01KQQ4Q027-ZTHF",
-      "description": "Backup, restore, and recovery point capability for durable data stores.",
-      "version": "1.0.0",
-      "catalogStatus": "complete",
-      "lifecycleStatus": "unknown",
-      "status": "",
-      "businessContext": {},
-      "product": "",
-      "runsOn": "",
-      "subtype": "",
-      "vendor": "",
-      "productName": "",
-      "productVersion": "",
-      "classification": "",
-      "platformDependency": "",
-      "capabilities": [],
-      "configurations": [],
-      "networkPlacement": "",
-      "patchingOwner": "",
-      "complianceCerts": [],
-      "requirementGroups": [],
-      "requirementImplementations": [],
-      "dataLeavesInfrastructure": null,
-      "dataResidencyCommitment": "",
-      "dpaNotes": "",
-      "vendorSLA": "",
-      "authenticationModel": "",
-      "incidentNotificationProcess": "",
-      "owner": {},
-      "definitionOwner": {
-        "provider": "draft-framework",
-        "team": "cloud-architecture",
-        "contact": "cloud-architecture@example.com"
-      },
-      "provider": {},
-      "authority": {},
-      "shape": "ellipse",
-      "color": "#7a6e60",
-      "source": "framework/configurations/capabilities/capability-backup-strategy.yaml",
-      "tags": [],
-      "ardCategory": "",
-      "internalComponents": [],
-      "architectureNotes": {},
-      "requirements": [],
-      "implementations": [],
-      "appliesTo": {},
-      "inherits": "",
-      "scalingUnits": [],
-      "networkZones": [],
-      "sdpConnections": [],
-      "serviceGroups": [],
-      "tierVariants": [],
-      "tierId": "",
-      "purpose": "",
-      "availabilityExpectation": "",
-      "costPosture": "",
-      "complianceScope": [],
-      "parameterSurface": [],
-      "followsReferenceArchitecture": "",
-      "decisionRecords": [],
-      "affectedComponent": "",
-      "impact": "",
-      "mitigationPath": "",
-      "decisionRationale": "",
-      "relatedDecisionRecords": [],
-      "linkedObject": "",
-      "primaryObjectType": "",
-      "primaryObjectUid": "",
-      "generatedObjects": [],
-      "unresolvedQuestions": [],
-      "assumptions": [],
-      "nextSteps": [],
-      "defaultSelection": false,
-      "requirementCount": 0,
-      "hasRiskRef": false,
-      "outboundRefs": [
-        {
-          "target": "01KQQ4Q027-ZTHF",
-          "path": "domain"
-        }
-      ],
-      "referencedBy": [
-        {
-          "source": "01KQQ4Q027-VBF0",
-          "path": "requirements[0].relatedCapability"
-        },
-        {
-          "source": "01KQQ4Q027-VBF0",
-          "path": "requirements[1].relatedCapability"
-        },
-        {
-          "source": "01KQQ4Q027-69VY",
-          "path": "requirements[7].relatedCapability"
-        },
-        {
-          "source": "01KQQ4Q027-T3CA",
-          "path": "requirements[12].relatedCapability"
-        },
-        {
-          "source": "01KQQ4Q027-7JN2",
-          "path": "requirements[6].relatedCapability"
-        },
-        {
-          "source": "01KQQ4Q027-1GHC",
-          "path": "requirements[6].relatedCapability"
-        }
-      ],
-      "editorSchema": {
-        "requiredFields": [
-          "schemaVersion",
-          "uid",
-          "type",
-          "name",
-          "description",
-          "catalogStatus",
-          "definitionOwner",
-          "domain",
-          "implementations"
-        ],
-        "optionalFields": [
-          "aliases",
-          "version",
-          "tags",
-          "owner"
-        ],
-        "fieldTypes": {
-          "aliases": "list",
-          "definitionOwner": "dict",
-          "owner": "dict",
-          "tags": "list",
-          "implementations": "list"
-        },
-        "enumFields": {
-          "catalogStatus": [
-            "stub",
-            "incomplete",
-            "complete"
-          ]
-        },
-        "enumListFields": {},
-        "collectionSchemas": {
-          "implementations": "implementation"
-        },
-        "schemaPath": "framework/schemas/capability.schema.yaml"
-      },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-7T2H\",\n  \"type\": \"capability\",\n  \"name\": \"Backup Strategy\",\n  \"description\": \"Backup, restore, and recovery point capability for durable data stores.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-ZTHF\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-backup-strategy.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-MHJM\",\n  \"type\": \"capability\",\n  \"name\": \"Authentication\",\n  \"description\": \"Identity and access authentication capability for users, services, administrators, or workloads.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-71PY\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-authentication.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -33394,12 +34223,16 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "referencedBy": [
         {
+          "source": "01KSF4NHSP-HCPX",
+          "path": "requirements[0].relatedCapability"
+        },
+        {
           "source": "01KQQ4Q027-THYN",
           "path": "requirements[1].relatedCapability"
         },
         {
           "source": "01KQQ4Q027-ZTHF",
-          "path": "capabilities[2]"
+          "path": "capabilities[1]"
         },
         {
           "source": "01KQQ4Q025-X682",
@@ -33445,171 +34278,6 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/capability.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-1HZP\",\n  \"type\": \"capability\",\n  \"name\": \"Compute Platform\",\n  \"description\": \"Compute substrate or virtualized platform used to run Hosts.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-ZTHF\",\n  \"implementations\": [\n    {\n      \"ref\": \"01KQQ4Q025-9N4R\",\n      \"lifecycleStatus\": \"existing-only\",\n      \"notes\": \"Example workspace maps EC2 to the compute platform capability.\"\n    }\n  ],\n  \"_source\": \"framework/configurations/capabilities/capability-compute-platform.yaml\",\n  \"owner\": {\n    \"team\": \"example-architecture\",\n    \"contact\": \"architecture@example.com\"\n  }\n}",
-      "existsInCatalog": true,
-      "outboundRelationships": [],
-      "inboundRelationships": []
-    },
-    "01KQQ4Q026-9K8G": {
-      "id": "01KQQ4Q026-9K8G",
-      "uid": "01KQQ4Q026-9K8G",
-      "name": "General Purpose Compute",
-      "aliases": [],
-      "type": "capability",
-      "typeLabel": "Capability",
-      "filterType": "capability",
-      "category": "",
-      "deliveryModel": "",
-      "domain": "01KQQ4Q027-ZTHF",
-      "description": "Provisioning and execution of arbitrary code on reusable compute substrates.",
-      "version": "1.0.0",
-      "catalogStatus": "incomplete",
-      "lifecycleStatus": "unknown",
-      "status": "",
-      "businessContext": {},
-      "product": "",
-      "runsOn": "",
-      "subtype": "",
-      "vendor": "",
-      "productName": "",
-      "productVersion": "",
-      "classification": "",
-      "platformDependency": "",
-      "capabilities": [],
-      "configurations": [],
-      "networkPlacement": "",
-      "patchingOwner": "",
-      "complianceCerts": [],
-      "requirementGroups": [],
-      "requirementImplementations": [],
-      "dataLeavesInfrastructure": null,
-      "dataResidencyCommitment": "",
-      "dpaNotes": "",
-      "vendorSLA": "",
-      "authenticationModel": "",
-      "incidentNotificationProcess": "",
-      "owner": {
-        "team": "example-architecture",
-        "contact": "architecture@example.com"
-      },
-      "definitionOwner": {
-        "provider": "draft-framework",
-        "team": "cloud-architecture",
-        "contact": "cloud-architecture@example.com"
-      },
-      "provider": {},
-      "authority": {},
-      "shape": "ellipse",
-      "color": "#7a6e60",
-      "source": "framework/configurations/capabilities/capability-compute.yaml",
-      "tags": [],
-      "ardCategory": "",
-      "internalComponents": [],
-      "architectureNotes": {},
-      "requirements": [],
-      "implementations": [
-        {
-          "ref": "01KQQ4Q025-9N4R",
-          "lifecycleStatus": "existing-only",
-          "notes": "Example general-purpose compute implementation."
-        }
-      ],
-      "appliesTo": {},
-      "inherits": "",
-      "scalingUnits": [],
-      "networkZones": [],
-      "sdpConnections": [],
-      "serviceGroups": [],
-      "tierVariants": [],
-      "tierId": "",
-      "purpose": "",
-      "availabilityExpectation": "",
-      "costPosture": "",
-      "complianceScope": [],
-      "parameterSurface": [],
-      "followsReferenceArchitecture": "",
-      "decisionRecords": [],
-      "affectedComponent": "",
-      "impact": "",
-      "mitigationPath": "",
-      "decisionRationale": "",
-      "relatedDecisionRecords": [],
-      "linkedObject": "",
-      "primaryObjectType": "",
-      "primaryObjectUid": "",
-      "generatedObjects": [],
-      "unresolvedQuestions": [],
-      "assumptions": [],
-      "nextSteps": [],
-      "defaultSelection": false,
-      "requirementCount": 0,
-      "hasRiskRef": false,
-      "outboundRefs": [
-        {
-          "target": "01KQQ4Q027-ZTHF",
-          "path": "domain"
-        },
-        {
-          "target": "01KQQ4Q025-9N4R",
-          "path": "implementations[0].ref"
-        }
-      ],
-      "referencedBy": [
-        {
-          "source": "01KSF4NHSP-HCPX",
-          "path": "requirements[0].relatedCapability"
-        },
-        {
-          "source": "01KQQ4Q027-ZTHF",
-          "path": "capabilities[0]"
-        },
-        {
-          "source": "01KQQ4Q025-9NNQ",
-          "path": "target"
-        },
-        {
-          "source": "01KQQ4Q025-T7B7",
-          "path": "capabilities[0]"
-        }
-      ],
-      "editorSchema": {
-        "requiredFields": [
-          "schemaVersion",
-          "uid",
-          "type",
-          "name",
-          "description",
-          "catalogStatus",
-          "definitionOwner",
-          "domain",
-          "implementations"
-        ],
-        "optionalFields": [
-          "aliases",
-          "version",
-          "tags",
-          "owner"
-        ],
-        "fieldTypes": {
-          "aliases": "list",
-          "definitionOwner": "dict",
-          "owner": "dict",
-          "tags": "list",
-          "implementations": "list"
-        },
-        "enumFields": {
-          "catalogStatus": [
-            "stub",
-            "incomplete",
-            "complete"
-          ]
-        },
-        "enumListFields": {},
-        "collectionSchemas": {
-          "implementations": "implementation"
-        },
-        "schemaPath": "framework/schemas/capability.schema.yaml"
-      },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-9K8G\",\n  \"type\": \"capability\",\n  \"name\": \"General Purpose Compute\",\n  \"description\": \"Provisioning and execution of arbitrary code on reusable compute substrates.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-ZTHF\",\n  \"implementations\": [\n    {\n      \"ref\": \"01KQQ4Q025-9N4R\",\n      \"lifecycleStatus\": \"existing-only\",\n      \"notes\": \"Example general-purpose compute implementation.\"\n    }\n  ],\n  \"_source\": \"framework/configurations/capabilities/capability-compute.yaml\",\n  \"owner\": {\n    \"team\": \"example-architecture\",\n    \"contact\": \"architecture@example.com\"\n  }\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -33712,7 +34380,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         {
           "source": "01KQQ4Q027-ZTHF",
-          "path": "capabilities[4]"
+          "path": "capabilities[3]"
         }
       ],
       "editorSchema": {
@@ -33758,6 +34426,170 @@ window.DRAFT_BROWSER_DATA = {
       "outboundRelationships": [],
       "inboundRelationships": []
     },
+    "01KQQ4Q026-7T2H": {
+      "id": "01KQQ4Q026-7T2H",
+      "uid": "01KQQ4Q026-7T2H",
+      "name": "Data Resilience",
+      "aliases": [],
+      "type": "capability",
+      "typeLabel": "Capability",
+      "filterType": "capability",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "01KSWVZSZ5-QHKZ",
+      "description": "Resilience of data against loss or corruption through backup, restore, replication, and recovery capabilities.",
+      "version": "1.0.0",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {
+        "provider": "draft-framework",
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "provider": {},
+      "authority": {},
+      "shape": "ellipse",
+      "color": "#7a6e60",
+      "source": "framework/configurations/capabilities/capability-data-resilience.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSWVZSZ5-QHKZ",
+          "path": "domain"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KQQ4Q027-VBF0",
+          "path": "requirements[0].relatedCapability"
+        },
+        {
+          "source": "01KQQ4Q027-VBF0",
+          "path": "requirements[1].relatedCapability"
+        },
+        {
+          "source": "01KQQ4Q027-69VY",
+          "path": "requirements[7].relatedCapability"
+        },
+        {
+          "source": "01KQQ4Q027-T3CA",
+          "path": "requirements[12].relatedCapability"
+        },
+        {
+          "source": "01KQQ4Q027-7JN2",
+          "path": "requirements[6].relatedCapability"
+        },
+        {
+          "source": "01KQQ4Q027-1GHC",
+          "path": "requirements[6].relatedCapability"
+        },
+        {
+          "source": "01KSWVZSZ5-QHKZ",
+          "path": "capabilities[1]"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "definitionOwner",
+          "domain",
+          "implementations"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "owner"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "definitionOwner": "dict",
+          "owner": "dict",
+          "tags": "list",
+          "implementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "implementations": "implementation"
+        },
+        "schemaPath": "framework/schemas/capability.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-7T2H\",\n  \"type\": \"capability\",\n  \"name\": \"Data Resilience\",\n  \"description\": \"Resilience of data against loss or corruption through backup, restore, replication, and recovery capabilities.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-QHKZ\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-data-resilience.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
     "01KQQ4Q026-H3B5": {
       "id": "01KQQ4Q026-H3B5",
       "uid": "01KQQ4Q026-H3B5",
@@ -33768,7 +34600,7 @@ window.DRAFT_BROWSER_DATA = {
       "filterType": "capability",
       "category": "",
       "deliveryModel": "",
-      "domain": "01KQQ4Q027-ZTHF",
+      "domain": "01KSWVZSZ5-QHKZ",
       "description": "Protection of persisted data through encryption or equivalent storage safeguards.",
       "version": "1.0.0",
       "catalogStatus": "complete",
@@ -33845,7 +34677,7 @@ window.DRAFT_BROWSER_DATA = {
       "hasRiskRef": false,
       "outboundRefs": [
         {
-          "target": "01KQQ4Q027-ZTHF",
+          "target": "01KSWVZSZ5-QHKZ",
           "path": "domain"
         }
       ],
@@ -33865,6 +34697,10 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KQQ4Q027-1GHC",
           "path": "requirements[4].relatedCapability"
+        },
+        {
+          "source": "01KSWVZSZ5-QHKZ",
+          "path": "capabilities[0]"
         }
       ],
       "editorSchema": {
@@ -33905,7 +34741,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/capability.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-H3B5\",\n  \"type\": \"capability\",\n  \"name\": \"Encryption At Rest\",\n  \"description\": \"Protection of persisted data through encryption or equivalent storage safeguards.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-ZTHF\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-encryption-at-rest.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-H3B5\",\n  \"type\": \"capability\",\n  \"name\": \"Encryption At Rest\",\n  \"description\": \"Protection of persisted data through encryption or equivalent storage safeguards.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-QHKZ\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-encryption-at-rest.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -34256,6 +35092,286 @@ window.DRAFT_BROWSER_DATA = {
       "outboundRelationships": [],
       "inboundRelationships": []
     },
+    "01KSWVZSZ5-Q6HW": {
+      "id": "01KSWVZSZ5-Q6HW",
+      "uid": "01KSWVZSZ5-Q6HW",
+      "name": "Network Connectivity",
+      "aliases": [],
+      "type": "capability",
+      "typeLabel": "Capability",
+      "filterType": "capability",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "01KSWVZSZ5-4WKE",
+      "description": "Hosts and services can reach each other across the network fabric through approved switching and routing infrastructure.",
+      "version": "1.0.0",
+      "catalogStatus": "incomplete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {
+        "provider": "draft-framework",
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "provider": {},
+      "authority": {},
+      "shape": "ellipse",
+      "color": "#7a6e60",
+      "source": "framework/configurations/capabilities/capability-network-connectivity.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSWVZSZ5-4WKE",
+          "path": "domain"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KSWVZSZ5-4WKE",
+          "path": "capabilities[0]"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "definitionOwner",
+          "domain",
+          "implementations"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "owner"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "definitionOwner": "dict",
+          "owner": "dict",
+          "tags": "list",
+          "implementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "implementations": "implementation"
+        },
+        "schemaPath": "framework/schemas/capability.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-Q6HW\",\n  \"type\": \"capability\",\n  \"name\": \"Network Connectivity\",\n  \"description\": \"Hosts and services can reach each other across the network fabric through approved switching and routing infrastructure.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-4WKE\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-network-connectivity.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KSWVZSZ5-1RTH": {
+      "id": "01KSWVZSZ5-1RTH",
+      "uid": "01KSWVZSZ5-1RTH",
+      "name": "Network Segmentation",
+      "aliases": [],
+      "type": "capability",
+      "typeLabel": "Capability",
+      "filterType": "capability",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "01KSWVZSZ5-4WKE",
+      "description": "Traffic between network zones is isolated and controlled by policy through VLANs, micro-segmentation, or software-defined networking.",
+      "version": "1.0.0",
+      "catalogStatus": "incomplete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {
+        "provider": "draft-framework",
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "provider": {},
+      "authority": {},
+      "shape": "ellipse",
+      "color": "#7a6e60",
+      "source": "framework/configurations/capabilities/capability-network-segmentation.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSWVZSZ5-4WKE",
+          "path": "domain"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KSWVZSZ5-4WKE",
+          "path": "capabilities[1]"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "definitionOwner",
+          "domain",
+          "implementations"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "owner"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "definitionOwner": "dict",
+          "owner": "dict",
+          "tags": "list",
+          "implementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "implementations": "implementation"
+        },
+        "schemaPath": "framework/schemas/capability.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-1RTH\",\n  \"type\": \"capability\",\n  \"name\": \"Network Segmentation\",\n  \"description\": \"Traffic between network zones is isolated and controlled by policy through VLANs, micro-segmentation, or software-defined networking.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-4WKE\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-network-segmentation.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
     "01KQQ4Q026-QM2X": {
       "id": "01KQQ4Q026-QM2X",
       "uid": "01KQQ4Q026-QM2X",
@@ -34367,7 +35483,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         {
           "source": "01KQQ4Q027-ZTHF",
-          "path": "capabilities[1]"
+          "path": "capabilities[0]"
         },
         {
           "source": "01KQQ4Q026-4AYD",
@@ -34532,6 +35648,10 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KQQ4Q027-THYN",
           "path": "requirements[6].relatedCapability"
+        },
+        {
+          "source": "01KQQ4Q027-ZTHF",
+          "path": "capabilities[4]"
         }
       ],
       "editorSchema": {
@@ -34875,7 +35995,7 @@ window.DRAFT_BROWSER_DATA = {
       "filterType": "capability",
       "category": "",
       "deliveryModel": "",
-      "domain": "01KQQ4Q027-ZTHF",
+      "domain": "01KSWVZSZ5-GY67",
       "description": "Secure storage, rotation, and access mediation for secrets and authenticators.",
       "version": "1.0.0",
       "catalogStatus": "complete",
@@ -34952,7 +36072,7 @@ window.DRAFT_BROWSER_DATA = {
       "hasRiskRef": false,
       "outboundRefs": [
         {
-          "target": "01KQQ4Q027-ZTHF",
+          "target": "01KSWVZSZ5-GY67",
           "path": "domain"
         }
       ],
@@ -34976,6 +36096,10 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KQQ4Q027-K5DR",
           "path": "requirements[3].relatedCapability"
+        },
+        {
+          "source": "01KSWVZSZ5-GY67",
+          "path": "capabilities[1]"
         }
       ],
       "editorSchema": {
@@ -35016,7 +36140,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/capability.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-DTJJ\",\n  \"type\": \"capability\",\n  \"name\": \"Secrets Management\",\n  \"description\": \"Secure storage, rotation, and access mediation for secrets and authenticators.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-ZTHF\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-secrets-management.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-DTJJ\",\n  \"type\": \"capability\",\n  \"name\": \"Secrets Management\",\n  \"description\": \"Secure storage, rotation, and access mediation for secrets and authenticators.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-GY67\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-secrets-management.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -35031,7 +36155,7 @@ window.DRAFT_BROWSER_DATA = {
       "filterType": "capability",
       "category": "",
       "deliveryModel": "",
-      "domain": "01KQQ4Q027-C213",
+      "domain": "01KSWVZSZ5-GY67",
       "description": "Threat detection, intrusion detection, security event monitoring, and audit telemetry.",
       "version": "1.0.0",
       "catalogStatus": "complete",
@@ -35117,7 +36241,7 @@ window.DRAFT_BROWSER_DATA = {
       "hasRiskRef": false,
       "outboundRefs": [
         {
-          "target": "01KQQ4Q027-C213",
+          "target": "01KSWVZSZ5-GY67",
           "path": "domain"
         },
         {
@@ -35147,8 +36271,8 @@ window.DRAFT_BROWSER_DATA = {
           "path": "requirements[5].relatedCapability"
         },
         {
-          "source": "01KQQ4Q027-C213",
-          "path": "capabilities[2]"
+          "source": "01KSWVZSZ5-GY67",
+          "path": "capabilities[0]"
         },
         {
           "source": "01KQQ4Q026-BQ87",
@@ -35197,7 +36321,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/capability.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-JW52\",\n  \"type\": \"capability\",\n  \"name\": \"Security Monitoring\",\n  \"description\": \"Threat detection, intrusion detection, security event monitoring, and audit telemetry.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KQQ4Q027-C213\",\n  \"implementations\": [\n    {\n      \"ref\": \"01KQQ4Q025-MQ3F\",\n      \"lifecycleStatus\": \"existing-only\",\n      \"notes\": \"Example endpoint security monitoring agent.\"\n    }\n  ],\n  \"_source\": \"framework/configurations/capabilities/capability-security-monitoring.yaml\",\n  \"owner\": {\n    \"team\": \"example-architecture\",\n    \"contact\": \"architecture@example.com\"\n  }\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q026-JW52\",\n  \"type\": \"capability\",\n  \"name\": \"Security Monitoring\",\n  \"description\": \"Threat detection, intrusion detection, security event monitoring, and audit telemetry.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-GY67\",\n  \"implementations\": [\n    {\n      \"ref\": \"01KQQ4Q025-MQ3F\",\n      \"lifecycleStatus\": \"existing-only\",\n      \"notes\": \"Example endpoint security monitoring agent.\"\n    }\n  ],\n  \"_source\": \"framework/configurations/capabilities/capability-security-monitoring.yaml\",\n  \"owner\": {\n    \"team\": \"example-architecture\",\n    \"contact\": \"architecture@example.com\"\n  }\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -35300,7 +36424,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         {
           "source": "01KQQ4Q027-ZTHF",
-          "path": "capabilities[3]"
+          "path": "capabilities[2]"
         }
       ],
       "editorSchema": {
@@ -35634,6 +36758,286 @@ window.DRAFT_BROWSER_DATA = {
       "outboundRelationships": [],
       "inboundRelationships": []
     },
+    "01KSWVZSZ5-M0FR": {
+      "id": "01KSWVZSZ5-M0FR",
+      "uid": "01KSWVZSZ5-M0FR",
+      "name": "Traffic Management",
+      "aliases": [],
+      "type": "capability",
+      "typeLabel": "Capability",
+      "filterType": "capability",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "01KSWVZSZ5-4WKE",
+      "description": "Application and network traffic is distributed, shaped, and controlled across services and infrastructure through approved load balancing and traffic management technology.",
+      "version": "1.0.0",
+      "catalogStatus": "incomplete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {
+        "provider": "draft-framework",
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "provider": {},
+      "authority": {},
+      "shape": "ellipse",
+      "color": "#7a6e60",
+      "source": "framework/configurations/capabilities/capability-traffic-management.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSWVZSZ5-4WKE",
+          "path": "domain"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KSWVZSZ5-4WKE",
+          "path": "capabilities[2]"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "definitionOwner",
+          "domain",
+          "implementations"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "owner"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "definitionOwner": "dict",
+          "owner": "dict",
+          "tags": "list",
+          "implementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "implementations": "implementation"
+        },
+        "schemaPath": "framework/schemas/capability.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-M0FR\",\n  \"type\": \"capability\",\n  \"name\": \"Traffic Management\",\n  \"description\": \"Application and network traffic is distributed, shaped, and controlled across services and infrastructure through approved load balancing and traffic management technology.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-4WKE\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-traffic-management.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KSWVZSZ5-26F1": {
+      "id": "01KSWVZSZ5-26F1",
+      "uid": "01KSWVZSZ5-26F1",
+      "name": "WAN Connectivity",
+      "aliases": [],
+      "type": "capability",
+      "typeLabel": "Capability",
+      "filterType": "capability",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "01KSWVZSZ5-4WKE",
+      "description": "Sites, data centers, and cloud environments are interconnected reliably through approved wide area network technology.",
+      "version": "1.0.0",
+      "catalogStatus": "incomplete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {
+        "provider": "draft-framework",
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "provider": {},
+      "authority": {},
+      "shape": "ellipse",
+      "color": "#7a6e60",
+      "source": "framework/configurations/capabilities/capability-wan-connectivity.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSWVZSZ5-4WKE",
+          "path": "domain"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KSWVZSZ5-4WKE",
+          "path": "capabilities[3]"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "definitionOwner",
+          "domain",
+          "implementations"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "owner"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "definitionOwner": "dict",
+          "owner": "dict",
+          "tags": "list",
+          "implementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "implementations": "implementation"
+        },
+        "schemaPath": "framework/schemas/capability.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-26F1\",\n  \"type\": \"capability\",\n  \"name\": \"WAN Connectivity\",\n  \"description\": \"Sites, data centers, and cloud environments are interconnected reliably through approved wide area network technology.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"definitionOwner\": {\n    \"provider\": \"draft-framework\",\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"domain\": \"01KSWVZSZ5-4WKE\",\n  \"implementations\": [],\n  \"_source\": \"framework/configurations/capabilities/capability-wan-connectivity.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
     "01KQQ4Q027-DSDD": {
       "id": "01KQQ4Q027-DSDD",
       "uid": "01KQQ4Q027-DSDD",
@@ -35871,42 +37275,6 @@ window.DRAFT_BROWSER_DATA = {
           "minimumSatisfactions": 1
         },
         {
-          "id": "network-placement",
-          "description": "Where does this appliance sit in the network topology?",
-          "rationale": "Placement defines exposure and traffic path.",
-          "canBeSatisfiedBy": [
-            {
-              "mechanism": "field",
-              "key": "networkPlacement",
-              "example": "networkPlacement: public-facing"
-            }
-          ],
-          "requirementMode": "mandatory",
-          "naAllowed": false,
-          "validAnswerTypes": [
-            "field"
-          ],
-          "minimumSatisfactions": 1
-        },
-        {
-          "id": "patching-ownership",
-          "description": "Who is responsible for firmware and software updates?",
-          "rationale": "A blackbox component still needs clear update ownership.",
-          "canBeSatisfiedBy": [
-            {
-              "mechanism": "field",
-              "key": "patchingOwner",
-              "example": "patchingOwner: aws-managed"
-            }
-          ],
-          "requirementMode": "mandatory",
-          "naAllowed": false,
-          "validAnswerTypes": [
-            "field"
-          ],
-          "minimumSatisfactions": 1
-        },
-        {
           "id": "configurable-surface",
           "description": "What configuration surface does the organization control on this appliance?\n",
           "rationale": "The object should capture what the adopter can actually configure rather than pretending the hidden host is visible.",
@@ -35995,7 +37363,7 @@ window.DRAFT_BROWSER_DATA = {
       "assumptions": [],
       "nextSteps": [],
       "defaultSelection": false,
-      "requirementCount": 11,
+      "requirementCount": 9,
       "hasRiskRef": false,
       "outboundRefs": [],
       "referencedBy": [],
@@ -36057,7 +37425,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/requirement-group.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-DSDD\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Appliance Delivery Requirement Group\",\n  \"description\": \"Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service uses appliance delivery and the underlying host is blackbox to the adopter.\",\n  \"version\": \"1.1.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"runtime_service\",\n    \"data_store_service\",\n    \"edge_gateway_service\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"function\",\n      \"description\": \"What capabilities does this appliance provide?\",\n      \"rationale\": \"The capabilities are the reason the appliance exists in the architecture.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"capabilities\",\n          \"example\": \"capabilities: [load-balancing]\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"authentication-access-model\",\n      \"description\": \"How is administrative, user, or service access to the appliance authenticated?\",\n      \"rationale\": \"A blackbox appliance still needs an explicit access-control answer because it provides a deployed capability without inheriting the host or service Requirement Group baseline.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"The appliance authenticates administrators through an enterprise identity platform.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"A named appliance configuration defines the authentication model.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"authenticationAccessModel\",\n          \"example\": \"Administrator access is federated through SAML SSO; service access uses appliance-managed mTLS.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"log-audit-visibility\",\n      \"description\": \"What operational logs, audit records, or events are visible to the adopter, and where do they go?\",\n      \"rationale\": \"A blackbox appliance must state the log or audit visibility the adopter can rely on because hidden host logs are not modeled.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          },\n          \"example\": \"A relationship object where source is this appliance and the relationship has the log-management capability, pointing to a modeled central logging service or SIEM platform.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          },\n          \"example\": \"A named appliance configuration enables audit export or log forwarding.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"logAuditVisibility\",\n          \"example\": \"Administrative actions are exported to CloudTrail and retained in the enterprise SIEM.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"health-status-visibility\",\n      \"description\": \"How does the adopter observe appliance health, status, incidents, or operational telemetry?\",\n      \"rationale\": \"The appliance provides a service-like capability, so consumers need to know how health and status are observed even though the internal host is hidden.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          },\n          \"example\": \"The appliance publishes health metrics to the enterprise monitoring platform.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          },\n          \"example\": \"A named appliance configuration enables health checks, status endpoints, or metrics export.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"healthStatusVisibility\",\n          \"example\": \"Health is observed through managed service status, target health checks, and alert rules.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"patch-update-model\",\n      \"description\": \"Who or what is responsible for appliance firmware, software, and hidden host updates, and what mechanism applies them?\",\n      \"rationale\": \"The hidden host prevents normal host patch-management modeling, so the appliance must document the update responsibility and mechanism directly.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"patchingOwner\",\n          \"example\": \"patchingOwner: vendor-managed\"\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          },\n          \"example\": \"Updates are orchestrated through a vendor or cloud-provider patch service.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          },\n          \"example\": \"A named appliance configuration defines update windows or managed update policy.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"patchUpdateModel\",\n          \"example\": \"Firmware and hidden host updates are vendor-managed; the adopter controls only maintenance windows.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"field\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"resilience-model\",\n      \"description\": \"What is the resilience model of this appliance \\u2014 is it inherently highly available, single instance, or clustered?\\n\",\n      \"rationale\": \"A blackbox appliance still needs an explicit answer for the resilience posture the adopter is depending on.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"resilienceModel\",\n          \"example\": \"Inherently highly available within the managed service control plane\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"network-placement\",\n      \"description\": \"Where does this appliance sit in the network topology?\",\n      \"rationale\": \"Placement defines exposure and traffic path.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"networkPlacement\",\n          \"example\": \"networkPlacement: public-facing\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"patching-ownership\",\n      \"description\": \"Who is responsible for firmware and software updates?\",\n      \"rationale\": \"A blackbox component still needs clear update ownership.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"patchingOwner\",\n          \"example\": \"patchingOwner: aws-managed\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"configurable-surface\",\n      \"description\": \"What configuration surface does the organization control on this appliance?\\n\",\n      \"rationale\": \"The object should capture what the adopter can actually configure rather than pretending the hidden host is visible.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"configurableSurface\",\n          \"example\": \"Listener rules, target groups, and TLS certificates are customer-managed\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"failure-domain\",\n      \"description\": \"What failure domain does this appliance introduce?\",\n      \"rationale\": \"Blackbox shared components can create broad impact boundaries that must be explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"failureDomain\",\n          \"example\": \"Shared dependency for all traffic entering the protected application path\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"compliance-posture\",\n      \"description\": \"What compliance certifications does this appliance carry?\",\n      \"rationale\": \"Compliance posture must be explicit when the underlying implementation is opaque.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"complianceCerts\",\n          \"allowEmpty\": true,\n          \"example\": \"complianceCerts: [SOC2, ISO27001]\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"appliance\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"appliesToQualifiers\": {\n    \"deliveryModel\": \"appliance\"\n  },\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-appliance-delivery.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-DSDD\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Appliance Delivery Requirement Group\",\n  \"description\": \"Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service uses appliance delivery and the underlying host is blackbox to the adopter.\",\n  \"version\": \"1.1.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"runtime_service\",\n    \"data_store_service\",\n    \"edge_gateway_service\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"function\",\n      \"description\": \"What capabilities does this appliance provide?\",\n      \"rationale\": \"The capabilities are the reason the appliance exists in the architecture.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"capabilities\",\n          \"example\": \"capabilities: [load-balancing]\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"authentication-access-model\",\n      \"description\": \"How is administrative, user, or service access to the appliance authenticated?\",\n      \"rationale\": \"A blackbox appliance still needs an explicit access-control answer because it provides a deployed capability without inheriting the host or service Requirement Group baseline.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"The appliance authenticates administrators through an enterprise identity platform.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"A named appliance configuration defines the authentication model.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"authenticationAccessModel\",\n          \"example\": \"Administrator access is federated through SAML SSO; service access uses appliance-managed mTLS.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"log-audit-visibility\",\n      \"description\": \"What operational logs, audit records, or events are visible to the adopter, and where do they go?\",\n      \"rationale\": \"A blackbox appliance must state the log or audit visibility the adopter can rely on because hidden host logs are not modeled.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          },\n          \"example\": \"A relationship object where source is this appliance and the relationship has the log-management capability, pointing to a modeled central logging service or SIEM platform.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          },\n          \"example\": \"A named appliance configuration enables audit export or log forwarding.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"logAuditVisibility\",\n          \"example\": \"Administrative actions are exported to CloudTrail and retained in the enterprise SIEM.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"health-status-visibility\",\n      \"description\": \"How does the adopter observe appliance health, status, incidents, or operational telemetry?\",\n      \"rationale\": \"The appliance provides a service-like capability, so consumers need to know how health and status are observed even though the internal host is hidden.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          },\n          \"example\": \"The appliance publishes health metrics to the enterprise monitoring platform.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          },\n          \"example\": \"A named appliance configuration enables health checks, status endpoints, or metrics export.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"healthStatusVisibility\",\n          \"example\": \"Health is observed through managed service status, target health checks, and alert rules.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"patch-update-model\",\n      \"description\": \"Who or what is responsible for appliance firmware, software, and hidden host updates, and what mechanism applies them?\",\n      \"rationale\": \"The hidden host prevents normal host patch-management modeling, so the appliance must document the update responsibility and mechanism directly.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"patchingOwner\",\n          \"example\": \"patchingOwner: vendor-managed\"\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          },\n          \"example\": \"Updates are orchestrated through a vendor or cloud-provider patch service.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          },\n          \"example\": \"A named appliance configuration defines update windows or managed update policy.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"patchUpdateModel\",\n          \"example\": \"Firmware and hidden host updates are vendor-managed; the adopter controls only maintenance windows.\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"field\",\n        \"technologyComponentConfiguration\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"resilience-model\",\n      \"description\": \"What is the resilience model of this appliance \\u2014 is it inherently highly available, single instance, or clustered?\\n\",\n      \"rationale\": \"A blackbox appliance still needs an explicit answer for the resilience posture the adopter is depending on.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"resilienceModel\",\n          \"example\": \"Inherently highly available within the managed service control plane\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"configurable-surface\",\n      \"description\": \"What configuration surface does the organization control on this appliance?\\n\",\n      \"rationale\": \"The object should capture what the adopter can actually configure rather than pretending the hidden host is visible.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"configurableSurface\",\n          \"example\": \"Listener rules, target groups, and TLS certificates are customer-managed\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"failure-domain\",\n      \"description\": \"What failure domain does this appliance introduce?\",\n      \"rationale\": \"Blackbox shared components can create broad impact boundaries that must be explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"failureDomain\",\n          \"example\": \"Shared dependency for all traffic entering the protected application path\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\"\n      ],\n      \"minimumSatisfactions\": 1\n    },\n    {\n      \"id\": \"compliance-posture\",\n      \"description\": \"What compliance certifications does this appliance carry?\",\n      \"rationale\": \"Compliance posture must be explicit when the underlying implementation is opaque.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"complianceCerts\",\n          \"allowEmpty\": true,\n          \"example\": \"complianceCerts: [SOC2, ISO27001]\"\n        }\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ],\n      \"minimumSatisfactions\": 1\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"appliance\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"appliesToQualifiers\": {\n    \"deliveryModel\": \"appliance\"\n  },\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-appliance-delivery.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -40119,7 +41487,7 @@ window.DRAFT_BROWSER_DATA = {
             }
           ],
           "minimumSatisfactions": 1,
-          "relatedCapability": "01KQQ4Q026-9K8G",
+          "relatedCapability": "01KQQ4Q026-1HZP",
           "requirementMode": "mandatory",
           "naAllowed": true,
           "validAnswerTypes": [
@@ -40163,7 +41531,7 @@ window.DRAFT_BROWSER_DATA = {
       "hasRiskRef": false,
       "outboundRefs": [
         {
-          "target": "01KQQ4Q026-9K8G",
+          "target": "01KQQ4Q026-1HZP",
           "path": "requirements[0].relatedCapability"
         }
       ],
@@ -40226,7 +41594,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/requirement-group.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSF4NHSP-HCPX\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Host Compute Profile Requirement Group\",\n  \"description\": \"Optional checklist for Hosts covering compute type classification. Activated per workspace; does not fire automatically.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"workspace\",\n  \"appliesTo\": [\n    \"host\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"compute-type\",\n      \"description\": \"The host must declare its compute type or instance class when the compute profile is not captured by the compute-platform requirement alone.\",\n      \"rationale\": \"Compute type captures the general-purpose, memory-optimized, GPU, or bare-metal classification of the host's compute resources, which affects workload placement and capacity planning.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"computeType\",\n          \"example\": \"A documented statement of the compute type such as general-purpose, memory-optimized, GPU, or bare-metal.\"\n        },\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"computeType\",\n          \"example\": \"A field declaration of the compute type on the host object.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-9K8G\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"field\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"candidate\",\n  \"tags\": [\n    \"host\",\n    \"requirement-group\",\n    \"compute\",\n    \"optional\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-host-compute-profile.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSF4NHSP-HCPX\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Host Compute Profile Requirement Group\",\n  \"description\": \"Optional checklist for Hosts covering compute type classification. Activated per workspace; does not fire automatically.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"workspace\",\n  \"appliesTo\": [\n    \"host\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"compute-type\",\n      \"description\": \"The host must declare its compute type or instance class when the compute profile is not captured by the compute-platform requirement alone.\",\n      \"rationale\": \"Compute type captures the general-purpose, memory-optimized, GPU, or bare-metal classification of the host's compute resources, which affects workload placement and capacity planning.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"computeType\",\n          \"example\": \"A documented statement of the compute type such as general-purpose, memory-optimized, GPU, or bare-metal.\"\n        },\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"computeType\",\n          \"example\": \"A field declaration of the compute type on the host object.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-1HZP\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"field\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"candidate\",\n  \"tags\": [\n    \"host\",\n    \"requirement-group\",\n    \"compute\",\n    \"optional\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-host-compute-profile.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -40666,6 +42034,236 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/requirement-group.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-THYN\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Host Requirement Group\",\n  \"description\": \"Structured checklist of required questions and answers used to define a complete and correct Host.\",\n  \"version\": \"3.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"host\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"operating-system\",\n      \"description\": \"The host must declare the Operating System Technology Component that defines the operating system baseline.\",\n      \"rationale\": \"A host is not complete until the operating system product baseline is explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"operatingSystemComponent\",\n          \"example\": \"operatingSystemComponent: technology.os.microsoft-windowsserver-2022\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-QM2X\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"compute-platform\",\n      \"description\": \"The host must declare the Compute Platform Technology Component that defines the physical or virtual compute substrate.\",\n      \"rationale\": \"A host is not complete until the compute substrate is explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"computePlatformComponent\",\n          \"example\": \"computePlatformComponent: technology.compute.amazon-ec2-standard\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-1HZP\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"authentication\",\n      \"description\": \"The host must address how administrators and services authenticate to the platform.\",\n      \"rationale\": \"Identity control is a baseline host requirement because unmanaged access breaks supportability and auditability.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"Active Directory or another enterprise identity platform.\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"A Technology Component installed locally that provides host authentication behavior.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          },\n          \"example\": \"An Operating System Technology Component configuration that defines the authentication model.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"authenticationApproach\",\n          \"example\": \"A documented local or federated authentication model when the dependency is not expressed as a platform interaction.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-MHJM\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"internalComponent\",\n        \"technologyComponentConfiguration\"\n      ]\n    },\n    {\n      \"id\": \"log-management\",\n      \"description\": \"The host must address how logs leave the host and reach an operationally supported logging destination.\",\n      \"rationale\": \"Logging is required for troubleshooting, security response, and evidentiary review.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          },\n          \"example\": \"A relationship object where source is this host and the relationship has the log-management capability, pointing to a modeled central logging Runtime Service, Edge/Gateway Service, or PaaS-delivered service.\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          },\n          \"example\": \"A locally installed Technology Component that implements host log management.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          },\n          \"example\": \"An Operating System Technology Component configuration that redirects logs to a dedicated volume or forwarding path.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"loggingApproach\",\n          \"example\": \"A documented log shipping design for cases where the platform is described indirectly.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-D04B\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"internalComponent\",\n        \"technologyComponentConfiguration\"\n      ]\n    },\n    {\n      \"id\": \"health-welfare-monitoring\",\n      \"description\": \"The host must address health and welfare monitoring for performance, availability, and operational telemetry.\",\n      \"rationale\": \"Hosts must show how operators know whether the platform is healthy and supportable.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          },\n          \"example\": \"Dynatrace, Nagios, or another host monitoring platform.\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          },\n          \"example\": \"A locally installed Technology Component that exports host health telemetry.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          },\n          \"example\": \"A Technology Component configuration that enables local health telemetry or metrics export.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"healthWelfareMonitoringApproach\",\n          \"example\": \"A documented explanation of the host monitoring pattern when the implementation is not captured directly.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-98VD\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"internalComponent\",\n        \"technologyComponentConfiguration\"\n      ]\n    },\n    {\n      \"id\": \"security-monitoring\",\n      \"description\": \"The host must address endpoint security or runtime security monitoring.\",\n      \"rationale\": \"Hosts must show how they are protected and observed by a security control plane.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          },\n          \"example\": \"CrowdStrike Falcon Platform or Wiz Cloud Security.\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          },\n          \"example\": \"An installed Technology Component that provides endpoint or runtime security monitoring.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          },\n          \"example\": \"A Technology Component configuration that enables local security telemetry or runtime protection behavior.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"securityMonitoringApproach\",\n          \"example\": \"A documented statement of the host security monitoring pattern.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-JW52\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"internalComponent\",\n        \"technologyComponentConfiguration\"\n      ]\n    },\n    {\n      \"id\": \"patch-management\",\n      \"description\": \"The host must address how patching is orchestrated and what operational mechanism applies updates.\",\n      \"rationale\": \"Patching is a governance control, not an implementation detail that can be left implicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          },\n          \"example\": \"Automox Patch Management.\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          },\n          \"example\": \"An installed Technology Component that performs or coordinates patch execution.\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          },\n          \"example\": \"A Technology Component configuration that defines how the platform is patched without a separate external orchestrator.\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"patchManagementApproach\",\n          \"example\": \"A documented patch orchestration model when a platform interaction is not explicitly modeled.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"relatedCapability\": \"01KQQ4Q026-BH6E\",\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"architectureNote\",\n        \"relationship\",\n        \"internalComponent\",\n        \"technologyComponentConfiguration\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"existing-only\",\n  \"tags\": [\n    \"host\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"appliesToQualifiers\": {\n    \"category\": \"host\"\n  },\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-host.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KSWVZSZ5-B146": {
+      "id": "01KSWVZSZ5-B146",
+      "uid": "01KSWVZSZ5-B146",
+      "name": "Network Service Requirement Group",
+      "aliases": [],
+      "type": "requirement_group",
+      "typeLabel": "Requirement Group",
+      "filterType": "requirement_group",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Base requirements for NetworkService objects covering network function declaration, topology definition, and protocol governance. Delivery model requirement groups (Appliance Delivery, SaaS Delivery, Service Behavior) apply on top of these base requirements based on how the network service is operated.\n",
+      "version": "1.0.0",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "preferred",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {
+        "name": "DRAFT Framework",
+        "shortName": "DRAFT",
+        "source": "DRAFT Framework"
+      },
+      "shape": "barrel",
+      "color": "#1f8a5b",
+      "source": "framework/configurations/requirement-groups/requirement-group-network-service.yaml",
+      "tags": [
+        "network",
+        "requirement-group",
+        "definition"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [
+        {
+          "id": "network-function",
+          "description": "The network service must declare what network function it performs.",
+          "rationale": "The network function is the architectural reason this device exists. Without it, the catalog cannot explain what role the device plays in the network architecture.\n",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "networkFunction",
+              "example": "networkFunction: Layer 3 routing between production and management segments"
+            },
+            {
+              "mechanism": "architectureNote",
+              "key": "networkFunction",
+              "example": "Core distribution switch providing VLAN trunking across the data center fabric."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field",
+            "architectureNote"
+          ]
+        },
+        {
+          "id": "network-topology-definition",
+          "description": "The network service must declare what network segments, zones, or routing domains it defines or manages.",
+          "rationale": "Network infrastructure objects that create topology are upstream of SDP network zone declarations. Documenting what zones or segments a device creates grounds the zone vocabulary that SDPs reference.\n",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "networkTopology",
+              "example": "networkTopology: Defines production VLAN (10), management VLAN (20), and storage VLAN (30)"
+            },
+            {
+              "mechanism": "architectureNote",
+              "key": "networkTopology",
+              "example": "Connects the AWS VPC to on-premises data centers via dedicated circuits."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": true,
+          "naRationale": "Acceptable when the network service does not create or define topology \u2014 for example a pure WAN transport device.",
+          "validAnswerTypes": [
+            "field",
+            "architectureNote"
+          ]
+        },
+        {
+          "id": "protocol-governance",
+          "description": "The network service must declare which network protocols it participates in.",
+          "rationale": "Protocol participation is an architectural decision with security and interoperability implications. Undocumented protocol use creates compliance and troubleshooting gaps.\n",
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "protocols",
+              "example": "protocols: [BGP, OSPF, VLAN]"
+            },
+            {
+              "mechanism": "architectureNote",
+              "key": "protocols",
+              "example": "Runs BGP for external peering and OSPF internally. VLANs 10-50 are trunked."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "validAnswerTypes": [
+            "field",
+            "architectureNote"
+          ]
+        }
+      ],
+      "implementations": [],
+      "appliesTo": [
+        "network_service"
+      ],
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 3,
+      "hasRiskRef": false,
+      "outboundRefs": [],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "description",
+          "catalogStatus",
+          "activation",
+          "appliesTo",
+          "requirements"
+        ],
+        "optionalFields": [
+          "aliases",
+          "version",
+          "tags",
+          "owner",
+          "lifecycleStatus",
+          "provider",
+          "authority",
+          "notes",
+          "inherits",
+          "appliesToQualifiers"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "provider": "dict",
+          "authority": "dict",
+          "appliesTo": "list",
+          "requirements": "list",
+          "appliesToQualifiers": "dict"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "activation": [
+            "always",
+            "workspace"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "requirements": "requirement"
+        },
+        "schemaPath": "framework/schemas/requirement-group.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-B146\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Network Service Requirement Group\",\n  \"description\": \"Base requirements for NetworkService objects covering network function declaration, topology definition, and protocol governance. Delivery model requirement groups (Appliance Delivery, SaaS Delivery, Service Behavior) apply on top of these base requirements based on how the network service is operated.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"network_service\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"network-function\",\n      \"description\": \"The network service must declare what network function it performs.\",\n      \"rationale\": \"The network function is the architectural reason this device exists. Without it, the catalog cannot explain what role the device plays in the network architecture.\\n\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"networkFunction\",\n          \"example\": \"networkFunction: Layer 3 routing between production and management segments\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"networkFunction\",\n          \"example\": \"Core distribution switch providing VLAN trunking across the data center fabric.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"architectureNote\"\n      ]\n    },\n    {\n      \"id\": \"network-topology-definition\",\n      \"description\": \"The network service must declare what network segments, zones, or routing domains it defines or manages.\",\n      \"rationale\": \"Network infrastructure objects that create topology are upstream of SDP network zone declarations. Documenting what zones or segments a device creates grounds the zone vocabulary that SDPs reference.\\n\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"networkTopology\",\n          \"example\": \"networkTopology: Defines production VLAN (10), management VLAN (20), and storage VLAN (30)\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"networkTopology\",\n          \"example\": \"Connects the AWS VPC to on-premises data centers via dedicated circuits.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"naRationale\": \"Acceptable when the network service does not create or define topology \\u2014 for example a pure WAN transport device.\",\n      \"validAnswerTypes\": [\n        \"field\",\n        \"architectureNote\"\n      ]\n    },\n    {\n      \"id\": \"protocol-governance\",\n      \"description\": \"The network service must declare which network protocols it participates in.\",\n      \"rationale\": \"Protocol participation is an architectural decision with security and interoperability implications. Undocumented protocol use creates compliance and troubleshooting gaps.\\n\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"protocols\",\n          \"example\": \"protocols: [BGP, OSPF, VLAN]\"\n        },\n        {\n          \"mechanism\": \"architectureNote\",\n          \"key\": \"protocols\",\n          \"example\": \"Runs BGP for external peering and OSPF internally. VLANs 10-50 are trunked.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"architectureNote\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"network\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-network-service.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -43420,11 +45018,11 @@ window.DRAFT_BROWSER_DATA = {
       "classification": "",
       "platformDependency": "",
       "capabilities": [
-        "01KQQ4Q026-9K8G",
         "01KQQ4Q026-QM2X",
         "01KQQ4Q026-1HZP",
         "01KQQ4Q026-3ZWJ",
-        "01KQQ4Q026-GW5D"
+        "01KQQ4Q026-GW5D",
+        "01KQQ4Q026-BH6E"
       ],
       "configurations": [],
       "networkPlacement": "",
@@ -43483,53 +45081,33 @@ window.DRAFT_BROWSER_DATA = {
       "hasRiskRef": false,
       "outboundRefs": [
         {
-          "target": "01KQQ4Q026-9K8G",
+          "target": "01KQQ4Q026-QM2X",
           "path": "capabilities[0]"
         },
         {
-          "target": "01KQQ4Q026-QM2X",
+          "target": "01KQQ4Q026-1HZP",
           "path": "capabilities[1]"
         },
         {
-          "target": "01KQQ4Q026-1HZP",
+          "target": "01KQQ4Q026-3ZWJ",
           "path": "capabilities[2]"
         },
         {
-          "target": "01KQQ4Q026-3ZWJ",
+          "target": "01KQQ4Q026-GW5D",
           "path": "capabilities[3]"
         },
         {
-          "target": "01KQQ4Q026-GW5D",
+          "target": "01KQQ4Q026-BH6E",
           "path": "capabilities[4]"
         }
       ],
       "referencedBy": [
         {
-          "source": "01KQQ4Q026-4JR6",
-          "path": "domain"
-        },
-        {
-          "source": "01KQQ4Q026-MHJM",
-          "path": "domain"
-        },
-        {
-          "source": "01KQQ4Q026-7T2H",
-          "path": "domain"
-        },
-        {
           "source": "01KQQ4Q026-1HZP",
           "path": "domain"
         },
         {
-          "source": "01KQQ4Q026-9K8G",
-          "path": "domain"
-        },
-        {
           "source": "01KQQ4Q026-GW5D",
-          "path": "domain"
-        },
-        {
-          "source": "01KQQ4Q026-H3B5",
           "path": "domain"
         },
         {
@@ -43538,10 +45116,6 @@ window.DRAFT_BROWSER_DATA = {
         },
         {
           "source": "01KQQ4Q026-BH6E",
-          "path": "domain"
-        },
-        {
-          "source": "01KQQ4Q026-DTJJ",
           "path": "domain"
         },
         {
@@ -43573,7 +45147,424 @@ window.DRAFT_BROWSER_DATA = {
         "collectionSchemas": {},
         "schemaPath": "framework/schemas/domain.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-ZTHF\",\n  \"type\": \"domain\",\n  \"name\": \"Compute & Runtime\",\n  \"description\": \"Strategic domain covering application runtimes, serverless functions, and physical or virtual compute resources.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-9K8G\",\n    \"01KQQ4Q026-QM2X\",\n    \"01KQQ4Q026-1HZP\",\n    \"01KQQ4Q026-3ZWJ\",\n    \"01KQQ4Q026-GW5D\"\n  ],\n  \"_source\": \"framework/configurations/domains/compute.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-ZTHF\",\n  \"type\": \"domain\",\n  \"name\": \"Compute & Runtime\",\n  \"description\": \"Strategic domain covering application runtimes, serverless functions, and physical or virtual compute resources.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-QM2X\",\n    \"01KQQ4Q026-1HZP\",\n    \"01KQQ4Q026-3ZWJ\",\n    \"01KQQ4Q026-GW5D\",\n    \"01KQQ4Q026-BH6E\"\n  ],\n  \"_source\": \"framework/configurations/domains/compute.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KSWVZSZ5-QHKZ": {
+      "id": "01KSWVZSZ5-QHKZ",
+      "uid": "01KSWVZSZ5-QHKZ",
+      "name": "Data",
+      "aliases": [],
+      "type": "domain",
+      "typeLabel": "Strategy Domain",
+      "filterType": "domain",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Strategic domain covering data protection and resilience. Capabilities in this domain are governed by the data and storage team, who owns the HOW decisions for encryption implementation and backup and recovery platforms.\n",
+      "version": "",
+      "catalogStatus": "",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [
+        "01KQQ4Q026-H3B5",
+        "01KQQ4Q026-7T2H"
+      ],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "framework/configurations/domains/data.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KQQ4Q026-H3B5",
+          "path": "capabilities[0]"
+        },
+        {
+          "target": "01KQQ4Q026-7T2H",
+          "path": "capabilities[1]"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KQQ4Q026-7T2H",
+          "path": "domain"
+        },
+        {
+          "source": "01KQQ4Q026-H3B5",
+          "path": "domain"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "capabilities"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {},
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/domain.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-QHKZ\",\n  \"type\": \"domain\",\n  \"name\": \"Data\",\n  \"description\": \"Strategic domain covering data protection and resilience. Capabilities in this domain are governed by the data and storage team, who owns the HOW decisions for encryption implementation and backup and recovery platforms.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-H3B5\",\n    \"01KQQ4Q026-7T2H\"\n  ],\n  \"_source\": \"framework/configurations/domains/data.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KSWVZSZ5-71PY": {
+      "id": "01KSWVZSZ5-71PY",
+      "uid": "01KSWVZSZ5-71PY",
+      "name": "Identity & Access Management",
+      "aliases": [],
+      "type": "domain",
+      "typeLabel": "Strategy Domain",
+      "filterType": "domain",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Strategic domain covering authentication and authorization. Capabilities in this domain are governed by the IAM team, who owns the HOW decisions for identity provider selection and access control model.\n",
+      "version": "",
+      "catalogStatus": "",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [
+        "01KQQ4Q026-MHJM",
+        "01KQQ4Q026-4JR6"
+      ],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "framework/configurations/domains/identity.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KQQ4Q026-MHJM",
+          "path": "capabilities[0]"
+        },
+        {
+          "target": "01KQQ4Q026-4JR6",
+          "path": "capabilities[1]"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KQQ4Q026-4JR6",
+          "path": "domain"
+        },
+        {
+          "source": "01KQQ4Q026-MHJM",
+          "path": "domain"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "capabilities"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {},
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/domain.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-71PY\",\n  \"type\": \"domain\",\n  \"name\": \"Identity & Access Management\",\n  \"description\": \"Strategic domain covering authentication and authorization. Capabilities in this domain are governed by the IAM team, who owns the HOW decisions for identity provider selection and access control model.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-MHJM\",\n    \"01KQQ4Q026-4JR6\"\n  ],\n  \"_source\": \"framework/configurations/domains/identity.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KSWVZSZ5-4WKE": {
+      "id": "01KSWVZSZ5-4WKE",
+      "uid": "01KSWVZSZ5-4WKE",
+      "name": "Network",
+      "aliases": [],
+      "type": "domain",
+      "typeLabel": "Strategy Domain",
+      "filterType": "domain",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Strategic domain covering network fabric infrastructure, connectivity, and segmentation. Capabilities in this domain are governed by the network team, who owns the HOW decisions for switching, routing, WAN, and traffic management technology.\n",
+      "version": "",
+      "catalogStatus": "",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [
+        "01KSWVZSZ5-Q6HW",
+        "01KSWVZSZ5-1RTH",
+        "01KSWVZSZ5-M0FR",
+        "01KSWVZSZ5-26F1"
+      ],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "framework/configurations/domains/network.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSWVZSZ5-Q6HW",
+          "path": "capabilities[0]"
+        },
+        {
+          "target": "01KSWVZSZ5-1RTH",
+          "path": "capabilities[1]"
+        },
+        {
+          "target": "01KSWVZSZ5-M0FR",
+          "path": "capabilities[2]"
+        },
+        {
+          "target": "01KSWVZSZ5-26F1",
+          "path": "capabilities[3]"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KSWVZSZ5-Q6HW",
+          "path": "domain"
+        },
+        {
+          "source": "01KSWVZSZ5-1RTH",
+          "path": "domain"
+        },
+        {
+          "source": "01KSWVZSZ5-M0FR",
+          "path": "domain"
+        },
+        {
+          "source": "01KSWVZSZ5-26F1",
+          "path": "domain"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "capabilities"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {},
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/domain.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-4WKE\",\n  \"type\": \"domain\",\n  \"name\": \"Network\",\n  \"description\": \"Strategic domain covering network fabric infrastructure, connectivity, and segmentation. Capabilities in this domain are governed by the network team, who owns the HOW decisions for switching, routing, WAN, and traffic management technology.\\n\",\n  \"capabilities\": [\n    \"01KSWVZSZ5-Q6HW\",\n    \"01KSWVZSZ5-1RTH\",\n    \"01KSWVZSZ5-M0FR\",\n    \"01KSWVZSZ5-26F1\"\n  ],\n  \"_source\": \"framework/configurations/domains/network.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -43606,7 +45597,6 @@ window.DRAFT_BROWSER_DATA = {
       "capabilities": [
         "01KQQ4Q026-98VD",
         "01KQQ4Q026-D04B",
-        "01KQQ4Q026-JW52",
         "01KQQ4Q026-NB1W"
       ],
       "configurations": [],
@@ -43674,12 +45664,8 @@ window.DRAFT_BROWSER_DATA = {
           "path": "capabilities[1]"
         },
         {
-          "target": "01KQQ4Q026-JW52",
-          "path": "capabilities[2]"
-        },
-        {
           "target": "01KQQ4Q026-NB1W",
-          "path": "capabilities[3]"
+          "path": "capabilities[2]"
         }
       ],
       "referencedBy": [
@@ -43693,6 +45679,135 @@ window.DRAFT_BROWSER_DATA = {
         },
         {
           "source": "01KQQ4Q026-D04B",
+          "path": "domain"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "capabilities"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {},
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/domain.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-C213\",\n  \"type\": \"domain\",\n  \"name\": \"Observability & Monitoring\",\n  \"description\": \"Strategic domain covering logging, metrics, tracing, and health monitoring across infrastructure and application stacks.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-98VD\",\n    \"01KQQ4Q026-D04B\",\n    \"01KQQ4Q026-NB1W\"\n  ],\n  \"_source\": \"framework/configurations/domains/observability.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KSWVZSZ5-GY67": {
+      "id": "01KSWVZSZ5-GY67",
+      "uid": "01KSWVZSZ5-GY67",
+      "name": "Security",
+      "aliases": [],
+      "type": "domain",
+      "typeLabel": "Strategy Domain",
+      "filterType": "domain",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Strategic domain covering threat detection, security event monitoring, and secure credential management. Capabilities in this domain are governed by the security team, who owns the HOW decisions for threat response and secrets governance.\n",
+      "version": "",
+      "catalogStatus": "",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [
+        "01KQQ4Q026-JW52",
+        "01KQQ4Q026-DTJJ"
+      ],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "framework/configurations/domains/security.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "architectureNotes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KQQ4Q026-JW52",
+          "path": "capabilities[0]"
+        },
+        {
+          "target": "01KQQ4Q026-DTJJ",
+          "path": "capabilities[1]"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KQQ4Q026-DTJJ",
           "path": "domain"
         },
         {
@@ -43724,7 +45839,7 @@ window.DRAFT_BROWSER_DATA = {
         "collectionSchemas": {},
         "schemaPath": "framework/schemas/domain.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-C213\",\n  \"type\": \"domain\",\n  \"name\": \"Observability & Monitoring\",\n  \"description\": \"Strategic domain covering logging, metrics, tracing, and health monitoring across infrastructure and application stacks.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-98VD\",\n    \"01KQQ4Q026-D04B\",\n    \"01KQQ4Q026-JW52\",\n    \"01KQQ4Q026-NB1W\"\n  ],\n  \"_source\": \"framework/configurations/domains/observability.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSWVZSZ5-GY67\",\n  \"type\": \"domain\",\n  \"name\": \"Security\",\n  \"description\": \"Strategic domain covering threat detection, security event monitoring, and secure credential management. Capabilities in this domain are governed by the security team, who owns the HOW decisions for threat response and secrets governance.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-JW52\",\n    \"01KQQ4Q026-DTJJ\"\n  ],\n  \"_source\": \"framework/configurations/domains/security.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -43876,146 +45991,6 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/domain.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-SGHR\",\n  \"type\": \"domain\",\n  \"name\": \"Testing & Quality\",\n  \"description\": \"Strategic domain covering all aspects of software testing, quality assurance, and release gates.\\n\",\n  \"capabilities\": [\n    \"01KQQ4Q026-QC9S\",\n    \"01KQQ4Q026-58Q3\",\n    \"01KQQ4Q026-RTWC\",\n    \"01KQQ4Q026-S5J6\"\n  ],\n  \"_source\": \"framework/configurations/domains/testing.yaml\"\n}",
-      "existsInCatalog": true,
-      "outboundRelationships": [],
-      "inboundRelationships": []
-    },
-    "01KQQ4Q025-9NNQ": {
-      "id": "01KQQ4Q025-9NNQ",
-      "uid": "01KQQ4Q025-9NNQ",
-      "name": "Example capability.compute implementations",
-      "aliases": [],
-      "type": "object_patch",
-      "typeLabel": "Object Patch",
-      "filterType": "object_patch",
-      "category": "",
-      "deliveryModel": "",
-      "domain": "",
-      "description": "Example workspace-owned capability implementation mapping.",
-      "version": "1.0.0",
-      "catalogStatus": "incomplete",
-      "lifecycleStatus": "existing-only",
-      "status": "",
-      "businessContext": {},
-      "product": "",
-      "runsOn": "",
-      "subtype": "",
-      "vendor": "",
-      "productName": "",
-      "productVersion": "",
-      "classification": "",
-      "platformDependency": "",
-      "capabilities": [],
-      "configurations": [],
-      "networkPlacement": "",
-      "patchingOwner": "",
-      "complianceCerts": [],
-      "requirementGroups": [],
-      "requirementImplementations": [],
-      "dataLeavesInfrastructure": null,
-      "dataResidencyCommitment": "",
-      "dpaNotes": "",
-      "vendorSLA": "",
-      "authenticationModel": "",
-      "incidentNotificationProcess": "",
-      "owner": {},
-      "definitionOwner": {},
-      "provider": {},
-      "authority": {},
-      "shape": "round-rectangle",
-      "color": "#2a6fdb",
-      "source": "examples/configurations/object-patches/patch-compute-implementations.yaml",
-      "tags": [],
-      "ardCategory": "",
-      "internalComponents": [],
-      "architectureNotes": {},
-      "requirements": [],
-      "implementations": [],
-      "appliesTo": {},
-      "inherits": "",
-      "scalingUnits": [],
-      "networkZones": [],
-      "sdpConnections": [],
-      "serviceGroups": [],
-      "tierVariants": [],
-      "tierId": "",
-      "purpose": "",
-      "availabilityExpectation": "",
-      "costPosture": "",
-      "complianceScope": [],
-      "parameterSurface": [],
-      "followsReferenceArchitecture": "",
-      "decisionRecords": [],
-      "affectedComponent": "",
-      "impact": "",
-      "mitigationPath": "",
-      "decisionRationale": "",
-      "relatedDecisionRecords": [],
-      "linkedObject": "",
-      "primaryObjectType": "",
-      "primaryObjectUid": "",
-      "generatedObjects": [],
-      "unresolvedQuestions": [],
-      "assumptions": [],
-      "nextSteps": [],
-      "defaultSelection": false,
-      "requirementCount": 0,
-      "hasRiskRef": false,
-      "outboundRefs": [
-        {
-          "target": "01KQQ4Q026-9K8G",
-          "path": "target"
-        },
-        {
-          "target": "01KQQ4Q025-9N4R",
-          "path": "patch.implementations[0].ref"
-        }
-      ],
-      "referencedBy": [],
-      "editorSchema": {
-        "requiredFields": [
-          "schemaVersion",
-          "uid",
-          "type",
-          "name",
-          "target",
-          "patch",
-          "catalogStatus",
-          "lifecycleStatus"
-        ],
-        "optionalFields": [
-          "aliases",
-          "description",
-          "version",
-          "owner",
-          "tags",
-          "notes"
-        ],
-        "fieldTypes": {
-          "aliases": "list",
-          "owner": "dict",
-          "tags": "list",
-          "patch": "dict"
-        },
-        "enumFields": {
-          "catalogStatus": [
-            "stub",
-            "incomplete",
-            "complete"
-          ],
-          "lifecycleStatus": [
-            "candidate",
-            "preferred",
-            "existing-only",
-            "deprecated",
-            "retired"
-          ]
-        },
-        "enumListFields": {},
-        "collectionSchemas": {},
-        "schemaPath": "framework/schemas/object-patch.schema.yaml"
-      },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q025-9NNQ\",\n  \"type\": \"object_patch\",\n  \"name\": \"Example capability.compute implementations\",\n  \"description\": \"Example workspace-owned capability implementation mapping.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"target\": \"01KQQ4Q026-9K8G\",\n  \"patch\": {\n    \"owner\": {\n      \"team\": \"example-architecture\",\n      \"contact\": \"architecture@example.com\"\n    },\n    \"implementations\": [\n      {\n        \"ref\": \"01KQQ4Q025-9N4R\",\n        \"lifecycleStatus\": \"existing-only\",\n        \"notes\": \"Example general-purpose compute implementation.\"\n      }\n    ]\n  },\n  \"_source\": \"examples/configurations/object-patches/patch-compute-implementations.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -44840,14 +46815,6 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KQQ4Q026-1HZP",
           "path": "implementations[0].ref"
-        },
-        {
-          "source": "01KQQ4Q026-9K8G",
-          "path": "implementations[0].ref"
-        },
-        {
-          "source": "01KQQ4Q025-9NNQ",
-          "path": "patch.implementations[0].ref"
         },
         {
           "source": "01KQQ4Q025-X682",
@@ -48783,12 +50750,7 @@ window.DRAFT_BROWSER_DATA = {
       "defaultSelection": false,
       "requirementCount": 0,
       "hasRiskRef": false,
-      "outboundRefs": [
-        {
-          "target": "01KQQ4Q026-9K8G",
-          "path": "capabilities[0]"
-        }
-      ],
+      "outboundRefs": [],
       "referencedBy": [
         {
           "source": "01KQQ4Q025-1XDE",
@@ -65351,49 +67313,13 @@ window.DRAFT_BROWSER_DATA = {
     "existing-only"
   ],
   "referencedBy": {
-    "01KQQ4Q027-ZTHF": [
+    "01KSWVZSZ5-71PY": [
       {
         "source": "01KQQ4Q026-4JR6",
         "path": "domain"
       },
       {
         "source": "01KQQ4Q026-MHJM",
-        "path": "domain"
-      },
-      {
-        "source": "01KQQ4Q026-7T2H",
-        "path": "domain"
-      },
-      {
-        "source": "01KQQ4Q026-1HZP",
-        "path": "domain"
-      },
-      {
-        "source": "01KQQ4Q026-9K8G",
-        "path": "domain"
-      },
-      {
-        "source": "01KQQ4Q026-GW5D",
-        "path": "domain"
-      },
-      {
-        "source": "01KQQ4Q026-H3B5",
-        "path": "domain"
-      },
-      {
-        "source": "01KQQ4Q026-QM2X",
-        "path": "domain"
-      },
-      {
-        "source": "01KQQ4Q026-BH6E",
-        "path": "domain"
-      },
-      {
-        "source": "01KQQ4Q026-DTJJ",
-        "path": "domain"
-      },
-      {
-        "source": "01KQQ4Q026-3ZWJ",
         "path": "domain"
       }
     ],
@@ -65409,9 +67335,27 @@ window.DRAFT_BROWSER_DATA = {
       {
         "source": "01KQQ4Q026-D04B",
         "path": "domain"
+      }
+    ],
+    "01KQQ4Q027-ZTHF": [
+      {
+        "source": "01KQQ4Q026-1HZP",
+        "path": "domain"
       },
       {
-        "source": "01KQQ4Q026-JW52",
+        "source": "01KQQ4Q026-GW5D",
+        "path": "domain"
+      },
+      {
+        "source": "01KQQ4Q026-QM2X",
+        "path": "domain"
+      },
+      {
+        "source": "01KQQ4Q026-BH6E",
+        "path": "domain"
+      },
+      {
+        "source": "01KQQ4Q026-3ZWJ",
         "path": "domain"
       }
     ],
@@ -65421,16 +67365,18 @@ window.DRAFT_BROWSER_DATA = {
         "path": "implementations[0].ref"
       },
       {
-        "source": "01KQQ4Q026-9K8G",
-        "path": "implementations[0].ref"
-      },
-      {
-        "source": "01KQQ4Q025-9NNQ",
-        "path": "patch.implementations[0].ref"
-      },
-      {
         "source": "01KQQ4Q025-X682",
         "path": "patch.implementations[0].ref"
+      }
+    ],
+    "01KSWVZSZ5-QHKZ": [
+      {
+        "source": "01KQQ4Q026-7T2H",
+        "path": "domain"
+      },
+      {
+        "source": "01KQQ4Q026-H3B5",
+        "path": "domain"
       }
     ],
     "01KQQ4Q025-3HXA": [
@@ -65455,6 +67401,24 @@ window.DRAFT_BROWSER_DATA = {
         "path": "operatingSystemComponent"
       }
     ],
+    "01KSWVZSZ5-4WKE": [
+      {
+        "source": "01KSWVZSZ5-Q6HW",
+        "path": "domain"
+      },
+      {
+        "source": "01KSWVZSZ5-1RTH",
+        "path": "domain"
+      },
+      {
+        "source": "01KSWVZSZ5-M0FR",
+        "path": "domain"
+      },
+      {
+        "source": "01KSWVZSZ5-26F1",
+        "path": "domain"
+      }
+    ],
     "01KQQ4Q027-SGHR": [
       {
         "source": "01KQQ4Q026-S5J6",
@@ -65470,6 +67434,16 @@ window.DRAFT_BROWSER_DATA = {
       },
       {
         "source": "01KQQ4Q026-58Q3",
+        "path": "domain"
+      }
+    ],
+    "01KSWVZSZ5-GY67": [
+      {
+        "source": "01KQQ4Q026-DTJJ",
+        "path": "domain"
+      },
+      {
+        "source": "01KQQ4Q026-JW52",
         "path": "domain"
       }
     ],
@@ -65507,6 +67481,10 @@ window.DRAFT_BROWSER_DATA = {
       {
         "source": "01KQQ4Q027-1GHC",
         "path": "requirements[6].relatedCapability"
+      },
+      {
+        "source": "01KSWVZSZ5-QHKZ",
+        "path": "capabilities[1]"
       }
     ],
     "01KQQ4Q026-H3B5": [
@@ -65525,6 +67503,10 @@ window.DRAFT_BROWSER_DATA = {
       {
         "source": "01KQQ4Q027-1GHC",
         "path": "requirements[4].relatedCapability"
+      },
+      {
+        "source": "01KSWVZSZ5-QHKZ",
+        "path": "capabilities[0]"
       }
     ],
     "01KQQ4Q026-4JR6": [
@@ -65555,6 +67537,10 @@ window.DRAFT_BROWSER_DATA = {
       {
         "source": "01KQQ4Q027-1GHC",
         "path": "requirements[5].relatedCapability"
+      },
+      {
+        "source": "01KSWVZSZ5-71PY",
+        "path": "capabilities[1]"
       }
     ],
     "01KQQ4Q027-K5DR": [
@@ -65587,6 +67573,10 @@ window.DRAFT_BROWSER_DATA = {
       {
         "source": "01KQQ4Q027-THYN",
         "path": "requirements[2].relatedCapability"
+      },
+      {
+        "source": "01KSWVZSZ5-71PY",
+        "path": "capabilities[0]"
       }
     ],
     "01KQQ4Q026-D04B": [
@@ -65675,8 +67665,8 @@ window.DRAFT_BROWSER_DATA = {
         "path": "requirements[5].relatedCapability"
       },
       {
-        "source": "01KQQ4Q027-C213",
-        "path": "capabilities[2]"
+        "source": "01KSWVZSZ5-GY67",
+        "path": "capabilities[0]"
       },
       {
         "source": "01KQQ4Q026-BQ87",
@@ -65711,6 +67701,10 @@ window.DRAFT_BROWSER_DATA = {
       {
         "source": "01KQQ4Q027-THYN",
         "path": "requirements[6].relatedCapability"
+      },
+      {
+        "source": "01KQQ4Q027-ZTHF",
+        "path": "capabilities[4]"
       }
     ],
     "01KQQ4Q026-DTJJ": [
@@ -65733,6 +67727,10 @@ window.DRAFT_BROWSER_DATA = {
       {
         "source": "01KQQ4Q027-K5DR",
         "path": "requirements[3].relatedCapability"
+      },
+      {
+        "source": "01KSWVZSZ5-GY67",
+        "path": "capabilities[1]"
       }
     ],
     "01KQQ4Q026-S5J6": [
@@ -65775,22 +67773,22 @@ window.DRAFT_BROWSER_DATA = {
         "path": "capabilities[1]"
       }
     ],
-    "01KQQ4Q026-9K8G": [
+    "01KQQ4Q026-1HZP": [
       {
         "source": "01KSF4NHSP-HCPX",
         "path": "requirements[0].relatedCapability"
       },
       {
+        "source": "01KQQ4Q027-THYN",
+        "path": "requirements[1].relatedCapability"
+      },
+      {
         "source": "01KQQ4Q027-ZTHF",
-        "path": "capabilities[0]"
+        "path": "capabilities[1]"
       },
       {
-        "source": "01KQQ4Q025-9NNQ",
+        "source": "01KQQ4Q025-X682",
         "path": "target"
-      },
-      {
-        "source": "01KQQ4Q025-T7B7",
-        "path": "capabilities[0]"
       }
     ],
     "01KQQ4Q026-QM2X": [
@@ -65800,24 +67798,10 @@ window.DRAFT_BROWSER_DATA = {
       },
       {
         "source": "01KQQ4Q027-ZTHF",
-        "path": "capabilities[1]"
+        "path": "capabilities[0]"
       },
       {
         "source": "01KQQ4Q026-4AYD",
-        "path": "target"
-      }
-    ],
-    "01KQQ4Q026-1HZP": [
-      {
-        "source": "01KQQ4Q027-THYN",
-        "path": "requirements[1].relatedCapability"
-      },
-      {
-        "source": "01KQQ4Q027-ZTHF",
-        "path": "capabilities[2]"
-      },
-      {
-        "source": "01KQQ4Q025-X682",
         "path": "target"
       }
     ],
@@ -65828,7 +67812,7 @@ window.DRAFT_BROWSER_DATA = {
       },
       {
         "source": "01KQQ4Q027-C213",
-        "path": "capabilities[3]"
+        "path": "capabilities[2]"
       }
     ],
     "01KQQ4Q026-GW5D": [
@@ -65838,7 +67822,7 @@ window.DRAFT_BROWSER_DATA = {
       },
       {
         "source": "01KQQ4Q027-ZTHF",
-        "path": "capabilities[4]"
+        "path": "capabilities[3]"
       }
     ],
     "01KQQ4Q026-3ZWJ": [
@@ -65848,6 +67832,30 @@ window.DRAFT_BROWSER_DATA = {
       },
       {
         "source": "01KQQ4Q027-ZTHF",
+        "path": "capabilities[2]"
+      }
+    ],
+    "01KSWVZSZ5-Q6HW": [
+      {
+        "source": "01KSWVZSZ5-4WKE",
+        "path": "capabilities[0]"
+      }
+    ],
+    "01KSWVZSZ5-1RTH": [
+      {
+        "source": "01KSWVZSZ5-4WKE",
+        "path": "capabilities[1]"
+      }
+    ],
+    "01KSWVZSZ5-M0FR": [
+      {
+        "source": "01KSWVZSZ5-4WKE",
+        "path": "capabilities[2]"
+      }
+    ],
+    "01KSWVZSZ5-26F1": [
+      {
+        "source": "01KSWVZSZ5-4WKE",
         "path": "capabilities[3]"
       }
     ],
@@ -66795,7 +68803,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "active": false,
         "description": "Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service uses appliance delivery and the underlying host is blackbox to the adopter.",
-        "requirementCount": 11
+        "requirementCount": 9
       },
       {
         "id": "01KRWRRNM7-VJ5A",
@@ -66912,6 +68920,22 @@ window.DRAFT_BROWSER_DATA = {
         "active": false,
         "description": "Initial NIST Cybersecurity Framework (CSF) 2.0 requirement group scoped to the outcomes that can be meaningfully answered by DRAFT objects.\n",
         "requirementCount": 12
+      },
+      {
+        "id": "01KSWVZSZ5-B146",
+        "uid": "01KSWVZSZ5-B146",
+        "name": "Network Service Requirement Group",
+        "activation": "always",
+        "catalogStatus": "complete",
+        "provider": {},
+        "authority": {
+          "name": "DRAFT Framework",
+          "shortName": "DRAFT",
+          "source": "DRAFT Framework"
+        },
+        "active": false,
+        "description": "Base requirements for NetworkService objects covering network function declaration, topology definition, and protocol governance. Delivery model requirement groups (Appliance Delivery, SaaS Delivery, Service Behavior) apply on top of these base requirements based on how the network service is operated.\n",
+        "requirementCount": 3
       },
       {
         "id": "01KQQ4Q027-TPWG",
