@@ -1,13 +1,13 @@
 schemaVersion: '1.0'
-uid: 01KQQ4Q026-9K8G
+uid: 01KSWVZSZ5-26F1
 type: capability
-name: General Purpose Compute
-description: Provisioning and execution of arbitrary code on reusable compute substrates.
+name: WAN Connectivity
+description: Sites, data centers, and cloud environments are interconnected reliably through approved wide area network technology.
 version: 1.0.0
 catalogStatus: incomplete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture
   contact: cloud-architecture@example.com
-domain: 01KQQ4Q027-ZTHF
+domain: 01KSWVZSZ5-4WKE
 implementations: []

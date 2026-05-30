@@ -24,7 +24,7 @@ requirements:
     key: computeType
     example: A field declaration of the compute type on the host object.
   minimumSatisfactions: 1
-  relatedCapability: 01KQQ4Q026-9K8G
+  relatedCapability: 01KQQ4Q026-1HZP
   requirementMode: mandatory
   naAllowed: true
   validAnswerTypes:

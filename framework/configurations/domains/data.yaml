@@ -1,0 +1,11 @@
+schemaVersion: '1.0'
+uid: 01KSWVZSZ5-QHKZ
+type: domain
+name: Data
+description: >
+  Strategic domain covering data protection and resilience. Capabilities in
+  this domain are governed by the data and storage team, who owns the HOW
+  decisions for encryption implementation and backup and recovery platforms.
+capabilities:
+- 01KQQ4Q026-H3B5
+- 01KQQ4Q026-7T2H

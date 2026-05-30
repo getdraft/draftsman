@@ -131,30 +131,6 @@ requirements:
   validAnswerTypes:
   - architectureNote
   minimumSatisfactions: 1
-- id: network-placement
-  description: Where does this appliance sit in the network topology?
-  rationale: Placement defines exposure and traffic path.
-  canBeSatisfiedBy:
-  - mechanism: field
-    key: networkPlacement
-    example: 'networkPlacement: public-facing'
-  requirementMode: mandatory
-  naAllowed: false
-  validAnswerTypes:
-  - field
-  minimumSatisfactions: 1
-- id: patching-ownership
-  description: Who is responsible for firmware and software updates?
-  rationale: A blackbox component still needs clear update ownership.
-  canBeSatisfiedBy:
-  - mechanism: field
-    key: patchingOwner
-    example: 'patchingOwner: aws-managed'
-  requirementMode: mandatory
-  naAllowed: false
-  validAnswerTypes:
-  - field
-  minimumSatisfactions: 1
 - id: configurable-surface
   description: 'What configuration surface does the organization control on this appliance?
 

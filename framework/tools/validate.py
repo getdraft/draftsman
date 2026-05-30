@@ -46,6 +46,7 @@ VALID_REQUIREMENT_SCOPES = {
     "runtime_service",
     "data_store_service",
     "edge_gateway_service",
+    "network_service",
     "product_component",
     "data_component",
     "reference_architecture",
@@ -69,10 +70,11 @@ STANDARD_TYPES = {
     "runtime_service",
     "data_store_service",
     "edge_gateway_service",
+    "network_service",
     "product_component",
     "data_component",
 }
-SERVICE_TYPES = {"runtime_service", "data_store_service", "edge_gateway_service"}
+SERVICE_TYPES = {"runtime_service", "data_store_service", "edge_gateway_service", "network_service"}
 RELATIONSHIP_ENDPOINT_TYPES = STANDARD_TYPES | {"runtime_service", "data_store_service", "edge_gateway_service", "software_deployment_pattern", "reference_architecture", "technology_component", "host"}
 BUSINESS_PILLAR_ID_PATTERN = re.compile(r"^business-pillar\.[a-z0-9-]+$")
 UID_PATTERN = re.compile(UID_PATTERN_TEXT)

@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KSWVZSZ5-GY67
+type: domain
+name: Security
+description: >
+  Strategic domain covering threat detection, security event monitoring, and
+  secure credential management. Capabilities in this domain are governed by
+  the security team, who owns the HOW decisions for threat response and
+  secrets governance.
+capabilities:
+- 01KQQ4Q026-JW52
+- 01KQQ4Q026-DTJJ

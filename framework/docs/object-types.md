@@ -33,6 +33,7 @@ engineering objects run on or connect to.
 | Runtime Service | `runtime_service` | Reusable runtime behavior such as web, app, cache, worker, messaging, or serverless runtime. | Deploys runtime behavior on a Host or through PaaS, SaaS, or appliance delivery. |
 | DataStoreService | `data_store_service` | Durable data behavior such as database, file, object, search, analytics, or storage. | Deploys persistence behavior on a Host or through PaaS, SaaS, or appliance delivery. |
 | Edge/Gateway Service | `edge_gateway_service` | Boundary behavior such as WAF, firewall, API gateway, load balancer, ingress, proxy, or traffic inspection. | Deploys traffic control behavior at a product or network boundary. |
+| Network Service | `network_service` | Non-perimeter network fabric infrastructure such as switches, routers, SDN controllers, and WAN appliances that create or manage network topology. | Deploys network fabric infrastructure that other objects connect through. |
 | Reference Architecture | `reference_architecture` | A reusable deployment approach that Software Deployment Patterns may follow. | Documents a canonical assembly pattern. |
 
 ## Non-Deployable Architecture Objects

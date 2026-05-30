@@ -1,13 +1,13 @@
 schemaVersion: '1.0'
 uid: 01KQQ4Q026-7T2H
 type: capability
-name: Backup Strategy
-description: Backup, restore, and recovery point capability for durable data stores.
+name: Data Resilience
+description: Resilience of data against loss or corruption through backup, restore, replication, and recovery capabilities.
 version: 1.0.0
 catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture
   contact: cloud-architecture@example.com
-domain: 01KQQ4Q027-ZTHF
+domain: 01KSWVZSZ5-QHKZ
 implementations: []

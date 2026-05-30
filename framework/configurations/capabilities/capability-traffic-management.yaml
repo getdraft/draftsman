@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KSWVZSZ5-M0FR
+type: capability
+name: Traffic Management
+description: Application and network traffic is distributed, shaped, and controlled across services and infrastructure through approved load balancing and traffic management technology.
+version: 1.0.0
+catalogStatus: incomplete
+definitionOwner:
+  provider: draft-framework
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+domain: 01KSWVZSZ5-4WKE
+implementations: []

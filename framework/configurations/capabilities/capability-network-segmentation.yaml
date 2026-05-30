@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KSWVZSZ5-1RTH
+type: capability
+name: Network Segmentation
+description: Traffic between network zones is isolated and controlled by policy through VLANs, micro-segmentation, or software-defined networking.
+version: 1.0.0
+catalogStatus: incomplete
+definitionOwner:
+  provider: draft-framework
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+domain: 01KSWVZSZ5-4WKE
+implementations: []

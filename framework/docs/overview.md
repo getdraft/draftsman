@@ -38,6 +38,7 @@ objects run on or connect to.
 | Runtime Service | Reusable runtime behavior such as web, app, cache, worker, messaging, or serverless runtime. |
 | DataStoreService | Durable data behavior such as database, file, object, search, analytics, or storage. |
 | Edge/Gateway Service | Boundary behavior such as WAF, firewall, API gateway, load balancer, ingress, proxy, or traffic inspection. |
+| Network Service | Non-perimeter network fabric infrastructure such as switches, routers, SDN controllers, and WAN appliances that create or manage the network topology other objects depend on. |
 | Reference Architecture | A reusable deployment approach that Software Deployment Patterns may follow. |
 
 ## Non-Deployable Architecture

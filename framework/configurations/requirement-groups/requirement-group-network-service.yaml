@@ -1,0 +1,80 @@
+schemaVersion: '1.0'
+uid: 01KSWVZSZ5-B146
+type: requirement_group
+name: Network Service Requirement Group
+description: >
+  Base requirements for NetworkService objects covering network function declaration,
+  topology definition, and protocol governance. Delivery model requirement groups
+  (Appliance Delivery, SaaS Delivery, Service Behavior) apply on top of these base
+  requirements based on how the network service is operated.
+version: 1.0.0
+catalogStatus: complete
+authority:
+  name: DRAFT Framework
+  shortName: DRAFT
+  source: DRAFT Framework
+activation: always
+appliesTo:
+- network_service
+requirements:
+- id: network-function
+  description: The network service must declare what network function it performs.
+  rationale: >
+    The network function is the architectural reason this device exists. Without it,
+    the catalog cannot explain what role the device plays in the network architecture.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: networkFunction
+    example: 'networkFunction: Layer 3 routing between production and management segments'
+  - mechanism: architectureNote
+    key: networkFunction
+    example: Core distribution switch providing VLAN trunking across the data center fabric.
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - field
+  - architectureNote
+- id: network-topology-definition
+  description: The network service must declare what network segments, zones, or routing domains it defines or manages.
+  rationale: >
+    Network infrastructure objects that create topology are upstream of SDP network zone
+    declarations. Documenting what zones or segments a device creates grounds the zone
+    vocabulary that SDPs reference.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: networkTopology
+    example: 'networkTopology: Defines production VLAN (10), management VLAN (20), and storage VLAN (30)'
+  - mechanism: architectureNote
+    key: networkTopology
+    example: Connects the AWS VPC to on-premises data centers via dedicated circuits.
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: true
+  naRationale: Acceptable when the network service does not create or define topology — for example a pure WAN transport device.
+  validAnswerTypes:
+  - field
+  - architectureNote
+- id: protocol-governance
+  description: The network service must declare which network protocols it participates in.
+  rationale: >
+    Protocol participation is an architectural decision with security and interoperability
+    implications. Undocumented protocol use creates compliance and troubleshooting gaps.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: protocols
+    example: 'protocols: [BGP, OSPF, VLAN]'
+  - mechanism: architectureNote
+    key: protocols
+    example: Runs BGP for external peering and OSPF internally. VLANs 10-50 are trunked.
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - field
+  - architectureNote
+lifecycleStatus: preferred
+tags:
+- network
+- requirement-group
+- definition

@@ -1,0 +1,11 @@
+schemaVersion: '1.0'
+uid: 01KSWVZSZ5-71PY
+type: domain
+name: Identity & Access Management
+description: >
+  Strategic domain covering authentication and authorization. Capabilities in
+  this domain are governed by the IAM team, who owns the HOW decisions for
+  identity provider selection and access control model.
+capabilities:
+- 01KQQ4Q026-MHJM
+- 01KQQ4Q026-4JR6
