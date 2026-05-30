@@ -89,13 +89,14 @@ In the connected AI tool, ask:
 I want a Draftsman session for this company DRAFT workspace.
 ```
 
-The Draftsman should respond with:
+The Draftsman should respond concisely with:
 
-- current workspace state
+- current workspace state, in a sentence or two
 - the next setup step
-- what remains after that step
-- what can be revisited later
 - one focused question
+
+It should record anything to revisit as Drafting Session next steps rather than
+displaying a running backlog of remaining work.
 
 If the selected repo is the upstream framework repo instead of a company
 workspace, the Draftsman must stop and ask for the company-specific repo path
@@ -265,7 +266,8 @@ Every setup or drafting session should keep users oriented:
 - ask only for missing facts needed for the current step
 - prefer multiple-choice questions when approved catalog options exist
 - ask at most three questions at a time
-- keep a visible list of what is next, what is left, and what can be revisited
+- keep the live conversation focused on the current step; do not display a
+  running backlog of remaining or revisit-later work
 - record uncertainty as assumptions, unresolved questions, or Drafting Session
   next steps
 - validate before claiming work is complete
