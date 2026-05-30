@@ -193,7 +193,7 @@ Question:
 
 DRAFT is AI-agnostic. The Draftsman role can be fulfilled by any capable AI
 assistant. This step wires DRAFT's built-in workflow commands into whichever
-IDE the team uses so `/draftsman`, `/draft-session`, `/validate-catalog`,
+IDE the team uses so `/draftsman`, `/draft-session`, `/draft-validate`,
 and `/draft-updateframework` are available as first-class invocable commands
 rather than role-activation phrases.
 
@@ -208,7 +208,7 @@ Run once from the workspace root:
 mkdir -p .claude/commands
 ln -sf ../../.draft/framework/commands/draftsman.md .claude/commands/draftsman.md
 ln -sf ../../.draft/framework/commands/draft-session.md .claude/commands/draft-session.md
-ln -sf ../../.draft/framework/commands/validate-catalog.md .claude/commands/validate-catalog.md
+ln -sf ../../.draft/framework/commands/draft-validate.md .claude/commands/draft-validate.md
 ln -sf ../../.draft/framework/commands/draft-updateframework.md .claude/commands/draft-updateframework.md
 ```
 
@@ -220,8 +220,8 @@ New-Item -ItemType SymbolicLink -Path .claude\commands\draftsman.md `
   -Target ..\..\draft\framework\commands\draftsman.md -Force
 New-Item -ItemType SymbolicLink -Path .claude\commands\draft-session.md `
   -Target ..\..\draft\framework\commands\draft-session.md -Force
-New-Item -ItemType SymbolicLink -Path .claude\commands\validate-catalog.md `
-  -Target ..\..\draft\framework\commands\validate-catalog.md -Force
+New-Item -ItemType SymbolicLink -Path .claude\commands\draft-validate.md `
+  -Target ..\..\draft\framework\commands\draft-validate.md -Force
 New-Item -ItemType SymbolicLink -Path .claude\commands\draft-updateframework.md `
   -Target ..\..\draft\framework\commands\draft-updateframework.md -Force
 ```
@@ -259,7 +259,7 @@ Draftsman activation already included. If the file exists and was edited
 manually, add the following block:
 
 ```markdown
-When the user invokes `/draftsman`, `/draft-session`, or `/validate-catalog`,
+When the user invokes `/draftsman`, `/draft-session`, or `/draft-validate`,
 read the corresponding file from `.draft/framework/commands/` and follow its
 instructions exactly.
 ```

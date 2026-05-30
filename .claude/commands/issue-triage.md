@@ -1,1 +1,0 @@
-../../framework/commands/issue-triage.md

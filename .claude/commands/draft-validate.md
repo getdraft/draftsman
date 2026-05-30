@@ -1,0 +1,1 @@
+../../framework/commands/draft-validate.md

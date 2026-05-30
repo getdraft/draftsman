@@ -198,7 +198,7 @@ After the PR is merged, remind the Draft Admin:
 > ```bash
 > ln -sf ../../.draft/framework/commands/draftsman.md .claude/commands/draftsman.md
 > ln -sf ../../.draft/framework/commands/draft-session.md .claude/commands/draft-session.md
-> ln -sf ../../.draft/framework/commands/validate-catalog.md .claude/commands/validate-catalog.md
+> ln -sf ../../.draft/framework/commands/draft-validate.md .claude/commands/draft-validate.md
 > ln -sf ../../.draft/framework/commands/draft-updateframework.md .claude/commands/draft-updateframework.md
 > ```
 >

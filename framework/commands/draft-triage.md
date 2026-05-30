@@ -4,7 +4,7 @@ argument-hint: "[filter: bugs | features | docs | all]"
 allowed-tools: [Bash, Read, Write, Edit, Glob, Grep]
 ---
 
-# /issue-triage Command
+# /draft-triage Command
 
 Pull open GitHub issues for this repository, present them as a selection
 table, and work through whichever the user picks.
