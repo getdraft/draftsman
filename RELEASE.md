@@ -54,8 +54,43 @@ git diff --exit-code docs/index.html
 
 ## Publish
 
-Before `1.0.0`, direct commits to `main` are allowed.
+All changes reach `main` through a pull request. Direct pushes to `main` are
+blocked by branch protection (see below), including for repository admins and
+automated tools acting under an admin identity. This applies pre-1.0 as well as
+after `1.0.0`.
 
-After `1.0.0`, publish through a pull request with branch protection enabled.
 When creating a release tag, use `vX.Y.Z` and verify it matches
 `draft-framework.yaml`.
+
+## Branch Protection On `main`
+
+`main` is protected so that no contract change can land without passing the
+release gate. The enforced rules are:
+
+- **Pull request required before merge** — no direct pushes to `main`.
+- **Required status check: `validate`** — the `validate` job in the
+  `Validate Catalog` workflow (`.github/workflows/validate-catalog.yml`). It
+  runs `validate.py`, the unit tests, `check_release_notes.py`, and the AI-index
+  drift check. A PR cannot merge until this check passes.
+- **Branches must be up to date before merging** (`strict`) — a PR is re-tested
+  against the current tip of `main`, so a change cannot slip the gate by being
+  based on an older `main`.
+- **Enforced for administrators** — admins and tools pushing under an admin
+  identity cannot bypass the rules.
+- **Force pushes and branch deletion disabled.**
+
+> **Caveat — do not rename the `validate` job.** The required status check is
+> matched by the context name `validate`. If the job in
+> `validate-catalog.yml` is renamed, update the required-check context in the
+> branch protection settings at the same time, or pull requests will wait
+> forever on a check that never reports.
+
+To inspect or change the policy:
+
+```bash
+gh api repos/getdraft/draftsman/branches/main/protection
+```
+
+Relaxing `enforce_admins` to `false` would restore an admin emergency-push
+lane; doing so reopens the path that previously let a schema change reach `main`
+without a changelog entry, so prefer keeping it enabled.

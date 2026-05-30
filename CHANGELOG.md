@@ -3,6 +3,32 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.32.2 - 2026-05-30
+
+Documents the branch-protection policy now enforced on `main`. This is a
+release-governance/documentation change with no schema, code, or catalog
+impact.
+
+### Added
+
+- **`Branch Protection On main` section in `RELEASE.md`**: records the enforced rules (pull request required, `validate` status check required, branches must be up to date before merge, enforced for admins, force-push and deletion disabled), the command to inspect the policy, and an explicit caveat that the required-check context is named `validate` and must be kept in sync if the workflow job is renamed.
+
+### Changed
+
+- **Corrected the `Publish` section of `RELEASE.md`**: it previously stated that direct commits to `main` are allowed before `1.0.0`. All changes now reach `main` through a pull request that passes the release gate, pre-1.0 included. This closes the policy gap that allowed a schema contract change to be pushed directly to `main` without a changelog entry (see `0.32.1`).
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+No framework behavior, schema, or catalog change. Affects contributor workflow only: changes to `main` must now go through a pull request whose `validate` check passes.
+
+### Migration Notes
+
+No action required for existing workspaces. Contributors should branch and open a pull request rather than pushing to `main`; the merge is blocked until the `validate` check passes and the branch is up to date.
+
 ## 0.32.1 - 2026-05-30
 
 Release-note correction. Commit `de67d90` was pushed directly to `main`
