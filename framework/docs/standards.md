@@ -7,7 +7,7 @@ blocks. The current framework uses explicit object types instead:
 
 - Host
 - Runtime Service
-- Data-at-Rest Service
+- Data Store Service
 - Edge/Gateway Service
 - Product Service
 
@@ -21,7 +21,7 @@ type and delivery model:
 - operating platform: Host
 - application, web, cache, worker, or runtime behavior: Runtime Service
 - database, file, object, search, analytics, or storage behavior:
-  Data-at-Rest Service
+  Data Store Service
 - firewall, WAF, load balancer, API gateway, ingress, or proxy behavior:
   Edge/Gateway Service
 - first-party custom binary or black-box application behavior: Product Service

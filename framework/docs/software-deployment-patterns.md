@@ -137,7 +137,7 @@ document:
 The Software Deployment Pattern checklist is only the root checklist. DRAFT
 drafting must also close the composition graph below it. Every deployable object
 referenced by a service group brings its own Requirement Groups. A
-self-managed Runtime Service, Data-at-Rest Service, or Edge/Gateway Service
+self-managed Runtime Service, Data Store Service, or Edge/Gateway Service
 must identify the Host Standard that provides its execution substrate. If the
 Draftsman does not know whether a service is self-managed, PaaS, SaaS,
 appliance, or serverless, that delivery model is the next architecture question.

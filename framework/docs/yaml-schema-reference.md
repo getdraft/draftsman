@@ -17,7 +17,7 @@ The framework uses two sources of truth for YAML validation:
 | Technology Component | `catalog/technology-components/` | [technology-component.schema.yaml](../schemas/technology-component.schema.yaml) | Discrete vendor product with vendor facts, capability references, and optional configuration-level network bindings. Company adoption lives on capability implementation mappings, not top-level lifecycle status. |
 | Host | `catalog/hosts/` | [host.schema.yaml](../schemas/host.schema.yaml) | Operational platform built from an operating system, compute platform, and required host capabilities. |
 | Runtime Service | `catalog/runtime-services/` | [runtime-service.schema.yaml](../schemas/runtime-service.schema.yaml) | Reusable runtime behavior such as web, app, cache, worker, messaging, or serverless runtime. |
-| Data-at-Rest Service | `catalog/data-at-rest-services/` | [data-at-rest-service.schema.yaml](../schemas/data-at-rest-service.schema.yaml) | Durable data behavior such as database, file, object, search, analytics, or storage. |
+| Data Store Service | `catalog/data-store-services/` | [data-store-service.schema.yaml](../schemas/data-store-service.schema.yaml) | Durable data behavior such as database, file, object, search, analytics, or storage. |
 | Edge/Gateway Service | `catalog/edge-gateway-services/` | [edge-gateway-service.schema.yaml](../schemas/edge-gateway-service.schema.yaml) | Boundary behavior such as WAF, firewall, API gateway, load balancer, ingress, proxy, or traffic inspection. |
 | Reference Architecture | `catalog/reference-architectures/` | [reference-architecture.schema.yaml](../schemas/reference-architecture.schema.yaml) | Reusable deployment pattern that Software Deployment Patterns can follow. |
 | Software Deployment Pattern | `catalog/software-deployment-patterns/` | [software-deployment-pattern.schema.yaml](../schemas/software-deployment-pattern.schema.yaml) | Intended product deployment architecture with service groups, deployable object references, business context, and topology metadata. |
@@ -30,7 +30,7 @@ The framework uses two sources of truth for YAML validation:
 | Object Patch | `configurations/object-patches/` | [object-patch.schema.yaml](../schemas/object-patch.schema.yaml) | Workspace overlay that deep-merges selected fields into a base framework object. |
 
 PaaS, SaaS, appliance, and self-managed are `deliveryModel` values on Runtime
-Service, Data-at-Rest Service, and Edge/Gateway Service objects. They are not
+Service, Data Store Service, and Edge/Gateway Service objects. They are not
 separate object types.
 
 ## Requirement And Capability Flow

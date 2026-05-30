@@ -316,7 +316,7 @@ Technology Component should satisfy it for this host, so the capability owner
 can review it?"
 
 Capability implementations must reference Technology Components only. Do not
-put a Host, Runtime Service, Data-at-Rest Service, Edge/Gateway Service,
+put a Host, Runtime Service, Data Store Service, Edge/Gateway Service,
 Product Service, Software Deployment Pattern, or running service in a capability
 lifecycle list. If a SaaS or managed platform is governed by lifecycle, model
 the vendor product and version as a Technology Component, then compose the
@@ -327,7 +327,7 @@ logging, identity, monitoring, security monitoring, patching, or secrets
 management, search for a modeled deployable object first. If it exists, author
 a relationship object with that object as the `target`. If it does not exist
 and the user can identify the platform, create the appropriate Runtime Service,
-Data-at-Rest Service, or Edge/Gateway Service with the correct `deliveryModel`
+Data Store Service, or Edge/Gateway Service with the correct `deliveryModel`
 before writing the relationship. For external systems with no catalog
 representation, use `externalTarget` on the relationship instead.
 
@@ -426,7 +426,7 @@ source material:
 4. Choose the right artifact family:
    - actual product deployment: Software Deployment Pattern
    - reusable deployment pattern: Reference Architecture
-   - reusable runtime substrate: Host, Runtime Service, Data-at-Rest Service, or Edge/Gateway Service
+   - reusable runtime substrate: Host, Runtime Service, Data Store Service, or Edge/Gateway Service
    - third-party product, OS, platform, software, or agent: Technology Component
    - vendor product that behaves like a service with no modeled host: service object with `deliveryModel: appliance`
    - vendor-managed platform dependency: service object with `deliveryModel: paas`
@@ -536,7 +536,7 @@ Use this procedure:
 2. Identify the deployable objects in each group.
 3. Resolve or draft each deployable object.
 4. Resolve `runsOn` for each Product Service.
-5. Resolve the delivery model for each Runtime Service, Data-at-Rest Service,
+5. Resolve the delivery model for each Runtime Service, Data Store Service,
    and Edge/Gateway Service.
 6. For every self-managed service, resolve the `host` substrate from approved
    Host Standards or ask a catalog-grounded multiple-choice question.

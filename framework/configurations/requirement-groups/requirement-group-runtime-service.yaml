@@ -2,7 +2,7 @@ schemaVersion: '1.0'
 uid: 01KQQ4Q027-K5DR
 type: requirement_group
 name: Service Behavior Requirement Group
-description: Structured checklist of required questions and answers used to define complete and correct self-managed Runtime and Edge/Gateway Services; Data-at-Rest Services inherit these service behavior requirements.
+description: Structured checklist of required questions and answers used to define complete and correct self-managed Runtime and Edge/Gateway Services; Data Store Services inherit these service behavior requirements.
 version: 3.0.0
 catalogStatus: complete
 authority:

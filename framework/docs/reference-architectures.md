@@ -112,7 +112,7 @@ high-availability pattern includes service groups such as:
 
 - `Frontend UI` with presentation-tier web services
 - `Application Runtime Services` with application-tier runtime services
-- `Data Services` with data-tier Data-at-Rest Services
+- `Data Services` with data-tier Data Store Services
 
 The Reference Architecture also carries architectural decision entries that explain what the deployment
 pattern assumes, such as web-tier autoscaling and AlwaysOn on the data tier.

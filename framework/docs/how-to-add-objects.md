@@ -82,7 +82,7 @@ Technology Components should be specific. If you cannot name the product version
 
 ## Add A Host
 
-1. Create the file in `catalog/hosts/`, `catalog/runtime-services/`, or `catalog/data-at-rest-services/`.
+1. Create the file in `catalog/hosts/`, `catalog/runtime-services/`, or `catalog/data-store-services/`.
 2. Reference the Operating System and Compute Platform Technology Components explicitly.
 3. Add any Agent Technology Components or other internal components that physically live on the host.
 4. Create relationship objects for identity, logging, security, monitoring, patching, or other platform dependencies.
@@ -95,13 +95,13 @@ Technology Components should be specific. If you cannot name the product version
 
 ## Add A Runtime Service
 
-1. Create the file in `catalog/hosts/`, `catalog/runtime-services/`, or `catalog/data-at-rest-services/`.
+1. Create the file in `catalog/hosts/`, `catalog/runtime-services/`, or `catalog/data-store-services/`.
 2. Reference exactly one `host` and one `primaryTechnologyComponent`; the
    primary Technology Component is the service's required function component,
    not an optional dependency that needs separate rationale.
 3. Create relationship objects for service-level dependencies that go beyond the host baseline.
-4. Document the decisions that describe scaling, health, secrets handling, and, for Data-at-Rest Services, durability and protection.
-   Data-at-Rest Services must document backup strategy, backup platform, RTO,
+4. Document the decisions that describe scaling, health, secrets handling, and, for Data Store Services, durability and protection.
+   Data Store Services must document backup strategy, backup platform, RTO,
    and RPO; create a relationship object pointing to a separate backup platform
    or use `architectureNotes.backup.platform` for provider-managed backups.
 5. Use `architectureNotes` whenever the service must answer a Requirement Group or compliance question that is not expressed directly in the object, or when an internal component exists for a reason outside the applicable service requirements.
@@ -145,7 +145,7 @@ A Reference Architecture should be generic enough to guide many products, not ju
 3. Add `businessContext.pillar` when the workspace declares business pillars in `.draft/workspace.yaml`.
 4. Set `followsReferenceArchitecture` if the product aligns with an existing Reference Architecture.
 5. Define any `scalingUnits` needed to express replicable or shared deployment boundaries.
-6. Build the manifest out through `serviceGroups`, then place Product Services, Hosts, Runtime Services, Data-at-Rest Services, and Edge/Gateway Services into the appropriate groups.
+6. Build the manifest out through `serviceGroups`, then place Product Services, Hosts, Runtime Services, Data Store Services, and Edge/Gateway Services into the appropriate groups.
    Product Service is not a starting-point Requirement Group object; use it here only when the Software Deployment Pattern needs to express a distinct first-party runtime-behavior component deployed on a substrate.
 7. Set `diagramTier` on every deployable object entry using one of `presentation`, `application`, `data`, or `utility`.
 8. Use `intent` only when the architect is explicitly deviating from the Reference Architecture or when no Reference Architecture exists.
@@ -251,5 +251,5 @@ python3 framework/tools/generate_browser.py
 For deployable objects, `complete` means the applicable Requirement Group requirements are satisfied. For every object type, it also means the description, ownership, lifecycle, and relationships are clear enough that another engineer could use the object without guessing what it means.
 
 The catalog uses flat folders by object family inside `catalog/`. Do not create
-nested taxonomy folders under `catalog/technology-components/` or `catalog/hosts/`, `catalog/runtime-services/`, or `catalog/data-at-rest-services/`; the YAML
+nested taxonomy folders under `catalog/technology-components/` or `catalog/hosts/`, `catalog/runtime-services/`, or `catalog/data-store-services/`; the YAML
 content already carries the object classification.

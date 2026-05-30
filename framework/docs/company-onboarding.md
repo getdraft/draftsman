@@ -187,7 +187,7 @@ Draft reusable deployable objects in this order when possible:
 1. Technology Components for known products and versions
 2. Hosts for operating system plus compute platform combinations
 3. Runtime Services for web, app, worker, messaging, cache, or runtime behavior
-4. Data-at-Rest Services for database, file, object, analytics, and storage
+4. Data Store Services for database, file, object, analytics, and storage
 5. Edge/Gateway Services for WAF, firewall, load balancer, ingress, proxy, or
    API gateway behavior
 6. Product Services for first-party runtime behavior
@@ -206,7 +206,7 @@ Good first question:
 
 ```text
 Which common deployable standard should we draft first: Host, Runtime Service,
-Data-at-Rest Service, or Edge/Gateway Service?
+Data Store Service, or Edge/Gateway Service?
 ```
 
 ## Step 8: Start The First Real Drafting Session
