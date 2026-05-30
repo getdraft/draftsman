@@ -3,6 +3,42 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.30.0 - 2026-05-30
+
+### Added
+
+- **Four new capability domains**: Security, Identity, Data, Network. Each domain is owned by the team that decides implementation selections.
+- **Four new network capabilities**: Network Connectivity, Network Segmentation, Traffic Management, WAN Connectivity.
+- **NetworkService object type** and schema: Represents non-perimeter network fabric infrastructure (switches, routers, SDN controllers, WAN appliances). Includes Network Service requirement group covering network function, topology definition, and protocol governance.
+
+### Changed
+
+- **Capability domain restructuring**: 
+  - Move Authentication, Access Control Model to Identity domain
+  - Move Security Monitoring, Secrets Management to Security domain
+  - Move Encryption at Rest, Data Resilience to Data domain
+  - Remove General Purpose Compute — no meaningful distinction from Compute Platform
+  - Update all capability objects with new domain references
+  - Fix domain `capabilities:` lists to match actual capability assignments
+
+- **Appliance Delivery Requirement Group simplified**: Remove `network-placement` (placement belongs in SDPs/RAs) and `patching-ownership` (duplicate of `patch-update-model`).
+
+- **Validator and object-type documentation** updated to recognize `network_service`.
+
+### Fixed
+
+- Removed example `patch-compute-implementations.yaml` which targeted deleted General Purpose Compute capability.
+- Updated `requirement-group-host-compute-profile.yaml` to reference Compute Platform instead of deleted General Purpose Compute.
+
+### Compatibility Impact
+
+Breaking change: General Purpose Compute capability removed. Any workspace objects or requirement groups referencing it (UID `01KQQ4Q026-9K8G`) must be updated to use Compute Platform (`01KQQ4Q026-1HZP`).
+
+### Migration Notes
+
+1. If your workspace references General Purpose Compute capability, update to Compute Platform.
+2. If you have custom capability domains, align with the new domain model: each domain is owned by the team that decides the HOW for implementations (Compute Platform owner = infrastructure team, Encryption at Rest owner = data team, etc.).
+
 ## 0.29.3 - 2026-05-29
 
 ### Added
