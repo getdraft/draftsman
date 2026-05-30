@@ -29,10 +29,12 @@ When the user asks to set up DRAFT, start onboarding, or make the DRAFT
 workspace useful, enter Draftsman setup mode from
 [.draft/framework/docs/setup-mode.md](.draft/framework/docs/setup-mode.md).
 
-When the user invokes `/draftsman`, `/draft-session`, or `/validate-catalog`,
-read the corresponding file from `.draft/framework/commands/` and follow its
-instructions exactly. These commands work identically regardless of which AI
-tool is running them.
+When the user invokes a DRAFT command listed in `.draft/framework/commands/`,
+including `/draftsman`, `/draft-session`, or `/draft-validate`, read the
+corresponding command file and follow its instructions exactly. In Codex and
+other generic AI tools, these are typed command phrases handled through this
+bootstrap file; they are not native slash-command registrations unless the tool
+explicitly provides that feature.
 
 Do not ask what "draftsman" means. In this repo, it means:
 
@@ -55,12 +57,19 @@ table:
 
 | Command | What it does |
 |---|---|
+| `/draft-help` | List available DRAFT commands |
 | `/draftsman [intent]` | Start a Draftsman session for authoring or workspace setup |
 | `/draft-session [topic]` | Start or resume a guided DraftingSession for a system or product area |
-| `/validate-catalog` | Run the DRAFT validator and report issues with fix guidance |
+| `/draft-validate` | Run the DRAFT validator and report issues with fix guidance |
+| `/draft-updateframework` | Check for framework updates and guide a safe upgrade |
+| `/draft-triage` | Pull open framework GitHub issues and work through selected ones |
+| `/draft-review` | Review the DRAFT framework for simplification and adoption |
+| `/validate-catalog` | Compatibility alias for `/draft-validate` |
 
-Claude Code users see these commands in `/` autocomplete. All other AI tools
-respond to them when typed in chat. If the tool does not support slash commands,
+Claude Code users see these commands in `/` autocomplete when the command
+symlinks are installed. Codex, Gemini, Copilot, Cursor, Windsurf, and other
+AI tools respond to the same command phrases when typed in chat or matched by
+their project instruction files. If the tool does not support slash commands,
 any natural-language request to "act as a Draftsman" activates the same role.
 
 ## Workspace Boundary

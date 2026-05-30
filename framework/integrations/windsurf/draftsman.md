@@ -1,13 +1,13 @@
 # DRAFT Draftsman
 
-This workspace uses the DRAFT architecture framework. When the user invokes
-`/draftsman`, `/draft-session`, or `/validate-catalog`, or asks you to act as
-a Draftsman, read the corresponding command file and follow its instructions
-exactly:
+This workspace uses the DRAFT architecture framework. When the user invokes a
+DRAFT command listed in `.draft/framework/commands/`, including `/draftsman`,
+`/draft-session`, or `/draft-validate`, or asks you to act as a Draftsman, read
+the corresponding command file and follow its instructions exactly:
 
 - `/draftsman [intent]` → read `.draft/framework/commands/draftsman.md`
 - `/draft-session [topic]` → read `.draft/framework/commands/draft-session.md`
-- `/validate-catalog` → read `.draft/framework/commands/validate-catalog.md`
+- `/draft-validate` → read `.draft/framework/commands/draft-validate.md`
 
 All Draftsman workflows bootstrap from `AGENTS.md` and treat
 `.draft/framework/` as the approved vendored framework copy. Do not edit
