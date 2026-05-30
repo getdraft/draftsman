@@ -3,6 +3,35 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.31.2 - 2026-05-30
+
+Realigns the workspace template scaffold (`templates/workspace/`) with the
+canonical catalog convention used by `examples/`, CODEOWNERS, the browser, and
+`how-to-add-objects.md`. The scaffold had drifted: it used a legacy
+"standards"/delivery-model folder taxonomy and still seeded directories for the
+retired Control Enforcement Profile model.
+
+### Added
+
+- **Canonical catalog folders in the scaffold**: added `catalog/hosts/`, `catalog/runtime-services/`, `catalog/edge-gateway-services/`, `catalog/relationships/`, and `catalog/systems/` so a new workspace scaffolds the behavior-based folders the Draftsman, CODEOWNERS, and the browser actually use. (`catalog/network-services/` was added in 0.30.2.)
+
+### Changed
+
+- **Removed legacy/mismatched scaffold directories**: deleted `catalog/host-standards/`, `catalog/service-standards/`, `catalog/database-standards/`, `catalog/objects/`, `catalog/saas-services/`, and `catalog/appliance-components/`. The first three used the old "standards" naming (objects authored there were not routed by CODEOWNERS or rendered by the browser); `saas-services`/`appliance-components` scaffolded delivery models as if they were object types, contradicting `object-types.md`. The scaffold catalog tree now matches `examples/` (plus `network-services/`).
+- **Removed retired-model configuration directories**: deleted `configurations/compliance-controls/`, `configurations/control-enforcement-profiles/`, `configurations/definition-checklists/`, `configurations/automation-targets/`, and `configurations/object-types/`. These have no live framework references and belong to the model that Requirement Groups replaced.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+No breaking changes. Affects only the new-workspace scaffold under `templates/workspace/`; no schema, requirement group, or existing catalog content changed. The capability-ownership object-patch templates are retained.
+
+### Migration Notes
+
+No action required for existing workspaces. Workspaces scaffolded from an earlier template can delete the empty legacy directories (`catalog/*-standards/`, `catalog/saas-services/`, `catalog/appliance-components/`, `catalog/objects/`, and the retired `configurations/` dirs) and author against the behavior-based catalog folders; objects validate regardless of folder name, but only the canonical folders are routed by CODEOWNERS and rendered by the browser.
+
 ## 0.31.1 - 2026-05-30
 
 Resolves a contradiction in the AI instruction surface about whether the
