@@ -138,7 +138,7 @@ Question:
 
 ### 5. Domain Standard Ownership
 
-DRAFT ships with 19 capability definitions covering the core technology
+DRAFT ships with 22 capability definitions across seven technology
 architecture domains every company must govern — Authentication, Log Management,
 Patch Management, Secrets Management, and so on. These are the equivalent of
 enterprise domain standards. Each one needs a designated owner at your company:
@@ -153,18 +153,22 @@ each owned domain, name the approved Technology Component (if known) — the
 Draftsman will create the component and map the capability implementation.
 
 **Compute & Runtime** — Operating System, Compute Platform, Container
-Orchestration, Serverless Runtime, Patch Management, General Purpose Compute
+Orchestration, Serverless Function Runtime, Patch Management
 
-**Security & Identity** — Authentication, Access Control Model, Secrets
-Management, Security Monitoring, Encryption At Rest
+**Identity & Access Management** — Authentication, Access Control Model
 
-**Observability** — Log Management, Health & Welfare Monitoring, Application
-Performance Monitoring
+**Security** — Security Monitoring, Secrets Management
 
-**Data** — Backup Strategy
+**Data** — Encryption At Rest, Data Resilience
 
-**Engineering Quality** — Quality Gates, Test Authoring, Test Execution,
-Performance Testing
+**Observability & Monitoring** — Log Management, Health and Welfare Monitoring,
+Application Performance Monitoring
+
+**Network** — Network Connectivity, Network Segmentation, Traffic Management,
+WAN Connectivity
+
+**Testing & Quality** — Quality Gates, Test Authoring, Test Execution and
+Automation, Performance and Load Testing
 
 Questions:
 

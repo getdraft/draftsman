@@ -90,7 +90,7 @@ The minimum useful setup path is:
 4. define enough business taxonomy for catalog navigation
 5. declare first company vocabulary lists in advisory mode
 6. choose the initial active Requirement Groups
-7. assign domain standard owners to the 19 framework capabilities — for each
+7. assign domain standard owners to the 22 framework capabilities — for each
    capability, ask which company team owns that domain, then generate one
    object-patch file in `configurations/object-patches/` setting `owner`; use
    `owner.team: TBD` for any capability the user cannot assign today so the gap
