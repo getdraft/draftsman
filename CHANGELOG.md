@@ -3,6 +3,33 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.30.2 - 2026-05-30
+
+Completes the 0.30.0 capability-domain restructure and network-infrastructure
+work: the configuration, schema, and validator layers shipped in 0.30.0, but the
+documentation and the catalog-folder plumbing for the new `network_service` type
+were not updated to match.
+
+### Added
+
+- **`catalog/network-services/` is now a first-class catalog folder**: added to the workspace catalog scaffold (`templates/workspace/catalog/network-services/`), routed to technology-admins in `CODEOWNERS.tmpl`, and registered in `generate_browser.py` `CATALOG_FOLDERS` so `network_service` objects are scaffolded, review-routed, and rendered in the browser.
+
+### Changed
+
+- **Setup-mode and Draftsman docs now describe the 0.30.0 domain structure**: `setup-mode.md` Step 5 listed 19 capabilities under the pre-0.30 grouping (with the dropped General Purpose Compute, the renamed Backup Strategy, and a combined "Security & Identity"). Updated to the actual seven domains (Compute & Runtime, Identity & Access Management, Security, Data, Observability & Monitoring, Network, Testing & Quality) and 22 capabilities. Updated the matching "19 framework capabilities" count in `draftsman.md`.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+No breaking changes. Documentation and workspace-template/tooling alignment only; no schema, requirement group, or catalog object content changed. The four network capabilities remain intentional `incomplete` stubs (advisory validation warnings) pending the requirement-mapping decision tracked in issue #36.
+
+### Migration Notes
+
+No action required for existing catalogs. Workspaces created before this release that author `network_service` objects can add a `catalog/network-services/` folder and a matching `CODEOWNERS` line to pick up review routing; existing objects validate regardless of folder name.
+
 ## 0.30.1 - 2026-05-30
 
 ### Added
