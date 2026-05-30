@@ -16,9 +16,9 @@ DRAFT is a framework for describing architecture as structured objects that can 
 
 | Concern | Where It Lives | Purpose |
 |---|---|---|
-| Framework rules | `.draft/framework/` in company workspaces, `framework/` upstream | Schemas, base capabilities, Requirement Groups, docs, and tools. |
-| Company architecture | `catalog/` | Hosts, services, ProductComponents, DataComponents, Software Deployment Patterns, and other architecture inventory. |
-| Company extensions | `configurations/` | Capability mappings, object patches, company Requirement Groups, and local domains. |
+| Framework rules | `.draft/framework/` in company workspaces, `framework/` upstream | Schemas, base capabilities, RequirementGroups, docs, and tools. |
+| Company architecture | `catalog/` | Hosts, services, ProductComponents, DataComponents, SoftwareDeploymentPatterns, and other architecture inventory. |
+| Company extensions | `configurations/` | Capability mappings, object patches, company RequirementGroups, and local domains. |
 | Generated views | `docs/` | Static HTML, browser assets, and browser data generated from YAML and Markdown source. |
 
 Framework files are not normal authoring targets inside a company workspace. Update them only through an explicit framework refresh or framework change. Architecture content belongs in the company workspace.
@@ -33,7 +33,7 @@ DRAFT is written for three audiences who work together on every PR:
 
 **Engineers** connect the AI tool they already use to the repository and describe what they ship. The Draftsman handles schema details. Engineers review YAML diffs, not documentation tickets.
 
-**Security and compliance teams** get requirement evidence recorded at authoring time, not assembled after an audit. Requirement Groups ask mandatory questions; objects cannot be marked approved until the evidence is present.
+**Security and compliance teams** get requirement evidence recorded at authoring time, not assembled after an audit. RequirementGroups ask mandatory questions; objects cannot be marked approved until the evidence is present.
 
 **Architects** maintain a governed catalog of real deployments instead of diagrams that diverge from reality. The catalog browser gives a searchable, versioned view of the whole estate.
 
@@ -56,7 +56,7 @@ Follow this loop for most changes:
 3. Start from the closest template or nearby approved object.
 4. Fill in required schema fields.
 5. Add relationships to existing objects by UID.
-6. Add Requirement Group evidence or architectural decisions.
+6. Add RequirementGroup evidence or architectural decisions.
 7. Run validation.
 8. Regenerate the browser and manual.
 9. Review source and generated diffs.
@@ -79,7 +79,7 @@ The bootstrap chain is:
 2. framework `AGENTS.md`
 3. `framework/docs/draftsman.md`
 4. `AI_INDEX.md`
-5. schemas, templates, capabilities, Requirement Groups, and nearby catalog examples
+5. schemas, templates, capabilities, RequirementGroups, and nearby catalog examples
 
 AI assistants should:
 
@@ -119,7 +119,7 @@ engineering team. They are deployed inside or on top of Architecture Objects.
 |---|---|
 | ProductComponent | A first-party deployable runtime unit — API, worker, scheduler, or service — that uses `runsOn` to reference the RuntimeService, Host, or EdgeGatewayService it is deployed on. |
 | DataComponent | A first-party data schema, dataset, or storage unit that uses `runsOn` to reference the DataStoreService it is deployed on. |
-| Software Deployment Pattern | The intended assembly of deployable objects for a product or product capability. |
+| SoftwareDeploymentPattern | The intended assembly of deployable objects for a product or product capability. |
 
 #### 3a.3 Architecture objects {#architecture-objects}
 
@@ -128,25 +128,25 @@ Objects run on or connect to.
 
 | Object Type | Use It For |
 |---|---|
-| Technology Component | A governed vendor product, operating system, compute platform, agent, appliance product, software package, or product/version building block. |
+| TechnologyComponent | A governed vendor product, operating system, compute platform, agent, appliance product, software package, or product/version building block. |
 | Host | An operational platform that combines compute, operating system, and required host capabilities. |
-| Runtime Service | Reusable runtime behavior such as web, app, cache, worker, messaging, or serverless runtime. |
+| RuntimeService | Reusable runtime behavior such as web, app, cache, worker, messaging, or serverless runtime. |
 | DataStoreService | Durable data behavior such as database, file, object, search, analytics, or storage. |
-| Edge/Gateway Service | Boundary behavior such as WAF, firewall, API gateway, load balancer, ingress, proxy, or traffic inspection. |
-| Reference Architecture | A reusable deployment approach that Software Deployment Patterns may follow. |
+| EdgeGatewayService | Boundary behavior such as WAF, firewall, API gateway, load balancer, ingress, proxy, or traffic inspection. |
+| ReferenceArchitecture | A reusable deployment approach that SoftwareDeploymentPatterns may follow. |
 
-Technology Components are governed building blocks. They are deployed as ingredients inside hosts and services, but they are not usually the service boundary you review on their own.
+TechnologyComponents are governed building blocks. They are deployed as ingredients inside hosts and services, but they are not usually the service boundary you review on their own.
 
 #### 3a.4 Governance objects {#governance-objects}
 
 | Object Type | Use It For |
 |---|---|
 | Capability | A reusable architecture need such as authentication, backup strategy, log management, operating system, or patch management. |
-| Requirement Group | A requirement set that asks questions, defines acceptable evidence, and validates object completeness. |
+| RequirementGroup | A requirement set that asks questions, defines acceptable evidence, and validates object completeness. |
 | Domain | A strategy grouping for related capabilities. |
-| Decision Record | A record of a known risk, accepted decision, mitigation, or follow-up. |
-| Drafting Session | A machine-readable work-in-progress record for partial authoring sessions. |
-| Object Patch | A workspace overlay that deep-merges selected company fields into a framework-owned object. |
+| DecisionRecord | A record of a known risk, accepted decision, mitigation, or follow-up. |
+| DraftingSession | A machine-readable work-in-progress record for partial authoring sessions. |
+| ObjectPatch | A workspace overlay that deep-merges selected company fields into a framework-owned object. |
 
 #### 3a.5 Repository ownership {#repo-ownership}
 
@@ -155,18 +155,18 @@ Use this decision table before editing:
 | Need | Edit |
 |---|---|
 | Add or update company architecture inventory | `catalog/` |
-| Map a framework capability to company-approved Technology Components | `configurations/object-patches/` or company-owned `configurations/capabilities/` |
-| Add a company Requirement Group | `configurations/requirement-groups/` |
+| Map a framework capability to company-approved TechnologyComponents | `configurations/object-patches/` or company-owned `configurations/capabilities/` |
+| Add a company RequirementGroup | `configurations/requirement-groups/` |
 | Adjust selected fields on a framework object without copying it | `configurations/object-patches/` |
 | Change schema, validation, tools, or framework documentation | upstream framework repo |
 | Change the static browser output | source YAML, Markdown, or generator code, then regenerate |
 | Change company browser colors or branding | company-owned `configurations/browser/theme.css` |
 
-#### 3a.6 Modeling Technology Components {#modeling-technology-components}
+#### 3a.6 Modeling TechnologyComponents {#modeling-technology-components}
 
-Create a Technology Component when you need to govern a specific product, product family, product version, operating system, compute platform, agent, appliance, or software package.
+Create a TechnologyComponent when you need to govern a specific product, product family, product version, operating system, compute platform, agent, appliance, or software package.
 
-A Technology Component should usually include:
+A TechnologyComponent should usually include:
 
 - `vendor`
 - `productName`
@@ -178,7 +178,7 @@ A Technology Component should usually include:
 
 Use top-level `capabilities` when the product generally satisfies a capability. Use configuration-level capabilities when only a named variant satisfies the capability.
 
-**Network Bindings.** Technology Component configurations can include `networkBindings` for known ports, protocols, and traffic direction. Use this for component-level facts such as a database engine listening on TCP 1433 or a message broker listening on AMQP 5672.
+**Network Bindings.** TechnologyComponent configurations can include `networkBindings` for known ports, protocols, and traffic direction. Use this for component-level facts such as a database engine listening on TCP 1433 or a message broker listening on AMQP 5672.
 
 ```yaml
 configurations:
@@ -202,16 +202,16 @@ internalComponents:
 
 #### 3a.7 Modeling Hosts and Services {#modeling-hosts-services}
 
-Hosts describe operational platforms. A useful Host normally references operating system and compute Technology Components, then documents required host capabilities such as monitoring, logging, patching, identity integration, backup, and security tooling.
+Hosts describe operational platforms. A useful Host normally references operating system and compute TechnologyComponents, then documents required host capabilities such as monitoring, logging, patching, identity integration, backup, and security tooling.
 
-Runtime Service, DataStoreService, and Edge/Gateway Service objects describe reusable behavior delivered through a delivery model:
+RuntimeService, DataStoreService, and EdgeGatewayService objects describe reusable behavior delivered through a delivery model:
 
 - `self-managed`
 - `paas`
 - `saas`
 - `appliance`
 
-For Runtime, DataStoreService, and Edge/Gateway Services, the primary Technology Component is the main functional component. Do not add a separate dependency rationale for the primary component when it is the object core.
+For Runtime, DataStoreService, and EdgeGatewayServices, the primary TechnologyComponent is the main functional component. Do not add a separate dependency rationale for the primary component when it is the object core.
 
 DataStoreServices should document backup strategy, backup platform, RTO, and RPO. Use an external interaction for a separate backup platform, or use `architectureNotes.backup.platform` when the backup capability is provider-managed inside the service.
 
@@ -236,7 +236,7 @@ Use ProductComponent fields to document:
 - deployment configurations such as single-tenant, multi-tenant, embedded, or standalone variants
 - architectural decisions that explain requirements or non-obvious dependencies
 
-Don't elevate static assets, build scripts, or simple product configuration to ProductComponent. The boundary is first-party runtime behavior that a Software Deployment Pattern needs to communicate.
+Don't elevate static assets, build scripts, or simple product configuration to ProductComponent. The boundary is first-party runtime behavior that a SoftwareDeploymentPattern needs to communicate.
 
 #### 3a.9 Modeling DataComponents {#modeling-data-components}
 
@@ -254,15 +254,15 @@ At minimum, a DataComponent needs:
 
 Use DataComponent fields to document:
 
-- internal components (Technology Components) used inside the data layer
+- internal components (TechnologyComponents) used inside the data layer
 - external interactions the data layer depends on
 - architectural decisions about data classification, retention, or encryption
 
-#### 3a.10 Modeling Software Deployment Patterns {#modeling-sdps}
+#### 3a.10 Modeling SoftwareDeploymentPatterns {#modeling-sdps}
 
-A Software Deployment Pattern is the product-level assembly. It answers what a product deploys and how those objects relate.
+A SoftwareDeploymentPattern is the product-level assembly. It answers what a product deploys and how those objects relate.
 
-A good Software Deployment Pattern includes:
+A good SoftwareDeploymentPattern includes:
 
 - product or capability name
 - service groups
@@ -272,32 +272,32 @@ A good Software Deployment Pattern includes:
 - source repository provenance when the pattern is generated from repository discovery
 - decisions or assumptions that explain uncertain boundaries
 
-Don't stop when the Software Deployment Pattern validates. Walk the full object graph and make sure every referenced Host, Service, ProductComponent, DataComponent, Technology Component, and dependency is valid enough for review.
+Don't stop when the SoftwareDeploymentPattern validates. Walk the full object graph and make sure every referenced Host, Service, ProductComponent, DataComponent, TechnologyComponent, and dependency is valid enough for review.
 
 ---
 
 ### 3b · Requirements-based definitions {#part-3b}
 
-#### 3b.1 Capabilities and Requirement Groups {#capabilities-requirement-groups}
+#### 3b.1 Capabilities and RequirementGroups {#capabilities-requirement-groups}
 
-Capabilities describe what an architecture must be able to do. Requirement Groups describe which questions must be answered and which mechanisms can satisfy them.
+Capabilities describe what an architecture must be able to do. RequirementGroups describe which questions must be answered and which mechanisms can satisfy them.
 
-Requirement Groups can be:
+RequirementGroups can be:
 
 - always-on for matching object types
 - workspace-mode groups activated in `.draft/workspace.yaml`
 - company or compliance groups declared by specific objects in `requirementGroups`
 
-An object that declares a Requirement Group must provide valid `requirementImplementations` for the applicable requirements before it can be treated as approved for that group.
+An object that declares a RequirementGroup must provide valid `requirementImplementations` for the applicable requirements before it can be treated as approved for that group.
 
-When validation says a requirement is missing, either add the evidence that directly satisfies it or record an explicit disposition such as `not-applicable` or `not-compliant` when the schema and Requirement Group allow it.
+When validation says a requirement is missing, either add the evidence that directly satisfies it or record an explicit disposition such as `not-applicable` or `not-compliant` when the schema and RequirementGroup allow it.
 
 #### 3b.2 Acceptable evidence {#acceptable-evidence}
 
 Requirements can be satisfied by mechanisms such as:
 
-- a Technology Component
-- a named Technology Component configuration
+- a TechnologyComponent
+- a named TechnologyComponent configuration
 - an internal component
 - an external interaction
 - a deployment configuration
@@ -327,7 +327,7 @@ External dependencies are modeled as standalone `relationship` objects in the ca
 
 #### 3b.4 Agent rule {#agent-rule}
 
-Agent Technology Components have an additional rule: any deployable object that includes an agent must have a relationship object where this object is the source, or record an exception under `architectureNotes.agentInteractionExceptions`.
+Agent TechnologyComponents have an additional rule: any deployable object that includes an agent must have a relationship object where this object is the source, or record an exception under `architectureNotes.agentInteractionExceptions`.
 
 ---
 
@@ -337,9 +337,9 @@ Agent Technology Components have an additional rule: any deployable object that 
 
 | Concern | Where It Lives | Purpose |
 |---|---|---|
-| Framework rules | `.draft/framework/` in company workspaces, `framework/` upstream | Schemas, base capabilities, Requirement Groups, docs, and tools. |
-| Company architecture | `catalog/` | Hosts, services, ProductComponents, DataComponents, Software Deployment Patterns, and other architecture inventory. |
-| Company extensions | `configurations/` | Capability mappings, object patches, company Requirement Groups, and local domains. |
+| Framework rules | `.draft/framework/` in company workspaces, `framework/` upstream | Schemas, base capabilities, RequirementGroups, docs, and tools. |
+| Company architecture | `catalog/` | Hosts, services, ProductComponents, DataComponents, SoftwareDeploymentPatterns, and other architecture inventory. |
+| Company extensions | `configurations/` | Capability mappings, object patches, company RequirementGroups, and local domains. |
 | Generated views | `docs/` | Static HTML, browser assets, and browser data generated from YAML and Markdown source. |
 
 ### 4.2 Start setup mode {#setup-mode}
@@ -365,13 +365,13 @@ The minimum useful setup is:
 1. private company repo selected and `.draft/framework/` present
 2. business taxonomy defined enough for navigation
 3. first company vocabulary lists declared in advisory mode, or queued for later
-4. initial active Requirement Groups selected
+4. initial active RequirementGroups selected
 5. capability owners identified for mapped capabilities
-6. acceptable-use Technology Components seeded for common standards
+6. acceptable-use TechnologyComponents seeded for common standards
 7. baseline deployable standards started
-8. one real product, system, repository, diagram, or document selected for the first Drafting Session
+8. one real product, system, repository, diagram, or document selected for the first DraftingSession
 
-The Draftsman should record uncertainty as assumptions, unresolved questions, or Drafting Session next steps instead of forcing complete answers during setup.
+The Draftsman should record uncertainty as assumptions, unresolved questions, or DraftingSession next steps instead of forcing complete answers during setup.
 
 ### 4.3 Commands {#commands}
 
@@ -487,10 +487,10 @@ Before merging a DRAFT change, check:
 - no duplicate object already exists
 - required schema fields are present
 - references point to real objects
-- Technology Components are specific enough to govern
+- TechnologyComponents are specific enough to govern
 - ProductComponents represent first-party runtime behavior and use `runsOn` to reference a RuntimeService, Host, or EdgeGatewayService
 - DataComponents represent first-party data schemas or datasets and use `runsOn` to reference a DataStoreService
-- Requirement Groups and implementations are coherent
+- RequirementGroups and implementations are coherent
 - internal components and external interactions either satisfy requirements or have rationale
 - generated docs were regenerated from source
 - framework files were changed only when the change is intentionally a framework change

@@ -42,7 +42,7 @@ python3 .draft/framework/tools/repair_uids.py --workspace .
 ## Dependency Rationale Rule
 
 Every `internalComponents` entry must either directly satisfy an applicable
-Requirement Group requirement or have an explicit architectural decision
+RequirementGroup requirement or have an explicit architectural decision
 explaining why the dependency is modeled. Direct satisfaction means the entry
 matches an applicable requirement's `canBeSatisfiedBy` mechanism, or a valid
 `requirementImplementations` entry points at that mechanism.
@@ -56,7 +56,7 @@ When an internal component is present for a reason outside the applicable
 requirements, document the reason under:
 
 - `architectureNotes.internalComponentRationales` for locally composed
-  Technology Components
+  TechnologyComponents
 - `architectureNotes.dependencyRationales` when one shared rationale is
   clearer than separate buckets
 
@@ -65,93 +65,93 @@ key. If the dependency is actually intended to satisfy a requirement, update the
 entry with the matching capability or add valid `requirementImplementations`
 evidence instead of adding rationale.
 
-## Add A Technology Component
+## Add A TechnologyComponent
 
-1. Decide whether the object is an Operating System, Compute Platform, Software, or Agent Technology Component.
+1. Decide whether the object is an Operating System, Compute Platform, Software, or Agent TechnologyComponent.
 2. Create the YAML file in `catalog/technology-components/`.
 3. Add or repair the generated `uid`.
 4. Fill in the shared base fields: `uid`, `type`, `name`, `description`, `version`, `catalogStatus`, `owner`, and `tags`.
-5. Fill in the required Technology Component fields: `vendor`, `productName`, `productVersion`, and `classification`.
-6. Add `capabilities` if the Technology Component itself satisfies reusable host capabilities.
-7. Add `configurations` if a named Technology Component configuration satisfies reusable host capabilities.
-8. Fill in any remaining Technology Component-specific metadata such as vendor lifecycle and optional platform dependency.
-9. If the Technology Component is classified as `agent`, make sure any deployable object that uses it also documents the corresponding external interaction or an architectural decision exception under `architectureNotes.agentInteractionExceptions`.
+5. Fill in the required TechnologyComponent fields: `vendor`, `productName`, `productVersion`, and `classification`.
+6. Add `capabilities` if the TechnologyComponent itself satisfies reusable host capabilities.
+7. Add `configurations` if a named TechnologyComponent configuration satisfies reusable host capabilities.
+8. Fill in any remaining TechnologyComponent-specific metadata such as vendor lifecycle and optional platform dependency.
+9. If the TechnologyComponent is classified as `agent`, make sure any deployable object that uses it also documents the corresponding external interaction or an architectural decision exception under `architectureNotes.agentInteractionExceptions`.
 10. Run validation.
 
-Technology Components should be specific. If you cannot name the product version clearly, you probably are not ready to create the object yet.
+TechnologyComponents should be specific. If you cannot name the product version clearly, you probably are not ready to create the object yet.
 
 ## Add A Host
 
 1. Create the file in `catalog/hosts/`, `catalog/runtime-services/`, or `catalog/data-store-services/`.
-2. Reference the Operating System and Compute Platform Technology Components explicitly.
-3. Add any Agent Technology Components or other internal components that physically live on the host.
+2. Reference the Operating System and Compute Platform TechnologyComponents explicitly.
+3. Add any Agent TechnologyComponents or other internal components that physically live on the host.
 4. Create relationship objects for identity, logging, security, monitoring, patching, or other platform dependencies.
-5. Add `architectureNotes` when the host must answer a Requirement Group or compliance question that is not expressed directly in the object, or when an internal component exists for a reason outside the applicable Host requirements.
-6. Add `requirementGroups` only for Requirement Groups the host explicitly claims to
+5. Add `architectureNotes` when the host must answer a RequirementGroup or compliance question that is not expressed directly in the object, or when an internal component exists for a reason outside the applicable Host requirements.
+6. Add `requirementGroups` only for RequirementGroups the host explicitly claims to
    satisfy, then add valid `requirementImplementations` for every applicable
    control in each declared profile.
 7. Use generated UIDs when adding explicit `requirementGroups`.
 8. Run validation.
 
-## Add A Runtime Service
+## Add A RuntimeService
 
 1. Create the file in `catalog/hosts/`, `catalog/runtime-services/`, or `catalog/data-store-services/`.
 2. Reference exactly one `host` and one `primaryTechnologyComponent`; the
-   primary Technology Component is the service's required function component,
+   primary TechnologyComponent is the service's required function component,
    not an optional dependency that needs separate rationale.
 3. Create relationship objects for service-level dependencies that go beyond the host baseline.
-4. Document the decisions that describe scaling, health, secrets handling, and, for Data Store Services, durability and protection.
-   Data Store Services must document backup strategy, backup platform, RTO,
+4. Document the decisions that describe scaling, health, secrets handling, and, for DataStoreServices, durability and protection.
+   DataStoreServices must document backup strategy, backup platform, RTO,
    and RPO; create a relationship object pointing to a separate backup platform
    or use `architectureNotes.backup.platform` for provider-managed backups.
-5. Use `architectureNotes` whenever the service must answer a Requirement Group or compliance question that is not expressed directly in the object, or when an internal component exists for a reason outside the applicable service requirements.
-6. Add `requirementGroups` only for Requirement Groups the service explicitly claims
+5. Use `architectureNotes` whenever the service must answer a RequirementGroup or compliance question that is not expressed directly in the object, or when an internal component exists for a reason outside the applicable service requirements.
+6. Add `requirementGroups` only for RequirementGroups the service explicitly claims
    to satisfy, then add valid `requirementImplementations` for every applicable
    control in each declared profile.
-7. Set `requirementGroups` to the correct Requirement Group list.
+7. Set `requirementGroups` to the correct RequirementGroup list.
 8. Run validation.
 
-## Add A Requirement Group
+## Add A RequirementGroup
 
 1. Create an `object_patch` override or extension file in
    `configurations/object-patches/`.
 2. Define the `appliesTo` scope clearly.
 3. Write requirements in the mechanism-based model.
 4. For each requirement, explain what capability must be addressed, why it exists, which mechanisms are allowed, and how many satisfactions are required.
-5. If the Requirement Group extends another Requirement Group, use `inherits`.
+5. If the RequirementGroup extends another RequirementGroup, use `inherits`.
 
-Base Requirement Groups live in `.draft/framework/configurations/requirement-groups/` inside a company repo. Company-specific Requirement Group
+Base RequirementGroups live in `.draft/framework/configurations/requirement-groups/` inside a company repo. Company-specific RequirementGroup
 changes should be patch-style overlays in the company repo.
 
-A Requirement Group can target deployable and non-deployable object types. The current catalog includes Requirement Groups for Hosts, services, Reference Architectures, and Software Deployment Patterns. The `appliesTo` block is what tells the validator which object type the Requirement Group governs.
+A RequirementGroup can target deployable and non-deployable object types. The current catalog includes RequirementGroups for Hosts, services, ReferenceArchitectures, and SoftwareDeploymentPatterns. The `appliesTo` block is what tells the validator which object type the RequirementGroup governs.
 
 Keep the requirements focused on architecture outcomes rather than implementation trivia.
 
-## Add A Reference Architecture
+## Add A ReferenceArchitecture
 
 1. Create the file in `catalog/reference-architectures/`.
 2. Add or repair the generated `uid`; choose a clear human `name`.
 3. Populate `serviceGroups` with the reusable building blocks that define the deployment pattern.
 4. Set `diagramTier` on every deployable object entry and cluster related functionality into the right service group.
 5. Add `architectureNotes` that explain what non-functional qualities the pattern is meant to deliver and how.
-6. Make sure the file satisfies the Reference Architecture Requirement Group by documenting `patternType`, tiered service groups, and deployment-quality decisions.
+6. Make sure the file satisfies the ReferenceArchitecture RequirementGroup by documenting `patternType`, tiered service groups, and deployment-quality decisions.
 
-A Reference Architecture should be generic enough to guide many products, not just one.
+A ReferenceArchitecture should be generic enough to guide many products, not just one.
 
-## Add A Software Deployment Pattern
+## Add A SoftwareDeploymentPattern
 
 1. Create the file in `catalog/software-deployment-patterns/`.
 2. Add or repair the generated `uid`; choose a product-focused human `name`.
 3. Add `businessContext.pillar` when the workspace declares business pillars in `.draft/workspace.yaml`.
-4. Set `followsReferenceArchitecture` if the product aligns with an existing Reference Architecture.
+4. Set `followsReferenceArchitecture` if the product aligns with an existing ReferenceArchitecture.
 5. Define any `scalingUnits` needed to express replicable or shared deployment boundaries.
-6. Build the manifest out through `serviceGroups`, then place Product Services, Hosts, Runtime Services, Data Store Services, and Edge/Gateway Services into the appropriate groups.
-   Product Service is not a starting-point Requirement Group object; use it here only when the Software Deployment Pattern needs to express a distinct first-party runtime-behavior component deployed on a substrate.
+6. Build the manifest out through `serviceGroups`, then place Product Services, Hosts, RuntimeServices, DataStoreServices, and EdgeGatewayServices into the appropriate groups.
+   Product Service is not a starting-point RequirementGroup object; use it here only when the SoftwareDeploymentPattern needs to express a distinct first-party runtime-behavior component deployed on a substrate.
 7. Set `diagramTier` on every deployable object entry using one of `presentation`, `application`, `data`, or `utility`.
-8. Use `intent` only when the architect is explicitly deviating from the Reference Architecture or when no Reference Architecture exists.
-9. Add product-level `architectureNotes`, including availability requirement and data classification, so the Software Deployment Pattern satisfies the Software Deployment Pattern Requirement Group.
+8. Use `intent` only when the architect is explicitly deviating from the ReferenceArchitecture or when no ReferenceArchitecture exists.
+9. Add product-level `architectureNotes`, including availability requirement and data classification, so the SoftwareDeploymentPattern satisfies the SoftwareDeploymentPattern RequirementGroup.
 
-## Add A Drafting Session
+## Add A DraftingSession
 
 1. Create the file in `catalog/sessions/`.
 2. Add or repair the generated `uid`; choose a name that describes the drafting work.
@@ -162,7 +162,7 @@ A Reference Architecture should be generic enough to guide many products, not ju
 7. Add `nextSteps` so the session can be resumed later without re-reading the entire intake.
 8. Run validation.
 
-## Add A Requirement Group
+## Add A RequirementGroup
 
 1. Create the file in `configurations/requirement-groups/` for company-owned
    requirements, or in `.draft/providers/<provider>/configurations/requirement-groups/`
@@ -174,7 +174,7 @@ A Reference Architecture should be generic enough to guide many products, not ju
 4. Add requirements with `id`, `description`, `requirementMode`, `naAllowed`,
    `canBeSatisfiedBy`, `minimumSatisfactions`, and `validAnswerTypes`.
 5. Use `relatedCapability` when the requirement should be grounded in approved
-   company Technology Component implementations.
+   company TechnologyComponent implementations.
 6. Use `externalControlId` and `externalReference` when the requirement comes
    from an external control source.
 7. Set `authority.shortName` when the group maps external or named framework
@@ -222,7 +222,7 @@ From inside a company repo, use the vendored framework copy:
 python3 .draft/framework/tools/validate.py --workspace .
 ```
 
-Regenerate the AI framework index after framework docs, schemas, Requirement Groups,
+Regenerate the AI framework index after framework docs, schemas, RequirementGroups,
 templates, or catalog YAML change:
 
 ```bash
@@ -237,7 +237,7 @@ python3 framework/tools/generate_browser.py
 
 ## What The GitHub Actions Workflows Do
 
-- `validate-catalog.yml` runs on pushes and pull requests to make sure the YAML parses, base fields are valid, deployable objects satisfy their Requirement Groups, and Reference Architecture/Software Deployment Pattern objects satisfy their applicable Requirement Group checks.
+- `validate-catalog.yml` runs on pushes and pull requests to make sure the YAML parses, base fields are valid, deployable objects satisfy their RequirementGroups, and ReferenceArchitecture/SoftwareDeploymentPattern objects satisfy their applicable RequirementGroup checks.
 - `generate-browser.yml` runs on pushes to `main` that change YAML content and regenerates `docs/index.html` so the published browser stays synchronized with the source data.
 
 ## How To Advance `catalogStatus`
@@ -246,9 +246,9 @@ python3 framework/tools/generate_browser.py
 
 - `stub` means the object exists but is skeletal — enough to be referenced, not enough to validate completely.
 - `incomplete` means the structure and major fields are present but some required facts are still missing or unresolved.
-- `complete` means the object is fully authored and all applicable Requirement Group requirements are satisfied.
+- `complete` means the object is fully authored and all applicable RequirementGroup requirements are satisfied.
 
-For deployable objects, `complete` means the applicable Requirement Group requirements are satisfied. For every object type, it also means the description, ownership, lifecycle, and relationships are clear enough that another engineer could use the object without guessing what it means.
+For deployable objects, `complete` means the applicable RequirementGroup requirements are satisfied. For every object type, it also means the description, ownership, lifecycle, and relationships are clear enough that another engineer could use the object without guessing what it means.
 
 The catalog uses flat folders by object family inside `catalog/`. Do not create
 nested taxonomy folders under `catalog/technology-components/` or `catalog/hosts/`, `catalog/runtime-services/`, or `catalog/data-store-services/`; the YAML

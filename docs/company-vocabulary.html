@@ -207,7 +207,7 @@
     <aside class="sidebar">
       <a class="back-link" href="index.html">Back to catalog</a>
       <h1>Company Vocabulary</h1>
-      <p>Generated 2026-05-27 from the framework-owned Markdown source.</p>
+      <p>Generated 2026-05-30 from the framework-owned Markdown source.</p>
       <nav class="toc" aria-label="Table of contents">
         <a class="level-2" href="#modes">Modes</a>
 <a class="level-2" href="#standard-value-states">Standard Value States</a>
@@ -250,7 +250,7 @@
 <ul><li>Standard value: declared in the vocabulary with <code>status: approved</code>.</li><li>Proposed standard value: declared with <code>status: proposed</code>.</li><li>Non-standard value: present in an object field but not approved in the</li></ul>
 <p>declared vocabulary list.</p>
 <ul><li>Interview-required value: an explicit unresolved marker such as</li></ul>
-<p><code>drafting-interview-required</code>; for Software Deployment Pattern deployment targets, <code>owner-interview-required</code> remains valid during drafting.</p>
+<p><code>drafting-interview-required</code>; for SoftwareDeploymentPattern deployment targets, <code>owner-interview-required</code> remains valid during drafting.</p>
 <h2 id="supported-lists">Supported Lists</h2>
 <h3 id="deployment-targets">Deployment Targets</h3>
 <p>Deployment targets describe execution boundaries such as cloud regions, cloud accounts, Kubernetes clusters, colocations, SaaS tenants, customer sites, or edge locations.</p>
@@ -277,7 +277,7 @@
         description: Highest sensitivity data.
       - id: confidential
         name: Confidential</code></pre>
-<p>When declared, validation checks <code>architectureNotes.dataClassification</code> on Software Deployment Patterns and deployable service objects.</p>
+<p>When declared, validation checks <code>architectureNotes.dataClassification</code> on SoftwareDeploymentPatterns and deployable service objects.</p>
 <h3 id="teams">Teams</h3>
 <pre><code class="language-yaml">vocabulary:
   teams:
@@ -296,7 +296,7 @@
         name: Tier 1 Mission Critical
         target: &quot;99.95%&quot;
         notes: Incident response required.</code></pre>
-<p>When declared, validation checks <code>architectureNotes.availabilityRequirement</code> on Software Deployment Patterns and deployable service objects.</p>
+<p>When declared, validation checks <code>architectureNotes.availabilityRequirement</code> on SoftwareDeploymentPatterns and deployable service objects.</p>
 <h3 id="failure-domains">Failure Domains</h3>
 <pre><code class="language-yaml">vocabulary:
   failureDomains:
@@ -306,7 +306,7 @@
         name: Per Product
       - id: shared-platform
         name: Shared Platform</code></pre>
-<p>When declared, validation checks <code>architectureNotes.failureDomain</code> on Software Deployment Patterns and deployable service objects.</p>
+<p>When declared, validation checks <code>architectureNotes.failureDomain</code> on SoftwareDeploymentPatterns and deployable service objects.</p>
 <h3 id="connection-protocols">Connection Protocols</h3>
 <pre><code class="language-yaml">vocabulary:
   connectionProtocols:
@@ -327,7 +327,7 @@
   connectionProtocols:
     mode: advisory
     source: .draft/framework/configurations/vocabulary/connection-protocols.yaml</code></pre>
-<p>When declared, validation checks <code>serviceGroups[].connections[].protocol</code> on Software Deployment Patterns. The Draftsman presents approved values as a multiple-choice list during connection elicitation. Values not in the list are recorded as non-standard and may be submitted as vocabulary proposals.</p>
+<p>When declared, validation checks <code>relationship.technology</code> on relationship objects. The Draftsman presents approved values as a multiple-choice list during connection elicitation. Values not in the list are recorded as non-standard and may be submitted as vocabulary proposals.</p>
 <p>The framework ships a default source file at <code>configurations/vocabulary/connection-protocols.yaml</code> covering REST, gRPC, AMQP, JDBC, SQL, WebSocket, HTTPS, GraphQL, and other. Companies may extend this list via vocabulary proposals without editing the framework source.</p>
 <h3 id="network-zones">Network Zones</h3>
 <pre><code class="language-yaml">vocabulary:
@@ -343,7 +343,7 @@
       - id: management
         name: Management
         description: Operational and administrative services.</code></pre>
-<p>When declared, validation checks <code>networkZones[].id</code> and <code>serviceGroups[].deployableObjects[].networkZone</code> on Software Deployment Patterns. Zone IDs must be lowercase alphanumeric with hyphens.</p>
+<p>When declared, validation checks <code>networkZones[].id</code> and <code>serviceGroups[].deployableObjects[].networkZone</code> on SoftwareDeploymentPatterns. Zone IDs must be lowercase alphanumeric with hyphens.</p>
 <p>The Draftsman populates this list during the first SDP session that needs network zones. It asks one yes/no question ("does your deployment use distinct network zones?"), then presents the common zone patterns from <code>configurations/vocabulary/network-zone-patterns.yaml</code> as a multiple-choice list. The selected pattern expands into the SDP's <code>networkZones</code> list and establishes the zone-to-tier default mapping used for all subsequent zone assignment questions.</p>
 <p>Once zones are recorded in the workspace vocabulary, the Draftsman offers them as approved choices in all future SDP sessions without repeating the setup questions.</p>
 <h2 id="source-files">Source Files</h2>

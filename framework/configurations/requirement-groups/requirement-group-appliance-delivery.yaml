@@ -1,8 +1,8 @@
 schemaVersion: '1.0'
 uid: 01KQQ4Q027-DSDD
 type: requirement_group
-name: Appliance Delivery Requirement Group
-description: Structured requirements used when a Runtime, Data Store, or Edge/Gateway Service uses appliance delivery and the underlying host is blackbox to the adopter.
+name: Appliance Delivery RequirementGroup
+description: Structured requirements used when a Runtime, Data Store, or EdgeGatewayService uses appliance delivery and the underlying host is blackbox to the adopter.
 version: 1.1.0
 catalogStatus: complete
 authority:
@@ -29,7 +29,7 @@ requirements:
   minimumSatisfactions: 1
 - id: authentication-access-model
   description: How is administrative, user, or service access to the appliance authenticated?
-  rationale: A blackbox appliance still needs an explicit access-control answer because it provides a deployed capability without inheriting the host or service Requirement Group baseline.
+  rationale: A blackbox appliance still needs an explicit access-control answer because it provides a deployed capability without inheriting the host or service RequirementGroup baseline.
   canBeSatisfiedBy:
   - mechanism: relationship
     criteria:

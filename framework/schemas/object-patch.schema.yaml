@@ -32,7 +32,7 @@ fieldTypes:
   owner: dict
   tags: list
   patch: dict
-aiHint: An Object Patch is a workspace overlay that deep-merges company or provider changes into a base framework object without editing the base copy.
+aiHint: An ObjectPatch is a workspace overlay that deep-merges company or provider changes into a base framework object without editing the base copy.
 fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   type: Use the exact object type declared by the matching schema.

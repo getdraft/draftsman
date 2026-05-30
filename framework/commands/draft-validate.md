@@ -40,7 +40,7 @@ violation, and a one-line fix hint:
 ```
 catalog/product-components/my-service.yaml
   ERROR   runsOn — required field missing
-          → add a runsOn reference to a declared Host or Runtime Service
+          → add a runsOn reference to a declared Host or RuntimeService
   WARNING owner.team — "platform-eng" is not in the approved teams vocabulary
           → approved values: platform, core-hr, ...
 ```

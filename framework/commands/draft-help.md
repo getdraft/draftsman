@@ -14,7 +14,7 @@ Do not output any additional setup guides, intro explanations, or symlink instru
 |---|---|---|
 | `/draft-help` | All Users | List all available DRAFT commands and describe their purposes in a concise table. |
 | `/draftsman` | Engineers & Tech Admins | Activate the Draftsman for architecture catalog authoring or workspace setup. |
-| `/draft-session` | Engineers & Tech Admins | Start or resume a guided Drafting Session for a system, component, or product. |
+| `/draft-session` | Engineers & Tech Admins | Start or resume a guided DraftingSession for a system, component, or product. |
 | `/draft-validate` | All Users | Validate the DRAFT catalog and report issues with detailed fix guidance. |
 | `/draft-triage` | Framework Contributors | Pull open GitHub issues and work through selected ones interactively. |
 | `/draft-updateframework` | Draft Admins | Check for DRAFT framework updates and guide a safe upgrade. |

@@ -38,7 +38,7 @@ Framework base capability files ship with empty `implementations` and a
 `definitionOwner`. Company workspaces own the `owner` and implementation
 mappings through `configurations/capabilities/` or
 `configurations/object-patches/`. The `owner` is the company decision authority
-for Technology Component lifecycle disposition.
+for TechnologyComponent lifecycle disposition.
 
 ## Session Routing
 
@@ -89,7 +89,7 @@ The minimum useful setup path is:
 3b. [Optional] Offer DRAFT Discovery options (Atlassian Rovo semantic scan, FinOps reports, or IaC templates) to accelerate the remaining setup steps. If declined, proceed manually.
 4. define enough business taxonomy for catalog navigation
 5. declare first company vocabulary lists in advisory mode
-6. choose the initial active Requirement Groups
+6. choose the initial active RequirementGroups
 7. assign domain standard owners to the 22 framework capabilities — for each
    capability, ask which company team owns that domain, then generate one
    object-patch file in `configurations/object-patches/` setting `owner`; use
@@ -97,15 +97,15 @@ The minimum useful setup path is:
    is visible rather than silent; use the templates in
    `.draft/templates/workspace/configurations/object-patches/` as the
    starting structure
-8. seed acceptable-use Technology Components for owned capabilities
+8. seed acceptable-use TechnologyComponents for owned capabilities
 9. draft baseline deployable standards
-10. start one real Drafting Session from a product, system, repository, diagram,
+10. start one real DraftingSession from a product, system, repository, diagram,
    or source document
 
 Do not overwhelm the user with every possible framework concern. Setup mode
 should stop when the workspace can draft and validate one real system. Capture
 remaining taxonomy, lifecycle, compliance, capability, and object-detail work
-as revisit-later items or Drafting Session next steps.
+as revisit-later items or DraftingSession next steps.
 
 Every Draftsman interview should follow the same lightweight cadence:
 
@@ -136,7 +136,7 @@ bootstrap files from those values.
 1. Schemas in the selected framework copy
 2. Workspace metadata in `.draft/workspace.yaml`
 3. Effective capabilities in configuration overlays
-4. Effective Requirement Groups in configuration overlays
+4. Effective RequirementGroups in configuration overlays
 5. Company catalog content
 6. Framework docs
 7. Generated browser output
@@ -154,14 +154,14 @@ by many engineering objects. This is the primary mechanism for catalog scale.
   same Kubernetes deployment has one RuntimeService, not fifty.
 - A **TechnologyComponent** is authored once per vendor product version and
   referenced by every Host, RuntimeService, or DataStoreService that uses it.
-- A **Reference Architecture** is authored once and followed by every SDP that
+- A **ReferenceArchitecture** is authored once and followed by every SDP that
   fits that deployment shape.
 
 Before creating any infrastructure object (Host, RuntimeService, DataStoreService,
 EdgeGatewayService, TechnologyComponent), search the effective catalog. If a
 matching object exists, reference it — do not create a duplicate. Creating
 duplicate infrastructure objects is always wrong. When no matching object exists,
-stub one and record it as a Drafting Session item for the Technology Admin to
+stub one and record it as a DraftingSession item for the Technology Admin to
 complete.
 
 Engineering objects (ProductComponent, DataComponent, SDP) are per-product and
@@ -179,14 +179,13 @@ The `uid` must stay unchanged through ordinary content edits and object renames.
 When a user renames an object, append the previous display name to `aliases` so
 future conversations can still resolve historical names.
 
-Nested local IDs still exist for values such as requirement IDs, Technology
-Component configuration IDs, Drafting Session question IDs, provider IDs, and
+Nested local IDs still exist for values such as requirement IDs, TechnologyComponent configuration IDs, DraftingSession question IDs, provider IDs, and
 business pillar IDs. These are scoped local labels, not catalog object identity.
 
 ## Business Taxonomy Lookup
 
 Business pillars, portfolios, and product groupings are company taxonomy, not
-framework taxonomy. When authoring a Software Deployment Pattern, read
+framework taxonomy. When authoring a SoftwareDeploymentPattern, read
 `.draft/workspace.yaml` and resolve `businessTaxonomy.pillars` before assigning
 `businessContext.pillar`.
 
@@ -196,13 +195,13 @@ Use this procedure:
 2. Match the product or product family to one primary pillar.
 3. Record the primary value as `businessContext.pillar`.
 4. Record `businessContext.productFamily` when the product family is clearer
-   than the Software Deployment Pattern name.
+   than the SoftwareDeploymentPattern name.
 5. Use `businessContext.additionalPillars` only when the pattern materially
    spans another pillar.
 6. If the right pillar is unclear and the workspace requires one, ask one
    focused clarification question instead of inventing a new taxonomy value.
 
-Do not use Strategy Domains, Capabilities, Requirement Groups, or tags as a
+Do not use Strategy Domains, Capabilities, RequirementGroups, or tags as a
 substitute for company business taxonomy.
 
 ## Company Vocabulary Lookup
@@ -243,13 +242,13 @@ prepare the local changes and give the exact Git commands the user can run.
 
 ## Requirement And Capability Lookup
 
-Requirement Groups are the unified authoring and validation contract. They
+RequirementGroups are the unified authoring and validation contract. They
 cover both always-on object-definition requirements and workspace-activated
 compliance requirements.
 
 DRAFT is requirement-first. Do not add or approve a Capability merely because
 it seems useful. A Capability becomes approved only when at least one
-Requirement Group requirement references it through `relatedCapability` or a
+RequirementGroup requirement references it through `relatedCapability` or a
 satisfaction mechanism criteria capability. Draft capabilities may be created
 while authoring, but the Draftsman must either connect them to a requirement
 before approval or leave them as draft.
@@ -262,20 +261,20 @@ or workspace migrations, where source material may contain named products (ERP,
 HCM, SIS) or business domains (Recruiting & Hiring, Inventory Management) that
 look like candidates. Do not generate Capability objects from that material —
 only generate capabilities that represent technology architecture outcomes a
-Requirement Group would reference.
+RequirementGroup would reference.
 
 Always use this named lookup procedure when a requirement has
 `relatedCapability`:
 
-1. Resolve the Requirement Group requirement.
+1. Resolve the RequirementGroup requirement.
 2. Read `relatedCapability`.
 3. Resolve the capability object from the effective model.
 4. Read capability `owner` from the effective model; this is the company
    decision authority for lifecycle choices.
 5. Read capability `implementations` from the workspace overlay first, then base.
 6. Prefer implementations with `lifecycleStatus: preferred`, then `existing-only`.
-7. Recommend the referenced Technology Component or named configuration.
-8. If no implementation exists, ask which Technology Component should satisfy
+7. Recommend the referenced TechnologyComponent or named configuration.
+8. If no implementation exists, ask which TechnologyComponent should satisfy
    the capability and note that the capability owner must approve the lifecycle
    entry.
 
@@ -299,8 +298,7 @@ For each active requirement:
 5. Ask one grounded question using those choices.
 6. Include "something else" only as an exception path, not as an approved
    standard.
-7. If the user selects "something else", identify or draft the Technology
-   Component and record that the capability owner must approve the lifecycle
+7. If the user selects "something else", identify or draft the TechnologyComponent and record that the capability owner must approve the lifecycle
    entry before it becomes acceptable use.
 
 Example wording:
@@ -312,22 +310,22 @@ Example wording:
 If no approved implementation exists, ask a bounded question that names the
 capability and owner. For example: "`DRAFT Host / authentication` requires an
 authentication capability, but no approved implementation is mapped yet. Which
-Technology Component should satisfy it for this host, so the capability owner
+TechnologyComponent should satisfy it for this host, so the capability owner
 can review it?"
 
-Capability implementations must reference Technology Components only. Do not
-put a Host, Runtime Service, Data Store Service, Edge/Gateway Service,
-Product Service, Software Deployment Pattern, or running service in a capability
+Capability implementations must reference TechnologyComponents only. Do not
+put a Host, RuntimeService, DataStoreService, EdgeGatewayService,
+Product Service, SoftwareDeploymentPattern, or running service in a capability
 lifecycle list. If a SaaS or managed platform is governed by lifecycle, model
-the vendor product and version as a Technology Component, then compose the
+the vendor product and version as a TechnologyComponent, then compose the
 architecture-facing deployable object from it.
 
 When modeling a dependency on a shared enterprise platform such as central
 logging, identity, monitoring, security monitoring, patching, or secrets
 management, search for a modeled deployable object first. If it exists, author
 a relationship object with that object as the `target`. If it does not exist
-and the user can identify the platform, create the appropriate Runtime Service,
-Data Store Service, or Edge/Gateway Service with the correct `deliveryModel`
+and the user can identify the platform, create the appropriate RuntimeService,
+DataStoreService, or EdgeGatewayService with the correct `deliveryModel`
 before writing the relationship. For external systems with no catalog
 representation, use `externalTarget` on the relationship instead.
 
@@ -335,14 +333,14 @@ Use relationship objects to model all outbound dependencies from service or host
 
 Do not convert a capability question into team ownership unless the requirement
 explicitly asks for ownership. For example, host patch management asks what
-platform, installed component, Technology Component configuration, relationship
+platform, installed component, TechnologyComponent configuration, relationship
 target, or architectural decision applies patches. It does not ask which
 team owns patching.
 
 ## Dependency Rationale
 
 When adding `internalComponents`, verify that each entry directly satisfies an
-applicable Requirement Group requirement. The entry is direct evidence only when
+applicable RequirementGroup requirement. The entry is direct evidence only when
 it matches a `canBeSatisfiedBy` mechanism for an applicable requirement, or when
 a valid `requirementImplementations` entry points at that mechanism.
 
@@ -388,7 +386,7 @@ apply.
 
 ## Workspace-Activated Requirements
 
-Workspace-mode Requirement Groups are active only when listed in
+Workspace-mode RequirementGroups are active only when listed in
 `.draft/workspace.yaml`:
 
 ```yaml
@@ -424,43 +422,42 @@ source material:
 2. Separate observed facts from assumptions.
 3. Search existing catalog inventory before proposing new objects.
 4. Choose the right artifact family:
-   - actual product deployment: Software Deployment Pattern
-   - reusable deployment pattern: Reference Architecture
-   - reusable runtime substrate: Host, Runtime Service, Data Store Service, or Edge/Gateway Service
-   - third-party product, OS, platform, software, or agent: Technology Component
+   - actual product deployment: SoftwareDeploymentPattern
+   - reusable deployment pattern: ReferenceArchitecture
+   - reusable runtime substrate: Host, RuntimeService, DataStoreService, or EdgeGatewayService
+   - third-party product, OS, platform, software, or agent: TechnologyComponent
    - vendor product that behaves like a service with no modeled host: service object with `deliveryModel: appliance`
    - vendor-managed platform dependency: service object with `deliveryModel: paas`
    - vendor-managed external dependency: service object with `deliveryModel: saas`
-   - deployment risk or decision: Decision Record
-   - incomplete authoring work: Drafting Session
-5. Use applicable Requirement Groups and capability lookups to drive focused
+   - deployment risk or decision: DecisionRecord
+   - incomplete authoring work: DraftingSession
+5. Use applicable RequirementGroups and capability lookups to drive focused
    questions.
-6. Preserve unresolved facts in a Drafting Session.
+6. Preserve unresolved facts in a DraftingSession.
 
-For Software Deployment Pattern work, create or update the Software Deployment
-Pattern first. Create Product Services only for distinct first-party runtime
+For SoftwareDeploymentPattern work, create or update the SoftwareDeploymentPattern first. Create Product Services only for distinct first-party runtime
 behavior needed by that pattern.
 
 ## RA-Guided Drafting
 
-The Draftsman should use Reference Architectures as drafting maps, not as form
-questions. Do not ask the user "what Reference Architecture are you using?"
+The Draftsman should use ReferenceArchitectures as drafting maps, not as form
+questions. Do not ask the user "what ReferenceArchitecture are you using?"
 unless the user is already operating in catalog terms.
 
-For a Software Deployment Pattern session:
+For a SoftwareDeploymentPattern session:
 
 1. Infer the deployment shape from the user's description and source material.
-2. Search the effective catalog for candidate Reference Architectures.
+2. Search the effective catalog for candidate ReferenceArchitectures.
 3. Explain the closest match in plain language and ask for confirmation,
    deviation, or permission to continue without an exact match.
-4. If no suitable Reference Architecture exists, record that gap in the
-   Drafting Session and continue drafting against the active Requirement Groups.
-5. Do not invent a Reference Architecture match to make the session feel
+4. If no suitable ReferenceArchitecture exists, record that gap in the
+   DraftingSession and continue drafting against the active RequirementGroups.
+5. Do not invent a ReferenceArchitecture match to make the session feel
    complete.
 
 ## RA Constraint Enforcement
 
-Reference Architectures may carry a `constraints` block — a list of
+ReferenceArchitectures may carry a `constraints` block — a list of
 compositional rules that the validator enforces against every SDP that declares
 `followsReferenceArchitecture` pointing to that RA.
 
@@ -511,7 +508,7 @@ When an SDP legitimately cannot satisfy an RA constraint (internal-only
 deployment, operator-accepted deviation, etc.) the author should:
 
 1. Document the exception in `architectureNotes.reference_architecture_conformance`.
-2. Reference a Decision Record explaining the rationale.
+2. Reference a DecisionRecord explaining the rationale.
 3. Note that the validator will still report a failure unless the constraint is
    structurally satisfied — the exception is architectural documentation, not a
    validator bypass.
@@ -519,14 +516,14 @@ deployment, operator-accepted deviation, etc.) the author should:
 Example wording:
 
 > This sounds like a web/API/batch/data deployment. I found no exact approved
-> Reference Architecture for that shape, so I will draft the Software
+> ReferenceArchitecture for that shape, so I will draft the Software
 > Deployment Pattern as a candidate and record the missing Reference
 > Architecture as a gap.
 
 ## Composition Closure
 
-A Software Deployment Pattern session is not complete when the top-level
-Software Deployment Pattern validates. The Draftsman must walk the deployable
+A SoftwareDeploymentPattern session is not complete when the top-level
+SoftwareDeploymentPattern validates. The Draftsman must walk the deployable
 object graph until every referenced deployable object is closed, explicitly
 deferred, or recorded as unresolved.
 
@@ -536,17 +533,16 @@ Use this procedure:
 2. Identify the deployable objects in each group.
 3. Resolve or draft each deployable object.
 4. Resolve `runsOn` for each Product Service.
-5. Resolve the delivery model for each Runtime Service, Data Store Service,
-   and Edge/Gateway Service.
+5. Resolve the delivery model for each RuntimeService, DataStoreService,
+   and EdgeGatewayService.
 6. For every self-managed service, resolve the `host` substrate from approved
    Host Standards or ask a catalog-grounded multiple-choice question.
 7. For PaaS, SaaS, appliance, or serverless delivery, record why no
-   self-managed Host is required and apply the appropriate delivery Requirement
-   Group.
-8. Follow each object's Requirement Groups and capability lookups until the
+   self-managed Host is required and apply the appropriate delivery RequirementGroup.
+8. Follow each object's RequirementGroups and capability lookups until the
    graph is closed.
 9. Run the Network Zone and Connection Elicitation procedure (below).
-10. Preserve unresolved choices in the Drafting Session instead of making hidden
+10. Preserve unresolved choices in the DraftingSession instead of making hidden
     assumptions.
 
 The Draftsman must not assume EKS, EC2, Lambda, VM, physical, or container
@@ -554,10 +550,10 @@ placement from a generic hosted-SaaS answer. The correct substrate question
 comes from the service delivery model and the workspace's approved Host
 Standards.
 
-For the `DRAFT Software Deployment Pattern / deployment-targets` requirement,
+For the `DRAFT SoftwareDeploymentPattern / deployment-targets` requirement,
 ask for the deployment boundary or execution context that matters to ownership,
 isolation, and operations. Do not ask for a cloud region unless the source
-material already names a region or an active Requirement Group explicitly
+material already names a region or an active RequirementGroup explicitly
 requires region-level placement. Valid answers may be account boundaries,
 clusters, data centers, customer sites, tenant/environment boundaries, SaaS
 contexts, or another architecture-relevant execution context. Do not invent a
@@ -594,7 +590,7 @@ multiple-choice. If no list is declared, present the standard patterns from
 
 Record the selected pattern's zones as the SDP's `networkZones` list. For
 option D, ask the engineer to name each zone (one question per zone, at most
-three zones before offering to continue in a Drafting Session).
+three zones before offering to continue in a DraftingSession).
 
 ### Phase 2 — Zone Assignment (propose, then confirm exceptions)
 
@@ -620,7 +616,7 @@ explicit `networkZone` value.
 ### Phase 3 — Connection Elicitation (propose-and-confirm, tier by tier)
 
 Ask one yes/no question per tier crossing. Stop after three questions per
-round; continue in a follow-up or Drafting Session if more crossings remain.
+round; continue in a follow-up or DraftingSession if more crossings remain.
 
 **Round A — Tier crossings (yes/no per crossing):**
 
@@ -667,7 +663,7 @@ files to `catalog/relationships/` using the naming convention
 
 Do not ask about same-tier connections during the initial session. If the
 engineer volunteers a same-tier connection record it as a relationship object.
-Otherwise record in the Drafting Session that same-tier connections have not
+Otherwise record in the DraftingSession that same-tier connections have not
 been reviewed.
 
 **Zone-boundary crossings:**
@@ -683,7 +679,7 @@ Follow the same Round B and C pattern for confirmed zone crossings.
 ## Source Provenance
 
 When source material produces or materially changes an artifact, record
-provenance on that artifact itself. A Drafting Session may summarize the
+provenance on that artifact itself. A DraftingSession may summarize the
 overall intake, but it is not sufficient provenance for every generated object.
 
 For repository discovery:
@@ -692,14 +688,14 @@ For repository discovery:
   `architectureNotes.sourceRepository`, `repositoryName`,
   `repositoryPrimaryLanguage`, `observedRuntimeSignals`, and
   `observedManifestPaths` when those facts are available.
-- Software Deployment Patterns generated from repositories should aggregate the
+- SoftwareDeploymentPatterns generated from repositories should aggregate the
   contributing repositories in `architectureNotes.sourceRepositories`.
   Each entry should include the Product Service ref, repository name, repository
   URL, primary language, and runtime signals.
-- If one Software Deployment Pattern groups multiple repositories, record every
-  contributing repository. Do not point only to the shared Drafting Session.
+- If one SoftwareDeploymentPattern groups multiple repositories, record every
+  contributing repository. Do not point only to the shared DraftingSession.
 - If a repository was reviewed but intentionally excluded, keep that decision in
-  the Drafting Session or a Decision Record rather than adding it as pattern
+  the DraftingSession or a DecisionRecord rather than adding it as pattern
   provenance.
 
 ## Artifact Updates
@@ -713,25 +709,25 @@ Resolve update targets in this order:
 5. UID, only when the user or tool already has one
 
 After resolving the object, read the source YAML, matching schema, applicable
-Requirement Groups, related capabilities, and directly related objects. Make the
+RequirementGroups, related capabilities, and directly related objects. Make the
 smallest coherent change, preserve `uid` and references unless validation is
 repairing malformed identity, and validate before presenting completed changes.
 If a user renames an object, keep the `uid` unchanged and append the old display
 name to `aliases`.
 
-## Edge/Gateway Services
+## EdgeGatewayServices
 
-An Edge/Gateway Service maps directly to a vendor product, but it behaves like a
+An EdgeGatewayService maps directly to a vendor product, but it behaves like a
 service without a modeled Host. Because it does not inherit host or
 service requirements through a wrapper, it answers service-like operating
-capabilities directly on the Edge/Gateway Service: authentication, logging,
+capabilities directly on the EdgeGatewayService: authentication, logging,
 monitoring, patch/update model, resilience, configurable surface, failure
 domain, and compliance posture.
 
 ## SDP Completion Interview
 
 When a user asks to complete, fill in gaps for, or review completeness of an
-existing Software Deployment Pattern, run the structured protocol defined in
+existing SoftwareDeploymentPattern, run the structured protocol defined in
 [sdp-completion-interview.md](sdp-completion-interview.md).
 
 The protocol scores the SDP against a ten-dimension completeness rubric,
@@ -841,8 +837,8 @@ output to the user.
 | `Add required field 'uid' with generated value` | Object is missing its stable machine identity | Run `framework/tools/repair_uids.py --workspace <path> --file <relative-path> --uid <generated>` |
 | `Replace malformed uid '...' with generated value` | uid exists but does not match the Crockford Base32 pattern | Run `repair_uids.py` with the suggested generated value |
 | `RA constraint '...' violated` | An SDP following an RA is missing a required object type in a service group | Add a deployable object entry of the required `objectType` and `diagramTier` to the appropriate service group, then resolve the specific catalog object using the Capability Lookup procedure |
-| `Satisfy ... / ...` | An active workspace Requirement Group requires evidence not yet present | Add a `requirementImplementations` entry with `status: satisfied` citing the applicable mechanism, or mark it `not-applicable` if the requirement does not apply |
-| `Set catalogStatus: deprecated` | A Technology Component in the object's graph has passed its vendor end-of-support date | Set `catalogStatus: deprecated` and add `architectureNotes.lifecycleRationale` explaining the transition plan |
+| `Satisfy ... / ...` | An active workspace RequirementGroup requires evidence not yet present | Add a `requirementImplementations` entry with `status: satisfied` citing the applicable mechanism, or mark it `not-applicable` if the requirement does not apply |
+| `Set catalogStatus: deprecated` | A TechnologyComponent in the object's graph has passed its vendor end-of-support date | Set `catalogStatus: deprecated` and add `architectureNotes.lifecycleRationale` explaining the transition plan |
 | `deliveryModel must be one of` | An invalid delivery model value was used | Replace with one of `self-managed`, `saas`, `paas`, `appliance`, `serverless` |
 | `classification must be one of` (technology_component) | Invalid classification field | Replace with one of `software`, `agent`, `operating-system`, `compute-platform` |
 | `relationship must have either target or externalTarget` | A relationship object has neither a catalog target nor an externalTarget name | Set `target` to a catalog UID or `externalTarget` to the external system name |
@@ -850,9 +846,9 @@ output to the user.
 | `relationship target references unknown object` | Relationship target UID not found in catalog | Fix the target UID or add the missing object |
 | `internalComponentRationales['...']` + `does not directly satisfy any applicable requirement` | An internal component is present but does not satisfy a requirement and no rationale explains why | Add `architectureNotes.internalComponentRationales.<uid>` explaining the reason |
 
-## Resuming a Drafting Session
+## Resuming a DraftingSession
 
-A Drafting Session YAML captures all the context needed to continue interrupted
+A DraftingSession YAML captures all the context needed to continue interrupted
 authoring work. To resume from an existing session:
 
 1. Read the session YAML to reconstruct current context.
@@ -864,7 +860,7 @@ authoring work. To resume from an existing session:
    `status: blocked`).
 5. Read `assumptions` to check which working assumptions need confirmation.
 6. Read `resumptionContext` for any additional state stored to avoid re-asking
-   answered questions — for example, the identified Reference Architecture,
+   answered questions — for example, the identified ReferenceArchitecture,
    confirmed delivery models, or scope decisions.
 
 When resuming, lead with a brief summary of what was captured and what is left
@@ -873,7 +869,7 @@ already recorded in the session.
 
 The `resumptionContext` field is for Draftsman-internal session state only. It
 should not duplicate information already expressed in other session fields.
-Typical entries include the matched Reference Architecture UID, the delivery
+Typical entries include the matched ReferenceArchitecture UID, the delivery
 model decisions made so far, and the scope boundary confirmed by the user.
 
 Example:

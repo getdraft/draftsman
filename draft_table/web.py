@@ -246,19 +246,19 @@ def summary_fields(obj: dict[str, Any]) -> list[dict[str, str]]:
 
 def type_label(object_type: str) -> str:
     labels = {
-        "technology_component": "Technology Component",
-        "edge_gateway_service": "Edge/Gateway Service",
+        "technology_component": "TechnologyComponent",
+        "edge_gateway_service": "EdgeGatewayService",
         "host": "Host",
-        "runtime_service": "Runtime Service",
+        "runtime_service": "RuntimeService",
         "data_store_service": "DataStoreService",
         "product_component": "ProductComponent",
-        "edge_gateway_service": "Edge/Gateway Service",
-        "reference_architecture": "Reference Architecture",
-        "software_deployment_pattern": "Software Deployment Pattern",
+        "edge_gateway_service": "EdgeGatewayService",
+        "reference_architecture": "ReferenceArchitecture",
+        "software_deployment_pattern": "SoftwareDeploymentPattern",
         "capability": "Capability",
-        "requirement_group": "Requirement Group",
-        "decision_record": "Decision Record",
-        "drafting_session": "Drafting Session",
+        "requirement_group": "RequirementGroup",
+        "decision_record": "DecisionRecord",
+        "drafting_session": "DraftingSession",
         "domain": "Domain",
     }
     return labels.get(object_type, object_type.replace("_", " ").title() if object_type else "Artifact")
@@ -839,7 +839,7 @@ INDEX_HTML = """<!doctype html>
           <h2>Draftsman Conversation</h2>
           <div class="quick-actions">
             <button class="action-button" data-draftsman-prompt="start setup mode">Start Setup Mode</button>
-            <button class="action-button" data-draftsman-prompt="Start a guided drafting session for one product or system.">Start Drafting Session</button>
+            <button class="action-button" data-draftsman-prompt="Start a guided drafting session for one product or system.">Start DraftingSession</button>
           </div>
           <div class="messages" id="messages">${messageMarkup}</div>
           <label for="upload">Source Material</label>
@@ -863,7 +863,7 @@ INDEX_HTML = """<!doctype html>
         <div class="sidebar-block">
           <h3>Good First Questions</h3>
           <ul class="guide-list">
-            <li>What is a Technology Component?</li>
+            <li>What is a TechnologyComponent?</li>
             <li>Start setup mode.</li>
             <li>What deployable objects already exist for this product?</li>
             <li>Where is the Falcon agent used?</li>
@@ -1049,27 +1049,27 @@ INDEX_HTML = """<!doctype html>
           <section class="section-card">
             <h3>Core Artifacts</h3>
             <ul class="guide-list">
-              <li><strong>Technology Component</strong>: a discrete product, operating system, software package, tool, runtime, or agent.</li>
+              <li><strong>TechnologyComponent</strong>: a discrete product, operating system, software package, tool, runtime, or agent.</li>
               <li><strong>Host</strong>: a reusable compute standard built from an operating system, compute platform, and required operational capabilities.</li>
-              <li><strong>Runtime Service</strong>: a reusable service building block that combines a host or platform with the primary internal component that makes it useful.</li>
+              <li><strong>RuntimeService</strong>: a reusable service building block that combines a host or platform with the primary internal component that makes it useful.</li>
               <li><strong>DataStoreService</strong>: a data service standard with durability, protection, operation, and compliance expectations.</li>
-              <li><strong>Edge/Gateway Service</strong>: a vendor product that behaves like a service but does not expose a host model.</li>
+              <li><strong>EdgeGatewayService</strong>: a vendor product that behaves like a service but does not expose a host model.</li>
             </ul>
           </section>
           <section class="section-card">
             <h3>Architecture Artifacts</h3>
             <ul class="guide-list">
-              <li><strong>Reference Architecture</strong>: a reusable architecture pattern for a class of deployments.</li>
-              <li><strong>Software Deployment Pattern</strong>: the intended deployable shape of a product or system that follows a reference architecture.</li>
-              <li><strong>Decision Record</strong>: a documented architecture decision or risk that affects deployment choices.</li>
-              <li><strong>Drafting Session</strong>: a work-in-progress record for assumptions, source material, generated objects, and unanswered questions.</li>
+              <li><strong>ReferenceArchitecture</strong>: a reusable architecture pattern for a class of deployments.</li>
+              <li><strong>SoftwareDeploymentPattern</strong>: the intended deployable shape of a product or system that follows a reference architecture.</li>
+              <li><strong>DecisionRecord</strong>: a documented architecture decision or risk that affects deployment choices.</li>
+              <li><strong>DraftingSession</strong>: a work-in-progress record for assumptions, source material, generated objects, and unanswered questions.</li>
             </ul>
           </section>
           <section class="section-card">
             <h3>Controls And Completeness</h3>
             <ul class="guide-list">
-              <li><strong>Capability</strong>: a first-class capability that can point the Draftsman to approved Technology Component implementations.</li>
-              <li><strong>Requirement Group</strong>: the required questions an artifact must answer, including always-on definition requirements and workspace-activated controls.</li>
+              <li><strong>Capability</strong>: a first-class capability that can point the Draftsman to approved TechnologyComponent implementations.</li>
+              <li><strong>RequirementGroup</strong>: the required questions an artifact must answer, including always-on definition requirements and workspace-activated controls.</li>
               <li><strong>Validation</strong>: the executable check that confirms objects follow the framework and resolve their relationships.</li>
             </ul>
           </section>
@@ -1196,7 +1196,7 @@ INDEX_HTML = """<!doctype html>
               ['Source', object.source],
               ['Owner', object.owner?.team || object.owner?.contact || ''],
               ['Capabilities', (object.capabilities || []).join(', ')],
-              ['Requirement Groups', (object.requirementGroups || []).join(', ')]
+              ['RequirementGroups', (object.requirementGroups || []).join(', ')]
             ])}
           </section>
           <section class="section-card">

@@ -4,7 +4,7 @@
 
 A Capability is a first-class framework object that names an architecture
 outcome the Draftsman can reason about. Requirements can point to a capability,
-and the Draftsman can then look up the company-approved Technology Components
+and the Draftsman can then look up the company-approved TechnologyComponents
 that implement it.
 
 Capabilities use generated `uid` values like other first-class objects. Humans
@@ -32,7 +32,7 @@ team accountable for deciding which vendor products may satisfy the capability.
 
 When a workspace assigns any implementation lifecycle entries, the effective
 capability must include `owner.team`. That owner is the decision authority for
-moving Technology Components through `candidate`, `preferred`, `existing-only`,
+moving TechnologyComponents through `candidate`, `preferred`, `existing-only`,
 `deprecated`, and `retired`.
 
 ## Requirement Traceability
@@ -40,31 +40,31 @@ moving Technology Components through `candidate`, `preferred`, `existing-only`,
 DRAFT is requirement-first. Requirements create demand for capabilities, and
 capabilities provide the reusable vocabulary for satisfying that demand.
 
-A Capability may be created as `stub` or `incomplete` while a Requirement Group is
+A Capability may be created as `stub` or `incomplete` while a RequirementGroup is
 still being shaped. A Capability must not be marked `complete` until at least
-one Requirement Group requirement references it through `relatedCapability` or
+one RequirementGroup requirement references it through `relatedCapability` or
 a satisfaction mechanism criteria capability. The validator warns on incomplete
 orphan capabilities and fails complete orphan capabilities.
 
 This preserves a many-to-many model: one requirement can point to a capability,
 and one capability can satisfy requirements in multiple groups. A capability
-does not belong to exactly one Requirement Group.
+does not belong to exactly one RequirementGroup.
 
 ## Capability Lookup Procedure
 
 When a requirement names `relatedCapability`, the Draftsman must use this lookup
 procedure:
 
-1. Resolve the Requirement Group requirement.
+1. Resolve the RequirementGroup requirement.
 2. Read `relatedCapability`.
 3. Resolve the capability object from the effective model, checking workspace
    overlays before framework base.
 4. Read `owner` to identify the company decision authority.
 5. Read `implementations`.
 6. Prefer implementations with `lifecycleStatus: preferred`, then `existing-only`.
-7. Present the referenced Technology Component or named configuration as a
+7. Present the referenced TechnologyComponent or named configuration as a
    concrete interview choice.
-8. If no implementation exists, ask which Technology Component should satisfy
+8. If no implementation exists, ask which TechnologyComponent should satisfy
    the capability and flag that the capability owner must approve the lifecycle
    entry.
 
@@ -81,28 +81,28 @@ standard.
 
 Each implementation entry contains:
 
-- `ref`: Technology Component UID
-- `lifecycleStatus`: company disposition for using that Technology Component
-- optional `configuration`: named Technology Component configuration
+- `ref`: TechnologyComponent UID
+- `lifecycleStatus`: company disposition for using that TechnologyComponent
+- optional `configuration`: named TechnologyComponent configuration
 - optional `notes`
 
-The framework keeps vendor support facts on Technology Components in
+The framework keeps vendor support facts on TechnologyComponents in
 `vendorLifecycle`. Company adoption lives here, on the capability mapping.
-Implementation entries must reference Technology Components, not deployable
+Implementation entries must reference TechnologyComponents, not deployable
 service objects or running systems, because lifecycle disposition is a decision
 about a discrete vendor product and version. If a SaaS platform or managed
 service is governed by the lifecycle program, model the vendor product as a
-Technology Component and compose the service-facing architecture separately as
+TechnologyComponent and compose the service-facing architecture separately as
 a deployable object.
 
 ## Acceptable Use Technology View
 
 The generated browser includes an Acceptable Use Technology view. It groups
 capability implementation mappings by domain and shows the capability owner,
-contact, lifecycle status, Technology Component, vendor/product/version,
+contact, lifecycle status, TechnologyComponent, vendor/product/version,
 configuration, and notes. This is the human-readable technology lifecycle table
 for a company workspace.
 
-If a user wants a Technology Component added, retired, or moved between
+If a user wants a TechnologyComponent added, retired, or moved between
 `candidate`, `preferred`, `existing-only`, `deprecated`, and `retired`, the capability
 owner listed in that view is the contact for the change request.

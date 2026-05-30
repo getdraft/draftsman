@@ -24,7 +24,7 @@ class CliTests(unittest.TestCase):
 
         with redirect_stdout(StringIO()), redirect_stderr(StringIO()):
             with self.assertRaises(SystemExit) as context:
-                parser.parse_args(["ask", "What is a Technology Component?"])
+                parser.parse_args(["ask", "What is a TechnologyComponent?"])
 
         self.assertNotEqual(context.exception.code, 0)
 

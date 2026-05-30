@@ -536,36 +536,36 @@ def filter_type_for(obj: dict[str, Any]) -> str:
 def type_label_for(obj: dict[str, Any]) -> str:
     if obj["type"] == "technology_component":
         classification = humanize_slug(str(obj.get("classification", "unknown")))
-        return f"Technology Component / {classification}"
+        return f"TechnologyComponent / {classification}"
     if obj["type"] == "edge_gateway_service":
         delivery_model = str(obj.get("deliveryModel", "self-managed")).replace("-", " ").title()
-        return f"Edge/Gateway Service / {delivery_model}"
+        return f"EdgeGatewayService / {delivery_model}"
     if obj["type"] == "capability":
         return "Capability"
     if obj["type"] == "requirement_group":
-        return "Requirement Group"
+        return "RequirementGroup"
     if obj["type"] == "decision_record":
-        return f"Decision Record / {obj.get('category', 'risk')}"
+        return f"DecisionRecord / {obj.get('category', 'risk')}"
     if obj["type"] == "reference_architecture":
-        return "Reference Architecture"
+        return "ReferenceArchitecture"
     if obj["type"] == "software_deployment_pattern":
-        return "Software Deployment Pattern"
+        return "SoftwareDeploymentPattern"
     if obj["type"] == "drafting_session":
-        return "Drafting Session"
+        return "DraftingSession"
     if obj["type"] == "host":
         return "Host"
     if obj["type"] == "runtime_service":
         delivery_model = str(obj.get("deliveryModel", "")).replace("-", " ").title()
-        return f"Runtime Service / {delivery_model}" if delivery_model else "Runtime Service"
+        return f"RuntimeService / {delivery_model}" if delivery_model else "RuntimeService"
     if obj["type"] == "data_store_service":
         delivery_model = str(obj.get("deliveryModel", "")).replace("-", " ").title()
         return f"DataStoreService / {delivery_model}" if delivery_model else "DataStoreService"
     if obj["type"] == "product_component":
         classification = humanize_slug(str(obj.get("classification", "unknown")))
-        return f"Product Component / {classification}"
+        return f"ProductComponent / {classification}"
     if obj["type"] == "data_component":
         engine = str(obj.get("targetEngine", "")).replace("-", " ").title()
-        return f"Data Component / {engine}" if engine else "Data Component"
+        return f"DataComponent / {engine}" if engine else "DataComponent"
     if obj["type"] == "domain":
         return "Strategy Domain"
     if obj["type"] == "environment_tier":

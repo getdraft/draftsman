@@ -1,8 +1,8 @@
 schemaVersion: '1.0'
 uid: 01KQQ4Q027-K5DR
 type: requirement_group
-name: Service Behavior Requirement Group
-description: Structured checklist of required questions and answers used to define complete and correct self-managed Runtime and Edge/Gateway Services; Data Store Services inherit these service behavior requirements.
+name: Service Behavior RequirementGroup
+description: Structured checklist of required questions and answers used to define complete and correct self-managed Runtime and EdgeGatewayServices; DataStoreServices inherit these service behavior requirements.
 version: 3.0.0
 catalogStatus: complete
 authority:
@@ -29,12 +29,12 @@ requirements:
   validAnswerTypes:
   - field
 - id: primary-technology-component
-  description: A self-managed service must reference the primary Technology Component that provides its runtime, gateway, or data-service function.
+  description: A self-managed service must reference the primary TechnologyComponent that provides its runtime, gateway, or data-service function.
   rationale: A service is not complete until the product or component that performs the service function is explicit.
   canBeSatisfiedBy:
   - mechanism: field
     key: primaryTechnologyComponent
-    example: Reference the main Technology Component such as IIS, SQL Server, NGINX, Java, or another workspace-defined component.
+    example: Reference the main TechnologyComponent such as IIS, SQL Server, NGINX, Java, or another workspace-defined component.
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
@@ -51,11 +51,11 @@ requirements:
   - mechanism: internalComponent
     criteria:
       capability: 01KQQ4Q026-MHJM
-    example: A function Technology Component or installed component that provides the service authentication capability.
+    example: A function TechnologyComponent or installed component that provides the service authentication capability.
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-MHJM
-    example: A named configuration on the function Technology Component that defines the service authentication model.
+    example: A named configuration on the function TechnologyComponent that defines the service authentication model.
   - mechanism: architectureNote
     key: serviceAuthentication
     example: A documented service authentication pattern when the implementation is not expressed directly.
@@ -82,7 +82,7 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-DTJJ
-    example: A function Technology Component configuration that defines how service secrets are sourced.
+    example: A function TechnologyComponent configuration that defines how service secrets are sourced.
   - mechanism: architectureNote
     key: secretsManagement
     example: A documented statement of the service-level secrets pattern.
@@ -102,7 +102,7 @@ requirements:
   - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-D04B
-    example: A relationship object where source is this service and the relationship has the log-management capability, pointing to a modeled central logging Runtime Service, Edge/Gateway Service, or PaaS-delivered service.
+    example: A relationship object where source is this service and the relationship has the log-management capability, pointing to a modeled central logging RuntimeService, EdgeGatewayService, or PaaS-delivered service.
   - mechanism: internalComponent
     criteria:
       capability: 01KQQ4Q026-D04B
@@ -110,7 +110,7 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-D04B
-    example: A function Technology Component configuration that defines service log collection and export.
+    example: A function TechnologyComponent configuration that defines service log collection and export.
   - mechanism: architectureNote
     key: serviceLogging
     example: A documented service logging pattern when modeled indirectly.
@@ -137,7 +137,7 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-98VD
-    example: A function Technology Component configuration that enables service-level health telemetry.
+    example: A function TechnologyComponent configuration that enables service-level health telemetry.
   - mechanism: architectureNote
     key: healthWelfareMonitoring
     example: A documented monitoring and telemetry approach for the service.
@@ -157,7 +157,7 @@ requirements:
   - mechanism: deploymentConfiguration
     criteria:
       quality: availability
-    example: A high-availability deployment configuration on the Runtime or Edge/Gateway Service.
+    example: A high-availability deployment configuration on the Runtime or EdgeGatewayService.
   - mechanism: architectureNote
     key: availabilityModel
     example: A documented statement of the service availability model.
@@ -174,7 +174,7 @@ requirements:
   - mechanism: deploymentConfiguration
     criteria:
       quality: scalability
-    example: An autoscaling deployment configuration on the Runtime or Edge/Gateway Service.
+    example: An autoscaling deployment configuration on the Runtime or EdgeGatewayService.
   - mechanism: architectureNote
     key: scalabilityModel
     example: A documented statement of the service scalability model.

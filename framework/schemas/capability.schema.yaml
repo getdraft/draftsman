@@ -1,7 +1,7 @@
 schemaVersion: '1.0'
 type: capability
 defaultOwnerRole: draft-admin
-aiHint: "A Capability names a technology architecture outcome (e.g., Data Persistence, Container Orchestration, Secrets Management, CI/CD Pipeline) that requirement groups use as a demand signal and resolve to company-approved Technology Component implementations. It is NOT a product name, business process, organizational unit, or business domain label. When generating capabilities — especially in bulk or during a migration — do not create capability objects from product names (ERP, HCM, SIS), product lines, business process labels, or organizational unit names found in source material. Only generate capabilities that represent technology architecture outcomes a requirement group would reference."
+aiHint: "A Capability names a technology architecture outcome (e.g., Data Persistence, Container Orchestration, Secrets Management, CI/CD Pipeline) that requirement groups use as a demand signal and resolve to company-approved TechnologyComponent implementations. It is NOT a product name, business process, organizational unit, or business domain label. When generating capabilities — especially in bulk or during a migration — do not create capability objects from product names (ERP, HCM, SIS), product lines, business process labels, or organizational unit names found in source material. Only generate capabilities that represent technology architecture outcomes a requirement group would reference."
 requiredFields:
 - schemaVersion
 - uid
@@ -39,7 +39,7 @@ fieldDescriptions:
   definitionOwner: Identify the framework, provider, or company team accountable for maintaining the capability definition and vocabulary.
   owner: Identify the company team accountable for lifecycle decisions on this capability; required in the effective workspace when implementations are assigned.
   domain: Reference the owning domain object UID.
-  implementations: List company-approved Technology Component implementations; framework base files must leave this empty because the framework does not make company adoption decisions.
+  implementations: List company-approved TechnologyComponent implementations; framework base files must leave this empty because the framework does not make company adoption decisions.
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name, product-name, or taxonomy changes.
   aliases: List prior or alternate human-readable names that should resolve to this object.
 implementation:
@@ -50,7 +50,7 @@ implementation:
   - configuration
   - notes
   fieldDescriptions:
-    ref: Reference a Technology Component approved to satisfy this capability.
+    ref: Reference a TechnologyComponent approved to satisfy this capability.
     lifecycleStatus: 'Record the company disposition for this implementation: candidate, preferred, existing-only, deprecated, or retired.'
   enumFields:
     lifecycleStatus:

@@ -1,7 +1,7 @@
 schemaVersion: '1.0'
 uid: 01KSF4NHSP-HCPX
 type: requirement_group
-name: Host Compute Profile Requirement Group
+name: Host Compute Profile RequirementGroup
 description: Optional checklist for Hosts covering compute type classification. Activated per workspace; does not fire automatically.
 version: 1.0.0
 catalogStatus: complete

@@ -19,13 +19,13 @@ After initial onboarding, the company should have:
 - tracked workspace metadata in `.draft/workspace.yaml`
 - a small business taxonomy for catalog navigation
 - advisory company vocabulary lists for the first governed choices
-- one or more active Requirement Groups for new drafting work
+- one or more active RequirementGroups for new drafting work
 - owners for the first mapped capabilities
 - a starter acceptable-use technology baseline
 - a few reusable deployable standards
-- one real Drafting Session started from a product, system, repository,
+- one real DraftingSession started from a product, system, repository,
   document, or diagram
-- validation passing, or clear Drafting Session gaps for remaining work
+- validation passing, or clear DraftingSession gaps for remaining work
 
 ## Repo-First Setup
 
@@ -95,7 +95,7 @@ The Draftsman should respond concisely with:
 - the next setup step
 - one focused question
 
-It should record anything to revisit as Drafting Session next steps rather than
+It should record anything to revisit as DraftingSession next steps rather than
 displaying a running backlog of remaining work.
 
 If the selected repo is the upstream framework repo instead of a company
@@ -142,7 +142,7 @@ vocabulary proposal for review.
 
 ## Step 5: Pick The Initial Governance Baseline
 
-Activate the Requirement Groups that should guide new drafting work:
+Activate the RequirementGroups that should guide new drafting work:
 
 ```yaml
 requirements:
@@ -164,13 +164,12 @@ SOC 2, TX-RAMP, NIST CSF, or a company-specific group?
 
 ## Step 6: Seed Acceptable-Use Technology
 
-Technology Components are vendor products, platforms, tools, runtimes, agents,
+TechnologyComponents are vendor products, platforms, tools, runtimes, agents,
 operating systems, and product versions. Capabilities describe reusable needs
 such as authentication, logging, monitoring, patching, backup, compute, and
 database.
 
-The first useful baseline should map common capabilities to the Technology
-Components the company already uses. Each mapped capability needs a company
+The first useful baseline should map common capabilities to the TechnologyComponents the company already uses. Each mapped capability needs a company
 owner who can approve lifecycle choices such as `preferred`, `existing-only`,
 `candidate`, `deprecated`, and `retired`.
 
@@ -185,14 +184,14 @@ monitoring, patching, backup, compute, operating systems, database, and edge?
 
 Draft reusable deployable objects in this order when possible:
 
-1. Technology Components for known products and versions
+1. TechnologyComponents for known products and versions
 2. Hosts for operating system plus compute platform combinations
-3. Runtime Services for web, app, worker, messaging, cache, or runtime behavior
-4. Data Store Services for database, file, object, analytics, and storage
-5. Edge/Gateway Services for WAF, firewall, load balancer, ingress, proxy, or
+3. RuntimeServices for web, app, worker, messaging, cache, or runtime behavior
+4. DataStoreServices for database, file, object, analytics, and storage
+5. EdgeGatewayServices for WAF, firewall, load balancer, ingress, proxy, or
    API gateway behavior
 6. Product Services for first-party runtime behavior
-7. Software Deployment Patterns for complete product deployment shapes
+7. SoftwareDeploymentPatterns for complete product deployment shapes
 
 Choose object type by behavior first. Then choose delivery model:
 
@@ -206,11 +205,11 @@ PaaS, SaaS, and appliance are delivery models, not object types.
 Good first question:
 
 ```text
-Which common deployable standard should we draft first: Host, Runtime Service,
-Data Store Service, or Edge/Gateway Service?
+Which common deployable standard should we draft first: Host, RuntimeService,
+DataStoreService, or EdgeGatewayService?
 ```
 
-## Step 8: Start The First Real Drafting Session
+## Step 8: Start The First Real DraftingSession
 
 The first drafting session should be a guided conversation, not a YAML editing
 exercise. Start with a real product, system, diagram, repository, or source
@@ -221,21 +220,21 @@ The Draftsman should:
 1. identify the product or system being described
 2. extract observed components and deployment facts
 3. separate observations from assumptions
-4. search existing Technology Components and deployable objects before creating
+4. search existing TechnologyComponents and deployable objects before creating
    new ones
-5. identify applicable Requirement Groups from object type, delivery model, and
+5. identify applicable RequirementGroups from object type, delivery model, and
    workspace governance
 6. ask focused follow-up questions for missing required facts
 7. create or update DRAFT objects behind the scenes
 8. run validation before presenting completed work
 
-Unresolved facts should be stored in a Drafting Session, not hidden in prose.
+Unresolved facts should be stored in a DraftingSession, not hidden in prose.
 
 Good first question:
 
 ```text
 Which product, system, diagram, repository, or source document should we use
-for the first guided Drafting Session?
+for the first guided DraftingSession?
 ```
 
 ## Step 9: Validate, Review, And Publish
@@ -268,7 +267,7 @@ Every setup or drafting session should keep users oriented:
 - ask at most three questions at a time
 - keep the live conversation focused on the current step; do not display a
   running backlog of remaining or revisit-later work
-- record uncertainty as assumptions, unresolved questions, or Drafting Session
+- record uncertainty as assumptions, unresolved questions, or DraftingSession
   next steps
 - validate before claiming work is complete
 

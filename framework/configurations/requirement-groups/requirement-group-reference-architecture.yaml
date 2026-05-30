@@ -1,8 +1,8 @@
 schemaVersion: '1.0'
 uid: 01KQQ4Q027-SS2K
 type: requirement_group
-name: Reference Architecture Requirement Group
-description: Structured checklist of required questions and answers used to define a complete and correct Reference Architecture.
+name: ReferenceArchitecture RequirementGroup
+description: Structured checklist of required questions and answers used to define a complete and correct ReferenceArchitecture.
 version: 1.0.0
 catalogStatus: complete
 authority:
@@ -14,8 +14,8 @@ appliesTo:
 - reference_architecture
 requirements:
 - id: pattern-type
-  description: What supported deployment pattern does this Reference Architecture define for application teams?
-  rationale: The Reference Architecture must clearly signal when an application should adopt this deployment pattern to achieve the intended non-functional outcomes.
+  description: What supported deployment pattern does this ReferenceArchitecture define for application teams?
+  rationale: The ReferenceArchitecture must clearly signal when an application should adopt this deployment pattern to achieve the intended non-functional outcomes.
   canBeSatisfiedBy:
   - mechanism: field
     key: patternType
@@ -31,7 +31,7 @@ requirements:
   - architectureNote
 - id: service-groups
   description: How are the required services clustered into service groups and diagram tiers to realize this deployment pattern?
-  rationale: The Reference Architecture should guide downstream Software Deployment Patterns and application teams with the same service-group and tier structure they will use in a real deployment.
+  rationale: The ReferenceArchitecture should guide downstream SoftwareDeploymentPatterns and application teams with the same service-group and tier structure they will use in a real deployment.
   canBeSatisfiedBy:
   - mechanism: field
     key: serviceGroups
@@ -47,8 +47,8 @@ requirements:
   - field
   - internalComponent
 - id: deployment-qualities
-  description: What non-functional deployment qualities is this Reference Architecture intended to deliver, and what pattern-level decisions make that possible?
-  rationale: A Reference Architecture exists to guide application teams toward supported deployment choices that meet availability, recoverability, security, and similar non-functional requirements.
+  description: What non-functional deployment qualities is this ReferenceArchitecture intended to deliver, and what pattern-level decisions make that possible?
+  rationale: A ReferenceArchitecture exists to guide application teams toward supported deployment choices that meet availability, recoverability, security, and similar non-functional requirements.
   canBeSatisfiedBy:
   - mechanism: field
     key: architectureNotes

@@ -1,8 +1,8 @@
 schemaVersion: '1.0'
 uid: 01KQQ4Q027-VBF0
 type: requirement_group
-name: Data Store Service Requirement Group
-description: Additional Data Store Service checklist items extending the service behavior Requirement Group for durable data, recovery, and access control.
+name: DataStoreService RequirementGroup
+description: Additional DataStoreService checklist items extending the service behavior RequirementGroup for durable data, recovery, and access control.
 version: 3.0.0
 catalogStatus: complete
 authority:

@@ -3,6 +3,39 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.32.0 - 2026-05-30
+
+Standardizes how object types are *named in text* on a single PascalCase
+convention across the entire framework — documentation, schema `aiHint`s,
+requirement-group `name:` fields, validation messages, command files, the
+browser template, workspace templates, and the DRAFT application strings. Before
+this release the surface was inconsistent: the same row of `object-types.md`
+could read `RuntimeService` and `Edge/Gateway Service` side by side, and stale
+`Data-at-Rest Service` terminology survived in several files. This release also
+folds the legacy `Data-at-Rest Service` label into `DataStoreService`.
+
+### Added
+
+- **`Object Type Names` section in `naming-conventions.md`**: documents the PascalCase display convention (`TechnologyComponent`, `RuntimeService`, `DataStoreService`, `EdgeGatewayService`, `NetworkService`, `ProductComponent`, `DataComponent`, `ReferenceArchitecture`, `SoftwareDeploymentPattern`, `RequirementGroup`, `DecisionRecord`, `DraftingSession`, `ObjectPatch`, and single-word `Host`/`Capability`/`Domain`), and states explicitly that machine identifiers (snake_case `type` values), schema filenames, and catalog folder names are unchanged.
+
+### Changed
+
+- **Uniform PascalCase object-type labels**: replaced spaced/slashed display forms (`Runtime Service`, `Data Store Service`, `Edge/Gateway Service`, `Technology Component`, `Network Service`, `Product Component`, `Data Component`, `Requirement Group`, `Decision Record`, `Drafting Session`, `Software Deployment Pattern`, `Reference Architecture`, `Object Patch`) with their PascalCase forms wherever they name an object type. This includes requirement-group `name:` fields (e.g. `Data Store Service Requirement Group` → `DataStoreService RequirementGroup`), which is why this is a `0.MINOR.0` contract release.
+- **`Data-at-Rest Service` → `DataStoreService`**: removed the last remaining instances of the superseded label from live docs, templates, the application, and `llms.txt`.
+- **Space/slash/hyphen-insensitive question routing**: `draft_table/draftsman.py` now recognizes both `Technology Component` and `TechnologyComponent` (and the other types) when answering local definition questions, so the new canonical spelling routes correctly.
+
+### Fixed
+
+- **Mixed casing inside single passages**: removed cases where one sentence or table row used both spaced and PascalCase forms of the same type name.
+
+### Compatibility Impact
+
+Display-name change to the contract surface: seven built-in requirement groups have a new `name:` value (the spaced "… Requirement Group" forms become "… RequirementGroup", and "Data Store Service Requirement Group" becomes "DataStoreService RequirementGroup"). The opaque `uid` of every requirement group is unchanged, and `activeRequirementGroups` in `.draft/workspace.yaml` references groups by `uid`, so activation is unaffected. No schema `type` value, schema filename, or catalog folder name changed, so existing catalog YAML continues to validate without edits.
+
+### Migration Notes
+
+No catalog edits are required. Workspaces that reference a built-in requirement group by display name in prose, dashboards, or external docs should update those references to the PascalCase form; workspaces that reference groups by `uid` (the supported mechanism) need no change. If a company workspace maintained its own copy of the old "Data-at-Rest Service" wording in local docs, update it to "DataStoreService" to match the refreshed framework vocabulary.
+
 ## 0.31.2 - 2026-05-30
 
 Realigns the workspace template scaffold (`templates/workspace/`) with the

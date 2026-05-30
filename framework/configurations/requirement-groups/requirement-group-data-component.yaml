@@ -1,8 +1,8 @@
 schemaVersion: '1.0'
 uid: 01KRWRRNM7-VJ5A
 type: requirement_group
-name: Data Component Requirement Group
-description: Built-in checklist for first-party data artifacts deployed onto Data Store Services. Establishes what must be known about a DataComponent — including data classification, PII declaration, and data ownership — before it is considered architecturally complete. Backup and recovery requirements belong on the DataStoreService, not here.
+name: DataComponent RequirementGroup
+description: Built-in checklist for first-party data artifacts deployed onto DataStoreServices. Establishes what must be known about a DataComponent — including data classification, PII declaration, and data ownership — before it is considered architecturally complete. Backup and recovery requirements belong on the DataStoreService, not here.
 version: 1.0.0
 catalogStatus: complete
 authority:

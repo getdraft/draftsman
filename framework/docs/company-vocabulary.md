@@ -46,7 +46,7 @@ DRAFT uses these terms:
 - Non-standard value: present in an object field but not approved in the
   declared vocabulary list.
 - Interview-required value: an explicit unresolved marker such as
-  `drafting-interview-required`; for Software Deployment Pattern deployment
+  `drafting-interview-required`; for SoftwareDeploymentPattern deployment
   targets, `owner-interview-required` remains valid during drafting.
 
 ## Supported Lists
@@ -92,7 +92,7 @@ vocabulary:
 ```
 
 When declared, validation checks
-`architectureNotes.dataClassification` on Software Deployment Patterns and
+`architectureNotes.dataClassification` on SoftwareDeploymentPatterns and
 deployable service objects.
 
 ### Teams
@@ -124,8 +124,7 @@ vocabulary:
 ```
 
 When declared, validation checks
-`architectureNotes.availabilityRequirement` on Software Deployment
-Patterns and deployable service objects.
+`architectureNotes.availabilityRequirement` on SoftwareDeploymentPatterns and deployable service objects.
 
 ### Failure Domains
 
@@ -141,7 +140,7 @@ vocabulary:
 ```
 
 When declared, validation checks `architectureNotes.failureDomain` on
-Software Deployment Patterns and deployable service objects.
+SoftwareDeploymentPatterns and deployable service objects.
 
 ### Connection Protocols
 
@@ -200,8 +199,7 @@ vocabulary:
 ```
 
 When declared, validation checks `networkZones[].id` and
-`serviceGroups[].deployableObjects[].networkZone` on Software Deployment
-Patterns. Zone IDs must be lowercase alphanumeric with hyphens.
+`serviceGroups[].deployableObjects[].networkZone` on SoftwareDeploymentPatterns. Zone IDs must be lowercase alphanumeric with hyphens.
 
 The Draftsman populates this list during the first SDP session that needs
 network zones. It asks one yes/no question ("does your deployment use distinct

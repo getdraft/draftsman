@@ -130,7 +130,7 @@ nextStep:
     relatedObjects: list
   collectionSchemas:
     relatedObjects: objectRef
-aiHint: A Drafting Session captures incomplete AI authoring work, assumptions, source material, generated objects, and unresolved questions.
+aiHint: A DraftingSession captures incomplete AI authoring work, assumptions, source material, generated objects, and unresolved questions.
 fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   type: Use the exact object type declared by the matching schema.

@@ -37,17 +37,16 @@ DRAFT objects to a generated deployment plan.
 MVP outcome:
 
 Define a minimal executable deployment contract that can translate one approved
-Software Deployment Pattern graph into a deployment manifest and dry-run plan.
+SoftwareDeploymentPattern graph into a deployment manifest and dry-run plan.
 
 Acceptance criteria:
 
 - Add a machine-readable deployment target and environment binding contract.
-- Generate a deployment manifest from an approved Software Deployment Pattern
+- Generate a deployment manifest from an approved SoftwareDeploymentPattern
   and its closed deployable object graph.
 - Add one narrow adapter path for dry-run output, even if the first adapter only
   emits a neutral plan format rather than applying infrastructure.
-- Block deployment plan generation when the graph contains unresolved Drafting
-  Session questions, invalid references, not-compliant requirements, or
+- Block deployment plan generation when the graph contains unresolved DraftingSession questions, invalid references, not-compliant requirements, or
   unapproved required objects.
 - Represent secrets only as references, never as literal values.
 - Add validator coverage and documentation for the contract.
@@ -58,7 +57,7 @@ Recommended labels: `v1.0`, `mvp`, `deployment`, `automation`
 
 Problem:
 
-The framework has strong schemas, Requirement Groups, and validation logic, but
+The framework has strong schemas, RequirementGroups, and validation logic, but
 the example catalog does not yet prove a complete product deployment path with
 compliance evidence.
 
@@ -69,13 +68,11 @@ to end.
 
 Acceptance criteria:
 
-- Include Technology Components, Host, Runtime Service, Data-at-Rest Service,
-  Edge/Gateway Service, Product Service, Reference Architecture, Software
-  Deployment Pattern, Decision Record, and Drafting Session examples.
-- Activate at least one workspace-mode security or compliance Requirement
-  Group.
+- Include TechnologyComponents, Host, RuntimeService, DataStoreService,
+  EdgeGatewayService, Product Service, ReferenceArchitecture, SoftwareDeploymentPattern, DecisionRecord, and DraftingSession examples.
+- Activate at least one workspace-mode security or compliance RequirementGroup.
 - Record valid `requirementImplementations` evidence for the active group.
-- Demonstrate acceptable-use Technology Component mappings through
+- Demonstrate acceptable-use TechnologyComponent mappings through
   capabilities.
 - Ensure the golden workspace validates without warnings.
 - Regenerate the browser so topology, relationships, requirements, evidence,
@@ -108,7 +105,7 @@ Acceptance criteria:
 - Map validation failures to actionable repair steps that the Draftsman can
   propose or perform.
 - Record source provenance on every generated or materially updated artifact.
-- Preserve Drafting Session state so interrupted work can resume without relying
+- Preserve DraftingSession state so interrupted work can resume without relying
   on chat history.
 - Document the minimum supported Git branch, commit, push, and pull request
   path for connected AI tools using the user's credentials.

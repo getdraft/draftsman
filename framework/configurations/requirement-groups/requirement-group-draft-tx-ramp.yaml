@@ -1,7 +1,7 @@
 schemaVersion: '1.0'
 uid: 01KQQ4Q027-1GHC
 type: requirement_group
-name: TX-RAMP Requirement Group
+name: TX-RAMP RequirementGroup
 description: 'Starter TX-RAMP requirement group for DRAFT. This file is intended to map TX-RAMP control expectations onto the unified DRAFT requirement model.
 
   '

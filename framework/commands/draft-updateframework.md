@@ -165,7 +165,7 @@ output. Group errors by the catalog file they affect:
 >
 > **catalog/runtime-services/kubernetes.yaml**
 > — `primary-technology-component`: required field is now mandatory in A.B.C.
->    Add a reference to the Kubernetes Technology Component.
+>    Add a reference to the Kubernetes TechnologyComponent.
 
 Then offer to fix them:
 
