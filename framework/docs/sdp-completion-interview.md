@@ -103,18 +103,18 @@ and ask:
 > What runs inside [group name]? I'll look up catalog options — just give me
 > the component or service name and I'll match it.
 
-Search the catalog for matching Product Services, RuntimeServices,
-DataStoreServices, and EdgeGatewayServices. Present the top matches as
+Search the catalog for matching ProductComponents, RuntimeServices,
+DataStoreServices, and NetworkServices. Present the top matches as
 a numbered list. If an exact match exists, confirm it. If multiple plausible
 matches exist, ask the user to choose.
 
 For each resolved catalog object:
 
 1. Set `diagramTier` based on the object type:
-   - Product Service → infer from component role (API = application, UI =
+   - ProductComponent → infer from component role (API = application, UI =
      presentation, worker = application)
    - DataStoreService → data
-   - EdgeGatewayService → presentation or utility
+   - NetworkService → presentation or utility
    - RuntimeService → utility
    - Ask the user to confirm or correct the inferred tier.
 2. If the catalog object has no entry yet, note that you will draft it and
@@ -153,7 +153,7 @@ Ask one question per platform category. Present each as a yes/no:
 > secrets manager, or feature-flag service? (yes / no)
 
 For each **yes**, search the catalog for the deployable object that represents
-that platform (RuntimeService, DataStoreService, or EdgeGatewayService
+that platform (RuntimeService, DataStoreService, or NetworkService
 with a matching `deliveryModel`). If found, create a relationship object with
 `source` set to the dependent service and `target` set to the platform UID.
 If not found and the user can name the platform, draft the appropriate service
@@ -170,7 +170,7 @@ Ask:
 > SMS/email gateways, state agency data feeds. (yes / no)
 
 For each **yes**, ask the user to name the vendor or service. Check whether a
-TechnologyComponent or EdgeGatewayService already models it. If yes, create
+TechnologyComponent or NetworkService already models it. If yes, create
 a relationship object with `source` set to the calling service and `target` set
 to the catalog UID. If not, create a relationship object using `externalTarget`
 with the vendor name, and note that a catalog object should be created later.

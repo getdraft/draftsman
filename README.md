@@ -160,7 +160,7 @@ does not, it should prepare local changes and give exact review steps.
 
 - [Deployable objects](framework/docs/standards.md)
 - [Delivery models](framework/docs/delivery-models.md)
-- [Product Service](framework/docs/product-service.md)
+- [ProductComponent schema](framework/schemas/product-component.schema.yaml)
 - [ReferenceArchitectures](framework/docs/reference-architectures.md)
 - [SoftwareDeploymentPatterns](framework/docs/software-deployment-patterns.md)
 

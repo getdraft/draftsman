@@ -13,7 +13,7 @@ Object mapping:
   system           → System  (groups components by explicit boundary)
   runtime_service  → Component (spec.type: service)
   data_store_service → Component (spec.type: service)
-  edge_gateway_service → Component (spec.type: service)
+  network_service → Component (spec.type: service)
   product_component  → Component (spec.type: service)
   technology_component → Resource
 
@@ -46,12 +46,12 @@ MAPPABLE_TYPES = {
     "system",
     "runtime_service",
     "data_store_service",
-    "edge_gateway_service",
+    "network_service",
     "product_component",
     "technology_component",
 }
 
-SERVICE_TYPES = {"runtime_service", "data_store_service", "edge_gateway_service", "product_component"}
+SERVICE_TYPES = {"runtime_service", "data_store_service", "network_service", "product_component"}
 SYSTEM_TYPES = {"domain", "system"}
 RESOURCE_TYPES = {"technology_component"}
 

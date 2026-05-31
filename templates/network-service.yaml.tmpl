@@ -1,0 +1,31 @@
+schemaVersion: '1.0'
+uid: <generated-uid>
+type: network_service
+name: <NetworkService Name>
+description: <Reusable network, traffic-control, routing, switching, ingress, load-balancing, WAF, firewall, DNS, WAN, or segmentation service description.>
+version: 1.0.0
+catalogStatus: incomplete
+lifecycleStatus: candidate
+owner:
+  team: <owning-team>
+  contact: <team-or-person@example.com>
+tags:
+- network-service
+deliveryModel: <self-managed|paas|saas|appliance>
+host: <host-uid-if-self-managed>
+primaryTechnologyComponent: <network-technology-component-uid>
+vendor: <vendor-required-for-paas-saas-appliance>
+productName: <product-name-required-for-paas-saas-appliance>
+productVersion: <product-version-required-for-paas-saas-appliance>
+networkFunction: <What this service intrinsically does: routing, switching, load balancing, WAF, firewalling, ingress, DNS, segmentation, WAN transport, etc.>
+networkTopology: <Network segments, zones, routing domains, or traffic paths this service creates or manages.>
+protocols:
+- <protocol-or-traffic-family>
+architectureNotes:
+  placementContext: <Perimeter, internal, data, management, or other SDP/network-zone placement context. Do not use placement alone to choose the object type.>
+  requirementContext: <RequirementGroups may add obligations based on zone, delivery model, capability, or ReferenceArchitecture conformance.>
+decisionRecords:
+- ref: <decision-record-uid-if-applicable>
+internalComponents:
+- ref: <technology-component-or-host-uid>
+  role: <component role inside this service>

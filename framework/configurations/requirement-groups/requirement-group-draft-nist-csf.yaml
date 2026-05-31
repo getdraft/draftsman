@@ -13,7 +13,7 @@ appliesTo:
 - host
 - product_component
 - runtime_service
-- edge_gateway_service
+- network_service
 - software_deployment_pattern
 provider:
   id: provider.draft-framework
@@ -237,7 +237,7 @@ requirements:
   rationale: Record how this object satisfies PR.AA for NIST Cybersecurity Framework.
   appliesTo:
   - runtime_service
-  - edge_gateway_service
+  - network_service
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:

@@ -3,7 +3,7 @@
 ## Purpose
 
 Delivery models explain how a deployable service is operated. They apply to
-RuntimeService, DataStoreService, and EdgeGatewayService objects.
+RuntimeService, DataStoreService, and NetworkService objects.
 
 Delivery models are not object types.
 
@@ -26,4 +26,4 @@ Examples:
 - Amazon ECS Service is a RuntimeService with `deliveryModel: paas`.
 - Amazon RDS PostgreSQL is a DataStoreService with `deliveryModel: paas`.
 - Snowflake is a DataStoreService with `deliveryModel: saas`.
-- F5 BIG-IP WAF is an EdgeGatewayService with `deliveryModel: appliance`.
+- F5 BIG-IP WAF is a NetworkService with `deliveryModel: appliance`.

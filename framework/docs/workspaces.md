@@ -260,8 +260,10 @@ the company wants to manage framework updates manually.
 The end goal is deployable architecture. Catalog objects should capture facts
 that can later inform pipeline and infrastructure automation:
 
-- Hosts, RuntimeServices, DataStoreServices, EdgeGatewayServices, and
-  Product Services describe reusable deployable building blocks.
+- Hosts, RuntimeServices, DataStoreServices, and NetworkServices describe
+  reusable deployable building blocks.
+- ProductComponents describe first-party deployable units that use those
+  building blocks.
 - ReferenceArchitectures describe deployable patterns.
 - SoftwareDeploymentPatterns describe product deployment reality.
 - Capabilities describe architecture outcomes, company decision owners, and

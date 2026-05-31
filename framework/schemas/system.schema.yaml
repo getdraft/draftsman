@@ -44,7 +44,7 @@ systemContainer:
     role: str
     notes: str
   fieldDescriptions:
-    ref: UID of a deployable catalog object that is part of this system boundary (runtime_service, data_store_service, edge_gateway_service, product_component).
+    ref: UID of a deployable catalog object that is part of this system boundary (runtime_service, data_store_service, network_service, product_component).
     role: Optional label describing this container's role within the system boundary.
     notes: Any additional context about this container's inclusion.
 externalActor:

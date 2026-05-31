@@ -55,7 +55,7 @@ DRAFT uses these terms:
 
 Deployment targets describe execution boundaries such as cloud regions, cloud
 accounts, Kubernetes clusters, colocations, SaaS tenants, customer sites, or
-edge locations.
+network edge locations.
 
 ```yaml
 vocabulary:
@@ -189,7 +189,7 @@ vocabulary:
     values:
       - id: public
         name: Public
-        description: Internet-facing services and edge components.
+        description: Internet-facing services and network boundary components.
       - id: private
         name: Private
         description: Internal application and data services.

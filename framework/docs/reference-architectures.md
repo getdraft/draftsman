@@ -29,7 +29,7 @@ declarations, remove internal names), then submit a pull request.
 Framework-level RAs use `objectType` instead of `ref` in `deployableObjects`
 entries. `objectType` declares the expected catalog object type without pinning
 to a specific company catalog object. The company catalog defines which specific
-Host, RuntimeService, DataStoreService, or EdgeGatewayService objects satisfy
+Host, RuntimeService, DataStoreService, or NetworkService objects satisfy
 each role when the SDP is drafted.
 
 When a company authors their own RA or extends a framework RA, they may use
@@ -42,6 +42,14 @@ A ReferenceArchitecture is a deployment pattern. It tells application
 teams which reusable building blocks and pattern-level decisions they should
 adopt when they need a supported set of non-functional outcomes such as high
 availability, recoverability, security posture, or scaling behavior.
+
+ReferenceArchitectures sit beside RequirementGroups in governance. A
+RequirementGroup defines the obligation and acceptable evidence; a
+ReferenceArchitecture shows a reusable compliant arrangement when the answer
+requires multiple objects, relationships, zones, or capabilities. For example,
+a perimeter-zone web requirement may require traffic to pass through an approved
+WAF NetworkService before it reaches a RuntimeService. That cannot be proven by
+one field on the RuntimeService; it is a pattern and relationship question.
 
 If an engineer asks, "what deployment pattern should I adopt so my application
 gets the right operational qualities here," the answer belongs in a ReferenceArchitecture. If

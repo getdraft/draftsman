@@ -45,7 +45,7 @@ deliberately queued:
 6. Capability owners identified for the first mapped capabilities.
 7. Acceptable-use TechnologyComponents seeded for the most common standards.
 8. Baseline deployable objects started for common Host, RuntimeService,
-   DataStoreService, and Edge/Gateway patterns.
+   DataStoreService, and NetworkService patterns.
 9. One real product, system, diagram, repository, or source document selected
    for the first guided DraftingSession.
 
@@ -191,7 +191,7 @@ standards instead of inventing everything.
 Question:
 
 > Which common deployable standard should we draft first: Host, Runtime
-> Service, DataStoreService, or EdgeGatewayService?
+> Service, DataStoreService, or NetworkService?
 
 ### 7. IDE Integration
 
@@ -320,8 +320,8 @@ Edit `.github/CODEOWNERS`:
 - Replace `YOUR-ORG` with your GitHub organization slug.
 - Set the team handle for `draft-admins` (the team that governs the workspace).
 - Set the team handle for `technology-admins` (the team that owns the shared
-  technology catalog — runtime services, hosts, technology components, edge
-  gateway services, data store services).
+  technology catalog — runtime services, hosts, technology components,
+  NetworkServices, data store services).
 - Add one line per engineering team for their catalog path:
   `catalog/engineering/[team-slug]/   @YOUR-ORG/[github-team-slug]`
 

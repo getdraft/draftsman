@@ -117,7 +117,7 @@ engineering team. They are deployed inside or on top of Architecture Objects.
 
 | Object Type | Use It For |
 |---|---|
-| ProductComponent | A first-party deployable runtime unit — API, worker, scheduler, or service — that uses `runsOn` to reference the RuntimeService, Host, or EdgeGatewayService it is deployed on. |
+| ProductComponent | A first-party deployable runtime unit — API, worker, scheduler, or service — that uses `runsOn` to reference the RuntimeService or Host it is deployed on. |
 | DataComponent | A first-party data schema, dataset, or storage unit that uses `runsOn` to reference the DataStoreService it is deployed on. |
 | SoftwareDeploymentPattern | The intended assembly of deployable objects for a product or product capability. |
 
@@ -132,7 +132,7 @@ Objects run on or connect to.
 | Host | An operational platform that combines compute, operating system, and required host capabilities. |
 | RuntimeService | Reusable runtime behavior such as web, app, cache, worker, messaging, or serverless runtime. |
 | DataStoreService | Durable data behavior such as database, file, object, search, analytics, or storage. |
-| EdgeGatewayService | Boundary behavior such as WAF, firewall, API gateway, load balancer, ingress, proxy, or traffic inspection. |
+| NetworkService | Network or traffic-control behavior such as routing, switching, segmentation, DNS, WAN transport, load balancing, ingress, WAF, firewalling, proxying, or traffic inspection. |
 | ReferenceArchitecture | A reusable deployment approach that SoftwareDeploymentPatterns may follow. |
 
 TechnologyComponents are governed building blocks. They are deployed as ingredients inside hosts and services, but they are not usually the service boundary you review on their own.
@@ -204,14 +204,14 @@ internalComponents:
 
 Hosts describe operational platforms. A useful Host normally references operating system and compute TechnologyComponents, then documents required host capabilities such as monitoring, logging, patching, identity integration, backup, and security tooling.
 
-RuntimeService, DataStoreService, and EdgeGatewayService objects describe reusable behavior delivered through a delivery model:
+RuntimeService, DataStoreService, and NetworkService objects describe reusable behavior delivered through a delivery model:
 
 - `self-managed`
 - `paas`
 - `saas`
 - `appliance`
 
-For Runtime, DataStoreService, and EdgeGatewayServices, the primary TechnologyComponent is the main functional component. Do not add a separate dependency rationale for the primary component when it is the object core.
+For RuntimeService, DataStoreService, and NetworkService objects, the primary TechnologyComponent is the main functional component. Do not add a separate dependency rationale for the primary component when it is the object core.
 
 DataStoreServices should document backup strategy, backup platform, RTO, and RPO. Use an external interaction for a separate backup platform, or use `architectureNotes.backup.platform` when the backup capability is provider-managed inside the service.
 
@@ -225,7 +225,7 @@ At minimum, a ProductComponent needs:
 - `uid`
 - `type: product_component`
 - `name`
-- `runsOn` — referencing the RuntimeService, Host, or EdgeGatewayService it is deployed on
+- `runsOn` — referencing the RuntimeService or Host it is deployed on
 - `catalogStatus`
 - `lifecycleStatus`
 
@@ -488,7 +488,7 @@ Before merging a DRAFT change, check:
 - required schema fields are present
 - references point to real objects
 - TechnologyComponents are specific enough to govern
-- ProductComponents represent first-party runtime behavior and use `runsOn` to reference a RuntimeService, Host, or EdgeGatewayService
+- ProductComponents represent first-party runtime behavior and use `runsOn` to reference a RuntimeService or Host
 - DataComponents represent first-party data schemas or datasets and use `runsOn` to reference a DataStoreService
 - RequirementGroups and implementations are coherent
 - internal components and external interactions either satisfy requirements or have rationale

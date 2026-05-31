@@ -5,7 +5,7 @@ category: host
 subtype: host
 name: AWS Lambda Serverless Host
 description: 'Serverless execution environment provided by AWS Lambda. The host is entirely AWS-managed and blackbox to the
-  organization. Function code is deployed as a Product Service. No OS management, no agent installation, and no patching responsibility
+  organization. Function code is deployed as a ProductComponent. No OS management, no agent installation, and no patching responsibility
   exist at this layer.
 
   '

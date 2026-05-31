@@ -34,6 +34,26 @@ requirements:
 The presence of a YAML file does not activate a workspace-mode group. Activation
 is a build-time workspace decision.
 
+## Applicability Scope
+
+RequirementGroups can scope obligations by more than object type. Object type is
+the intrinsic scope: a Host, RuntimeService, DataStoreService, NetworkService,
+Capability, TechnologyComponent, DecisionRecord, ReferenceArchitecture, or
+SoftwareDeploymentPattern has base questions that come from what it is.
+
+Other obligations come from context. A service placed in a perimeter network
+zone, exposed to partners, delivered as SaaS, processing regulated data, or
+following a particular ReferenceArchitecture may have requirements that the
+same intrinsic object would not have elsewhere. Those requirements should be
+modeled through applicability conditions, SDP placement, capabilities, delivery
+model, and followed ReferenceArchitectures rather than by creating a new object
+type for the context.
+
+ReferenceArchitectures are the companion to RequirementGroups for multi-object
+answers. A RequirementGroup states the obligation; a ReferenceArchitecture can
+show the approved composition of services, zones, relationships, and capabilities
+that satisfies the obligation when one object cannot do so alone.
+
 ## Requirement Entries
 
 A requirement entry includes:
@@ -117,7 +137,7 @@ For SoftwareDeploymentPattern sessions, the Draftsman must also perform
 composition closure. The SoftwareDeploymentPattern RequirementGroup governs
 the root deployment pattern, but every referenced deployable object brings its
 own RequirementGroups. A self-managed RuntimeService, DataStoreService,
-or EdgeGatewayService must satisfy `DRAFT Service Behavior /
+or NetworkService must satisfy `DRAFT Service Behavior /
 runtime-substrate` by referencing the Host Standard it runs on. If the Host is
 unknown, the Draftsman asks from the workspace's approved Host Standards or
 records the missing substrate as an unresolved DraftingSession question.

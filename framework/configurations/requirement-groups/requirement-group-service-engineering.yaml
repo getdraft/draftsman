@@ -2,7 +2,7 @@ schemaVersion: '1.0'
 uid: 01KSF29JTP-SRVE
 type: requirement_group
 name: Service Engineering Practices RequirementGroup
-description: Optional checklist for self-managed Runtime and EdgeGatewayServices covering advanced observability and runtime patterns. Activated per workspace; does not fire automatically.
+description: Optional checklist for self-managed Runtime and NetworkServices covering advanced observability and runtime patterns. Activated per workspace; does not fire automatically.
 version: 1.0.0
 catalogStatus: complete
 authority:
@@ -12,7 +12,7 @@ authority:
 activation: workspace
 appliesTo:
 - runtime_service
-- edge_gateway_service
+- network_service
 requirements:
 - id: application-performance-monitoring
   description: The service may declare how application performance and tracing data is captured.

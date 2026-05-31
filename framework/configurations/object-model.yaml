@@ -57,7 +57,7 @@ leftSections:
     colorKey: architecture
     rows:
       - objects:
-          - typeRef: edge_gateway_service
+          - typeRef: network_service
           - typeRef: runtime_service
           - typeRef: data_store_service
             # layout: spread-3 (three objects → equal gaps, anchored to margins)
@@ -114,8 +114,8 @@ objectTypes:
       - repoUrl · owner · targetEngine
       - dataClassification · containsPII
 
-  edge_gateway_service:
-    displayName: EdgeGatewayService
+  network_service:
+    displayName: NetworkService
     titleFontSize: 10.5
     width: 184
     height: 68
@@ -267,7 +267,7 @@ relationships:
 
   - id: services-composed-of
     from:
-      - edge_gateway_service
+      - network_service
       - runtime_service
       - data_store_service
     to:

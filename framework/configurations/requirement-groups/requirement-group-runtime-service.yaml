@@ -2,7 +2,7 @@ schemaVersion: '1.0'
 uid: 01KQQ4Q027-K5DR
 type: requirement_group
 name: Service Behavior RequirementGroup
-description: Structured checklist of required questions and answers used to define complete and correct self-managed Runtime and EdgeGatewayServices; DataStoreServices inherit these service behavior requirements.
+description: Structured checklist of required questions and answers used to define complete and correct self-managed Runtime and NetworkServices; DataStoreServices inherit these service behavior requirements.
 version: 3.0.0
 catalogStatus: complete
 authority:
@@ -12,7 +12,7 @@ authority:
 activation: always
 appliesTo:
 - runtime_service
-- edge_gateway_service
+- network_service
 appliesToQualifiers:
   deliveryModel: self-managed
 requirements:
@@ -102,7 +102,7 @@ requirements:
   - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-D04B
-    example: A relationship object where source is this service and the relationship has the log-management capability, pointing to a modeled central logging RuntimeService, EdgeGatewayService, or PaaS-delivered service.
+    example: A relationship object where source is this service and the relationship has the log-management capability, pointing to a modeled central logging RuntimeService, NetworkService, or PaaS-delivered service.
   - mechanism: internalComponent
     criteria:
       capability: 01KQQ4Q026-D04B
@@ -157,7 +157,7 @@ requirements:
   - mechanism: deploymentConfiguration
     criteria:
       quality: availability
-    example: A high-availability deployment configuration on the Runtime or EdgeGatewayService.
+    example: A high-availability deployment configuration on the Runtime or NetworkService.
   - mechanism: architectureNote
     key: availabilityModel
     example: A documented statement of the service availability model.
@@ -174,7 +174,7 @@ requirements:
   - mechanism: deploymentConfiguration
     criteria:
       quality: scalability
-    example: An autoscaling deployment configuration on the Runtime or EdgeGatewayService.
+    example: An autoscaling deployment configuration on the Runtime or NetworkService.
   - mechanism: architectureNote
     key: scalabilityModel
     example: A documented statement of the service scalability model.

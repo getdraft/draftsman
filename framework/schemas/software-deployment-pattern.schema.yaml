@@ -141,7 +141,7 @@ serviceGroup:
     deployableObjects: deployableObjectEntry
   fieldDescriptions:
     substrate: >
-      UID of the RuntimeService, Host, or EdgeGatewayService that hosts the
+      UID of the RuntimeService or Host that hosts the
       ProductComponents in this service group. When set, the hosting runtime is
       rendered as the deployment container for this group in the browser and does
       not need to appear as a separate entry in deployableObjects. List only
@@ -157,8 +157,8 @@ serviceGroup:
   aiHint: >
     A service group is one deployment unit within an SDP — a set of objects that
     share a deployment target, network placement, and scaling boundary. Use
-    substrate to declare the hosting runtime (RuntimeService, Host, or
-    EdgeGatewayService) when this group contains ProductComponents; list only the
+    substrate to declare the hosting runtime (RuntimeService or Host) when this
+    group contains ProductComponents; list only the
     ProductComponents in deployableObjects rather than repeating the runtime
     alongside them. For data-tier groups whose primary object is a DataStoreService,
     leave substrate unset and include the DataStoreService in deployableObjects so

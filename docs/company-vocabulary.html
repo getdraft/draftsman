@@ -253,7 +253,7 @@
 <p><code>drafting-interview-required</code>; for SoftwareDeploymentPattern deployment targets, <code>owner-interview-required</code> remains valid during drafting.</p>
 <h2 id="supported-lists">Supported Lists</h2>
 <h3 id="deployment-targets">Deployment Targets</h3>
-<p>Deployment targets describe execution boundaries such as cloud regions, cloud accounts, Kubernetes clusters, colocations, SaaS tenants, customer sites, or edge locations.</p>
+<p>Deployment targets describe execution boundaries such as cloud regions, cloud accounts, Kubernetes clusters, colocations, SaaS tenants, customer sites, or network edge locations.</p>
 <pre><code class="language-yaml">vocabulary:
   deploymentTargets:
     mode: advisory
@@ -336,7 +336,7 @@
     values:
       - id: public
         name: Public
-        description: Internet-facing services and edge components.
+        description: Internet-facing services and network boundary components.
       - id: private
         name: Private
         description: Internal application and data services.

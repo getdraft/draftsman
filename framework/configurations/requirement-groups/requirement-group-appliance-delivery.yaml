@@ -2,7 +2,7 @@ schemaVersion: '1.0'
 uid: 01KQQ4Q027-DSDD
 type: requirement_group
 name: Appliance Delivery RequirementGroup
-description: Structured requirements used when a Runtime, Data Store, or EdgeGatewayService uses appliance delivery and the underlying host is blackbox to the adopter.
+description: Structured requirements used when a Runtime, Data Store, or NetworkService uses appliance delivery and the underlying host is blackbox to the adopter.
 version: 1.1.0
 catalogStatus: complete
 authority:
@@ -13,7 +13,7 @@ activation: always
 appliesTo:
 - runtime_service
 - data_store_service
-- edge_gateway_service
+- network_service
 requirements:
 - id: function
   description: What capabilities does this appliance provide?

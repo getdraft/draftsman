@@ -13,7 +13,7 @@ appliesTo:
 - host
 - product_component
 - runtime_service
-- edge_gateway_service
+- network_service
 - software_deployment_pattern
 provider:
   id: provider.draft-framework
@@ -237,7 +237,7 @@ requirements:
   rationale: Record how this object satisfies CC6 for SOC 2.
   appliesTo:
   - runtime_service
-  - edge_gateway_service
+  - network_service
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:
@@ -258,8 +258,8 @@ requirements:
   externalReference: https://www.aicpa-cima.com/resources/download/2017-trust-services-criteria-with-revised-points-of-focus-2022
 - id: CC6.product_component
   externalControlId: CC6
-  name: Product Service Access and Secrets Controls
-  description: Product Service Access and Secrets Controls
+  name: ProductComponent Access and Secrets Controls
+  description: ProductComponent Access and Secrets Controls
   rationale: Record how this object satisfies CC6 for SOC 2.
   appliesTo:
   - product_component

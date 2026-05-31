@@ -26,6 +26,33 @@ class ValidationTests(unittest.TestCase):
         self.assertTrue(result.ok, result.stdout + result.stderr)
         self.assertIn("Validated", result.stdout)
 
+    def test_edge_gateway_service_has_no_compatibility_schema(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            catalog = workspace / "catalog" / "edge-gateway-services"
+            catalog.mkdir(parents=True, exist_ok=True)
+            (catalog / "edge-gateway-service-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF70-EDGE
+                    type: edge_gateway_service
+                    name: Retired Edge Gateway
+                    deliveryModel: appliance
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("no schema found for type 'edge_gateway_service'", result.stdout)
+
     def test_missing_uid_reports_suggested_value_and_repair_command(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
@@ -551,15 +578,15 @@ requirementGroups:
     def test_appliance_delivery_satisfies_service_like_capabilities_directly(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
-            catalog = workspace / "catalog" / "edge-gateway-services"
+            catalog = workspace / "catalog" / "network-services"
             catalog.mkdir(parents=True)
             (workspace / "configurations").mkdir()
-            (catalog / "edge-gateway-service-aws-alb.yaml").write_text(
+            (catalog / "network-service-aws-alb.yaml").write_text(
                 textwrap.dedent(
                     """
                     schemaVersion: "1.0"
-                    id: edge-gateway.aws-alb
-                    type: edge_gateway_service
+                    id: network-service.aws-alb
+                    type: network_service
                     name: AWS Application Load Balancer
                     deliveryModel: appliance
                     vendor: Amazon Web Services
@@ -1390,13 +1417,13 @@ requirementGroups:
                     catalogStatus: incomplete
                     lifecycleStatus: preferred
                     constraints:
-                      - id: presentation-requires-edge-gateway
-                        description: Presentation tier needs an edge/gateway service.
+                      - id: presentation-requires-network-service
+                        description: Presentation tier needs a network service.
                         when:
                           anyServiceGroup:
                             diagramTier: presentation
                         require:
-                          - objectType: edge_gateway_service
+                          - objectType: network_service
                             diagramTier: presentation
                     """
                 ).strip()
@@ -1454,9 +1481,9 @@ requirementGroups:
             result = validate_workspace(workspace)
 
         self.assertFalse(result.ok, result.stdout + result.stderr)
-        self.assertIn("presentation-requires-edge-gateway", result.stdout)
+        self.assertIn("presentation-requires-network-service", result.stdout)
         self.assertIn("RA constraint", result.stdout)
-        self.assertIn("edge_gateway_service", result.stdout)
+        self.assertIn("network_service", result.stdout)
 
     def test_ra_constraint_satisfied_passes_sdp(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -1474,28 +1501,28 @@ requirementGroups:
                     catalogStatus: incomplete
                     lifecycleStatus: preferred
                     constraints:
-                      - id: presentation-requires-edge-gateway
-                        description: Presentation tier needs an edge/gateway service.
+                      - id: presentation-requires-network-service
+                        description: Presentation tier needs a network service.
                         when:
                           anyServiceGroup:
                             diagramTier: presentation
                         require:
-                          - objectType: edge_gateway_service
+                          - objectType: network_service
                             diagramTier: presentation
                     """
                 ).strip()
                 + "\n",
                 encoding="utf-8",
             )
-            egw_dir = workspace / "catalog" / "edge-gateway-services"
-            egw_dir.mkdir(parents=True, exist_ok=True)
-            (egw_dir / "edge-gateway-service-test.yaml").write_text(
+            network_dir = workspace / "catalog" / "network-services"
+            network_dir.mkdir(parents=True, exist_ok=True)
+            (network_dir / "network-service-test.yaml").write_text(
                 textwrap.dedent(
                     """
                     schemaVersion: "1.0"
                     uid: 01KQS0TF72-EGWS
-                    type: edge_gateway_service
-                    name: Test Edge Gateway
+                    type: network_service
+                    name: Test NetworkService
                     deliveryModel: appliance
                     vendor: Test Vendor
                     productName: Test Gateway
@@ -1563,7 +1590,7 @@ requirementGroups:
             result = validate_workspace(workspace)
 
         self.assertTrue(result.ok, result.stdout + result.stderr)
-        self.assertNotIn("presentation-requires-edge-gateway", result.stdout)
+        self.assertNotIn("presentation-requires-network-service", result.stdout)
 
     def _write_vocabulary_workspace(self, workspace: Path, mode: str) -> None:
         (workspace / ".draft" / "workspace.yaml").write_text(

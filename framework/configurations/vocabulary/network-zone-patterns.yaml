@@ -16,7 +16,7 @@ values:
   - id: public
     name: Public
     tier: frontend
-    description: Internet-facing services and edge components.
+    description: Internet-facing services and network boundary components.
   - id: private
     name: Private
     tier: application

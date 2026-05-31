@@ -158,7 +158,7 @@ requirementImplementation:
     - field
   fieldTypes:
     criteria: dict
-aiHint: A ProductComponent is first-party code authored by the organization and deployed onto a RuntimeService. It is the first-party peer of TechnologyComponent. Define interfaces, network bindings, and environment configuration here when they are declared by the component itself, not by the runtime or infrastructure layer.
+aiHint: A ProductComponent is first-party code authored by the organization and deployed onto a RuntimeService or Host. It is the first-party peer of TechnologyComponent. Define interfaces, network bindings, and environment configuration here when they are declared by the component itself, not by the runtime or infrastructure layer.
 fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name changes.
@@ -167,7 +167,7 @@ fieldDescriptions:
   repoUrl: Record the source repository URL where this component's code is maintained.
   owner: Declare the team that authors and maintains this component.
   runsOn: >
-    UID of the RuntimeService, Host, or EdgeGatewayService this component is
+    UID of the RuntimeService or Host this component is
     deployed on. Optional when the hosting runtime is declared via the serviceGroup
     substrate field in every SDP that references this component — the SDP is the
     canonical deployment context. Set runsOn when a single unambiguous host exists

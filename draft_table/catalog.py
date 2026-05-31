@@ -11,7 +11,7 @@ from .paths import REPO_ROOT, resolve_framework_root, workspace_framework_root
 
 CATALOG_FOLDERS = (
     "technology-components",
-    "edge-gateway-services",
+    "network-services",
     "hosts",
     "runtime-services",
     "data-at-rest-services",

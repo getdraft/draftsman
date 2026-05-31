@@ -33,7 +33,7 @@ SKIP_DIRS = {"tools", "schemas", "docs", "adrs", ".github", ".git", ".draft"}
 CONTAINER_TYPES = {
     "runtime_service",
     "data_store_service",
-    "edge_gateway_service",
+    "network_service",
     "product_component",
 }
 

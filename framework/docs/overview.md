@@ -22,7 +22,7 @@ engineering team. They are deployed inside or on top of Architecture Objects.
 
 | Object Type | Purpose |
 |---|---|
-| ProductComponent | A first-party deployable runtime unit — API, worker, scheduler, or service — that uses `runsOn` to reference the RuntimeService, Host, or EdgeGatewayService it is deployed on. |
+| ProductComponent | A first-party deployable runtime unit — API, worker, scheduler, or service — that uses `runsOn` to reference the RuntimeService or Host it is deployed on. |
 | DataComponent | A first-party data schema, dataset, or storage unit that uses `runsOn` to reference the DataStoreService it is deployed on. |
 | SoftwareDeploymentPattern | The intended assembly of deployable objects for a product or product capability. |
 
@@ -37,8 +37,7 @@ objects run on or connect to.
 | Host | An operational platform that combines an operating system, compute platform, and required host capabilities. |
 | RuntimeService | Reusable runtime behavior such as web, app, cache, worker, messaging, or serverless runtime. |
 | DataStoreService | Durable data behavior such as database, file, object, search, analytics, or storage. |
-| EdgeGatewayService | Boundary behavior such as WAF, firewall, API gateway, load balancer, ingress, proxy, or traffic inspection. |
-| NetworkService | Non-perimeter network fabric infrastructure such as switches, routers, SDN controllers, and WAN appliances that create or manage the network topology other objects depend on. |
+| NetworkService | Network or traffic-control behavior such as routing, switching, segmentation, DNS, WAN transport, load balancing, ingress, WAF, firewalling, proxying, or traffic inspection. |
 | ReferenceArchitecture | A reusable deployment approach that SoftwareDeploymentPatterns may follow. |
 
 ## Non-Deployable Architecture
@@ -55,5 +54,5 @@ objects run on or connect to.
 ## Delivery Models
 
 PaaS, SaaS, appliance, and self-managed describe how a RuntimeService,
-DataStoreService, or EdgeGatewayService is delivered. They are not
+DataStoreService, or NetworkService is delivered. They are not
 separate object types.

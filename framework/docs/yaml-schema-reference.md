@@ -18,10 +18,10 @@ The framework uses two sources of truth for YAML validation:
 | Host | `catalog/hosts/` | [host.schema.yaml](../schemas/host.schema.yaml) | Operational platform built from an operating system, compute platform, and required host capabilities. |
 | RuntimeService | `catalog/runtime-services/` | [runtime-service.schema.yaml](../schemas/runtime-service.schema.yaml) | Reusable runtime behavior such as web, app, cache, worker, messaging, or serverless runtime. |
 | DataStoreService | `catalog/data-store-services/` | [data-store-service.schema.yaml](../schemas/data-store-service.schema.yaml) | Durable data behavior such as database, file, object, search, analytics, or storage. |
-| EdgeGatewayService | `catalog/edge-gateway-services/` | [edge-gateway-service.schema.yaml](../schemas/edge-gateway-service.schema.yaml) | Boundary behavior such as WAF, firewall, API gateway, load balancer, ingress, proxy, or traffic inspection. |
+| NetworkService | `catalog/network-services/` | [network-service.schema.yaml](../schemas/network-service.schema.yaml) | Network or traffic-control behavior such as routing, switching, segmentation, DNS, WAN transport, load balancing, ingress, WAF, firewalling, proxying, or traffic inspection. |
 | ReferenceArchitecture | `catalog/reference-architectures/` | [reference-architecture.schema.yaml](../schemas/reference-architecture.schema.yaml) | Reusable deployment pattern that SoftwareDeploymentPatterns can follow. |
 | SoftwareDeploymentPattern | `catalog/software-deployment-patterns/` | [software-deployment-pattern.schema.yaml](../schemas/software-deployment-pattern.schema.yaml) | Intended product deployment architecture with service groups, deployable object references, business context, and topology metadata. |
-| Product Service | `catalog/product-services/` | [product-service.schema.yaml](../schemas/product-service.schema.yaml) | First-party runtime behavior used inside a SoftwareDeploymentPattern, including internal process, API, dependency, and deployment variant details when needed. |
+| ProductComponent | `catalog/product-components/` | [product-component.schema.yaml](../schemas/product-component.schema.yaml) | First-party runtime behavior used inside a SoftwareDeploymentPattern, including internal process, API, dependency, and deployment variant details when needed. |
 | DecisionRecord | `catalog/decision-records/` | [decision-record.schema.yaml](../schemas/decision-record.schema.yaml) | Risk, decision, mitigation, or follow-up record. |
 | DraftingSession | `catalog/sessions/` | [drafting-session.schema.yaml](../schemas/drafting-session.schema.yaml) | Incomplete authoring state, generated objects, assumptions, and unresolved questions. |
 | Capability | `configurations/capabilities/` | [capability.schema.yaml](../schemas/capability.schema.yaml) | First-class capability with a definition owner, optional company owner, and company-approved TechnologyComponent implementations. |
@@ -29,7 +29,7 @@ The framework uses two sources of truth for YAML validation:
 | Domain | `configurations/domains/` | [domain.schema.yaml](../schemas/domain.schema.yaml) | Groups capability UIDs for strategy navigation. |
 | ObjectPatch | `configurations/object-patches/` | [object-patch.schema.yaml](../schemas/object-patch.schema.yaml) | Workspace overlay that deep-merges selected fields into a base framework object. |
 
-PaaS, SaaS, appliance, and self-managed are `deliveryModel` values on RuntimeService, DataStoreService, and EdgeGatewayService objects. They are not
+PaaS, SaaS, appliance, and self-managed are `deliveryModel` values on RuntimeService, DataStoreService, and NetworkService objects. They are not
 separate object types.
 
 ## Requirement And Capability Flow

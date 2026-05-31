@@ -177,7 +177,7 @@ Good first question:
 
 ```text
 Which enterprise standards should we seed first for identity, logging,
-monitoring, patching, backup, compute, operating systems, database, and edge?
+monitoring, patching, backup, compute, operating systems, database, and network?
 ```
 
 ## Step 7: Draft Baseline Deployable Standards
@@ -188,9 +188,9 @@ Draft reusable deployable objects in this order when possible:
 2. Hosts for operating system plus compute platform combinations
 3. RuntimeServices for web, app, worker, messaging, cache, or runtime behavior
 4. DataStoreServices for database, file, object, analytics, and storage
-5. EdgeGatewayServices for WAF, firewall, load balancer, ingress, proxy, or
+5. NetworkServices for WAF, firewall, load balancer, ingress, proxy, or
    API gateway behavior
-6. Product Services for first-party runtime behavior
+6. ProductComponents for first-party runtime behavior
 7. SoftwareDeploymentPatterns for complete product deployment shapes
 
 Choose object type by behavior first. Then choose delivery model:
@@ -206,7 +206,7 @@ Good first question:
 
 ```text
 Which common deployable standard should we draft first: Host, RuntimeService,
-DataStoreService, or EdgeGatewayService?
+DataStoreService, or NetworkService?
 ```
 
 ## Step 8: Start The First Real DraftingSession

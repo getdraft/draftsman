@@ -27,6 +27,7 @@ optionalFields:
 - networkFunction
 - networkTopology
 - protocols
+- authenticationModel
 - patchingOwner
 - vendorGovernance
 - architectureNotes
@@ -59,6 +60,18 @@ enumFields:
   - paas
   - saas
   - appliance
+  patchingOwner:
+  - provider-managed
+  - organization-scheduled
+  - vendor-managed
+  - aws-managed
+  authenticationModel:
+  - iam
+  - api-key
+  - oauth
+  - saml
+  - other
+  - TBD
 fieldTypes:
   aliases: list
   owner: dict
@@ -72,11 +85,76 @@ fieldTypes:
   vendorGovernance: dict
   protocols: list
   architectureNotes: dict
+  configurations: list
 collectionSchemas:
   internalComponents: internalComponent
   deploymentConfigurations: deploymentConfiguration
+  configurations: configuration
   decisionRecords: decisionRecordRef
   requirementImplementations: requirementImplementation
+dictSubSchemas:
+  vendorGovernance: vendorGovernance
+internalComponent:
+  requiredFields:
+  - ref
+  optionalFields:
+  - role
+  - configuration
+  - notes
+  fieldTypes:
+    ref: str
+    role: str
+    configuration: str
+    notes: str
+  fieldDescriptions:
+    ref: Reference the TechnologyComponent, Host, or deployable object included inside this service.
+    role: Describe the component role inside this service.
+    configuration: Reference a configuration id on the referenced TechnologyComponent when this service uses a specific named variant.
+    notes: Add context that does not belong in role or configuration.
+deploymentConfiguration:
+  requiredFields:
+  - id
+  - name
+  - description
+  optionalFields:
+  - addressesQualities
+  - addsInternalComponents
+  - addsExternalInteractions
+  - addsArchitecturalDecisions
+  - notes
+  enumListFields:
+    addressesQualities:
+    - availability
+    - scalability
+    - recoverability
+  fieldTypes:
+    addressesQualities: list
+    addsInternalComponents: list
+    addsExternalInteractions: list
+    addsArchitecturalDecisions: dict
+configuration:
+  requiredFields:
+  - id
+  - name
+  - description
+  - capabilities
+  fieldTypes:
+    capabilities: list
+vendorGovernance:
+  optionalFields:
+  - dataLeavesInfrastructure
+  - dataResidencyCommitment
+  - dpaNotes
+  - vendorSLA
+  - incidentNotificationProcess
+  fieldTypes:
+    dataLeavesInfrastructure: bool
+  fieldDescriptions:
+    dataLeavesInfrastructure: Set true when data processed by this service leaves organization-controlled infrastructure.
+    dataResidencyCommitment: Describe the vendor's data residency commitment (e.g., EU-only, US-only, configurable).
+    dpaNotes: Record DPA (Data Processing Agreement) notes, reference, or status for this vendor service.
+    vendorSLA: Document the vendor-committed SLA for this service (e.g., 99.9% uptime, 4-hour response).
+    incidentNotificationProcess: Describe how the vendor notifies the organization of incidents or outages.
 requirementImplementation:
   requiredFields:
   - requirementGroup
@@ -112,22 +190,22 @@ fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name changes.
   type: Use network_service exactly.
-  name: Use a clear human-readable name for the network infrastructure service.
+  name: Use a clear human-readable name for the network or traffic-control service.
   deliveryModel: Use self-managed, paas, saas, or appliance to state how this network service is operated.
-  networkFunction: Describe what this device does — routing, switching, segmentation, WAN optimization, DNS, etc.
-  networkTopology: Describe what network segments, zones, or routing domains this device defines or creates.
-  protocols: List the network protocols this device participates in — BGP, OSPF, VLAN, MPLS, etc.
+  networkFunction: Describe what this service intrinsically does — routing, switching, segmentation, WAN optimization, DNS, load balancing, WAF, firewalling, ingress, proxying, traffic inspection, etc.
+  networkTopology: Describe what network segments, zones, routing domains, boundaries, or traffic paths this service defines or manages.
+  protocols: List the network protocols or traffic families this service participates in — BGP, OSPF, VLAN, MPLS, HTTPS, TCP, etc.
   host: For self-managed services, reference the Host this service runs on.
   primaryTechnologyComponent: Reference the main TechnologyComponent that provides the network service function.
   catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition.
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired for this network service.
   aliases: List prior or alternate human-readable names that should resolve to this object.
 aiHint: >
-  A NetworkService represents non-perimeter network fabric infrastructure — switches, routers, SDN
-  controllers, WAN appliances — that creates or manages the network topology other objects depend on.
-  Use networkFunction to describe what this device does, networkTopology to describe what segments or
-  zones it defines, and protocols to list the network protocols it participates in. Use deliveryModel
-  appliance for physical or virtual network appliances; use paas for cloud-managed networking services.
-  Do not use NetworkService for perimeter boundary devices (WAF, API gateway, firewall at the
-  application boundary) — those use EdgeGatewayService. See issue #36 for the boundary definition.
+  A NetworkService represents intrinsic network or traffic-control behavior: routing, switching,
+  segmentation, DNS, WAN transport, load balancing, ingress, WAF, firewalling, proxying, and traffic
+  inspection. Do not choose this type merely because something is in a perimeter or edge zone; choose
+  it because the artifact's intrinsic behavior is network or traffic control. Perimeter, external
+  exposure, tenant boundary, and other placement obligations are contextual RequirementGroup and
+  ReferenceArchitecture concerns expressed through SDP network zones, service groups, relationships,
+  capabilities, and DecisionRecords.
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$

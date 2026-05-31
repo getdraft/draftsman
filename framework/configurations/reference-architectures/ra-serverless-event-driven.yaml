@@ -27,7 +27,7 @@ applicableDefinitionChecklist:
 serviceGroups:
 - name: Ingestion
   deployableObjects:
-  - objectType: edge_gateway_service
+  - objectType: network_service
     diagramTier: presentation
     notes: API gateway or event bus entry point. Routes inbound HTTP requests or events
       to processing functions. Provides authentication, throttling, and payload validation
@@ -62,16 +62,16 @@ architectureNotes:
     state, or any state from a prior invocation. All coordination between function
     instances must use external services — data stores, queues, or distributed caches.
 constraints:
-- id: ingestion-requires-edge-gateway
-  description: Serverless event-driven SDPs with a presentation-tier entry point must declare an edge/gateway service at that boundary.
-  rationale: All inbound traffic must enter through a managed edge boundary before reaching processing functions. The edge/gateway service provides authentication enforcement, throttling, and payload validation that function runtimes should not implement themselves.
+- id: ingestion-requires-network-service
+  description: Serverless event-driven SDPs with a presentation-tier entry point must declare a network service at that boundary.
+  rationale: All inbound traffic must enter through a managed boundary before reaching processing functions. The NetworkService provides authentication enforcement, throttling, and payload validation that function runtimes should not implement themselves.
   when:
     anyServiceGroup:
       diagramTier: presentation
   require:
-  - objectType: edge_gateway_service
+  - objectType: network_service
     diagramTier: presentation
-    notes: Add an edge/gateway service (API gateway or event bus) to the presentation tier. The company catalog defines which specific platform (API Gateway, EventBridge, SNS, etc.) satisfies this role.
+    notes: Add a NetworkService (API gateway or event bus) to the presentation tier. The company catalog defines which specific platform (API Gateway, EventBridge, SNS, etc.) satisfies this role.
 - id: state-requires-data-store-service
   description: Serverless event-driven SDPs that model a data tier must use data_store_service objects for all durable state.
   rationale: Function instances are ephemeral and cannot hold durable state. All cross-invocation state must be externalized into data store services governed by the data-tier requirement groups.

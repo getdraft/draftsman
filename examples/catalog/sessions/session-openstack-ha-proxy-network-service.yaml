@@ -1,0 +1,69 @@
+schemaVersion: '1.0'
+uid: 01KSE5V73Z-VATZ
+type: drafting_session
+name: OpenStack HAProxy NetworkService
+sessionStatus: resolved
+catalogStatus: incomplete
+lifecycleStatus: candidate
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+tags:
+- drafting-session
+- openstack
+- network-service
+- haproxy
+description: Incomplete authoring session for the HAProxy load balancer NetworkService. HAProxy fronts the OpenStack
+  public network zone, distributing API and Horizon traffic across controller nodes. The completed migration records
+  HAProxy as a NetworkService because its intrinsic behavior is traffic distribution and TLS termination; the public-zone
+  obligations come from SDP placement and the followed ReferenceArchitecture.
+primaryObjectType: network_service
+primaryObjectUid: 01KSF29JTP-9HYA
+sourceArtifacts:
+- name: sdp-openstack-iaas-platform.yaml
+  type: catalog-object
+  location: examples/catalog/software-deployment-patterns/sdp-openstack-iaas-platform.yaml
+  notes: HAProxy is referenced in the SDP presentation layer as the HA mechanism for the public network zone.
+- name: OpenStack HA Guide - HAProxy
+  type: external-reference
+  location: https://docs.openstack.org/ha-guide/
+  notes: Upstream HA guide documents HAProxy configuration patterns for multi-controller deployments.
+generatedObjects:
+- name: HAProxy NetworkService
+  type: network_service
+  status: created
+  ref: 01KSF29JTP-9HYA
+  notes: Modeled as a NetworkService co-located on the OpenStack controller host (STCK00000F-HS0F). TLS terminates at
+    HAProxy; backends use HTTP on the control plane network. Added to the SDP presentation tier as the public-zone
+    traffic-control service.
+unresolvedQuestions:
+- id: Q1
+  question: Is HAProxy deployed on dedicated load balancer VMs, or co-located on the same controller nodes as the
+    OpenStack services?
+  status: answered
+  resolution: Co-located on controller nodes (STCK00000F-HS0F). The NetworkService object references the same host as
+    the OpenStack runtime services.
+- id: Q2
+  question: Does HAProxy terminate TLS, or does TLS pass through to the backend services?
+  status: answered
+  resolution: TLS terminated at HAProxy. Backends use HTTP on the control plane network zone.
+assumptions:
+- id: A1
+  statement: HAProxy version in use is 2.4 or later (shipped with Ubuntu 22.04 LTS).
+  rationale: The controller host uses Ubuntu 22.04 LTS per the technology-component catalog.
+  impact: If an older HAProxy version is in use, the NetworkService object may need a TechnologyComponent version
+    override.
+nextSteps:
+- id: NS1
+  action: Confirm HAProxy deployment topology (dedicated VMs vs. co-located) with platform-engineering team.
+  status: done
+  owner: platform-engineering
+- id: NS2
+  action: Confirm TLS termination point.
+  status: done
+  owner: platform-engineering
+- id: NS3
+  action: Create the network_service catalog object once topology is confirmed.
+  status: done
+  notes: network-service-openstack-api-lb.yaml (01KSF29JTP-9HYA) added to catalog and included in the SDP presentation
+    tier.
