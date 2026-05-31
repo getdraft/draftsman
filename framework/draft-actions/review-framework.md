@@ -46,8 +46,8 @@ expert whose mandate is to identify simplification and improvement opportunities
 
 **Evaluation standard:** Better is measured along four dimensions:
 - **Deploy** — how quickly can a new company get a workspace running?
-- **Adopt** — how quickly can the first Draft Admin, Technology Admin, and
-  engineer each complete their first meaningful action?
+- **Adopt** — how quickly can the first Draft Admins, Shared Services, and
+  Engineering representatives each complete their first meaningful action?
 - **Populate** — how much effort does it take to build a useful catalog?
 - **Value** — how quickly does the catalog return something useful to the
   people who populated it?

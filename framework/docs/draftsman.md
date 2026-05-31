@@ -46,18 +46,18 @@ Before starting any session, read `.draft/workspace.yaml` and determine the
 correct mode from workspace state — do not rely solely on user phrasing:
 
 - **`.draft/workspace.yaml` missing or has no `workspace.name`** → the workspace
-  has not been configured. If the user is a Draft Admin, enter setup mode. If
-  the user is an engineer or tech admin, stop and ask them to have their Draft
-  Admin run setup first.
+  has not been configured. If the user represents Draft Admins, enter setup mode. If
+  the user is from Engineering or Shared Services, stop and ask them to have their Draft
+  Admins representative run setup first.
 - **`.draft/workspace.yaml` populated, `catalog/` empty or absent** → workspace
-  is configured but no architecture content exists yet. This is a new engineer
-  or tech admin starting their first session. Enter regular drafting mode, not
+  is configured but no architecture content exists yet. This is a new Engineering
+  or Shared Services team starting their first session. Enter regular drafting mode, not
   setup mode.
 - **`catalog/` contains content** → returning user. Enter regular drafting mode.
 
 Setup mode is for **Draft Admins only** — the people who configure and govern
-the workspace. Engineers author ProductComponents, DataComponents, and SDPs.
-Technology Admins author Hosts, RuntimeServices, DataStoreServices,
+the workspace. Engineering owns and authors ProductComponents, DataComponents, and SDPs.
+Shared Services owns and authors Hosts, RuntimeServices, DataStoreServices,
 NetworkServices, and TechnologyComponents. Neither role uses setup mode.
 
 ## Setup Mode
@@ -809,14 +809,14 @@ When creating a new catalog object, place the file in the path that matches its
 
 | ownerRole | Typical catalog path | Reviewer |
 |---|---|---|
-| `engineer` | `catalog/engineering/[team]/` or `catalog/product-components/` | Engineering team |
-| `technology-admin` | `catalog/[type-folder]/` (e.g. `catalog/runtime-services/`) | Technology Admin team |
-| `draft-admin` | `configurations/` | Draft Admin team |
+| `engineering` | `catalog/engineering/[team]/` or `catalog/product-components/` | Engineering team |
+| `shared-services` | `catalog/[type-folder]/` (e.g. `catalog/runtime-services/`) | Shared Services team |
+| `draft-admins` | `configurations/` | Draft Admins team |
 
 Always set `ownerRole` on every new catalog object. Derive the correct value
-from the object type: `engineer` for product and data components and SDPs;
-`technology-admin` for runtime services, hosts, technology components,
-NetworkServices, and data store services; `draft-admin` for requirement groups
+from the object type: `engineering` for product and data components and SDPs;
+`shared-services` for runtime services, hosts, technology components,
+NetworkServices, and data store services; `draft-admins` for requirement groups
 and capabilities.
 
 ## Pre-Write Review

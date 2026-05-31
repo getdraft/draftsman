@@ -10,7 +10,7 @@ requiredFields:
 - productVersion
 - classification
 - catalogStatus
-defaultOwnerRole: technology-admin
+defaultOwnerRole: shared-services
 optionalFields:
 - aliases
 - description
