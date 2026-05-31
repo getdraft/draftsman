@@ -45,7 +45,6 @@ VALID_REQUIREMENT_SCOPES = {
     "host",
     "runtime_service",
     "data_store_service",
-    "edge_gateway_service",
     "network_service",
     "product_component",
     "data_component",
@@ -69,13 +68,12 @@ STANDARD_TYPES = {
     "host",
     "runtime_service",
     "data_store_service",
-    "edge_gateway_service",
     "network_service",
     "product_component",
     "data_component",
 }
-SERVICE_TYPES = {"runtime_service", "data_store_service", "edge_gateway_service", "network_service"}
-RELATIONSHIP_ENDPOINT_TYPES = STANDARD_TYPES | {"runtime_service", "data_store_service", "edge_gateway_service", "software_deployment_pattern", "reference_architecture", "technology_component", "host"}
+SERVICE_TYPES = {"runtime_service", "data_store_service", "network_service"}
+RELATIONSHIP_ENDPOINT_TYPES = STANDARD_TYPES | {"runtime_service", "data_store_service", "network_service", "software_deployment_pattern", "reference_architecture", "technology_component", "host"}
 BUSINESS_PILLAR_ID_PATTERN = re.compile(r"^business-pillar\.[a-z0-9-]+$")
 UID_PATTERN = re.compile(UID_PATTERN_TEXT)
 WORKSPACE_DOCUMENT_TYPES = {"vocabulary", "vocabulary_proposal"}
@@ -1994,9 +1992,9 @@ def validate_standard(
     if object_type == "product_component":
         runs_on = obj.get("runsOn")
         target = catalog_by_id.get(runs_on) if runs_on else None
-        allowed = {"host", "runtime_service", "edge_gateway_service"}
+        allowed = {"host", "runtime_service"}
         if runs_on and (not target or target.get("type") not in allowed):
-            failures.append(f"{path}: runsOn must reference a Host, RuntimeService, or EdgeGatewayService (got '{runs_on}')")
+            failures.append(f"{path}: runsOn must reference a Host or RuntimeService (got '{runs_on}')")
     if object_type == "data_component":
         runs_on = obj.get("runsOn")
         target = catalog_by_id.get(runs_on) if runs_on else None
@@ -3115,11 +3113,11 @@ def validate_service_group_structure(
                 )
             else:
                 substrate_type = substrate_target.get("type")
-                valid_substrate_types = {"runtime_service", "host", "edge_gateway_service"}
+                valid_substrate_types = {"runtime_service", "host"}
                 if substrate_type not in valid_substrate_types:
                     failures.append(
-                        f"{path}: serviceGroup '{group_name}' substrate must reference a RuntimeService, Host, "
-                        f"or EdgeGatewayService (got type '{substrate_type}')"
+                        f"{path}: serviceGroup '{group_name}' substrate must reference a RuntimeService or Host "
+                        f"(got type '{substrate_type}')"
                     )
 
         for entry in group.get("deployableObjects", []) or []:

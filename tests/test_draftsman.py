@@ -124,7 +124,7 @@ class DraftsmanTests(unittest.TestCase):
         self.assertIn("Ask no more than three questions", prompt)
 
     def test_prompt_explains_appliance_delivery_service_like_capability_answers(self) -> None:
-        prompt = build_draftsman_prompt(REPO_ROOT, None, "Build an appliance-delivered EdgeGatewayService.", {"uploads": []})
+        prompt = build_draftsman_prompt(REPO_ROOT, None, "Build an appliance-delivered NetworkService.", {"uploads": []})
 
         self.assertIn("deliveryModel appliance", prompt)
         self.assertIn("vendor-product", prompt)

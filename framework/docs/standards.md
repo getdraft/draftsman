@@ -8,8 +8,8 @@ blocks. The current framework uses explicit object types instead:
 - Host
 - RuntimeService
 - DataStoreService
-- EdgeGatewayService
-- Product Service
+- NetworkService
+- ProductComponent
 
 For the full object model, see [DRAFT Object Types](object-types.md).
 
@@ -23,8 +23,8 @@ type and delivery model:
 - database, file, object, search, analytics, or storage behavior:
   DataStoreService
 - firewall, WAF, load balancer, API gateway, ingress, or proxy behavior:
-  EdgeGatewayService
-- first-party custom binary or black-box application behavior: Product Service
+  NetworkService
+- first-party custom binary or black-box application behavior: ProductComponent
 
 PaaS, SaaS, appliance, and self-managed describe how a service is delivered.
 They do not create separate object types.

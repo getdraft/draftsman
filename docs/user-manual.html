@@ -1213,7 +1213,7 @@
               <span class="diagram-sub">UML · framework-generated</span>
             </div>
             <div class="diagram-body">
-              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing architecture objects (TechnologyComponent, Host, RuntimeService, DataStoreService, EdgeGatewayService, ProductComponent, SoftwareDeploymentPattern, ReferenceArchitecture) and governance objects (Capability, RequirementGroup, Domain, DecisionRecord, DraftingSession, ObjectPatch) and their relationships">
+              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing architecture objects (TechnologyComponent, Host, RuntimeService, DataStoreService, NetworkService, ProductComponent, SoftwareDeploymentPattern, ReferenceArchitecture) and governance objects (Capability, RequirementGroup, Domain, DecisionRecord, DraftingSession, ObjectPatch) and their relationships">
             </div>
           </div>
         </div>
@@ -1385,7 +1385,7 @@
               <span class="diagram-sub">UML · framework-generated</span>
             </div>
             <div class="diagram-body">
-              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing architecture objects (TechnologyComponent, Host, RuntimeService, DataStoreService, EdgeGatewayService, ProductComponent, SoftwareDeploymentPattern, ReferenceArchitecture) and governance objects (Capability, RequirementGroup, Domain, DecisionRecord, DraftingSession, ObjectPatch) and their relationships">
+              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing architecture objects (TechnologyComponent, Host, RuntimeService, DataStoreService, NetworkService, ProductComponent, SoftwareDeploymentPattern, ReferenceArchitecture) and governance objects (Capability, RequirementGroup, Domain, DecisionRecord, DraftingSession, ObjectPatch) and their relationships">
             </div>
           </div>
         </div>
@@ -1420,13 +1420,13 @@
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Architecture Object</div>
-                <h5>EdgeGatewayService</h5>
-                <p>Boundary behavior such as WAF, firewall, API gateway, load balancer, ingress, proxy, or traffic inspection.</p>
+                <h5>NetworkService</h5>
+                <p>Network or traffic-control behavior such as routing, switching, segmentation, DNS, WAN, load balancing, ingress, WAF, firewalling, proxying, or traffic inspection.</p>
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Architecture Object</div>
                 <h5>ProductComponent</h5>
-                <p>First-party deployable runtime behavior that runs on a selected Host, RuntimeService, DataStoreService, EdgeGatewayService, or equivalent deployable object.</p>
+                <p>First-party deployable runtime behavior that runs on a selected RuntimeService or Host.</p>
               </div>
               <div class="object-card">
                 <div class="object-card-eyebrow">Architecture Object</div>
@@ -1605,7 +1605,7 @@
             tooling.
           </p>
           <p>
-            RuntimeService, DataStoreService, and EdgeGatewayService objects describe
+            RuntimeService, DataStoreService, and NetworkService objects describe
             reusable behavior delivered through a delivery model:
           </p>
           <ul>
@@ -1615,7 +1615,7 @@
             <li><code>appliance</code></li>
           </ul>
           <p>
-            For Runtime, Data Store, and EdgeGatewayServices, the primary TechnologyComponent is the main functional component. Do not add a separate dependency
+            For RuntimeService, DataStoreService, and NetworkService objects, the primary TechnologyComponent is the main functional component. Do not add a separate dependency
             rationale for the primary component when it is the object core.
           </p>
           <p>

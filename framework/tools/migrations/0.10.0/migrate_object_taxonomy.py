@@ -15,7 +15,7 @@ TYPE_MAP = {
     "service_standard": "runtime_service",
     "paas_service_standard": "runtime_service",
     "saas_service_standard": "runtime_service",
-    "appliance_component": "edge_gateway_service",
+    "appliance_component": "network_service",
 }
 
 PRIMARY_TYPE_MAP = {
@@ -24,16 +24,16 @@ PRIMARY_TYPE_MAP = {
     "service_standard": "runtime_service",
     "paas_service_standard": "runtime_service",
     "saas_service_standard": "runtime_service",
-    "appliance_component": "edge_gateway_service",
+    "appliance_component": "network_service",
 }
 
 EXPAND_APPLIES_TO = {
     "host_standard": ["host"],
     "database_standard": ["data_at_rest_service"],
-    "service_standard": ["runtime_service", "edge_gateway_service"],
-    "paas_service_standard": ["runtime_service", "data_at_rest_service", "edge_gateway_service"],
-    "saas_service_standard": ["runtime_service", "data_at_rest_service", "edge_gateway_service"],
-    "appliance_component": ["runtime_service", "data_at_rest_service", "edge_gateway_service"],
+    "service_standard": ["runtime_service", "network_service"],
+    "paas_service_standard": ["runtime_service", "data_at_rest_service", "network_service"],
+    "saas_service_standard": ["runtime_service", "data_at_rest_service", "network_service"],
+    "appliance_component": ["runtime_service", "data_at_rest_service", "network_service"],
 }
 
 TEXT_REPLACEMENTS = {
@@ -58,10 +58,10 @@ TEXT_REPLACEMENTS = {
     "SaaS Service Standards": "SaaS Delivery",
     "saas_service_standard": "runtime_service",
     "saas-services": "runtime-services",
-    "Appliance Component": "Edge/Gateway Service",
-    "Appliance Components": "Edge/Gateway Services",
-    "appliance_component": "edge_gateway_service",
-    "appliance-components": "edge-gateway-services",
+    "Appliance Component": "NetworkService",
+    "Appliance Components": "Network Services",
+    "appliance_component": "network_service",
+    "appliance-components": "network-services",
 }
 
 
@@ -143,14 +143,14 @@ def classify_service_family(path: Path, obj: dict[str, Any]) -> str:
         if any(term in text for term in data_terms):
             return "data_at_rest_service"
         if any(term in text for term in edge_terms):
-            return "edge_gateway_service"
+            return "network_service"
         return "runtime_service"
 
     if old_type == "saas_service_standard":
         if any(term in text for term in ["snowflake", "database", "data warehouse", "object storage", "file"]):
             return "data_at_rest_service"
         if any(term in text for term in ["waf", "firewall", "cdn", "gateway", "proxy"]):
-            return "edge_gateway_service"
+            return "network_service"
         return "runtime_service"
 
     if old_type == "appliance_component":
@@ -158,7 +158,7 @@ def classify_service_family(path: Path, obj: dict[str, Any]) -> str:
             return "data_at_rest_service"
         if any(term in text for term in ["runtime", "lambda", "application"]):
             return "runtime_service"
-        return "edge_gateway_service"
+        return "network_service"
 
     edge_terms = [
         "gateway",
@@ -175,7 +175,7 @@ def classify_service_family(path: Path, obj: dict[str, Any]) -> str:
         "imperva",
     ]
     if any(term in text for term in edge_terms) or any(tag in {"gateway", "waf", "firewall", "edge"} for tag in tags):
-        return "edge_gateway_service"
+        return "network_service"
     return "runtime_service"
 
 
@@ -212,8 +212,8 @@ def migrate_requirement_group(obj: dict[str, Any]) -> bool:
         changed = True
     elif name == "General Service Requirement Group":
         obj["name"] = "Service Behavior Requirement Group"
-        obj["description"] = "Structured checklist of required questions and answers used to define complete and correct Runtime and Edge/Gateway Services."
-        obj["appliesTo"] = ["runtime_service", "edge_gateway_service"]
+        obj["description"] = "Structured checklist of required questions and answers used to define complete and correct Runtime and Network Services."
+        obj["appliesTo"] = ["runtime_service", "network_service"]
         obj.pop("appliesToQualifiers", None)
         changed = True
     elif name == "DBMS Service Requirement Group":
@@ -224,20 +224,20 @@ def migrate_requirement_group(obj: dict[str, Any]) -> bool:
         changed = True
     elif name == "Appliance Component Requirement Group":
         obj["name"] = "Appliance Delivery Requirement Group"
-        obj["description"] = "Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service uses appliance delivery and the underlying host is blackbox to the adopter."
-        obj["appliesTo"] = ["runtime_service", "data_at_rest_service", "edge_gateway_service"]
+        obj["description"] = "Structured requirements used when a Runtime, Data-at-Rest, or NetworkService uses appliance delivery and the underlying host is blackbox to the adopter."
+        obj["appliesTo"] = ["runtime_service", "data_at_rest_service", "network_service"]
         obj["appliesToQualifiers"] = {"deliveryModel": "appliance"}
         changed = True
     elif name == "PaaS Service Requirement Group":
         obj["name"] = "PaaS Delivery Requirement Group"
-        obj["description"] = "Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service is vendor-managed inside the organization's cloud boundary."
-        obj["appliesTo"] = ["runtime_service", "data_at_rest_service", "edge_gateway_service"]
+        obj["description"] = "Structured requirements used when a Runtime, Data-at-Rest, or NetworkService is vendor-managed inside the organization's cloud boundary."
+        obj["appliesTo"] = ["runtime_service", "data_at_rest_service", "network_service"]
         obj["appliesToQualifiers"] = {"deliveryModel": "paas"}
         changed = True
     elif name == "SaaS Service Requirement Group":
         obj["name"] = "SaaS Delivery Requirement Group"
-        obj["description"] = "Structured requirements used when a Runtime, Data-at-Rest, or Edge/Gateway Service is consumed as a vendor-managed external service."
-        obj["appliesTo"] = ["runtime_service", "data_at_rest_service", "edge_gateway_service"]
+        obj["description"] = "Structured requirements used when a Runtime, Data-at-Rest, or NetworkService is consumed as a vendor-managed external service."
+        obj["appliesTo"] = ["runtime_service", "data_at_rest_service", "network_service"]
         obj["appliesToQualifiers"] = {"deliveryModel": "saas"}
         changed = True
     return changed
@@ -311,7 +311,7 @@ def target_path_for(path: Path, root: Path, obj: dict[str, Any]) -> Path:
     folder_by_type = {
         "host": "hosts",
         "runtime_service": "runtime-services",
-        "edge_gateway_service": "edge-gateway-services",
+        "network_service": "network-services",
         "data_at_rest_service": "data-at-rest-services",
     }
     old_catalog_folders = {
@@ -334,7 +334,7 @@ def target_path_for(path: Path, root: Path, obj: dict[str, Any]) -> Path:
     filename = filename.replace("database-standard", "data-at-rest-service")
     filename = filename.replace("paas-service", str(obj.get("type") or "runtime-service").replace("_", "-"))
     filename = filename.replace("saas-service", str(obj.get("type") or "runtime-service").replace("_", "-"))
-    filename = filename.replace("appliance", str(obj.get("type") or "edge-gateway-service").replace("_", "-"))
+    filename = filename.replace("appliance", str(obj.get("type") or "network-service").replace("_", "-"))
     parts[-1] = filename
     return root.joinpath(*parts)
 

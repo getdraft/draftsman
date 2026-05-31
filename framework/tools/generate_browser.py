@@ -44,11 +44,10 @@ CATALOG_FOLDERS = [
     "requirement-groups",
     "object-patches",
     "technology-components",
-    "edge-gateway-services",
+    "network-services",
     "hosts",
     "runtime-services",
     "data-store-services",
-    "network-services",
     "product-components",
     "data-components",
     "decision-records",
@@ -95,11 +94,11 @@ UID_PATTERN = re.compile(r"^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$")
 
 
 def is_saas_service_classification(obj: dict[str, Any]) -> bool:
-    return obj.get("type") in {"runtime_service", "data_store_service", "edge_gateway_service"} and obj.get("deliveryModel") == "saas"
+    return obj.get("type") in {"runtime_service", "data_store_service", "network_service"} and obj.get("deliveryModel") == "saas"
 
 
 def is_paas_service_classification(obj: dict[str, Any]) -> bool:
-    return obj.get("type") in {"runtime_service", "data_store_service", "edge_gateway_service"} and obj.get("deliveryModel") == "paas"
+    return obj.get("type") in {"runtime_service", "data_store_service", "network_service"} and obj.get("deliveryModel") == "paas"
 
 
 def is_database_service(obj: dict[str, Any]) -> bool:
@@ -512,7 +511,7 @@ def shape_for(obj: dict[str, Any]) -> str:
         return "round-rectangle"
     if obj["type"] == "technology_component":
         return "ellipse"
-    if obj["type"] == "edge_gateway_service":
+    if obj["type"] == "network_service":
         return "diamond"
     if obj["type"] in {"host", "runtime_service", "data_store_service"}:
         return "round-rectangle" if obj["type"] == "host" else "diamond"
@@ -537,9 +536,9 @@ def type_label_for(obj: dict[str, Any]) -> str:
     if obj["type"] == "technology_component":
         classification = humanize_slug(str(obj.get("classification", "unknown")))
         return f"TechnologyComponent / {classification}"
-    if obj["type"] == "edge_gateway_service":
+    if obj["type"] == "network_service":
         delivery_model = str(obj.get("deliveryModel", "self-managed")).replace("-", " ").title()
-        return f"EdgeGatewayService / {delivery_model}"
+        return f"NetworkService / {delivery_model}"
     if obj["type"] == "capability":
         return "Capability"
     if obj["type"] == "requirement_group":
@@ -836,7 +835,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
         "host",
         "runtime_service",
         "data_store_service",
-        "edge_gateway_service",
+        "network_service",
         "product_component",
         "data_component",
     }

@@ -2,7 +2,7 @@ schemaVersion: '1.0'
 uid: 01KQQ4Q027-FKRM
 type: requirement_group
 name: SaaS Delivery RequirementGroup
-description: Structured requirements used when a Runtime, Data Store, or EdgeGatewayService is consumed as a vendor-managed external service.
+description: Structured requirements used when a Runtime, Data Store, or NetworkService is consumed as a vendor-managed external service.
 version: 1.0.0
 catalogStatus: complete
 authority:
@@ -13,7 +13,7 @@ activation: always
 appliesTo:
 - runtime_service
 - data_store_service
-- edge_gateway_service
+- network_service
 requirements:
 - id: function
   description: What capability does this SaaS service provide?

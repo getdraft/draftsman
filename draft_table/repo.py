@@ -14,7 +14,7 @@ from .paths import DEFAULT_WORKSPACE_PARENT, REPO_ROOT, resolve_framework_root, 
 WORKSPACE_DIRS = (
     "catalog",
     "catalog/technology-components",
-    "catalog/edge-gateway-services",
+    "catalog/network-services",
     "catalog/hosts",
     "catalog/runtime-services",
     "catalog/data-at-rest-services",

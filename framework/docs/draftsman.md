@@ -58,7 +58,7 @@ correct mode from workspace state — do not rely solely on user phrasing:
 Setup mode is for **Draft Admins only** — the people who configure and govern
 the workspace. Engineers author ProductComponents, DataComponents, and SDPs.
 Technology Admins author Hosts, RuntimeServices, DataStoreServices,
-EdgeGatewayServices, and TechnologyComponents. Neither role uses setup mode.
+NetworkServices, and TechnologyComponents. Neither role uses setup mode.
 
 ## Setup Mode
 
@@ -152,13 +152,17 @@ by many engineering objects. This is the primary mechanism for catalog scale.
 - A **RuntimeService** is authored by a Technology Admin and reused by every
   ProductComponent that runs on it. A company with fifty microservices on the
   same Kubernetes deployment has one RuntimeService, not fifty.
+- A **NetworkService** is authored by a Technology Admin for reusable network
+  and traffic-control behavior such as routing, switching, load balancing, WAF,
+  firewalling, ingress, DNS, WAN, or segmentation.
 - A **TechnologyComponent** is authored once per vendor product version and
-  referenced by every Host, RuntimeService, or DataStoreService that uses it.
+  referenced by every Host, RuntimeService, DataStoreService, or NetworkService
+  that uses it.
 - A **ReferenceArchitecture** is authored once and followed by every SDP that
   fits that deployment shape.
 
 Before creating any infrastructure object (Host, RuntimeService, DataStoreService,
-EdgeGatewayService, TechnologyComponent), search the effective catalog. If a
+NetworkService, TechnologyComponent), search the effective catalog. If a
 matching object exists, reference it — do not create a duplicate. Creating
 duplicate infrastructure objects is always wrong. When no matching object exists,
 stub one and record it as a DraftingSession item for the Technology Admin to
@@ -314,8 +318,8 @@ TechnologyComponent should satisfy it for this host, so the capability owner
 can review it?"
 
 Capability implementations must reference TechnologyComponents only. Do not
-put a Host, RuntimeService, DataStoreService, EdgeGatewayService,
-Product Service, SoftwareDeploymentPattern, or running service in a capability
+put a Host, RuntimeService, DataStoreService, NetworkService,
+ProductComponent, SoftwareDeploymentPattern, or running service in a capability
 lifecycle list. If a SaaS or managed platform is governed by lifecycle, model
 the vendor product and version as a TechnologyComponent, then compose the
 architecture-facing deployable object from it.
@@ -325,7 +329,7 @@ logging, identity, monitoring, security monitoring, patching, or secrets
 management, search for a modeled deployable object first. If it exists, author
 a relationship object with that object as the `target`. If it does not exist
 and the user can identify the platform, create the appropriate RuntimeService,
-DataStoreService, or EdgeGatewayService with the correct `deliveryModel`
+DataStoreService, or NetworkService with the correct `deliveryModel`
 before writing the relationship. For external systems with no catalog
 representation, use `externalTarget` on the relationship instead.
 
@@ -424,7 +428,7 @@ source material:
 4. Choose the right artifact family:
    - actual product deployment: SoftwareDeploymentPattern
    - reusable deployment pattern: ReferenceArchitecture
-   - reusable runtime substrate: Host, RuntimeService, DataStoreService, or EdgeGatewayService
+   - reusable infrastructure service: Host, RuntimeService, DataStoreService, or NetworkService
    - third-party product, OS, platform, software, or agent: TechnologyComponent
    - vendor product that behaves like a service with no modeled host: service object with `deliveryModel: appliance`
    - vendor-managed platform dependency: service object with `deliveryModel: paas`
@@ -435,7 +439,7 @@ source material:
    questions.
 6. Preserve unresolved facts in a DraftingSession.
 
-For SoftwareDeploymentPattern work, create or update the SoftwareDeploymentPattern first. Create Product Services only for distinct first-party runtime
+For SoftwareDeploymentPattern work, create or update the SoftwareDeploymentPattern first. Create ProductComponents only for distinct first-party runtime
 behavior needed by that pattern.
 
 ## RA-Guided Drafting
@@ -483,7 +487,7 @@ resolution is a two-step lookup — not a free choice:
 
 1. **Identify what is required.** The constraint names an `objectType` (and
    optionally a `diagramTier`). This is the pattern requirement: "the SDP
-   needs an `edge_gateway_service` here."
+   needs a `network_service` here."
 2. **Resolve which catalog object satisfies it.** Search the effective catalog
    for objects of that type with `lifecycleStatus: preferred`. That is the
    company's current acceptable-use answer to "which one." If no `preferred`
@@ -497,10 +501,10 @@ SDP authors get the right answer automatically without the RA ever changing.
 
 Example: drafting an SDP that follows the Three-Tier Web RA. The user declares
 a presentation-tier runtime service. The Draftsman evaluates constraints, finds
-`presentation-tier-requires-edge-gateway` firing, checks the SDP's service
-groups, finds no `edge_gateway_service`, then searches the catalog for a
-`preferred` `edge_gateway_service` and proposes it. If the company has five
-edge/gateway products, only the `preferred` one is proposed.
+`presentation-tier-requires-network-service` firing, checks the SDP's service
+groups, finds no `network_service`, then searches the catalog for a
+`preferred` `network_service` and proposes it. If the company has five
+network or traffic-control products, only the `preferred` one is proposed.
 
 **Exception handling:**
 
@@ -532,9 +536,9 @@ Use this procedure:
 1. Identify the service groups.
 2. Identify the deployable objects in each group.
 3. Resolve or draft each deployable object.
-4. Resolve `runsOn` for each Product Service.
+4. Resolve `runsOn` for each ProductComponent.
 5. Resolve the delivery model for each RuntimeService, DataStoreService,
-   and EdgeGatewayService.
+   and NetworkService.
 6. For every self-managed service, resolve the `host` substrate from approved
    Host Standards or ask a catalog-grounded multiple-choice question.
 7. For PaaS, SaaS, appliance, or serverless delivery, record why no
@@ -684,13 +688,13 @@ overall intake, but it is not sufficient provenance for every generated object.
 
 For repository discovery:
 
-- Product Services should record their direct repository evidence in
+- ProductComponents should record their direct repository evidence in
   `architectureNotes.sourceRepository`, `repositoryName`,
   `repositoryPrimaryLanguage`, `observedRuntimeSignals`, and
   `observedManifestPaths` when those facts are available.
 - SoftwareDeploymentPatterns generated from repositories should aggregate the
   contributing repositories in `architectureNotes.sourceRepositories`.
-  Each entry should include the Product Service ref, repository name, repository
+  Each entry should include the ProductComponent ref, repository name, repository
   URL, primary language, and runtime signals.
 - If one SoftwareDeploymentPattern groups multiple repositories, record every
   contributing repository. Do not point only to the shared DraftingSession.
@@ -715,14 +719,21 @@ repairing malformed identity, and validate before presenting completed changes.
 If a user renames an object, keep the `uid` unchanged and append the old display
 name to `aliases`.
 
-## EdgeGatewayServices
+## NetworkServices
 
-An EdgeGatewayService maps directly to a vendor product, but it behaves like a
-service without a modeled Host. Because it does not inherit host or
-service requirements through a wrapper, it answers service-like operating
-capabilities directly on the EdgeGatewayService: authentication, logging,
-monitoring, patch/update model, resilience, configurable surface, failure
-domain, and compliance posture.
+A NetworkService is the intrinsic object type for network and traffic-control
+behavior: routing, switching, segmentation, DNS, WAN transport, load balancing,
+ingress, WAF, firewalling, proxying, and traffic inspection. Do not select this
+type merely because the service is deployed at the edge or in a perimeter zone;
+placement and exposure are contextual requirement scopes expressed through SDP
+network zones, relationships, capabilities, RequirementGroups, and
+ReferenceArchitectures.
+
+`edge_gateway_service` is no longer a supported object type. Existing objects of
+that type require triage and migration to the intrinsic object type that matches
+their behavior: RuntimeService for execution behavior, DataStoreService for
+persistence behavior, NetworkService for network or traffic-control behavior,
+or Host for operating substrate behavior.
 
 ## SDP Completion Interview
 
@@ -804,8 +815,8 @@ When creating a new catalog object, place the file in the path that matches its
 
 Always set `ownerRole` on every new catalog object. Derive the correct value
 from the object type: `engineer` for product and data components and SDPs;
-`technology-admin` for runtime services, hosts, technology components, edge
-gateway services, and data store services; `draft-admin` for requirement groups
+`technology-admin` for runtime services, hosts, technology components,
+NetworkServices, and data store services; `draft-admin` for requirement groups
 and capabilities.
 
 ## Pre-Write Review

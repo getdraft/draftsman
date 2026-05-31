@@ -8,7 +8,7 @@ and interacts with the Draftsman differently.
 | Role | What they own | How they start |
 |---|---|---|
 | **Draft Admin** | Workspace configuration — vocabulary lists, RequirementGroups, business taxonomy, governance rules | Run setup mode once to configure the workspace |
-| **Technology Admin** | Shared infrastructure — Hosts, RuntimeServices, DataStoreServices, EdgeGatewayServices, TechnologyComponents | Regular Draftsman session; author reusable building blocks |
+| **Technology Admin** | Shared infrastructure — Hosts, RuntimeServices, DataStoreServices, NetworkServices, TechnologyComponents | Regular Draftsman session; author reusable building blocks |
 | **Engineer** | Product content — ProductComponents, DataComponents, SDPs | Regular Draftsman session; describe their service and the Draftsman handles the rest |
 
 Engineers and Technology Admins never use setup mode. They connect their AI
@@ -27,7 +27,7 @@ The catalog is organized in three layers that compose from bottom to top.
 ├─────────────────────────────────────────────────────┤
 │  INFRASTRUCTURE LAYER  (shared, owned by tech admins│
 │  Host · RuntimeService · DataStoreService           │
-│  EdgeGatewayService · TechnologyComponent           │
+│  NetworkService · TechnologyComponent               │
 │  "What platforms and products do we run on?"        │
 ├─────────────────────────────────────────────────────┤
 │  GOVERNANCE LAYER  (workspace-wide, owned by admins)│

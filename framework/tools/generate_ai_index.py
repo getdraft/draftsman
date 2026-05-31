@@ -54,7 +54,7 @@ EXAMPLE_CATALOG_FOLDERS = [
     "examples/catalog/hosts",
     "examples/catalog/runtime-services",
     "examples/catalog/data-store-services",
-    "examples/catalog/edge-gateway-services",
+    "examples/catalog/network-services",
     "examples/catalog/reference-architectures",
     "examples/catalog/software-deployment-patterns",
     "examples/catalog/product-components",

@@ -69,7 +69,7 @@ to end.
 Acceptance criteria:
 
 - Include TechnologyComponents, Host, RuntimeService, DataStoreService,
-  EdgeGatewayService, Product Service, ReferenceArchitecture, SoftwareDeploymentPattern, DecisionRecord, and DraftingSession examples.
+  NetworkService, ProductComponent, ReferenceArchitecture, SoftwareDeploymentPattern, DecisionRecord, and DraftingSession examples.
 - Activate at least one workspace-mode security or compliance RequirementGroup.
 - Record valid `requirementImplementations` evidence for the active group.
 - Demonstrate acceptable-use TechnologyComponent mappings through

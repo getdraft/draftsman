@@ -53,11 +53,11 @@
   <text x="399.0" y="172.0" font-size="9" fill="#5f564b" text-anchor="middle">repoUrl · owner · targetEngine</text>
   <text x="399.0" y="184.0" font-size="9" fill="#5f564b" text-anchor="middle">dataClassification · containsPII</text>
 
-  <!-- EdgeGatewayService -->
+  <!-- NetworkService -->
   <rect x="18.0" y="242.0" width="184" height="68" rx="6" fill="white" stroke="#2a6fdb" stroke-width="1.5"/>
   <rect x="18.0" y="242.0" width="184" height="26" rx="6" fill="#2a6fdb"/>
   <rect x="18.0" y="262.0" width="184" height="6" fill="#2a6fdb"/>
-  <text x="110.0" y="259.0" font-size="10.5" fill="white" text-anchor="middle" font-weight="700">EdgeGatewayService</text>
+  <text x="110.0" y="259.0" font-size="10.5" fill="white" text-anchor="middle" font-weight="700">NetworkService</text>
   <text x="110.0" y="278.5" font-size="9" fill="#5f564b" text-anchor="middle">WAF · API GW · LB · proxy</text>
   <text x="110.0" y="289.0" font-size="9" fill="#5f564b" text-anchor="middle">traffic management</text>
   <text x="110.0" y="299.5" font-size="8" fill="#888" text-anchor="middle" font-style="italic">not a code execution env</text>

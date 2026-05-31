@@ -74,7 +74,7 @@ requirements:
   - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-D04B
-    example: A relationship object where source is this host and the relationship has the log-management capability, pointing to a modeled central logging RuntimeService, EdgeGatewayService, or PaaS-delivered service.
+    example: A relationship object where source is this host and the relationship has the log-management capability, pointing to a modeled central logging RuntimeService, NetworkService, or PaaS-delivered service.
   - mechanism: internalComponent
     criteria:
       capability: 01KQQ4Q026-D04B

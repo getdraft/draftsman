@@ -30,8 +30,9 @@ vendor a reviewed framework copy under `.draft/framework/`.
   messaging, or serverless runtime.
 - DataStoreService: durable data behavior such as database, file, object,
   search, analytics, or storage.
-- EdgeGatewayService: boundary behavior such as WAF, firewall, API gateway,
-  load balancer, ingress, proxy, or traffic inspection.
+- NetworkService: network or traffic-control behavior such as routing,
+  switching, segmentation, DNS, WAN, load balancing, ingress, WAF,
+  firewalling, proxying, or traffic inspection.
 - Delivery Model: self-managed, PaaS, SaaS, and appliance are delivery models
   for service objects, not separate object types.
 - ReferenceArchitecture: a reusable deployment pattern.

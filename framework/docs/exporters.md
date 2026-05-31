@@ -28,7 +28,7 @@ Backstage entity files into `<workspace>/backstage/` (configurable with `--outpu
 | `system` | `System` | Groups components by explicit boundary |
 | `runtime_service` | `Component` (type: service) | |
 | `data_store_service` | `Component` (type: service) | |
-| `edge_gateway_service` | `Component` (type: service) | |
+| `network_service` | `Component` (type: service) | |
 | `product_component` | `Component` (type: service) | |
 | `technology_component` | `Resource` | |
 

@@ -3,7 +3,7 @@ uid: 01KS8N4KR2-3TWA
 type: reference_architecture
 name: Three-Tier Web Application
 description: Standard pattern for web-facing applications with a presentation tier
-  (edge/gateway services), an application tier (runtime services), and a data tier
+  (network services), an application tier (runtime services), and a data tier
   (data store services). Use this pattern when the deployment serves web or API traffic
   to external users or partners.
 patternType: three-tier
@@ -14,7 +14,7 @@ tags:
 - three-tier
 - web
 applicableDefinitionChecklist:
-- An edge/gateway service must be present in the presentation tier. This is not optional
+- A NetworkService must be present in the presentation tier. This is not optional
   for externally-facing web or API deployments.
 - Application tier services must not be directly internet-facing. All inbound traffic
   flows through the presentation tier.
@@ -25,16 +25,16 @@ applicableDefinitionChecklist:
 serviceGroups:
 - name: Presentation Tier
   deployableObjects:
-  - objectType: edge_gateway_service
+  - objectType: network_service
     diagramTier: presentation
     notes: Traffic inspection and protection service (WAF, application delivery controller,
       or equivalent). Provides DDoS mitigation, rate limiting, and request filtering
       before traffic reaches the application tier. The company catalog defines which
-      edge/gateway service objects satisfy this role.
-  - objectType: edge_gateway_service
+      NetworkService objects satisfy this role.
+  - objectType: network_service
     diagramTier: presentation
     notes: Load balancer distributing stateless traffic across application tier instances.
-      May be combined with the WAF/ADC in a single edge service depending on the chosen
+      May be combined with the WAF/ADC in a single NetworkService depending on the chosen
       platform.
 - name: Application Tier
   deployableObjects:
@@ -52,23 +52,23 @@ architectureNotes:
   patternRationale: The three-tier pattern separates traffic control, application logic,
     and data persistence so that each tier can be governed, scaled, and secured independently.
     The presentation tier is the only tier with direct internet exposure.
-  presentationTierRequirement: An edge/gateway service is required in the presentation
+  presentationTierRequirement: A NetworkService is required in the presentation
     tier for all externally-facing deployments. The Draftsman should surface the company-approved
     WAF or load balancer catalog object when drafting an SDP that follows this pattern.
   dataTierIsolation: Data tier services must not accept direct connections from the
     presentation tier. All data access flows through the application tier. This constraint
     will be enforceable via RA constraints when that feature is available.
 constraints:
-- id: presentation-tier-requires-edge-gateway
-  description: All SDPs with a presentation-tier service must include at least one edge/gateway service in the presentation tier.
-  rationale: The presentation tier is the only tier with direct internet or partner exposure. An edge/gateway service (WAF, application delivery controller, or load balancer) must inspect and distribute traffic before it reaches the application tier. Omitting this layer leaves application services directly addressable from outside the SDP boundary.
+- id: presentation-tier-requires-network-service
+  description: All SDPs with a presentation-tier service must include at least one network service in the presentation tier.
+  rationale: The presentation tier is the only tier with direct internet or partner exposure. A NetworkService (WAF, application delivery controller, or load balancer) must inspect and distribute traffic before it reaches the application tier. Omitting this layer leaves application services directly addressable from outside the SDP boundary.
   when:
     anyServiceGroup:
       diagramTier: presentation
   require:
-  - objectType: edge_gateway_service
+  - objectType: network_service
     diagramTier: presentation
-    notes: Add an edge/gateway service to the presentation tier. The company catalog defines which specific WAF, ADC, or load balancer objects satisfy this role. Internal-only SDPs that operate behind a network boundary without a software edge gateway should document the exception in architectureNotes.reference_architecture_conformance and reference a DecisionRecord.
+    notes: Add a NetworkService to the presentation tier. The company catalog defines which specific WAF, ADC, or load balancer objects satisfy this role. Internal-only SDPs that operate behind a network boundary without a dedicated traffic-control service should document the exception in architectureNotes.reference_architecture_conformance and reference a DecisionRecord.
 - id: data-tier-requires-data-store-service
   description: All SDPs with a data-tier service must model persistent data using data_store_service objects, not runtime services.
   rationale: Modelling persistent data as a data_store_service ensures that backup strategy, encryption-at-rest, and access-control requirements are governed through the data store requirement group. Using a runtime_service for data persistence bypasses data-tier governance controls.

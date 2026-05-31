@@ -147,20 +147,20 @@ const DEPLOYABLE_OBJECT_TYPES = [
   'host',
   'runtime_service',
   'data_store_service',
-  'edge_gateway_service',
+  'network_service',
   'product_component',
   'data_component',
   'product_component',
   'software_deployment_pattern'
 ];
-const SERVICE_OBJECT_TYPES = ['runtime_service', 'data_store_service', 'edge_gateway_service'];
-const DEPLOYABLE_STANDARD_TYPES = ['host', 'runtime_service', 'data_store_service', 'edge_gateway_service', 'product_component', 'data_component', 'product_component'];
+const SERVICE_OBJECT_TYPES = ['runtime_service', 'data_store_service', 'network_service'];
+const DEPLOYABLE_STANDARD_TYPES = ['host', 'runtime_service', 'data_store_service', 'network_service', 'product_component', 'data_component', 'product_component'];
 const CATEGORY_CONFIG = [
   {
     id: 'architecture',
     label: 'Architecture Content',
     filters: [
-      { id: 'all', label: 'All', types: ['software_deployment_pattern', 'reference_architecture', 'host', 'runtime_service', 'data_store_service', 'edge_gateway_service', 'product_component', 'data_component', 'product_component'] },
+      { id: 'all', label: 'All', types: ['software_deployment_pattern', 'reference_architecture', 'host', 'runtime_service', 'data_store_service', 'network_service', 'product_component', 'data_component', 'product_component'] },
       { id: 'software_deployment_pattern', label: 'Software Deployment Patterns', types: ['software_deployment_pattern'] },
       { id: 'reference_architecture', label: 'Reference Architectures', types: ['reference_architecture'] },
       { id: 'deployable_objects', label: 'Deployable Objects', types: DEPLOYABLE_STANDARD_TYPES }
@@ -171,7 +171,7 @@ const CATEGORY_CONFIG = [
       { id: 'host', label: 'Hosts', types: ['host'] },
       { id: 'runtime_service', label: 'Runtime Services', types: ['runtime_service'] },
       { id: 'data_store_service', label: 'DataStoreServices', types: ['data_store_service'] },
-      { id: 'edge_gateway_service', label: 'Edge/Gateway Services', types: ['edge_gateway_service'] },
+      { id: 'network_service', label: 'Network Services', types: ['network_service'] },
       { id: 'product_component', label: 'Product Components', types: ['product_component'] },
       { id: 'data_component', label: 'Data Components', types: ['data_component'] },
       { id: 'product_component', label: 'ProductComponents', types: ['product_component'] }
@@ -224,7 +224,7 @@ const deployableTypes = new Set([
   'host',
   'runtime_service',
   'data_store_service',
-  'edge_gateway_service',
+  'network_service',
   'product_component',
   'data_component',
   'product_component'
@@ -294,7 +294,7 @@ function relatedCapabilityOptions() {
 function formatTypeLabel(typeValue) {
   const normalized = String(typeValue || '');
   if (normalized === 'technology_component') return 'Technology Component';
-  if (normalized === 'edge_gateway_service') return 'Edge/Gateway Service';
+  if (normalized === 'network_service') return 'NetworkService';
   if (normalized === 'host') return 'Host';
   if (normalized === 'runtime_service') return 'Runtime Service';
   if (normalized === 'data_store_service') return 'DataStoreService';
@@ -891,9 +891,6 @@ function objectCardTitle(object) {
     return object.name;
   }
   const trimmed = String(object.name || '').replace(/\s+Requirement Group$/i, '');
-  if (trimmed === 'Edge/Gateway Service') {
-    return 'Appliance';
-  }
   return trimmed;
 }
 
@@ -1732,7 +1729,7 @@ function executiveStats() {
     hosts: allObjects.filter(object => object.type === 'host').length,
     runtimeServices: allObjects.filter(object => object.type === 'runtime_service').length,
     dataAtRestServices: allObjects.filter(object => object.type === 'data_store_service').length,
-    edgeGatewayServices: allObjects.filter(object => object.type === 'edge_gateway_service').length,
+    networkServices: allObjects.filter(object => object.type === 'network_service').length,
     productServices: allObjects.filter(object => object.type === 'product_component').length,
     productComponents: allObjects.filter(object => object.type === 'product_component').length,
     dataComponents: allObjects.filter(object => object.type === 'data_component').length,
@@ -1832,7 +1829,7 @@ function executiveArchitecturePanelMarkup(stats) {
     ['Hosts', stats.objectTypes.hosts],
     ['Runtime Services', stats.objectTypes.runtimeServices],
     ['DataStoreServices', stats.objectTypes.dataAtRestServices],
-    ['Edge/Gateway Services', stats.objectTypes.edgeGatewayServices],
+    ['Network Services', stats.objectTypes.networkServices],
     ['ProductComponents', stats.objectTypes.productServices]
   ];
   const maxCount = Math.max(...rows.map(row => row[1]), 1);
@@ -2938,13 +2935,13 @@ function renderDeploymentTargetsView() {
 }
 
 // ── Shared team helpers ─────────────────────────────────────────────
-const TEAM_TYPES = ['software_deployment_pattern','reference_architecture','runtime_service','data_store_service','edge_gateway_service','product_component','data_component','product_component','host'];
+const TEAM_TYPES = ['software_deployment_pattern','reference_architecture','runtime_service','data_store_service','network_service','product_component','data_component','product_component','host'];
 const TEAM_TYPE_LABELS = {
   software_deployment_pattern: 'Deployment Patterns',
   reference_architecture: 'Reference Architectures',
   runtime_service: 'Runtime Services',
   data_store_service: 'DataStoreServices',
-  edge_gateway_service: 'Edge / Gateway Services',
+  network_service: 'Network Services',
   product_component: 'Product Components',
   data_component: 'Data Components',
   product_component: 'ProductComponents',
@@ -2955,7 +2952,7 @@ const TEAM_TYPE_ICONS = {
   reference_architecture: '📐',
   runtime_service: '⚙️',
   data_store_service: '🗄',
-  edge_gateway_service: '🌐',
+  network_service: '🌐',
   product_component: '📦',
   data_component: '🗃',
   product_component: '📦',
@@ -3332,7 +3329,7 @@ function renderExecutiveView() {
   const targetSet = new Set();
   sdps.forEach(sdp => (sdp.serviceGroups || []).forEach(sg => { if (sg.deploymentTarget) targetSet.add(sg.deploymentTarget); }));
   const teamSet = new Set();
-  const TEAM_TYPES_EXEC = new Set(['software_deployment_pattern','reference_architecture','runtime_service','data_store_service','edge_gateway_service','product_component','data_component','product_component','host']);
+  const TEAM_TYPES_EXEC = new Set(['software_deployment_pattern','reference_architecture','runtime_service','data_store_service','network_service','product_component','data_component','product_component','host']);
   (browserData.objects || []).filter(o => TEAM_TYPES_EXEC.has(o.type)).forEach(obj => {
     const t = obj.owner?.team || obj.definitionOwner?.team;
     if (t) teamSet.add(t);
@@ -3420,10 +3417,10 @@ const OBJECT_TYPE_GUIDE = {
       deployableRole: 'Deploys persistence behavior on a host or through PaaS, SaaS, or appliance delivery.'
     },
     {
-      type: 'edge_gateway_service',
-      label: 'Edge/Gateway Service',
-      purpose: 'A reusable boundary service such as WAF, firewall, API gateway, load balancer, ingress, or proxy.',
-      deployableRole: 'Deploys traffic control behavior at a product or network boundary.'
+      type: 'network_service',
+      label: 'NetworkService',
+      purpose: 'Reusable network or traffic-control behavior such as routing, switching, segmentation, DNS, WAN, load balancing, ingress, WAF, firewalling, proxying, or traffic inspection.',
+      deployableRole: 'Deploys network and traffic-control behavior that other objects connect through or are protected by.'
     },
     {
       type: 'product_component',
@@ -3523,7 +3520,7 @@ function renderObjectTypesView() {
       </section>
       <section class="section-card">
         <h3>Delivery Models</h3>
-        <div class="header-description">PaaS, SaaS, appliance, and self-managed are delivery models on Runtime Service, DataStoreService, and Edge/Gateway Service objects. They are not separate object types.</div>
+        <div class="header-description">PaaS, SaaS, appliance, and self-managed are delivery models on Runtime Service, DataStoreService, and NetworkService objects. They are not separate object types.</div>
       </section>
     </div>
   `;
@@ -3566,8 +3563,8 @@ function renderCompanyOnboardingView() {
     ['Install', 'Install DRAFT Table and select or create a private company DRAFT repo.', ['Run draft-table onboard', 'Vendor the selected framework copy into .draft/framework/', 'Confirm draft-table doctor, framework status, and validation']],
     ['Start Setup Mode', 'Ask the Draftsman to guide the first-run setup conversation.', ['Open DRAFT Table', 'Ask: start setup mode', 'Track current step, next step, remaining work, and revisit-later items']],
     ['Define Minimum Governance', 'Make only the workspace decisions needed for useful first drafting.', ['Define business taxonomy in .draft/workspace.yaml', 'Activate the initial Requirement Groups', 'Keep strict active-group disposition off while migrating inventory']],
-    ['Seed Acceptable Use', 'Connect the first capabilities to approved Technology Components and owners.', ['Start with identity, logging, monitoring, patching, backup, compute, operating systems, database, and edge', 'Use preferred, existing-only, candidate, deprecated, and retired deliberately']],
-    ['Draft Baseline Standards', 'Create reusable deployable architecture from behavior first, delivery model second.', ['Host', 'Runtime Service', 'DataStoreService', 'Edge/Gateway Service', 'ProductComponent', 'Software Deployment Pattern']],
+    ['Seed Acceptable Use', 'Connect the first capabilities to approved Technology Components and owners.', ['Start with identity, logging, monitoring, patching, backup, compute, operating systems, database, and network', 'Use preferred, existing-only, candidate, deprecated, and retired deliberately']],
+    ['Draft Baseline Standards', 'Create reusable deployable architecture from behavior first, delivery model second.', ['Host', 'Runtime Service', 'DataStoreService', 'NetworkService', 'ProductComponent', 'Software Deployment Pattern']],
     ['Draft One Real System', 'Use one product, system, repository, diagram, or document to prove the workflow.', ['Capture unresolved facts in a Drafting Session', 'Run validation', 'Regenerate the browser and review the Git diff']]
   ];
   const gapSignals = [
@@ -3618,7 +3615,7 @@ function renderCompanyOnboardingView() {
           <li>Capability owners are identified wherever implementations are mapped.</li>
           <li>Approved capabilities are referenced by Requirement Group requirements.</li>
           <li>Acceptable-use Technology Components are mapped by capability.</li>
-          <li>Baseline Hosts, Runtime Services, DataStoreServices, and Edge/Gateway Services exist for common deployment patterns.</li>
+          <li>Baseline Hosts, Runtime Services, DataStoreServices, and Network Services exist for common deployment patterns.</li>
           <li>Validation passes and the generated browser reflects the catalog.</li>
         </ul>
       </section>
@@ -3851,7 +3848,7 @@ function renderDiagramsView() {
   destroySdpGraphCy();
   destroyImpactCy();
 
-  const CONTAINER_TYPES = new Set(['runtime_service', 'data_store_service', 'edge_gateway_service', 'product_component']);
+  const CONTAINER_TYPES = new Set(['runtime_service', 'data_store_service', 'network_service', 'product_component']);
   const DATA_STORE_TYPES = new Set(['data_store_service']);
   const edges = (window.DRAFT_BROWSER_DATA && window.DRAFT_BROWSER_DATA.topologyEdges) || [];
   const systems = allObjects.filter(o => o.type === 'system');
@@ -4900,7 +4897,7 @@ function topologyNodeIcon(entry, objectType = 'host', options = {}) {
     return { icon: objectIconSvg('container'), cls: 'pod' };
   }
   if (object?.type === 'product_component') return { icon: objectIconSvg('code'), cls: 'product' };
-  if (object?.type === 'edge_gateway_service') return { icon: objectIconSvg('gateway'), cls: 'gateway' };
+  if (object?.type === 'network_service') return { icon: objectIconSvg('gateway'), cls: 'gateway' };
   if (hostObject?.type === 'data_store_service') return { icon: objectIconSvg('database'), cls: 'data' };
   if (hostObject?.type === 'runtime_service') return { icon: objectIconSvg('gear'), cls: 'runtime' };
   return { icon: objectIconSvg('gear'), cls: 'runtime' };
@@ -4951,7 +4948,7 @@ function supportEntryTier(entry, objectType) {
     return 'utility';
   }
   if (object?.type === 'data_store_service') return 'data';
-  if (object?.type === 'edge_gateway_service') return 'presentation';
+  if (object?.type === 'network_service') return 'presentation';
   return 'utility';
 }
 
@@ -5015,7 +5012,7 @@ function topologyNodeMarkup(entry, options = {}) {
 const SUBSTRATE_TYPE_LABELS = {
   runtime_service:    'runtime',
   host:               'host',
-  edge_gateway_service: 'edge/gateway',
+  network_service: 'network',
 };
 
 function serviceGroupSectionMarkup(group, tier) {
@@ -7101,7 +7098,7 @@ const PALETTE_TYPE_ICONS = {
   host: '⬛',
   runtime_service: '▶',
   data_store_service: '◼',
-  edge_gateway_service: '◈',
+  network_service: '◈',
   product_component: '◉',
   software_deployment_pattern: '⊞',
   reference_architecture: '▤',

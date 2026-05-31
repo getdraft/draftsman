@@ -247,12 +247,11 @@ def summary_fields(obj: dict[str, Any]) -> list[dict[str, str]]:
 def type_label(object_type: str) -> str:
     labels = {
         "technology_component": "TechnologyComponent",
-        "edge_gateway_service": "EdgeGatewayService",
+        "network_service": "NetworkService",
         "host": "Host",
         "runtime_service": "RuntimeService",
         "data_store_service": "DataStoreService",
         "product_component": "ProductComponent",
-        "edge_gateway_service": "EdgeGatewayService",
         "reference_architecture": "ReferenceArchitecture",
         "software_deployment_pattern": "SoftwareDeploymentPattern",
         "capability": "Capability",
@@ -1053,7 +1052,7 @@ INDEX_HTML = """<!doctype html>
               <li><strong>Host</strong>: a reusable compute standard built from an operating system, compute platform, and required operational capabilities.</li>
               <li><strong>RuntimeService</strong>: a reusable service building block that combines a host or platform with the primary internal component that makes it useful.</li>
               <li><strong>DataStoreService</strong>: a data service standard with durability, protection, operation, and compliance expectations.</li>
-              <li><strong>EdgeGatewayService</strong>: a vendor product that behaves like a service but does not expose a host model.</li>
+              <li><strong>NetworkService</strong>: reusable network and traffic-control behavior such as routing, ingress, WAF, load balancing, DNS, WAN, or segmentation.</li>
             </ul>
           </section>
           <section class="section-card">

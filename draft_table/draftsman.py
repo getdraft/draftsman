@@ -213,7 +213,7 @@ def answer_locally(message: str, workspace: Path | None, framework_root: Path) -
             "host",
             "runtime service",
             "data store service",
-            "edge/gateway service",
+            "network service",
             "object type",
             "host standard",
             "service standard",
@@ -288,7 +288,7 @@ def setup_mode_response(workspace: Path | None, framework_root: Path) -> LocalAn
             "",
             f"Next: {next_step}",
             "",
-            "Left after that: finish the acceptable-use technology baseline, draft common Host/Runtime/DataStore/Edge standards, pick one real product or system, and validate the generated catalog.",
+            "Left after that: finish the acceptable-use technology baseline, draft common Host/Runtime/DataStore/Network standards, pick one real product or system, and validate the generated catalog.",
             "Can revisit later: taxonomy names, active governance groups, lifecycle choices, and incomplete object details. We will capture uncertainty instead of forcing perfect answers up front.",
         ]
     )
@@ -317,7 +317,7 @@ def workspace_setup_status(workspace: Path, framework_root: Path) -> dict[str, s
             "host",
             "runtime_service",
             "data_store_service",
-            "edge_gateway_service",
+            "network_service",
             "product_component",
             "software_deployment_pattern",
         )
@@ -398,7 +398,7 @@ def setup_questions_for_status(status: dict[str, Any]) -> list[str]:
     if int(status.get("mappedCapabilityCount") or 0) == 0:
         return ["Which few enterprise standards should we seed first, such as identity, logging, monitoring, patching, backup, compute, and operating systems?"]
     if int(status.get("deployableCount") or 0) == 0:
-        return ["Which common deployable standard should we draft first: Host, RuntimeService, DataStoreService, or EdgeGatewayService?"]
+        return ["Which common deployable standard should we draft first: Host, RuntimeService, DataStoreService, or NetworkService?"]
     return ["Which real product, system, diagram, or repository should we use for the first guided DraftingSession?"]
 
 
@@ -523,7 +523,7 @@ Rules:
 - For SoftwareDeploymentPattern sessions, search candidate ReferenceArchitectures and explain the
   closest match in plain language; do not ask the user to name a ReferenceArchitecture UID.
 - After drafting SoftwareDeploymentPattern service groups, perform composition closure: resolve each
-  deployable object, resolve ProductComponent runsOn, classify each RuntimeService, DataStoreService, and EdgeGatewayService delivery model, and for every self-managed service resolve the
+  deployable object, resolve ProductComponent runsOn, classify each RuntimeService, DataStoreService, and NetworkService delivery model, and for every self-managed service resolve the
   Host substrate from approved Host Standards or ask a catalog-grounded multiple-choice question.
 - Do not assume EKS, EC2, Lambda, VM, physical, or container placement without source evidence or
   user confirmation; record unresolved substrate choices in the DraftingSession.
@@ -532,7 +532,7 @@ Rules:
 - For Host RequirementGroup patch management, ask what patch platform, installed component,
   TechnologyComponent configuration, or architectural decision applies updates; do not ask which
   team owns patching as the capability answer.
-- For RuntimeService, DataStoreService, or EdgeGatewayService objects with
+- For RuntimeService, DataStoreService, or NetworkService objects with
   deliveryModel appliance, remember that the service maps directly to a vendor-product
   identity but carries service-like operating capability answers because there
   is no Host wrapper to inherit host requirements.
@@ -568,7 +568,7 @@ Return JSON only with this shape:
     {{
       "id": "short proposal id",
       "action": "create|update",
-      "artifactType": "TechnologyComponent|Host|RuntimeService|DataStoreService|EdgeGatewayService|ProductComponent|ReferenceArchitecture|SoftwareDeploymentPattern|Capability|RequirementGroup|DecisionRecord|DraftingSession",
+      "artifactType": "TechnologyComponent|Host|RuntimeService|DataStoreService|NetworkService|ProductComponent|ReferenceArchitecture|SoftwareDeploymentPattern|Capability|RequirementGroup|DecisionRecord|DraftingSession",
       "name": "artifact name",
       "summary": "plain-language summary",
       "path": "relative file path under the company DRAFT repo",

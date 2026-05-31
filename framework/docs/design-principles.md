@@ -57,7 +57,53 @@ cannot act on prose; it can act on structured facts.
 
 ---
 
-## 5. Compliance is authoring, not auditing
+## 5. Object types are requirement scopes
+
+DRAFT object types are not generic catalog buckets. They exist because the
+Draftsman needs to know which intrinsic architecture obligations apply to the
+thing being authored.
+
+A Host must answer host questions. A RuntimeService must answer runtime and
+substrate questions. A DataStoreService must answer persistence, backup,
+recovery, and encryption-at-rest questions. A NetworkService must answer
+network-function, topology, protocol, and traffic-control questions. The object
+type gives RequirementGroups a stable scope so the Draftsman can ask the right
+questions without guessing from product names.
+
+Object type is not the only requirement scope. Placement, exposure, delivery
+model, capability, data classification, and followed ReferenceArchitecture can
+also create obligations. Requirements that arise because something is in a
+perimeter zone, exposes public traffic, processes regulated data, or follows a
+specific pattern should be scoped with RequirementGroup applicability and
+SoftwareDeploymentPattern context, not by inventing another object type.
+
+Use this rule when the model is unclear: create or keep a distinct object type
+only when the artifact has intrinsic required questions that cannot be expressed
+clearly through existing object type plus contextual RequirementGroup scope.
+
+---
+
+## 6. ReferenceArchitectures encode compliant composition
+
+RequirementGroups define obligations. ReferenceArchitectures show approved
+multi-object patterns for satisfying obligations that no single object can
+answer alone.
+
+For example, a RequirementGroup may say that web traffic in a perimeter zone
+must be protected by an approved WAF capability. The compliant answer is not a
+field on the web RuntimeService. A ReferenceArchitecture can show the required
+composition: the web RuntimeService sits in the appropriate zone, traffic enters
+through an approved WAF NetworkService, and the SoftwareDeploymentPattern records
+the relationship or interaction path. If the system intentionally does not
+follow that pattern, the deviation belongs in a DecisionRecord.
+
+ReferenceArchitectures and RequirementGroups therefore work together:
+RequirementGroups state what must be true; ReferenceArchitectures describe how a
+valid architecture normally makes it true.
+
+---
+
+## 7. Compliance is authoring, not auditing
 
 RequirementGroups embed compliance questions into the normal architecture
 interview. Evidence is captured as a byproduct of describing what was built,
@@ -69,7 +115,7 @@ to the catalog adds it to the compliance posture automatically.
 
 ---
 
-## 6. The AI owns the YAML, the human owns the facts
+## 8. The AI owns the YAML, the human owns the facts
 
 Engineers and architects describe their systems in plain language. The
 Draftsman handles translation into valid YAML, schema compliance, UID
@@ -82,7 +128,7 @@ job.
 
 ---
 
-## 7. Uncertainty is first-class
+## 9. Uncertainty is first-class
 
 Unresolved facts belong in DraftingSessions, not hidden in prose or forced to
 premature closure. When the answer to an architecture question is genuinely

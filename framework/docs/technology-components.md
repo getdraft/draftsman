@@ -63,7 +63,7 @@ A TechnologyComponent is not a deployment artifact. It does not say where or
 how many times a product is deployed.
 
 A TechnologyComponent is not a Host, RuntimeService, DataStoreService,
-EdgeGatewayService, Product Service, or SoftwareDeploymentPattern. Those
+NetworkService, ProductComponent, or SoftwareDeploymentPattern. Those
 objects describe deployable behavior. TechnologyComponents describe the vendor
 products those deployable objects use.
 
@@ -75,7 +75,7 @@ objects:
 - A Host uses an Operating System TechnologyComponent and a Compute Platform
   TechnologyComponent.
 - A RuntimeService or DataStoreService references one primary TechnologyComponent that provides the service capability, such as IIS or SQL Server.
-- An EdgeGatewayService with `deliveryModel: appliance` may reference the
+- A NetworkService with `deliveryModel: appliance` may reference the
   appliance product TechnologyComponent while carrying the service-like
   operating answers on the service object.
 
@@ -90,7 +90,7 @@ decision explains why the interaction is intentionally omitted via
 When a vendor appliance or appliance-like product delivers useful architecture
 behavior, model the vendor product/version as a TechnologyComponent and model
 the deployable behavior as a RuntimeService, DataStoreService, or
-EdgeGatewayService with `deliveryModel: appliance`.
+NetworkService with `deliveryModel: appliance`.
 
 This preserves the TechnologyComponent as the product lifecycle object and
 keeps the service object responsible for authentication, logging, monitoring,

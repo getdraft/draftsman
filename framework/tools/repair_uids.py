@@ -146,8 +146,8 @@ def legacy_ids_for_path(path: Path, data: dict[str, Any]) -> list[str]:
         parts = stem.removeprefix("technology-").split("-", 1)
         if len(parts) == 2:
             return [f"technology.{parts[0]}.{parts[1]}"]
-    if object_type == "edge_gateway_service" and stem.startswith("edge-gateway-service-"):
-        return ["edge-gateway-service." + stem.removeprefix("edge-gateway-service-")]
+    if object_type == "network_service" and stem.startswith("network-service-"):
+        return ["network-service." + stem.removeprefix("network-service-")]
     if object_type == "host" and stem.startswith("host-"):
         return ["host." + stem.removeprefix("host-")]
     if object_type == "runtime_service" and stem.startswith("runtime-service-"):

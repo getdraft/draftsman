@@ -3,6 +3,110 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.33.0 - 2026-05-31
+
+Retires `EdgeGatewayService` as a supported object type, expands
+`NetworkService` to cover intrinsic network and traffic-control behavior, and
+codifies the object-type and RequirementGroup principles that decide when a
+new object type is warranted.
+
+### Added
+
+- **Object types as requirement scopes**: added AI-facing guidance in
+  `design-principles.md`, `object-types.md`, `requirement-groups.md`, and
+  `draftsman.md` explaining that object types exist so the Draftsman can apply
+  the right base requirements. Context such as network zone, exposure, delivery
+  model, capability, data classification, or followed ReferenceArchitecture can
+  add obligations without changing the object's intrinsic type.
+- **ReferenceArchitecture and RequirementGroup governance relationship**:
+  documented that RequirementGroups state obligations, while
+  ReferenceArchitectures show approved multi-object compositions for satisfying
+  obligations that no single service or component can answer alone.
+- **NetworkService authoring template and migrated example**: added
+  `templates/network-service.yaml.tmpl` and migrated the OpenStack HAProxy
+  example from an edge gateway object to a `network_service` object with
+  `networkFunction`, `networkTopology`, and `protocols` evidence.
+
+### Changed
+
+- **Removed `edge_gateway_service` from the object contract**: deleted the
+  EdgeGatewayService schema, template, scaffold folder, example folder, and
+  generated/browser references. RequirementGroups, ReferenceArchitectures,
+  validation constants, C4/Backstage/browser generators, Draft Table labels,
+  tests, and AI guidance now use `network_service` where the intrinsic behavior
+  is network or traffic control.
+- **Expanded NetworkService schema coverage**: NetworkService now carries the
+  service-like fields needed by delivery-model RequirementGroups, including
+  `host`, `primaryTechnologyComponent`, `internalComponents`,
+  `deploymentConfigurations`, `configurations`, `vendorGovernance`,
+  `authenticationModel`, `patchingOwner`, `architectureNotes`,
+  `decisionRecords`, and requirement implementations.
+- **Tightened hosting semantics**: ProductComponent `runsOn` and SDP
+  `serviceGroup.substrate` now reference only a RuntimeService or Host.
+  NetworkService participation is modeled through service groups,
+  relationships, network zones, RequirementGroups, and ReferenceArchitecture
+  conformance instead of being treated as a hosting substrate.
+- **ReferenceArchitecture constraints use NetworkService**: the bundled
+  three-tier, multi-tenant SaaS, and serverless ReferenceArchitectures now
+  require `network_service` presentation-tier roles when their patterns need
+  traffic control, WAF, API gateway, ingress, event ingress, or load-balancing
+  composition.
+
+### Fixed
+
+- **Stale Product Service wording**: replaced remaining AI-facing documentation
+  references to the retired Product Service name and nonexistent
+  `product-service.schema.yaml` with ProductComponent terminology and schema
+  links.
+- **Generated and browser labels**: regenerated `AI_INDEX.md`, browser data,
+  browser shell assets, the user manual, company vocabulary page, and the
+  object model diagram so AI and browser discovery no longer surface
+  EdgeGatewayService as an active object type.
+
+### Compatibility Impact
+
+Required migration for any workspace that contains `type: edge_gateway_service`
+or files under `catalog/edge-gateway-services/`. No compatibility shim is kept
+in this release. After refreshing the framework, those objects are unsupported
+and will not validate as active catalog objects.
+
+Existing EdgeGatewayService objects do not have a default replacement target.
+Each one must be triaged and migrated to the object type that matches its
+intrinsic behavior:
+
+- runtime or execution behavior becomes RuntimeService
+- durable data or persistence behavior becomes DataStoreService
+- network, traffic-control, ingress, WAF, firewall, load-balancing, proxy, DNS,
+  WAN, routing, switching, or segmentation behavior becomes NetworkService
+- operating substrate behavior becomes Host
+
+ProductComponents that previously used an EdgeGatewayService as `runsOn` must
+be updated to reference the RuntimeService or Host they run on.
+Network paths, WAFs, load balancers, gateways, and perimeter obligations should
+be expressed through SDP placement, relationships, RequirementGroups,
+DecisionRecords, and ReferenceArchitecture conformance.
+
+### Migration Notes
+
+1. Inventory `catalog/edge-gateway-services/` and all YAML with
+   `type: edge_gateway_service`.
+2. For each object, choose the target type from intrinsic behavior, not from
+   placement words such as edge, perimeter, public, partner, or tenant.
+3. Move each object into the correct catalog folder and update `type`. Preserve
+   `uid` when the same architecture object is being reclassified rather than
+   replaced.
+4. For traffic-control objects migrated to `network_service`, fill in
+   `networkFunction`, `networkTopology`, and `protocols`, then keep or add
+   service evidence such as `host`, `primaryTechnologyComponent`,
+   `internalComponents`, `architectureNotes`, and `decisionRecords` as
+   applicable.
+5. Update ReferenceArchitecture constraints, SDP service-group entries,
+   relationships, RequirementGroup `appliesTo` scopes, templates, and generated
+   browser output to use the migrated object types.
+6. Run `python3 framework/tools/generate_ai_index.py`,
+   `python3 framework/tools/generate_browser.py --workspace . --output docs/index.html`,
+   and `python3 framework/tools/validate.py --workspace .` after migration.
+
 ## 0.32.3 - 2026-05-30
 
 Clarifies DRAFT command integration across Codex, generic AI tools, and

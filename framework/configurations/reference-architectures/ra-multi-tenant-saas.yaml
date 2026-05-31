@@ -25,7 +25,7 @@ applicableDefinitionChecklist:
 serviceGroups:
 - name: Tenant Runtime
   deployableObjects:
-  - objectType: edge_gateway_service
+  - objectType: network_service
     diagramTier: presentation
     notes: Per-tenant or shared API gateway providing tenant routing, authentication
       enforcement, and per-tenant rate limiting.
@@ -66,16 +66,16 @@ architectureNotes:
     tenant-facing services. Administrative access to tenant data must flow through
     the management plane, not through tenant runtime endpoints.
 constraints:
-- id: presentation-tier-requires-edge-gateway
-  description: All multi-tenant SaaS SDPs with a presentation-tier service must include at least one edge/gateway service in the presentation tier.
-  rationale: The tenant-facing boundary must enforce per-tenant authentication, rate limiting, and traffic inspection before requests reach tenant runtime services. An edge/gateway service at the presentation tier is the governance point for those controls.
+- id: presentation-tier-requires-network-service
+  description: All multi-tenant SaaS SDPs with a presentation-tier service must include at least one network service in the presentation tier.
+  rationale: The tenant-facing boundary must enforce per-tenant authentication, rate limiting, and traffic inspection before requests reach tenant runtime services. A NetworkService at the presentation tier is the governance point for those controls.
   when:
     anyServiceGroup:
       diagramTier: presentation
   require:
-  - objectType: edge_gateway_service
+  - objectType: network_service
     diagramTier: presentation
-    notes: Add an edge/gateway service to the presentation tier. The company catalog defines which API gateway, WAF, or tenant-routing service satisfies this role.
+    notes: Add a NetworkService to the presentation tier. The company catalog defines which API gateway, WAF, or tenant-routing service satisfies this role.
 - id: saas-requires-utility-tier
   description: Multi-tenant SaaS SDPs must include at least one utility-tier service for management-plane operations.
   rationale: SaaS platforms require a management plane for tenant provisioning, observability aggregation, and administrative operations that must be isolated from tenant-facing runtime paths. A utility-tier service makes this boundary explicit.

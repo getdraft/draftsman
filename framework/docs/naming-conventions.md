@@ -5,17 +5,17 @@
 When a DRAFT object type is referred to by name in prose, headings, schema
 hints, requirement-group names, validation messages, and the browser, write it
 in PascalCase: `TechnologyComponent`, `Host`, `RuntimeService`,
-`DataStoreService`, `EdgeGatewayService`, `NetworkService`, `ProductComponent`,
+`DataStoreService`, `NetworkService`, `ProductComponent`,
 `DataComponent`, `ReferenceArchitecture`, `SoftwareDeploymentPattern`,
 `Capability`, `RequirementGroup`, `Domain`, `DecisionRecord`, `DraftingSession`,
 and `ObjectPatch`. Single-word types such as `Host`, `Capability`, and `Domain`
-are unaffected. There are no spaces and no slash in `EdgeGatewayService`.
+are unaffected. There are no spaces and no slash in `NetworkService`.
 
 This is the display convention only. The machine identifier for each type stays
-snake_case (`technology_component`, `data_store_service`, `edge_gateway_service`,
+snake_case (`technology_component`, `data_store_service`, `network_service`,
 `reference_architecture`), and schema filenames and catalog folder names keep
 their existing kebab-case form (`data-store-service.schema.yaml`,
-`catalog/edge-gateway-services/`). When a type name appears as an ordinary
+`catalog/network-services/`). When a type name appears as an ordinary
 lowercase common noun inside a sentence ("the runtime service tier"), no
 PascalCase is required.
 

@@ -145,8 +145,8 @@ A ReferenceArchitecture should be generic enough to guide many products, not jus
 3. Add `businessContext.pillar` when the workspace declares business pillars in `.draft/workspace.yaml`.
 4. Set `followsReferenceArchitecture` if the product aligns with an existing ReferenceArchitecture.
 5. Define any `scalingUnits` needed to express replicable or shared deployment boundaries.
-6. Build the manifest out through `serviceGroups`, then place Product Services, Hosts, RuntimeServices, DataStoreServices, and EdgeGatewayServices into the appropriate groups.
-   Product Service is not a starting-point RequirementGroup object; use it here only when the SoftwareDeploymentPattern needs to express a distinct first-party runtime-behavior component deployed on a substrate.
+6. Build the manifest out through `serviceGroups`, then place ProductComponents, Hosts, RuntimeServices, DataStoreServices, and NetworkServices into the appropriate groups.
+   ProductComponent is not a starting-point RequirementGroup object; use it here only when the SoftwareDeploymentPattern needs to express a distinct first-party runtime-behavior component deployed on a substrate.
 7. Set `diagramTier` on every deployable object entry using one of `presentation`, `application`, `data`, or `utility`.
 8. Use `intent` only when the architect is explicitly deviating from the ReferenceArchitecture or when no ReferenceArchitecture exists.
 9. Add product-level `architectureNotes`, including availability requirement and data classification, so the SoftwareDeploymentPattern satisfies the SoftwareDeploymentPattern RequirementGroup.

@@ -13,7 +13,7 @@ appliesTo:
 - host
 - product_component
 - runtime_service
-- edge_gateway_service
+- network_service
 - software_deployment_pattern
 provider:
   id: provider.draft-framework
@@ -246,7 +246,7 @@ requirements:
   rationale: Record how this object satisfies IA-5 for TX-RAMP.
   appliesTo:
   - runtime_service
-  - edge_gateway_service
+  - network_service
   requirementMode: conditional
   naAllowed: true
   canBeSatisfiedBy:
@@ -273,8 +273,8 @@ requirements:
   externalReference: https://dir.texas.gov/information-security/texas-risk-and-authorization-management-program-tx-ramp
 - id: IA-5.product_component
   externalControlId: IA-5
-  name: Product Service Secrets and Authenticator Management
-  description: Product Service Secrets and Authenticator Management
+  name: ProductComponent Secrets and Authenticator Management
+  description: ProductComponent Secrets and Authenticator Management
   rationale: Record how this object satisfies IA-5 for TX-RAMP.
   appliesTo:
   - product_component
