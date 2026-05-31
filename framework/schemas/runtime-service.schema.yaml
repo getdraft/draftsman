@@ -8,7 +8,7 @@ requiredFields:
 - deliveryModel
 - catalogStatus
 - lifecycleStatus
-defaultOwnerRole: technology-admin
+defaultOwnerRole: shared-services
 optionalFields:
 - aliases
 - description

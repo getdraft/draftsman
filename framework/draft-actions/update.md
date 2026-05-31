@@ -6,10 +6,10 @@ allowed-tools: [Bash, Read, Write, Edit]
 
 # /draft-updateframework Command
 
-> **Draft Admin only.** This command modifies the vendored framework copy at
+> **Draft Admins only.** This command modifies the vendored framework copy at
 > `.draft/framework/` and updates `.draft/framework.lock`. It must not be run
-> by engineers or technology admins. Framework updates affect every Draftsman
-> session and every validation run in this workspace — only the Draft Admin
+> by Engineering or Shared Services representatives. Framework updates affect every Draftsman
+> session and every validation run in this workspace — only Draft Admins
 > should initiate them.
 
 ## Step 1: Confirm Role
@@ -18,10 +18,10 @@ Before doing anything else, confirm the user understands this action:
 
 > This command checks for a newer DRAFT framework version and, if one is
 > available, walks you through updating the vendored copy in `.draft/framework/`.
-> It should only be run by a Draft Admin. Are you the Draft Admin for this
+> It should only be run by Draft Admins. Are you a Draft Admins representative for this
 > workspace?
 
-If the user says no or is unsure, stop and direct them to their Draft Admin.
+If the user says no or is unsure, stop and direct them to Draft Admins.
 
 ## Step 2: Read Current State
 
@@ -148,7 +148,7 @@ The PR body must include:
 - link to the DRAFT changelog between those versions
 - validation status (pass / warnings)
 - any warnings that remain after the update
-- a note that the Draft Admin reviewed and approved the update
+- a note that Draft Admins reviewed and approved the update
 
 ### If validation produces new errors:
 
@@ -190,7 +190,7 @@ git branch -D draft/framework-update-A.B.C
 
 ## Step 8: Post-Update Notes
 
-After the PR is merged, remind the Draft Admin:
+After the PR is merged, remind Draft Admins:
 
 > After merging, any engineers using Claude Code should re-run the symlink
 > setup to pick up any new commands shipped with A.B.C:

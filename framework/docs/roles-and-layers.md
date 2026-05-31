@@ -7,12 +7,12 @@ and interacts with the Draftsman differently.
 
 | Role | What they own | How they start |
 |---|---|---|
-| **Draft Admin** | Workspace configuration — vocabulary lists, RequirementGroups, business taxonomy, governance rules | Run setup mode once to configure the workspace |
-| **Technology Admin** | Shared infrastructure — Hosts, RuntimeServices, DataStoreServices, NetworkServices, TechnologyComponents | Regular Draftsman session; author reusable building blocks |
-| **Engineer** | Product content — ProductComponents, DataComponents, SDPs | Regular Draftsman session; describe their service and the Draftsman handles the rest |
+| **Draft Admins** | Workspace configuration — vocabulary lists, RequirementGroups, business taxonomy, governance rules | Run setup mode once to configure the workspace |
+| **Shared Services** | Shared infrastructure — Hosts, RuntimeServices, DataStoreServices, NetworkServices, TechnologyComponents | Regular Draftsman session; author reusable building blocks |
+| **Engineering** | Product content — ProductComponents, DataComponents, SDPs | Regular Draftsman session; describe their service and the Draftsman handles the rest |
 
-Engineers and Technology Admins never use setup mode. They connect their AI
-tool to a workspace the Draft Admin has already configured and start a regular
+Engineering and Shared Services never use setup mode. They connect their AI
+tool to a workspace the Draft Admins have already configured and start a regular
 Draftsman session.
 
 ## The Three Layers
@@ -62,22 +62,22 @@ small because it represents standards, not instances.
 
 ## What Each Role Does in Practice
 
-### Draft Admin
+### Draft Admins
 
 Runs setup mode once when the workspace is first created. After that, their
 ongoing work is governance maintenance:
 
 - Declaring and updating vocabulary lists
 - Activating RequirementGroups for new compliance obligations
-- Reviewing vocabulary proposals submitted by engineers
+- Reviewing vocabulary proposals submitted by Engineering
 - Maintaining business taxonomy as the company evolves
 - Updating capability owner assignments when teams change
 
-### Technology Admin
+### Shared Services
 
 Authors and maintains the shared infrastructure layer. Their work unlocks
-engineering work — engineers cannot reference a Host that does not exist.
-Technology Admins typically work ahead of engineering onboarding:
+Engineering work — Engineering cannot reference a Host that does not exist.
+Shared Services typically works ahead of Engineering onboarding:
 
 - Authoring Host standards for each compute platform the company uses
 - Authoring RuntimeService objects for each deployment pattern
@@ -85,14 +85,14 @@ Technology Admins typically work ahead of engineering onboarding:
 - Authoring TechnologyComponent objects for vendor products
 - Mapping capability owners and approved implementations
 
-When a Technology Admin stubs a new object, engineers can reference it
-immediately. The stub becomes `incomplete` and then `complete` as the
-Technology Admin adds the required architecture facts.
+When Shared Services stubs a new object, Engineering can reference it
+immediately. The stub becomes `incomplete` and then `complete` as
+Shared Services adds the required architecture facts.
 
-### Engineer
+### Engineering
 
 Authors product content. The Draftsman handles object resolution, reuse
-lookup, and YAML authoring. An engineer's session looks like:
+lookup, and YAML authoring. An Engineering session looks like:
 
 1. Describe the service in plain language
 2. Answer focused questions about runtime, dependencies, and ownership
@@ -100,7 +100,7 @@ lookup, and YAML authoring. An engineer's session looks like:
    any that are missing, and creates the ProductComponent and SDP
 4. Review the pull request the Draftsman opens
 
-Engineers never need to know what a Host or TechnologyComponent is. They
+Engineering never needs to know what a Host or TechnologyComponent is. They
 answer "what runs this service?" and the Draftsman resolves the catalog object.
 
 ## Implications for AI Agents
@@ -110,10 +110,10 @@ from context before asking any questions. Role determines which layer the sessio
 will touch, what questions are appropriate, and what prior catalog content to
 search.
 
-An engineer asking "I want to document my service" should never be asked about
+An Engineering representative asking "I want to document my service" should never be asked about
 capability owners, vocabulary governance, or Host Standards by name. The
 Draftsman resolves those from the catalog and only surfaces them if they are
-missing and the engineer is the right person to answer.
+missing and the Engineering user is the right person to answer.
 
 See [Session Routing](draftsman.md#session-routing) for how the Draftsman
 detects workspace state and routes to the correct mode.

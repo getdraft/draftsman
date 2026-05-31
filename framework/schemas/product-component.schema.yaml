@@ -9,7 +9,7 @@ requiredFields:
 - owner
 - classification
 - catalogStatus
-defaultOwnerRole: engineer
+defaultOwnerRole: engineering
 optionalFields:
 - lifecycleStatus
 - aliases

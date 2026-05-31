@@ -1,10 +1,10 @@
 # Draftsman Setup Mode
 
 > **Audience: Draft Admins only.**
-> Setup mode is for the person standing up and configuring a DRAFT workspace
-> for their company. Engineers and Technology Admins do not use setup mode —
+> Setup mode is for the team standing up and configuring a DRAFT workspace
+> for their company. Engineering and Shared Services representatives do not use setup mode —
 > they connect their AI tool to an already-configured workspace and start a
-> regular Draftsman session. If you are an engineer wanting to document a
+> regular Draftsman session. If you are an Engineering representative wanting to document a
 > service, see [Draftsman Instructions](draftsman.md) instead.
 
 Setup mode is the first-run Draftsman conversation for a company DRAFT
@@ -304,7 +304,7 @@ all AI tools.
 
 Enable branch protection and CODEOWNERS so every catalog change is reviewed by
 the right team before it reaches main. This step wires the three DRAFT roles
-(Draft Admin, Technology Admin, Engineer) to GitHub Teams.
+(Draft Admins, Shared Services, Engineering) to GitHub Teams.
 
 #### 8a. CODEOWNERS file
 
@@ -319,7 +319,7 @@ cp .draft/templates/workspace/CODEOWNERS.tmpl .github/CODEOWNERS
 Edit `.github/CODEOWNERS`:
 - Replace `YOUR-ORG` with your GitHub organization slug.
 - Set the team handle for `draft-admins` (the team that governs the workspace).
-- Set the team handle for `technology-admins` (the team that owns the shared
+- Set the team handle for `shared-services` (the team that owns the shared
   technology catalog — runtime services, hosts, technology components,
   NetworkServices, data store services).
 - Add one line per engineering team for their catalog path:
@@ -329,10 +329,10 @@ Questions:
 
 > What is your GitHub organization slug?
 
-> Which GitHub team should be the Draft Admin (governs workspace config,
+> Which GitHub team represents Draft Admins (governs workspace config,
 > vocabulary, and requirement groups)?
 
-> Which GitHub team should be the Technology Admin (owns the shared technology
+> Which GitHub team represents Shared Services (owns the shared technology
 > catalog)?
 
 > Which engineering teams need CODEOWNERS lines, and what are their GitHub team

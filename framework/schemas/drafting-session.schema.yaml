@@ -1,6 +1,6 @@
 schemaVersion: '1.0'
 type: drafting_session
-defaultOwnerRole: engineer
+defaultOwnerRole: engineering
 requiredFields:
 - schemaVersion
 - uid

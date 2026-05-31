@@ -6,7 +6,7 @@ contract, see [DRAFT Object Types](object-types.md).
 For the principles behind DRAFT's design decisions, see
 [Design Principles](design-principles.md).
 
-For an explanation of the three roles (Draft Admin, Technology Admin, Engineer)
+For an explanation of the three roles (Draft Admins, Shared Services, Engineering)
 and how the catalog layers compose, see [Roles and Layers](roles-and-layers.md).
 
 For a step-by-step company adoption path, see

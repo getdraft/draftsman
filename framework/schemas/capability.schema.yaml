@@ -1,6 +1,6 @@
 schemaVersion: '1.0'
 type: capability
-defaultOwnerRole: draft-admin
+defaultOwnerRole: draft-admins
 aiHint: "A Capability names a technology architecture outcome (e.g., Data Persistence, Container Orchestration, Secrets Management, CI/CD Pipeline) that requirement groups use as a demand signal and resolve to company-approved TechnologyComponent implementations. It is NOT a product name, business process, organizational unit, or business domain label. When generating capabilities — especially in bulk or during a migration — do not create capability objects from product names (ERP, HCM, SIS), product lines, business process labels, or organizational unit names found in source material. Only generate capabilities that represent technology architecture outcomes a requirement group would reference."
 requiredFields:
 - schemaVersion

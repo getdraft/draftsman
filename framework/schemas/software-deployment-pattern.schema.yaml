@@ -7,7 +7,7 @@ requiredFields:
 - name
 - catalogStatus
 - lifecycleStatus
-defaultOwnerRole: engineer
+defaultOwnerRole: engineering
 optionalFields:
 - aliases
 - description

@@ -6,30 +6,30 @@
 #
 # Three DRAFT roles map to three ownership tiers:
 #
-#   draft-admin      — workspace config, vocabulary, requirement groups
-#   technology-admin — shared technology catalog (tech components, runtime
+#   draft-admins     — workspace config, vocabulary, requirement groups
+#   shared-services  — shared technology catalog (tech components, runtime
 #                      services, hosts, data store services, network services)
-#   engineer         — product components, data components, SDPs
+#   engineering      — product components, data components, SDPs
 #
-# ── Draft Admin ─────────────────────────────────────────────────────────────
+# ── Draft Admins ─────────────────────────────────────────────────────────────
 # Owns the framework vendoring, workspace config, and vocabulary governance.
 
 .draft/                                  @YOUR-ORG/draft-admins
 .github/                                 @YOUR-ORG/draft-admins
 configurations/                          @YOUR-ORG/draft-admins
 
-# ── Technology Admin ─────────────────────────────────────────────────────────
+# ── Shared Services ─────────────────────────────────────────────────────────
 # Owns the shared technology catalog. Engineering teams reference these objects
 # in their SDPs; they do not modify them directly.
 
-catalog/technology-components/           @YOUR-ORG/technology-admins
-catalog/runtime-services/                @YOUR-ORG/technology-admins
-catalog/hosts/                           @YOUR-ORG/technology-admins
-catalog/data-store-services/             @YOUR-ORG/technology-admins
-catalog/network-services/                @YOUR-ORG/technology-admins
-catalog/decision-records/                @YOUR-ORG/technology-admins @YOUR-ORG/draft-admins
+catalog/technology-components/           @YOUR-ORG/shared-services
+catalog/runtime-services/                @YOUR-ORG/shared-services
+catalog/hosts/                           @YOUR-ORG/shared-services
+catalog/data-store-services/             @YOUR-ORG/shared-services
+catalog/network-services/                @YOUR-ORG/shared-services
+catalog/decision-records/                @YOUR-ORG/shared-services @YOUR-ORG/draft-admins
 
-# ── Engineer ─────────────────────────────────────────────────────────────────
+# ── Engineering ──────────────────────────────────────────────────────────────
 # Each engineering team owns their product components, data components, and
 # SDPs. Add one line per team. If using a team-first folder structure
 # (catalog/engineering/[team]/), one line covers all three object types.
@@ -38,9 +38,9 @@ catalog/decision-records/                @YOUR-ORG/technology-admins @YOUR-ORG/d
 #   catalog/engineering/[team-slug]/     @YOUR-ORG/[github-team-slug]
 #
 # Flat structure (current default):
-#   catalog/product-components/          @YOUR-ORG/engineers
-#   catalog/data-components/             @YOUR-ORG/engineers
-#   catalog/software-deployment-patterns/ @YOUR-ORG/engineers
+#   catalog/product-components/          @YOUR-ORG/engineering-team
+#   catalog/data-components/             @YOUR-ORG/engineering-team
+#   catalog/software-deployment-patterns/ @YOUR-ORG/engineering-team
 #
 # Example team-first lines — replace with your teams:
 # catalog/engineering/absence-management/  @YOUR-ORG/absence-management

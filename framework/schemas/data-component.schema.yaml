@@ -12,7 +12,7 @@ requiredFields:
 - dataClassification
 - containsPII
 - catalogStatus
-defaultOwnerRole: engineer
+defaultOwnerRole: engineering
 optionalFields:
 - lifecycleStatus
 - aliases
