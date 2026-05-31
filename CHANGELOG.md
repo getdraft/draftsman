@@ -3,6 +3,34 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.34.0 - 2026-05-31
+
+Standardizes DRAFT role terminology around Engineering, Shared Services, and Draft Admins to clarify ownership layers rather than individual job titles.
+
+### Added
+
+- **Standardized role-based onboarding guides issue**: Filed issue #57 to track building role-specific onboarding guides for `Engineering`, `Shared Services`, and `Draft Admins`.
+
+### Changed
+
+- **Standardized roles in schemas**: Updated all 15 schemas to use the new standardized machine roles: `engineering` (was `engineer`), `shared-services` (was `technology-admin`), and `draft-admins` (was `draft-admin`) in their `defaultOwnerRole` values.
+- **CODEOWNERS template updated**: Realigned `templates/workspace/CODEOWNERS.tmpl` to map the new standardized role-based layers and folder paths.
+- **Role terminology standardized in docs**: Updated `roles-and-layers.md`, `draftsman.md`, `setup-mode.md`, and `overview.md` to use standard role terms: `Engineering`, `Shared Services`, and `Draft Admins`.
+- **Draft Actions role updates**: Renamed framework command files and standard role checks in `review-framework.md` and `update.md`.
+
+### Fixed
+
+- **Singular/plural consistency**: Resolved inconsistent singular/plural references to role names in all documentation and action files.
+
+### Compatibility Impact
+
+Workspaces migrating to framework version `0.34.0` must update their `.github/CODEOWNERS` files and any custom configurations referencing old machine roles (`engineer`, `technology-admin`, `draft-admin`) to the new standardized machine names (`engineering`, `shared-services`, `draft-admins`).
+
+### Migration Notes
+
+1. Update your workspace `.github/CODEOWNERS` file based on the new `templates/workspace/CODEOWNERS.tmpl` structure.
+2. If your workspace contains custom configurations, vocabularies, or object-patches that reference `ownerRole: engineer`, `ownerRole: technology-admin`, or `ownerRole: draft-admin`, update them to `engineering`, `shared-services`, or `draft-admins` respectively.
+
 ## 0.33.0 - 2026-05-31
 
 Retires `EdgeGatewayService` as a supported object type, expands
