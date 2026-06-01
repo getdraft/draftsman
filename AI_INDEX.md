@@ -33,7 +33,9 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | security.md | Credential and local security boundary notes for optional local tooling. |
 | framework/docs/draftsman.md | Draftsman role, intent routing, and authoring rules. |
 | framework/docs/setup-mode.md | Draftsman first-run setup mode and guided interview cadence. |
-| framework/docs/company-onboarding.md | Company onboarding tutorial for implementing DRAFT in a private workspace. |
+| framework/docs/engineering-onboarding.md | Targeted onboarding tutorial for product engineering teams. |
+| framework/docs/shared-services-onboarding.md | Targeted onboarding tutorial for platform/shared services teams. |
+| framework/docs/draft-admins-onboarding.md | Targeted onboarding tutorial for workspace administrators. |
 | framework/docs/company-vocabulary.md | Optional company vocabulary lists, advisory/gated validation, and proposal flow. |
 | framework/docs/overview.md | Framework concepts and object family overview. |
 | framework/docs/object-types.md | User-facing DRAFT object type taxonomy and deployable/non-deployable distinction. |
@@ -56,14 +58,15 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | Path | Title | Summary |
 |---|---|---|
 | framework/docs/capabilities.md | Capabilities | A Capability is a first-class framework object that names an architecture |
-| framework/docs/company-onboarding.md | Company Onboarding | This guide is the clean first-run path for a company adopting DRAFT. It keeps |
 | framework/docs/company-vocabulary.md | Company Vocabulary | Company vocabulary lists are optional governed lists in `.draft/workspace.yaml`. |
 | framework/docs/decision-records.md | DecisionRecords | DecisionRecords are first-class records for known risks, |
 | framework/docs/delivery-models.md | Delivery Models | Delivery models explain how a deployable service is operated. They apply to |
 | framework/docs/design-principles.md | Design Principles | DRAFT is opinionated. These principles explain the reasoning behind the |
+| framework/docs/draft-admins-onboarding.md | Draft Admins Onboarding Guide | > **Audience:** Workspace Administrators, Enterprise Architects, and Devops Leads. |
 | framework/docs/drafting-sessions.md | DraftingSessions | A DraftingSession is a machine-readable record of partial architecture work. |
 | framework/docs/draftsman-ai-configuration.md | Draftsman AI Guidance | DRAFT does not include a built-in AI runtime. The Draftsman is an external AI |
 | framework/docs/draftsman.md | Draftsman Instructions | The Draftsman is an AI architecture-authoring agent for DRAFT. It interviews the |
+| framework/docs/engineering-onboarding.md | Engineering Onboarding Guide | > **Audience:** Product Developers, Tech Leads, and Software Architects. |
 | framework/docs/exporters.md | DRAFT Exporters | DRAFT catalogs are authoritative YAML — the source of truth for architecture |
 | framework/docs/how-to-add-objects.md | How To Add Objects | The fastest way to add a new object correctly is to decide what kind of thing you are modeling before you write YAML. |
 | framework/docs/naming-conventions.md | Naming Conventions | When a DRAFT object type is referred to by name in prose, headings, schema |
@@ -76,12 +79,13 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/sdp-completion-interview.md | SDP Completion Interview | The SDP Completion Interview is a structured protocol for enriching an existing |
 | framework/docs/security-and-compliance-controls.md | Security And Compliance RequirementGroups | DRAFT treats compliance as an explicitly activated authoring and validation layer. |
 | framework/docs/setup-mode.md | Draftsman Setup Mode | > **Audience: Draft Admins only.** |
+| framework/docs/shared-services-onboarding.md | Shared Services Onboarding Guide | > **Audience:** Platform Engineers, Infrastructure Leads, Security Architects, and Database Administrators. |
 | framework/docs/software-deployment-patterns.md | SoftwareDeploymentPatterns | A SoftwareDeploymentPattern is a declaration that a specific product is intended |
 | framework/docs/standards.md | Deployable Objects | DRAFT previously used the word "Standard" for reusable deployable building |
 | framework/docs/technology-components.md | TechnologyComponents | A TechnologyComponent is a discrete vendor product object. It records one |
 | framework/docs/ticketing.md | Ticketing and Issue Creation Workflow | > **Audience:** Draft Admins, Shared Services, and Engineering Representatives. |
 | framework/docs/user-manual.md | DRAFT User Manual | DRAFT is an AI-first, Git-native, repo-first framework for documenting governed architecture. It turns architecture c... |
-| framework/docs/workspaces.md | Workspaces | For the full adoption sequence from installation through first drafting |
+| framework/docs/workspaces.md | Workspaces | For the full adoption sequence from installation through first drafting sessions, see the role-specific onboarding tu... |
 | framework/docs/yaml-schema-reference.md | YAML Schema Reference | This page is the quickest way to understand how to build a valid YAML object in |
 
 ## Schemas
