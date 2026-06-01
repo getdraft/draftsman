@@ -197,6 +197,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         action="store_true",
         help="Print verbose tracing of requirements validation.",
     )
+    parser.add_argument(
+        "--deployment-ready",
+        nargs=2,
+        metavar=("SDP_UID", "TARGET_UID"),
+        help="Check if a SoftwareDeploymentPattern is deployment-ready for a DeploymentTarget.",
+    )
     return parser.parse_args(argv)
 
 
@@ -3339,8 +3345,42 @@ def validate_relationship(
             "add the referenced object to the catalog or correct the UID"
         )
 
+def scan_for_secrets(data: Any, path: Path, failures: list[str], current_field_path: str = "") -> None:
+    if isinstance(data, dict):
+        if "secretReference" in data:
+            return
+        for k, v in data.items():
+            field_name = f"{current_field_path}.{k}" if current_field_path else k
+            k_lower = str(k).lower()
+            if k_lower in ("description", "architecturenotes", "notes", "rationale", "rationales", "decisionrecords"):
+                continue
+            if isinstance(v, str) and any(sub in k_lower for sub in ("password", "token", "secret", "privatekey", "apikey", "private_key", "api_key")):
+                failures.append(
+                    f"{path}: Plaintext secret leaked in field '{field_name}' ('{v}'); "
+                    "sensitive fields must use a secretReference mapping to avoid security leaks"
+                )
+            else:
+                scan_for_secrets(v, path, failures, field_name)
+    elif isinstance(data, list):
+        for index, item in enumerate(data):
+            scan_for_secrets(item, path, failures, f"{current_field_path}[{index}]")
+
+
+
+def extract_referenced_uids(data: Any, refs: set[str]) -> None:
+    if isinstance(data, str):
+        if UID_PATTERN.match(data):
+            refs.add(data)
+    elif isinstance(data, dict):
+        for v in data.values():
+            extract_referenced_uids(v, refs)
+    elif isinstance(data, list):
+        for item in data:
+            extract_referenced_uids(item, refs)
+
 
 def main(argv: list[str] | None = None) -> int:
+
     args = parse_args(argv or sys.argv[1:])
     workspace_root = args.workspace.resolve()
 
@@ -3383,6 +3423,7 @@ def main(argv: list[str] | None = None) -> int:
     for path, obj in objects.items():
         if obj.get("type") is None:
             continue
+        scan_for_secrets(obj, path, failures)
         if obj.get("type") == "vocabulary":
             validate_vocabulary_document(obj, path, failures, warnings)
             continue
@@ -3478,7 +3519,63 @@ def main(argv: list[str] | None = None) -> int:
             )
             validate_service_group_refs(obj, path, decision_record_ids, catalog_by_id, failures, warnings=warnings)
 
+    if args.deployment_ready:
+        sdp_uid, target_uid = args.deployment_ready
+        sdp_obj = catalog_by_id.get(sdp_uid)
+        target_obj = catalog_by_id.get(target_uid)
+
+        if not sdp_obj:
+            failures.append(f"Deployment readiness check failed: SoftwareDeploymentPattern UID '{sdp_uid}' not found in catalog")
+        elif sdp_obj.get("type") != "software_deployment_pattern":
+            failures.append(f"Deployment readiness check failed: Object '{sdp_uid}' is a '{sdp_obj.get('type')}', not a software_deployment_pattern")
+
+        if not target_obj:
+            failures.append(f"Deployment readiness check failed: DeploymentTarget UID '{target_uid}' not found in catalog")
+        elif target_obj.get("type") != "deployment_target":
+            failures.append(f"Deployment readiness check failed: Object '{target_uid}' is a '{target_obj.get('type')}', not a deployment_target")
+
+        if sdp_obj and target_obj and sdp_obj.get("type") == "software_deployment_pattern" and target_obj.get("type") == "deployment_target":
+            sdp_status = sdp_obj.get("catalogStatus")
+            if sdp_status != "complete":
+                failures.append(f"Deployment readiness check failed: SoftwareDeploymentPattern '{sdp_obj.get('name') or sdp_uid}' has catalogStatus '{sdp_status}' instead of 'complete'")
+            target_status = target_obj.get("catalogStatus")
+            if target_status != "complete":
+                failures.append(f"Deployment readiness check failed: DeploymentTarget '{target_obj.get('name') or target_uid}' has catalogStatus '{target_status}' instead of 'complete'")
+
+            visited = set()
+            queue = [sdp_uid]
+            while queue:
+                current_uid = queue.pop(0)
+                if current_uid in visited:
+                    continue
+                visited.add(current_uid)
+                ref_obj = catalog_by_id.get(current_uid)
+                if ref_obj:
+                    refs = set()
+                    extract_referenced_uids(ref_obj, refs)
+                    for ref in refs:
+                        if ref in catalog_by_id and ref not in visited:
+                            queue.append(ref)
+
+            for ref_uid in sorted(visited):
+                if ref_uid == sdp_uid:
+                    continue
+                ref_obj = catalog_by_id.get(ref_uid)
+                if ref_obj:
+                    status = ref_obj.get("catalogStatus")
+                    if status != "complete":
+                        failures.append(
+                            f"Deployment readiness check failed: Object '{ref_obj.get('name') or ref_uid}' "
+                            f"(type: {ref_obj.get('type')}, uid: {ref_uid}) in SDP closed graph has catalogStatus "
+                            f"'{status}' instead of 'complete'"
+                        )
+
+            if not failures:
+                print("")
+                print(f"SoftwareDeploymentPattern '{sdp_obj.get('name')}' is deployment-ready for DeploymentTarget '{target_obj.get('name')}' (200 OK).")
+
     failing_paths = {entry.split(":", 1)[0] for entry in failures}
+
     for path in files:
         if str(path) in failing_paths:
             print(f"FAIL {display_path(path)}")

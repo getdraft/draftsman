@@ -3,6 +3,35 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.44.0 - 2026-06-01
+
+Introduces the DRAFT v1.0 deployment readiness validation contract, including environment target binding schemas, a template, automated secrets scanning, and a topological closed-graph completeness check.
+
+### Compatibility Impact
+
+- This release does not introduce any breaking changes to existing catalogs. All additions are backwards-compatible.
+
+### Added
+
+- Support for first-class environment target bindings via `DeploymentTarget` objects and its schema `framework/schemas/deployment-target.schema.yaml`.
+- Added `templates/deployment-target.yaml.tmpl` for easy catalog onboarding and drafting of environment targets.
+- Added `--deployment-ready <SDP_UID> <TARGET_UID>` command line option to `validate.py` to verify that a SoftwareDeploymentPattern is deployment-ready for a physical target environment.
+- Implement a topological closed-dependency-graph validator for the `--deployment-ready` option, checking that every transitively referenced catalog object is fully mature and set to `catalogStatus: complete`.
+- Added an automated, recursive plaintext secrets scanner in `validate.py` to scan all parsed configuration parameters and enforce the secure `secretReference` design pattern.
+- Added comprehensive unit testing covering secrets scanner blocking and graph completeness validation.
+
+### Changed
+
+- None. This release introduces new schemas, templates, and validator verification steps only.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No migration steps are required for this release. Existing objects and configurations remain valid.
+
 ## 0.43.0 - 2026-06-01
 
 Adds quiet and summary-only modes to the validator command line tool, and clarifies requirement gap warning trace messages.
