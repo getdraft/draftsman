@@ -105,7 +105,7 @@ reviews:
     note: Spawned from finding 3; shipped 0.32.0 as uniform PascalCase across the entire framework
 
 - date: 2026-06-01
-  frameworkVersion: "0.41.6"
+  frameworkVersion: "0.42.0"
   scope: [full, schemas, browser, validator]
   findingsGenerated: 6
   findings:
