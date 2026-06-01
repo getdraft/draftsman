@@ -3,6 +3,41 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.41.1 - 2026-06-01
+
+Fixes the vendored workspace framework updater when upstream tags are missing
+or stale. The updater now compares the latest visible release tag with
+upstream `main`'s `draft-framework.yaml` version and selects `main` when it is
+newer, so company workspaces can still discover the current framework version.
+
+### Added
+
+- None.
+
+### Changed
+
+- `/draft update`, workspace documentation, and README guidance now describe
+  the stale-tag fallback behavior.
+
+### Fixed
+
+- The generated DRAFT framework update workflow now falls back to upstream
+  `main` when the latest visible semver tag is older than the version declared
+  by `main`'s `draft-framework.yaml`.
+- Main-based updates now link to the main changelog instead of a non-existent
+  release tag URL.
+
+### Compatibility Impact
+
+- None. This is an updater and documentation fix only; no schema, object model,
+  RequirementGroup, or validator contract changed.
+
+### Migration Notes
+
+Existing company workspaces should refresh their
+`.github/workflows/draft-framework-update.yml` from the updated workspace
+template if they want automatic stale-tag fallback behavior.
+
 ## 0.41.0 - 2026-06-01
 
 Completes the `architectureNote`→DecisionRecord cleanup by applying the rule to the opt-in compliance packs and removing `architectureNote` from the satisfaction allowlist entirely (closes #74). With every shipped RequirementGroup now free of note-based satisfiers, `architectureNote` is no longer an accepted answer type anywhere — it is purely a drafting annotation.

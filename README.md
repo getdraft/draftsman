@@ -110,7 +110,8 @@ update source, not a runtime dependency for a company's Draftsman.
 
 New company workspaces include an optional GitHub Actions workflow at
 `.github/workflows/draft-framework-update.yml`. The workflow checks for newer
-DRAFT Framework version tags, creates an update branch, refreshes the vendored
+DRAFT Framework versions, falls back to upstream `main` when version tags are
+missing or stale, creates an update branch, refreshes the vendored
 `.draft/framework/` copy, updates `.draft/framework.lock`, validates the
 workspace, and opens a pull request.
 
