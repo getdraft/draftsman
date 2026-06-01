@@ -175,7 +175,7 @@ def display_path(path: Path) -> str:
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Validate DRAFT framework and workspace YAML.")
+    parser = argparse.ArgumentParser(description="Validate DRAFT framework and workspace YAML. Primarily run via the `/draft validate` command.")
     parser.add_argument(
         "--workspace",
         type=Path,
