@@ -3,6 +3,35 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.41.5 - 2026-06-01
+
+Removes remaining legacy role wording from command help and role-layer guidance
+so the framework consistently uses Shared Services.
+
+### Added
+
+- None.
+
+### Changed
+
+- `/draft` help now lists `/draft author` and `/draft session` for Engineering
+  and Shared Services.
+- Reuse model and roles/layers docs now use Shared Services consistently.
+
+### Fixed
+
+- Removed stale legacy role names from current docs and prior changelog notes
+  that could confuse vendored company workspace guidance.
+
+### Compatibility Impact
+
+- None. This is terminology and AI instruction guidance only.
+
+### Migration Notes
+
+Existing company workspaces should refresh their vendored framework copy to
+pick up the corrected `/draft` help text.
+
 ## 0.41.4 - 2026-06-01
 
 Adds a `/draft security` workflow for security RequirementGroup authoring,
@@ -1009,7 +1038,7 @@ No breaking changes. SaaS service objects that previously placed fields at the t
 
 ### Added
 
-- **Roles and Layers document** (`framework/docs/roles-and-layers.md`): New document explaining the three roles (Draft Admin, Technology Admin, Engineer), the three catalog layers (Governance, Infrastructure, Product), and the reuse scale model. Clarifies that 50 services on a shared platform produces ~60 objects, not hundreds, because infrastructure objects are authored once and referenced by many.
+- **Roles and Layers document** (`framework/docs/roles-and-layers.md`): New document explaining the three roles (Draft Admins, Shared Services, Engineering), the three catalog layers (Governance, Infrastructure, Product), and the reuse scale model. Clarifies that 50 services on a shared platform produces ~60 objects, not hundreds, because infrastructure objects are authored once and referenced by many.
 
 - **Design Principles document** (`framework/docs/design-principles.md`): Seven principles explaining the reasoning behind DRAFT's opinions — reuse over invention, stubs as progress, binary governance, automation-first catalog, compliance as authoring, AI owns the YAML, and uncertainty as first-class. Linked from `overview.md`.
 
@@ -1027,7 +1056,7 @@ No breaking changes. SaaS service objects that previously placed fields at the t
 
 - **`setup-mode.md` step 5 reframed as domain standard ownership**: The step now explicitly surfaces the 19 framework capabilities as domain standards requiring designated owners, grouped by domain. Unassigned owners are recorded as `TBD` so gaps are visible immediately.
 
-- **`setup-mode.md` audience declaration added**: A prominent callout at the top clarifies that setup mode is for Draft Admins only. Engineers and Technology Admins connect to an already-configured workspace and start a regular Draftsman session.
+- **`setup-mode.md` audience declaration added**: A prominent callout at the top clarifies that setup mode is for Draft Admins only. Engineering and Shared Services representatives connect to an already-configured workspace and start a regular Draftsman session.
 
 - **`AGENTS.md` reduced from 187 to 70 lines**: Removed seven sections duplicated in `draftsman.md` — Source Of Truth Order, AI Agent Contract, Compliance Claims, Overlapping Requirements, Capability Lookup, SDP Walkdown, and the condensed Draftsman behavior summary. AGENTS.md now contains only what is needed before `draftsman.md` is read: bootstrap sequence, activation phrases, repository-mode structural facts, and editing rules.
 

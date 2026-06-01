@@ -25,7 +25,7 @@ The catalog is organized in three layers that compose from bottom to top.
 │  SDP · ProductComponent · DataComponent             │
 │  "What does this specific product deploy?"          │
 ├─────────────────────────────────────────────────────┤
-│  INFRASTRUCTURE LAYER  (shared, owned by tech admins│
+│  INFRASTRUCTURE LAYER  (owned by Shared Services)   │
 │  Host · RuntimeService · DataStoreService           │
 │  NetworkService · TechnologyComponent               │
 │  "What platforms and products do we run on?"        │
