@@ -3,6 +3,30 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.35.2 - 2026-05-31
+
+Adds the comprehensive specification for DRAFT's issue routing semantics, default labels, and accountable team resolution rules.
+
+### Added
+
+- **Issue Routing Semantics & Default Labels**: expanded `framework/docs/ticketing.md` to define DRAFT's minimal labeling strategy (`draft`, `needs-triage`, exact role, exact severity, and conditional `needs-routing` labels), role-specific ownership scopes, 3-tier team resolution sequence (Artifact, CODEOWNERS, Fallback), and downstream override configuration.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+None. This release adds documentation and specifications only.
+
+### Migration Notes
+
+No migration is required.
+
 ## 0.35.1 - 2026-05-31
 
 Adds the comprehensive specification for DRAFT's shared issue creation and ticketing workflow.
