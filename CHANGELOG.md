@@ -3,6 +3,26 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.36.4 - 2026-05-31
+
+Traces the four framework-native network capabilities (Network Connectivity, Network Segmentation, Traffic Management, WAN Connectivity) from the base NetworkService RequirementGroup so they resolve to a requirement demand signal. Previously the validator warned that these capabilities were untraceable, forcing vendored company workspaces to invent artificial company-specific requirements just to satisfy traceability.
+
+### Fixed
+
+- **Untraced native network capabilities**: Added capability-keyed satisfaction mechanisms to the `network-function` requirement in `requirement-group-network-service.yaml`, referencing `01KSWVZSZ5-Q6HW` (Network Connectivity), `01KSWVZSZ5-1RTH` (Network Segmentation), `01KSWVZSZ5-M0FR` (Traffic Management), and `01KSWVZSZ5-26F1` (WAN Connectivity). A NetworkService can now declare its function either with the existing `networkFunction` field/architectureNote or by referencing a TechnologyComponent that provides one of the native network capabilities. `minimumSatisfactions` remains `1`, so existing NetworkService objects are unaffected.
+
+### Changed
+
+- None.
+
+### Compatibility Impact
+
+- None. The change only broadens how the existing `network-function` requirement can be satisfied; no new mandatory obligations are introduced for existing objects.
+
+### Migration Notes
+
+No manual workspace migration is required. Vendored workspaces pick up the traceability fix on their next framework refresh.
+
 ## 0.36.3 - 2026-05-31
 
 Replaces the monolithic company onboarding tutorial with three role-targeted onboarding guides aligned to the standardized DRAFT roles (Engineering, Shared Services, Draft Admins), reducing cross-role cognitive load and giving each audience a focused time-to-first-action path.
