@@ -1,0 +1,56 @@
+schemaVersion: '1.0'
+type: deployment_target
+defaultOwnerRole: draft-admins
+requiredFields:
+- schemaVersion
+- uid
+- type
+- name
+- environmentTier
+- targetProvider
+- parameters
+- catalogStatus
+optionalFields:
+- description
+- version
+- owner
+- tags
+- notes
+enumFields:
+  catalogStatus:
+  - stub
+  - incomplete
+  - complete
+  environmentTier:
+  - dev
+  - staging
+  - production
+  targetProvider:
+  - aws
+  - gcp
+  - azure
+  - openstack
+  - kubernetes
+  - on-premise
+fieldTypes:
+  tags: list
+  parameters: dict
+  owner: dict
+uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
+aiHint: >
+  A DeploymentTarget bridges abstract environment tiers (dev, staging, production) to physical infrastructure connection settings and target providers.
+  Use parameters to store cloud-specific or environment-specific connection configuration like accountIds, regions, and VPCs.
+fieldDescriptions:
+  schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
+  uid: Use the generated opaque UID for object identity. Do not edit it for display-name changes.
+  type: Use deployment_target exactly.
+  name: Use a clear human-readable name for the deployment target (e.g. "AWS Production - Oregon").
+  environmentTier: Select the environment tier this target represents — dev, staging, or production.
+  targetProvider: Select the cloud or runtime hosting platform — aws, gcp, azure, openstack, kubernetes, or on-premise.
+  parameters: A mapping of cloud or environment-specific connection settings (e.g., accountId, VPC, region).
+  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity.
+  description: A short explanation of what this environment target represents and who has access to it.
+  version: Version string for this target configuration.
+  owner: Owner metadata including team and contact info.
+  tags: Metadata tags to categorize this deployment target.
+  notes: Additional context about how this environment target is governed, provisioned, or secured.

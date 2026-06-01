@@ -1843,6 +1843,110 @@ requirementGroups:
             self.assertNotIn("PASS ", quiet_result.stdout)
             self.assertIn("Validated ", quiet_result.stdout)
 
+    def test_validate_secrets_scanner_blocks_plaintext_secrets(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            self._write_workspace_requirement_fixture(workspace, require_disposition=False)
+
+            # Write a component with a plaintext password leak
+            component_dir = workspace / "catalog" / "technology-components"
+            component_dir.mkdir(parents=True, exist_ok=True)
+            (component_dir / "technology-component-leak.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: technology.leak
+                    type: technology_component
+                    classification: software
+                    name: Leaking Component
+                    catalogStatus: stub
+                    lifecycleStatus: candidate
+                    owner:
+                      team: platform-engineering
+                    configurations:
+                      - id: default
+                        name: Default Config
+                        description: Plaintext leak
+                        parameters:
+                          db_password: "my-plain-password"
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+
+            cmd = build_validate_command(workspace, REPO_ROOT)
+            result = subprocess.run(
+                cmd,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("Plaintext secret leaked in field", result.stdout)
+
+    def test_validate_deployment_ready_checks_completeness_and_dependency_graph(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            self._write_workspace_requirement_fixture(workspace, require_disposition=False)
+
+            # 1. Create a SoftwareDeploymentPattern (complete status)
+            sdp_dir = workspace / "catalog" / "software-deployment-patterns"
+            sdp_dir.mkdir(parents=True, exist_ok=True)
+            (sdp_dir / "sdp-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KSF9T6YZ-A1B2
+                    type: software_deployment_pattern
+                    name: Test SDP
+                    catalogStatus: complete
+                    lifecycleStatus: existing-only
+                    patternType: SaaS
+                    serviceGroups: []
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            # 2. Create a DeploymentTarget (incomplete status)
+            target_dir = workspace / "configurations" / "deployment-targets"
+            target_dir.mkdir(parents=True, exist_ok=True)
+            (target_dir / "target-dev.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KSHG87WX-C3D4
+                    type: deployment_target
+                    name: Dev Target
+                    environmentTier: dev
+                    targetProvider: aws
+                    parameters:
+                      region: us-east-1
+                    catalogStatus: incomplete
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+
+            # 3. Check deployment readiness for SDP (which should fail because the target is incomplete)
+            cmd = build_validate_command(workspace, REPO_ROOT) + ["--deployment-ready", "01KSF9T6YZ-A1B2", "01KSHG87WX-C3D4"]
+            result = subprocess.run(
+                cmd,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("has catalogStatus 'incomplete' instead of 'complete'", result.stdout)
+
+
 
 if __name__ == "__main__":
     unittest.main()
