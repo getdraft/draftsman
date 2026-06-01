@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KT0XNZEY-KPTW
+type: capability
+name: Email Delivery
+description: Outbound and transactional email is accepted, routed, and delivered to recipients through a managed mail delivery service.
+version: 1.0.0
+catalogStatus: complete
+definitionOwner:
+  provider: draft-framework
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+domain: 01KT0XNZEY-QY0Y
+implementations: []

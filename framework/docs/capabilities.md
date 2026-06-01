@@ -53,12 +53,14 @@ does not belong to exactly one RequirementGroup.
 ## Native vs Company-Local Capabilities
 
 DRAFT ships a native capability vocabulary for architecture outcomes that are
-generic to software, data, network, security, observability, and testing — for
-example Application Runtime, Caching, Messaging, Data Persistence, Object
-Storage, File Storage, API Gateway, DNS, CDN, WAF, Traffic Management, and the
-identity, secrets, and monitoring capabilities. These are not company-specific
-vocabulary, so the framework owns them and traces them from base
-RequirementGroups.
+generic to software, data, network, security, observability, testing, delivery,
+integration, and analytics — for example Application Runtime, Caching, Messaging,
+Data Persistence, Object Storage, File Storage, API Gateway, DNS, CDN, WAF,
+Traffic Management, CI/CD Pipeline, Artifact Management, Configuration
+Management, Email Delivery, File Transfer, Data Integration, Analytics,
+Reporting, Certificate Management, and the identity, secrets, and monitoring
+capabilities. These are not company-specific vocabulary, so the framework owns
+them and traces them from base RequirementGroups.
 
 Use a native capability whenever your outcome matches one. Create a
 company-local capability only for a genuinely company-specific architecture

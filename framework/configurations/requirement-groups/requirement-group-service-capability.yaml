@@ -418,6 +418,330 @@ requirements:
   - internalComponent
   - relationship
   - decisionRecord
+- id: capability-cicd-pipeline
+  name: CI/CD Pipeline behavior
+  description: A runtime service that declares the CI/CD Pipeline capability must document how source code is automatically built, tested, and promoted through environments.
+  rationale: CI/CD Pipeline is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - runtime_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0XNZEY-Q2TF
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0XNZEY-Q2TF
+    example: A TechnologyComponent configuration that implements the build and delivery pipeline.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0XNZEY-Q2TF
+    example: A locally included TechnologyComponent that provides CI/CD Pipeline behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-Q2TF
+    example: A relationship to a modeled service that delivers CI/CD Pipeline behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0XNZEY-Q2TF
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0XNZEY-Q2TF, recording how CI/CD Pipeline is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0XNZEY-Q2TF
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-artifact-management
+  name: Artifact Management behavior
+  description: A runtime service that declares the Artifact Management capability must document how build outputs, packages, and dependencies are stored, versioned, and served.
+  rationale: Artifact Management is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - runtime_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0XNZEY-7HWQ
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0XNZEY-7HWQ
+    example: A TechnologyComponent configuration that implements the artifact repository.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0XNZEY-7HWQ
+    example: A locally included TechnologyComponent that provides Artifact Management behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-7HWQ
+    example: A relationship to a modeled service that delivers Artifact Management behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0XNZEY-7HWQ
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0XNZEY-7HWQ, recording how Artifact Management is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0XNZEY-7HWQ
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-configuration-management
+  name: Configuration Management behavior
+  description: A runtime service that declares the Configuration Management capability must document how system and application configuration is declared, applied, and reconciled across environments.
+  rationale: Configuration Management is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - runtime_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0XNZEY-35Y2
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0XNZEY-35Y2
+    example: A TechnologyComponent configuration that implements the configuration management platform.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0XNZEY-35Y2
+    example: A locally included TechnologyComponent that provides Configuration Management behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-35Y2
+    example: A relationship to a modeled service that delivers Configuration Management behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0XNZEY-35Y2
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0XNZEY-35Y2, recording how Configuration Management is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0XNZEY-35Y2
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-email-delivery
+  name: Email Delivery behavior
+  description: A runtime service that declares the Email Delivery capability must document how outbound and transactional email is accepted, routed, and delivered.
+  rationale: Email Delivery is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - runtime_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0XNZEY-KPTW
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0XNZEY-KPTW
+    example: A TechnologyComponent configuration that implements the mail delivery service.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0XNZEY-KPTW
+    example: A locally included TechnologyComponent that provides Email Delivery behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-KPTW
+    example: A relationship to a modeled service that delivers Email Delivery behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0XNZEY-KPTW
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0XNZEY-KPTW, recording how Email Delivery is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0XNZEY-KPTW
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-file-transfer
+  name: File Transfer behavior
+  description: A network service that declares the File Transfer capability must document how files are exchanged between systems or partners reliably and securely.
+  rationale: File Transfer is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - network_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0XNZEY-K1J3
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0XNZEY-K1J3
+    example: A TechnologyComponent configuration that implements the managed file transfer service.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0XNZEY-K1J3
+    example: A locally included TechnologyComponent that provides File Transfer behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-K1J3
+    example: A relationship to a modeled service that delivers File Transfer behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0XNZEY-K1J3
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0XNZEY-K1J3, recording how File Transfer is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0XNZEY-K1J3
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-data-integration
+  name: Data Integration behavior
+  description: A runtime service that declares the Data Integration capability must document how data is moved, transformed, and synchronized between systems.
+  rationale: Data Integration is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - runtime_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0XNZEY-DENJ
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0XNZEY-DENJ
+    example: A TechnologyComponent configuration that implements the integration or ETL platform.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0XNZEY-DENJ
+    example: A locally included TechnologyComponent that provides Data Integration behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-DENJ
+    example: A relationship to a modeled service that delivers Data Integration behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0XNZEY-DENJ
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0XNZEY-DENJ, recording how Data Integration is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0XNZEY-DENJ
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-analytics
+  name: Analytics behavior
+  description: A runtime service that declares the Analytics capability must document how operational and business data is processed and analyzed to produce insight.
+  rationale: Analytics is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - runtime_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0XNZEY-A7GK
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0XNZEY-A7GK
+    example: A TechnologyComponent configuration that implements the analytics platform.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0XNZEY-A7GK
+    example: A locally included TechnologyComponent that provides Analytics behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-A7GK
+    example: A relationship to a modeled service that delivers Analytics behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0XNZEY-A7GK
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0XNZEY-A7GK, recording how Analytics is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0XNZEY-A7GK
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-reporting
+  name: Reporting behavior
+  description: A runtime service that declares the Reporting capability must document how curated metrics and datasets are presented through reports and dashboards.
+  rationale: Reporting is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - runtime_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0XNZEY-70Y6
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0XNZEY-70Y6
+    example: A TechnologyComponent configuration that implements the reporting platform.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0XNZEY-70Y6
+    example: A locally included TechnologyComponent that provides Reporting behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-70Y6
+    example: A relationship to a modeled service that delivers Reporting behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0XNZEY-70Y6
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0XNZEY-70Y6, recording how Reporting is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0XNZEY-70Y6
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-certificate-management
+  name: Certificate Management behavior
+  description: A runtime service that declares the Certificate Management capability must document how digital certificates are issued, distributed, renewed, and revoked.
+  rationale: Certificate Management is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - runtime_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0XNZEY-RVTG
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0XNZEY-RVTG
+    example: A TechnologyComponent configuration that implements the certificate or PKI service.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0XNZEY-RVTG
+    example: A locally included TechnologyComponent that provides Certificate Management behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-RVTG
+    example: A relationship to a modeled service that delivers Certificate Management behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0XNZEY-RVTG
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0XNZEY-RVTG, recording how Certificate Management is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0XNZEY-RVTG
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
 lifecycleStatus: preferred
 tags:
 - service

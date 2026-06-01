@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KT0XNZEY-A7GK
+type: capability
+name: Analytics
+description: Operational and business data is processed and analyzed to produce insight through a managed analytics platform.
+version: 1.0.0
+catalogStatus: complete
+definitionOwner:
+  provider: draft-framework
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+domain: 01KT0XNZEY-HGZZ
+implementations: []

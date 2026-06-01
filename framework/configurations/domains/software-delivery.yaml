@@ -1,0 +1,14 @@
+schemaVersion: '1.0'
+uid: 01KT0XNZEY-GXYR
+type: domain
+name: Software Delivery
+description: >
+  Strategic domain covering the build, integration, packaging, and configuration
+  pipeline that delivers software into running environments. Capabilities in this
+  domain are governed by the platform engineering team, who owns the HOW decisions
+  for continuous integration and delivery, artifact custody, and configuration
+  management technology.
+capabilities:
+- 01KT0XNZEY-Q2TF
+- 01KT0XNZEY-7HWQ
+- 01KT0XNZEY-35Y2

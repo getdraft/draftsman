@@ -1,0 +1,11 @@
+schemaVersion: '1.0'
+uid: 01KT0XNZEY-HGZZ
+type: domain
+name: Analytics
+description: >
+  Strategic domain covering analytical processing and reporting over operational
+  and business data. Capabilities in this domain are governed by the data team,
+  who owns the HOW decisions for analytics and reporting technology.
+capabilities:
+- 01KT0XNZEY-A7GK
+- 01KT0XNZEY-70Y6
