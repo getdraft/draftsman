@@ -104,3 +104,32 @@ reviews:
     outcome: implemented
     note: Spawned from finding 3; shipped 0.32.0 as uniform PascalCase across the entire framework
 
+- date: 2026-06-01
+  frameworkVersion: "0.42.0"
+  scope: [full, schemas, browser, validator]
+  findingsGenerated: 6
+  findings:
+  - title: Capability satisfaction limited to TechnologyComponents
+    severity: High
+    outcome: implemented
+    note: Expanded capability implementations in schema/validator to allow shared operational services (runtime_service, data_store_service, network_service) in addition to technology_component.
+  - title: Missing recursive system boundaries
+    severity: High
+    outcome: implemented
+    note: Enabled system objects to recursively contain other system objects under the system's containers list to support nested subsystems.
+  - title: Empty domains shown on Acceptable Use view
+    severity: Medium
+    outcome: implemented
+    note: Filtered out empty domain cards from the Acceptable Use view to reduce clutter.
+  - title: UID displayed as main label for unresolved components
+    severity: Medium
+    outcome: implemented
+    note: Rendered 'Unresolved Component Reference' as the primary card label for unresolved components, placing the raw UID in the smaller subtitle.
+  - title: Absence of automated lifecycle dates
+    severity: Low
+    outcome: deferred
+    note: Discussed automating lifecycle dates based on status, but deferred to avoid validation complexity and allow explicit manual definitions first.
+  - title: Vocabulary registration double-binding redundancy
+    severity: Low
+    outcome: deferred
+    note: Reviewed vocabulary sources and registration paths; deferred to avoid unnecessary refactoring until more diverse catalog configurations are ingested.

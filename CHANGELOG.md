@@ -3,6 +3,32 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.42.0 - 2026-06-01
+
+Expands capability satisfaction to support shared operational platform services, supports recursive system boundaries (subsystems), and resolves Acceptable Use view browser UI display bugs.
+
+### Compatibility Impact
+
+- This release does not introduce any breaking changes to existing catalogs. All additions are backwards-compatible.
+
+### Added
+
+- Support in schemas and validator for capability implementations to satisfy requirements by referencing shared operational services (`runtime_service`, `data_store_service`, `network_service`) in addition to local `technology_component` objects.
+- Support in schemas and validator for `system` objects to recursively contain other `system` objects in their `containers` list to represent nested subsystems.
+
+### Changed
+
+- Framework schemas and browser rendering logic were updated to support the expanded capability satisfaction models and recursive system boundaries.
+
+### Fixed
+
+- Acceptable Use view in the browser now filters out and suppresses empty domain cards that contain no rows, reducing visual clutter.
+- Acceptable Use capability drill-down in the browser now displays a clean human-readable `"Unresolved Component Reference"` label when the capability's implementation reference cannot be resolved, keeping the raw UID as a smaller subtitle.
+
+### Migration Notes
+
+- No migration steps are required for this release. Existing objects and configurations remain valid under the expanded schemas.
+
 ## 0.41.6 - 2026-06-01
 
 Fixes manual framework update ref handling so bare semantic versions resolve to

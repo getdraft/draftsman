@@ -1388,7 +1388,7 @@ requirementGroups:
         self.assertFalse(result.ok, result.stdout + result.stderr)
         self.assertIn("Add owner.team before assigning capability implementations", result.stdout)
 
-    def test_capability_implementation_ref_must_be_technology_component(self) -> None:
+    def test_capability_implementation_ref_allows_shared_services(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
             patch_dir = workspace / "configurations" / "object-patches"
@@ -1401,7 +1401,10 @@ requirementGroups:
                     schemaVersion: "1.0"
                     id: service.test
                     type: runtime_service
-                    deliveryModel: self-managed
+                    deliveryModel: saas
+                    vendor: Amazon Web Services
+                    productName: RDS
+                    productVersion: Postgresql-15
                     name: Test Service
                     catalogStatus: stub
                     lifecycleStatus: existing-only
@@ -1435,8 +1438,56 @@ requirementGroups:
 
             result = validate_workspace(workspace)
 
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+
+    def test_capability_implementation_ref_rejects_invalid_types(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            patch_dir = workspace / "configurations" / "object-patches"
+            system_dir = workspace / "catalog" / "systems"
+            patch_dir.mkdir(parents=True)
+            system_dir.mkdir(parents=True)
+            (system_dir / "system-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: system.test
+                    type: system
+                    name: Test System
+                    catalogStatus: stub
+                    lifecycleStatus: existing-only
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            (patch_dir / "patch-security-monitoring.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: patch.test.security-monitoring
+                    type: object_patch
+                    name: Test Security Monitoring Implementation
+                    target: capability.security-monitoring
+                    catalogStatus: incomplete
+                    lifecycleStatus: existing-only
+                    patch:
+                      owner:
+                        team: security-engineering
+                      implementations:
+                        - ref: system.test
+                          lifecycleStatus: preferred
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+
+            result = validate_workspace(workspace)
+
         self.assertFalse(result.ok, result.stdout + result.stderr)
-        self.assertIn("capability lifecycle applies only to discrete vendor product versions", result.stdout)
+        self.assertIn("capability lifecycle applies only to discrete vendor product versions or shared enterprise services", result.stdout)
 
     def test_advisory_vocabulary_reports_non_standard_value_as_warning(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -2772,7 +2772,7 @@ def validate_capability(
             warnings.append(message)
     implementations = obj.get("implementations", [])
     if not isinstance(implementations, list):
-        failures.append(f"{path}: Change implementations to a list of TechnologyComponent mappings")
+        failures.append(f"{path}: Change implementations to a list of TechnologyComponent or shared service mappings")
         return
     owner = obj.get("owner")
     if implementations and not (isinstance(owner, dict) and is_non_empty(owner.get("team"))):
@@ -2787,8 +2787,8 @@ def validate_capability(
             continue
         ref = implementation.get("ref")
         target = catalog_by_id.get(str(ref)) if is_non_empty(ref) else None
-        if not target or target.get("type") != "technology_component":
-            failures.append(f"{context}: Set ref to an existing TechnologyComponent UID; capability lifecycle applies only to discrete vendor product versions")
+        if not target or target.get("type") not in {"technology_component", "runtime_service", "data_store_service", "network_service"}:
+            failures.append(f"{context}: Set ref to an existing TechnologyComponent or shared service UID; capability lifecycle applies only to discrete vendor product versions or shared enterprise services")
         lifecycle_status = implementation.get("lifecycleStatus")
         if lifecycle_status not in VALID_IMPLEMENTATION_STATUSES:
             failures.append(
@@ -3268,7 +3268,7 @@ def validate_service_group_refs(
     )
 
 
-SYSTEM_CONTAINER_TYPES = STANDARD_TYPES
+SYSTEM_CONTAINER_TYPES = STANDARD_TYPES | {"system"}
 
 
 def validate_system(

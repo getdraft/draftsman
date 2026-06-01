@@ -346,8 +346,8 @@ Always use this named lookup procedure when a requirement has
    decision authority for lifecycle choices.
 5. Read capability `implementations` from the workspace overlay first, then base.
 6. Prefer implementations with `lifecycleStatus: preferred`, then `existing-only`.
-7. Recommend the referenced TechnologyComponent or named configuration.
-8. If no implementation exists, ask which TechnologyComponent should satisfy
+7. Recommend the referenced TechnologyComponent, shared service, or named configuration.
+8. If no implementation exists, ask which TechnologyComponent or shared service should satisfy
    the capability and note that the capability owner must approve the lifecycle
    entry.
 
@@ -371,7 +371,7 @@ For each active requirement:
 5. Ask one grounded question using those choices.
 6. Include "something else" only as an exception path, not as an approved
    standard.
-7. If the user selects "something else", identify or draft the TechnologyComponent and record that the capability owner must approve the lifecycle
+7. If the user selects "something else", identify or draft the TechnologyComponent or shared service and record that the capability owner must approve the lifecycle
    entry before it becomes acceptable use.
 
 Example wording:
@@ -383,15 +383,12 @@ Example wording:
 If no approved implementation exists, ask a bounded question that names the
 capability and owner. For example: "`DRAFT Host / authentication` requires an
 authentication capability, but no approved implementation is mapped yet. Which
-TechnologyComponent should satisfy it for this host, so the capability owner
+TechnologyComponent or shared service should satisfy it for this host, so the capability owner
 can review it?"
 
-Capability implementations must reference TechnologyComponents only. Do not
-put a Host, RuntimeService, DataStoreService, NetworkService,
-ProductComponent, SoftwareDeploymentPattern, or running service in a capability
-lifecycle list. If a SaaS or managed platform is governed by lifecycle, model
-the vendor product and version as a TechnologyComponent, then compose the
-architecture-facing deployable object from it.
+Capability implementations must reference TechnologyComponents or shared services (RuntimeService, DataStoreService, NetworkService) only. Do not
+put a Host, ProductComponent, SoftwareDeploymentPattern, or running service in a capability
+lifecycle list. If a SaaS or managed platform is governed by lifecycle, it can be referenced directly as a shared service object (or modeled as a TechnologyComponent when composing a custom deployable object from it).
 
 When modeling a dependency on a shared enterprise platform such as central
 logging, identity, monitoring, security monitoring, patching, or secrets
