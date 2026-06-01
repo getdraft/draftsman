@@ -59,6 +59,7 @@ VALID_REQUIREMENT_ANSWER_TYPES = {
     "relationship",
     "internalComponent",
     "architectureNote",
+    "decisionRecord",
     "field",
 }
 VALID_REQUIREMENT_MODES = {"mandatory", "conditional"}
@@ -921,6 +922,9 @@ def mechanism_description(mechanism: dict[str, Any]) -> str:
         return f"deploymentConfiguration(quality={quality})"
     if mechanism_type == "architectureNote":
         return f"architectureNote({mechanism.get('key', 'unknown')})"
+    if mechanism_type == "decisionRecord":
+        capability = mechanism.get("criteria", {}).get("capability") or mechanism.get("criteria", {}).get("concern", "unknown")
+        return f"decisionRecord(capability={capability})"
     return str(mechanism_type)
 
 
@@ -1170,6 +1174,25 @@ def mechanism_satisfied(obj: dict[str, Any], mechanism: dict[str, Any], catalog_
                 continue
             qualities = configuration.get("addressesQualities", [])
             if isinstance(qualities, list) and quality in qualities:
+                return True
+        return False
+    if mechanism_type == "decisionRecord":
+        criteria = mechanism.get("criteria", {}) if isinstance(mechanism.get("criteria"), dict) else {}
+        capability = criteria.get("capability") or criteria.get("concern")
+        records = obj.get("decisionRecords", [])
+        if not isinstance(records, list):
+            return False
+        for entry in records:
+            if not isinstance(entry, dict):
+                continue
+            ref = entry.get("ref")
+            target = catalog_by_id.get(str(ref)) if is_non_empty(ref) else None
+            if not target or target.get("type") != "decision_record":
+                continue
+            if not capability or capability == "any":
+                return True
+            entry_capability = entry.get("capability") or entry.get("concern")
+            if entry_capability == capability:
                 return True
         return False
     return False
@@ -2676,6 +2699,23 @@ def implementation_resolves(
         return find_technology_component_reference(obj, implementation, catalog_by_id)
     if mechanism == "technologyComponentConfiguration":
         return find_technology_component_configuration(obj, implementation, catalog_by_id)
+    if mechanism == "decisionRecord":
+        criteria = implementation.get("criteria", {}) if isinstance(implementation.get("criteria"), dict) else {}
+        capability = criteria.get("capability") or criteria.get("concern")
+        direct_ref = implementation.get("ref")
+        if is_non_empty(direct_ref):
+            target = catalog_by_id.get(str(direct_ref))
+            if target and target.get("type") == "decision_record":
+                return True
+        for entry in obj.get("decisionRecords", []) or []:
+            if not isinstance(entry, dict):
+                continue
+            target = catalog_by_id.get(str(entry.get("ref"))) if is_non_empty(entry.get("ref")) else None
+            if not target or target.get("type") != "decision_record":
+                continue
+            if not capability or (entry.get("capability") or entry.get("concern")) == capability:
+                return True
+        return False
     return False
 
 

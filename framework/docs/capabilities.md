@@ -85,9 +85,20 @@ service document how each declared capability is delivered:
 
 Each requirement is conditional on the service self-declaring the capability, so
 a service is never asked about a capability it does not provide. When a service
-does declare a capability, it documents the delivery by referencing the
-TechnologyComponent that implements it (or, as an exception path, an
-architecture note).
+does declare a capability, it satisfies the requirement by resolving it to a
+concrete implementation — a TechnologyComponent configuration or internal
+component that provides the capability, or a relationship to a modeled service
+that delivers it — or by committing a DecisionRecord that records the
+architecture decision (including a documented decision that the capability is
+not required). The DecisionRecord is referenced from the service's
+`decisionRecords` list with a `capability` key naming the capability it
+addresses.
+
+An inline `architectureNote` is a *drafting placeholder*, not a satisfaction. It
+lets a DraftingSession continue when the information or the right decision-maker
+is not yet available, but it does not resolve the requirement. The requirement
+is only met once that note is committed as a DecisionRecord (or the capability is
+resolved to a concrete implementation).
 
 Companies still own the **implementation lifecycle** decisions — which approved
 TechnologyComponents may satisfy a native capability — through capability
