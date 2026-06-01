@@ -1,0 +1,20 @@
+schemaVersion: '1.0'
+uid: 01KT11AQX6-62RD
+type: decision_record
+name: Ceilometer Telemetry Service — Identity, Access, and Secrets
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: STCK000008-RS08
+tags:
+- decision-record
+- example
+- identity
+decisionRationale: >-
+  Records the identity, access, and secrets decisions for Ceilometer Telemetry Service. These decisions
+  address the secretsManagement, serviceAuthentication requirement(s); supporting detail is documented
+  in this object's architectureNotes. This DecisionRecord is the committed answer that satisfies the requirement(s).

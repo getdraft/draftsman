@@ -46,16 +46,16 @@ requirements:
     criteria:
       capability: 01KSWVZSZ5-26F1
     example: A WAN edge or interconnect TechnologyComponent providing WAN Connectivity between sites.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: networkFunction
-    example: Core distribution switch providing VLAN trunking across the data center fabric.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: networkFunction, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
   - field
   - technologyComponentConfiguration
-  - architectureNote
+  - decisionRecord
 - id: network-topology-definition
   description: The network service must declare what network segments, zones, or routing domains it defines or manages.
   rationale: >
@@ -66,16 +66,16 @@ requirements:
   - mechanism: field
     key: networkTopology
     example: 'networkTopology: Defines production VLAN (10), management VLAN (20), and storage VLAN (30)'
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: networkTopology
-    example: Connects the AWS VPC to on-premises data centers via dedicated circuits.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: networkTopology, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: true
   naRationale: Acceptable when the network service does not create or define topology — for example a pure WAN transport device.
   validAnswerTypes:
   - field
-  - architectureNote
+  - decisionRecord
 - id: protocol-governance
   description: The network service must declare which network protocols it participates in.
   rationale: >
@@ -85,15 +85,15 @@ requirements:
   - mechanism: field
     key: protocols
     example: 'protocols: [BGP, OSPF, VLAN]'
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: protocols
-    example: Runs BGP for external peering and OSPF internally. VLANs 10-50 are trunked.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: protocols, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
   - field
-  - architectureNote
+  - decisionRecord
 lifecycleStatus: preferred
 tags:
 - network

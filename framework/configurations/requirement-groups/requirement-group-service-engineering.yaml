@@ -26,15 +26,15 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-NB1W
     example: An APM agent or instrumentation library installed as an internalComponent.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: apm
-    example: A documented statement of the APM approach or a declaration that APM is not applicable.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: apm, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   relatedCapability: 01KQQ4Q026-NB1W
   requirementMode: mandatory
   naAllowed: true
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - relationship
   - internalComponent
 - id: container-orchestration
@@ -45,15 +45,15 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-GW5D
     example: A container orchestration platform (Kubernetes, ECS, Nomad) declared as an internalComponent.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: containerRuntime
-    example: A documented statement of the container runtime when it cannot be expressed as a catalog internalComponent.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: containerRuntime, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   relatedCapability: 01KQQ4Q026-GW5D
   requirementMode: mandatory
   naAllowed: true
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - internalComponent
 - id: serverless-runtime
   description: The service may declare its serverless execution runtime when using a function-as-a-service delivery model.
@@ -63,15 +63,15 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-3ZWJ
     example: A serverless platform (AWS Lambda, Azure Functions, Google Cloud Run) declared as an internalComponent.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: serverlessRuntime
-    example: A documented statement of the serverless execution environment when not catalog-modeled.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: serverlessRuntime, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   relatedCapability: 01KQQ4Q026-3ZWJ
   requirementMode: mandatory
   naAllowed: true
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - internalComponent
 lifecycleStatus: candidate
 tags:

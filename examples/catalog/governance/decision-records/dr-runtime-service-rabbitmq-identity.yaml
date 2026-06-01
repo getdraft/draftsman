@@ -1,0 +1,20 @@
+schemaVersion: '1.0'
+uid: 01KT11AQYZ-W72G
+type: decision_record
+name: RabbitMQ Message Broker Service — Identity, Access, and Secrets
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: STCK00000D-RS0D
+tags:
+- decision-record
+- example
+- identity
+decisionRationale: >-
+  Records the identity, access, and secrets decisions for RabbitMQ Message Broker Service. These decisions
+  address the secretsManagement, serviceAuthentication requirement(s); supporting detail is documented
+  in this object's architectureNotes. This DecisionRecord is the committed answer that satisfies the requirement(s).

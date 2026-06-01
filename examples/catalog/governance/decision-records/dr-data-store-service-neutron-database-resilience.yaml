@@ -1,0 +1,21 @@
+schemaVersion: '1.0'
+uid: 01KT11AQVW-1SKV
+type: decision_record
+name: Neutron Database — Resilience and Availability
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: STCK000004-DAR4
+tags:
+- decision-record
+- example
+- resilience
+decisionRationale: >-
+  Records the resilience and availability decisions for Neutron Database. These decisions address the
+  availabilityModel, failureDomain, ha.mechanism, recoverabilityModel, scalabilityModel requirement(s);
+  supporting detail is documented in this object's architectureNotes. This DecisionRecord is the committed
+  answer that satisfies the requirement(s).

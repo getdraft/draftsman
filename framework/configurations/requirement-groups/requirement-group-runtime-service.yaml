@@ -56,14 +56,14 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-MHJM
     example: A named configuration on the function TechnologyComponent that defines the service authentication model.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: serviceAuthentication
-    example: A documented service authentication pattern when the implementation is not expressed directly.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: serviceAuthentication, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - relationship
   - internalComponent
   - technologyComponentConfiguration
@@ -83,15 +83,15 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-DTJJ
     example: A function TechnologyComponent configuration that defines how service secrets are sourced.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: secretsManagement
-    example: A documented statement of the service-level secrets pattern.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: secretsManagement, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   relatedCapability: 01KQQ4Q026-DTJJ
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - relationship
   - internalComponent
   - technologyComponentConfiguration
@@ -111,14 +111,14 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-D04B
     example: A function TechnologyComponent configuration that defines service log collection and export.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: serviceLogging
-    example: A documented service logging pattern when modeled indirectly.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: serviceLogging, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - relationship
   - internalComponent
   - technologyComponentConfiguration
@@ -138,15 +138,15 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-98VD
     example: A function TechnologyComponent configuration that enables service-level health telemetry.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: healthWelfareMonitoring
-    example: A documented monitoring and telemetry approach for the service.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: healthWelfareMonitoring, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   relatedCapability: 01KQQ4Q026-98VD
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - relationship
   - internalComponent
   - technologyComponentConfiguration
@@ -158,14 +158,14 @@ requirements:
     criteria:
       quality: availability
     example: A high-availability deployment configuration on the Runtime or NetworkService.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: availabilityModel
-    example: A documented statement of the service availability model.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: availabilityModel, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - deploymentConfiguration
 - id: scalability
   description: The service must state its scalability model.
@@ -175,14 +175,14 @@ requirements:
     criteria:
       quality: scalability
     example: An autoscaling deployment configuration on the Runtime or NetworkService.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: scalabilityModel
-    example: A documented statement of the service scalability model.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: scalabilityModel, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - deploymentConfiguration
 - id: recoverability
   description: The service must state its recoverability model.
@@ -192,27 +192,27 @@ requirements:
     criteria:
       quality: recoverability
     example: A deployment configuration that captures failover or restoration behavior.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: recoverabilityModel
-    example: A documented statement of the service recovery model.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: recoverabilityModel, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - deploymentConfiguration
 - id: failure-domain
   description: The service must state its failure domain.
   rationale: A service is incomplete until the scope of impact from its failure is explicit.
   canBeSatisfiedBy:
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: failureDomain
-    example: A documented description of the service failure domain, such as per host, per shard, or shared across products.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: failureDomain, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
 lifecycleStatus: existing-only
 tags:
 - service

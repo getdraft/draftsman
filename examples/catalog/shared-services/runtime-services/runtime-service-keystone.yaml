@@ -2,12 +2,8 @@ schemaVersion: '1.0'
 uid: STCK000002-RS02
 type: runtime_service
 name: Keystone Identity Service
-description: 'Self-managed deployment of OpenStack Keystone providing identity, authentication, and authorization services
-  for all OpenStack platform components. Issues scoped tokens used by every other service for request validation. Manages
-  projects, users, roles, groups, and service endpoints. Optionally federates with an external LDAP directory for enterprise
-  identity integration.
-
-  '
+description: |
+  Self-managed deployment of OpenStack Keystone providing identity, authentication, and authorization services for all OpenStack platform components. Issues scoped tokens used by every other service for request validation. Manages projects, users, roles, groups, and service endpoints. Optionally federates with an external LDAP directory for enterprise identity integration.
 version: 1.0.0
 catalogStatus: incomplete
 lifecycleStatus: existing-only
@@ -25,32 +21,62 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000002-TC02
 architectureNotes:
-  serviceAuthentication: Keystone is the root of trust for all OpenStack API authentication. Keystone itself 
-    authenticates administrative users via local credential store or LDAP federation. Bootstrap credentials are managed 
+  serviceAuthentication: >-
+    Keystone is the root of trust for all OpenStack API authentication. Keystone itself authenticates
+    administrative users via local credential store or LDAP federation. Bootstrap credentials are managed
     out-of-band.
-  secretsManagement: Keystone Fernet token signing keys are stored on the controller nodes and rotated on a scheduled 
-    basis. Database credentials are stored in keystone.conf managed by configuration management tooling.
-  serviceLogging: Keystone emits structured logs to /var/log/keystone/. Logs are shipped to the centralised log 
-    aggregation platform. Auth failure events are treated as security events and routed to SIEM.
-  healthWelfareMonitoring: keystone-api health is verified via HTTP endpoint polling on the admin and public endpoints. 
-    Token issuance rate and auth failure rate are monitored as platform health indicators.
-  availabilityModel: Keystone runs active-active across multiple controller nodes behind a load balancer (HAProxy). Loss
+  secretsManagement: >-
+    Keystone Fernet token signing keys are stored on the controller nodes and rotated on a scheduled basis.
+    Database credentials are stored in keystone.conf managed by configuration management tooling.
+  serviceLogging: >-
+    Keystone emits structured logs to /var/log/keystone/. Logs are shipped to the centralised log aggregation
+    platform. Auth failure events are treated as security events and routed to SIEM.
+  healthWelfareMonitoring: >-
+    keystone-api health is verified via HTTP endpoint polling on the admin and public endpoints. Token
+    issuance rate and auth failure rate are monitored as platform health indicators.
+  availabilityModel: >-
+    Keystone runs active-active across multiple controller nodes behind a load balancer (HAProxy). Loss
     of a single controller does not interrupt token validation as Fernet tokens are stateless.
-  scalabilityModel: Keystone scales horizontally by adding API replicas. Fernet token validation is fully stateless and 
+  scalabilityModel: >-
+    Keystone scales horizontally by adding API replicas. Fernet token validation is fully stateless and
     does not require inter-node coordination.
-  recoverabilityModel: Keystone API processes are recovered via systemd restart. Keystone DB is recovered from MariaDB 
-    Galera replication. Fernet key loss requires re-issuance of all active tokens.
-  failureDomain: Failure of Keystone renders the entire OpenStack control plane inaccessible as all other services 
+  recoverabilityModel: >-
+    Keystone API processes are recovered via systemd restart. Keystone DB is recovered from MariaDB Galera
+    replication. Fernet key loss requires re-issuance of all active tokens.
+  failureDomain: >-
+    Failure of Keystone renders the entire OpenStack control plane inaccessible as all other services
     depend on token validation. This is the highest-blast-radius component in the platform.
   relationshipRationales:
-    Keystone Identity: Keystone is the identity service itself. Intra-service admin operations use the admin endpoint 
-      for initial setup and service catalog registration.
-    Keystone Database: Keystone persists all identity data (users, projects, roles, endpoints, tokens for UUID mode) to 
+    Keystone Identity: >-
+      Keystone is the identity service itself. Intra-service admin operations use the admin endpoint for
+      initial setup and service catalog registration.
+    Keystone Database: >-
+      Keystone persists all identity data (users, projects, roles, endpoints, tokens for UUID mode) to
       MariaDB. Modeled as a critical dependency.
-    LDAP Directory: Optional federation for enterprise identity. Modeled to show the external identity dependency when 
+    LDAP Directory: >-
+      Optional federation for enterprise identity. Modeled to show the external identity dependency when
       LDAP backend is configured.
-  secrets_management: Keystone Fernet token signing keys are stored on the controller nodes and rotated on a scheduled 
-    basis.
+  secrets_management: >-
+    Keystone Fernet token signing keys are stored on the controller nodes and rotated on a scheduled basis.
 internalComponents:
 - ref: STCK000002-TC02
-  role: Core identity service providing token issuance, project and user management, and service endpoint catalog.
+  role: >-
+    Core identity service providing token issuance, project and user management, and service endpoint
+    catalog.
+decisionRecords:
+- ref: 01KT11AQYB-GWXS
+  key: secretsManagement
+- ref: 01KT11AQYB-GWXS
+  key: serviceAuthentication
+- ref: 01KT11AQYC-JKP6
+  key: healthWelfareMonitoringApproach
+- ref: 01KT11AQYC-JKP6
+  key: serviceLogging
+- ref: 01KT11AQYC-6CFA
+  key: availabilityModel
+- ref: 01KT11AQYC-6CFA
+  key: failureDomain
+- ref: 01KT11AQYC-6CFA
+  key: recoverabilityModel
+- ref: 01KT11AQYC-6CFA
+  key: scalabilityModel

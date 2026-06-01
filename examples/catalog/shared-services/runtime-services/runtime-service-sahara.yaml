@@ -2,12 +2,8 @@ schemaVersion: '1.0'
 uid: STCK00000B-RS0B
 type: runtime_service
 name: Sahara Data Processing Service
-description: 'Self-managed deployment of OpenStack Sahara providing data processing cluster orchestration on OpenStack. Runs
-  sahara-api and sahara-all subcomponents. Sahara automates the provisioning and management of Apache Hadoop and Apache Spark
-  clusters on Nova compute instances, enabling tenants to run big data workloads without manually managing cluster lifecycle.
-  Clusters are defined via cluster templates and node group templates.
-
-  '
+description: |
+  Self-managed deployment of OpenStack Sahara providing data processing cluster orchestration on OpenStack. Runs sahara-api and sahara-all subcomponents. Sahara automates the provisioning and management of Apache Hadoop and Apache Spark clusters on Nova compute instances, enabling tenants to run big data workloads without manually managing cluster lifecycle. Clusters are defined via cluster templates and node group templates.
 version: 1.0.0
 catalogStatus: incomplete
 lifecycleStatus: existing-only
@@ -25,28 +21,56 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000C-TC0C
 architectureNotes:
-  serviceAuthentication: All Sahara API requests are authenticated via Keystone token validation. Sahara service account
-    is registered in the Keystone service catalog. Sahara uses the requesting user's scoped token to provision Nova 
-    instances on their behalf.
-  secretsManagement: Database credentials and any cluster provisioning credentials are stored in sahara.conf managed by 
+  serviceAuthentication: >-
+    All Sahara API requests are authenticated via Keystone token validation. Sahara service account is
+    registered in the Keystone service catalog. Sahara uses the requesting user's scoped token to provision
+    Nova instances on their behalf.
+  secretsManagement: >-
+    Database credentials and any cluster provisioning credentials are stored in sahara.conf managed by
     configuration management tooling.
-  serviceLogging: Sahara emits logs to /var/log/sahara/. Logs are shipped to the centralised log aggregation platform.
-  healthWelfareMonitoring: sahara-api health is verified via HTTP endpoint polling. Cluster provisioning job status is 
-    monitored via Sahara cluster state machine health checks.
-  availabilityModel: sahara-api and sahara-all run behind a load balancer. Sahara is generally not HA-critical as data 
+  serviceLogging: >-
+    Sahara emits logs to /var/log/sahara/. Logs are shipped to the centralised log aggregation platform.
+  healthWelfareMonitoring: >-
+    sahara-api health is verified via HTTP endpoint polling. Cluster provisioning job status is monitored
+    via Sahara cluster state machine health checks.
+  availabilityModel: >-
+    sahara-api and sahara-all run behind a load balancer. Sahara is generally not HA-critical as data
     processing workloads are inherently batch-oriented.
-  scalabilityModel: sahara-api scales horizontally. Cluster compute capacity scales by provisioning larger or more Nova 
+  scalabilityModel: >-
+    sahara-api scales horizontally. Cluster compute capacity scales by provisioning larger or more Nova
     instances in the data processing cluster.
-  recoverabilityModel: Control plane processes recovered via systemd restart. Sahara state recovered from MariaDB. 
-    In-progress cluster provisioning operations may need to be retried after service failure.
-  failureDomain: Failure of Sahara prevents cluster provisioning and management operations. Running Hadoop/Spark 
-    clusters on Nova instances continue to operate independently.
+  recoverabilityModel: >-
+    Control plane processes recovered via systemd restart. Sahara state recovered from MariaDB. In-progress
+    cluster provisioning operations may need to be retried after service failure.
+  failureDomain: >-
+    Failure of Sahara prevents cluster provisioning and management operations. Running Hadoop/Spark clusters
+    on Nova instances continue to operate independently.
   relationshipRationales:
-    Keystone Identity: All Sahara API requests require Keystone token validation. Modeled to show the authentication 
-      dependency.
-    Sahara Database: Sahara persists cluster templates, node group templates, and cluster operational state to MariaDB. 
+    Keystone Identity: >-
+      All Sahara API requests require Keystone token validation. Modeled to show the authentication dependency.
+    Sahara Database: >-
+      Sahara persists cluster templates, node group templates, and cluster operational state to MariaDB.
       Modeled as a critical stateful dependency.
   secrets_management: Database credentials and any cluster provisioning credentials are stored in sahara.
 internalComponents:
 - ref: STCK00000C-TC0C
-  role: Core data processing service providing sahara-api and sahara-all for Hadoop/Spark cluster lifecycle management.
+  role: >-
+    Core data processing service providing sahara-api and sahara-all for Hadoop/Spark cluster lifecycle
+    management.
+decisionRecords:
+- ref: 01KT11AQZ5-FA35
+  key: secretsManagement
+- ref: 01KT11AQZ5-FA35
+  key: serviceAuthentication
+- ref: 01KT11AQZ5-W13D
+  key: healthWelfareMonitoringApproach
+- ref: 01KT11AQZ5-W13D
+  key: serviceLogging
+- ref: 01KT11AQZ6-JNHZ
+  key: availabilityModel
+- ref: 01KT11AQZ6-JNHZ
+  key: failureDomain
+- ref: 01KT11AQZ6-JNHZ
+  key: recoverabilityModel
+- ref: 01KT11AQZ6-JNHZ
+  key: scalabilityModel

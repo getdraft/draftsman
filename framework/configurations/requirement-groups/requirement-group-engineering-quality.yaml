@@ -21,15 +21,15 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-S5J6
     example: A load testing platform or service referenced via a relationship object.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: performanceTesting
-    example: A documented statement of the load or performance testing approach, or a declaration that it is not applicable.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: performanceTesting, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   relatedCapability: 01KQQ4Q026-S5J6
   requirementMode: mandatory
   naAllowed: true
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - relationship
 - id: quality-gates
   description: The ProductComponent may declare the quality gates that govern release readiness.
@@ -39,15 +39,15 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-RTWC
     example: A CI/CD platform or quality gate service referenced via a relationship object.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: qualityGates
-    example: A documented statement of the quality gate criteria and enforcement mechanism.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: qualityGates, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   relatedCapability: 01KQQ4Q026-RTWC
   requirementMode: mandatory
   naAllowed: true
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - relationship
 - id: test-authoring
   description: The ProductComponent may declare how automated tests are authored and maintained.
@@ -57,15 +57,15 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-QC9S
     example: A test management or specification platform referenced via a relationship object.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: testAuthoring
-    example: A documented statement of the test framework, coverage targets, and authoring ownership.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: testAuthoring, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   relatedCapability: 01KQQ4Q026-QC9S
   requirementMode: mandatory
   naAllowed: true
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - relationship
 - id: test-execution
   description: The ProductComponent may declare how automated tests are executed in CI and pre-production environments.
@@ -75,15 +75,15 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-58Q3
     example: A CI platform or test execution service referenced via a relationship object.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: testExecution
-    example: A documented statement of the test execution environment and trigger model.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: testExecution, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   relatedCapability: 01KQQ4Q026-58Q3
   requirementMode: mandatory
   naAllowed: true
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - relationship
 lifecycleStatus: candidate
 tags:

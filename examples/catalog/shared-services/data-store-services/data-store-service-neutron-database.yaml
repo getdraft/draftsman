@@ -2,11 +2,8 @@ schemaVersion: '1.0'
 uid: STCK000004-DAR4
 type: data_store_service
 name: Neutron Database
-description: 'MariaDB database schema dedicated to OpenStack Neutron for persisting all network service state. Stores virtual
-  networks, subnets, ports, routers, floating IPs, security groups, security group rules, load balancers, and ML2 plugin state.
-  This is one of the higher-volume schemas due to the number of ports created per instance during compute operations.
-
-  '
+description: |
+  MariaDB database schema dedicated to OpenStack Neutron for persisting all network service state. Stores virtual networks, subnets, ports, routers, floating IPs, security groups, security group rules, load balancers, and ML2 plugin state. This is one of the higher-volume schemas due to the number of ports created per instance during compute operations.
 version: 1.0.0
 catalogStatus: incomplete
 lifecycleStatus: existing-only
@@ -25,40 +22,86 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000E-TC0E
 architectureNotes:
-  serviceAuthentication: Neutron connects to its database schema using a dedicated MariaDB service account with 
-    credentials configured in neutron.conf.
+  serviceAuthentication: >-
+    Neutron connects to its database schema using a dedicated MariaDB service account with credentials
+    configured in neutron.conf.
   secretsManagement: Database credentials stored in neutron.conf managed by configuration management tooling.
-  serviceLogging: MariaDB slow query logs and error logs for the Neutron schema are shipped to the centralised log 
-    aggregation platform.
-  healthWelfareMonitoring: MariaDB Galera cluster health monitored via wsrep status. Port allocation rate and ML2 plugin
-    query latency are tracked as health indicators.
-  availabilityModel: Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.
-  scalabilityModel: The Neutron schema grows with the number of ports, networks, and security group rules. Archival of 
+  serviceLogging: >-
+    MariaDB slow query logs and error logs for the Neutron schema are shipped to the centralised log aggregation
+    platform.
+  healthWelfareMonitoring: >-
+    MariaDB Galera cluster health monitored via wsrep status. Port allocation rate and ML2 plugin query
+    latency are tracked as health indicators.
+  availabilityModel: >-
+    Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.
+  scalabilityModel: >-
+    The Neutron schema grows with the number of ports, networks, and security group rules. Archival of
     deleted resource records is recommended for large deployments.
-  recoverabilityModel: Data recovered from MariaDB Galera replication. Virtual network configuration is rebuilt from 
-    database state on neutron-agent restart. Schema migrations applied via neutron-db-manage upgrade.
-  failureDomain: Loss of the Neutron database prevents network provisioning operations (new ports, router updates, 
-    floating IP assignment). Existing network connectivity on the data plane is unaffected as it is programmed in the 
-    kernel/OVS tables.
+  recoverabilityModel: >-
+    Data recovered from MariaDB Galera replication. Virtual network configuration is rebuilt from database
+    state on neutron-agent restart. Schema migrations applied via neutron-db-manage upgrade.
+  failureDomain: >-
+    Loss of the Neutron database prevents network provisioning operations (new ports, router updates,
+    floating IP assignment). Existing network connectivity on the data plane is unaffected as it is programmed
+    in the kernel/OVS tables.
   backup:
-    strategy: Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to
-      object storage.
-    platform: Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.
+    strategy: >-
+      Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups
+      written to object storage.
+    platform: >-
+      Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.
     rto: 2 hours for full restore; near-zero for Galera node failure.
     rpo: 4 hours maximum; near-zero for Galera replication.
   ha:
     mechanism: MariaDB Galera cluster with 3 synchronous replicas and HAProxy.
   encryption:
-    atRest: MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Neutron schema.
+    atRest: >-
+      MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Neutron schema.
   accessControl:
-    model: Role-based database access. Neutron service account has DML access to the neutron schema only.
+    model: >-
+      Role-based database access. Neutron service account has DML access to the neutron schema only.
   relationshipRationales:
-    Backup Service: Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to
-      show the external backup platform dependency.
-  access_control_model: Role-based database access. Neutron service account has DML access to the neutron schema only. 
-    Credentials managed by Ansible configuration management.
-  backup_strategy: Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups written to 
+    Backup Service: >-
+      Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled
+      to show the external backup platform dependency.
+  access_control_model: >-
+    Role-based database access. Neutron service account has DML access to the neutron schema only. Credentials
+    managed by Ansible configuration management.
+  backup_strategy: >-
+    Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups written to
     Swift object storage. RTO 2h, RPO 4h.
 internalComponents:
 - ref: STCK00000E-TC0E
-  role: MariaDB Galera cluster providing the relational database engine for the Neutron network state schema.
+  role: >-
+    MariaDB Galera cluster providing the relational database engine for the Neutron network state schema.
+decisionRecords:
+- ref: 01KT11AQVV-Z2T4
+  key: backup.platform
+- ref: 01KT11AQVV-Z2T4
+  key: backup.rpo
+- ref: 01KT11AQVV-Z2T4
+  key: backup.rto
+- ref: 01KT11AQVV-Z2T4
+  key: backup.strategy
+- ref: 01KT11AQVV-Z2T4
+  key: encryption.atRest
+- ref: 01KT11AQVV-6KZ4
+  key: accessControl.model
+- ref: 01KT11AQVV-6KZ4
+  key: secretsManagement
+- ref: 01KT11AQVV-6KZ4
+  key: serviceAuthentication
+- ref: 01KT11AQVW-T2VG
+  key: healthWelfareMonitoringApproach
+- ref: 01KT11AQVW-T2VG
+  key: serviceLogging
+- ref: 01KT11AQVW-1SKV
+  key: availabilityModel
+- ref: 01KT11AQVW-1SKV
+  key: failureDomain
+- ref: 01KT11AQVW-1SKV
+  key: ha.mechanism
+- ref: 01KT11AQVW-1SKV
+  key: recoverabilityModel
+- ref: 01KT11AQVW-1SKV
+  key: scalabilityModel

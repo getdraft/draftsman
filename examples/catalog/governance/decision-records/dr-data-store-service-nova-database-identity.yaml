@@ -1,0 +1,20 @@
+schemaVersion: '1.0'
+uid: 01KT11AQW3-WP1H
+type: decision_record
+name: Nova Database — Identity, Access, and Secrets
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: STCK000001-DAR1
+tags:
+- decision-record
+- example
+- identity
+decisionRationale: >-
+  Records the identity, access, and secrets decisions for Nova Database. These decisions address the accessControl.model,
+  secretsManagement, serviceAuthentication requirement(s); supporting detail is documented in this object's
+  architectureNotes. This DecisionRecord is the committed answer that satisfies the requirement(s).

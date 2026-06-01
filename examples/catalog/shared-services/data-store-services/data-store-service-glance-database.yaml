@@ -2,12 +2,8 @@ schemaVersion: '1.0'
 uid: STCK000003-DAR3
 type: data_store_service
 name: Glance Database
-description: 'MariaDB database schema dedicated to OpenStack Glance for persisting virtual machine image metadata. Stores
-  image records including name, format, size, checksum, visibility (public/private/shared), and storage location references.
-  Image binary data is stored separately in the Swift storage cluster. Loss of this database orphans image binaries in Swift
-  but does not destroy binary data.
-
-  '
+description: |
+  MariaDB database schema dedicated to OpenStack Glance for persisting virtual machine image metadata. Stores image records including name, format, size, checksum, visibility (public/private/shared), and storage location references. Image binary data is stored separately in the Swift storage cluster. Loss of this database orphans image binaries in Swift but does not destroy binary data.
 version: 1.0.0
 catalogStatus: incomplete
 lifecycleStatus: existing-only
@@ -26,39 +22,84 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000E-TC0E
 architectureNotes:
-  serviceAuthentication: Glance connects to its database schema using a dedicated MariaDB service account with 
-    credentials configured in glance-api.conf.
-  secretsManagement: Database credentials stored in glance-api.conf managed by configuration management tooling.
-  serviceLogging: MariaDB slow query logs and error logs for the Glance schema are shipped to the centralised log 
-    aggregation platform.
-  healthWelfareMonitoring: MariaDB Galera cluster health monitored via wsrep status. Image count and metadata query 
-    latency are tracked as health indicators.
-  availabilityModel: Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.
-  scalabilityModel: The Glance schema is typically low-volume (image metadata only). Scales within the shared Galera 
-    cluster.
-  recoverabilityModel: Data recovered from MariaDB Galera replication. Schema migrations applied via glance-manage 
-    db_sync.
-  failureDomain: Loss of the Glance database prevents image metadata operations. Image binary data in Swift is 
-    unaffected. Nova instance provisioning fails as it cannot look up image metadata.
+  serviceAuthentication: >-
+    Glance connects to its database schema using a dedicated MariaDB service account with credentials
+    configured in glance-api.conf.
+  secretsManagement: >-
+    Database credentials stored in glance-api.conf managed by configuration management tooling.
+  serviceLogging: >-
+    MariaDB slow query logs and error logs for the Glance schema are shipped to the centralised log aggregation
+    platform.
+  healthWelfareMonitoring: >-
+    MariaDB Galera cluster health monitored via wsrep status. Image count and metadata query latency are
+    tracked as health indicators.
+  availabilityModel: >-
+    Hosted in the 3-node MariaDB Galera cluster. Loss of one node does not interrupt availability.
+  scalabilityModel: >-
+    The Glance schema is typically low-volume (image metadata only). Scales within the shared Galera cluster.
+  recoverabilityModel: >-
+    Data recovered from MariaDB Galera replication. Schema migrations applied via glance-manage db_sync.
+  failureDomain: >-
+    Loss of the Glance database prevents image metadata operations. Image binary data in Swift is unaffected.
+    Nova instance provisioning fails as it cannot look up image metadata.
   backup:
-    strategy: Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups written to
-      object storage.
-    platform: Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.
+    strategy: >-
+      Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups. Backups
+      written to object storage.
+    platform: >-
+      Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.
     rto: 2 hours for full restore; near-zero for Galera node failure.
     rpo: 4 hours maximum; near-zero for Galera replication.
   ha:
     mechanism: MariaDB Galera cluster with 3 synchronous replicas and HAProxy.
   encryption:
-    atRest: MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Glance schema.
+    atRest: >-
+      MariaDB data-at-rest encryption enabled with tablespace-level encryption on the Glance schema.
   accessControl:
-    model: Role-based database access. Glance service account has DML access to the glance schema only.
+    model: >-
+      Role-based database access. Glance service account has DML access to the glance schema only.
   relationshipRationales:
-    Backup Service: Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled to
-      show the external backup platform dependency.
-  access_control_model: Role-based database access. Glance service account has DML access to the glance schema only. 
-    Credentials managed by Ansible configuration management.
-  backup_strategy: Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups written to 
+    Backup Service: >-
+      Percona XtraBackup automated backup writes point-in-time backups to Swift object storage. Modeled
+      to show the external backup platform dependency.
+  access_control_model: >-
+    Role-based database access. Glance service account has DML access to the glance schema only. Credentials
+    managed by Ansible configuration management.
+  backup_strategy: >-
+    Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups written to
     Swift object storage. RTO 2h, RPO 4h.
 internalComponents:
 - ref: STCK00000E-TC0E
-  role: MariaDB Galera cluster providing the relational database engine for the Glance image metadata schema.
+  role: >-
+    MariaDB Galera cluster providing the relational database engine for the Glance image metadata schema.
+decisionRecords:
+- ref: 01KT11AQVB-JJ2A
+  key: backup.platform
+- ref: 01KT11AQVB-JJ2A
+  key: backup.rpo
+- ref: 01KT11AQVB-JJ2A
+  key: backup.rto
+- ref: 01KT11AQVB-JJ2A
+  key: backup.strategy
+- ref: 01KT11AQVB-JJ2A
+  key: encryption.atRest
+- ref: 01KT11AQVB-P0P0
+  key: accessControl.model
+- ref: 01KT11AQVB-P0P0
+  key: secretsManagement
+- ref: 01KT11AQVB-P0P0
+  key: serviceAuthentication
+- ref: 01KT11AQVC-0TX0
+  key: healthWelfareMonitoringApproach
+- ref: 01KT11AQVC-0TX0
+  key: serviceLogging
+- ref: 01KT11AQVC-DJ9N
+  key: availabilityModel
+- ref: 01KT11AQVC-DJ9N
+  key: failureDomain
+- ref: 01KT11AQVC-DJ9N
+  key: ha.mechanism
+- ref: 01KT11AQVC-DJ9N
+  key: recoverabilityModel
+- ref: 01KT11AQVC-DJ9N
+  key: scalabilityModel

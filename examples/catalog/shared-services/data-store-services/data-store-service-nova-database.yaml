@@ -2,11 +2,8 @@ schemaVersion: '1.0'
 uid: STCK000001-DAR1
 type: data_store_service
 name: Nova Database
-description: 'MariaDB database schema dedicated to OpenStack Nova for persisting all compute service state. Stores instance
-  records, flavor definitions, host aggregates, cell mappings, scheduler hints, migration records, and quota allocations.
-  Hosted within the shared MariaDB Galera cluster on the OpenStack controller nodes.
-
-  '
+description: |
+  MariaDB database schema dedicated to OpenStack Nova for persisting all compute service state. Stores instance records, flavor definitions, host aggregates, cell mappings, scheduler hints, migration records, and quota allocations. Hosted within the shared MariaDB Galera cluster on the OpenStack controller nodes.
 version: 1.0.0
 catalogStatus: incomplete
 lifecycleStatus: existing-only
@@ -24,49 +21,98 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000E-TC0E
 architectureNotes:
-  serviceAuthentication: Nova connects to its database schema using a dedicated MariaDB service account with credentials
-    configured in nova.conf. Access is restricted to the Nova service account; no shared credentials with other 
-    OpenStack services.
-  secretsManagement: Database credentials are stored in nova.conf managed by configuration management tooling. 
-    Credentials are not rotated automatically; rotation requires planned maintenance.
-  serviceLogging: MariaDB slow query logs and error logs are captured for the Nova schema. Logs are shipped to the 
-    centralised log aggregation platform.
-  healthWelfareMonitoring: MariaDB Galera cluster health is monitored via wsrep status variables. Nova DB schema health 
-    is verified by the nova-manage db check command. Replication lag is monitored across Galera nodes.
-  availabilityModel: The Nova database is hosted in a 3-node MariaDB Galera cluster with synchronous multi-master 
-    replication. Loss of one Galera node does not interrupt database availability. HAProxy routes all DB connections to 
-    the active primary.
-  scalabilityModel: The Nova schema is contained within the shared Galera cluster. Read scaling is achieved via ProxySQL
+  serviceAuthentication: >-
+    Nova connects to its database schema using a dedicated MariaDB service account with credentials configured
+    in nova.conf. Access is restricted to the Nova service account; no shared credentials with other OpenStack
+    services.
+  secretsManagement: >-
+    Database credentials are stored in nova.conf managed by configuration management tooling. Credentials
+    are not rotated automatically; rotation requires planned maintenance.
+  serviceLogging: >-
+    MariaDB slow query logs and error logs are captured for the Nova schema. Logs are shipped to the centralised
+    log aggregation platform.
+  healthWelfareMonitoring: >-
+    MariaDB Galera cluster health is monitored via wsrep status variables. Nova DB schema health is verified
+    by the nova-manage db check command. Replication lag is monitored across Galera nodes.
+  availabilityModel: >-
+    The Nova database is hosted in a 3-node MariaDB Galera cluster with synchronous multi-master replication.
+    Loss of one Galera node does not interrupt database availability. HAProxy routes all DB connections
+    to the active primary.
+  scalabilityModel: >-
+    The Nova schema is contained within the shared Galera cluster. Read scaling is achieved via ProxySQL
     read replicas. Write scaling requires Galera cluster expansion.
-  recoverabilityModel: Data is recovered from MariaDB Galera replication in the event of node failure. Point-in-time 
-    recovery is available from automated backups. Nova schema migrations are applied via nova-manage db sync.
-  failureDomain: Loss of the Nova database schema renders the Nova compute service unable to process API requests. 
-    Running instances are not immediately affected but instance lifecycle operations (start, stop, delete) fail until DB
-    is restored.
+  recoverabilityModel: >-
+    Data is recovered from MariaDB Galera replication in the event of node failure. Point-in-time recovery
+    is available from automated backups. Nova schema migrations are applied via nova-manage db sync.
+  failureDomain: >-
+    Loss of the Nova database schema renders the Nova compute service unable to process API requests.
+    Running instances are not immediately affected but instance lifecycle operations (start, stop, delete)
+    fail until DB is restored.
   backup:
-    strategy: Automated daily full backup using Percona XtraBackup with binlog-based incremental backups every 4 hours. 
-      Backups are written to object storage.
-    platform: Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target. Backup 
-      jobs are managed by a cron schedule on a dedicated backup controller node.
-    rto: 2 hours for full schema restore from backup; near-zero for Galera node failure with surviving quorum.
-    rpo: 4 hours maximum data loss in worst-case scenario (binlog backup window); near-zero for Galera replication 
+    strategy: >-
+      Automated daily full backup using Percona XtraBackup with binlog-based incremental backups every
+      4 hours. Backups are written to object storage.
+    platform: >-
+      Percona XtraBackup writing to Swift object storage on the openstack-controller deployment target.
+      Backup jobs are managed by a cron schedule on a dedicated backup controller node.
+    rto: >-
+      2 hours for full schema restore from backup; near-zero for Galera node failure with surviving quorum.
+    rpo: >-
+      4 hours maximum data loss in worst-case scenario (binlog backup window); near-zero for Galera replication
       failure.
   ha:
-    mechanism: MariaDB Galera cluster with 3 synchronous replicas and HAProxy for connection routing. Quorum requires at
-      least 2 of 3 nodes.
+    mechanism: >-
+      MariaDB Galera cluster with 3 synchronous replicas and HAProxy for connection routing. Quorum requires
+      at least 2 of 3 nodes.
   encryption:
-    atRest: MariaDB data-at-rest encryption is enabled using the file_key_management plugin. Tablespace-level encryption
-      is applied to the Nova schema.
+    atRest: >-
+      MariaDB data-at-rest encryption is enabled using the file_key_management plugin. Tablespace-level
+      encryption is applied to the Nova schema.
   accessControl:
-    model: Role-based database access control. Nova service account has DML access to the nova schema only. Root access 
-      is restricted to DBA team members via SSH-tunnelled connections.
-  access_control_model: Role-based database access. Nova service account has DML access to the nova and nova_api schemas
-    only. Credentials managed by Ansible configuration management.
+    model: >-
+      Role-based database access control. Nova service account has DML access to the nova schema only.
+      Root access is restricted to DBA team members via SSH-tunnelled connections.
+  access_control_model: >-
+    Role-based database access. Nova service account has DML access to the nova and nova_api schemas only.
+    Credentials managed by Ansible configuration management.
   relationshipRationales:
-    Backup Service: Percona XtraBackup automated backup writes point-in-time backups to object storage. Modeled to show 
+    Backup Service: >-
+      Percona XtraBackup automated backup writes point-in-time backups to object storage. Modeled to show
       the external backup dependency and recovery boundary.
-  backup_strategy: Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups written to 
+  backup_strategy: >-
+    Automated daily full backup using Percona XtraBackup with 4-hourly incremental backups written to
     Swift object storage. RTO 2h, RPO 4h.
 internalComponents:
 - ref: STCK00000E-TC0E
   role: MariaDB Galera cluster providing the relational database engine for the Nova schema.
+decisionRecords:
+- ref: 01KT11AQW3-DJNQ
+  key: backup.platform
+- ref: 01KT11AQW3-DJNQ
+  key: backup.rpo
+- ref: 01KT11AQW3-DJNQ
+  key: backup.rto
+- ref: 01KT11AQW3-DJNQ
+  key: backup.strategy
+- ref: 01KT11AQW3-DJNQ
+  key: encryption.atRest
+- ref: 01KT11AQW3-WP1H
+  key: accessControl.model
+- ref: 01KT11AQW3-WP1H
+  key: secretsManagement
+- ref: 01KT11AQW3-WP1H
+  key: serviceAuthentication
+- ref: 01KT11AQW4-VW0R
+  key: healthWelfareMonitoringApproach
+- ref: 01KT11AQW4-VW0R
+  key: serviceLogging
+- ref: 01KT11AQW5-K8YK
+  key: availabilityModel
+- ref: 01KT11AQW5-K8YK
+  key: failureDomain
+- ref: 01KT11AQW5-K8YK
+  key: ha.mechanism
+- ref: 01KT11AQW5-K8YK
+  key: recoverabilityModel
+- ref: 01KT11AQW5-K8YK
+  key: scalabilityModel

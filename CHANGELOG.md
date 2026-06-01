@@ -3,6 +3,33 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.40.0 - 2026-06-01
+
+Enforces the DRAFT principle that an `architectureNote` is a drafting placeholder, not a requirement satisfaction (closes #71). A note lets a DraftingSession continue when information or the right decision-maker is not yet available, but the requirement is met only when the decision is committed as a DecisionRecord (or satisfied by concrete implementation). Because requirement gaps already warn for `stub`/`incomplete` objects and fail only for `complete` ones, drafting is unaffected — only completion now requires a real answer. Scope is the always-on core RequirementGroups; the opt-in compliance packs are deferred to a follow-up.
+
+### Added
+
+- **`decisionRecord` satisfaction mechanism** is now usable for non-capability "document X" requirements via a top-level `key`, matched against an object's `decisionRecords` entry whose `key` (or `concern`) equals it. Capability-scoped decisions continue to match via `criteria.capability`.
+- **Concern-grouped example DecisionRecords**: 76 DecisionRecords across 23 example objects (grouped by concern — identity/access, observability, resilience, data protection, deployment, integration) replace note-based satisfaction in the OpenStack demo catalog.
+
+### Changed
+
+- **`architectureNote` no longer satisfies a requirement** (`validate.py`: `mechanism_satisfied` and `implementation_resolves` return `False` for it). It remains a recognized answer type so deferred RequirementGroups still parse, but it never resolves a requirement.
+- **Core RequirementGroups converted**: all `architectureNote` satisfiers (and `field`-into-`architectureNotes` satisfiers) in the 13 always-on RGs were replaced with `decisionRecord` (keyed by the former note key). The ReferenceArchitecture `deployment-qualities` requirement is now also satisfiable by the structured `applicableDefinitionChecklist` field.
+- Regenerated `AI_INDEX.md` for the new DecisionRecords.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+- **Behavioral.** A `complete` object that previously satisfied a requirement with an inline `architectureNote` now fails until the decision is committed as a DecisionRecord or satisfied by concrete evidence. `stub`/`incomplete` objects only warn, so in-progress drafting is unaffected. No object model or schema field was removed.
+
+### Migration Notes
+
+For each `complete` object that relied on notes, add a `decision_record` object and reference it from the object's `decisionRecords` list with a `key` matching the requirement (or satisfy the requirement with concrete evidence). The compliance packs (NIST CSF, SOC 2, TX-RAMP, Security & Security Compliance) still accept note-style satisfiers and were deactivated in the examples workspace for now; their cleanup and re-activation is tracked as a follow-up to #71.
+
 ## 0.39.0 - 2026-05-31
 
 Phase 2 of the native capability vocabulary (follow-up to #66 via #70): promotes generic delivery, integration, analytics, and certificate-management outcomes into native DRAFT capabilities and traces them through the existing Service Capability RequirementGroup using the same conditional, self-declared pattern as Phase 1. Adds three new domains.

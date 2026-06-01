@@ -7,8 +7,7 @@ businessTaxonomy:
   - id: business-pillar.infrastructure
     name: Infrastructure
 requirements:
-  activeRequirementGroups:
-  - 01KQQ4Q027-T3CA
+  activeRequirementGroups: []
   requireActiveRequirementGroupDisposition: true
 vocabulary:
   deploymentTargets:

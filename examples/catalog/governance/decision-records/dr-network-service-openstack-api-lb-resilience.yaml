@@ -1,0 +1,21 @@
+schemaVersion: '1.0'
+uid: 01KT11AQWX-A5ZZ
+type: decision_record
+name: OpenStack API Load Balancer — Resilience and Availability
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: 01KSF29JTP-9HYA
+tags:
+- decision-record
+- example
+- resilience
+decisionRationale: >-
+  Records the resilience and availability decisions for OpenStack API Load Balancer. These decisions address
+  the availabilityModel, failureDomain, recoverabilityModel, scalabilityModel requirement(s); supporting
+  detail is documented in this object's architectureNotes. This DecisionRecord is the committed answer
+  that satisfies the requirement(s).
