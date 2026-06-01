@@ -3,6 +3,33 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.36.0 - 2026-05-31
+
+Establishes the authoritative team registry model, team routing semantics, and programmatic CODEOWNERS generation. Introduces strict validation rules requiring owner team assignment for complete catalog artifacts.
+
+### Added
+
+- **DRAFT Operations & Governance Guide**: added `framework/docs/operations.md` covering the schema definition for the authoritative team registry (`vocabulary.teams`), programmatic ownership resolution, default folder/role CODEOWNERS fallbacks, and the fallback team routing logic.
+- **Strict Ownership Validation**: updated `framework/tools/validate.py` to enforce that `owner.team` must be defined for all first-class artifacts (warning for `stub` or `incomplete` catalogStatus, failure for `complete` status). Excluded framework-owned base files and unit test temporary directories.
+
+### Changed
+
+- **AI Index updated**: registered the operations guide in `AI_INDEX.md`.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+This is a contract change. Complete catalog objects in existing workspaces that do not have `owner.team` assigned will now fail validation, and incomplete ones will generate warnings.
+
+### Migration Notes
+
+1. Run `/draft validate` to find all complete or incomplete catalog objects missing ownership.
+2. In each workspace, update the objects to add a valid `owner.team` mapping that matches the company team vocabulary.
+3. Generate the updated `CODEOWNERS` file from the team registry vocabulary if using automated generation.
+
 ## 0.35.2 - 2026-05-31
 
 Adds the comprehensive specification for DRAFT's issue routing semantics, default labels, and accountable team resolution rules.
