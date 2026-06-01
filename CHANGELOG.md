@@ -3,6 +3,33 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.43.0 - 2026-06-01
+
+Adds quiet and summary-only modes to the validator command line tool, and clarifies requirement gap warning trace messages.
+
+### Compatibility Impact
+
+- This release does not introduce any breaking changes to existing catalogs. All additions are backwards-compatible.
+
+### Added
+
+- Support for `--quiet` / `-q`, `--summary-only`, and `--verbose` / `-v` command-line options in the `validate.py` validator script.
+- Configured `--quiet` to suppress individual file PASS trace logs and validation warnings (only showing failures and final summary).
+- Configured `--summary-only` to suppress individual pass/fail and errors/warnings detail, only outputting the high-level validation summary.
+- Added comprehensive unit testing verifying `--quiet` option behavior.
+
+### Changed
+
+- Rephrased the standard unsatisfied requirement warning message from 'Satisfy [requirement] using ...' to 'Requirement not satisfied: [requirement]; satisfy using ...' to avoid confusion with trace logs of successful checks.
+
+### Fixed
+
+- None. This release introduces new command-line features and phrasing clarity only.
+
+### Migration Notes
+
+- No migration steps are required for this release. Existing objects and configurations remain valid.
+
 ## 0.42.0 - 2026-06-01
 
 Expands capability satisfaction to support shared operational platform services, supports recursive system boundaries (subsystems), and resolves Acceptable Use view browser UI display bugs.
