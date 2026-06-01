@@ -182,6 +182,21 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         default=DEFAULT_WORKSPACE_ROOT,
         help="Workspace root containing catalog/ and configurations/. Defaults to examples/.",
     )
+    parser.add_argument(
+        "--quiet", "-q",
+        action="store_true",
+        help="Run quietly, suppressing PASS files and validation warnings.",
+    )
+    parser.add_argument(
+        "--summary-only",
+        action="store_true",
+        help="Only output the high-level summary at the end.",
+    )
+    parser.add_argument(
+        "--verbose", "-v",
+        action="store_true",
+        help="Print verbose tracing of requirements validation.",
+    )
     return parser.parse_args(argv)
 
 
@@ -1246,7 +1261,7 @@ def validate_requirement(
     source = str(group.get("name") or group_id)
     return (
         False,
-        f"[{object_label(obj)}] Satisfy {label} from {source} using {mechanism_text}{related_text}",
+        f"[{object_label(obj)}] Requirement not satisfied: {label} from {source}; satisfy using {mechanism_text}{related_text}",
     )
 
 
@@ -3467,22 +3482,23 @@ def main(argv: list[str] | None = None) -> int:
     for path in files:
         if str(path) in failing_paths:
             print(f"FAIL {display_path(path)}")
-        else:
+        elif not args.quiet and not args.summary_only:
             print(f"PASS {display_path(path)}")
 
     if failures:
-        print("")
-        print("Validation failures:")
-        for failure in failures:
-            print(f"- {failure}")
-        if warnings:
+        if not args.summary_only:
+            print("")
+            print("Validation failures:")
+            for failure in failures:
+                print(f"- {failure}")
+        if warnings and not args.quiet and not args.summary_only:
             print("")
             print("Validation warnings:")
             for warning in warnings:
                 print(f"- {warning}")
         return 1
 
-    if warnings:
+    if warnings and not args.quiet and not args.summary_only:
         print("")
         print("Validation warnings:")
         for warning in warnings:
@@ -3491,6 +3507,7 @@ def main(argv: list[str] | None = None) -> int:
     print("")
     print(f"Validated {len(files)} catalog files successfully.")
     return 0
+
 
 
 if __name__ == "__main__":
