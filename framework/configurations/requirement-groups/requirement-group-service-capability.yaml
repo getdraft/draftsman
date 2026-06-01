@@ -1,0 +1,426 @@
+schemaVersion: '1.0'
+uid: 01KT0VM061-CRN7
+type: requirement_group
+name: Service Capability RequirementGroup
+description: >
+  Self-declared capability requirements for shared service objects. When a RuntimeService,
+  DataStoreService, or NetworkService declares a native DRAFT capability in its capabilities
+  list, the matching requirement here demands that the service document how that capability is
+  delivered and ties it to an approved TechnologyComponent or a committed DecisionRecord. Every
+  requirement is conditional on the service self-declaring the capability, so services that do
+  not provide a capability are never asked about it. This group applies across all delivery
+  models.
+version: 1.0.0
+catalogStatus: complete
+authority:
+  name: DRAFT Framework
+  shortName: DRAFT
+  source: DRAFT Framework
+activation: always
+appliesTo:
+- runtime_service
+- data_store_service
+- network_service
+requirements:
+- id: capability-api-gateway
+  name: API Gateway behavior
+  description: A network service that declares the API Gateway capability must document inbound API routing, authentication, rate limiting, and transformation.
+  rationale: API Gateway is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - network_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0V5MCV-3A6F
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0V5MCV-3A6F
+    example: A TechnologyComponent configuration that implements the API gateway.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0V5MCV-3A6F
+    example: A locally included TechnologyComponent that provides API Gateway behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0V5MCV-3A6F
+    example: A relationship to a modeled service that delivers API Gateway behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0V5MCV-3A6F
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0V5MCV-3A6F, recording how API Gateway is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0V5MCV-3A6F
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-dns
+  name: DNS behavior
+  description: A network service that declares the DNS capability must document authoritative or recursive name resolution.
+  rationale: DNS is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - network_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0V5MCV-GJBH
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0V5MCV-GJBH
+    example: A TechnologyComponent configuration that implements DNS resolution.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0V5MCV-GJBH
+    example: A locally included TechnologyComponent that provides DNS behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0V5MCV-GJBH
+    example: A relationship to a modeled service that delivers DNS behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0V5MCV-GJBH
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0V5MCV-GJBH, recording how DNS is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0V5MCV-GJBH
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-cdn
+  name: CDN behavior
+  description: A network service that declares the CDN capability must document how cacheable content is distributed and served from edge locations.
+  rationale: CDN is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - network_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0V5MCV-HZ37
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0V5MCV-HZ37
+    example: A TechnologyComponent configuration that implements content delivery.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0V5MCV-HZ37
+    example: A locally included TechnologyComponent that provides CDN behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0V5MCV-HZ37
+    example: A relationship to a modeled service that delivers CDN behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0V5MCV-HZ37
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0V5MCV-HZ37, recording how CDN is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0V5MCV-HZ37
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-waf
+  name: WAF behavior
+  description: A network service that declares the WAF capability must document how application-layer traffic is inspected and filtered, including rule sets and protected applications.
+  rationale: WAF is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - network_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0V5MCV-Z079
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0V5MCV-Z079
+    example: A TechnologyComponent configuration that implements the web application firewall.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0V5MCV-Z079
+    example: A locally included TechnologyComponent that provides WAF behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0V5MCV-Z079
+    example: A relationship to a modeled service that delivers WAF behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0V5MCV-Z079
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0V5MCV-Z079, recording how WAF is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0V5MCV-Z079
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-application-runtime
+  name: Application Runtime behavior
+  description: A runtime service that declares the Application Runtime capability must document the process, web, or worker execution environment it provides for first-party code.
+  rationale: Application Runtime is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - runtime_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0V5MCV-RZV0
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0V5MCV-RZV0
+    example: A TechnologyComponent configuration that implements the application execution runtime.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0V5MCV-RZV0
+    example: A locally included TechnologyComponent that provides Application Runtime behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0V5MCV-RZV0
+    example: A relationship to a modeled service that delivers Application Runtime behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0V5MCV-RZV0
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0V5MCV-RZV0, recording how Application Runtime is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0V5MCV-RZV0
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-service-mesh
+  name: Service Mesh behavior
+  description: A runtime service that declares the Service Mesh capability must document how service-to-service traffic is routed, secured, and observed.
+  rationale: Service Mesh is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - runtime_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0V5MCV-RM8M
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0V5MCV-RM8M
+    example: A TechnologyComponent configuration that implements the service mesh.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0V5MCV-RM8M
+    example: A locally included TechnologyComponent that provides Service Mesh behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0V5MCV-RM8M
+    example: A relationship to a modeled service that delivers Service Mesh behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0V5MCV-RM8M
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0V5MCV-RM8M, recording how Service Mesh is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0V5MCV-RM8M
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-caching
+  name: Caching behavior
+  description: A runtime service that declares the Caching capability must document how the fast, ephemeral data tier is provided and how it relates to the system of record.
+  rationale: Caching is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - runtime_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0V5MCV-ECR4
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0V5MCV-ECR4
+    example: A TechnologyComponent configuration that implements the cache tier.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0V5MCV-ECR4
+    example: A locally included TechnologyComponent that provides Caching behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0V5MCV-ECR4
+    example: A relationship to a modeled service that delivers Caching behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0V5MCV-ECR4
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0V5MCV-ECR4, recording how Caching is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0V5MCV-ECR4
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-messaging
+  name: Messaging behavior
+  description: A runtime service that declares the Messaging capability must document how asynchronous messages or events are accepted, queued, and delivered between producers and consumers.
+  rationale: Messaging is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - runtime_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0V5MCV-KT72
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0V5MCV-KT72
+    example: A TechnologyComponent configuration that implements the message broker or event bus.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0V5MCV-KT72
+    example: A locally included TechnologyComponent that provides Messaging behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0V5MCV-KT72
+    example: A relationship to a modeled service that delivers Messaging behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0V5MCV-KT72
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0V5MCV-KT72, recording how Messaging is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0V5MCV-KT72
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-data-persistence
+  name: Data Persistence behavior
+  description: A data store service that declares the Data Persistence capability must document how structured data is durably stored, queried, and managed.
+  rationale: Data Persistence is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - data_store_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0V5MCV-VD0Y
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0V5MCV-VD0Y
+    example: A TechnologyComponent configuration that implements the database or persistence engine.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0V5MCV-VD0Y
+    example: A locally included TechnologyComponent that provides Data Persistence behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0V5MCV-VD0Y
+    example: A relationship to a modeled service that delivers Data Persistence behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0V5MCV-VD0Y
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0V5MCV-VD0Y, recording how Data Persistence is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0V5MCV-VD0Y
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-object-storage
+  name: Object Storage behavior
+  description: A data store service that declares the Object Storage capability must document how unstructured objects and blobs are durably stored and retrieved.
+  rationale: Object Storage is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - data_store_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0V5MCV-E9TN
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0V5MCV-E9TN
+    example: A TechnologyComponent configuration that implements the object storage tier.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0V5MCV-E9TN
+    example: A locally included TechnologyComponent that provides Object Storage behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0V5MCV-E9TN
+    example: A relationship to a modeled service that delivers Object Storage behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0V5MCV-E9TN
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0V5MCV-E9TN, recording how Object Storage is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0V5MCV-E9TN
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+- id: capability-file-storage
+  name: File Storage behavior
+  description: A data store service that declares the File Storage capability must document how files are durably stored and accessed through a shared file system or file storage interface.
+  rationale: File Storage is a declared native capability. A service documents a declared capability either by resolving it to an approved TechnologyComponent or modeled interaction, or by committing a DecisionRecord that records the architecture decision; an inline note is a drafting placeholder and does not satisfy the requirement until it is committed as a DecisionRecord.
+  appliesTo:
+  - data_store_service
+  applicability:
+    anyOf:
+    - field: capabilities
+      contains: 01KT0V5MCV-924J
+  canBeSatisfiedBy:
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KT0V5MCV-924J
+    example: A TechnologyComponent configuration that implements the file storage tier.
+  - mechanism: internalComponent
+    criteria:
+      capability: 01KT0V5MCV-924J
+    example: A locally included TechnologyComponent that provides File Storage behavior.
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0V5MCV-924J
+    example: A relationship to a modeled service that delivers File Storage behavior.
+  - mechanism: decisionRecord
+    criteria:
+      capability: 01KT0V5MCV-924J
+    example: 'A committed DecisionRecord, referenced from decisionRecords with capability: 01KT0V5MCV-924J, recording how File Storage is delivered or why it is not required.'
+  minimumSatisfactions: 1
+  relatedCapability: 01KT0V5MCV-924J
+  requirementMode: conditional
+  naAllowed: true
+  validAnswerTypes:
+  - technologyComponentConfiguration
+  - internalComponent
+  - relationship
+  - decisionRecord
+lifecycleStatus: preferred
+tags:
+- service
+- capability
+- requirement-group
+- definition

@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KT0V5MCV-ECR4
+type: capability
+name: Caching
+description: Frequently accessed data is stored in a fast, ephemeral tier to reduce latency and load on the system of record.
+version: 1.0.0
+catalogStatus: complete
+definitionOwner:
+  provider: draft-framework
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+domain: 01KQQ4Q027-ZTHF
+implementations: []

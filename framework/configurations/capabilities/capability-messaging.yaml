@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KT0V5MCV-KT72
+type: capability
+name: Messaging
+description: Asynchronous messages and events are accepted, queued, and delivered between producers and consumers.
+version: 1.0.0
+catalogStatus: complete
+definitionOwner:
+  provider: draft-framework
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+domain: 01KQQ4Q027-ZTHF
+implementations: []

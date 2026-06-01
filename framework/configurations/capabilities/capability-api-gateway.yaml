@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KT0V5MCV-3A6F
+type: capability
+name: API Gateway
+description: Inbound API traffic is routed, authenticated, rate-limited, and transformed at a managed entry point in front of backend services.
+version: 1.0.0
+catalogStatus: complete
+definitionOwner:
+  provider: draft-framework
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+domain: 01KSWVZSZ5-4WKE
+implementations: []
