@@ -3,6 +3,30 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.36.2 - 2026-05-31
+
+Creates the comprehensive DRAFT Operations Guide, consolidating all operational commands, registry configurations, ownership routing, generated CODEOWNERS behaviors, issue creation formats, standard label patterns, and issue lifecycles.
+
+### Added
+
+- **Draft Operations Guide**: Published a comprehensive governance and operations standard at `framework/docs/operations-guide.md` providing step-by-step guidance on commands, issue lifecycles, and standard dispositions.
+
+### Changed
+
+- **Operations Guide Location renamed**: Renamed the partial draft `framework/docs/operations.md` to `framework/docs/operations-guide.md` and registered the updated file in `AI_INDEX.md`.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+- None. Standalone legacy command forms are officially deprecated in documentation in favor of the unified `/draft <verb>` command structures.
+
+### Migration Notes
+
+No manual workspace migration is required.
+
 ## 0.36.1 - 2026-05-31
 
 Reorganizes catalog files from a flat folder structure under `catalog/` into role-specific subfolders (`engineering/`, `shared-services/`, `governance/`) to align with role terminology (Issue #53) and the team registry (Issue #54).
