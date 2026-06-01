@@ -31,9 +31,14 @@ verb distinct from the upstream-only `/draft review-framework`.
 - **Claude Code command linking**: `.claude/commands/` now links a single
   `draft.md`; setup, update, and integration docs link only `/draft`.
 - **Docs updated to verb syntax**: `draftsman-ai-configuration.md`,
-  `setup-mode.md`, the Cursor and Windsurf integration files, and
-  `framework/draft-actions/update.md` now advertise the `/draft <verb>` form
-  only.
+  `setup-mode.md`, `framework/integrations/README.md`, the Cursor and Windsurf
+  integration files, and `framework/draft-actions/update.md` now advertise the
+  `/draft <verb>` form only.
+- **Workspace templates updated**: `templates/workspace/AGENTS.md.tmpl`,
+  `README.md.tmpl`, `GEMINI.md.tmpl`, `.windsurfrules.tmpl`,
+  `.cursor/rules/draftsman.mdc.tmpl`, and
+  `.github/copilot-instructions.md.tmpl` now generate the `/draft <verb>`
+  command surface for new company workspaces.
 
 ### Fixed
 

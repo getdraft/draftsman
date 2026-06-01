@@ -29,12 +29,13 @@ When the user asks to set up DRAFT, start onboarding, or make the DRAFT
 workspace useful, enter Draftsman setup mode from
 [.draft/framework/docs/setup-mode.md](.draft/framework/docs/setup-mode.md).
 
-When the user invokes a DRAFT command listed in `.draft/framework/commands/`,
-including `/draftsman`, `/draft-session`, or `/draft-validate`, read the
-corresponding command file and follow its instructions exactly. In Codex and
-other generic AI tools, these are typed command phrases handled through this
-bootstrap file; they are not native slash-command registrations unless the tool
-explicitly provides that feature.
+When the user types `/draft <verb>` (for example `/draft author`,
+`/draft session`, or `/draft validate`), read
+`.draft/framework/commands/draft.md`, resolve the verb to its action file under
+`.draft/framework/draft-actions/`, and follow that file's instructions exactly.
+In Codex and other generic AI tools, `/draft <verb>` is a typed command phrase
+handled through this bootstrap file; it is not a native slash-command
+registration unless the tool explicitly provides that feature.
 
 Do not ask what "draftsman" means. In this repo, it means:
 
@@ -57,20 +58,19 @@ table:
 
 | Command | What it does |
 |---|---|
-| `/draft-help` | List available DRAFT commands |
-| `/draftsman [intent]` | Start a Draftsman session for authoring or workspace setup |
-| `/draft-session [topic]` | Start or resume a guided DraftingSession for a system or product area |
-| `/draft-validate` | Run the DRAFT validator and report issues with fix guidance |
-| `/draft-updateframework` | Check for framework updates and guide a safe upgrade |
-| `/draft-triage` | Pull open framework GitHub issues and work through selected ones |
-| `/draft-review` | Review the DRAFT framework for simplification and adoption |
-| `/validate-catalog` | Compatibility alias for `/draft-validate` |
+| `/draft` (or `/draft help`) | List available DRAFT verbs |
+| `/draft author [intent]` | Start a Draftsman session for authoring or workspace setup |
+| `/draft session [topic]` | Start or resume a guided DraftingSession for a system or product area |
+| `/draft validate` | Run the DRAFT validator and report issues with fix guidance |
+| `/draft review` | Review company catalog/content in this workspace |
+| `/draft triage` | Pull open GitHub issues and work through selected ones |
+| `/draft update` | Check for framework updates and guide a safe upgrade |
 
-Claude Code users see these commands in `/` autocomplete when the command
-symlinks are installed. Codex, Gemini, Copilot, Cursor, Windsurf, and other
-AI tools respond to the same command phrases when typed in chat or matched by
-their project instruction files. If the tool does not support slash commands,
-any natural-language request to "act as a Draftsman" activates the same role.
+Claude Code users see `/draft` in `/` autocomplete when the command symlink is
+installed. Codex, Gemini, Copilot, Cursor, Windsurf, and other AI tools respond
+to the same `/draft <verb>` phrases when typed in chat or matched by their
+project instruction files. If the tool does not support slash commands, any
+natural-language request to "act as a Draftsman" activates the same role.
 
 ## Workspace Boundary
 
@@ -96,11 +96,11 @@ path before making content changes.
 Before presenting completed changes, run:
 
 ```bash
-python .draft/framework/tools/validate.py --workspace .
+python3 .draft/framework/tools/validate.py --workspace .
 ```
 
 When catalog or configuration content changes, regenerate the browser:
 
 ```bash
-python .draft/framework/tools/generate_browser.py --workspace . --output docs/index.html
+python3 .draft/framework/tools/generate_browser.py --workspace . --output docs/index.html
 ```

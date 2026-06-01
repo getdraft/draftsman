@@ -6,21 +6,24 @@ Codex, or any other tool that can read and follow markdown instructions.
 
 ## How It Works
 
-`framework/commands/` contains the canonical, IDE-neutral workflow instructions.
-These files are plain markdown that any AI can read and execute. What varies
-per IDE is how the AI **discovers** these commands and what triggers their
-invocation.
+`framework/commands/` contains the single registered `/draft` command, and
+`framework/draft-actions/` contains the canonical, IDE-neutral workflow
+instructions for each verb. These files are plain markdown that any AI can read
+and execute. What varies per IDE is how the AI **discovers** `/draft` and what
+triggers its invocation.
 
 ```
 framework/commands/
-  draft-help.md         ← command inventory
-  draftsman.md          ← canonical draftsman workflow
-  draft-session.md      ← canonical drafting session workflow
-  draft-validate.md     ← canonical validation workflow
-  draft-updateframework.md ← framework refresh workflow
-  draft-triage.md       ← framework issue triage workflow
-  draft-review.md       ← framework review workflow
-  validate-catalog.md   ← compatibility alias for older workspaces
+  draft.md              ← /draft dispatcher: parses the verb, routes to an action
+
+framework/draft-actions/
+  author.md             ← /draft author — draftsman authoring/setup workflow
+  session.md            ← /draft session — guided drafting session workflow
+  validate.md           ← /draft validate — catalog validation workflow
+  review.md             ← /draft review — company catalog/content review
+  triage.md             ← /draft triage — GitHub issue triage workflow
+  update.md             ← /draft update — framework refresh workflow
+  review-framework.md   ← /draft review-framework — upstream-only framework review
 
 framework/integrations/
   cursor/
@@ -36,7 +39,7 @@ supported IDE. The short version:
 
 | IDE | Integration mechanism | File to create |
 |---|---|---|
-| Claude Code | `.claude/commands/` symlinks | Step 7a |
+| Claude Code | `.claude/commands/draft.md` symlink | Step 7a |
 | Cursor | `.cursor/rules/draftsman.mdc` | Step 7b |
 | Windsurf | `.windsurfrules` | Step 7c |
 | GitHub Copilot | `.github/copilot-instructions.md` block | Step 7d |
@@ -45,8 +48,9 @@ supported IDE. The short version:
 
 ## Adding Support for a New IDE
 
-1. Add a file under `framework/integrations/<ide>/` that tells that IDE's AI
-   to read and follow the command files in `.draft/framework/commands/`.
+1. Add a file under `framework/integrations/<ide>/` that tells that IDE's AI to
+   read `.draft/framework/commands/draft.md` and follow the matching verb action
+   under `.draft/framework/draft-actions/`.
 2. Add a workspace template under
    `framework/templates/workspace/` if the IDE reads a standard path.
 3. Add a step to `docs/setup-mode.md` step 7.
@@ -54,7 +58,8 @@ supported IDE. The short version:
 
 ## What the Command Files Contain
 
-The `framework/commands/*.md` files include Claude Code frontmatter
+The `framework/commands/draft.md` file includes Claude Code frontmatter
 (`description`, `argument-hint`, `allowed-tools`). Other AI tools skip or
-ignore this frontmatter — the instruction content that follows it works for
-any AI. No translation is needed.
+ignore this frontmatter — the instruction content that follows it, and the
+verb action files under `framework/draft-actions/`, work for any AI. No
+translation is needed.
