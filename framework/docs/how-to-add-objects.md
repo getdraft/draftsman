@@ -68,7 +68,7 @@ evidence instead of adding rationale.
 ## Add A TechnologyComponent
 
 1. Decide whether the object is an Operating System, Compute Platform, Software, or Agent TechnologyComponent.
-2. Create the YAML file in `catalog/technology-components/`.
+2. Create the YAML file in `catalog/shared-services/technology-components/`.
 3. Add or repair the generated `uid`.
 4. Fill in the shared base fields: `uid`, `type`, `name`, `description`, `version`, `catalogStatus`, `owner`, and `tags`.
 5. Fill in the required TechnologyComponent fields: `vendor`, `productName`, `productVersion`, and `classification`.
@@ -82,7 +82,7 @@ TechnologyComponents should be specific. If you cannot name the product version 
 
 ## Add A Host
 
-1. Create the file in `catalog/hosts/`, `catalog/runtime-services/`, or `catalog/data-store-services/`.
+1. Create the file under `catalog/shared-services/hosts/`, `catalog/shared-services/runtime-services/`, or `catalog/shared-services/data-store-services/`.
 2. Reference the Operating System and Compute Platform TechnologyComponents explicitly.
 3. Add any Agent TechnologyComponents or other internal components that physically live on the host.
 4. Create relationship objects for identity, logging, security, monitoring, patching, or other platform dependencies.
@@ -95,7 +95,7 @@ TechnologyComponents should be specific. If you cannot name the product version 
 
 ## Add A RuntimeService
 
-1. Create the file in `catalog/hosts/`, `catalog/runtime-services/`, or `catalog/data-store-services/`.
+1. Create the file under `catalog/shared-services/hosts/`, `catalog/shared-services/runtime-services/`, or `catalog/shared-services/data-store-services/`.
 2. Reference exactly one `host` and one `primaryTechnologyComponent`; the
    primary TechnologyComponent is the service's required function component,
    not an optional dependency that needs separate rationale.
@@ -129,7 +129,7 @@ Keep the requirements focused on architecture outcomes rather than implementatio
 
 ## Add A ReferenceArchitecture
 
-1. Create the file in `catalog/reference-architectures/`.
+1. Create the file under `catalog/governance/reference-architectures/`.
 2. Add or repair the generated `uid`; choose a clear human `name`.
 3. Populate `serviceGroups` with the reusable building blocks that define the deployment pattern.
 4. Set `diagramTier` on every deployable object entry and cluster related functionality into the right service group.
@@ -140,7 +140,7 @@ A ReferenceArchitecture should be generic enough to guide many products, not jus
 
 ## Add A SoftwareDeploymentPattern
 
-1. Create the file in `catalog/software-deployment-patterns/`.
+1. Create the file under `catalog/engineering/software-deployment-patterns/`.
 2. Add or repair the generated `uid`; choose a product-focused human `name`.
 3. Add `businessContext.pillar` when the workspace declares business pillars in `.draft/workspace.yaml`.
 4. Set `followsReferenceArchitecture` if the product aligns with an existing ReferenceArchitecture.
@@ -153,7 +153,7 @@ A ReferenceArchitecture should be generic enough to guide many products, not jus
 
 ## Add A DraftingSession
 
-1. Create the file in `catalog/sessions/`.
+1. Create the file under `catalog/governance/sessions/`.
 2. Add or repair the generated `uid`; choose a name that describes the drafting work.
 3. Record the target object type in `primaryObjectType` and, if it already exists, `primaryObjectUid`.
 4. Add the source material that informed the current work under `sourceArtifacts`.
@@ -250,6 +250,4 @@ python3 framework/tools/generate_browser.py
 
 For deployable objects, `complete` means the applicable RequirementGroup requirements are satisfied. For every object type, it also means the description, ownership, lifecycle, and relationships are clear enough that another engineer could use the object without guessing what it means.
 
-The catalog uses flat folders by object family inside `catalog/`. Do not create
-nested taxonomy folders under `catalog/technology-components/` or `catalog/hosts/`, `catalog/runtime-services/`, or `catalog/data-store-services/`; the YAML
-content already carries the object classification.
+The catalog organizes folders by content role inside `catalog/` (`engineering/`, `shared-services/`, and `governance/`), with flat folders by object family inside those role layers. Do not create deeper custom nested folders; the YAML content already carries the object classification.

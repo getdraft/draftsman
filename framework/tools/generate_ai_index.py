@@ -39,6 +39,7 @@ FRAMEWORK_ENTRYPOINTS = [
     ("framework/tools/apply_vocabulary_proposals.py", "Materializes Draftsman vocabulary_proposal files into reviewable company vocabulary entries."),
     ("framework/tools/repair_uids.py", "Explicit repair utility that adds or replaces generated object UIDs and rewrites object references."),
     ("framework/tools/generate_browser.py", "Static GitHub Pages browser generator."),
+    ("framework/tools/migrations/0.36.1/migrate_to_nested_catalog.py", "Automated utility to migrate flat catalog directories under catalog/ to role-nested paths."),
     ("install-draft-table.sh", "Experimental local tooling installer retained for post-v1.0 work."),
 ]
 
@@ -50,17 +51,19 @@ CONFIGURATION_FOLDERS = [
 ]
 
 EXAMPLE_CATALOG_FOLDERS = [
-    "examples/catalog/technology-components",
-    "examples/catalog/hosts",
-    "examples/catalog/runtime-services",
-    "examples/catalog/data-store-services",
-    "examples/catalog/network-services",
-    "examples/catalog/reference-architectures",
-    "examples/catalog/software-deployment-patterns",
-    "examples/catalog/product-components",
-    "examples/catalog/data-components",
-    "examples/catalog/decision-records",
-    "examples/catalog/sessions",
+    "examples/catalog/engineering/product-components",
+    "examples/catalog/engineering/data-components",
+    "examples/catalog/engineering/software-deployment-patterns",
+    "examples/catalog/shared-services/hosts",
+    "examples/catalog/shared-services/runtime-services",
+    "examples/catalog/shared-services/data-store-services",
+    "examples/catalog/shared-services/network-services",
+    "examples/catalog/shared-services/technology-components",
+    "examples/catalog/governance/decision-records",
+    "examples/catalog/governance/sessions",
+    "examples/catalog/governance/relationships",
+    "examples/catalog/governance/systems",
+    "examples/catalog/governance/reference-architectures",
 ]
 
 

@@ -497,7 +497,7 @@ Before merging a DRAFT change, check:
 
 ### 4.8 Troubleshooting {#troubleshooting}
 
-**Browser does not show a new object.** Verify the file is under a discovered folder such as `catalog/hosts/`, `catalog/runtime-services/`, `catalog/data-store-services/`, `catalog/product-components/`, or `configurations/capabilities/`, and confirm the YAML has a valid `uid`.
+**Browser does not show a new object.** Verify the file is under a discovered folder such as `catalog/shared-services/hosts/`, `catalog/shared-services/runtime-services/`, `catalog/shared-services/data-store-services/`, `catalog/engineering/product-components/`, or `configurations/capabilities/`, and confirm the YAML has a valid `uid`.
 
 **Validation cannot find framework objects in a company workspace.** Confirm the vendored framework exists at `.draft/framework/` and run validation with `--workspace .`.
 

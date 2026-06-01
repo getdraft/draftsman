@@ -60,6 +60,20 @@ CATALOG_FOLDERS = [
     "domains",
     "relationships",
     "systems",
+    # Nested catalog folders by content role
+    "engineering/product-components",
+    "engineering/data-components",
+    "engineering/software-deployment-patterns",
+    "shared-services/hosts",
+    "shared-services/runtime-services",
+    "shared-services/data-store-services",
+    "shared-services/network-services",
+    "shared-services/technology-components",
+    "governance/decision-records",
+    "governance/sessions",
+    "governance/relationships",
+    "governance/systems",
+    "governance/reference-architectures",
 ]
 LIFECYCLE_COLORS = {
     "preferred": "1f8a5b",
