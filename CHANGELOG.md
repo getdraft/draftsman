@@ -3,6 +3,33 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.39.0 - 2026-05-31
+
+Phase 2 of the native capability vocabulary (follow-up to #66 via #70): promotes generic delivery, integration, analytics, and certificate-management outcomes into native DRAFT capabilities and traces them through the existing Service Capability RequirementGroup using the same conditional, self-declared pattern as Phase 1. Adds three new domains.
+
+### Added
+
+- **Three domains**: `Software Delivery`, `Integration`, `Analytics` (`framework/configurations/domains/`).
+- **Nine native capabilities**: `CI/CD Pipeline`, `Artifact Management`, `Configuration Management` (Software Delivery); `Email Delivery`, `File Transfer`, `Data Integration` (Integration); `Analytics`, `Reporting` (Analytics); `Certificate Management` (Security). All ship `complete` with framework `definitionOwner` and empty `implementations`.
+- **Nine conditional self-declared requirements** added to the Service Capability RequirementGroup, one per new capability, gated on `capabilities contains <uid>` and scoped via `appliesTo` (`runtime_service`, except File Transfer on `network_service`). Each traces its capability through `relatedCapability` and is satisfied by concrete technical evidence or a committed DecisionRecord — never a bare note.
+
+### Changed
+
+- Added `Certificate Management` to the Security domain's capability list and regenerated `AI_INDEX.md`.
+- Extended the native-vs-company-local guidance in `framework/docs/capabilities.md` to cover the delivery, integration, and analytics outcomes.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+- None for existing catalogs. The new requirements are conditional on a service self-declaring a native capability; no current object references the new capability UIDs, so nothing gains a new obligation.
+
+### Migration Notes
+
+No manual workspace migration is required. As with Phase 1, workspaces that created generic local capabilities for these outcomes should declare the native capability UID on the providing service over time. Remaining open design work (consumer-side demand for outcomes a ProductComponent *needs*, and a possible migration helper) stays tracked under #70; the framework-wide `architectureNote`-as-satisfier cleanup is tracked under #71.
+
 ## 0.38.0 - 2026-05-31
 
 Begins promoting generic architecture outcomes into native DRAFT capability vocabulary (Phase 1: network, runtime, and data outcomes) so company workspaces stop reinventing them as local capabilities. New native capabilities are traced from a new always-on Service Capability RequirementGroup using conditional, self-declared requirements: a shared service declares the capability it provides in its `capabilities` list, and the matching requirement demands the service document how that capability is delivered. Requirements are conditional on the self-declaration, so existing objects gain no new obligations.

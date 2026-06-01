@@ -118,19 +118,27 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | UID | Name | Type | Tags | Description | Path |
 |---|---|---|---|---|---|
 | 01KQQ4Q026-4JR6 | Access Control Model | capability |  | Authorization model that controls access to a service or data platform. | framework/configurations/capabilities/capability-access-control-model.yaml |
+| 01KT0XNZEY-A7GK | Analytics | capability |  | Operational and business data is processed and analyzed to produce insight through a managed analytics platform. | framework/configurations/capabilities/capability-analytics.yaml |
 | 01KT0V5MCV-3A6F | API Gateway | capability |  | Inbound API traffic is routed, authenticated, rate-limited, and transformed at a managed entry point in front of back... | framework/configurations/capabilities/capability-api-gateway.yaml |
 | 01KQQ4Q026-NB1W | Application Performance Monitoring | capability |  | Tracing and performance analysis of application runtimes. | framework/configurations/capabilities/capability-apm.yaml |
 | 01KT0V5MCV-RZV0 | Application Runtime | capability |  | First-party application code executes on a managed runtime that provides the process, web, or worker execution enviro... | framework/configurations/capabilities/capability-application-runtime.yaml |
+| 01KT0XNZEY-7HWQ | Artifact Management | capability |  | Build outputs, packages, images, and dependencies are stored, versioned, and served from a managed artifact repository. | framework/configurations/capabilities/capability-artifact-management.yaml |
 | 01KQQ4Q026-MHJM | Authentication | capability |  | Identity and access authentication capability for users, services, administrators, or workloads. | framework/configurations/capabilities/capability-authentication.yaml |
 | 01KT0V5MCV-ECR4 | Caching | capability |  | Frequently accessed data is stored in a fast, ephemeral tier to reduce latency and load on the system of record. | framework/configurations/capabilities/capability-caching.yaml |
 | 01KT0V5MCV-HZ37 | CDN | capability |  | Static and cacheable content is distributed and served from edge locations close to consumers to reduce latency and o... | framework/configurations/capabilities/capability-cdn.yaml |
+| 01KT0XNZEY-RVTG | Certificate Management | capability |  | Digital certificates are issued, distributed, renewed, and revoked through a managed certificate or PKI service. | framework/configurations/capabilities/capability-certificate-management.yaml |
+| 01KT0XNZEY-Q2TF | CI/CD Pipeline | capability |  | Source code is automatically built, tested, and promoted through environments by an automated continuous integration... | framework/configurations/capabilities/capability-cicd-pipeline.yaml |
 | 01KQQ4Q026-1HZP | Compute Platform | capability |  | Compute substrate or virtualized platform used to run Hosts. | framework/configurations/capabilities/capability-compute-platform.yaml |
+| 01KT0XNZEY-35Y2 | Configuration Management | capability |  | System and application configuration is declared, applied, and reconciled across environments through a managed confi... | framework/configurations/capabilities/capability-configuration-management.yaml |
 | 01KQQ4Q026-GW5D | Container Orchestration | capability |  | Management of containerized workload lifecycles. | framework/configurations/capabilities/capability-container-orchestration.yaml |
+| 01KT0XNZEY-DENJ | Data Integration | capability |  | Data is moved, transformed, and synchronized between systems through a managed integration or ETL platform. | framework/configurations/capabilities/capability-data-integration.yaml |
 | 01KT0V5MCV-VD0Y | Data Persistence | capability |  | Structured application data is durably stored, queried, and managed in a database or persistence platform. | framework/configurations/capabilities/capability-data-persistence.yaml |
 | 01KQQ4Q026-7T2H | Data Resilience | capability |  | Resilience of data against loss or corruption through backup, restore, replication, and recovery capabilities. | framework/configurations/capabilities/capability-data-resilience.yaml |
 | 01KT0V5MCV-GJBH | DNS | capability |  | Names are resolved to network addresses through authoritative and recursive domain name resolution. | framework/configurations/capabilities/capability-dns.yaml |
+| 01KT0XNZEY-KPTW | Email Delivery | capability |  | Outbound and transactional email is accepted, routed, and delivered to recipients through a managed mail delivery ser... | framework/configurations/capabilities/capability-email-delivery.yaml |
 | 01KQQ4Q026-H3B5 | Encryption At Rest | capability |  | Protection of persisted data through encryption or equivalent storage safeguards. | framework/configurations/capabilities/capability-encryption-at-rest.yaml |
 | 01KT0V5MCV-924J | File Storage | capability |  | Files are durably stored and accessed through a shared file system or file storage interface. | framework/configurations/capabilities/capability-file-storage.yaml |
+| 01KT0XNZEY-K1J3 | File Transfer | capability |  | Files are exchanged between systems or partners reliably and securely through a managed file transfer service. | framework/configurations/capabilities/capability-file-transfer.yaml |
 | 01KQQ4Q026-98VD | Health and Welfare Monitoring | capability |  | Runtime health, uptime, metrics, and operational welfare visibility. | framework/configurations/capabilities/capability-health-welfare-monitoring.yaml |
 | 01KQQ4Q026-D04B | Log Management | capability |  | Aggregation, retention, searchability, and forwarding of system or application logs. | framework/configurations/capabilities/capability-log-management.yaml |
 | 01KT0V5MCV-KT72 | Messaging | capability |  | Asynchronous messages and events are accepted, queued, and delivered between producers and consumers. | framework/configurations/capabilities/capability-messaging.yaml |
@@ -141,6 +149,7 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KQQ4Q026-BH6E | Patch Management | capability |  | Patch orchestration and update application capability for managed runtime components. | framework/configurations/capabilities/capability-patch-management.yaml |
 | 01KQQ4Q026-S5J6 | Performance and Load Testing | capability |  | Capabilities to simulate load and measure system behavior under stress. | framework/configurations/capabilities/capability-performance-testing.yaml |
 | 01KQQ4Q026-RTWC | Quality Gates | capability |  | Promotion criteria and automated checks required for lifecycle transitions. | framework/configurations/capabilities/capability-quality-gates.yaml |
+| 01KT0XNZEY-70Y6 | Reporting | capability |  | Curated metrics and datasets are presented to consumers through managed reports and dashboards. | framework/configurations/capabilities/capability-reporting.yaml |
 | 01KQQ4Q026-DTJJ | Secrets Management | capability |  | Secure storage, rotation, and access mediation for secrets and authenticators. | framework/configurations/capabilities/capability-secrets-management.yaml |
 | 01KQQ4Q026-JW52 | Security Monitoring | capability |  | Threat detection, intrusion detection, security event monitoring, and audit telemetry. | framework/configurations/capabilities/capability-security-monitoring.yaml |
 | 01KQQ4Q026-3ZWJ | Serverless Function Runtime | capability |  | Event-driven, scale-to-zero compute runtime capability. | framework/configurations/capabilities/capability-serverless-runtime.yaml |
@@ -173,12 +182,15 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KS8N4KR3-MTSA | Multi-Tenant SaaS | reference_architecture | reference-architecture, multi-tenant, saas | Deployment pattern for software-as-a-service products that serve multiple customer tenants from shared infrastructure... | framework/configurations/reference-architectures/ra-multi-tenant-saas.yaml |
 | 01KS8N4KR4-SVED | Serverless Event-Driven | reference_architecture | reference-architecture, serverless, event-driven | Deployment pattern for event-driven applications using serverless compute runtimes. No persistent application-tier co... | framework/configurations/reference-architectures/ra-serverless-event-driven.yaml |
 | 01KS8N4KR2-3TWA | Three-Tier Web Application | reference_architecture | reference-architecture, three-tier, web | Standard pattern for web-facing applications with a presentation tier (network services), an application tier (runtim... | framework/configurations/reference-architectures/ra-three-tier-web.yaml |
+| 01KT0XNZEY-HGZZ | Analytics | domain |  | Strategic domain covering analytical processing and reporting over operational and business data. Capabilities in thi... | framework/configurations/domains/analytics.yaml |
 | 01KQQ4Q027-ZTHF | Compute & Runtime | domain |  | Strategic domain covering application runtimes, serverless functions, and physical or virtual compute resources. | framework/configurations/domains/compute.yaml |
 | 01KSWVZSZ5-QHKZ | Data | domain |  | Strategic domain covering data protection and resilience. Capabilities in this domain are governed by the data and st... | framework/configurations/domains/data.yaml |
 | 01KSWVZSZ5-71PY | Identity & Access Management | domain |  | Strategic domain covering authentication and authorization. Capabilities in this domain are governed by the IAM team,... | framework/configurations/domains/identity.yaml |
+| 01KT0XNZEY-QY0Y | Integration | domain |  | Strategic domain covering the movement of messages, files, and data between systems. Capabilities in this domain are... | framework/configurations/domains/integration.yaml |
 | 01KSWVZSZ5-4WKE | Network | domain |  | Strategic domain covering network fabric infrastructure, connectivity, and segmentation. Capabilities in this domain... | framework/configurations/domains/network.yaml |
 | 01KQQ4Q027-C213 | Observability & Monitoring | domain |  | Strategic domain covering logging, metrics, tracing, and health monitoring across infrastructure and application stacks. | framework/configurations/domains/observability.yaml |
 | 01KSWVZSZ5-GY67 | Security | domain |  | Strategic domain covering threat detection, security event monitoring, and secure credential management. Capabilities... | framework/configurations/domains/security.yaml |
+| 01KT0XNZEY-GXYR | Software Delivery | domain |  | Strategic domain covering the build, integration, packaging, and configuration pipeline that delivers software into r... | framework/configurations/domains/software-delivery.yaml |
 | 01KQQ4Q027-SGHR | Testing & Quality | domain |  | Strategic domain covering all aspects of software testing, quality assurance, and release gates. | framework/configurations/domains/testing.yaml |
 
 ## Example Catalog Inventory
@@ -299,10 +311,10 @@ These are sample catalog objects used to validate and demonstrate the framework.
 
 | Folder | YAML Count |
 |---|---|
-| framework/configurations/capabilities | 33 |
+| framework/configurations/capabilities | 42 |
 | framework/configurations/requirement-groups | 20 |
 | framework/configurations/reference-architectures | 3 |
-| framework/configurations/domains | 7 |
+| framework/configurations/domains | 10 |
 | examples/catalog/engineering/product-components | 1 |
 | examples/catalog/engineering/data-components | 1 |
 | examples/catalog/engineering/software-deployment-patterns | 1 |

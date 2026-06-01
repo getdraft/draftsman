@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KT0XNZEY-Q2TF
+type: capability
+name: CI/CD Pipeline
+description: Source code is automatically built, tested, and promoted through environments by an automated continuous integration and delivery pipeline.
+version: 1.0.0
+catalogStatus: complete
+definitionOwner:
+  provider: draft-framework
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+domain: 01KT0XNZEY-GXYR
+implementations: []

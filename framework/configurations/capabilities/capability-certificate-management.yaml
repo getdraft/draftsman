@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KT0XNZEY-RVTG
+type: capability
+name: Certificate Management
+description: Digital certificates are issued, distributed, renewed, and revoked through a managed certificate or PKI service.
+version: 1.0.0
+catalogStatus: complete
+definitionOwner:
+  provider: draft-framework
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+domain: 01KSWVZSZ5-GY67
+implementations: []
