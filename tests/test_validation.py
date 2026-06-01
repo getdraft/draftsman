@@ -185,7 +185,7 @@ class ValidationTests(unittest.TestCase):
             result = validate_workspace(workspace)
 
         self.assertFalse(result.ok, result.stdout + result.stderr)
-        self.assertIn("Satisfy Company Control / company-required-field", result.stdout)
+        self.assertIn("Requirement not satisfied: Company Control / company-required-field", result.stdout)
 
     def test_self_managed_runtime_service_requires_host_substrate(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -1814,6 +1814,34 @@ requirementGroups:
             + "\n",
             encoding="utf-8",
         )
+
+    def test_validate_quiet_argument_suppresses_pass_output(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            self._write_workspace_requirement_fixture(workspace, require_disposition=False)
+            self._repair_workspace_uids(workspace)
+
+            # Standard run
+            standard_cmd = build_validate_command(workspace, REPO_ROOT)
+            standard_result = subprocess.run(
+                standard_cmd,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertIn("PASS ", standard_result.stdout)
+
+            # Quiet run
+            quiet_cmd = build_validate_command(workspace, REPO_ROOT) + ["--quiet"]
+            quiet_result = subprocess.run(
+                quiet_cmd,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertNotIn("PASS ", quiet_result.stdout)
+            self.assertIn("Validated ", quiet_result.stdout)
 
 
 if __name__ == "__main__":
