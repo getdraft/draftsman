@@ -3,7 +3,7 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
-## 0.36.4 - 2026-05-31
+## 0.37.0 - 2026-05-31
 
 Traces the four framework-native network capabilities (Network Connectivity, Network Segmentation, Traffic Management, WAN Connectivity) from the base NetworkService RequirementGroup so they resolve to a requirement demand signal, then promotes every traced framework-native capability out of `incomplete` so DRAFT no longer ships capabilities at provisional maturity. Previously the validator warned that the network capabilities were untraceable, forcing vendored company workspaces to invent artificial company-specific requirements just to satisfy traceability.
 
