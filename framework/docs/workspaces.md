@@ -251,6 +251,10 @@ are missing or stale, opens an update branch, refreshes
 `.draft/framework/`, updates `.draft/framework.lock`, and validates the
 workspace.
 
+DRAFT release tags use the `vX.Y.Z` form, such as `v0.41.5`. When manually
+running the update workflow, a bare semantic version like `0.41.5` is accepted
+as a convenience and normalized to the matching `v0.41.5` tag when it exists.
+
 When validation passes, the workflow opens a normal update pull request. When
 validation fails, it opens the pull request anyway with a blocked title and the
 validation output in the body. The branch remains available for the company or

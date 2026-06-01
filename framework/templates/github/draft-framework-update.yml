@@ -35,7 +35,7 @@ on:
   workflow_dispatch:
     inputs:
       target_ref:
-        description: "Optional DRAFT tag, branch, or commit. Leave blank for the latest framework version."
+        description: "Optional DRAFT tag, branch, or commit. Version tags are vX.Y.Z; bare X.Y.Z is accepted."
         required: false
         type: string
 
@@ -142,13 +142,32 @@ jobs:
                   return "main"
               return tag
 
+          def canonical_target_ref(value: str) -> str:
+              ref = value.strip().removeprefix("refs/tags/")
+              parsed = semver(ref)
+              if parsed and not ref.startswith("v"):
+                  v_tag = f"v{ref}"
+                  exists = run(["git", "ls-remote", "--exit-code", "--tags", "--refs", source, v_tag], check=False)
+                  if exists.returncode == 0:
+                      return v_tag
+              return ref
+
           def clone_framework(target_ref: str) -> Path:
               temp_dir = Path(tempfile.mkdtemp(prefix="draft-framework-"))
               run(["git", "clone", "--no-checkout", source, str(temp_dir)])
               fetch = run(["git", "fetch", "--depth", "1", "origin", target_ref], cwd=temp_dir, check=False)
               if fetch.returncode != 0:
-                  run(["git", "fetch", "--depth", "1", "origin", f"refs/tags/{target_ref}:refs/tags/{target_ref}"], cwd=temp_dir)
-                  run(["git", "checkout", target_ref], cwd=temp_dir)
+                  tag_name = target_ref.removeprefix("refs/tags/")
+                  tag_candidates = [tag_name]
+                  if semver(tag_name) and not tag_name.startswith("v"):
+                      tag_candidates.insert(0, f"v{tag_name}")
+                  for tag in dict.fromkeys(tag_candidates):
+                      fetch_tag = run(["git", "fetch", "--depth", "1", "origin", f"refs/tags/{tag}:refs/tags/{tag}"], cwd=temp_dir, check=False)
+                      if fetch_tag.returncode == 0:
+                          run(["git", "checkout", tag], cwd=temp_dir)
+                          break
+                  else:
+                      raise SystemExit(f"Could not fetch DRAFT framework ref '{target_ref}'. Use a branch, commit, or tag such as vA.B.C.")
               else:
                   run(["git", "checkout", "FETCH_HEAD"], cwd=temp_dir)
               return temp_dir
@@ -223,7 +242,7 @@ jobs:
           current_version = str(framework_lock.get("version") or "")
           current_commit = str(framework_lock.get("syncedCommit") or "")
 
-          target_ref = target_ref_input or latest_target_ref()
+          target_ref = canonical_target_ref(target_ref_input) if target_ref_input else latest_target_ref()
           source_repo = clone_framework(target_ref)
           target_commit = run(["git", "rev-parse", "HEAD"], cwd=source_repo).stdout.strip()
           manifest = read_yaml(source_repo / "draft-framework.yaml")

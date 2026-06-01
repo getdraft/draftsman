@@ -87,7 +87,9 @@ Confirm the branch was created before continuing.
 
 ## Step 5: Replace the Vendored Framework
 
-Download the selected framework ref and replace the vendored copy:
+Download the selected framework ref and replace the vendored copy. DRAFT
+release tags use the `vA.B.C` form. If a user supplies a bare semantic version
+such as `A.B.C`, resolve it to `vA.B.C` when that tag exists.
 
 ```bash
 # Fetch the new version into a temporary location
@@ -122,7 +124,7 @@ framework:
   syncedCommit: <resolved-sha>
 ```
 
-Only include `syncedTag` when `<target-ref>` is a version tag such as
+Only include `syncedTag` when `<target-ref>` is a canonical version tag such as
 `vA.B.C`; omit it when the updater selected `main`.
 
 ## Step 7: Run Validation
