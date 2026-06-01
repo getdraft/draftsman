@@ -56,8 +56,8 @@ Output **only** this table — no preamble, setup guides, or symlink notes:
 | Verb | Who runs it | Purpose |
 |---|---|---|
 | `/draft help` | All Users | Show this list of DRAFT verbs. |
-| `/draft author` | Engineering & Tech Admins | Activate the Draftsman for catalog authoring or workspace setup. |
-| `/draft session` | Engineering & Tech Admins | Start or resume a guided DraftingSession. |
+| `/draft author` | Engineering & Shared Services | Activate the Draftsman for catalog authoring or workspace setup. |
+| `/draft session` | Engineering & Shared Services | Start or resume a guided DraftingSession. |
 | `/draft validate` | All Users | Validate the DRAFT catalog and report issues with fix guidance. |
 | `/draft review` | Engineering & Shared Services | Review company catalog/content in a vendored workspace. |
 | `/draft security` | Security, GRC & Draft Admins | Run security RequirementGroup, satisfaction, review, and audit workflows. |

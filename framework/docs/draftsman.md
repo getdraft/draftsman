@@ -215,13 +215,13 @@ bootstrap files from those values.
 DRAFT is designed so that infrastructure objects are authored once and referenced
 by many engineering objects. This is the primary mechanism for catalog scale.
 
-- A **Host** standard is authored by a Technology Admin and reused by every
+- A **Host** standard is authored by Shared Services and reused by every
   RuntimeService that runs on that platform. A company with one EKS cluster
   authors one Host — not one per service.
-- A **RuntimeService** is authored by a Technology Admin and reused by every
+- A **RuntimeService** is authored by Shared Services and reused by every
   ProductComponent that runs on it. A company with fifty microservices on the
   same Kubernetes deployment has one RuntimeService, not fifty.
-- A **NetworkService** is authored by a Technology Admin for reusable network
+- A **NetworkService** is authored by Shared Services for reusable network
   and traffic-control behavior such as routing, switching, load balancing, WAF,
   firewalling, ingress, DNS, WAN, or segmentation.
 - A **TechnologyComponent** is authored once per vendor product version and
@@ -234,7 +234,7 @@ Before creating any infrastructure object (Host, RuntimeService, DataStoreServic
 NetworkService, TechnologyComponent), search the effective catalog. If a
 matching object exists, reference it — do not create a duplicate. Creating
 duplicate infrastructure objects is always wrong. When no matching object exists,
-stub one and record it as a DraftingSession item for the Technology Admin to
+stub one and record it as a DraftingSession item for Shared Services to
 complete.
 
 Engineering objects (ProductComponent, DataComponent, SDP) are per-product and
