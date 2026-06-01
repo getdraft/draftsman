@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KT0V5MCV-RM8M
+type: capability
+name: Service Mesh
+description: Service-to-service traffic is routed, secured, and observed through a dedicated connectivity and policy layer.
+version: 1.0.0
+catalogStatus: complete
+definitionOwner:
+  provider: draft-framework
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+domain: 01KQQ4Q027-ZTHF
+implementations: []

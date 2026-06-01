@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KT0V5MCV-GJBH
+type: capability
+name: DNS
+description: Names are resolved to network addresses through authoritative and recursive domain name resolution.
+version: 1.0.0
+catalogStatus: complete
+definitionOwner:
+  provider: draft-framework
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+domain: 01KSWVZSZ5-4WKE
+implementations: []

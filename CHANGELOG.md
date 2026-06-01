@@ -3,6 +3,32 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.38.0 - 2026-05-31
+
+Begins promoting generic architecture outcomes into native DRAFT capability vocabulary (Phase 1: network, runtime, and data outcomes) so company workspaces stop reinventing them as local capabilities. New native capabilities are traced from a new always-on Service Capability RequirementGroup using conditional, self-declared requirements: a shared service declares the capability it provides in its `capabilities` list, and the matching requirement demands the service document how that capability is delivered. Requirements are conditional on the self-declaration, so existing objects gain no new obligations.
+
+### Added
+
+- **Eleven native capabilities**: `API Gateway`, `DNS`, `CDN`, `WAF` (Network domain); `Application Runtime`, `Service Mesh`, `Caching`, `Messaging` (Compute & Runtime domain); `Data Persistence`, `Object Storage`, `File Storage` (Data domain). All ship `complete` with framework `definitionOwner` and empty `implementations`.
+- **Service Capability RequirementGroup** (`requirement-group-service-capability.yaml`, always-on, applies to `runtime_service`/`data_store_service`/`network_service` across all delivery models): one conditional self-declared requirement per native capability, gated on `capabilities contains <uid>` and scoped per requirement via `appliesTo`. Each requirement traces its capability through `relatedCapability` and is satisfiable by a TechnologyComponent configuration/internal component, a relationship to a providing service, or an architecture note.
+- **Native vs company-local capability guidance** in `framework/docs/capabilities.md`: when to use a native capability versus minting a company-local one, and how native service capabilities are self-declared.
+
+### Changed
+
+- **Regenerated `AI_INDEX.md`** to register the eleven new capabilities and the new RequirementGroup.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+- None for existing catalogs. The new requirements are conditional on a service self-declaring a native capability; no current object references the new capability UIDs, so nothing gains a new obligation. When a workspace migrates a generic local capability to its native equivalent (by declaring the native UID), the service is then asked to document delivery of that capability.
+
+### Migration Notes
+
+No manual workspace migration is required to upgrade. Workspaces that previously created generic local capabilities (caching, messaging, object storage, API gateway, etc.) should, over time, declare the native capability UID on the providing service instead, and reserve company-local capabilities for genuinely company-specific outcomes. Phase 2 (delivery, integration, analytics, and security/identity outcomes, plus a possible migration helper) is tracked as a follow-up to #66.
+
 ## 0.37.0 - 2026-05-31
 
 Traces the four framework-native network capabilities (Network Connectivity, Network Segmentation, Traffic Management, WAN Connectivity) from the base NetworkService RequirementGroup so they resolve to a requirement demand signal, then promotes every traced framework-native capability out of `incomplete` so DRAFT no longer ships capabilities at provisional maturity. Previously the validator warned that the network capabilities were untraceable, forcing vendored company workspaces to invent artificial company-specific requirements just to satisfy traceability.

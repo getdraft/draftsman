@@ -50,6 +50,50 @@ This preserves a many-to-many model: one requirement can point to a capability,
 and one capability can satisfy requirements in multiple groups. A capability
 does not belong to exactly one RequirementGroup.
 
+## Native vs Company-Local Capabilities
+
+DRAFT ships a native capability vocabulary for architecture outcomes that are
+generic to software, data, network, security, observability, and testing — for
+example Application Runtime, Caching, Messaging, Data Persistence, Object
+Storage, File Storage, API Gateway, DNS, CDN, WAF, Traffic Management, and the
+identity, secrets, and monitoring capabilities. These are not company-specific
+vocabulary, so the framework owns them and traces them from base
+RequirementGroups.
+
+Use a native capability whenever your outcome matches one. Create a
+company-local capability only for a genuinely company-specific architecture
+outcome that the native set does not cover. Reaching for a local capability to
+model a generic outcome (caching, messaging, an API gateway, object storage,
+and so on) fragments vocabulary and UIDs across workspaces and forces the
+workspace to invent local RequirementGroups just to satisfy traceability —
+which makes the workspace look more custom than it is.
+
+### Native Service Capabilities Are Self-Declared
+
+A shared service declares the native capabilities it provides in its
+`capabilities` list, and the **Service Capability RequirementGroup**
+(`requirement-group-service-capability.yaml`) conditionally demands that the
+service document how each declared capability is delivered:
+
+- a `RuntimeService` declares outcomes such as Application Runtime, Service
+  Mesh, Caching, or Messaging;
+- a `DataStoreService` declares Data Persistence, Object Storage, or File
+  Storage;
+- a `NetworkService` declares API Gateway, DNS, CDN, or WAF (network function
+  capabilities — Network Connectivity, Segmentation, Traffic Management, and WAN
+  Connectivity — are traced from the NetworkService RequirementGroup).
+
+Each requirement is conditional on the service self-declaring the capability, so
+a service is never asked about a capability it does not provide. When a service
+does declare a capability, it documents the delivery by referencing the
+TechnologyComponent that implements it (or, as an exception path, an
+architecture note).
+
+Companies still own the **implementation lifecycle** decisions — which approved
+TechnologyComponents may satisfy a native capability — through capability
+overlays and object patches. The framework owns the capability *definition*; the
+company owns *which products satisfy it*.
+
 ## Capability Lookup Procedure
 
 When a requirement names `relatedCapability`, the Draftsman must use this lookup

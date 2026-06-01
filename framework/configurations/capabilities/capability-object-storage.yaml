@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KT0V5MCV-E9TN
+type: capability
+name: Object Storage
+description: Unstructured objects and blobs are durably stored and retrieved through an object storage interface.
+version: 1.0.0
+catalogStatus: complete
+definitionOwner:
+  provider: draft-framework
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+domain: 01KSWVZSZ5-QHKZ
+implementations: []

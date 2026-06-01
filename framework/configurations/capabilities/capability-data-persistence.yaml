@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KT0V5MCV-VD0Y
+type: capability
+name: Data Persistence
+description: Structured application data is durably stored, queried, and managed in a database or persistence platform.
+version: 1.0.0
+catalogStatus: complete
+definitionOwner:
+  provider: draft-framework
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+domain: 01KSWVZSZ5-QHKZ
+implementations: []
