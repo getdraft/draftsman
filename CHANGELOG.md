@@ -3,6 +3,37 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.41.6 - 2026-06-01
+
+Fixes manual framework update ref handling so bare semantic versions resolve to
+the canonical `vX.Y.Z` release tags when those tags exist.
+
+### Added
+
+- A workflow-template guard that accepts manual `target_ref` values such as
+  `0.41.6` or `refs/tags/0.41.6` and normalizes them to `v0.41.6` when that tag
+  exists upstream.
+
+### Changed
+
+- Framework update docs now explicitly state that DRAFT release tags use
+  `vX.Y.Z` and that bare `X.Y.Z` inputs are accepted as a convenience.
+
+### Fixed
+
+- Manual framework update runs no longer try only `refs/tags/X.Y.Z` when the
+  upstream release tag is actually `refs/tags/vX.Y.Z`.
+
+### Compatibility Impact
+
+- None. This is an update workflow and documentation fix only.
+
+### Migration Notes
+
+Existing company workspaces should refresh their
+`.github/workflows/draft-framework-update.yml` from the updated template to pick
+up manual `target_ref` normalization.
+
 ## 0.41.5 - 2026-06-01
 
 Removes remaining legacy role wording from command help and role-layer guidance

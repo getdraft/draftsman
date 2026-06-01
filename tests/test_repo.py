@@ -70,6 +70,15 @@ class RepoTests(unittest.TestCase):
             self.assertTrue(created)
             self.assertTrue(is_workspace(workspace))
 
+    def test_update_workflow_normalizes_bare_semver_target_ref(self) -> None:
+        workflow = Path("framework/templates/github/draft-framework-update.yml").read_text(encoding="utf-8")
+
+        self.assertIn("def canonical_target_ref(value: str) -> str:", workflow)
+        self.assertIn('ref = value.strip().removeprefix("refs/tags/")', workflow)
+        self.assertIn('v_tag = f"v{ref}"', workflow)
+        self.assertIn('target_ref = canonical_target_ref(target_ref_input)', workflow)
+        self.assertIn("Use a branch, commit, or tag such as vA.B.C.", workflow)
+
     def test_refresh_vendored_framework_updates_framework_copy_and_lock(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory) / "company-draft"
