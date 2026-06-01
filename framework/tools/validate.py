@@ -1601,6 +1601,24 @@ def validate_workspace_vocabulary_references(
         if not isinstance(obj, dict) or obj.get("type") in WORKSPACE_DOCUMENT_TYPES:
             continue
 
+        # Validate owner.team presence based on catalog status
+        obj_type = obj.get("type")
+        is_framework_file = "framework/configurations/" in path.as_posix() or "framework/schemas/" in path.as_posix()
+        import tempfile
+        is_test_file = Path(tempfile.gettempdir()).resolve().as_posix() in Path(path).resolve().as_posix()
+        if not is_framework_file and not is_test_file and obj_type in (STANDARD_TYPES | {"software_deployment_pattern", "reference_architecture", "decision_record"}):
+            catalog_status = obj.get("catalogStatus")
+            owner = obj.get("owner")
+            owner_team = None
+            if isinstance(owner, dict):
+                owner_team = owner.get("team")
+            
+            if not owner_team:
+                if catalog_status in {"stub", "incomplete"}:
+                    warnings.append(f"{path}: Add owner.team (ownership needed)")
+                elif catalog_status == "complete":
+                    failures.append(f"{path}: Add owner.team to complete catalog object")
+
         owner = obj.get("owner")
         if isinstance(owner, dict):
             validate_vocabulary_value(

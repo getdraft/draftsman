@@ -67,6 +67,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/how-to-add-objects.md | How To Add Objects | The fastest way to add a new object correctly is to decide what kind of thing you are modeling before you write YAML. |
 | framework/docs/naming-conventions.md | Naming Conventions | When a DRAFT object type is referred to by name in prose, headings, schema |
 | framework/docs/object-types.md | DRAFT Object Types | DRAFT object types are split into deployable architecture and non-deployable |
+| framework/docs/operations.md | Draft Operations and Governance Guide | > **Audience:** Draft Admins, Shared Services, and Engineering Representatives. |
 | framework/docs/overview.md | Framework Overview | This page is the high-level object map for DRAFT. For the complete object type |
 | framework/docs/reference-architectures.md | ReferenceArchitectures | The DRAFT framework ships a set of baseline ReferenceArchitectures in |
 | framework/docs/requirement-groups.md | RequirementGroups | A RequirementGroup is the unified DRAFT requirement model. It replaces the old |
