@@ -120,7 +120,7 @@ templates include command invocation guidance for each supported tool:
 
 | IDE | Mechanism | Setup |
 |---|---|---|
-| Claude Code | `.claude/commands/` symlinks | setup-mode step 7a |
+| Claude Code | `.claude/commands/draft.md` symlink | setup-mode step 7a |
 | Cursor | `.cursor/rules/draftsman.mdc` | setup-mode step 7b |
 | Windsurf | `.windsurfrules` | setup-mode step 7c |
 | GitHub Copilot | `.github/copilot-instructions.md` block | setup-mode step 7d |
