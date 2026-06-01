@@ -1,0 +1,75 @@
+name: DRAFT framework bug
+description: Report a bug in the public DRAFT framework, commands, schemas, templates, or tooling.
+title: "Bug: "
+labels:
+  - bug
+  - draftsman
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for public DRAFT framework bugs. Do not include confidential company architecture details, secrets, customer names, or proprietary diagrams unless they have been explicitly sanitized for public disclosure.
+  - type: input
+    id: framework-version
+    attributes:
+      label: DRAFT framework version
+      description: From `draft-framework.yaml` or `.draft/framework.lock`.
+      placeholder: "0.x.y"
+    validations:
+      required: true
+  - type: input
+    id: source-ref
+    attributes:
+      label: Framework source, ref, and commit
+      description: Include `.draft/framework.lock` source/ref/commit when available.
+      placeholder: "https://github.com/getdraft/draftsman.git, v0.x.y, abc1234"
+    validations:
+      required: false
+  - type: input
+    id: command
+    attributes:
+      label: Command or workflow
+      description: Which `/draft` command, validator, generator, template, or AI workflow exposed the bug?
+      placeholder: "/draft validate"
+    validations:
+      required: false
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Provide sanitized steps, minimal YAML, or command output needed to reproduce the issue.
+      placeholder: |
+        1. Run ...
+        2. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: How does this affect drafting, validation, workspace updates, adoption, or catalog governance?
+    validations:
+      required: false
+  - type: checkboxes
+    id: disclosure
+    attributes:
+      label: Public disclosure check
+      options:
+        - label: I have removed or sanitized company-confidential architecture details.
+          required: true
+        - label: I have not included secrets, credentials, customer data, or proprietary diagrams.
+          required: true

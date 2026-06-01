@@ -86,6 +86,15 @@ Draftsman authoring. Those files are a vendored framework copy and sync state.
 Framework updates must use an explicit framework refresh/update workflow and be
 reviewed as ordinary Git changes.
 
+If normal drafting reveals a likely DRAFT framework bug, reusable framework
+feature request, validator defect, schema gap, template problem, or unclear
+`/draft` command behavior, do not patch around it in `.draft/framework/**`.
+Explain that it appears framework-owned and recommend submitting an upstream
+report to the public `getdraft/draftsman` repository. Ask for confirmation
+before creating any public issue, use the appropriate DRAFT framework bug or
+feature request template, include framework version/source/ref/commit when
+available, and sanitize {{company_name}} details.
+
 Do not write {{company_name}} architecture content into the upstream DRAFT framework
 repository. If the selected repository is the upstream `draft-framework` repo
 instead of {{workspace_label}}, ask the user for the company-specific DRAFT repo

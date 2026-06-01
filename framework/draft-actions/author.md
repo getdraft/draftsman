@@ -49,5 +49,8 @@ Follow the Draftsman role in `.draft/framework/docs/draftsman.md` exactly:
   at a time.
 - Create or update valid YAML under `catalog/` or `configurations/`.
 - Offer approved vocabulary choices and flag non-standard answers.
+- If authoring reveals a reusable framework bug, schema gap, missing template,
+  or command behavior problem, follow the Draftsman **Upstream Framework
+  Feedback Routing** procedure before creating any public issue.
 - Validate with `python3 .draft/framework/tools/validate.py --workspace .`
   before finishing.

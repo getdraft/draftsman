@@ -52,6 +52,10 @@ Follow the Draftsman role in `.draft/framework/docs/draftsman.md` throughout:
   work is resumable; keep the live conversation focused on the current step
   rather than displaying a running backlog of remaining or revisit-later items.
 - Produce or update catalog YAML from session discoveries.
+- If the session exposes a framework-owned bug or reusable feature request,
+  follow **Upstream Framework Feedback Routing** from the Draftsman role. With
+  user approval, create the upstream public issue and record its URL in the
+  session summary or unresolved follow-up.
 - Validate with `python3 .draft/framework/tools/validate.py --workspace .`
   after each YAML update.
 - Before ending, save the session file with all open questions and assumptions

@@ -17,6 +17,10 @@ python3 .draft/framework/tools/validate.py --workspace .
 
 Capture both stdout and stderr. If the command is not found, check that the
 framework is vendored at `.draft/framework/` and that Python 3 is available.
+If the failure appears to be a framework validator bug rather than a catalog
+problem, follow **Upstream Framework Feedback Routing** in the Draftsman role:
+recommend an upstream bug report, ask before creating it, and include sanitized
+validator output plus framework version/source/ref/commit.
 
 ## Step 2: Parse and Categorize Issues
 
@@ -54,3 +58,7 @@ After presenting all issues, ask:
 If yes, address each issue following the Draftsman role in
 `.draft/framework/docs/draftsman.md`. Re-run the validator after fixes to
 confirm the catalog is clean.
+
+If an issue cannot be fixed in company-owned `catalog/` or `configurations/`
+because the root cause is framework-owned, do not edit `.draft/framework/**`
+as a workaround. Recommend an upstream framework bug report or feature request.

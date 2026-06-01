@@ -55,6 +55,28 @@ framework-managed. Normal Draftsman work must read those files but must not edit
 them. Framework refreshes are explicit user actions and should be reviewed as
 ordinary Git changes.
 
+## Upstream Framework Feedback
+
+If work in a company vendored workspace reveals a likely DRAFT framework bug,
+missing reusable framework capability, unclear `/draft` command behavior,
+validator defect, schema gap, or template problem, do not patch around it in
+`.draft/framework/**`. Explain that the finding appears framework-owned and
+recommend submitting an upstream report to the public
+`getdraft/draftsman` repository.
+
+Before creating a public issue, ask the user to confirm. Use the appropriate
+public issue template:
+
+- **DRAFT framework bug** for broken or contradictory framework behavior.
+- **DRAFT framework feature request** for reusable framework enhancements.
+
+Include safe context such as DRAFT version, framework source/ref/commit,
+command used, observed behavior, expected behavior, and sanitized reproduction
+steps. Do not include confidential company architecture details, secrets,
+customer data, or proprietary diagrams unless the user explicitly approves a
+sanitized public summary. If GitHub access is unavailable, draft the issue body
+for the user to submit manually.
+
 ## Editing Rules
 
 - Keep generated files current by running `python3 framework/tools/generate_ai_index.py`

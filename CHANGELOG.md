@@ -3,6 +3,43 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.41.2 - 2026-06-01
+
+Adds the upstream framework feedback path for company vendored workspaces so
+assistants know when to recommend a public DRAFT framework bug report or feature
+request instead of patching around framework-owned findings locally.
+
+### Added
+
+- Public GitHub issue forms for DRAFT framework bugs and reusable framework
+  feature requests.
+- Draftsman upstream feedback routing guidance covering safe public context,
+  issue-template selection, confirmation before public issue creation, and
+  confidentiality boundaries.
+
+### Changed
+
+- `/draft author`, `/draft session`, `/draft validate`, `/draft review`, and
+  `/draft update` now point assistants to the upstream feedback routing path
+  when a framework-owned bug or reusable feature request is discovered.
+- Workspace bootstrap templates now tell company-connected assistants to
+  recommend sanitized upstream reports for framework-owned issues.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+- None. This is AI instruction, command guidance, and public issue-template work
+  only; no schema, object model, RequirementGroup, or validator contract changed.
+
+### Migration Notes
+
+Existing company workspaces should refresh their workspace bootstrap files from
+the updated templates if they want the upstream framework feedback guidance in
+root AI instruction files.
+
 ## 0.41.1 - 2026-06-01
 
 Fixes the vendored workspace framework updater when upstream tags are missing
