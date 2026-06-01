@@ -9,8 +9,10 @@ For the principles behind DRAFT's design decisions, see
 For an explanation of the three roles (Draft Admins, Shared Services, Engineering)
 and how the catalog layers compose, see [Roles and Layers](roles-and-layers.md).
 
-For a step-by-step company adoption path, see
-[Company Onboarding Tutorial](company-onboarding.md).
+For step-by-step onboarding paths, see:
+* [Engineering Onboarding](engineering-onboarding.md)
+* [Shared Services Onboarding](shared-services-onboarding.md)
+* [Draft Admins Onboarding](draft-admins-onboarding.md)
 
 If an AI assistant is using this repo directly to author content, start with
 [Draftsman instructions](draftsman.md).

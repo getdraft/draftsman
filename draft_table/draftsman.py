@@ -466,7 +466,9 @@ def build_draftsman_prompt(framework_root: Path, workspace: Path | None, message
     matches = [object_summary(obj) for obj in search_objects(objects, message, 8)]
     docs = [
         ("Draftsman Instructions", framework_root / "docs" / "draftsman.md"),
-        ("Company Onboarding", framework_root / "docs" / "company-onboarding.md"),
+        ("Engineering Onboarding", framework_root / "docs" / "engineering-onboarding.md"),
+        ("Shared Services Onboarding", framework_root / "docs" / "shared-services-onboarding.md"),
+        ("Draft Admins Onboarding", framework_root / "docs" / "draft-admins-onboarding.md"),
         ("Workspace Model", framework_root / "docs" / "workspaces.md"),
         ("Schema Reference", framework_root / "docs" / "yaml-schema-reference.md"),
         ("Object Types", framework_root / "docs" / "object-types.md"),

@@ -3,6 +3,36 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.36.3 - 2026-05-31
+
+Replaces the monolithic company onboarding tutorial with three role-targeted onboarding guides aligned to the standardized DRAFT roles (Engineering, Shared Services, Draft Admins), reducing cross-role cognitive load and giving each audience a focused time-to-first-action path.
+
+### Added
+
+- **Engineering Onboarding Guide**: New tutorial at `framework/docs/engineering-onboarding.md` covering ProductComponents, DataComponents, and SoftwareDeploymentPatterns for product development teams.
+- **Shared Services Onboarding Guide**: New tutorial at `framework/docs/shared-services-onboarding.md` covering TechnologyComponents, Hosts, RuntimeServices, DataStoreServices, and NetworkServices for platform/infrastructure teams.
+- **Draft Admins Onboarding Guide**: New tutorial at `framework/docs/draft-admins-onboarding.md` covering workspace bootstrapping, vocabularies, RequirementGroups, and ongoing governance for workspace administrators.
+
+### Changed
+
+- **Onboarding references repointed**: Updated `README.md`, `framework/docs/overview.md`, `framework/docs/workspaces.md`, `framework/draft-actions/review-framework.md`, `llms.txt`, `AI_INDEX.md`, `framework/tools/generate_ai_index.py`, and `draft_table/draftsman.py` to reference the three role-specific guides. Each guide links to the central Draft Operations Guide for ongoing operating policies.
+
+### Removed
+
+- **Monolithic onboarding tutorial**: Deleted `framework/docs/company-onboarding.md`, now superseded by the three role-targeted guides.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+- None. Documentation-only change.
+
+### Migration Notes
+
+No manual workspace migration is required.
+
 ## 0.36.2 - 2026-05-31
 
 Creates the comprehensive DRAFT Operations Guide, consolidating all operational commands, registry configurations, ownership routing, generated CODEOWNERS behaviors, issue creation formats, standard label patterns, and issue lifecycles.

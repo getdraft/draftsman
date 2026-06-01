@@ -88,7 +88,7 @@ Multiple scopes may be selected. Read files accordingly:
 | AI Instructions | `AGENTS.md`, `framework/docs/draftsman.md`, `framework/commands/*.md`, `framework/docs/setup-mode.md` |
 | RequirementGroups | `framework/configurations/requirement-groups/*.yaml`, `framework/schemas/requirement-group.schema.yaml`, `framework/docs/requirement-groups.md` |
 | Docs | `framework/docs/*.md` |
-| Onboarding | `framework/docs/setup-mode.md`, `framework/docs/company-onboarding.md`, `framework/docs/roles-and-layers.md`, `framework/docs/draftsman.md` |
+| Onboarding | `framework/docs/setup-mode.md`, `framework/docs/engineering-onboarding.md`, `framework/docs/shared-services-onboarding.md`, `framework/docs/draft-admins-onboarding.md`, `framework/docs/roles-and-layers.md`, `framework/docs/draftsman.md` |
 
 ## Step 4: Read and Analyse
 

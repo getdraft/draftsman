@@ -11,7 +11,9 @@ vendor a reviewed framework copy under `.draft/framework/`.
 - Draftsman role: framework/docs/draftsman.md
 - Draftsman setup mode: framework/docs/setup-mode.md
 - Draftsman AI guidance: framework/docs/draftsman-ai-configuration.md
-- Company onboarding tutorial: framework/docs/company-onboarding.md
+- Engineering onboarding tutorial: framework/docs/engineering-onboarding.md
+- Shared Services onboarding tutorial: framework/docs/shared-services-onboarding.md
+- Draft Admins onboarding tutorial: framework/docs/draft-admins-onboarding.md
 - Company vocabulary model: framework/docs/company-vocabulary.md
 - v1.0 roadmap: ROADMAP.md
 - Framework index: AI_INDEX.md

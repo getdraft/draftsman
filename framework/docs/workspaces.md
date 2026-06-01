@@ -1,7 +1,9 @@
 # Workspaces
 
-For the full adoption sequence from installation through first drafting
-sessions, see [Company Onboarding Tutorial](company-onboarding.md).
+For the full adoption sequence from installation through first drafting sessions, see the role-specific onboarding tutorials:
+* [Engineering Onboarding](engineering-onboarding.md)
+* [Shared Services Onboarding](shared-services-onboarding.md)
+* [Draft Admins Onboarding](draft-admins-onboarding.md)
 
 ## Operating Model
 
