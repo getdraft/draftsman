@@ -3,6 +3,41 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.41.3 - 2026-06-01
+
+Updates the generated browser's Acceptable Use view so users can drill from
+domains to capabilities to the TechnologyComponents mapped as acceptable-use
+implementations, with lifecycle status visible at the point of technology
+selection.
+
+### Added
+
+- Domain tile landing view for Acceptable Use.
+- Capability tile drilldown for each domain.
+- Capability detail view listing mapped TechnologyComponents, vendor/product
+  details, configuration labels, implementation lifecycle, and component
+  lifecycle.
+- Hash state for deep links to Acceptable Use domain and capability drilldowns.
+
+### Changed
+
+- Acceptable Use now opens on domain tiles instead of a domain-section table.
+- Generated browser shell assets refreshed for the updated Acceptable Use
+  navigation.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+- None. This is a browser/navigation enhancement over existing Domain,
+  Capability, TechnologyComponent, and capability implementation data.
+
+### Migration Notes
+
+No catalog migration is required.
+
 ## 0.41.2 - 2026-06-01
 
 Adds the upstream framework feedback path for company vendored workspaces so
