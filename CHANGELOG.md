@@ -3,6 +3,30 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.35.1 - 2026-05-31
+
+Adds the comprehensive specification for DRAFT's shared issue creation and ticketing workflow.
+
+### Added
+
+- **Ticketing & Issue Creation Workflow**: added `framework/docs/ticketing.md` defining the issue body contract (human-readable sections + machine-readable YAML metadata), the deterministic duplicate detection mechanism, fallback routing when ownership is missing, and the interactive issue generation UX.
+
+### Changed
+
+- **AI Index updated**: registered the ticketing guide in `AI_INDEX.md`.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+None. This release adds documentation only.
+
+### Migration Notes
+
+No migration is required.
+
 ## 0.35.0 - 2026-05-31
 
 Collapses the legacy `/draft-*` slash commands into a single `/draft` command
