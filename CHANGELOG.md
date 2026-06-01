@@ -7,6 +7,10 @@ notes, including patch releases.
 
 Traces the four framework-native network capabilities (Network Connectivity, Network Segmentation, Traffic Management, WAN Connectivity) from the base NetworkService RequirementGroup so they resolve to a requirement demand signal, then promotes every traced framework-native capability out of `incomplete` so DRAFT no longer ships capabilities at provisional maturity. Previously the validator warned that the network capabilities were untraceable, forcing vendored company workspaces to invent artificial company-specific requirements just to satisfy traceability.
 
+### Added
+
+- None.
+
 ### Fixed
 
 - **Untraced native network capabilities**: Added capability-keyed satisfaction mechanisms to the `network-function` requirement in `requirement-group-network-service.yaml`, referencing `01KSWVZSZ5-Q6HW` (Network Connectivity), `01KSWVZSZ5-1RTH` (Network Segmentation), `01KSWVZSZ5-M0FR` (Traffic Management), and `01KSWVZSZ5-26F1` (WAN Connectivity). A NetworkService can now declare its function either with the existing `networkFunction` field/architectureNote or by referencing a TechnologyComponent that provides one of the native network capabilities. `minimumSatisfactions` remains `1`, so existing NetworkService objects are unaffected.
