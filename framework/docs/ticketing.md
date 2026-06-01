@@ -151,7 +151,78 @@ draft:
 
 ---
 
-## 4. Deterministic Duplicate Detection
+## 4. DRAFT Role Semantics and Labeling
+
+DRAFT-created GitHub issues use a minimal, stable set of labels designed for high-level queue filtering and team routing. Richer metadata remains inside the machine-readable YAML block or optional project board fields.
+
+Every issue created by a DRAFT workflow must receive these exact default labels:
+
+* `draft` — Identifies the ticket as a DRAFT framework-generated issue.
+* `needs-triage` — Indicates that the ticket is open and requires action.
+* Exactly one **Draft Role** label (defined below).
+* Exactly one **Severity** label:
+  - `severity:blocking` (for blocker validation failures)
+  - `severity:normal` (for normal validation warnings or manual review items)
+* Exactly one conditional label (if applicable):
+  - `needs-routing` (applied only when the accountable GitHub team cannot be programmatically resolved).
+
+### Canonical DRAFT Roles
+
+Draft role labels identify the ownership layer/catalog tier, not the specific individual or team responsible for the work. There are three canonical roles:
+
+1. **role:engineering** — Product/application tier. Responsible for ProductComponents, DataComponents, and SoftwareDeploymentPatterns.
+2. **role:shared-services** — Shared infrastructure tier. Responsible for Hosts, RuntimeServices, DataStoreServices, NetworkServices, TechnologyComponents, and shared DecisionRecords.
+3. **role:draft-admins** — Governance tier. Responsible for workspace configuration (`.draft/workspace.yaml`), company vocabulary lists, active RequirementGroups, ReferenceArchitectures, framework updates, and catalog governance rules.
+
+> [!NOTE]
+> The concrete accountable team is separate from the DRAFT role. A single DRAFT role (like `role:engineering` or `role:shared-services`) will have many different concrete teams assigned (e.g., `billing-team`, `database-admins`, `platform-eng`).
+
+### Excluded Labels (Non-Goals)
+To prevent label sprawl and maintain clean repository filtering, the Draftsman **must not** apply default labels for:
+* Object type (`type:runtime_service`)
+* Artifact UIDs or file paths
+* Concrete team names (`team:billing`)
+* Source details (`source:validation`)
+
+---
+
+## 5. Accountable Team Resolution Rules
+
+When a validation failure or content review finding is detected, the Draftsman programmatically resolves the accountable GitHub team using a strict 3-tier priority sequence:
+
+```mermaid
+graph TD
+    A[Start Resolution] --> B{1. owner.team populated?}
+    B -- Yes --> C[Resolve team slug from company vocabulary]
+    B -- No --> D{2. CODEOWNERS match found?}
+    D -- Yes --> E[Extract GitHub team slug from path match]
+    D -- No --> F[3. Fallback to Draft Admins]
+    F --> G[Apply needs-routing label]
+```
+
+### Priority 1: Artifact Ownership
+The Draftsman checks the target artifact's metadata directly:
+* **Product / Infrastructure Layers:** Reads the `owner` (or `owner.team`) field inside the object's YAML file.
+* **Governance Layer:** Reads the `definitionOwner` or `owner` of the capability, RequirementGroup, or configuration patch.
+* **Resolution:** Cross-references the owner value against the workspace's company team vocabulary. If mapped to a GitHub team slug, that slug (e.g., `@my-org/core-infra`) is selected.
+
+### Priority 2: CODEOWNERS & Path Fallback
+If the artifact YAML has no assigned owner team, the Draftsman falls back to git-native ownership:
+1. Reads the workspace `.github/CODEOWNERS` file.
+2. Evaluates the artifact's file path (e.g. `catalog/engineering/core/product-api.yaml`) against the rules.
+3. Finds the most specific matching path rule (e.g. `catalog/engineering/core/   @my-org/core-devs`).
+4. Extracts that GitHub team slug as the accountable team.
+
+### Priority 3: Draft Admin Fallback (`needs-routing`)
+If the owner team cannot be resolved via artifact metadata or `.github/CODEOWNERS`, the Draftsman:
+1. Assigns the issue to the workspace's configured administration team (`@my-org/draft-admins`).
+2. Sets `needsRouting: true` and `routingReason: "owner.team missing or unresolved"` in the YAML metadata.
+3. Applies the conditional `needs-routing` GitHub label.
+4. Alerts the user and routes the ticket to the Draft Admins triage queue.
+
+---
+
+## 6. Deterministic Duplicate Detection
 
 To prevent spamming the repository with duplicate issues for the same recurring validator failures or review comments, the Draftsman computes a deterministic `duplicateKey`:
 
@@ -169,7 +240,7 @@ draft:<artifact.uid>:<source.kind>:<rule-id-or-feedback-hash>
 
 ---
 
-## 5. Interactive Issue UX Protocol
+## 7. Interactive Issue UX Protocol
 
 The ticketing workflow is an interactive sub-action embedded in both `/draft validate` and `/draft review`. The Draftsman must follow this 6-step protocol:
 
@@ -200,7 +271,7 @@ graph TD
 
 ---
 
-## 6. Falling Back When Ownership is Missing
+## 8. Falling Back When Ownership is Missing
 
 When an artifact fails validation because its `owner.team` is missing, invalid, or cannot be resolved, the Draftsman cannot route the issue to an engineering team. 
 
@@ -213,3 +284,28 @@ In this scenario, DRAFT enforces **admin-first fallback**:
 * **routingReason:** `"owner.team missing or unresolved"`
 
 The Draft Admins team will triage the issue, identify the correct team, and update the catalog or route the ticket manually. This ensures that gaps are kept visible and are governed directly by workspace administrators.
+
+---
+
+## 9. Customization and Downstream Overrides
+
+### Overriding Default Labels
+While DRAFT enforces a stable set of default labels, workspace administrators can configure overrides in `.draft/workspace.yaml` under a `ticketing` configuration block:
+
+```yaml
+ticketing:
+  labelOverrides:
+    draft: "draft-catalog"
+    needs-triage: "status:needs-triage"
+  additionalLabels:
+    - "env:production"
+```
+
+### Downstream Integrations (Jira, Slack, Projects)
+Downstream workflows (e.g., synchronizing issues to Jira, alerting Slack channels, or placing tickets on a GitHub Project board) should not be implemented directly in the Draftsman CLI. Instead, they should be driven by downstream GitHub Webhooks or Actions that parse the structured `## Draft Metadata` YAML block inside the issue body.
+
+For example, a GitHub Action can parse the YAML and automatically:
+* Move the issue to the GitHub Project column corresponding to `draft.routing.draftRole`.
+* Populate a custom dropdown field for `accountableTeam`.
+* Sync the issue to the Jira project mapped to the resolved `githubTeam` handle.
+
