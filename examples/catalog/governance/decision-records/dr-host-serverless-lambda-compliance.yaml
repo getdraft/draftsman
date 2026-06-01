@@ -1,0 +1,21 @@
+schemaVersion: '1.0'
+uid: 01KT1340H6-X3T5
+type: decision_record
+name: AWS Lambda Serverless Host — Security and Compliance decisions
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+linkedObject: 01KQQ4Q025-1XDE
+tags:
+- decision-record
+- example
+- compliance
+decisionRationale: >-
+  Records the security and compliance decisions for AWS Lambda Serverless Host addressing the authentication,
+  health_welfare_monitoring, log_management, patch_management, security_monitoring control requirement(s);
+  supporting detail is documented in this object's architectureNotes. This DecisionRecord is the committed
+  answer that satisfies the requirement(s).

@@ -2,10 +2,8 @@ schemaVersion: '1.0'
 uid: STCK00000F-HS0F
 type: host
 name: OpenStack Linux Service Host
-description: 'General-purpose self-managed Linux host standard for the OpenStack example control-plane, data, and utility
-  services. This models the reusable substrate pattern, not a single node role.
-
-  '
+description: |
+  General-purpose self-managed Linux host standard for the OpenStack example control-plane, data, and utility services. This models the reusable substrate pattern, not a single node role.
 version: 1.0.0
 catalogStatus: incomplete
 lifecycleStatus: existing-only
@@ -19,16 +17,30 @@ tags:
 operatingSystemComponent: 01KQQ4Q025-3HXA
 computePlatformComponent: STCK00000F-TC0F
 architectureNotes:
-  authentication: Centralized authentication via enterprise LDAP/Active Directory integrated with PAM. SSH key-based 
-    access only for service accounts; password auth disabled. Sudo access restricted to named platform-engineering team 
-    members via sudoers managed by Ansible.
-  health_welfare_monitoring: Host health monitored via Prometheus node_exporter. CPU, memory, disk, and network metrics 
-    collected and forwarded to the centralised monitoring platform. Alerting configured for resource exhaustion and node
-    unreachability.
-  security_monitoring: CrowdStrike Falcon agent deployed on all OpenStack Linux hosts for EDR and security event 
-    collection. Events forwarded to SIEM.
-  patch_management: OS and package patching managed by Ansible playbooks on a monthly cadence for routine patches. 
-    Emergency patches applied within 72 hours of critical CVE disclosure. Patch execution requires platform-engineering 
+  authentication: >-
+    Centralized authentication via enterprise LDAP/Active Directory integrated with PAM. SSH key-based
+    access only for service accounts; password auth disabled. Sudo access restricted to named platform-engineering
+    team members via sudoers managed by Ansible.
+  health_welfare_monitoring: >-
+    Host health monitored via Prometheus node_exporter. CPU, memory, disk, and network metrics collected
+    and forwarded to the centralised monitoring platform. Alerting configured for resource exhaustion
+    and node unreachability.
+  security_monitoring: >-
+    CrowdStrike Falcon agent deployed on all OpenStack Linux hosts for EDR and security event collection.
+    Events forwarded to SIEM.
+  patch_management: >-
+    OS and package patching managed by Ansible playbooks on a monthly cadence for routine patches. Emergency
+    patches applied within 72 hours of critical CVE disclosure. Patch execution requires platform-engineering
     approval and is performed during maintenance windows.
-  log_management: System logs (syslog, auth.log, kernel) and OpenStack service logs forwarded to the centralised log 
+  log_management: >-
+    System logs (syslog, auth.log, kernel) and OpenStack service logs forwarded to the centralised log
     aggregation platform via Fluentd.
+decisionRecords:
+- ref: 01KT1340H3-0YCF
+  key: authentication
+- ref: 01KT1340H3-0YCF
+  key: health_welfare_monitoring
+- ref: 01KT1340H3-0YCF
+  key: patch_management
+- ref: 01KT1340H3-0YCF
+  key: security_monitoring

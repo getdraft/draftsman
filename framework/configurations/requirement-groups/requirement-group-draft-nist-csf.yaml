@@ -2,9 +2,8 @@ schemaVersion: '1.0'
 uid: 01KQQ4Q027-69VY
 type: requirement_group
 name: NIST Cybersecurity Framework RequirementGroup
-description: 'Initial NIST Cybersecurity Framework (CSF) 2.0 requirement group scoped to the outcomes that can be meaningfully answered by DRAFT objects.
-
-  '
+description: |
+  Initial NIST Cybersecurity Framework (CSF) 2.0 requirement group scoped to the outcomes that can be meaningfully answered by DRAFT objects.
 version: 2.0.0
 catalogStatus: stub
 activation: workspace
@@ -40,13 +39,16 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-MHJM
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: authentication
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: authentication, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - relationship
   - technologyComponentConfiguration
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-MHJM
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: DE.CM
@@ -68,14 +70,17 @@ requirements:
   - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-D04B
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: log_management
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: log_management, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - technologyComponentConfiguration
   - relationship
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-D04B
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: DE.CM.health-welfare-monitoring
@@ -97,14 +102,17 @@ requirements:
   - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-98VD
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: health_welfare_monitoring
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: health_welfare_monitoring,
+      recording this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - technologyComponentConfiguration
   - relationship
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-98VD
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: DE.CM.security-monitoring
@@ -126,14 +134,17 @@ requirements:
   - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-JW52
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: security_monitoring
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: security_monitoring, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - technologyComponentConfiguration
   - relationship
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-JW52
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: PR.PS
@@ -152,13 +163,16 @@ requirements:
   - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-BH6E
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: patch_management
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: patch_management, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - relationship
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-BH6E
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: PR.AA.access-control-model
@@ -177,13 +191,16 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-4JR6
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: access_control_model
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - relationship
   - technologyComponentConfiguration
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-4JR6
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: PR.DS
@@ -196,18 +213,18 @@ requirements:
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:
-  - mechanism: field
-    key: architectureNotes.encryption_at_rest
+  - mechanism: decisionRecord
+    key: encryption_at_rest
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: encryption_at_rest, recording
+      this decision (or why it is not applicable).
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-H3B5
-  - mechanism: architectureNote
-    key: encryption_at_rest
   minimumSatisfactions: 1
   validAnswerTypes:
-  - field
+  - decisionRecord
   - technologyComponentConfiguration
-  - architectureNote
   relatedCapability: 01KQQ4Q026-H3B5
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: RC.RP
@@ -220,14 +237,14 @@ requirements:
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:
-  - mechanism: field
-    key: architectureNotes.backup_strategy
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: backup_strategy
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: backup_strategy, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
-  - field
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-7T2H
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: PR.AA.secrets-management
@@ -247,13 +264,16 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-DTJJ
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: secrets_management
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: secrets_management, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - relationship
   - technologyComponentConfiguration
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-DTJJ
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: PR.AA.product_component
@@ -268,13 +288,16 @@ requirements:
   canBeSatisfiedBy:
   - mechanism: relationship
   - mechanism: technologyComponentConfiguration
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: product_component
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: product_component, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - relationship
   - technologyComponentConfiguration
-  - architectureNote
+  - decisionRecord
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: PR.DS.data-classification
   externalControlId: PR.DS
@@ -286,14 +309,14 @@ requirements:
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:
-  - mechanism: field
-    key: architectureNotes.data_classification
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: data_classification
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: data_classification, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
-  - field
-  - architectureNote
+  - decisionRecord
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 - id: RC.RP.availability-requirement
   externalControlId: RC.RP
@@ -305,14 +328,14 @@ requirements:
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:
-  - mechanism: field
-    key: architectureNotes.availability_requirement
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: availability_requirement
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: availability_requirement,
+      recording this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
-  - field
-  - architectureNote
+  - decisionRecord
   externalReference: https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20
 lifecycleStatus: preferred
 tags:
@@ -320,6 +343,5 @@ tags:
 - nist
 - starter-pack
 - requirement-group
-notes: 'These entries are DRAFT applicability mappings for public NIST CSF 2.0 outcomes. They intentionally cover only the subset of CSF outcomes that can be answered by deployable objects, SoftwareDeploymentPatterns, and related architecture objects.
-
-  '
+notes: |
+  These entries are DRAFT applicability mappings for public NIST CSF 2.0 outcomes. They intentionally cover only the subset of CSF outcomes that can be answered by deployable objects, SoftwareDeploymentPatterns, and related architecture objects.

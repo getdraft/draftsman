@@ -1,0 +1,20 @@
+schemaVersion: '1.0'
+uid: 01KT1340EW-5H7Z
+type: decision_record
+name: OpenStack Ops Console — Security and Compliance decisions
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: 01KSE5V73Z-Q0A0
+tags:
+- decision-record
+- example
+- compliance
+decisionRationale: >-
+  Records the security and compliance decisions for OpenStack Ops Console addressing the product_component
+  control requirement(s); supporting detail is documented in this object's architectureNotes. This DecisionRecord
+  is the committed answer that satisfies the requirement(s).

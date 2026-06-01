@@ -3,6 +3,34 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.41.0 - 2026-06-01
+
+Completes the `architectureNote`→DecisionRecord cleanup by applying the rule to the opt-in compliance packs and removing `architectureNote` from the satisfaction allowlist entirely (closes #74). With every shipped RequirementGroup now free of note-based satisfiers, `architectureNote` is no longer an accepted answer type anywhere — it is purely a drafting annotation.
+
+### Added
+
+- **Compliance example DecisionRecords**: 26 "Security and Compliance decisions" DecisionRecords (one per affected object) satisfying the re-activated Security & Security Compliance pack in the examples catalog.
+
+### Changed
+
+- **Compliance packs converted**: `requirement-group-draft-nist-csf.yaml`, `requirement-group-draft-soc2.yaml`, `requirement-group-draft-tx-ramp.yaml`, and `requirement-group-draft-security-compliance.yaml` had their `architectureNote` satisfiers (53) and `field`-into-`architectureNotes` satisfiers (19) replaced with `decisionRecord` (keyed by the former note key); `validAnswerTypes` recomputed.
+- **`architectureNote` removed from `VALID_REQUIREMENT_ANSWER_TYPES`** — no RequirementGroup may declare it as a satisfaction mechanism.
+- **Compliance re-activated in the examples workspace** (`Security & Security Compliance`), and the OpenStack SDP's compliance satisfactions restored via DecisionRecords.
+- **Fixed a latent key-collision from #71**: runtime/data example objects referenced the Host requirement's `healthWelfareMonitoringApproach` key instead of the Service Behavior/DataStoreService `healthWelfareMonitoring` key; corrected so the health-welfare-monitoring requirement resolves under the re-activated compliance pack.
+- Regenerated `AI_INDEX.md` for the new DecisionRecords.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+- **Behavioral, for workspaces using the compliance packs.** A `complete` object that satisfied a compliance requirement via an inline note now requires a DecisionRecord (or concrete evidence). `stub`/`incomplete` objects only warn. No object model or schema field was removed.
+
+### Migration Notes
+
+Workspaces that activate the NIST CSF, SOC 2, TX-RAMP, or Security & Security Compliance packs should commit DecisionRecords for any control previously satisfied by an inline `architectureNote`, referencing them from the object's `decisionRecords` list with a `key` matching the control. `architectureNote` is no longer a valid `canBeSatisfiedBy`/`validAnswerTypes` mechanism in any RequirementGroup.
+
 ## 0.40.0 - 2026-06-01
 
 Enforces the DRAFT principle that an `architectureNote` is a drafting placeholder, not a requirement satisfaction (closes #71). A note lets a DraftingSession continue when information or the right decision-maker is not yet available, but the requirement is met only when the decision is committed as a DecisionRecord (or satisfied by concrete implementation). Because requirement gaps already warn for `stub`/`incomplete` objects and fail only for `complete` ones, drafting is unaffected — only completion now requires a real answer. Scope is the always-on core RequirementGroups; the opt-in compliance packs are deferred to a follow-up.

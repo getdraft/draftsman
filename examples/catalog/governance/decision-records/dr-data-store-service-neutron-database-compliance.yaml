@@ -1,0 +1,20 @@
+schemaVersion: '1.0'
+uid: 01KT1340G7-96A6
+type: decision_record
+name: Neutron Database — Security and Compliance decisions
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: STCK000004-DAR4
+tags:
+- decision-record
+- example
+- compliance
+decisionRationale: >-
+  Records the security and compliance decisions for Neutron Database addressing the access_control_model,
+  backup_strategy control requirement(s); supporting detail is documented in this object's architectureNotes.
+  This DecisionRecord is the committed answer that satisfies the requirement(s).

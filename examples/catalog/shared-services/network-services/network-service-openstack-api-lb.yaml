@@ -70,6 +70,8 @@ decisionRecords:
   key: recoverabilityModel
 - ref: 01KT11AQWX-A5ZZ
   key: scalabilityModel
+- ref: 01KT1340HB-QMCP
+  key: secrets_management
 internalComponents:
 - ref: 01KSF29JTP-8YRX
   role: >-

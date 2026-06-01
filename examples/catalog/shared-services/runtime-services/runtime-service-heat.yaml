@@ -64,7 +64,7 @@ decisionRecords:
 - ref: 01KT11AQXR-G520
   key: serviceAuthentication
 - ref: 01KT11AQXR-81H4
-  key: healthWelfareMonitoringApproach
+  key: healthWelfareMonitoring
 - ref: 01KT11AQXR-81H4
   key: serviceLogging
 - ref: 01KT11AQXS-VYQS
@@ -75,3 +75,5 @@ decisionRecords:
   key: recoverabilityModel
 - ref: 01KT11AQXS-VYQS
   key: scalabilityModel
+- ref: 01KT1340J3-DG67
+  key: secrets_management

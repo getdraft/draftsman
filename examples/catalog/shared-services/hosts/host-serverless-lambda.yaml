@@ -4,11 +4,8 @@ type: host
 category: host
 subtype: host
 name: AWS Lambda Serverless Host
-description: 'Serverless execution environment provided by AWS Lambda. The host is entirely AWS-managed and blackbox to the
-  organization. Function code is deployed as a ProductComponent. No OS management, no agent installation, and no patching responsibility
-  exist at this layer.
-
-  '
+description: |
+  Serverless execution environment provided by AWS Lambda. The host is entirely AWS-managed and blackbox to the organization. Function code is deployed as a ProductComponent. No OS management, no agent installation, and no patching responsibility exist at this layer.
 version: 1.0.0
 catalogStatus: incomplete
 lifecycleStatus: preferred
@@ -23,24 +20,42 @@ architectureNotes:
   loggingApproach: Function and platform logs emitted to CloudWatch Logs
   securityMonitoringApproach: AWS-native monitoring and audit integration for the managed runtime
   patchManagementApproach: Runtime patching is handled by AWS as part of the managed platform
-  authentication: IAM-based invocation and execution roles managed by AWS. No SSH or interactive login; access to the 
-    execution environment is not possible. Administrative access to the Lambda configuration is governed by AWS IAM 
-    policies.
-  log_management: Function logs and platform runtime logs are emitted to Amazon CloudWatch Logs. Log retention and 
-    export are configured per function.
-  health_welfare_monitoring: AWS Lambda provides built-in invocation metrics (duration, errors, throttles, concurrency) 
-    via Amazon CloudWatch Metrics. No agent installation is possible; observability is entirely provider-managed.
-  security_monitoring: AWS CloudTrail captures all Lambda API calls for audit. AWS-native security event collection 
-    covers the managed runtime boundary.
-  patch_management: Runtime patching is fully managed by AWS as part of the Lambda managed platform. Organization has no
-    patching responsibility at this layer; runtime version selection is the only control available.
+  authentication: >-
+    IAM-based invocation and execution roles managed by AWS. No SSH or interactive login; access to the
+    execution environment is not possible. Administrative access to the Lambda configuration is governed
+    by AWS IAM policies.
+  log_management: >-
+    Function logs and platform runtime logs are emitted to Amazon CloudWatch Logs. Log retention and export
+    are configured per function.
+  health_welfare_monitoring: >-
+    AWS Lambda provides built-in invocation metrics (duration, errors, throttles, concurrency) via Amazon
+    CloudWatch Metrics. No agent installation is possible; observability is entirely provider-managed.
+  security_monitoring: >-
+    AWS CloudTrail captures all Lambda API calls for audit. AWS-native security event collection covers
+    the managed runtime boundary.
+  patch_management: >-
+    Runtime patching is fully managed by AWS as part of the Lambda managed platform. Organization has
+    no patching responsibility at this layer; runtime version selection is the only control available.
   internalComponentRationales:
-    01KQQ4Q025-T7B7: The AWS Lambda Runtime is modeled as the managed execution component that makes the serverless host
+    01KQQ4Q025-T7B7: >-
+      The AWS Lambda Runtime is modeled as the managed execution component that makes the serverless host
       understandable even though standard host requirements do not apply.
   relationshipRationales:
-    AWS Lambda Service: The AWS Lambda control plane is modeled to show the managed service boundary for the blackbox 
-      serverless host.
+    AWS Lambda Service: >-
+      The AWS Lambda control plane is modeled to show the managed service boundary for the blackbox serverless
+      host.
 internalComponents:
 - ref: 01KQQ4Q025-T7B7
   role: managed-runtime
   notes: AWS-managed serverless execution environment. Blackbox host.
+decisionRecords:
+- ref: 01KT1340H6-X3T5
+  key: authentication
+- ref: 01KT1340H6-X3T5
+  key: health_welfare_monitoring
+- ref: 01KT1340H6-X3T5
+  key: log_management
+- ref: 01KT1340H6-X3T5
+  key: patch_management
+- ref: 01KT1340H6-X3T5
+  key: security_monitoring

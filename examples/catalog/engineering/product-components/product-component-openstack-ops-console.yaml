@@ -2,9 +2,10 @@ schemaVersion: '1.0'
 uid: 01KSE5V73Z-Q0A0
 type: product_component
 name: OpenStack Ops Console
-description: Internal web-based operations console for platform engineering teams. Surfaces real-time service health, 
-  quota utilization, and incident triage workflows across the OpenStack control plane. Deployed alongside Horizon on the
-  same runtime service.
+description: >-
+  Internal web-based operations console for platform engineering teams. Surfaces real-time service health,
+  quota utilization, and incident triage workflows across the OpenStack control plane. Deployed alongside
+  Horizon on the same runtime service.
 version: 2.4.1
 catalogStatus: complete
 lifecycleStatus: preferred
@@ -51,7 +52,11 @@ environmentConfiguration:
   required: true
   sensitive: false
 architectureNotes:
-  product_component: Application secrets (OPS_CONSOLE_SECRET_KEY, SAML credentials) are injected at deploy time from the
-    platform secret store. No secrets present in source code or container images. See decision record 01KSE5V73Z-DRSC.
+  product_component: >-
+    Application secrets (OPS_CONSOLE_SECRET_KEY, SAML credentials) are injected at deploy time from the
+    platform secret store. No secrets present in source code or container images. See decision record
+    01KSE5V73Z-DRSC.
 decisionRecords:
 - ref: 01KSE5V73Z-DRSC
+- ref: 01KT1340EW-5H7Z
+  key: product_component
