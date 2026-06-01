@@ -1,1 +1,0 @@
-../../framework/commands/draft-triage.md

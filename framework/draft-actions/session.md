@@ -4,7 +4,7 @@ argument-hint: "[system name or topic]"
 allowed-tools: [Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion]
 ---
 
-# /draft-session Command
+# /draft session
 
 Start or resume a DraftingSession. A DraftingSession captures in-progress
 architecture work, interviews the user for missing facts, and produces valid

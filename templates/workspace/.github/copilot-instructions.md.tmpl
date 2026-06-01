@@ -8,11 +8,12 @@ When the user asks to set up DRAFT, start onboarding, or make the Drafting
 Table useful, enter setup mode from
 [../.draft/framework/docs/setup-mode.md](../.draft/framework/docs/setup-mode.md).
 
-When the user invokes a DRAFT command listed in
-`../.draft/framework/commands/`, including `/draftsman`, `/draft-session`, or
-`/draft-validate`, read the corresponding command file and follow its
-instructions exactly. These are command phrases handled through the workspace
-bootstrap unless the AI tool provides native slash-command registration.
+When the user types `/draft <verb>` (for example `/draft author`,
+`/draft session`, or `/draft validate`), read
+`../.draft/framework/commands/draft.md`, resolve the verb to its action file
+under `../.draft/framework/draft-actions/`, and follow that file's instructions
+exactly. These are command phrases handled through the workspace bootstrap unless
+the AI tool provides native slash-command registration.
 
 Read `../.draft/framework/**` as the approved vendored framework copy, but do
 not edit `../.draft/framework/**` or `../.draft/framework.lock` during normal

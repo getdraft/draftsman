@@ -4,7 +4,7 @@ argument-hint: ""
 allowed-tools: [Bash, Read, Write, Edit]
 ---
 
-# /draft-updateframework Command
+# /draft update
 
 > **Draft Admins only.** This command modifies the vendored framework copy at
 > `.draft/framework/` and updates `.draft/framework.lock`. It must not be run
@@ -192,18 +192,14 @@ git branch -D draft/framework-update-A.B.C
 
 After the PR is merged, remind Draft Admins:
 
-> After merging, any engineers using Claude Code should re-run the symlink
-> setup to pick up any new commands shipped with A.B.C:
+> After merging, any engineer using Claude Code who does not yet have the
+> `/draft` command linked should run the one-time setup:
 >
 > ```bash
-> ln -sf ../../.draft/framework/commands/draft-help.md .claude/commands/draft-help.md
-> ln -sf ../../.draft/framework/commands/draftsman.md .claude/commands/draftsman.md
-> ln -sf ../../.draft/framework/commands/draft-session.md .claude/commands/draft-session.md
-> ln -sf ../../.draft/framework/commands/draft-validate.md .claude/commands/draft-validate.md
-> ln -sf ../../.draft/framework/commands/draft-updateframework.md .claude/commands/draft-updateframework.md
-> ln -sf ../../.draft/framework/commands/draft-triage.md .claude/commands/draft-triage.md
-> ln -sf ../../.draft/framework/commands/draft-review.md .claude/commands/draft-review.md
+> mkdir -p .claude/commands
+> ln -sf ../../.draft/framework/commands/draft.md .claude/commands/draft.md
 > ```
 >
-> Review the CHANGELOG for any new setup steps or configuration changes
-> introduced in A.B.C.
+> The single `/draft` symlink tracks the vendored framework copy, so new verbs
+> shipped in A.B.C are picked up without re-linking. Review the CHANGELOG for any
+> new setup steps or configuration changes introduced in A.B.C.

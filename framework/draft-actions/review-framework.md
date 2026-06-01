@@ -4,7 +4,7 @@ argument-hint: "[scope: full | schemas | ai-instructions | requirement-groups | 
 allowed-tools: [Read, Glob, Grep, Bash, Write]
 ---
 
-# /draft-review Command
+# /draft review-framework
 
 > **Framework maintainers only.** This command is for the DRAFT framework
 > authors and maintainers. It is not intended for company workspace users or

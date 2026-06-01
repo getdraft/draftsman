@@ -198,9 +198,9 @@ Question:
 DRAFT is AI-agnostic. The Draftsman role can be fulfilled by any capable AI
 assistant. This step wires DRAFT's built-in workflow commands into whichever
 IDE the team uses. Some tools register native slash commands, while others use
-project instructions that route typed command phrases such as `/draftsman`,
-`/draft-session`, `/draft-validate`, and `/draft-updateframework` to the
-matching command files.
+project instructions that route the typed command phrase `/draft <verb>`
+(for example `/draft author`, `/draft session`, `/draft validate`,
+`/draft update`) to the `/draft` command file.
 
 Ask the team which AI IDE(s) they use and follow the relevant sub-steps. More
 than one can be configured; they do not conflict.
@@ -211,38 +211,22 @@ Run once from the workspace root:
 
 ```bash
 mkdir -p .claude/commands
-ln -sf ../../.draft/framework/commands/draft-help.md .claude/commands/draft-help.md
-ln -sf ../../.draft/framework/commands/draftsman.md .claude/commands/draftsman.md
-ln -sf ../../.draft/framework/commands/draft-session.md .claude/commands/draft-session.md
-ln -sf ../../.draft/framework/commands/draft-validate.md .claude/commands/draft-validate.md
-ln -sf ../../.draft/framework/commands/draft-updateframework.md .claude/commands/draft-updateframework.md
-ln -sf ../../.draft/framework/commands/draft-triage.md .claude/commands/draft-triage.md
-ln -sf ../../.draft/framework/commands/draft-review.md .claude/commands/draft-review.md
+ln -sf ../../.draft/framework/commands/draft.md .claude/commands/draft.md
 ```
 
 On Windows (PowerShell as Administrator, or with Developer Mode enabled):
 
 ```powershell
 New-Item -ItemType Directory -Force -Path .claude\commands
-New-Item -ItemType SymbolicLink -Path .claude\commands\draft-help.md `
-  -Target ..\..\draft\framework\commands\draft-help.md -Force
-New-Item -ItemType SymbolicLink -Path .claude\commands\draftsman.md `
-  -Target ..\..\draft\framework\commands\draftsman.md -Force
-New-Item -ItemType SymbolicLink -Path .claude\commands\draft-session.md `
-  -Target ..\..\draft\framework\commands\draft-session.md -Force
-New-Item -ItemType SymbolicLink -Path .claude\commands\draft-validate.md `
-  -Target ..\..\draft\framework\commands\draft-validate.md -Force
-New-Item -ItemType SymbolicLink -Path .claude\commands\draft-updateframework.md `
-  -Target ..\..\draft\framework\commands\draft-updateframework.md -Force
-New-Item -ItemType SymbolicLink -Path .claude\commands\draft-triage.md `
-  -Target ..\..\draft\framework\commands\draft-triage.md -Force
-New-Item -ItemType SymbolicLink -Path .claude\commands\draft-review.md `
-  -Target ..\..\draft\framework\commands\draft-review.md -Force
+New-Item -ItemType SymbolicLink -Path .claude\commands\draft.md `
+  -Target ..\..\draft\framework\commands\draft.md -Force
 ```
 
-The symlinks follow the vendored framework copy, so updating the framework
-automatically updates command behavior without re-linking. Re-run this step
-if a framework update adds new commands.
+A single `/draft` command is linked; its verbs (`author`, `session`,
+`validate`, `review`, `triage`, `update`) dispatch to the matching action files
+under `.draft/framework/draft-actions/`. The symlink follows the vendored
+framework copy, so updating the framework automatically updates command
+behavior — and adds any new verbs — without re-linking.
 
 #### 7b. Cursor
 
@@ -273,9 +257,10 @@ Draftsman activation already included. If the file exists and was edited
 manually, add the following block:
 
 ```markdown
-When the user invokes `/draftsman`, `/draft-session`, or `/draft-validate`,
-read the corresponding file from `.draft/framework/commands/` and follow its
-instructions exactly.
+When the user invokes `/draft <verb>` (for example `/draft author`,
+`/draft session`, or `/draft validate`), read
+`.draft/framework/commands/draft.md`, resolve the verb to its action file under
+`.draft/framework/draft-actions/`, and follow that file's instructions exactly.
 ```
 
 #### 7e. Gemini CLI and OpenAI Codex
@@ -285,9 +270,11 @@ command invocation already included. No additional DRAFT setup is required for
 these tools.
 
 For OpenAI Codex and other generic tools, `AGENTS.md` is a prompt-level router:
-typing `/draftsman`, `/draft-session`, or `/draft-validate` in chat tells the
-assistant to read the matching file under `.draft/framework/commands/`. It does
-not create native slash-command menu entries or autocomplete by itself.
+typing `/draft <verb>` (for example `/draft author`, `/draft session`, or
+`/draft validate`) in chat tells the assistant to read
+`.draft/framework/commands/draft.md` and follow the matching action file under
+`.draft/framework/draft-actions/`. It does not create native slash-command menu
+entries or autocomplete by itself.
 
 #### 7f. Other / generic AI tools
 
