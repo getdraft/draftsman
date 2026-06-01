@@ -45,8 +45,13 @@ Fetch the latest tags from the upstream source without modifying the workspace:
 git ls-remote --tags <framework.source>
 ```
 
-Parse the tag list to find the highest semantic version tag. Compare to
-`framework.version` from the lock file.
+Parse the tag list to find the highest semantic version tag. Then check upstream
+`main` and read `draft-framework.yaml`. If the highest visible tag is missing or
+older than the version declared by `main`, treat `main` as the target framework
+ref and use the manifest version from `draft-framework.yaml`.
+
+Compare the selected target version and commit to `framework.version` and
+`framework.syncedCommit` from the lock file.
 
 If **no newer version is available**:
 
@@ -78,11 +83,11 @@ Confirm the branch was created before continuing.
 
 ## Step 5: Replace the Vendored Framework
 
-Download the new framework version and replace the vendored copy:
+Download the selected framework ref and replace the vendored copy:
 
 ```bash
 # Fetch the new version into a temporary location
-git clone --depth 1 --branch vA.B.C <framework.source> /tmp/draft-framework-update
+git clone --depth 1 --branch <target-ref> <framework.source> /tmp/draft-framework-update
 
 # Replace the vendored copy
 rm -rf .draft/framework
@@ -93,10 +98,10 @@ cp -r /tmp/draft-framework-update/templates .draft/framework/../templates 2>/dev
 rm -rf /tmp/draft-framework-update
 ```
 
-Resolve the exact commit SHA of the new version:
+Resolve the exact commit SHA of the selected ref:
 
 ```bash
-git ls-remote <framework.source> refs/tags/vA.B.C
+git -C /tmp/draft-framework-update rev-parse HEAD
 ```
 
 ## Step 6: Update the Lock File
@@ -108,11 +113,13 @@ framework:
   source: <unchanged>
   vendoredPath: .draft/framework
   updatePolicy: explicit
-  syncedRef: vA.B.C
+  syncedRef: <target-ref>
   version: A.B.C
-  syncedTag: vA.B.C
   syncedCommit: <resolved-sha>
 ```
+
+Only include `syncedTag` when `<target-ref>` is a version tag such as
+`vA.B.C`; omit it when the updater selected `main`.
 
 ## Step 7: Run Validation
 

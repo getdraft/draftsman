@@ -246,7 +246,8 @@ the intent is to maintain an internal fork of the framework.
 
 New workspaces also include an optional GitHub Actions workflow at
 `.github/workflows/draft-framework-update.yml`. The workflow checks for a newer
-DRAFT Framework version tag, opens an update branch, refreshes
+visible DRAFT Framework version tag and falls back to upstream `main` when tags
+are missing or stale, opens an update branch, refreshes
 `.draft/framework/`, updates `.draft/framework.lock`, and validates the
 workspace.
 

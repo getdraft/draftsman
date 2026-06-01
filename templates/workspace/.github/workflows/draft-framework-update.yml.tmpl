@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       target_ref:
-        description: "Optional DRAFT tag, branch, or commit. Leave blank for the latest version tag."
+        description: "Optional DRAFT tag, branch, or commit. Leave blank for the latest framework version."
         required: false
         type: string
 
@@ -99,6 +99,23 @@ jobs:
                   return "main"
               return sorted(candidates)[-1][1]
 
+          def latest_target_ref() -> str:
+              tag = latest_tag()
+              if tag == "main":
+                  return "main"
+              parsed_tag = semver(tag)
+              main_repo = clone_framework("main")
+              try:
+                  manifest = read_yaml(main_repo / "draft-framework.yaml")
+                  main_version = str(manifest.get("version") or "")
+                  parsed_main = semver(main_version)
+              finally:
+                  shutil.rmtree(main_repo, ignore_errors=True)
+              if parsed_main and parsed_tag and parsed_main > parsed_tag:
+                  print(f"Latest visible tag is {tag}, but main reports DRAFT Framework {main_version}; using main.")
+                  return "main"
+              return tag
+
           def clone_framework(target_ref: str) -> Path:
               temp_dir = Path(tempfile.mkdtemp(prefix="draft-framework-"))
               run(["git", "clone", "--no-checkout", source, str(temp_dir)])
@@ -173,11 +190,13 @@ jobs:
                   text = text.replace(f"{{{{{key}}}}}", value)
               return text
 
-          def release_url_for(source_url: str, version: str) -> str:
+          def release_url_for(source_url: str, version: str, target_ref: str) -> str:
               cleaned = source_url.strip().removesuffix(".git")
               if cleaned.startswith("git@github.com:"):
                   cleaned = "https://github.com/" + cleaned.split(":", 1)[1]
               if cleaned.startswith("https://github.com/"):
+                  if target_ref == "main":
+                      return f"{cleaned}/blob/main/CHANGELOG.md"
                   return f"{cleaned}/releases/tag/v{version}"
               return cleaned
 
@@ -247,7 +266,7 @@ jobs:
 
           current_version = str(framework_lock.get("version") or "")
           current_commit = str(framework_lock.get("syncedCommit") or "")
-          target_ref = target_ref_input or latest_tag()
+          target_ref = target_ref_input or latest_target_ref()
           source_repo = clone_framework(target_ref)
           target_commit = run(["git", "rev-parse", "HEAD"], cwd=source_repo).stdout.strip()
           manifest = read_yaml(source_repo / "draft-framework.yaml")
@@ -298,7 +317,7 @@ jobs:
               lock_data["framework"]["syncedTag"] = target_ref
           lock_path.write_text(yaml.safe_dump(lock_data, sort_keys=False), encoding="utf-8")
 
-          release_url = release_url_for(source, target_version)
+          release_url = release_url_for(source, target_version, target_ref)
           with output_path.open("a", encoding="utf-8") as output:
               output.write("update_needed=true\n")
               output.write(f"branch={branch_name}\n")
