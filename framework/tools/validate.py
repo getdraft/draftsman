@@ -3268,7 +3268,7 @@ def validate_service_group_refs(
     )
 
 
-SYSTEM_CONTAINER_TYPES = STANDARD_TYPES
+SYSTEM_CONTAINER_TYPES = STANDARD_TYPES | {"system"}
 
 
 def validate_system(
