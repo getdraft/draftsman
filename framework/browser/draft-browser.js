@@ -3959,7 +3959,7 @@ function acceptableUseTechnologyCardMarkup(row) {
         <div>
           ${technology
             ? `<span class="ard-link acceptable-use-tech-name" data-object-link="${escapeHtml(technology.id)}">${escapeHtml(technology.name)}</span>`
-            : `<span class="acceptable-use-tech-name">${escapeHtml(implementation.ref || 'Unknown Technology Component')}</span>`}
+            : `<span class="acceptable-use-tech-name unresolved">Unresolved Component Reference</span>`}
           <div class="object-id">${escapeHtml(technology?.id || implementation.ref || '')}</div>
         </div>
         <div class="acceptable-use-tech-statuses">
