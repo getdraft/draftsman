@@ -38,6 +38,11 @@ Review the catalog content authored in this workspace for:
    GitHub issue. The exact issue-creation workflow is defined in issue #51
    (shared Draft issue creation) and is not yet implemented — until then, list
    the findings for the user to act on.
+5. If a finding is framework-owned rather than company-owned — for example a
+   missing reusable RequirementGroup pattern, schema gap, unclear command
+   behavior, or validator defect — follow **Upstream Framework Feedback
+   Routing** from the Draftsman role. Recommend a public upstream bug report or
+   feature request, ask before creating it, and sanitize company details.
 
 ## Notes
 

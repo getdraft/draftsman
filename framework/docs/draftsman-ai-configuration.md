@@ -44,6 +44,24 @@ Company architecture updates should go under `catalog/` or company-owned
 during normal Draftsman work; those files change only through an explicit
 framework refresh/update workflow.
 
+## Upstream Framework Feedback
+
+If a company workspace exposes a likely bug or reusable feature request in the
+vendored DRAFT framework, the assistant should identify it as framework-owned
+and recommend submitting an upstream report to `getdraft/draftsman`. Examples
+include validator defects, unclear `/draft` command behavior, missing reusable
+templates, schema gaps, setup/update workflow bugs, or AI instructions that
+cause repeatable Draftsman failure.
+
+The assistant must ask before creating a public issue. Use the public
+**DRAFT framework bug** template for broken behavior and the **DRAFT framework
+feature request** template for reusable enhancements. Include framework version,
+source/ref/commit, the command or workflow used, observed behavior, expected
+behavior, and sanitized reproduction steps. Do not include confidential company
+architecture details, secrets, customer data, or proprietary diagrams unless the
+user explicitly approves a sanitized public summary. If GitHub access is not
+available, prepare the issue body for manual submission.
+
 ## Vocabulary And Pull Requests
 
 When a declared vocabulary list covers a question, the Draftsman should offer

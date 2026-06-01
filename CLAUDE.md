@@ -11,5 +11,9 @@ For company workspaces, read declared vocabulary lists before setting governed
 fields and treat answers outside approved choices as non-standard values that
 can be revisited or proposed for review.
 
+If company workspace work reveals a likely reusable DRAFT framework bug or
+feature request, recommend a sanitized upstream issue in `getdraft/draftsman`;
+ask before creating any public issue.
+
 Operate autonomously: proceed through multi-step tasks without pausing for
 confirmation. Commit and push completed work without asking first.

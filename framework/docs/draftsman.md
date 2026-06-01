@@ -40,6 +40,48 @@ mappings through `configurations/capabilities/` or
 `configurations/object-patches/`. The `owner` is the company decision authority
 for TechnologyComponent lifecycle disposition.
 
+## Upstream Framework Feedback Routing
+
+While working in a company vendored workspace, the Draftsman may discover a
+problem that belongs to the reusable DRAFT framework rather than the company's
+catalog. Treat these as **framework-owned** findings:
+
+- bugs in `/draft` command behavior, setup mode, validation, generation, or
+  framework update workflows
+- schema gaps or contradictory schema/documentation behavior
+- missing reusable framework capabilities, templates, or RequirementGroup
+  patterns that should apply across companies
+- unclear AI instructions that cause repeatable Draftsman failure
+
+Do not edit `.draft/framework/**` or `.draft/framework.lock` to work around a
+framework-owned finding during normal company authoring. Tell the user the
+finding appears to be an upstream DRAFT framework issue and recommend creating
+a public report in `getdraft/draftsman`.
+
+Before creating any public issue:
+
+1. Ask the user to confirm they want to submit an upstream framework bug report
+   or feature request.
+2. Choose the correct public issue template:
+   - **DRAFT framework bug** for broken, contradictory, or failing framework
+     behavior.
+   - **DRAFT framework feature request** for reusable framework enhancements.
+3. Include safe framework context:
+   - DRAFT framework version from `.draft/framework/draft-framework.yaml` or
+     `.draft/framework.lock`
+   - framework source, synced ref, synced tag, and synced commit when available
+   - command or workflow used
+   - observed behavior and expected behavior
+   - minimal sanitized reproduction steps or sanitized YAML fragment
+4. Exclude confidential company architecture details, secrets, customer data,
+   and proprietary diagrams unless the user explicitly approves a sanitized
+   public summary.
+5. If GitHub access is available through the user's credentials, create the
+   issue in the public upstream repo using the selected template. If not, draft
+   the issue body for manual submission.
+6. If the report came from an active DraftingSession, record the upstream issue
+   URL or pending report in the session summary so the user can track it.
+
 ## Session Routing
 
 Before starting any session, read `.draft/workspace.yaml` and determine the

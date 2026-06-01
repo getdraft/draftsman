@@ -22,6 +22,10 @@ Before doing anything else, confirm the user understands this action:
 > workspace?
 
 If the user says no or is unsure, stop and direct them to Draft Admins.
+If this command exposes a framework-owned update workflow defect, follow
+**Upstream Framework Feedback Routing** from the Draftsman role before creating
+any public bug report. Include the current `.draft/framework.lock` source,
+ref, commit, and sanitized command output.
 
 ## Step 2: Read Current State
 

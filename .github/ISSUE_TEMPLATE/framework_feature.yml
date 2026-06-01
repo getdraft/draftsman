@@ -1,0 +1,69 @@
+name: DRAFT framework feature request
+description: Request a public DRAFT framework feature, command, schema, template, or tooling change.
+title: "Feature: "
+labels:
+  - enhancement
+  - draftsman
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for public DRAFT framework feature requests. Describe the reusable framework need, not private company architecture details.
+  - type: input
+    id: framework-version
+    attributes:
+      label: DRAFT framework version
+      description: From `draft-framework.yaml` or `.draft/framework.lock`, if this was discovered from a vendored workspace.
+      placeholder: "0.x.y"
+    validations:
+      required: false
+  - type: input
+    id: source-ref
+    attributes:
+      label: Framework source, ref, and commit
+      description: Include `.draft/framework.lock` source/ref/commit when available.
+      placeholder: "https://github.com/getdraft/draftsman.git, main, abc1234"
+    validations:
+      required: false
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What reusable framework problem or adoption friction should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: requested-change
+    attributes:
+      label: Requested change
+      description: What should DRAFT add or change?
+    validations:
+      required: true
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Company workspace use case
+      description: Describe the use case in sanitized terms. Avoid confidential systems, customers, data, or diagrams.
+    validations:
+      required: false
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: What would make this complete?
+      placeholder: |
+        - ...
+        - ...
+    validations:
+      required: false
+  - type: checkboxes
+    id: disclosure
+    attributes:
+      label: Public disclosure check
+      options:
+        - label: I have described this as a reusable DRAFT framework need, not private company catalog content.
+          required: true
+        - label: I have removed or sanitized company-confidential architecture details.
+          required: true
+        - label: I have not included secrets, credentials, customer data, or proprietary diagrams.
+          required: true

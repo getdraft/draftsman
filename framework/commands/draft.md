@@ -39,6 +39,12 @@ vendored under `.draft/framework/draft-actions/` (company workspace).
 Once you have matched the verb, **read that action file and follow it exactly**,
 treating `REST` as the action's `$ARGUMENTS`.
 
+If any verb reveals a likely reusable framework bug or feature request while
+running in a vendored company workspace, follow **Upstream Framework Feedback
+Routing** in `draftsman.md`: explain the framework-owned finding, recommend an
+upstream report, ask before creating a public issue, use the appropriate public
+issue template, and sanitize company details.
+
 If `VERB` does not match any row, tell the user it is not a known verb and then
 **Show the verb list**.
 
