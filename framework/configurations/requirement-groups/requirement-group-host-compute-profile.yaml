@@ -17,9 +17,9 @@ requirements:
   description: The host must declare its compute type or instance class when the compute profile is not captured by the compute-platform requirement alone.
   rationale: Compute type captures the general-purpose, memory-optimized, GPU, or bare-metal classification of the host's compute resources, which affects workload placement and capacity planning.
   canBeSatisfiedBy:
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: computeType
-    example: A documented statement of the compute type such as general-purpose, memory-optimized, GPU, or bare-metal.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: computeType, recording this decision (or why it is not applicable).'
   - mechanism: field
     key: computeType
     example: A field declaration of the compute type on the host object.
@@ -28,7 +28,7 @@ requirements:
   requirementMode: mandatory
   naAllowed: true
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - field
 lifecycleStatus: candidate
 tags:

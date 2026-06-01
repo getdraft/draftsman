@@ -44,15 +44,15 @@ requirements:
   - mechanism: field
     key: runtimeRequirement
     example: Node 20, Python 3.12, Java 17, .NET 8, or Go 1.22
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: runtimeRequirement
-    example: A documented decision when the runtime requirement cannot be expressed as a single version string.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: runtimeRequirement, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
   - field
-  - architectureNote
+  - decisionRecord
 - id: classification
   description: The ProductComponent must declare its component classification.
   rationale: Classification drives how the component is composed into a RuntimeService and what operational patterns apply to it.

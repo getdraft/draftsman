@@ -2,12 +2,8 @@ schemaVersion: '1.0'
 uid: STCK000007-RS07
 type: runtime_service
 name: Heat Orchestration Service
-description: 'Self-managed deployment of OpenStack Heat providing infrastructure orchestration via the Heat Orchestration
-  Template (HOT) format. Runs heat-api (native REST), heat-api-cfn (AWS CloudFormation-compatible), and heat-engine subcomponents.
-  Heat creates and manages stacks of OpenStack resources, coordinating Nova, Neutron, Cinder, Glance, and other services.
-  Uses RabbitMQ for engine-to-worker messaging and MariaDB for stack state persistence.
-
-  '
+description: |
+  Self-managed deployment of OpenStack Heat providing infrastructure orchestration via the Heat Orchestration Template (HOT) format. Runs heat-api (native REST), heat-api-cfn (AWS CloudFormation-compatible), and heat-engine subcomponents. Heat creates and manages stacks of OpenStack resources, coordinating Nova, Neutron, Cinder, Glance, and other services. Uses RabbitMQ for engine-to-worker messaging and MariaDB for stack state persistence.
 version: 1.0.0
 catalogStatus: incomplete
 lifecycleStatus: existing-only
@@ -24,30 +20,58 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000008-TC08
 architectureNotes:
-  serviceAuthentication: All Heat API requests are authenticated via Keystone token validation. Heat uses trust tokens 
-    to allow the heat-engine to perform deferred operations on behalf of users without holding long-lived user 
+  serviceAuthentication: >-
+    All Heat API requests are authenticated via Keystone token validation. Heat uses trust tokens to allow
+    the heat-engine to perform deferred operations on behalf of users without holding long-lived user
     credentials.
-  secretsManagement: Database credentials and RabbitMQ credentials are stored in heat.conf managed by configuration 
-    management tooling. Heat trust tokens are issued by Keystone and stored in the Heat database.
-  serviceLogging: Heat emits logs to /var/log/heat/. Logs are shipped to the centralised log aggregation platform.
-  healthWelfareMonitoring: heat-api health is verified via HTTP endpoint polling. Stack operation queue depth in 
-    RabbitMQ is monitored. heat-engine worker health is monitored via process checks.
-  availabilityModel: heat-api runs active-active across multiple controller nodes behind a load balancer. heat-engine 
-    runs on one or more controller nodes with RabbitMQ providing work distribution.
-  scalabilityModel: heat-api scales horizontally. heat-engine scales by adding additional engine workers which consume 
+  secretsManagement: >-
+    Database credentials and RabbitMQ credentials are stored in heat.conf managed by configuration management
+    tooling. Heat trust tokens are issued by Keystone and stored in the Heat database.
+  serviceLogging: >-
+    Heat emits logs to /var/log/heat/. Logs are shipped to the centralised log aggregation platform.
+  healthWelfareMonitoring: >-
+    heat-api health is verified via HTTP endpoint polling. Stack operation queue depth in RabbitMQ is
+    monitored. heat-engine worker health is monitored via process checks.
+  availabilityModel: >-
+    heat-api runs active-active across multiple controller nodes behind a load balancer. heat-engine runs
+    on one or more controller nodes with RabbitMQ providing work distribution.
+  scalabilityModel: >-
+    heat-api scales horizontally. heat-engine scales by adding additional engine workers which consume
     from the shared RabbitMQ queue.
-  recoverabilityModel: API and engine processes are recovered via systemd restart. Stack state is recovered from MariaDB
+  recoverabilityModel: >-
+    API and engine processes are recovered via systemd restart. Stack state is recovered from MariaDB
     Galera. In-progress stack operations may need manual remediation after engine failure.
-  failureDomain: Failure of Heat prevents stack creation and update operations. Existing provisioned resources 
-    (instances, networks, volumes) continue to operate independently of Heat availability.
+  failureDomain: >-
+    Failure of Heat prevents stack creation and update operations. Existing provisioned resources (instances,
+    networks, volumes) continue to operate independently of Heat availability.
   relationshipRationales:
-    Keystone Identity: Heat requires Keystone for API authentication and for issuing trust tokens used by heat-engine 
-      for deferred operations. Modeled as a critical authentication dependency.
-    RabbitMQ Message Broker: Heat uses RabbitMQ for communication between heat-api and heat-engine workers. Modeled as a
-      critical messaging dependency.
-    Heat Database: Heat persists all stack definitions, resource state, and operation history to MariaDB (shared 
-      OpenStack DB). Modeled as a critical stateful dependency.
+    Keystone Identity: >-
+      Heat requires Keystone for API authentication and for issuing trust tokens used by heat-engine for
+      deferred operations. Modeled as a critical authentication dependency.
+    RabbitMQ Message Broker: >-
+      Heat uses RabbitMQ for communication between heat-api and heat-engine workers. Modeled as a critical
+      messaging dependency.
+    Heat Database: >-
+      Heat persists all stack definitions, resource state, and operation history to MariaDB (shared OpenStack
+      DB). Modeled as a critical stateful dependency.
   secrets_management: Database credentials and RabbitMQ credentials are stored in heat.
 internalComponents:
 - ref: STCK000008-TC08
   role: Core orchestration service providing heat-api, heat-api-cfn, and heat-engine.
+decisionRecords:
+- ref: 01KT11AQXR-G520
+  key: secretsManagement
+- ref: 01KT11AQXR-G520
+  key: serviceAuthentication
+- ref: 01KT11AQXR-81H4
+  key: healthWelfareMonitoringApproach
+- ref: 01KT11AQXR-81H4
+  key: serviceLogging
+- ref: 01KT11AQXS-VYQS
+  key: availabilityModel
+- ref: 01KT11AQXS-VYQS
+  key: failureDomain
+- ref: 01KT11AQXS-VYQS
+  key: recoverabilityModel
+- ref: 01KT11AQXS-VYQS
+  key: scalabilityModel

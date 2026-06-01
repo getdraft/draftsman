@@ -1,0 +1,20 @@
+schemaVersion: '1.0'
+uid: 01KT11AQVM-2QCT
+type: decision_record
+name: Keystone Database — Observability and Logging
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: STCK000002-DAR2
+tags:
+- decision-record
+- example
+- observability
+decisionRationale: >-
+  Records the observability and logging decisions for Keystone Database. These decisions address the healthWelfareMonitoringApproach,
+  serviceLogging requirement(s); supporting detail is documented in this object's architectureNotes. This
+  DecisionRecord is the committed answer that satisfies the requirement(s).

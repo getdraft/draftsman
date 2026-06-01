@@ -546,6 +546,26 @@ class ValidationTests(unittest.TestCase):
             extra_note = "lifecycleRationale: Test approved host fixture."
         all_notes = base_notes + "\n" + extra_note
         decision_lines = textwrap.indent(all_notes, "  ")
+        decision_dir = workspace / "catalog" / "decision-records"
+        decision_dir.mkdir(parents=True, exist_ok=True)
+        (decision_dir / "dr-test-host-operations.yaml").write_text(
+            textwrap.dedent(
+                """\
+                schemaVersion: "1.0"
+                uid: 01KQS0TF60-DR01
+                type: decision_record
+                name: Test Complete Host — operations decisions
+                category: decision
+                status: accepted
+                catalogStatus: complete
+                lifecycleStatus: preferred
+                decisionRationale: >-
+                  Authentication is federated via the enterprise identity platform, logs are forwarded to
+                  the centralized logging platform, and host telemetry is shipped to the monitoring platform.
+                """
+            ),
+            encoding="utf-8",
+        )
         (host_dir / "host-test-complete.yaml").write_text(
             f"""schemaVersion: "1.0"
 uid: 01KQS0TF60-XYZ1
@@ -569,6 +589,13 @@ internalComponents:
     role: agent
 architectureNotes:
 {decision_lines}
+decisionRecords:
+  - ref: 01KQS0TF60-DR01
+    key: authenticationApproach
+  - ref: 01KQS0TF60-DR01
+    key: loggingApproach
+  - ref: 01KQS0TF60-DR01
+    key: healthWelfareMonitoringApproach
 requirementGroups:
   - 01KQQ4Q027-THYN
 """,
@@ -660,6 +687,28 @@ requirementGroups:
         self.assertTrue(result.ok, result.stdout + result.stderr)
         self.assertNotIn("does not directly satisfy any applicable requirement", result.stdout)
 
+    def _write_data_service_decision_record(self, decision_dir: Path, uid: str = "01KQS0TF61-DR01") -> None:
+        decision_dir.mkdir(parents=True, exist_ok=True)
+        (decision_dir / f"dr-{uid}.yaml").write_text(
+            textwrap.dedent(
+                f"""
+                schemaVersion: "1.0"
+                uid: {uid}
+                type: decision_record
+                name: Test Data Service — operations decisions
+                category: decision
+                status: accepted
+                catalogStatus: complete
+                lifecycleStatus: preferred
+                decisionRationale: >-
+                  Records the authentication, secrets, logging, monitoring, resilience, backup, encryption,
+                  and access-control decisions for the Test Data Service.
+                """
+            ).strip()
+            + "\n",
+            encoding="utf-8",
+        )
+
     def test_primary_technology_component_internal_component_validates_without_rationale(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
@@ -738,11 +787,43 @@ requirementGroups:
                         atRest: encrypted storage
                       accessControl:
                         model: Role-based access.
+                    decisionRecords:
+                      - ref: 01KQS0TF61-DR01
+                        key: serviceAuthentication
+                      - ref: 01KQS0TF61-DR01
+                        key: secretsManagement
+                      - ref: 01KQS0TF61-DR01
+                        key: serviceLogging
+                      - ref: 01KQS0TF61-DR01
+                        key: healthWelfareMonitoring
+                      - ref: 01KQS0TF61-DR01
+                        key: availabilityModel
+                      - ref: 01KQS0TF61-DR01
+                        key: scalabilityModel
+                      - ref: 01KQS0TF61-DR01
+                        key: recoverabilityModel
+                      - ref: 01KQS0TF61-DR01
+                        key: failureDomain
+                      - ref: 01KQS0TF61-DR01
+                        key: backup.strategy
+                      - ref: 01KQS0TF61-DR01
+                        key: backup.platform
+                      - ref: 01KQS0TF61-DR01
+                        key: backup.rto
+                      - ref: 01KQS0TF61-DR01
+                        key: backup.rpo
+                      - ref: 01KQS0TF61-DR01
+                        key: ha.mechanism
+                      - ref: 01KQS0TF61-DR01
+                        key: encryption.atRest
+                      - ref: 01KQS0TF61-DR01
+                        key: accessControl.model
                     """
                 ).strip()
                 + "\n",
                 encoding="utf-8",
             )
+            self._write_data_service_decision_record(data_dir.parent / "decision-records")
 
             result = validate_workspace(workspace)
 
@@ -829,10 +910,42 @@ requirementGroups:
                         atRest: encrypted storage
                       accessControl:
                         model: Role-based access.
+                    decisionRecords:
+                      - ref: 01KQS0TF62-DR01
+                        key: serviceAuthentication
+                      - ref: 01KQS0TF62-DR01
+                        key: secretsManagement
+                      - ref: 01KQS0TF62-DR01
+                        key: serviceLogging
+                      - ref: 01KQS0TF62-DR01
+                        key: healthWelfareMonitoring
+                      - ref: 01KQS0TF62-DR01
+                        key: availabilityModel
+                      - ref: 01KQS0TF62-DR01
+                        key: scalabilityModel
+                      - ref: 01KQS0TF62-DR01
+                        key: recoverabilityModel
+                      - ref: 01KQS0TF62-DR01
+                        key: failureDomain
+                      - ref: 01KQS0TF62-DR01
+                        key: backup.strategy
+                      - ref: 01KQS0TF62-DR01
+                        key: backup.rto
+                      - ref: 01KQS0TF62-DR01
+                        key: backup.rpo
+                      - ref: 01KQS0TF62-DR01
+                        key: ha.mechanism
+                      - ref: 01KQS0TF62-DR01
+                        key: encryption.atRest
+                      - ref: 01KQS0TF62-DR01
+                        key: accessControl.model
                     """
                 ).strip()
                 + "\n",
                 encoding="utf-8",
+            )
+            self._write_data_service_decision_record(
+                data_dir.parent / "decision-records", uid="01KQS0TF62-DR01"
             )
             (rel_dir / "rel-backup-vault.yaml").write_text(
                 textwrap.dedent(

@@ -58,8 +58,11 @@ VALID_REQUIREMENT_ANSWER_TYPES = {
     "deploymentConfiguration",
     "relationship",
     "internalComponent",
-    "architectureNote",
     "decisionRecord",
+    # architectureNote remains a recognized answer type so existing/deferred RequirementGroups
+    # parse, but it no longer SATISFIES a requirement (see mechanism_satisfied) — a note is a
+    # drafting placeholder; the decision must be committed as a DecisionRecord.
+    "architectureNote",
     "field",
 }
 VALID_REQUIREMENT_MODES = {"mandatory", "conditional"}
@@ -923,7 +926,10 @@ def mechanism_description(mechanism: dict[str, Any]) -> str:
     if mechanism_type == "architectureNote":
         return f"architectureNote({mechanism.get('key', 'unknown')})"
     if mechanism_type == "decisionRecord":
-        capability = mechanism.get("criteria", {}).get("capability") or mechanism.get("criteria", {}).get("concern", "unknown")
+        key = mechanism.get("key")
+        if key:
+            return f"decisionRecord(key={key})"
+        capability = mechanism.get("criteria", {}).get("capability", "any")
         return f"decisionRecord(capability={capability})"
     return str(mechanism_type)
 
@@ -1157,12 +1163,10 @@ def mechanism_satisfied(obj: dict[str, Any], mechanism: dict[str, Any], catalog_
                     return True
         return False
     if mechanism_type == "architectureNote":
-        key = mechanism.get("key", "")
-        decisions = obj.get("architectureNotes", {})
-        if isinstance(decisions, dict):
-            value = get_nested_value(decisions, key)
-            if is_non_empty(value):
-                return True
+        # An architectureNote is a drafting placeholder, not a satisfaction. It lets a
+        # DraftingSession continue when information or the right decision-maker is not yet
+        # available, but it never resolves a requirement — the decision must be committed
+        # as a DecisionRecord (or the requirement satisfied by concrete implementation).
         return False
     if mechanism_type == "deploymentConfiguration":
         quality = mechanism.get("criteria", {}).get("quality")
@@ -1178,7 +1182,8 @@ def mechanism_satisfied(obj: dict[str, Any], mechanism: dict[str, Any], catalog_
         return False
     if mechanism_type == "decisionRecord":
         criteria = mechanism.get("criteria", {}) if isinstance(mechanism.get("criteria"), dict) else {}
-        capability = criteria.get("capability") or criteria.get("concern")
+        capability = criteria.get("capability")
+        key = mechanism.get("key")
         records = obj.get("decisionRecords", [])
         if not isinstance(records, list):
             return False
@@ -1189,11 +1194,18 @@ def mechanism_satisfied(obj: dict[str, Any], mechanism: dict[str, Any], catalog_
             target = catalog_by_id.get(str(ref)) if is_non_empty(ref) else None
             if not target or target.get("type") != "decision_record":
                 continue
-            if not capability or capability == "any":
-                return True
-            entry_capability = entry.get("capability") or entry.get("concern")
-            if entry_capability == capability:
-                return True
+            # capability-scoped decision (service capability requirements)
+            if capability and capability != "any":
+                if (entry.get("capability") or entry.get("concern")) == capability:
+                    return True
+                continue
+            # key-scoped decision (topic requirements that previously used a note key)
+            if key:
+                if (entry.get("key") or entry.get("concern")) == key:
+                    return True
+                continue
+            # no discriminator — any committed DecisionRecord satisfies
+            return True
         return False
     return False
 
@@ -2688,9 +2700,8 @@ def implementation_resolves(
         key = implementation.get("key")
         return is_non_empty(key) and is_non_empty(get_nested_value(obj, str(key)))
     if mechanism == "architectureNote":
-        key = implementation.get("key")
-        decisions = obj.get("architectureNotes", {})
-        return is_non_empty(key) and isinstance(decisions, dict) and is_non_empty(get_nested_value(decisions, str(key)))
+        # architectureNote is a drafting placeholder and does not resolve a requirement.
+        return False
     if mechanism == "relationship":
         return find_relationship_for_implementation(obj, implementation, catalog_by_id)
     if mechanism == "deploymentConfiguration":

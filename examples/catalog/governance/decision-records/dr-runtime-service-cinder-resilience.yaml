@@ -1,0 +1,21 @@
+schemaVersion: '1.0'
+uid: 01KT11AQXD-TNJD
+type: decision_record
+name: Cinder Block Storage Service — Resilience and Availability
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: STCK000005-RS05
+tags:
+- decision-record
+- example
+- resilience
+decisionRationale: >-
+  Records the resilience and availability decisions for Cinder Block Storage Service. These decisions
+  address the availabilityModel, failureDomain, recoverabilityModel, scalabilityModel requirement(s);
+  supporting detail is documented in this object's architectureNotes. This DecisionRecord is the committed
+  answer that satisfies the requirement(s).

@@ -2,12 +2,8 @@ schemaVersion: '1.0'
 uid: STCK000009-RS09
 type: runtime_service
 name: Ironic Bare Metal Service
-description: 'Self-managed deployment of OpenStack Ironic providing bare metal provisioning as a service. Runs ironic-api
-  and ironic-conductor subcomponents. Ironic enrolls physical hardware using IPMI, Redfish, iLO, or DRAC interfaces, integrates
-  with Nova to expose bare metal nodes through the standard compute API, and uses RabbitMQ for conductor messaging. Enables
-  operators to provision operating systems directly onto physical machines using standard OpenStack workflows.
-
-  '
+description: |
+  Self-managed deployment of OpenStack Ironic providing bare metal provisioning as a service. Runs ironic-api and ironic-conductor subcomponents. Ironic enrolls physical hardware using IPMI, Redfish, iLO, or DRAC interfaces, integrates with Nova to expose bare metal nodes through the standard compute API, and uses RabbitMQ for conductor messaging. Enables operators to provision operating systems directly onto physical machines using standard OpenStack workflows.
 version: 1.0.0
 catalogStatus: incomplete
 lifecycleStatus: existing-only
@@ -24,33 +20,62 @@ deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000A-TC0A
 architectureNotes:
-  serviceAuthentication: All Ironic API requests are authenticated via Keystone token validation. Ironic service account
-    is registered in the Keystone service catalog. Node IPMI/BMC credentials are stored encrypted in the Ironic 
-    database.
-  secretsManagement: Database credentials, RabbitMQ credentials, and BMC credentials are stored in ironic.conf and the 
+  serviceAuthentication: >-
+    All Ironic API requests are authenticated via Keystone token validation. Ironic service account is
+    registered in the Keystone service catalog. Node IPMI/BMC credentials are stored encrypted in the
+    Ironic database.
+  secretsManagement: >-
+    Database credentials, RabbitMQ credentials, and BMC credentials are stored in ironic.conf and the
     Ironic database. BMC passwords are encrypted at rest using a configured encryption key.
-  serviceLogging: Ironic emits logs to /var/log/ironic/. Logs are shipped to the centralised log aggregation platform. 
+  serviceLogging: >-
+    Ironic emits logs to /var/log/ironic/. Logs are shipped to the centralised log aggregation platform.
     Conductor provisioning logs are critical for troubleshooting bare metal deployments.
-  healthWelfareMonitoring: ironic-api health is verified via HTTP endpoint polling. ironic-conductor health is monitored
-    via heartbeat mechanism. Individual node power state is polled from BMC interfaces.
-  availabilityModel: ironic-api runs active-active behind a load balancer. ironic-conductor supports multiple conductor 
+  healthWelfareMonitoring: >-
+    ironic-api health is verified via HTTP endpoint polling. ironic-conductor health is monitored via
+    heartbeat mechanism. Individual node power state is polled from BMC interfaces.
+  availabilityModel: >-
+    ironic-api runs active-active behind a load balancer. ironic-conductor supports multiple conductor
     instances with node affinity for HA. Loss of a conductor triggers node takeover by remaining conductors.
-  scalabilityModel: ironic-api scales horizontally. ironic-conductor scales by adding additional conductor instances, 
+  scalabilityModel: >-
+    ironic-api scales horizontally. ironic-conductor scales by adding additional conductor instances,
     each managing a subset of enrolled nodes.
-  recoverabilityModel: API and conductor processes recovered via systemd restart. Node state is recovered from MariaDB. 
-    In-progress provisioning operations may need to be retried after conductor failure.
-  failureDomain: Failure of Ironic prevents bare metal node provisioning and deprovisioning. Already-provisioned nodes 
-    continue to operate independently. Nova scheduling for bare metal flavors is suspended during Ironic outage.
+  recoverabilityModel: >-
+    API and conductor processes recovered via systemd restart. Node state is recovered from MariaDB. In-progress
+    provisioning operations may need to be retried after conductor failure.
+  failureDomain: >-
+    Failure of Ironic prevents bare metal node provisioning and deprovisioning. Already-provisioned nodes
+    continue to operate independently. Nova scheduling for bare metal flavors is suspended during Ironic
+    outage.
   relationshipRationales:
-    Keystone Identity: All Ironic API requests require Keystone token validation. Modeled to show the authentication 
-      dependency.
-    RabbitMQ Message Broker: Ironic uses RabbitMQ for conductor RPC messaging. Modeled as a critical distributed 
-      messaging dependency.
-    Ironic Database: Ironic persists node enrollment data, provisioning state, and driver configuration to MariaDB. 
-      Modeled as a critical stateful dependency.
-    Nova Compute Service: Ironic integrates with Nova to expose bare metal nodes as compute resources. Modeled to show 
-      the nova-conductor integration.
+    Keystone Identity: >-
+      All Ironic API requests require Keystone token validation. Modeled to show the authentication dependency.
+    RabbitMQ Message Broker: >-
+      Ironic uses RabbitMQ for conductor RPC messaging. Modeled as a critical distributed messaging dependency.
+    Ironic Database: >-
+      Ironic persists node enrollment data, provisioning state, and driver configuration to MariaDB. Modeled
+      as a critical stateful dependency.
+    Nova Compute Service: >-
+      Ironic integrates with Nova to expose bare metal nodes as compute resources. Modeled to show the
+      nova-conductor integration.
   secrets_management: Database credentials, RabbitMQ credentials, and BMC credentials are stored in ironic.
 internalComponents:
 - ref: STCK00000A-TC0A
-  role: Core bare metal service providing ironic-api and ironic-conductor with multi-driver BMC support.
+  role: >-
+    Core bare metal service providing ironic-api and ironic-conductor with multi-driver BMC support.
+decisionRecords:
+- ref: 01KT11AQY5-C04Q
+  key: secretsManagement
+- ref: 01KT11AQY5-C04Q
+  key: serviceAuthentication
+- ref: 01KT11AQY5-32MF
+  key: healthWelfareMonitoringApproach
+- ref: 01KT11AQY5-32MF
+  key: serviceLogging
+- ref: 01KT11AQY6-1YA5
+  key: availabilityModel
+- ref: 01KT11AQY6-1YA5
+  key: failureDomain
+- ref: 01KT11AQY6-1YA5
+  key: recoverabilityModel
+- ref: 01KT11AQY6-1YA5
+  key: scalabilityModel

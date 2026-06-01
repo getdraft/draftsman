@@ -1,0 +1,20 @@
+schemaVersion: '1.0'
+uid: 01KT11AQZJ-QYX8
+type: decision_record
+name: Trove Database Service — Identity, Access, and Secrets
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: STCK00000A-RS0A
+tags:
+- decision-record
+- example
+- identity
+decisionRationale: >-
+  Records the identity, access, and secrets decisions for Trove Database Service. These decisions address
+  the secretsManagement, serviceAuthentication requirement(s); supporting detail is documented in this
+  object's architectureNotes. This DecisionRecord is the committed answer that satisfies the requirement(s).

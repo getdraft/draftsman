@@ -1,0 +1,21 @@
+schemaVersion: '1.0'
+uid: 01KT11AQZ0-V8KX
+type: decision_record
+name: RabbitMQ Message Broker Service — Resilience and Availability
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: STCK00000D-RS0D
+tags:
+- decision-record
+- example
+- resilience
+decisionRationale: >-
+  Records the resilience and availability decisions for RabbitMQ Message Broker Service. These decisions
+  address the availabilityModel, failureDomain, recoverabilityModel, scalabilityModel requirement(s);
+  supporting detail is documented in this object's architectureNotes. This DecisionRecord is the committed
+  answer that satisfies the requirement(s).

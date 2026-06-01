@@ -39,13 +39,13 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-MHJM
     example: A named appliance configuration defines the authentication model.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: authenticationAccessModel
-    example: Administrator access is federated through SAML SSO; service access uses appliance-managed mTLS.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: authenticationAccessModel, recording this decision (or why it is not applicable).'
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - relationship
   - technologyComponentConfiguration
   minimumSatisfactions: 1
@@ -61,13 +61,13 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-D04B
     example: A named appliance configuration enables audit export or log forwarding.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: logAuditVisibility
-    example: Administrative actions are exported to CloudTrail and retained in the enterprise SIEM.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: logAuditVisibility, recording this decision (or why it is not applicable).'
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - relationship
   - technologyComponentConfiguration
   minimumSatisfactions: 1
@@ -83,13 +83,13 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-98VD
     example: A named appliance configuration enables health checks, status endpoints, or metrics export.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: healthStatusVisibility
-    example: Health is observed through managed service status, target health checks, and alert rules.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: healthStatusVisibility, recording this decision (or why it is not applicable).'
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - relationship
   - technologyComponentConfiguration
   minimumSatisfactions: 1
@@ -108,13 +108,13 @@ requirements:
     criteria:
       capability: 01KQQ4Q026-BH6E
     example: A named appliance configuration defines update windows or managed update policy.
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: patchUpdateModel
-    example: Firmware and hidden host updates are vendor-managed; the adopter controls only maintenance windows.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: patchUpdateModel, recording this decision (or why it is not applicable).'
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   - relationship
   - field
   - technologyComponentConfiguration
@@ -123,13 +123,13 @@ requirements:
   description: "What is the resilience model of this appliance \u2014 is it inherently highly available, single instance, or clustered?\n"
   rationale: A blackbox appliance still needs an explicit answer for the resilience posture the adopter is depending on.
   canBeSatisfiedBy:
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: resilienceModel
-    example: Inherently highly available within the managed service control plane
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: resilienceModel, recording this decision (or why it is not applicable).'
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   minimumSatisfactions: 1
 - id: configurable-surface
   description: 'What configuration surface does the organization control on this appliance?
@@ -137,25 +137,25 @@ requirements:
     '
   rationale: The object should capture what the adopter can actually configure rather than pretending the hidden host is visible.
   canBeSatisfiedBy:
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: configurableSurface
-    example: Listener rules, target groups, and TLS certificates are customer-managed
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: configurableSurface, recording this decision (or why it is not applicable).'
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   minimumSatisfactions: 1
 - id: failure-domain
   description: What failure domain does this appliance introduce?
   rationale: Blackbox shared components can create broad impact boundaries that must be explicit.
   canBeSatisfiedBy:
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: failureDomain
-    example: Shared dependency for all traffic entering the protected application path
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: failureDomain, recording this decision (or why it is not applicable).'
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   minimumSatisfactions: 1
 - id: compliance-posture
   description: What compliance certifications does this appliance carry?

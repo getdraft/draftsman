@@ -1,0 +1,20 @@
+schemaVersion: '1.0'
+uid: 01KT11AQZC-5TA3
+type: decision_record
+name: Swift Proxy Service — Observability and Logging
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: STCK00000C-RS0C
+tags:
+- decision-record
+- example
+- observability
+decisionRationale: >-
+  Records the observability and logging decisions for Swift Proxy Service. These decisions address the
+  healthWelfareMonitoringApproach, serviceLogging requirement(s); supporting detail is documented in this
+  object's architectureNotes. This DecisionRecord is the committed answer that satisfies the requirement(s).

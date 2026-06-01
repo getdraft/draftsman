@@ -31,13 +31,13 @@ requirements:
   description: "What is the resilience model of this service \u2014 is it inherently highly available within the region, or does it require multi-region config?\n"
   rationale: Adopters must know the managed availability baseline.
   canBeSatisfiedBy:
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: resilienceModel
-    example: Inherently multi-AZ within the AWS region.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: resilienceModel, recording this decision (or why it is not applicable).'
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   minimumSatisfactions: 1
 - id: authentication-model
   description: How is access to this service authenticated?
@@ -55,25 +55,25 @@ requirements:
   description: What configuration surface does the organization control?
   rationale: Captures the customer-managed portion of the managed platform.
   canBeSatisfiedBy:
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: configurableSurface
-    example: Bucket policies, encryption settings, and lifecycle rules.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: configurableSurface, recording this decision (or why it is not applicable).'
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   minimumSatisfactions: 1
 - id: failure-domain
   description: What is the failure domain of this platform dependency?
   rationale: Required to understand the blast radius of a vendor-managed outage.
   canBeSatisfiedBy:
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: failureDomain
-    example: Scoped to the AWS region and account.
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: failureDomain, recording this decision (or why it is not applicable).'
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
-  - architectureNote
+  - decisionRecord
   minimumSatisfactions: 1
 lifecycleStatus: preferred
 tags:

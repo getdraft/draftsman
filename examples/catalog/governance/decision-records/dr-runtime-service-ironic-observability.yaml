@@ -1,0 +1,20 @@
+schemaVersion: '1.0'
+uid: 01KT11AQY5-32MF
+type: decision_record
+name: Ironic Bare Metal Service — Observability and Logging
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: STCK000009-RS09
+tags:
+- decision-record
+- example
+- observability
+decisionRationale: >-
+  Records the observability and logging decisions for Ironic Bare Metal Service. These decisions address
+  the healthWelfareMonitoringApproach, serviceLogging requirement(s); supporting detail is documented
+  in this object's architectureNotes. This DecisionRecord is the committed answer that satisfies the requirement(s).

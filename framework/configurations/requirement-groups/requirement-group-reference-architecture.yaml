@@ -2,7 +2,8 @@ schemaVersion: '1.0'
 uid: 01KQQ4Q027-SS2K
 type: requirement_group
 name: ReferenceArchitecture RequirementGroup
-description: Structured checklist of required questions and answers used to define a complete and correct ReferenceArchitecture.
+description: >-
+  Structured checklist of required questions and answers used to define a complete and correct ReferenceArchitecture.
 version: 1.0.0
 catalogStatus: complete
 authority:
@@ -14,24 +15,33 @@ appliesTo:
 - reference_architecture
 requirements:
 - id: pattern-type
-  description: What supported deployment pattern does this ReferenceArchitecture define for application teams?
-  rationale: The ReferenceArchitecture must clearly signal when an application should adopt this deployment pattern to achieve the intended non-functional outcomes.
+  description: >-
+    What supported deployment pattern does this ReferenceArchitecture define for application teams?
+  rationale: >-
+    The ReferenceArchitecture must clearly signal when an application should adopt this deployment pattern
+    to achieve the intended non-functional outcomes.
   canBeSatisfiedBy:
   - mechanism: field
     key: patternType
     example: multi-tier
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: patternType
-    example: multi-tier
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: patternType, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
   - field
-  - architectureNote
+  - decisionRecord
 - id: service-groups
-  description: How are the required services clustered into service groups and diagram tiers to realize this deployment pattern?
-  rationale: The ReferenceArchitecture should guide downstream SoftwareDeploymentPatterns and application teams with the same service-group and tier structure they will use in a real deployment.
+  description: >-
+    How are the required services clustered into service groups and diagram tiers to realize this deployment
+    pattern?
+  rationale: >-
+    The ReferenceArchitecture should guide downstream SoftwareDeploymentPatterns and application teams
+    with the same service-group and tier structure they will use in a real deployment.
   canBeSatisfiedBy:
   - mechanism: field
     key: serviceGroups
@@ -39,7 +49,9 @@ requirements:
   - mechanism: internalComponent
     criteria:
       role: service-group
-    example: Frontend UI service group with presentation-tier deployable objects and Data Services service group with data-tier deployable objects
+    example: >-
+      Frontend UI service group with presentation-tier deployable objects and Data Services service group
+      with data-tier deployable objects
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
@@ -47,21 +59,27 @@ requirements:
   - field
   - internalComponent
 - id: deployment-qualities
-  description: What non-functional deployment qualities is this ReferenceArchitecture intended to deliver, and what pattern-level decisions make that possible?
-  rationale: A ReferenceArchitecture exists to guide application teams toward supported deployment choices that meet availability, recoverability, security, and similar non-functional requirements.
+  description: >-
+    What non-functional deployment qualities is this ReferenceArchitecture intended to deliver, and what
+    pattern-level decisions make that possible?
+  rationale: >-
+    A ReferenceArchitecture exists to guide application teams toward supported deployment choices that
+    meet availability, recoverability, security, and similar non-functional requirements.
   canBeSatisfiedBy:
   - mechanism: field
-    key: architectureNotes
-    example: all tiers HA, autoscaling on web tier, AlwaysOn on data tier
-  - mechanism: architectureNote
-    key: architectureNotes
-    example: all tiers HA, autoscaling on web tier, AlwaysOn on data tier
+    key: applicableDefinitionChecklist
+    example: A populated applicableDefinitionChecklist enumerating the pattern's definitional rules and the qualities they deliver.
+  - mechanism: decisionRecord
+    key: deploymentQualities
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: deploymentQualities,
+      recording the non-functional deployment qualities and the pattern-level decisions that deliver them.
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
   - field
-  - architectureNote
+  - decisionRecord
 lifecycleStatus: preferred
 tags:
 - reference-architecture

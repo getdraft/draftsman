@@ -1,0 +1,21 @@
+schemaVersion: '1.0'
+uid: 01KT11AQWP-H4E9
+type: decision_record
+name: Swift Storage Cluster — Resilience and Availability
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: STCK000006-DAR6
+tags:
+- decision-record
+- example
+- resilience
+decisionRationale: >-
+  Records the resilience and availability decisions for Swift Storage Cluster. These decisions address
+  the availabilityModel, failureDomain, ha.mechanism, recoverabilityModel, scalabilityModel requirement(s);
+  supporting detail is documented in this object's architectureNotes. This DecisionRecord is the committed
+  answer that satisfies the requirement(s).

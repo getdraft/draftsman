@@ -1,0 +1,21 @@
+schemaVersion: '1.0'
+uid: 01KT11AQVB-JJ2A
+type: decision_record
+name: Glance Database — Data Protection and Recovery
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: STCK000003-DAR3
+tags:
+- decision-record
+- example
+- data-protection
+decisionRationale: >-
+  Records the data protection and recovery decisions for Glance Database. These decisions address the
+  backup.platform, backup.rpo, backup.rto, backup.strategy, encryption.atRest requirement(s); supporting
+  detail is documented in this object's architectureNotes. This DecisionRecord is the committed answer
+  that satisfies the requirement(s).

@@ -1,0 +1,21 @@
+schemaVersion: '1.0'
+uid: 01KT11AQYJ-T3PZ
+type: decision_record
+name: Neutron Networking Service — Resilience and Availability
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: STCK000004-RS04
+tags:
+- decision-record
+- example
+- resilience
+decisionRationale: >-
+  Records the resilience and availability decisions for Neutron Networking Service. These decisions address
+  the availabilityModel, failureDomain, recoverabilityModel, scalabilityModel requirement(s); supporting
+  detail is documented in this object's architectureNotes. This DecisionRecord is the committed answer
+  that satisfies the requirement(s).
