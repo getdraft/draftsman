@@ -1,1 +1,0 @@
-../../framework/commands/draftsman.md

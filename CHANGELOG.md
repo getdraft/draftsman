@@ -3,6 +3,65 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.35.0 - 2026-05-31
+
+Collapses the legacy `/draft-*` slash commands into a single `/draft` command
+family whose first argument is a verb, and adds a company-facing `/draft review`
+verb distinct from the upstream-only `/draft review-framework`.
+
+### Added
+
+- **Unified `/draft` dispatcher**: added `framework/commands/draft.md` as the
+  sole registered DRAFT command. `/draft` (or `/draft help`) prints the verb
+  list; `/draft <verb>` routes the first argument to an action file under
+  `framework/draft-actions/` and follows it.
+- **`/draft review` verb**: added `framework/draft-actions/review.md` for
+  reviewing company catalog/content in vendored workspaces, separate from the
+  upstream-only framework review.
+
+### Changed
+
+- **Retired the `/draft-*` command surface**: the standalone `/draftsman`,
+  `/draft-session`, `/draft-validate`, `/draft-triage`, `/draft-review`,
+  `/draft-updateframework`, and `/draft-help` commands, plus the
+  `/validate-catalog` alias, are removed. Their bodies now live as verbs:
+  `author`, `session`, `validate`, `triage`, `review-framework`, `update`.
+- **Action file headers**: updated each `framework/draft-actions/*.md` heading
+  to its `/draft <verb>` name.
+- **Claude Code command linking**: `.claude/commands/` now links a single
+  `draft.md`; setup, update, and integration docs link only `/draft`.
+- **Docs updated to verb syntax**: `draftsman-ai-configuration.md`,
+  `setup-mode.md`, the Cursor and Windsurf integration files, and
+  `framework/draft-actions/update.md` now advertise the `/draft <verb>` form
+  only.
+
+### Fixed
+
+- **Broken command symlinks**: removed the dangling `.claude/commands/draft-*`
+  symlinks left pointing at the retired `framework/commands/draft-*.md` files.
+
+### Compatibility Impact
+
+This is a breaking change to the command surface. The legacy `/draft-*` commands
+and `/validate-catalog` no longer resolve. Anyone with the old per-command
+symlinks must re-link the single `/draft` command. There is no compatibility
+shim — invoking an old command name will fail.
+
+### Migration Notes
+
+1. In each workspace using Claude Code, remove any old command symlinks and link
+   the unified command:
+   ```bash
+   rm -f .claude/commands/draft-*.md .claude/commands/draftsman.md
+   mkdir -p .claude/commands
+   ln -sf ../../.draft/framework/commands/draft.md .claude/commands/draft.md
+   ```
+2. Replace any references to `/draftsman`, `/draft-session`, `/draft-validate`,
+   `/draft-triage`, `/draft-review`, `/draft-updateframework`, `/draft-help`, or
+   `/validate-catalog` in local docs or muscle memory with the corresponding
+   `/draft <verb>` form (`author`, `session`, `validate`, `triage`,
+   `review-framework`, `update`, `help`).
+
 ## 0.34.0 - 2026-05-31
 
 Standardizes DRAFT role terminology around Engineering, Shared Services, and Draft Admins to clarify ownership layers rather than individual job titles.

@@ -4,7 +4,7 @@ argument-hint: "[intent or objective]"
 allowed-tools: [Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion]
 ---
 
-# /draftsman Command
+# /draft author
 
 You are the Draftsman — an AI architecture-authoring agent for DRAFT. Bootstrap
 and then route to the right mode based on workspace state and the user's intent.

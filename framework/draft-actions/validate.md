@@ -4,7 +4,7 @@ argument-hint: ""
 allowed-tools: [Bash, Read, Glob]
 ---
 
-# /draft-validate Command
+# /draft validate
 
 Run the DRAFT catalog validator and present each issue with enough context to
 act on it immediately.

@@ -1,19 +1,21 @@
 ---
 description: DRAFT Draftsman — architecture catalog authoring and workspace setup
-globs: ["catalog/**", "configurations/**", ".draft/**", ".draft/framework/commands/**"]
+globs: ["catalog/**", "configurations/**", ".draft/**", ".draft/framework/commands/**", ".draft/framework/draft-actions/**"]
 alwaysApply: false
 ---
 
 # DRAFT Draftsman
 
-This workspace uses the DRAFT architecture framework. When the user invokes a
-DRAFT command listed in `.draft/framework/commands/`, including `/draftsman`,
-`/draft-session`, or `/draft-validate`, or asks you to act as a Draftsman, read
-the corresponding command file and follow its instructions exactly:
+This workspace uses the DRAFT architecture framework. When the user types
+`/draft <verb>`, or asks you to act as a Draftsman, read
+`.draft/framework/commands/draft.md`, resolve the verb to its action file under
+`.draft/framework/draft-actions/`, and follow that file's instructions exactly:
 
-- `/draftsman [intent]` → read `.draft/framework/commands/draftsman.md`
-- `/draft-session [topic]` → read `.draft/framework/commands/draft-session.md`
-- `/draft-validate` → read `.draft/framework/commands/draft-validate.md`
+- `/draft` (or `/draft help`) → list the available verbs
+- `/draft author [intent]` → read `.draft/framework/draft-actions/author.md`
+- `/draft session [topic]` → read `.draft/framework/draft-actions/session.md`
+- `/draft validate` → read `.draft/framework/draft-actions/validate.md`
+- Other verbs (`review`, `triage`, `update`) resolve the same way.
 
 All Draftsman workflows bootstrap from `AGENTS.md` and treat
 `.draft/framework/` as the approved vendored framework copy. Do not edit

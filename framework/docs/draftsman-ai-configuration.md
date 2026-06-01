@@ -81,28 +81,36 @@ tool-specific layer.
 
 ## Workflow Commands
 
-The following command names are canonical. Tools with native slash-command
-support can register them directly; Codex and other generic tools treat them as
-typed command phrases routed by the workspace bootstrap instructions.
+DRAFT exposes a single canonical command, `/draft`, whose first argument is a
+**verb**. Tools with native slash-command support register `/draft` directly;
+Codex and other generic tools treat `/draft <verb>` as a typed command phrase
+routed by the workspace bootstrap instructions.
 
 | Command | Purpose |
 |---|---|
-| `/draft-help` | List available DRAFT commands |
-| `/draftsman [intent]` | Activate the Draftsman for authoring or workspace setup |
-| `/draft-session [topic]` | Start or resume a guided DraftingSession |
-| `/draft-validate` | Run the validator and report issues with fix guidance |
-| `/draft-updateframework` | Check for framework updates and guide a safe upgrade |
-| `/draft-triage` | Pull open framework GitHub issues and work through selected ones |
-| `/draft-review` | Review the DRAFT framework for simplification and adoption |
+| `/draft` (or `/draft help`) | List available DRAFT verbs |
+| `/draft author [intent]` | Activate the Draftsman for authoring or workspace setup |
+| `/draft session [topic]` | Start or resume a guided DraftingSession |
+| `/draft validate` | Run the validator and report issues with fix guidance |
+| `/draft review` | Review company catalog/content in a vendored workspace |
+| `/draft triage` | Pull open GitHub issues and work through selected ones |
+| `/draft update` | Check for framework updates and guide a safe upgrade |
 
-Command files live in `.draft/framework/commands/`. They include Claude Code
+The upstream `getdraft/draftsman` repository also exposes `/draft
+review-framework` for maintainers reviewing the framework itself. It is
+upstream-only and is not advertised in vendored company workspaces.
+
+The `/draft` command file lives in `.draft/framework/commands/draft.md` and
+dispatches each verb to an action file under
+`.draft/framework/draft-actions/`. The command file includes Claude Code
 frontmatter (`description`, `argument-hint`, `allowed-tools`) which other AI
 tools skip — the instruction content that follows works for any AI without
 modification.
 
-`/validate-catalog` is retained only as a compatibility alias for older
-workspace references. New bootstrap files and integrations should advertise
-`/draft-validate`.
+The legacy dash commands (`/draftsman`, `/draft-session`, `/draft-validate`,
+`/draft-triage`, `/draft-review`, `/draft-updateframework`) and the older
+`/validate-catalog` alias have been retired. They no longer resolve; use the
+`/draft <verb>` form instead.
 
 ## IDE Integration
 
