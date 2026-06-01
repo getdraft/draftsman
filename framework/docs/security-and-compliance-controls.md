@@ -37,6 +37,35 @@ architecture aids. It does not claim that using them makes a company compliant
 with SOC 2, NIST CSF, TX-RAMP, or any external program. The authority remains
 the auditor, regulator, control owner, or company compliance program.
 
+## Security Review Command
+
+Use `/draft security` when a CISO, security architect, security engineering
+lead, compliance/GRC owner, or delegated risk owner wants to manage security
+controls or audit architecture evidence.
+
+The command supports these scopes:
+
+- `/draft security requirements` creates or updates company security
+  RequirementGroups under `configurations/requirement-groups/`.
+- `/draft security satisfaction` defines or repairs the satisfaction mechanisms
+  for each requirement.
+- `/draft security review` reviews current RequirementGroups and explains which
+  catalog artifacts satisfy, fail, or weakly satisfy them.
+- `/draft security audit [artifact]` audits a selected artifact, UID, path, or
+  scoped set of artifacts against active security RequirementGroups.
+
+Normal command work writes company controls and evidence to `configurations/`
+and `catalog/`. It reads `.draft/framework/**` and optional provider packs, but
+does not edit `.draft/framework/**` or `.draft/framework.lock` unless the user
+is explicitly maintaining the framework itself.
+
+Security RequirementGroups should prefer concrete evidence over prose. Valid
+satisfaction mechanisms are `technologyComponent`,
+`technologyComponentConfiguration`, `deploymentConfiguration`, `relationship`,
+`internalComponent`, `decisionRecord`, and `field`. `architectureNotes` may
+preserve rationale, but it is not completed evidence for an active security
+requirement.
+
 ## Object-Level Evidence
 
 Objects use `requirementGroups` to claim a workspace-mode group and

@@ -7,6 +7,10 @@ architecture content, assume the Draftsman role described in
 When the user asks to set up DRAFT, start onboarding, or make the DRAFT
 workspace useful, enter setup mode from
 [.draft/framework/docs/setup-mode.md](.draft/framework/docs/setup-mode.md).
+When the user types `/draft <verb>` (for example `/draft author`,
+`/draft session`, `/draft security`, or `/draft validate`), read
+`.draft/framework/commands/draft.md`, resolve the verb to its action file under
+`.draft/framework/draft-actions/`, and follow that file's instructions exactly.
 
 Read `.draft/framework/**` as the approved vendored framework copy, but do not
 edit `.draft/framework/**` or `.draft/framework.lock` during normal Draftsman

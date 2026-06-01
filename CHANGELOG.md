@@ -3,6 +3,41 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.41.4 - 2026-06-01
+
+Adds a `/draft security` workflow for security RequirementGroup authoring,
+satisfaction design, posture review, and artifact compliance audit in company
+workspaces.
+
+### Added
+
+- `framework/draft-actions/security.md` for CISO, security architect,
+  security engineering, compliance/GRC, and delegated risk owner workflows.
+- `/draft security [requirements|satisfaction|review|audit]` dispatcher,
+  command help, AI configuration, IDE integration, and workspace template
+  guidance.
+
+### Changed
+
+- Draftsman security/compliance docs now describe the security review persona,
+  workspace boundary, concrete satisfaction mechanisms, and placeholder
+  evidence limits.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+- None. This is command and AI instruction guidance only; no schema, object
+  model, validator, or RequirementGroup contract changed.
+
+### Migration Notes
+
+Existing company workspaces should refresh their workspace bootstrap and IDE
+integration files from the updated templates if they want `/draft security`
+advertised in root AI instruction files.
+
 ## 0.41.3 - 2026-06-01
 
 Updates the generated browser's Acceptable Use view so users can drill from
