@@ -77,6 +77,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/software-deployment-patterns.md | SoftwareDeploymentPatterns | A SoftwareDeploymentPattern is a declaration that a specific product is intended |
 | framework/docs/standards.md | Deployable Objects | DRAFT previously used the word "Standard" for reusable deployable building |
 | framework/docs/technology-components.md | TechnologyComponents | A TechnologyComponent is a discrete vendor product object. It records one |
+| framework/docs/ticketing.md | Ticketing and Issue Creation Workflow | > **Audience:** Draft Admins, Shared Services, and Engineering Representatives. |
 | framework/docs/user-manual.md | DRAFT User Manual | DRAFT is an AI-first, Git-native, repo-first framework for documenting governed architecture. It turns architecture c... |
 | framework/docs/workspaces.md | Workspaces | For the full adoption sequence from installation through first drafting |
 | framework/docs/yaml-schema-reference.md | YAML Schema Reference | This page is the quickest way to understand how to build a valid YAML object in |
