@@ -32,6 +32,13 @@ DRAFT recognizes three operational roles. Each owns a distinct layer of the cata
 * **Shared Services:** Owns and authors reusable service and technology standards. This includes `Host`, `RuntimeService`, `DataStoreService`, `NetworkService`, and `TechnologyComponent` objects. Shared Services representatives govern standard infrastructure profiles, acceptable-use vendor lists, and shared platforms.
 * **Draft Admins:** Owns the workspace platform configuration, business navigation, schemas, base capability ownership, and operations policy. This includes capability definitions, base `RequirementGroups`, domains, and the authoritative team vocabulary list (`vocabulary.teams`). Draft Admins govern the workspace itself.
 
+Security governance personas, such as CISOs, security architects, security
+engineering leads, compliance/GRC owners, and delegated risk owners, can use
+Draft Admin-governed workspace paths to author or review security
+RequirementGroups and compliance evidence. They do not introduce a separate
+`ownerRole`; workspace routing still resolves through the governed team
+registry and CODEOWNERS model.
+
 ---
 
 ## 4. Command Model
@@ -44,6 +51,7 @@ The primary interface for developers and AI assistants inside a DRAFT workspace 
 | `help` | `/draft` or `/draft help` | Framework & Workspace | Displays available verbs, arguments, and command usage. |
 | `validate` | `/draft validate [path]` | Workspace | Runs the schema, reference, and requirement validator against target files or the entire workspace. |
 | `review` | `/draft review [path]` | Workspace | Runs a static review of catalog files to check design completeness, advisory standards, and missing information. |
+| `security` | `/draft security [requirements\|satisfaction\|review\|audit]` | Workspace | Runs security RequirementGroup authoring, satisfaction design, posture review, and artifact compliance audit workflows. |
 | `triage` | `/draft triage` | Git Repo | Pulls open GitHub issues for the repository and runs the interactive selection/triage interface. |
 | `author` | `/draft author [type]` | Workspace | Launches a guided interface or templates to author new catalog objects. |
 | `session` | `/draft session` | Workspace | Manages drafting sessions, saving incomplete state, and recording open questions. |
@@ -187,11 +195,16 @@ catalog/engineering/product-components/billing-api.yaml              @my-org/bil
 
 ## 7. Issue Creation
 
-When a developer runs `/draft validate` or `/draft review`, the Draftsman identifies gaps (e.g. missing dependencies, outdated technologies, non-compliant controls).
+When a developer or security reviewer runs `/draft validate`, `/draft review`,
+or `/draft security`, the Draftsman identifies gaps (e.g. missing
+dependencies, outdated technologies, non-compliant controls).
 
 ### Sub-Actions
 * **validate sub-action:** Highlights hard errors (failed schema formats, unresolved UIDs, broken references) and offers to generate issues to repair them.
 * **review sub-action:** Highlights advisory architectural gaps or design reviews (e.g. missing backup configurations or unmapped scaling policies) and generates issues for enrichment.
+* **security sub-action:** Highlights unsatisfied controls, weak evidence,
+  incorrect satisfaction mechanisms, or artifact audit findings and offers
+  DecisionRecords, DraftingSession items, or issues for follow-up.
 
 ### Rules of Issue Creation
 * **One Issue Per Finding:** To keep tracking clean and highly actionable, each selected finding must map to exactly one separate GitHub issue. Mass-grouping unrelated issues is prohibited.

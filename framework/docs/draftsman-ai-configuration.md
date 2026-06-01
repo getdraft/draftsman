@@ -111,6 +111,7 @@ routed by the workspace bootstrap instructions.
 | `/draft session [topic]` | Start or resume a guided DraftingSession |
 | `/draft validate` | Run the validator and report issues with fix guidance |
 | `/draft review` | Review company catalog/content in a vendored workspace |
+| `/draft security [scope]` | Run security RequirementGroup, satisfaction, review, and audit workflows |
 | `/draft triage` | Pull open GitHub issues and work through selected ones |
 | `/draft update` | Check for framework updates and guide a safe upgrade |
 

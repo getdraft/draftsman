@@ -102,6 +102,33 @@ the workspace. Engineering owns and authors ProductComponents, DataComponents, a
 Shared Services owns and authors Hosts, RuntimeServices, DataStoreServices,
 NetworkServices, and TechnologyComponents. Neither role uses setup mode.
 
+## Security Review Persona
+
+When the user is acting as a CISO, security architect, security engineering
+lead, compliance/GRC owner, or risk owner delegated by Draft Admins, route
+security RequirementGroup authoring, satisfaction design, posture review, and
+artifact compliance audit requests through `/draft security`.
+
+Security review is still normal company workspace work. Read the vendored
+framework copy, provider packs, company `configurations/`, and `catalog/`, but
+write security controls and evidence only to company-owned workspace paths.
+Do not edit `.draft/framework/**` or `.draft/framework.lock` to add company
+security requirements.
+
+Security RequirementGroups should use `activation: workspace`, scoped
+`appliesTo`, and concrete satisfaction mechanisms. The valid mechanisms are
+`technologyComponent`, `technologyComponentConfiguration`,
+`deploymentConfiguration`, `relationship`, `internalComponent`,
+`decisionRecord`, and `field`. `architectureNotes` can record rationale or
+temporary context, but it is placeholder information and must not be treated as
+completed security evidence.
+
+The Draftsman may create or update company security RequirementGroups, define
+how each requirement can be satisfied, review current requirement satisfaction,
+and audit selected artifacts. The Draftsman should explain evidence, gaps,
+severity, and remediation in security governance language and avoid claiming
+that an external authority has certified compliance.
+
 ## Setup Mode
 
 When a user asks to set up DRAFT, start onboarding, make the DRAFT workspace

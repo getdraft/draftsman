@@ -200,7 +200,7 @@ assistant. This step wires DRAFT's built-in workflow commands into whichever
 IDE the team uses. Some tools register native slash commands, while others use
 project instructions that route the typed command phrase `/draft <verb>`
 (for example `/draft author`, `/draft session`, `/draft validate`,
-`/draft update`) to the `/draft` command file.
+`/draft security`, `/draft update`) to the `/draft` command file.
 
 Ask the team which AI IDE(s) they use and follow the relevant sub-steps. More
 than one can be configured; they do not conflict.
@@ -223,10 +223,10 @@ New-Item -ItemType SymbolicLink -Path .claude\commands\draft.md `
 ```
 
 A single `/draft` command is linked; its verbs (`author`, `session`,
-`validate`, `review`, `triage`, `update`) dispatch to the matching action files
-under `.draft/framework/draft-actions/`. The symlink follows the vendored
-framework copy, so updating the framework automatically updates command
-behavior — and adds any new verbs — without re-linking.
+`validate`, `review`, `security`, `triage`, `update`) dispatch to the matching
+action files under `.draft/framework/draft-actions/`. The symlink follows the
+vendored framework copy, so updating the framework automatically updates
+command behavior — and adds any new verbs — without re-linking.
 
 #### 7b. Cursor
 
@@ -258,7 +258,7 @@ manually, add the following block:
 
 ```markdown
 When the user invokes `/draft <verb>` (for example `/draft author`,
-`/draft session`, or `/draft validate`), read
+`/draft session`, `/draft security`, or `/draft validate`), read
 `.draft/framework/commands/draft.md`, resolve the verb to its action file under
 `.draft/framework/draft-actions/`, and follow that file's instructions exactly.
 ```
@@ -270,8 +270,8 @@ command invocation already included. No additional DRAFT setup is required for
 these tools.
 
 For OpenAI Codex and other generic tools, `AGENTS.md` is a prompt-level router:
-typing `/draft <verb>` (for example `/draft author`, `/draft session`, or
-`/draft validate`) in chat tells the assistant to read
+typing `/draft <verb>` (for example `/draft author`, `/draft session`,
+`/draft security`, or `/draft validate`) in chat tells the assistant to read
 `.draft/framework/commands/draft.md` and follow the matching action file under
 `.draft/framework/draft-actions/`. It does not create native slash-command menu
 entries or autocomplete by itself.

@@ -21,6 +21,7 @@ framework/draft-actions/
   session.md            ← /draft session — guided drafting session workflow
   validate.md           ← /draft validate — catalog validation workflow
   review.md             ← /draft review — company catalog/content review
+  security.md           ← /draft security — security review and compliance audit
   triage.md             ← /draft triage — GitHub issue triage workflow
   update.md             ← /draft update — framework refresh workflow
   review-framework.md   ← /draft review-framework — upstream-only framework review
