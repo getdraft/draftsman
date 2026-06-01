@@ -50,17 +50,19 @@ CONFIGURATION_FOLDERS = [
 ]
 
 EXAMPLE_CATALOG_FOLDERS = [
-    "examples/catalog/technology-components",
-    "examples/catalog/hosts",
-    "examples/catalog/runtime-services",
-    "examples/catalog/data-store-services",
-    "examples/catalog/network-services",
-    "examples/catalog/reference-architectures",
-    "examples/catalog/software-deployment-patterns",
-    "examples/catalog/product-components",
-    "examples/catalog/data-components",
-    "examples/catalog/decision-records",
-    "examples/catalog/sessions",
+    "examples/catalog/engineering/product-components",
+    "examples/catalog/engineering/data-components",
+    "examples/catalog/engineering/software-deployment-patterns",
+    "examples/catalog/shared-services/hosts",
+    "examples/catalog/shared-services/runtime-services",
+    "examples/catalog/shared-services/data-store-services",
+    "examples/catalog/shared-services/network-services",
+    "examples/catalog/shared-services/technology-components",
+    "examples/catalog/governance/decision-records",
+    "examples/catalog/governance/sessions",
+    "examples/catalog/governance/relationships",
+    "examples/catalog/governance/systems",
+    "examples/catalog/governance/reference-architectures",
 ]
 
 

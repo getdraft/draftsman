@@ -809,8 +809,8 @@ When creating a new catalog object, place the file in the path that matches its
 
 | ownerRole | Typical catalog path | Reviewer |
 |---|---|---|
-| `engineering` | `catalog/engineering/[team]/` or `catalog/product-components/` | Engineering team |
-| `shared-services` | `catalog/[type-folder]/` (e.g. `catalog/runtime-services/`) | Shared Services team |
+| `engineering` | `catalog/engineering/[type-folder]/` (e.g. `catalog/engineering/product-components/`) | Engineering team |
+| `shared-services` | `catalog/shared-services/[type-folder]/` (e.g. `catalog/shared-services/runtime-services/`) | Shared Services team |
 | `draft-admins` | `configurations/` | Draft Admins team |
 
 Always set `ownerRole` on every new catalog object. Derive the correct value

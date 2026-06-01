@@ -3,6 +3,35 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.36.1 - 2026-05-31
+
+Reorganizes catalog files from a flat folder structure under `catalog/` into role-specific subfolders (`engineering/`, `shared-services/`, `governance/`) to align with role terminology (Issue #53) and the team registry (Issue #54).
+
+### Added
+
+- **Nested Catalog Folders**: Reorganized workspace catalog templates in `templates/workspace/catalog/` and example catalog items in `examples/catalog/` into nested paths grouped by content role (`engineering/`, `shared-services/`, `governance/`).
+
+### Changed
+
+- **Backward-Compatible Folder Scanning**: Updated `framework/tools/generate_browser.py` and `draft_table/catalog.py` to scan both the old flat catalog folder names and the new role-nested folder names.
+- **AI Index and Docs updated**: Updated `framework/tools/generate_ai_index.py` with nested example catalog folder paths, regenerated `AI_INDEX.md`, and updated path references in `draftsman.md`, `how-to-add-objects.md`, and `user-manual.md`.
+
+### Fixed
+
+- None.
+
+### Compatibility Impact
+
+- None. Both flat and role-nested folders are supported by the browser and CLI tools, ensuring 100% backward-compatibility for existing flat and new nested workspaces.
+
+### Migration Notes
+
+1. To transition an existing workspace to the new nested directory structure, create `catalog/engineering/`, `catalog/shared-services/`, and `catalog/governance/` folders.
+2. Move product components, data components, and software deployment patterns under `engineering/`.
+3. Move hosts, runtime services, data store services, network services, and technology components under `shared-services/`.
+4. Move decision records, sessions, relationships, systems, and reference architectures under `governance/`.
+5. Rerun `/draft validate` to verify the new organization structure.
+
 ## 0.36.0 - 2026-05-31
 
 Establishes the authoritative team registry model, team routing semantics, and programmatic CODEOWNERS generation. Introduces strict validation rules requiring owner team assignment for complete catalog artifacts.
