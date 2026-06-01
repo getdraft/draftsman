@@ -22,10 +22,30 @@ requirements:
   rationale: >
     The network function is the architectural reason this device exists. Without it,
     the catalog cannot explain what role the device plays in the network architecture.
+    The framework-native network capabilities (Network Connectivity, Network Segmentation,
+    Traffic Management, WAN Connectivity) name the standard network functions a service
+    can perform; referencing the TechnologyComponent that provides one of them grounds the
+    declared function in an approved capability.
   canBeSatisfiedBy:
   - mechanism: field
     key: networkFunction
     example: 'networkFunction: Layer 3 routing between production and management segments'
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KSWVZSZ5-Q6HW
+    example: A routing or switching TechnologyComponent providing Network Connectivity across the fabric.
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KSWVZSZ5-1RTH
+    example: A firewall or SDN TechnologyComponent providing Network Segmentation between zones.
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KSWVZSZ5-M0FR
+    example: A load balancer or traffic-shaping TechnologyComponent providing Traffic Management.
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KSWVZSZ5-26F1
+    example: A WAN edge or interconnect TechnologyComponent providing WAN Connectivity between sites.
   - mechanism: architectureNote
     key: networkFunction
     example: Core distribution switch providing VLAN trunking across the data center fabric.
@@ -34,6 +54,7 @@ requirements:
   naAllowed: false
   validAnswerTypes:
   - field
+  - technologyComponentConfiguration
   - architectureNote
 - id: network-topology-definition
   description: The network service must declare what network segments, zones, or routing domains it defines or manages.

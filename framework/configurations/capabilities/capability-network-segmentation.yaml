@@ -4,7 +4,7 @@ type: capability
 name: Network Segmentation
 description: Traffic between network zones is isolated and controlled by policy through VLANs, micro-segmentation, or software-defined networking.
 version: 1.0.0
-catalogStatus: incomplete
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture
