@@ -3793,6 +3793,7 @@ function acceptableUseDomainModels() {
       group.rows.push(...rows);
     });
   return Array.from(groups.values())
+    .filter(group => group.rows.length > 0)
     .sort((a, b) => {
       const nameA = a.domain.name || a.domain.id || '';
       const nameB = b.domain.name || b.domain.id || '';
