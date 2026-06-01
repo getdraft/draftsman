@@ -753,6 +753,110 @@ html, body {
 .acceptable-use-table .muted-cell {
   color: var(--muted);
 }
+.muted-cell {
+  color: var(--muted);
+}
+.acceptable-use-grid {
+  display: grid;
+  gap: 14px;
+}
+.acceptable-use-grid.domain-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+.acceptable-use-grid.capability-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.acceptable-use-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  min-height: 190px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.acceptable-use-tile:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(15,23,42,0.10);
+  transform: translateY(-1px);
+}
+.acceptable-use-tile:focus-visible {
+  outline: 3px solid rgba(124,58,107,0.28);
+  outline-offset: 2px;
+}
+.acceptable-use-tile-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.acceptable-use-tile-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.acceptable-use-tile-desc {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.45;
+  min-height: 38px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.acceptable-use-tile-desc.muted {
+  color: var(--muted);
+}
+.acceptable-use-tile-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.acceptable-use-tile-meta span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 8px;
+  background: var(--surface);
+}
+.acceptable-use-lifecycle-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.acceptable-use-lifecycle-strip.compact {
+  margin-top: auto;
+}
+.acceptable-use-lifecycle-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 8px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.acceptable-use-lifecycle-chip strong {
+  color: var(--ink);
+}
+.acceptable-use-empty-note {
+  color: var(--muted);
+  font-size: 12px;
+}
 .acceptable-use-capability {
   display: grid;
   gap: 12px;
@@ -785,6 +889,77 @@ html, body {
   text-align: right;
   color: var(--muted);
   font-size: 12px;
+}
+.acceptable-use-owner.compact {
+  min-width: 0;
+  text-align: left;
+}
+.acceptable-use-tech-list {
+  display: grid;
+  gap: 12px;
+}
+.acceptable-use-tech-card {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+.acceptable-use-tech-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+.acceptable-use-tech-name {
+  font-weight: 700;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.acceptable-use-tech-statuses {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  gap: 6px 8px;
+  align-items: center;
+  justify-content: end;
+}
+.acceptable-use-status-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.acceptable-use-tech-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+.acceptable-use-tech-facts div {
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+.acceptable-use-tech-facts dt {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.acceptable-use-tech-facts dd {
+  margin: 4px 0 0;
+  color: var(--ink);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.acceptable-use-tech-notes {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.acceptable-use-tech-notes.muted {
+  color: var(--muted);
 }
 .ard-detail-card {
   display: grid;
@@ -2306,6 +2481,9 @@ html, body {
   .definition-list { grid-template-columns: 1fr; }
   .acceptable-use-capability-header { flex-direction: column; }
   .acceptable-use-owner { text-align: left; }
+  .acceptable-use-tech-main { flex-direction: column; }
+  .acceptable-use-tech-statuses { justify-content: start; }
+  .acceptable-use-tech-facts { grid-template-columns: 1fr; }
   .executive-mosaic { grid-template-columns: 1fr; }
   .executive-tile.large,
   .executive-tile.wide,

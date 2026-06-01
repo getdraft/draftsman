@@ -234,6 +234,8 @@ let activeFilter = 'all';
 let currentDetailId = null;
 let currentMode = 'executive';
 let executiveDrilldown = null;
+let acceptableUseDomainId = null;
+let acceptableUseCapabilityId = null;
 let currentSubViewId = null;
 const navHistory = [];
 let listSearchTerm = '';
@@ -446,7 +448,11 @@ function syncHashForImpactView() {
 }
 
 function syncHashForAcceptableUseView() {
-  setHashState({ view: 'acceptable-use' });
+  setHashState({
+    view: 'acceptable-use',
+    domain: acceptableUseDomainId,
+    capability: acceptableUseCapabilityId
+  });
 }
 
 function syncHashForObjectTypesView() {
@@ -525,7 +531,10 @@ function applyRouteFromHash() {
     }
   }
   if (view === 'acceptable-use') {
-    renderAcceptableUseView();
+    renderAcceptableUseView({
+      domainId: params.get('domain') || null,
+      capabilityId: params.get('capability') || null
+    });
     return;
   }
   if (view === 'topology') {
@@ -656,7 +665,10 @@ function rerenderCurrentView() {
     return;
   }
   if (currentMode === 'acceptable-use') {
-    renderAcceptableUseView();
+    renderAcceptableUseView({
+      domainId: acceptableUseDomainId,
+      capabilityId: acceptableUseCapabilityId
+    });
     return;
   }
   if (currentMode === 'topology') {
@@ -3707,6 +3719,11 @@ function navigateExecutiveTarget(target) {
     renderAcceptableUseView();
     return;
   }
+  if (target.startsWith('acceptable-domain:')) {
+    executiveDrilldown = null;
+    renderAcceptableUseView({ domainId: target.slice('acceptable-domain:'.length) });
+    return;
+  }
   if (target === 'controls') {
     executiveDrilldown = 'controls';
     renderExecutiveView();
@@ -3732,17 +3749,110 @@ function attachExecutiveHandlers() {
   });
 }
 
-function acceptableUseSidebarMarkup(groups, mappedCount) {
-  const capabilityCount = groups.reduce((count, group) => {
-    const ids = new Set(group.rows.map(row => row.capability.id));
-    return count + ids.size;
-  }, 0);
+function acceptableUseDomainModels() {
+  const groups = new Map();
+  allObjects
+    .filter(object => object.type === 'domain')
+    .forEach(domain => {
+      groups.set(domain.id, { domain, capabilityGroups: [], rows: [] });
+    });
+  allObjects
+    .filter(object => object.type === 'capability')
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .forEach(capability => {
+      const domainId = capability.domain || 'domain.unassigned';
+      const domain = objectLookup[domainId] || {
+        id: domainId,
+        name: capability.domain || 'Unassigned Domain',
+        description: ''
+      };
+      if (!groups.has(domainId)) {
+        groups.set(domainId, { domain, capabilityGroups: [], rows: [] });
+      }
+      const implementations = Array.isArray(capability.implementations)
+        ? capability.implementations.slice().sort((a, b) => {
+            const objectA = objectLookup[a.ref] || {};
+            const objectB = objectLookup[b.ref] || {};
+            const vendorA = objectA.vendor || '';
+            const vendorB = objectB.vendor || '';
+            const techA = objectA.name || a.ref || '';
+            const techB = objectB.name || b.ref || '';
+            return lifecycleSortRank(a.lifecycleStatus) - lifecycleSortRank(b.lifecycleStatus)
+              || vendorA.localeCompare(vendorB)
+              || techA.localeCompare(techB)
+              || (a.lifecycleStatus || '').localeCompare(b.lifecycleStatus || '');
+          })
+        : [];
+      const rows = implementations.map(implementation => ({
+        capability,
+        implementation,
+        technology: objectLookup[implementation.ref] || null
+      }));
+      const group = groups.get(domainId);
+      group.capabilityGroups.push({ capability, rows });
+      group.rows.push(...rows);
+    });
+  return Array.from(groups.values())
+    .sort((a, b) => {
+      const nameA = a.domain.name || a.domain.id || '';
+      const nameB = b.domain.name || b.domain.id || '';
+      return nameA.localeCompare(nameB);
+    });
+}
+
+function acceptableUseStats(groups) {
+  const mappedRefs = new Set();
+  let capabilityCount = 0;
+  groups.forEach(group => {
+    capabilityCount += group.capabilityGroups.length;
+    group.rows.forEach(row => {
+      if (row.implementation?.ref) mappedRefs.add(row.implementation.ref);
+    });
+  });
+  return {
+    domainCount: groups.length,
+    capabilityCount,
+    mappedTechnologyCount: mappedRefs.size
+  };
+}
+
+function acceptableUseFindDomainModel(groups, domainId) {
+  if (!domainId) return null;
+  return groups.find(group => group.domain.id === domainId) || null;
+}
+
+function acceptableUseFindCapabilityModel(groups, capabilityId, domainId = null) {
+  if (!capabilityId) return null;
+  const candidateGroups = domainId
+    ? groups.filter(group => group.domain.id === domainId)
+    : groups;
+  for (const group of candidateGroups) {
+    const capabilityGroup = group.capabilityGroups.find(item => item.capability.id === capabilityId);
+    if (capabilityGroup) {
+      return { domainGroup: group, capabilityGroup };
+    }
+  }
+  return null;
+}
+
+function acceptableUseSidebarMarkup(groups, stats, selectedDomain = null, selectedCapability = null) {
   return `
     <div class="sidebar-block">
       <div class="legend-title">Acceptable Use Technology</div>
-      <div class="current-filter"><span class="dot" style="background:#7c3a6b"></span><span>${mappedCount} mapped Technology Components</span></div>
-      <div class="current-filter"><span class="dot" style="background:#22c55e"></span><span>${capabilityCount} capability groups</span></div>
-      <div class="current-filter"><span class="dot" style="background:#f59e0b"></span><span>${groups.length} domain groups</span></div>
+      <div class="current-filter"><span class="dot" style="background:#7c3a6b"></span><span>${pluralize(stats.mappedTechnologyCount, 'mapped Technology Component')}</span></div>
+      <div class="current-filter"><span class="dot" style="background:#22c55e"></span><span>${pluralize(stats.capabilityCount, 'capability group')}</span></div>
+      <div class="current-filter"><span class="dot" style="background:#f59e0b"></span><span>${pluralize(stats.domainCount, 'domain group')}</span></div>
+    </div>
+    ${(selectedDomain || selectedCapability) ? `
+      <div class="sidebar-block">
+        <div class="legend-title">Current View</div>
+        ${selectedDomain ? `<div class="current-filter"><span class="dot" style="background:#7c3a6b"></span><span>${escapeHtml(selectedDomain.name || selectedDomain.id)}</span></div>` : ''}
+        ${selectedCapability ? `<div class="current-filter"><span class="dot" style="background:#22c55e"></span><span>${escapeHtml(selectedCapability.name || selectedCapability.id)}</span></div>` : ''}
+      </div>
+    ` : ''}
+    <div class="sidebar-block">
+      <div class="legend-title">Lifecycle Legend</div>
+      ${acceptableUseLifecycleSummaryMarkup(groups.flatMap(group => group.rows), { emptyText: 'No mapped lifecycle status' })}
     </div>
   `;
 }
@@ -3757,16 +3867,6 @@ function acceptableUseOwnerMarkup(owner) {
   `;
 }
 
-function acceptableUseTechnologyMarkup(technology, implementation) {
-  if (!technology) {
-    return `<span class="muted-cell">${escapeHtml(implementation.ref || 'Unknown Technology Component')}</span>`;
-  }
-  return `
-    <span class="ard-link" data-object-link="${escapeHtml(technology.id)}">${escapeHtml(technology.name)}</span>
-    <div class="object-id">${escapeHtml(technology.id)}</div>
-  `;
-}
-
 function acceptableUseCapabilityCount(rows) {
   const uniqueRefs = new Set(
     rows
@@ -3777,67 +3877,115 @@ function acceptableUseCapabilityCount(rows) {
   return `${count} ${count === 1 ? 'Technology Component' : 'Technology Components'}`;
 }
 
-function acceptableUseDomainMarkup(group) {
-  const capabilityGroups = [];
-  group.rows.forEach(row => {
-    let capabilityGroup = capabilityGroups[capabilityGroups.length - 1];
-    if (!capabilityGroup || capabilityGroup.capability.id !== row.capability.id) {
-      capabilityGroup = { capability: row.capability, rows: [] };
-      capabilityGroups.push(capabilityGroup);
-    }
-    capabilityGroup.rows.push(row);
+function acceptableUseLifecycleCounts(rows) {
+  const counts = {};
+  rows.forEach(row => {
+    const status = row.implementation?.lifecycleStatus || 'unknown';
+    counts[status] = (counts[status] || 0) + 1;
   });
+  return counts;
+}
+
+function acceptableUseLifecycleSummaryMarkup(rows, { compact = false, emptyText = 'No mapped implementations' } = {}) {
+  const counts = acceptableUseLifecycleCounts(rows);
+  const statuses = ['preferred', 'existing-only', 'candidate', 'deprecated', 'retired', 'unknown']
+    .filter(status => counts[status]);
+  if (!statuses.length) {
+    return `<div class="acceptable-use-empty-note">${escapeHtml(emptyText)}</div>`;
+  }
   return `
-    <section class="section-card">
-      <h3>${escapeHtml(group.domain.name || group.domain.id)}</h3>
-      <div class="object-id">${escapeHtml(group.domain.id || '')}</div>
-      ${group.domain.description ? `<div class="header-description">${escapeHtml(group.domain.description)}</div>` : ''}
-      ${capabilityGroups.map(capabilityGroup => {
-        const capability = capabilityGroup.capability;
+    <div class="acceptable-use-lifecycle-strip ${compact ? 'compact' : ''}">
+      ${statuses.map(status => {
+        const color = '#' + (lifecycleColors[status] || lifecycleColors.unknown);
         return `
-          <div class="acceptable-use-capability">
-            <div class="acceptable-use-capability-header">
-              <div class="acceptable-use-capability-title">
-                <span class="ard-link" data-object-link="${escapeHtml(capability.id)}">${escapeHtml(capability.name)}</span>
-                <span class="badge">${acceptableUseCapabilityCount(capabilityGroup.rows)}</span>
-                <span class="object-id">${escapeHtml(capability.id)}</span>
-              </div>
-              <div class="acceptable-use-owner">${acceptableUseOwnerMarkup(capability.owner)}</div>
-            </div>
-            <div class="table-scroll">
-              <table class="data-table acceptable-use-table">
-                <thead>
-                  <tr>
-                    <th>Vendor</th>
-                    <th>Technology Component</th>
-                    <th>Status</th>
-                    <th>Configuration</th>
-                    <th>Notes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${capabilityGroup.rows.map(row => {
-                    const implementation = row.implementation;
-                    const technology = row.technology;
-                    const configuration = implementationConfigurationLabel(technology, implementation);
-                    return `
-                      <tr>
-                        <td>${technology?.vendor ? escapeHtml(technology.vendor) : '<span class="muted-cell">Not documented</span>'}</td>
-                        <td>${acceptableUseTechnologyMarkup(technology, implementation)}</td>
-                        <td>${lifecycleBadge(implementation.lifecycleStatus || 'unknown')}</td>
-                        <td>${configuration ? escapeHtml(configuration) : '<span class="muted-cell">Default</span>'}</td>
-                        <td>${implementation?.notes ? escapeHtml(implementation.notes) : '<span class="muted-cell">No notes</span>'}</td>
-                      </tr>
-                    `;
-                  }).join('')}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <span class="acceptable-use-lifecycle-chip">
+            <span class="dot" style="background:${color}"></span>
+            <span>${escapeHtml(status)}</span>
+            <strong>${counts[status]}</strong>
+          </span>
         `;
       }).join('')}
-    </section>
+    </div>
   `;
+}
+
+function acceptableUseUniqueTechnologyCount(rows) {
+  return new Set(rows.map(row => row.implementation?.ref).filter(Boolean)).size;
+}
+
+function acceptableUseDomainTileMarkup(group) {
+  const capabilityCount = group.capabilityGroups.length;
+  const techCount = acceptableUseUniqueTechnologyCount(group.rows);
+  return `
+    <button class="acceptable-use-tile domain-tile" data-acceptable-domain="${escapeHtml(group.domain.id)}">
+      <span class="acceptable-use-tile-eyebrow">Domain</span>
+      <span class="acceptable-use-tile-title">${escapeHtml(group.domain.name || group.domain.id)}</span>
+      ${group.domain.description ? `<span class="acceptable-use-tile-desc">${escapeHtml(group.domain.description)}</span>` : '<span class="acceptable-use-tile-desc muted">No domain description documented.</span>'}
+      <span class="acceptable-use-tile-meta">
+        <span>${pluralize(capabilityCount, 'capability', 'capabilities')}</span>
+        <span>${pluralize(techCount, 'Technology Component')}</span>
+      </span>
+      ${acceptableUseLifecycleSummaryMarkup(group.rows, { compact: true, emptyText: 'No mapped Technology Components' })}
+    </button>
+  `;
+}
+
+function acceptableUseCapabilityTileMarkup(domainGroup, capabilityGroup) {
+  const capability = capabilityGroup.capability;
+  const techCount = acceptableUseUniqueTechnologyCount(capabilityGroup.rows);
+  return `
+    <button class="acceptable-use-tile capability-tile" data-acceptable-domain="${escapeHtml(domainGroup.domain.id)}" data-acceptable-capability="${escapeHtml(capability.id)}">
+      <span class="acceptable-use-tile-eyebrow">Capability</span>
+      <span class="acceptable-use-tile-title">${escapeHtml(capability.name || capability.id)}</span>
+      ${capability.description ? `<span class="acceptable-use-tile-desc">${escapeHtml(capability.description)}</span>` : '<span class="acceptable-use-tile-desc muted">No capability description documented.</span>'}
+      <span class="acceptable-use-tile-meta">
+        <span>${acceptableUseCapabilityCount(capabilityGroup.rows)}</span>
+      </span>
+      <span class="acceptable-use-owner compact">${acceptableUseOwnerMarkup(capability.owner)}</span>
+      ${acceptableUseLifecycleSummaryMarkup(capabilityGroup.rows, { compact: true, emptyText: 'No mapped implementations' })}
+    </button>
+  `;
+}
+
+function acceptableUseTechnologyCardMarkup(row) {
+  const implementation = row.implementation || {};
+  const technology = row.technology;
+  const configuration = implementationConfigurationLabel(technology, implementation);
+  const product = [technology?.productName, technology?.productVersion].filter(Boolean).join(' ');
+  return `
+    <article class="acceptable-use-tech-card">
+      <div class="acceptable-use-tech-main">
+        <div>
+          ${technology
+            ? `<span class="ard-link acceptable-use-tech-name" data-object-link="${escapeHtml(technology.id)}">${escapeHtml(technology.name)}</span>`
+            : `<span class="acceptable-use-tech-name">${escapeHtml(implementation.ref || 'Unknown Technology Component')}</span>`}
+          <div class="object-id">${escapeHtml(technology?.id || implementation.ref || '')}</div>
+        </div>
+        <div class="acceptable-use-tech-statuses">
+          <span class="acceptable-use-status-label">Capability use</span>
+          ${lifecycleBadge(implementation.lifecycleStatus || 'unknown')}
+          <span class="acceptable-use-status-label">Component lifecycle</span>
+          ${technology?.lifecycleStatus ? lifecycleBadge(technology.lifecycleStatus) : '<span class="muted-cell">Not documented</span>'}
+        </div>
+      </div>
+      <dl class="acceptable-use-tech-facts">
+        <div><dt>Vendor</dt><dd>${technology?.vendor ? escapeHtml(technology.vendor) : '<span class="muted-cell">Not documented</span>'}</dd></div>
+        <div><dt>Product</dt><dd>${product ? escapeHtml(product) : '<span class="muted-cell">Not documented</span>'}</dd></div>
+        <div><dt>Configuration</dt><dd>${configuration ? escapeHtml(configuration) : '<span class="muted-cell">Default</span>'}</dd></div>
+      </dl>
+      ${implementation.notes ? `<p class="acceptable-use-tech-notes">${escapeHtml(implementation.notes)}</p>` : '<p class="acceptable-use-tech-notes muted">No implementation notes documented.</p>'}
+    </article>
+  `;
+}
+
+function attachAcceptableUseHandlers() {
+  pageRoot.querySelectorAll('[data-acceptable-domain]').forEach(item => {
+    item.addEventListener('click', () => {
+      const domainId = item.dataset.acceptableDomain;
+      const capabilityId = item.dataset.acceptableCapability || null;
+      renderAcceptableUseView({ domainId, capabilityId });
+    });
+  });
 }
 
 function renderDiagramsView() {
@@ -4063,24 +4211,102 @@ function renderTopologyView() {
   attachObjectLinkHandlers(pageRoot);
 }
 
-function renderAcceptableUseView() {
+function renderAcceptableUseView({ domainId = null, capabilityId = null } = {}) {
   currentMode = 'acceptable-use';
   currentDetailId = null;
   executiveDrilldown = null;
   destroyDetailCy();
   destroySdpGraphCy();
   destroyImpactCy();
+  const groups = acceptableUseDomainModels();
+  let selectedDomainGroup = acceptableUseFindDomainModel(groups, domainId);
+  let selectedCapabilityPair = acceptableUseFindCapabilityModel(groups, capabilityId, selectedDomainGroup?.domain.id || null);
+  if (selectedCapabilityPair && !selectedDomainGroup) {
+    selectedDomainGroup = selectedCapabilityPair.domainGroup;
+  }
+  if (capabilityId && !selectedCapabilityPair) {
+    capabilityId = null;
+  }
+  if (domainId && !selectedDomainGroup) {
+    domainId = null;
+  }
+  acceptableUseDomainId = selectedDomainGroup?.domain.id || null;
+  acceptableUseCapabilityId = selectedCapabilityPair?.capabilityGroup.capability.id || null;
   syncHashForAcceptableUseView();
-  const groups = acceptableUseGroups();
-  const mappedCount = groups.reduce(
-    (count, group) => count + group.rows.filter(row => row.implementation).length,
-    0
-  );
-  const capabilityCount = groups.reduce((count, group) => {
-    const ids = new Set(group.rows.map(row => row.capability.id));
-    return count + ids.size;
-  }, 0);
-  renderSidebarContent(acceptableUseSidebarMarkup(groups, mappedCount));
+
+  const stats = acceptableUseStats(groups);
+  const selectedCapability = selectedCapabilityPair?.capabilityGroup.capability || null;
+  renderSidebarContent(acceptableUseSidebarMarkup(groups, stats, selectedDomainGroup?.domain || null, selectedCapability));
+
+  const headerBadges = `
+    <span class="badge">${pluralize(stats.mappedTechnologyCount, 'mapped Technology Component')}</span>
+    <span class="badge">${pluralize(stats.capabilityCount, 'capability group')}</span>
+    <span class="badge">${pluralize(stats.domainCount, 'domain group')}</span>
+  `;
+
+  if (selectedCapabilityPair) {
+    const { domainGroup, capabilityGroup } = selectedCapabilityPair;
+    const capability = capabilityGroup.capability;
+    pageRoot.innerHTML = `
+      <div class="view-shell">
+        ${topNavMarkup()}
+        ${subviewHeaderMarkup(domainGroup.domain.name || 'Domain', `acceptable-domain:${domainGroup.domain.id}`, capability.name || capability.id, 'Technology Components mapped to this capability', `
+          <span class="badge">${acceptableUseCapabilityCount(capabilityGroup.rows)}</span>
+          ${capability.catalogStatus ? catalogBadge(capability.catalogStatus) : ''}
+        `)}
+        <section class="header-card">
+          <div class="header-top">
+            <div class="header-title">
+              <h2>${escapeHtml(capability.name || capability.id)}</h2>
+              <div class="object-id">${escapeHtml(capability.id)}</div>
+            </div>
+            <div class="acceptable-use-owner">${acceptableUseOwnerMarkup(capability.owner)}</div>
+          </div>
+          ${capability.description ? `<div class="header-description">${escapeHtml(capability.description)}</div>` : '<div class="header-description">No capability description documented.</div>'}
+          ${acceptableUseLifecycleSummaryMarkup(capabilityGroup.rows, { emptyText: 'No TechnologyComponents are mapped to this capability yet.' })}
+        </section>
+        <div class="acceptable-use-tech-list">
+          ${capabilityGroup.rows.map(acceptableUseTechnologyCardMarkup).join('') || '<div class="empty-card" style="padding:24px;">No TechnologyComponents are mapped to this capability yet.</div>'}
+        </div>
+      </div>
+    `;
+    attachExecutiveHandlers();
+    attachTopNavHandlers();
+    attachObjectLinkHandlers(pageRoot);
+    attachAcceptableUseHandlers();
+    return;
+  }
+
+  if (selectedDomainGroup) {
+    pageRoot.innerHTML = `
+      <div class="view-shell">
+        ${topNavMarkup()}
+        ${subviewHeaderMarkup('Acceptable Use', 'acceptable-use', selectedDomainGroup.domain.name || selectedDomainGroup.domain.id, 'Capability groups in this domain', `
+          <span class="badge">${pluralize(selectedDomainGroup.capabilityGroups.length, 'capability', 'capabilities')}</span>
+          <span class="badge">${pluralize(acceptableUseUniqueTechnologyCount(selectedDomainGroup.rows), 'Technology Component')}</span>
+        `)}
+        <section class="header-card">
+          <div class="header-top">
+            <div class="header-title">
+              <h2>${escapeHtml(selectedDomainGroup.domain.name || selectedDomainGroup.domain.id)}</h2>
+              <div class="object-id">${escapeHtml(selectedDomainGroup.domain.id || '')}</div>
+            </div>
+          </div>
+          ${selectedDomainGroup.domain.description ? `<div class="header-description">${escapeHtml(selectedDomainGroup.domain.description)}</div>` : '<div class="header-description">No domain description documented.</div>'}
+          ${acceptableUseLifecycleSummaryMarkup(selectedDomainGroup.rows, { emptyText: 'No TechnologyComponents are mapped in this domain yet.' })}
+        </section>
+        <div class="acceptable-use-grid capability-grid">
+          ${selectedDomainGroup.capabilityGroups.map(group => acceptableUseCapabilityTileMarkup(selectedDomainGroup, group)).join('') || '<div class="empty-card" style="padding:24px;">No capabilities are assigned to this domain yet.</div>'}
+        </div>
+      </div>
+    `;
+    attachExecutiveHandlers();
+    attachTopNavHandlers();
+    attachObjectLinkHandlers(pageRoot);
+    attachAcceptableUseHandlers();
+    return;
+  }
+
   pageRoot.innerHTML = `
     <div class="view-shell">
       ${topNavMarkup()}
@@ -4091,22 +4317,21 @@ function renderAcceptableUseView() {
             <div class="object-id">Technology Component lifecycle map</div>
           </div>
           <div class="badges">
-            <span class="badge">${mappedCount} mapped Technology Components</span>
-            <span class="badge">${capabilityCount} capability groups</span>
-            <span class="badge">${groups.length} domain groups</span>
+            ${headerBadges}
           </div>
         </div>
         <div class="header-description">
-          Technology Components grouped by governing domain and capability. Contact the capability owner when a Technology Component needs to be added, retired, or moved to a different lifecycle status.
+          Start with a governing domain, then open a capability to see the TechnologyComponents approved or allowed for that capability and their lifecycle status.
         </div>
       </section>
-      <div class="content-rows">
-        ${groups.map(acceptableUseDomainMarkup).join('') || '<div class="empty-card" style="padding:24px;">No Technology Component implementations are mapped.</div>'}
+      <div class="acceptable-use-grid domain-grid">
+        ${groups.map(acceptableUseDomainTileMarkup).join('') || '<div class="empty-card" style="padding:24px;">No capability domains are available.</div>'}
       </div>
     </div>
   `;
   attachTopNavHandlers();
   attachObjectLinkHandlers(pageRoot);
+  attachAcceptableUseHandlers();
 }
 
 function renderListView() {
