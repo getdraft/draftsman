@@ -4,7 +4,7 @@ type: capability
 name: WAN Connectivity
 description: Sites, data centers, and cloud environments are interconnected reliably through approved wide area network technology.
 version: 1.0.0
-catalogStatus: incomplete
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

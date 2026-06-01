@@ -4,7 +4,7 @@ type: capability
 name: Test Authoring
 description: Tools and frameworks used to author automated tests.
 version: 1.0.0
-catalogStatus: incomplete
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

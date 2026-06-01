@@ -4,7 +4,7 @@ type: capability
 name: Traffic Management
 description: Application and network traffic is distributed, shaped, and controlled across services and infrastructure through approved load balancing and traffic management technology.
 version: 1.0.0
-catalogStatus: incomplete
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

@@ -4,7 +4,7 @@ type: capability
 name: Container Orchestration
 description: Management of containerized workload lifecycles.
 version: 1.0.0
-catalogStatus: incomplete
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

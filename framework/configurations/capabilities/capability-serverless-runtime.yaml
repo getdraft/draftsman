@@ -4,7 +4,7 @@ type: capability
 name: Serverless Function Runtime
 description: Event-driven, scale-to-zero compute runtime capability.
 version: 1.0.0
-catalogStatus: incomplete
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture

@@ -5,7 +5,7 @@ notes, including patch releases.
 
 ## 0.36.4 - 2026-05-31
 
-Traces the four framework-native network capabilities (Network Connectivity, Network Segmentation, Traffic Management, WAN Connectivity) from the base NetworkService RequirementGroup so they resolve to a requirement demand signal. Previously the validator warned that these capabilities were untraceable, forcing vendored company workspaces to invent artificial company-specific requirements just to satisfy traceability.
+Traces the four framework-native network capabilities (Network Connectivity, Network Segmentation, Traffic Management, WAN Connectivity) from the base NetworkService RequirementGroup so they resolve to a requirement demand signal, then promotes every traced framework-native capability out of `incomplete` so DRAFT no longer ships capabilities at provisional maturity. Previously the validator warned that the network capabilities were untraceable, forcing vendored company workspaces to invent artificial company-specific requirements just to satisfy traceability.
 
 ### Fixed
 
@@ -13,15 +13,15 @@ Traces the four framework-native network capabilities (Network Connectivity, Net
 
 ### Changed
 
-- None.
+- **Native capabilities promoted to `complete`**: All eleven framework-native capabilities that were still labeled `catalogStatus: incomplete` are now `complete`, since each is traceable to a RequirementGroup demand signal and structurally identical to the capabilities already shipped as complete. Promoted: Network Connectivity, Network Segmentation, Traffic Management, WAN Connectivity (newly traceable via this release), plus Application Performance Monitoring, Container Orchestration, Performance and Load Testing, Quality Gates, Serverless Function Runtime, Test Authoring, and Test Execution and Automation (already traced). DRAFT no longer ships any capability at `incomplete`.
 
 ### Compatibility Impact
 
-- None. The change only broadens how the existing `network-function` requirement can be satisfied; no new mandatory obligations are introduced for existing objects.
+- None. The NetworkService change only broadens how the existing `network-function` requirement can be satisfied, and capability promotion is a definition-maturity label change with no new object obligations. Workspace-activated compliance RequirementGroups (TX-RAMP, NIST CSF, SOC 2) remain intentionally provisional and are unaffected.
 
 ### Migration Notes
 
-No manual workspace migration is required. Vendored workspaces pick up the traceability fix on their next framework refresh.
+No manual workspace migration is required. Vendored workspaces pick up the traceability fix and capability maturity on their next framework refresh.
 
 ## 0.36.3 - 2026-05-31
 

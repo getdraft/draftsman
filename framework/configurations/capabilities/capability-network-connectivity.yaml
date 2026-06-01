@@ -4,7 +4,7 @@ type: capability
 name: Network Connectivity
 description: Hosts and services can reach each other across the network fabric through approved switching and routing infrastructure.
 version: 1.0.0
-catalogStatus: incomplete
+catalogStatus: complete
 definitionOwner:
   provider: draft-framework
   team: cloud-architecture
