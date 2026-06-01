@@ -50,3 +50,5 @@ decisionRecords:
   key: failureDomain
 - ref: 01KT11AQX2-STQ4
   key: resilienceModel
+- ref: 01KT1340HF-1HG3
+  key: secrets_management

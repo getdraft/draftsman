@@ -59,10 +59,6 @@ VALID_REQUIREMENT_ANSWER_TYPES = {
     "relationship",
     "internalComponent",
     "decisionRecord",
-    # architectureNote remains a recognized answer type so existing/deferred RequirementGroups
-    # parse, but it no longer SATISFIES a requirement (see mechanism_satisfied) — a note is a
-    # drafting placeholder; the decision must be committed as a DecisionRecord.
-    "architectureNote",
     "field",
 }
 VALID_REQUIREMENT_MODES = {"mandatory", "conditional"}

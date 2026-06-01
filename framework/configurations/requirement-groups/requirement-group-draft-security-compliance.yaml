@@ -2,9 +2,8 @@ schemaVersion: '1.0'
 uid: 01KQQ4Q027-T3CA
 type: requirement_group
 name: Security and Security Compliance RequirementGroup
-description: 'Baseline security and compliance requirement group bundled with DRAFT. Requirements are applied to matching object types based on their target scope.
-
-  '
+description: |
+  Baseline security and compliance requirement group bundled with DRAFT. Requirements are applied to matching object types based on their target scope.
 version: 1.0.0
 catalogStatus: complete
 activation: workspace
@@ -28,7 +27,9 @@ requirements:
   externalControlId: CC.SecurityCompliance.04.2.2
   name: Centralized Administrative Authentication
   description: Centralized Administrative Authentication
-  rationale: Record how this object satisfies CC.SecurityCompliance.04.2.2 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.04.2.2 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - host
   requirementMode: mandatory
@@ -40,20 +41,25 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-MHJM
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: authentication
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: authentication, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - relationship
   - technologyComponentConfiguration
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-MHJM
   externalReference: https://controls.example.com/security-compliance/04.2.2
 - id: CC.SecurityCompliance.04.4.1
   externalControlId: CC.SecurityCompliance.04.4.1
   name: Password Policy
   description: Password Policy
-  rationale: Record how this object satisfies CC.SecurityCompliance.04.4.1 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.04.4.1 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - host
   requirementMode: mandatory
@@ -65,20 +71,25 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-MHJM
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: authentication
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: authentication, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - relationship
   - technologyComponentConfiguration
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-MHJM
   externalReference: https://controls.example.com/security-compliance/04.4.1
 - id: CC.SecurityCompliance.04.4.1.access-control-model
   externalControlId: CC.SecurityCompliance.04.4.1
   name: Database Password Policy
   description: Database Password Policy
-  rationale: Record how this object satisfies CC.SecurityCompliance.04.4.1 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.04.4.1 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - data_store_service
   requirementMode: mandatory
@@ -90,20 +101,25 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-4JR6
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: access_control_model
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - relationship
   - technologyComponentConfiguration
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-4JR6
   externalReference: https://controls.example.com/security-compliance/04.4.1
 - id: CC.SecurityCompliance.06.1.1
   externalControlId: CC.SecurityCompliance.06.1.1
   name: Centralized Log Management
   description: Centralized Log Management
-  rationale: Record how this object satisfies CC.SecurityCompliance.06.1.1 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.06.1.1 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - host
   requirementMode: mandatory
@@ -115,20 +131,25 @@ requirements:
   - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-D04B
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: log_management
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: log_management, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponentConfiguration
   - relationship
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-D04B
   externalReference: https://controls.example.com/security-compliance/06.1.1
 - id: CC.SecurityCompliance.06.2.1
   externalControlId: CC.SecurityCompliance.06.2.1
   name: Host Health and Welfare Monitoring
   description: Host Health and Welfare Monitoring
-  rationale: Record how this object satisfies CC.SecurityCompliance.06.2.1 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.06.2.1 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - host
   requirementMode: mandatory
@@ -143,21 +164,26 @@ requirements:
   - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-98VD
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: health_welfare_monitoring
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: health_welfare_monitoring,
+      recording this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - technologyComponentConfiguration
   - relationship
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-98VD
   externalReference: https://controls.example.com/security-compliance/06.2.1
 - id: CC.SecurityCompliance.06.3.1
   externalControlId: CC.SecurityCompliance.06.3.1
   name: Security Event Monitoring
   description: Security Event Monitoring
-  rationale: Record how this object satisfies CC.SecurityCompliance.06.3.1 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.06.3.1 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - host
   requirementMode: mandatory
@@ -172,21 +198,26 @@ requirements:
   - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-JW52
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: security_monitoring
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: security_monitoring, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - technologyComponentConfiguration
   - relationship
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-JW52
   externalReference: https://controls.example.com/security-compliance/06.3.1
 - id: CC.SecurityCompliance.03.1.1
   externalControlId: CC.SecurityCompliance.03.1.1
   name: Patch Governance
   description: Patch Governance
-  rationale: Record how this object satisfies CC.SecurityCompliance.03.1.1 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.03.1.1 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - host
   requirementMode: mandatory
@@ -198,20 +229,25 @@ requirements:
   - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-BH6E
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: patch_management
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: patch_management, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - relationship
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-BH6E
   externalReference: https://controls.example.com/security-compliance/03.1.1
 - id: CC.SecurityCompliance.03.2.1
   externalControlId: CC.SecurityCompliance.03.2.1
   name: Patch Execution Workflow
   description: Patch Execution Workflow
-  rationale: Record how this object satisfies CC.SecurityCompliance.03.2.1 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.03.2.1 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - host
   requirementMode: mandatory
@@ -223,117 +259,132 @@ requirements:
   - mechanism: relationship
     criteria:
       capability: 01KQQ4Q026-BH6E
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: patch_management
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: patch_management, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - technologyComponent
   - relationship
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-BH6E
   externalReference: https://controls.example.com/security-compliance/03.2.1
 - id: CC.SecurityCompliance.10.1.1
   externalControlId: CC.SecurityCompliance.10.1.1
   name: ReferenceArchitecture Conformance
   description: ReferenceArchitecture Conformance
-  rationale: Record how this object satisfies CC.SecurityCompliance.10.1.1 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.10.1.1 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - software_deployment_pattern
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:
-  - mechanism: field
-    key: architectureNotes.reference_architecture_conformance
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: reference_architecture_conformance
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: reference_architecture_conformance,
+      recording this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
-  - field
-  - architectureNote
+  - decisionRecord
   externalReference: https://controls.example.com/security-compliance/10.1.1
 - id: CC.SecurityCompliance.10.1.2
   externalControlId: CC.SecurityCompliance.10.1.2
   name: Availability Requirement
   description: Availability Requirement
-  rationale: Record how this object satisfies CC.SecurityCompliance.10.1.2 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.10.1.2 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - software_deployment_pattern
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:
-  - mechanism: field
-    key: architectureNotes.availability_requirement
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: availability_requirement
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: availability_requirement,
+      recording this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
-  - field
-  - architectureNote
+  - decisionRecord
   externalReference: https://controls.example.com/security-compliance/10.1.2
 - id: CC.SecurityCompliance.00.2.1
   externalControlId: CC.SecurityCompliance.00.2.1
   name: Data Classification
   description: Data Classification
-  rationale: Record how this object satisfies CC.SecurityCompliance.00.2.1 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.00.2.1 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - software_deployment_pattern
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:
-  - mechanism: field
-    key: architectureNotes.data_classification
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: data_classification
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: data_classification, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
-  - field
-  - architectureNote
+  - decisionRecord
   externalReference: https://controls.example.com/security-compliance/00.2.1
 - id: CC.SecurityCompliance.00.2.1.access-control-model
   externalControlId: CC.SecurityCompliance.00.2.1
   name: Database Data Classification Context
   description: Database Data Classification Context
-  rationale: Record how this object satisfies CC.SecurityCompliance.00.2.1 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.00.2.1 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - data_store_service
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:
-  - mechanism: field
-    key: architectureNotes.access_control_model
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: access_control_model
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
-  - field
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-4JR6
   externalReference: https://controls.example.com/security-compliance/00.2.1
 - id: CC.SecurityCompliance.10.2.1
   externalControlId: CC.SecurityCompliance.10.2.1
   name: Database Backup Strategy
   description: Database Backup Strategy
-  rationale: Record how this object satisfies CC.SecurityCompliance.10.2.1 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.10.2.1 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - data_store_service
   requirementMode: mandatory
   naAllowed: false
   canBeSatisfiedBy:
-  - mechanism: field
-    key: architectureNotes.backup_strategy
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: backup_strategy
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: backup_strategy, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
-  - field
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-7T2H
   externalReference: https://controls.example.com/security-compliance/10.2.1
 - id: CC.SecurityCompliance.04.1.1
   externalControlId: CC.SecurityCompliance.04.1.1
   name: Database Access Control Model
   description: Database Access Control Model
-  rationale: Record how this object satisfies CC.SecurityCompliance.04.1.1 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.04.1.1 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - data_store_service
   requirementMode: mandatory
@@ -345,20 +396,25 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-4JR6
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: access_control_model
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - relationship
   - technologyComponentConfiguration
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-4JR6
   externalReference: https://controls.example.com/security-compliance/04.1.1
 - id: CC.SecurityCompliance.04.3.1
   externalControlId: CC.SecurityCompliance.04.3.1
   name: Secrets Management
   description: Secrets Management
-  rationale: Record how this object satisfies CC.SecurityCompliance.04.3.1 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.04.3.1 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - runtime_service
   - network_service
@@ -371,20 +427,25 @@ requirements:
   - mechanism: technologyComponentConfiguration
     criteria:
       capability: 01KQQ4Q026-DTJJ
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: secrets_management
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: secrets_management, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - relationship
   - technologyComponentConfiguration
-  - architectureNote
+  - decisionRecord
   relatedCapability: 01KQQ4Q026-DTJJ
   externalReference: https://controls.example.com/security-compliance/04.3.1
 - id: CC.SecurityCompliance.04.3.1.product_component
   externalControlId: CC.SecurityCompliance.04.3.1
   name: ProductComponent Secrets Management
   description: ProductComponent Secrets Management
-  rationale: Record how this object satisfies CC.SecurityCompliance.04.3.1 for Security and Security Compliance Requirements.
+  rationale: >-
+    Record how this object satisfies CC.SecurityCompliance.04.3.1 for Security and Security Compliance
+    Requirements.
   appliesTo:
   - product_component
   requirementMode: mandatory
@@ -392,13 +453,16 @@ requirements:
   canBeSatisfiedBy:
   - mechanism: relationship
   - mechanism: technologyComponentConfiguration
-  - mechanism: architectureNote
+  - mechanism: decisionRecord
     key: product_component
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: product_component, recording
+      this decision (or why it is not applicable).
   minimumSatisfactions: 1
   validAnswerTypes:
   - relationship
   - technologyComponentConfiguration
-  - architectureNote
+  - decisionRecord
   externalReference: https://controls.example.com/security-compliance/04.3.1
 lifecycleStatus: existing-only
 tags:

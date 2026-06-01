@@ -64,7 +64,7 @@ decisionRecords:
 - ref: 01KT11AQZJ-QYX8
   key: serviceAuthentication
 - ref: 01KT11AQZK-6FXW
-  key: healthWelfareMonitoringApproach
+  key: healthWelfareMonitoring
 - ref: 01KT11AQZK-6FXW
   key: serviceLogging
 - ref: 01KT11AQZK-PETM
@@ -75,3 +75,5 @@ decisionRecords:
   key: recoverabilityModel
 - ref: 01KT11AQZK-PETM
   key: scalabilityModel
+- ref: 01KT1340KJ-VHKK
+  key: secrets_management

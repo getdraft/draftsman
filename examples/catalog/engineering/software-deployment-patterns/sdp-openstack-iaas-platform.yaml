@@ -72,6 +72,12 @@ decisionRecords:
   key: availabilityRequirement
 - ref: 01KT11AQTT-P9SW
   key: failureDomain
+- ref: 01KT1340F7-WNNX
+  key: availability_requirement
+- ref: 01KT1340F7-WNNX
+  key: data_classification
+- ref: 01KT1340F7-WNNX
+  key: reference_architecture_conformance
 networkZones:
 - id: public
   name: Public

@@ -93,7 +93,7 @@ decisionRecords:
 - ref: 01KT11AQV3-N9NA
   key: serviceAuthentication
 - ref: 01KT11AQV4-8S2X
-  key: healthWelfareMonitoringApproach
+  key: healthWelfareMonitoring
 - ref: 01KT11AQV4-8S2X
   key: serviceLogging
 - ref: 01KT11AQV5-MX8S
@@ -106,3 +106,7 @@ decisionRecords:
   key: recoverabilityModel
 - ref: 01KT11AQV5-MX8S
   key: scalabilityModel
+- ref: 01KT1340FJ-DCHY
+  key: access_control_model
+- ref: 01KT1340FJ-DCHY
+  key: backup_strategy
