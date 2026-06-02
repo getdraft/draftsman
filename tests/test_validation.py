@@ -132,6 +132,118 @@ class ValidationTests(unittest.TestCase):
 
         self.assertTrue(result.ok, result.stdout + result.stderr)
 
+    def test_workspace_capability_duplicate_native_name_warns(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            capability_dir = workspace / "configurations" / "capabilities"
+            capability_dir.mkdir(parents=True, exist_ok=True)
+            (capability_dir / "capability-local-waf.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KT55KGQ2-96B8
+                    type: capability
+                    name: waf
+                    description: Local WAF capability that predates the native framework WAF capability.
+                    catalogStatus: incomplete
+                    definitionOwner:
+                      provider: local-workspace
+                      team: platform
+                    domain: 01KSWVZSZ5-4WKE
+                    implementations: []
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+        self.assertIn("duplicates native capability 'WAF'", result.stdout)
+        self.assertIn("01KT55KGQ2-96B8", result.stdout)
+        self.assertIn("01KT0V5MCV-Z079", result.stdout)
+
+    def test_workspace_duplicate_name_warn_suppressed_by_native_alias(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            patch_dir = workspace / "configurations" / "object-patches"
+            patch_dir.mkdir(parents=True, exist_ok=True)
+            (patch_dir / "patch-native-waf-alias.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KT55KHMT-FZT3
+                    type: object_patch
+                    name: Alias Native WAF
+                    target: 01KT0V5MCV-Z079
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    patch:
+                      aliases:
+                        - WAF
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            capability_dir = workspace / "configurations" / "capabilities"
+            capability_dir.mkdir(parents=True, exist_ok=True)
+            (capability_dir / "capability-local-waf.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KT55KGQ2-96B8
+                    type: capability
+                    name: WAF
+                    description: Local WAF capability intentionally preserved as an alias of the native object.
+                    catalogStatus: incomplete
+                    definitionOwner:
+                      provider: local-workspace
+                      team: platform
+                    domain: 01KSWVZSZ5-4WKE
+                    implementations: []
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+        self.assertNotIn("duplicates native capability 'WAF'", result.stdout)
+
+    def test_workspace_domain_duplicate_native_name_warns(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            domain_dir = workspace / "configurations" / "domains"
+            domain_dir.mkdir(parents=True, exist_ok=True)
+            (domain_dir / "domain-local-compute.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KT55KH5Y-9N8F
+                    type: domain
+                    name: Compute & Runtime
+                    description: Local compute domain that predates the native framework domain.
+                    capabilities: []
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+        self.assertIn("duplicates native domain 'Compute & Runtime'", result.stdout)
+        self.assertIn("01KT55KH5Y-9N8F", result.stdout)
+        self.assertIn("01KQQ4Q027-ZTHF", result.stdout)
+
     def test_active_requirement_group_must_exist(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
