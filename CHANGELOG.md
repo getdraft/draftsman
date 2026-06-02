@@ -3,6 +3,31 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.44.1 - 2026-06-02
+
+Clarifies GitHub activity ownership expectations for AI-assisted DRAFT work.
+
+### Compatibility Impact
+
+- This release does not introduce any breaking changes to existing catalogs. Documentation-only clarification.
+
+### Added
+
+- None.
+
+### Changed
+
+- Clarified that GitHub issues and pull requests are the shared activity log for DRAFT work.
+- Clarified that agent responsibility should be tracked through real GitHub identities and activity rather than labels.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No migration steps are required for this release. Existing objects and configurations remain valid.
+
 ## 0.44.0 - 2026-06-01
 
 Introduces the DRAFT v1.0 deployment readiness validation contract, including environment target binding schemas, a template, automated secrets scanning, and a topological closed-graph completeness check.
