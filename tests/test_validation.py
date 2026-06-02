@@ -1338,6 +1338,103 @@ requirementGroups:
         self.assertIn("internalComponentRationales['01KQS0TF68-RBMQ']", result.stdout)
         self.assertIn("does not directly satisfy any applicable requirement", result.stdout)
 
+    def test_validate_warns_when_workspace_capability_duplicates_native_name(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            capability_dir = workspace / "configurations" / "capabilities"
+            capability_dir.mkdir(parents=True, exist_ok=True)
+            (capability_dir / "capability-local-authentication.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KZZZZZZZ-ATHN
+                    type: capability
+                    name: Authentication
+                    description: Local duplicate of the native Authentication capability.
+                    catalogStatus: incomplete
+                    definitionOwner:
+                      provider: company
+                      team: platform-engineering
+                    domain: 01KSWVZSZ5-71PY
+                    implementations: []
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+        self.assertIn("Validation warnings:", result.stdout)
+        self.assertIn("workspace capability 'Authentication'", result.stdout)
+        self.assertIn("duplicates native capability 'Authentication'", result.stdout)
+        self.assertIn("object_patch", result.stdout)
+
+    def test_validate_warns_when_workspace_domain_duplicates_native_name(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            domain_dir = workspace / "configurations" / "domains"
+            domain_dir.mkdir(parents=True, exist_ok=True)
+            (domain_dir / "domain-local-compute.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KZZZZZZZ-CMP1
+                    type: domain
+                    name: Compute & Runtime
+                    capabilities: []
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+        self.assertIn("workspace domain 'Compute & Runtime'", result.stdout)
+        self.assertIn("duplicates native domain 'Compute & Runtime'", result.stdout)
+
+    def test_validate_allows_workspace_name_that_is_native_alias(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            native_capability = workspace / ".draft" / "framework" / "configurations" / "capabilities" / "capability-authentication.yaml"
+            native_capability.write_text(
+                native_capability.read_text(encoding="utf-8")
+                + "aliases:\n  - Local AuthN\n",
+                encoding="utf-8",
+            )
+            capability_dir = workspace / "configurations" / "capabilities"
+            capability_dir.mkdir(parents=True, exist_ok=True)
+            (capability_dir / "capability-local-authn.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KZZZZZZZ-AAN1
+                    type: capability
+                    name: Local AuthN
+                    description: Local capability whose name is intentionally retained as a native alias.
+                    catalogStatus: incomplete
+                    definitionOwner:
+                      provider: company
+                      team: platform-engineering
+                    domain: 01KSWVZSZ5-71PY
+                    implementations: []
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+        self.assertNotIn("duplicates native capability", result.stdout)
+
     def test_capability_implementation_requires_company_owner(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)

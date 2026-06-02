@@ -698,6 +698,80 @@ def validate_object_uids(
             seen[uid] = path
 
 
+def normalized_human_name(value: Any) -> str:
+    if not is_non_empty(value):
+        return ""
+    return re.sub(r"\s+", " ", str(value).strip()).casefold()
+
+
+def object_alias_keys(obj: dict[str, Any]) -> set[str]:
+    aliases = obj.get("aliases") or []
+    if not isinstance(aliases, list):
+        return set()
+    return {normalized_human_name(alias) for alias in aliases if normalized_human_name(alias)}
+
+
+def object_source_label(path: Path, workspace_root: Path) -> str:
+    resolved = path.resolve()
+    roots = (
+        (BASE_CONFIGURATION_ROOT.resolve(), "native"),
+        ((workspace_root / ".draft" / "providers").resolve(), "provider"),
+        ((workspace_root / "configurations").resolve(), "workspace"),
+        ((workspace_root / "catalog").resolve(), "workspace"),
+    )
+    for root, label in roots:
+        try:
+            resolved.relative_to(root)
+            return label
+        except ValueError:
+            continue
+    return "workspace"
+
+
+def validate_duplicate_capability_domain_names(
+    objects: dict[Path, dict[str, Any]],
+    workspace_root: Path,
+    warnings: list[str],
+) -> None:
+    by_type_and_name: dict[tuple[str, str], list[tuple[Path, dict[str, Any], str]]] = {}
+    native_aliases_by_type: dict[str, set[str]] = {}
+
+    for path, obj in objects.items():
+        if not isinstance(obj, dict):
+            continue
+        object_type = obj.get("type")
+        if object_type not in {"capability", "domain"}:
+            continue
+        name_key = normalized_human_name(obj.get("name"))
+        if name_key:
+            origin = object_source_label(path, workspace_root)
+            by_type_and_name.setdefault((str(object_type), name_key), []).append((path, obj, origin))
+            if origin == "native":
+                native_aliases_by_type.setdefault(str(object_type), set()).update(object_alias_keys(obj))
+
+    for (object_type, name_key), entries in sorted(by_type_and_name.items()):
+        if len(entries) < 2:
+            continue
+        if name_key in native_aliases_by_type.get(object_type, set()):
+            continue
+
+        native_entries = [entry for entry in entries if entry[2] == "native"]
+        comparison_entries = native_entries or entries[:1]
+        for path, obj, origin in entries:
+            if native_entries and origin == "native":
+                continue
+            duplicate_path, duplicate_obj, duplicate_origin = comparison_entries[0]
+            if path == duplicate_path:
+                continue
+            name = str(obj.get("name") or "").strip()
+            duplicate_name = str(duplicate_obj.get("name") or "").strip()
+            warnings.append(
+                f"{path}: {origin} {object_type} '{name}' ({obj.get('uid')}) duplicates "
+                f"{duplicate_origin} {object_type} '{duplicate_name}' ({duplicate_obj.get('uid')}) in {duplicate_path}. "
+                "Reconcile by retiring the local object and overlaying the native one via an object_patch, or rename."
+            )
+
+
 def get_nested_value(node: Any, dotted_key: str) -> Any:
     current = node
     for part in dotted_key.split("."):
@@ -3419,6 +3493,7 @@ def main(argv: list[str] | None = None) -> int:
     require_active_group_disposition = workspace_requirements["require_active_group_disposition"]
     validate_workspace_requirements(workspace_root, active_group_ids, catalog_by_id, failures)
     validate_workspace_vocabulary_references(objects, workspace_vocabulary, failures, warnings)
+    validate_duplicate_capability_domain_names(objects, workspace_root, warnings)
 
     for path, obj in objects.items():
         if obj.get("type") is None:
