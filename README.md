@@ -67,6 +67,19 @@ as an experimental prototype, but they are not part of the v1.0 launch path.
 Future releases may revive them as optional convenience tooling after the
 repo-first workflow is stable.
 
+## GitHub Activity Tracking
+
+Use GitHub issues and pull requests as the shared activity log for DRAFT work.
+Agents should keep work tied to the relevant GitHub ticket or PR so progress,
+decisions, and handoffs are visible in the repository rather than only in chat.
+
+Do **not** use labels to identify which agent was responsible for a ticket.
+Agent responsibility is determined by the real GitHub identity that performed
+the work: the issue assignee, PR author, commit author, review/comment author,
+and any linked GitHub activity. Labels should remain reserved for workflow,
+priority, area, type, or status metadata that is independent of who did the
+work.
+
 ## Repository Layout
 
 ```text
