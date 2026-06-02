@@ -2,6 +2,18 @@ const browserData = window.DRAFT_BROWSER_DATA || { objects: [], lookup: {}, life
 const lifecycleColors = browserData.lifecycleColors;
 const allObjects = browserData.objects.slice().sort((a, b) => a.name.localeCompare(b.name));
 const objectLookup = browserData.lookup;
+const objectAliasLookup = (() => {
+  const lookup = {};
+  (browserData.objects || []).forEach(object => {
+    [object.id, object.uid, object.name, ...(Array.isArray(object.aliases) ? object.aliases : [])]
+      .filter(Boolean)
+      .forEach(value => {
+        const key = String(value);
+        if (!lookup[key]) lookup[key] = object;
+      });
+  });
+  return lookup;
+})();
 const referencedByIndex = browserData.referencedBy || {};
 const repoUrl = browserData.repoUrl || '';
 const businessTaxonomy = browserData.businessTaxonomy || { pillars: [] };
@@ -1435,6 +1447,45 @@ function internalComponentSatisfiesMechanism(object, component, mechanism) {
   return false;
 }
 
+function resolveCatalogObjectRef(ref) {
+  if (!ref) return null;
+  return objectLookup[ref] || objectAliasLookup[String(ref)] || null;
+}
+
+function relationshipResolutionForImplementation(object, implementation) {
+  if (!object || !implementation || implementation.mechanism !== 'relationship' || !implementation.ref) {
+    return null;
+  }
+  const ref = String(implementation.ref);
+  const relationships = object.outboundRelationships || [];
+  for (const rel of relationships) {
+    const capabilities = Array.isArray(rel.capabilities) ? rel.capabilities : [];
+    const candidates = new Set([rel.targetUid, rel.targetName, rel.name, rel.label].filter(Boolean).map(String));
+    capabilities.filter(Boolean).map(String).forEach(capability => candidates.add(capability));
+    if (!candidates.has(ref)) {
+      continue;
+    }
+    const targetObject = resolveCatalogObjectRef(rel.targetUid) || resolveCatalogObjectRef(rel.targetName);
+    return {
+      object: targetObject,
+      id: targetObject?.id || rel.targetUid || rel.uid || ref,
+      label: targetObject?.name || rel.targetName || rel.name || rel.label || ref,
+      relationship: rel
+    };
+  }
+  return null;
+}
+
+function resolveImplementationReference(object, implementation) {
+  const ref = implementation?.ref;
+  if (!ref) return null;
+  const directObject = resolveCatalogObjectRef(ref);
+  if (directObject) {
+    return { object: directObject, id: directObject.id, label: directObject.name || ref };
+  }
+  return relationshipResolutionForImplementation(object, implementation) || { object: null, id: ref, label: ref };
+}
+
 function internalComponentSatisfiesImplementation(object, component, implementation) {
   if (implementation?.status !== 'satisfied' || !component?.ref) {
     return false;
@@ -1644,7 +1695,7 @@ function acceptableUseGroups() {
         rows.push({
           capability,
           implementation,
-          technology: objectLookup[implementation.ref] || null
+          technology: resolveImplementationReference(capability, implementation)?.object || null
         });
       });
     });
@@ -3786,7 +3837,7 @@ function acceptableUseDomainModels() {
       const rows = implementations.map(implementation => ({
         capability,
         implementation,
-        technology: objectLookup[implementation.ref] || null
+        technology: resolveImplementationReference(capability, implementation)?.object || null
       }));
       const group = groups.get(domainId);
       group.capabilityGroups.push({ capability, rows });
@@ -4708,10 +4759,10 @@ function requirementEvidenceMarkup(object) {
             ${implementations.map(implementation => {
               const group = objectLookup[implementation.requirementGroup] || null;
               const requirement = findRequirementInGroup(group, implementation.requirementId);
-              const refObject = implementation.ref ? objectLookup[implementation.ref] : null;
-              const evidence = refObject
-                ? `<span class="ard-link" data-object-link="${escapeHtml(refObject.id)}">${escapeHtml(refObject.name)}</span>`
-                : escapeHtml(implementation.ref || implementation.key || implementation.notes || 'Not documented');
+              const resolution = resolveImplementationReference(object, implementation);
+              const evidence = resolution?.object
+                ? `<span class="ard-link" data-object-link="${escapeHtml(resolution.object.id)}">${escapeHtml(resolution.object.name)}</span>`
+                : escapeHtml(resolution?.label || implementation.key || implementation.notes || 'Not documented');
               return `
                 <tr>
                   <td>
@@ -4998,7 +5049,7 @@ function domainDetailMarkup(object) {
               <div class="interaction-notes"><strong>Lifecycle implementations:</strong></div>
               <div class="related-list">
                 ${(capability.implementations || []).length ? capability.implementations.map(implementation => {
-                  const implObject = objectLookup[implementation.ref] || {};
+                  const implObject = resolveImplementationReference(object, implementation)?.object || {};
                   return `
                   <a href="#${escapeHtml(implementation.ref)}" class="related-link">
                     <span class="related-icon">${topologyNodeIcon({ref: implementation.ref}, 'host').icon}</span>
@@ -5028,7 +5079,7 @@ function capabilityDetailMarkup(object) {
         </dl>
         <div class="related-list">
           ${(object.implementations || []).length ? object.implementations.map(implementation => {
-            const implObject = objectLookup[implementation.ref] || {};
+            const implObject = resolveImplementationReference(object, implementation)?.object || {};
             return `
               <a href="#${escapeHtml(implementation.ref)}" class="related-link">
                 <span class="related-icon">${topologyNodeIcon({ref: implementation.ref}, 'host').icon}</span>
@@ -6487,6 +6538,38 @@ function _sdpCloseDrawer() {
 }
 
 // ── Service Groups section ────────────────────────────────────────────────────
+function serviceGroupDomId(name, index = 0) {
+  const slug = String(name || `group-${index}`)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || `group-${index}`;
+  return `sdp-service-group-${slug}`;
+}
+
+function findSdpServiceGroup(object, ref) {
+  if (!ref) return null;
+  return (object.serviceGroups || []).find(group => group?.name === ref || group?.id === ref) || null;
+}
+
+function serviceGroupInteractionMarkup(object, interaction) {
+  const ref = interaction.ref || interaction.target || interaction.name || '';
+  const isInternal = interaction.type === 'internal';
+  const targetGroup = isInternal ? findSdpServiceGroup(object, ref) : null;
+  const label = targetGroup?.name || interaction.name || ref || 'Interaction';
+  const target = targetGroup
+    ? `<span class="ard-link" data-service-group-link="${escapeHtml(targetGroup.name)}">${escapeHtml(label)}</span>`
+    : escapeHtml(label);
+  const capabilities = Array.isArray(interaction.capabilities) ? interaction.capabilities : [];
+  return `<div class="interaction-card">
+    <div class="interaction-heading">
+      <div class="interaction-name">${target}</div>
+      <span class="requirement-badge">${escapeHtml(interaction.type || 'external')}</span>
+      ${capabilityLabelsMarkup(capabilities)}
+    </div>
+    ${interaction.notes ? `<div class="interaction-notes">${escapeHtml(interaction.notes)}</div>` : ''}
+  </div>`;
+}
+
 function _sdpGroupsMarkup(object, vm) {
   const groups = object.serviceGroups || [];
   if (!groups.length) return `<div class="sdp-section" id="sdp-s-groups">
@@ -6509,7 +6592,11 @@ function _sdpGroupsMarkup(object, vm) {
         <span class="notes">${escapeHtml(e.notes || '')}</span>
       </div>`;
     }).join('');
-    return `<div class="group-card${gi === 0 ? ' open' : ''}" data-group-idx="${gi}">
+    const interactions = Array.isArray(sg.externalInteractions) ? sg.externalInteractions : [];
+    const interactionRowsHtml = interactions.length
+      ? `<div class="interaction-notes"><strong>Interactions:</strong></div><div class="section-stack">${interactions.map(interaction => serviceGroupInteractionMarkup(object, interaction)).join('')}</div>`
+      : '';
+    return `<div id="${escapeHtml(serviceGroupDomId(sg.name, gi))}" class="group-card${gi === 0 ? ' open' : ''}" data-group-idx="${gi}" data-service-group-name="${escapeHtml(sg.name || '')}">
       <div class="group-head">
         <div>
           <h3>${escapeHtml(sg.name || 'Service Group')}</h3>
@@ -6519,6 +6606,7 @@ function _sdpGroupsMarkup(object, vm) {
       </div>
       <div class="group-body">
         ${entries.length ? `<div class="group-table">${rowsHtml}</div>` : ''}
+        ${interactionRowsHtml}
       </div>
     </div>`;
   }).join('');
@@ -6833,6 +6921,17 @@ function _sdpAttachHandlers(object, vm) {
   root.querySelectorAll('.group-card .group-head').forEach(head => {
     head.addEventListener('click', () => {
       head.closest('.group-card').classList.toggle('open');
+    });
+  });
+
+  // ── Service-group links in legacy externalInteractions
+  root.querySelectorAll('[data-service-group-link]').forEach(link => {
+    link.addEventListener('click', event => {
+      event.stopPropagation();
+      const target = root.querySelector(`[data-service-group-name="${CSS.escape(link.dataset.serviceGroupLink)}"]`);
+      if (!target) return;
+      target.classList.add('open');
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 

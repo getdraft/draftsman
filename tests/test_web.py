@@ -1,8 +1,12 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 from draft_table.web import INDEX_HTML
+
+
+BROWSER_JS = (Path(__file__).resolve().parents[1] / "framework" / "browser" / "draft-browser.js").read_text(encoding="utf-8")
 
 
 class WebTests(unittest.TestCase):
@@ -32,6 +36,17 @@ class WebTests(unittest.TestCase):
         self.assertIn("How Content Gets Updated", INDEX_HTML)
         self.assertIn("TechnologyComponent", INDEX_HTML)
         self.assertIn("SoftwareDeploymentPattern", INDEX_HTML)
+    def test_browser_resolves_relationship_and_alias_refs(self) -> None:
+        self.assertIn("const objectAliasLookup", BROWSER_JS)
+        self.assertIn("function relationshipResolutionForImplementation", BROWSER_JS)
+        self.assertIn("rel.targetUid, rel.targetName, rel.name, rel.label", BROWSER_JS)
+        self.assertIn("resolveImplementationReference(object, implementation)", BROWSER_JS)
+
+    def test_sdp_internal_interactions_link_to_service_groups(self) -> None:
+        self.assertIn("function findSdpServiceGroup", BROWSER_JS)
+        self.assertIn("data-service-group-link", BROWSER_JS)
+        self.assertIn("data-service-group-name", BROWSER_JS)
+        self.assertIn("scrollIntoView({ behavior: 'smooth', block: 'start' })", BROWSER_JS)
 
 
 if __name__ == "__main__":
