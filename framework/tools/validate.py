@@ -595,6 +595,77 @@ def object_label(obj: dict[str, Any]) -> str:
     return str(obj.get("name") or obj.get("uid") or obj.get("id") or "unknown")
 
 
+def normalized_name(value: Any) -> str:
+    return re.sub(r"\s+", " ", str(value or "").strip()).casefold()
+
+
+def normalized_aliases(obj: dict[str, Any]) -> set[str]:
+    aliases = obj.get("aliases") or []
+    if not isinstance(aliases, list):
+        return set()
+    return {normalized_name(alias) for alias in aliases if is_non_empty(alias)}
+
+
+def object_source(path: Path, workspace_root: Path) -> str:
+    resolved = path.resolve()
+    try:
+        resolved.relative_to(BASE_CONFIGURATION_ROOT.resolve())
+        return "native"
+    except ValueError:
+        pass
+    provider_root = (workspace_root / ".draft" / "providers").resolve()
+    try:
+        resolved.relative_to(provider_root)
+        return "provider"
+    except ValueError:
+        pass
+    return "workspace"
+
+
+def validate_duplicate_capability_domain_names(
+    objects: dict[Path, dict[str, Any]],
+    workspace_root: Path,
+    warnings: list[str],
+) -> None:
+    by_type_and_name: dict[tuple[str, str], list[tuple[Path, dict[str, Any], str]]] = {}
+    for path, obj in objects.items():
+        object_type = obj.get("type")
+        if object_type not in {"capability", "domain"}:
+            continue
+        name_key = normalized_name(obj.get("name"))
+        if not name_key:
+            continue
+        by_type_and_name.setdefault((str(object_type), name_key), []).append(
+            (path, obj, object_source(path, workspace_root))
+        )
+
+    for (object_type, name_key), entries in sorted(by_type_and_name.items(), key=lambda item: item[0]):
+        if len(entries) < 2:
+            continue
+        for left_index, (left_path, left_obj, left_source) in enumerate(entries):
+            for right_path, right_obj, right_source in entries[left_index + 1:]:
+                if name_key in normalized_aliases(left_obj) or name_key in normalized_aliases(right_obj):
+                    continue
+                if left_source == "native" and right_source == "workspace":
+                    native_obj = left_obj
+                    workspace_path, workspace_obj = right_path, right_obj
+                elif left_source == "workspace" and right_source == "native":
+                    native_obj = right_obj
+                    workspace_path, workspace_obj = left_path, left_obj
+                else:
+                    warnings.append(
+                        f"{right_path}: {right_source} {object_type} '{object_label(right_obj)}' ({object_uid(right_obj)}) "
+                        f"duplicates {left_source} {object_type} '{object_label(left_obj)}' ({object_uid(left_obj)}). "
+                        "Reconcile by retiring or renaming one object, or use aliases/object_patch when they intentionally refer to the same concept."
+                    )
+                    continue
+                warnings.append(
+                    f"{workspace_path}: workspace {object_type} '{object_label(workspace_obj)}' ({object_uid(workspace_obj)}) "
+                    f"duplicates native {object_type} '{object_label(native_obj)}' ({object_uid(native_obj)}). "
+                    "Reconcile by retiring the local object and overlaying the native one via an object_patch, or rename."
+                )
+
+
 def requirement_group_name(group: dict[str, Any], fallback: str = "RequirementGroup") -> str:
     name = str(group.get("name") or fallback)
     return re.sub(r"\s+RequirementGroup$", "", name).strip() or fallback
