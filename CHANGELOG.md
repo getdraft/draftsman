@@ -3,6 +3,32 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.45.0 - 2026-06-02
+
+Adds validator coverage for duplicate capability and domain names across native, provider, and workspace catalog layers.
+
+### Compatibility Impact
+
+- This release adds validation warnings only. Existing catalogs remain valid, but duplicate capability or domain names will now be reported so they can be reconciled before they appear as duplicate browser cards.
+
+### Added
+
+- Added validator warnings for duplicate capability and domain names across native, provider, and workspace objects.
+- Added alias-aware suppression so intentional continuity aliases or object patches do not trigger duplicate-name warnings.
+- Added regression tests covering duplicate capability warnings, duplicate domain warnings, and alias suppression.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- Fixed a validator coverage gap where duplicate native/workspace capability or domain names could pass silently and later render as confusing duplicate browser entries.
+
+### Migration Notes
+
+- Existing catalogs do not require immediate migration. If validation reports a duplicate local capability or domain name, retire the local object and overlay the native object with an `object_patch`, or rename one of the objects.
+
 ## 0.44.1 - 2026-06-02
 
 Clarifies GitHub activity ownership expectations for AI-assisted DRAFT work.
