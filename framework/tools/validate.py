@@ -2148,6 +2148,20 @@ def validate_standard(
         allowed = {"host", "runtime_service"}
         if runs_on and (not target or target.get("type") not in allowed):
             failures.append(f"{path}: runsOn must reference a Host or RuntimeService (got '{runs_on}')")
+        runtime_spec = obj.get("runtimeSpec") or {}
+        if isinstance(runtime_spec, dict):
+            dependencies = runtime_spec.get("dependencies") or []
+            if isinstance(dependencies, list):
+                for index, dependency in enumerate(dependencies):
+                    if not isinstance(dependency, dict):
+                        continue
+                    ref = dependency.get("ref")
+                    if is_non_empty(ref) and str(ref) not in catalog_by_id:
+                        failures.append(
+                            f"{path}: runtimeSpec.dependencies[{index}].ref references unknown object '{ref}'"
+                        )
+                    if is_non_empty(ref) and str(ref) == str(obj.get("uid")):
+                        failures.append(f"{path}: runtimeSpec.dependencies[{index}].ref must not reference itself")
     if object_type == "data_component":
         runs_on = obj.get("runsOn")
         target = catalog_by_id.get(runs_on) if runs_on else None

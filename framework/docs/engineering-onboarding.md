@@ -49,6 +49,7 @@ For every microservice or runtime process, author a `ProductComponent` YAML file
 * Set `repoUrl` pointing to your service repository.
 * Specify `classification` (e.g., `service`, `web-application`, `background-worker`).
 * Declare network boundaries (`networkBindings`) and configuration dependencies.
+* Use `runtimeSpec.ports` for service-owned listener or egress port metadata, and `runtimeSpec.dependencies` for simple runtime dependencies the component consumes without asking Shared Services to edit the underlying RuntimeService.
 * **Important:** Link the component to your team ID by setting the `owner.team` property (e.g., `owner.team: billing-team`).
 
 ### Step 2: Create a DataComponent (If your service owns data)

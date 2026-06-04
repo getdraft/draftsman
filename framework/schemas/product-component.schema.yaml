@@ -21,6 +21,7 @@ optionalFields:
 - interfaces
 - networkBindings
 - environmentConfiguration
+- runtimeSpec
 - architectureNotes
 - notes
 - decisionRecords
@@ -51,6 +52,7 @@ fieldTypes:
   interfaces: list
   networkBindings: list
   environmentConfiguration: list
+  runtimeSpec: dict
   architectureNotes: dict
   requirementGroups: list
   decisionRecords: list
@@ -61,6 +63,60 @@ collectionSchemas:
   environmentConfiguration: environmentVariable
   decisionRecords: decisionRecordRef
   requirementImplementations: requirementImplementation
+dictSubSchemas:
+  runtimeSpec: runtimeSpec
+runtimeSpec:
+  optionalFields:
+  - ports
+  - dependencies
+  fieldTypes:
+    ports: list
+    dependencies: list
+  collectionSchemas:
+    ports: runtimePort
+    dependencies: runtimeDependency
+runtimePort:
+  requiredFields:
+  - number
+  - protocol
+  optionalFields:
+  - name
+  - direction
+  - description
+  enumFields:
+    direction:
+    - inbound
+    - outbound
+    - bidirectional
+  fieldTypes:
+    number: int
+    protocol: str
+    name: str
+    direction: str
+    description: str
+  fieldDescriptions:
+    number: Record the application port number exposed or consumed by this component.
+    protocol: Record the application protocol such as HTTP, HTTPS, gRPC, TCP, UDP, AMQP, or other.
+    name: Name the port or listener, such as web, metrics, admin, or grpc.
+    direction: Use inbound, outbound, or bidirectional when the traffic direction is known.
+    description: Explain the purpose of this runtime port.
+runtimeDependency:
+  requiredFields:
+  - ref
+  - purpose
+  optionalFields:
+  - interface
+  - notes
+  fieldTypes:
+    ref: str
+    purpose: str
+    interface: str
+    notes: str
+  fieldDescriptions:
+    ref: Reference the catalog UID for the service, data store, network service, component, or other object this component depends on.
+    purpose: Explain why this component depends on the referenced object.
+    interface: Name the consumed API, topic, queue, bucket, or configuration surface when known.
+    notes: Add extra runtime dependency context that does not belong in a Relationship object.
 interface:
   requiredFields:
   - name
@@ -178,6 +234,11 @@ fieldDescriptions:
   interfaces: List the APIs, events, or protocol surfaces this component exposes, when defined by the component itself.
   networkBindings: List ports this component opens as defined by its own configuration, not by the runtime infrastructure.
   environmentConfiguration: List environment variables or configuration keys this component requires at runtime.
+  runtimeSpec: >
+    Optional self-service runtime metadata owned by the product team. Use ports
+    for application listeners or egress bindings declared by the component, and
+    dependencies for simple runtime dependencies such as configuration stores,
+    queues, buckets, APIs, or platform services consumed by this component.
   catalogStatus: Use stub, incomplete, or complete to describe catalog maturity.
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired.
   aliases: List prior or alternate names for this component.

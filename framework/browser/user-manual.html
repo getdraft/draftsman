@@ -1669,6 +1669,8 @@
             <dd>The product this service is part of — used for grouping and SoftwareDeploymentPattern references.</dd>
             <dt>runsOn</dt>
             <dd>Reference to the Host, RuntimeService, or equivalent deployable object this service runs on.</dd>
+            <dt>runtimeSpec</dt>
+            <dd>Optional product-owned runtime metadata, including listener ports and simple runtime dependencies consumed by this component.</dd>
             <dt>catalogStatus</dt>
             <dd>The catalog lifecycle state of this object (e.g., draft, active, deprecated).</dd>
             <dt>lifecycleStatus</dt>
@@ -1678,6 +1680,7 @@
           <ul>
             <li>internal processes such as API, worker, scheduler, conductor, or queue processor</li>
             <li>API or protocol endpoints exposed by those processes</li>
+            <li>component-owned runtime ports and simple runtime dependencies declared in <code>runtimeSpec</code></li>
             <li>internal components consumed by the product</li>
             <li>external interactions the product depends on</li>
             <li>deployment configurations such as single-tenant, multi-tenant, embedded, or standalone variants</li>

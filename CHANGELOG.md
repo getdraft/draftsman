@@ -3,6 +3,32 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.50.0 - 2026-06-04
+
+Extends ProductComponent authoring with product-owned runtime metadata so engineering teams can document listener ports and simple runtime dependencies without editing shared RuntimeService definitions.
+
+### Compatibility Impact
+
+- This release adds optional ProductComponent fields only. Existing ProductComponent YAML remains valid.
+
+### Added
+
+- Added optional `runtimeSpec` to ProductComponent with `ports` and `dependencies` collections for component-owned runtime metadata.
+- Added validation for `runtimeSpec.ports[].number` typing and `runtimeSpec.dependencies[].ref` catalog references.
+- Added ProductComponent runtime metadata tests and authoring documentation.
+
+### Changed
+
+- Updated generated browser and AI assets so ProductComponent schema metadata includes `runtimeSpec`.
+
+### Fixed
+
+- Fixed ProductComponent validation gaps where malformed runtime port numbers and unknown inline runtime dependency references were not checked.
+
+### Migration Notes
+
+- Continue using standalone `relationship` objects for architecturally significant cross-service interactions. Use `runtimeSpec.dependencies` for concise product-owned runtime dependency metadata such as configuration stores, buckets, queues, or APIs consumed by a component.
+
 ## 0.49.0 - 2026-06-04
 
 Adds OWASP ASVS v4.0.3 as a reusable third-party provider pack and keeps it optional for workspaces by moving ASVS RequirementGroups out of core framework configurations.
