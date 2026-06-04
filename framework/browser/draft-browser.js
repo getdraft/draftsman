@@ -1324,6 +1324,14 @@ function requirementAppliesToObject(requirement, object) {
   return true;
 }
 
+function requirementGroupParentIds(group) {
+  const inherits = rawDetailObject(group).inherits;
+  if (Array.isArray(inherits)) {
+    return inherits.filter(Boolean).map(String);
+  }
+  return inherits ? [String(inherits)] : [];
+}
+
 function resolvedRequirementsForGroup(groupId, stack = new Set()) {
   if (!groupId || stack.has(groupId)) {
     return [];
@@ -1334,7 +1342,7 @@ function resolvedRequirementsForGroup(groupId, stack = new Set()) {
   }
   stack.add(groupId);
   const raw = rawDetailObject(group);
-  const parentRequirements = raw.inherits ? resolvedRequirementsForGroup(raw.inherits, stack) : [];
+  const parentRequirements = requirementGroupParentIds(group).flatMap(parentId => resolvedRequirementsForGroup(parentId, stack));
   const ownRequirements = Array.isArray(raw.requirements) ? raw.requirements : [];
   stack.delete(groupId);
   return [...parentRequirements, ...ownRequirements];

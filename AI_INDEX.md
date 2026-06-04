@@ -165,9 +165,6 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KQQ4Q027-DSDD | Appliance Delivery RequirementGroup | requirement_group | appliance, requirement-group, definition | Structured requirements used when a Runtime, Data Store, or NetworkService uses appliance delivery and the underlying... | framework/configurations/requirement-groups/requirement-group-appliance-delivery.yaml |
 | 01KRWRRNM7-VJ5A | DataComponent RequirementGroup | requirement_group | data-component, requirement-group, definition | Built-in checklist for first-party data artifacts deployed onto DataStoreServices. Establishes what must be known abo... | framework/configurations/requirement-groups/requirement-group-data-component.yaml |
 | 01KQQ4Q027-VBF0 | DataStoreService RequirementGroup | requirement_group | service, dbms, requirement-group, definition | Additional DataStoreService checklist items extending the service behavior RequirementGroup for durable data, recover... | framework/configurations/requirement-groups/requirement-group-data-store-service.yaml |
-| 01KQQ4Q027-ASV1 | OWASP ASVS Level 1 | requirement_group |  | Baseline verification controls that apply to all web applications, services, and APIs. | framework/configurations/requirement-groups/requirement-group-draft-asvs-l1.yaml |
-| 01KQQ4Q027-ASV2 | OWASP ASVS Level 2 | requirement_group |  | Standard verification controls for sensitive business applications, inheriting Level 1. | framework/configurations/requirement-groups/requirement-group-draft-asvs-l2.yaml |
-| 01KQQ4Q027-ASV3 | OWASP ASVS Level 3 | requirement_group |  | Advanced verification controls for critical infrastructure and high-value transactions, inheriting Level 2. | framework/configurations/requirement-groups/requirement-group-draft-asvs-l3.yaml |
 | 01KQQ4Q027-69VY | NIST Cybersecurity Framework RequirementGroup | requirement_group | compliance, nist, starter-pack, requirement-group | Initial NIST Cybersecurity Framework (CSF) 2.0 requirement group scoped to the outcomes that can be meaningfully answ... | framework/configurations/requirement-groups/requirement-group-draft-nist-csf.yaml |
 | 01KQQ4Q027-T3CA | Security and Security Compliance RequirementGroup | requirement_group | compliance, controls, baseline, requirement-group | Baseline security and compliance requirement group bundled with DRAFT. Requirements are applied to matching object ty... | framework/configurations/requirement-groups/requirement-group-draft-security-compliance.yaml |
 | 01KQQ4Q027-7JN2 | SOC 2 RequirementGroup | requirement_group | compliance, soc2, starter-pack, requirement-group | Initial SOC 2 requirement group based on the AICPA Trust Services Criteria. These requirements use DRAFT applicabilit... | framework/configurations/requirement-groups/requirement-group-draft-soc2.yaml |
@@ -420,7 +417,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | Folder | YAML Count |
 |---|---|
 | framework/configurations/capabilities | 42 |
-| framework/configurations/requirement-groups | 23 |
+| framework/configurations/requirement-groups | 20 |
 | framework/configurations/reference-architectures | 3 |
 | framework/configurations/domains | 10 |
 | examples/catalog/engineering/product-components | 1 |
