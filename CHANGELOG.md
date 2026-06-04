@@ -3,6 +3,32 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.47.0 - 2026-06-04
+
+Rename all prose, headings, sidebar links, and documentation occurrences of "Architecture Objects" to "Shared Services Objects" or "Governance Objects" as appropriate, fully aligning the documentation and UI tiles with the three-role framework terminology.
+
+### Compatibility Impact
+
+- This release does not introduce any breaking changes to existing catalogs. All additions are backwards-compatible.
+
+### Added
+
+- Added "Engineering Objects" as a dedicated section in the DRAFT User Manual.
+
+### Changed
+
+- Updated DRAFT User Manual, Framework Overview, and DRAFT Object Types docs to replace "Architecture Objects" with "Shared Services Objects" or "Governance Objects".
+- Renamed "architecture-objects" documentation links and IDs to "shared-services-objects" or "engineering-objects".
+- Updated the browser "Teams" tile description to refer to "catalog objects" instead of "architecture objects".
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No migration steps are required.
+
 ## 0.46.0 - 2026-06-04
 
 Adds a reusable compliance and verification integration for the OWASP Application Security Verification Standard (ASVS) v4.0.3, and updates the object model UML terminology to reflect "Shared Services".

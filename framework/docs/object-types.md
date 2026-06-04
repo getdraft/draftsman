@@ -2,10 +2,10 @@
 
 ## Purpose
 
-DRAFT object types are split into deployable architecture and non-deployable
-framework content. Deployable objects describe architecture that can eventually
+DRAFT object types are split into deployable objects and non-deployable
+framework content. Deployable objects describe software and infrastructure that can eventually
 become automation inputs. Non-deployable objects guide, govern, remember, or
-explain how deployable architecture is drafted.
+explain how deployable systems are drafted.
 
 PaaS, SaaS, appliance, and self-managed are delivery models. They are not
 separate object types.
@@ -19,7 +19,7 @@ can add requirements without changing the object's intrinsic type.
 ## Engineering Objects
 
 Engineering objects represent first-party software components that are authored
-by the engineering team and deployed inside or on top of Architecture Objects.
+by the engineering team and deployed inside or on top of Shared Services Objects.
 
 | Object type | YAML `type` | What it represents | Relationship |
 |---|---|---|---|
@@ -27,9 +27,9 @@ by the engineering team and deployed inside or on top of Architecture Objects.
 | DataComponent | `data_component` | A first-party data schema, dataset, or storage unit that lives inside a DataStoreService. | Uses `runsOn` to reference the DataStoreService it is deployed on. |
 | SoftwareDeploymentPattern | `software_deployment_pattern` | The intended assembly of deployable objects for a product or product capability. | Defines the deployable package shape that automation can target. |
 
-## Architecture Objects
+## Shared Services Objects
 
-Architecture Objects are reusable infrastructure-level deployable objects that
+Shared Services Objects are reusable infrastructure-level deployable objects that
 engineering objects run on or connect to.
 
 | Object type | YAML `type` | What it represents | Deployable role |
@@ -41,7 +41,7 @@ engineering objects run on or connect to.
 | NetworkService | `network_service` | Network or traffic-control behavior such as routing, switching, segmentation, DNS, WAN transport, load balancing, ingress, WAF, firewalling, proxying, or traffic inspection. | Deploys network and traffic-control behavior that other objects connect through or are protected by. |
 | ReferenceArchitecture | `reference_architecture` | A reusable deployment approach that SoftwareDeploymentPatterns may follow. | Documents a canonical assembly pattern. |
 
-## Non-Deployable Architecture Objects
+## Governance Objects
 
 | Object type | YAML `type` | What it does |
 |---|---|---|

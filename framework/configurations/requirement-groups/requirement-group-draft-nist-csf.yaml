@@ -344,4 +344,4 @@ tags:
 - starter-pack
 - requirement-group
 notes: |
-  These entries are DRAFT applicability mappings for public NIST CSF 2.0 outcomes. They intentionally cover only the subset of CSF outcomes that can be answered by deployable objects, SoftwareDeploymentPatterns, and related architecture objects.
+  These entries are DRAFT applicability mappings for public NIST CSF 2.0 outcomes. They intentionally cover only the subset of CSF outcomes that can be answered by deployable objects, SoftwareDeploymentPatterns, and related shared services objects.

@@ -245,7 +245,7 @@ relationships:
     label: serviceGroups
     style: dashed
     color: teal
-    routing: stub_down            # indicates SDP describes architecture objects below
+    routing: stub_down            # indicates SDP describes shared services objects below
 
   - id: product-component-deployed-on-runtime
     from: product_component

@@ -9,7 +9,7 @@ Enforcement Profile model.
 Every requirement is both:
 
 - an authoring interview prompt for the Draftsman
-- a validation rule for completed architecture objects
+- a validation rule for completed DRAFT objects
 
 There is no translation layer between authoring and validation.
 
@@ -97,7 +97,7 @@ but validation warns until the capability is tied back to a requirement.
 
 ## Object-Level Evidence
 
-Architecture objects use:
+DRAFT objects use:
 
 - `requirementGroups` to record workspace-activated groups the object claims or
   explicitly addresses
