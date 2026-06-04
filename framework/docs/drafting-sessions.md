@@ -62,7 +62,7 @@ The normal pattern is:
 
 1. Start the session from a partial source such as a Confluence page, Visio,
    spreadsheet, or interview.
-2. Create or update the target architecture objects with best-effort answers.
+2. Create or update the target DRAFT objects with best-effort answers.
 3. Record the generated or stubbed objects in `generatedObjects`.
 4. Record open questions with their current best guess and impact in
    `unresolvedQuestions`.

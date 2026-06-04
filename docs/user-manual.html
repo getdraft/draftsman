@@ -1103,7 +1103,8 @@
         </div>
         <a class="sidebar-link" href="#part-3a">3a · Objects</a>
         <a class="sidebar-sub-link" href="#object-model">Object model</a>
-        <a class="sidebar-sub-link" href="#architecture-objects">Architecture objects</a>
+        <a class="sidebar-sub-link" href="#engineering-objects">Engineering objects</a>
+        <a class="sidebar-sub-link" href="#shared-services-objects">Shared services objects</a>
         <a class="sidebar-sub-link" href="#governance-objects">Governance objects</a>
         <a class="sidebar-sub-link" href="#repo-ownership">Repository ownership</a>
         <a class="sidebar-sub-link" href="#modeling-technology-components">TechnologyComponents</a>
@@ -1209,14 +1210,14 @@
             them only through an explicit framework refresh or framework change. Architecture
             content belongs in the company workspace.
           </p>
-          <p>DRAFT object model — architecture objects, governance objects, and their core relationships:</p>
+          <p>DRAFT object model — engineering objects, shared services objects, governance objects, and their core relationships:</p>
           <div class="diagram-block block-gap">
             <div class="diagram-header">
               <span>DRAFT object model</span>
               <span class="diagram-sub">UML · framework-generated</span>
             </div>
             <div class="diagram-body">
-              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing architecture objects (TechnologyComponent, Host, RuntimeService, DataStoreService, NetworkService, ProductComponent, SoftwareDeploymentPattern, ReferenceArchitecture) and governance objects (Capability, RequirementGroup, Domain, DecisionRecord, DraftingSession, ObjectPatch) and their relationships">
+              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing engineering objects (ProductComponent, DataComponent, SoftwareDeploymentPattern), shared services objects (TechnologyComponent, Host, RuntimeService, DataStoreService, NetworkService, ReferenceArchitecture), and governance objects (Capability, RequirementGroup, Domain, DecisionRecord, DraftingSession, ObjectPatch) and their relationships">
             </div>
           </div>
         </div>
@@ -1388,61 +1389,78 @@
               <span class="diagram-sub">UML · framework-generated</span>
             </div>
             <div class="diagram-body">
-              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing architecture objects (TechnologyComponent, Host, RuntimeService, DataStoreService, NetworkService, ProductComponent, SoftwareDeploymentPattern, ReferenceArchitecture) and governance objects (Capability, RequirementGroup, Domain, DecisionRecord, DraftingSession, ObjectPatch) and their relationships">
+              <img src="assets/draft-object-model.svg" alt="DRAFT object model UML class diagram showing engineering objects (ProductComponent, DataComponent, SoftwareDeploymentPattern), shared services objects (TechnologyComponent, Host, RuntimeService, DataStoreService, NetworkService, ReferenceArchitecture), and governance objects (Capability, RequirementGroup, Domain, DecisionRecord, DraftingSession, ObjectPatch) and their relationships">
             </div>
           </div>
         </div>
 
         <!-- 3a.2 -->
-        <div class="chapter" id="architecture-objects">
+        <div class="chapter" id="engineering-objects">
           <div class="content-col">
             <div class="chapter-num">3a.2</div>
-            <h3>Architecture objects</h3>
+            <h3>Engineering objects</h3>
           </div>
           <div class="content-col wide">
             <div class="object-grid">
               <div class="object-card">
-                <div class="object-card-eyebrow">Architecture Object</div>
+                <div class="object-card-eyebrow">Engineering Object</div>
+                <h5>ProductComponent</h5>
+                <p>A first-party deployable runtime unit — API, worker, scheduler, or service — that uses <code>runsOn</code> to reference the RuntimeService or Host it is deployed on.</p>
+              </div>
+              <div class="object-card">
+                <div class="object-card-eyebrow">Engineering Object</div>
+                <h5>DataComponent</h5>
+                <p>A first-party data schema, dataset, or storage unit that lives inside a DataStoreService.</p>
+              </div>
+              <div class="object-card">
+                <div class="object-card-eyebrow">Engineering Object</div>
+                <h5>SoftwareDeploymentPattern</h5>
+                <p>The intended assembly of deployable objects for a product or product capability.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3a.3 -->
+        <div class="chapter" id="shared-services-objects">
+          <div class="content-col">
+            <div class="chapter-num">3a.3</div>
+            <h3>Shared services objects</h3>
+          </div>
+          <div class="content-col wide">
+            <div class="object-grid">
+              <div class="object-card">
+                <div class="object-card-eyebrow">Shared Services Object</div>
                 <h5>TechnologyComponent</h5>
                 <p>A governed vendor product, operating system, compute platform, agent, appliance product, software package, or product/version building block.</p>
               </div>
               <div class="object-card">
-                <div class="object-card-eyebrow">Architecture Object</div>
+                <div class="object-card-eyebrow">Shared Services Object</div>
                 <h5>Host</h5>
                 <p>An operational platform that combines compute, operating system, and required host capabilities.</p>
               </div>
               <div class="object-card">
-                <div class="object-card-eyebrow">Architecture Object</div>
+                <div class="object-card-eyebrow">Shared Services Object</div>
                 <h5>RuntimeService</h5>
                 <p>Reusable runtime behavior such as web, app, cache, worker, messaging, or serverless runtime.</p>
               </div>
               <div class="object-card">
-                <div class="object-card-eyebrow">Architecture Object</div>
+                <div class="object-card-eyebrow">Shared Services Object</div>
                 <h5>DataStoreService</h5>
                 <p>Durable data behavior such as database, file, object, search, analytics, or storage.</p>
               </div>
               <div class="object-card">
-                <div class="object-card-eyebrow">Architecture Object</div>
+                <div class="object-card-eyebrow">Shared Services Object</div>
                 <h5>NetworkService</h5>
                 <p>Network or traffic-control behavior such as routing, switching, segmentation, DNS, WAN, load balancing, ingress, WAF, firewalling, proxying, or traffic inspection.</p>
               </div>
               <div class="object-card">
-                <div class="object-card-eyebrow">Architecture Object</div>
-                <h5>ProductComponent</h5>
-                <p>First-party deployable runtime behavior that runs on a selected RuntimeService or Host.</p>
-              </div>
-              <div class="object-card">
-                <div class="object-card-eyebrow">Architecture Object</div>
-                <h5>SoftwareDeploymentPattern</h5>
-                <p>The intended assembly of deployable objects for a product or product capability.</p>
-              </div>
-              <div class="object-card">
-                <div class="object-card-eyebrow">Architecture Object</div>
+                <div class="object-card-eyebrow">Shared Services Object</div>
                 <h5>ReferenceArchitecture</h5>
                 <p>A reusable deployment approach that SoftwareDeploymentPatterns may follow.</p>
               </div>
             </div>
-            <p class="content-col" style="font-size:0.875rem;color:var(--subtle);">
+            <p class="content-col" style="font-size:0.875rem;color:var(--subtle);margin-top:1rem;">
               TechnologyComponents are governed building blocks. They are deployed as ingredients
               inside hosts and services, but they are not usually the service boundary you review
               on their own.
@@ -1450,10 +1468,10 @@
           </div>
         </div>
 
-        <!-- 3a.3 -->
+        <!-- 3a.4 -->
         <div class="chapter" id="governance-objects">
           <div class="content-col">
-            <div class="chapter-num">3a.3</div>
+            <div class="chapter-num">3a.4</div>
             <h3>Governance objects</h3>
           </div>
           <div class="content-col wide">
@@ -1492,9 +1510,9 @@
           </div>
         </div>
 
-        <!-- 3a.4 -->
+        <!-- 3a.5 -->
         <div class="chapter content-col" id="repo-ownership">
-          <div class="chapter-num">3a.4</div>
+          <div class="chapter-num">3a.5</div>
           <h3>Repository ownership</h3>
           <p>Use this decision table before editing:</p>
           <table class="draft-table">
@@ -1537,9 +1555,9 @@
           </table>
         </div>
 
-        <!-- 3a.5 -->
+        <!-- 3a.6 -->
         <div class="chapter content-col" id="modeling-technology-components">
-          <div class="chapter-num">3a.5</div>
+          <div class="chapter-num">3a.6</div>
           <h3>Modeling TechnologyComponents</h3>
           <p>
             Create a TechnologyComponent when you need to govern a specific product, product
@@ -1597,9 +1615,9 @@
           </div>
         </div>
 
-        <!-- 3a.6 -->
+        <!-- 3a.7 -->
         <div class="chapter content-col" id="modeling-hosts-services">
-          <div class="chapter-num">3a.6</div>
+          <div class="chapter-num">3a.7</div>
           <h3>Modeling Hosts and Services</h3>
           <p>
             Hosts describe operational platforms. A useful Host normally references operating
@@ -1629,9 +1647,9 @@
           </p>
         </div>
 
-        <!-- 3a.7 -->
+        <!-- 3a.8 -->
         <div class="chapter content-col" id="modeling-product-services">
-          <div class="chapter-num">3a.7</div>
+          <div class="chapter-num">3a.8</div>
           <h3>Modeling ProductComponents</h3>
           <p>
             A ProductComponent represents first-party runtime behavior. It is the place to document
@@ -1674,9 +1692,9 @@
           </div>
         </div>
 
-        <!-- 3a.8 -->
+        <!-- 3a.9 -->
         <div class="chapter content-col" id="modeling-sdps">
-          <div class="chapter-num">3a.8</div>
+          <div class="chapter-num">3a.9</div>
           <h3>Modeling SoftwareDeploymentPatterns</h3>
           <p>
             A SoftwareDeploymentPattern is the product-level assembly. It answers what a product

@@ -26,7 +26,7 @@ DRAFT is a framework for describing architecture as structured objects that can 
 
 Framework files are not normal authoring targets inside a company workspace. Update them only through an explicit framework refresh or framework change. Architecture content belongs in the company workspace.
 
-DRAFT object model — architecture objects, governance objects, and their core relationships:
+DRAFT object model — engineering objects, shared services objects, governance objects, and their core relationships:
 
 ![DRAFT object model UML class diagram](assets/draft-object-model.svg)
 
@@ -116,7 +116,7 @@ Use the object model diagram as the quickest reference for how the major object 
 #### 3a.2 Engineering objects {#engineering-objects}
 
 Engineering objects represent first-party software components authored by the
-engineering team. They are deployed inside or on top of Architecture Objects.
+engineering team. They are deployed inside or on top of Shared Services Objects.
 
 | Object Type | Use It For |
 |---|---|
@@ -124,9 +124,9 @@ engineering team. They are deployed inside or on top of Architecture Objects.
 | DataComponent | A first-party data schema, dataset, or storage unit that uses `runsOn` to reference the DataStoreService it is deployed on. |
 | SoftwareDeploymentPattern | The intended assembly of deployable objects for a product or product capability. |
 
-#### 3a.3 Architecture objects {#architecture-objects}
+#### 3a.3 Shared services objects {#shared-services-objects}
 
-Architecture Objects are reusable infrastructure-level services that Engineering
+Shared Services Objects are reusable infrastructure-level services that Engineering
 Objects run on or connect to.
 
 | Object Type | Use It For |

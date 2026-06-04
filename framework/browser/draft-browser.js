@@ -3416,7 +3416,7 @@ function renderExecutiveView() {
     makeTile('🗺', 'Software Deployment Patterns', 'Architecture patterns showing how software is deployed across targets', sdps.length, 'deployments'),
     makeTile('🔬', 'Technology Lifecycle', 'Browse technology components by domain, capability, and lifecycle status', techCount, 'technologies'),
     makeTile('📍', 'Deployment Targets', 'See deployment patterns grouped by their execution boundaries', targetSet.size, 'deployment-targets'),
-    makeTile('👥', 'Teams', 'View architecture objects grouped by owning team', teamSet.size, 'teams'),
+    makeTile('👥', 'Teams', 'View catalog objects grouped by owning team', teamSet.size, 'teams'),
   ];
 
   const configTiles = [

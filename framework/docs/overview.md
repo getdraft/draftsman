@@ -20,7 +20,7 @@ If an AI assistant is using this repo directly to author content, start with
 ## Engineering Objects
 
 Engineering objects represent first-party software components authored by the
-engineering team. They are deployed inside or on top of Architecture Objects.
+engineering team. They are deployed inside or on top of Shared Services Objects.
 
 | Object Type | Purpose |
 |---|---|
@@ -28,9 +28,9 @@ engineering team. They are deployed inside or on top of Architecture Objects.
 | DataComponent | A first-party data schema, dataset, or storage unit that uses `runsOn` to reference the DataStoreService it is deployed on. |
 | SoftwareDeploymentPattern | The intended assembly of deployable objects for a product or product capability. |
 
-## Architecture Objects
+## Shared Services Objects
 
-Architecture objects are reusable infrastructure-level services that engineering
+Shared Services objects are reusable infrastructure-level services that engineering
 objects run on or connect to.
 
 | Object Type | Purpose |
@@ -42,7 +42,7 @@ objects run on or connect to.
 | NetworkService | Network or traffic-control behavior such as routing, switching, segmentation, DNS, WAN transport, load balancing, ingress, WAF, firewalling, proxying, or traffic inspection. |
 | ReferenceArchitecture | A reusable deployment approach that SoftwareDeploymentPatterns may follow. |
 
-## Non-Deployable Architecture
+## Governance Objects
 
 | Object Type | Purpose |
 |---|---|

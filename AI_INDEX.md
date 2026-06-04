@@ -70,7 +70,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/exporters.md | DRAFT Exporters | DRAFT catalogs are authoritative YAML — the source of truth for architecture |
 | framework/docs/how-to-add-objects.md | How To Add Objects | The fastest way to add a new object correctly is to decide what kind of thing you are modeling before you write YAML. |
 | framework/docs/naming-conventions.md | Naming Conventions | When a DRAFT object type is referred to by name in prose, headings, schema |
-| framework/docs/object-types.md | DRAFT Object Types | DRAFT object types are split into deployable architecture and non-deployable |
+| framework/docs/object-types.md | DRAFT Object Types | DRAFT object types are split into deployable objects and non-deployable |
 | framework/docs/operations-guide.md | Draft Operations Guide | > **Audience:** Draft Admins, Shared Services, and Engineering Representatives. |
 | framework/docs/overview.md | Framework Overview | This page is the high-level object map for DRAFT. For the complete object type |
 | framework/docs/reference-architectures.md | ReferenceArchitectures | The DRAFT framework ships a set of baseline ReferenceArchitectures in |
