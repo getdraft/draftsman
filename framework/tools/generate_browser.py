@@ -31,6 +31,11 @@ if str(TOOLS_ROOT) not in sys.path:
 
 from catalog_indexes import build_domain_capability_index
 
+try:
+    from indexes import build_catalog_indexes
+except ImportError:  # pragma: no cover - package import path for tests
+    from framework.tools.indexes import build_catalog_indexes
+
 
 FRAMEWORK_ROOT = Path(__file__).resolve().parent.parent
 REPO_ROOT = FRAMEWORK_ROOT.parent
@@ -690,6 +695,7 @@ def build_sdp_connections(obj: dict[str, Any], all_objects: list[dict[str, Any]]
 
 def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: Path) -> dict[str, Any]:
     objects = list(registry.values())
+    catalog_indexes = build_catalog_indexes(registry)
     schemas = load_schemas(SCHEMA_ROOT)
     outbound_refs, referenced_by, warnings = build_reference_index(registry)
     domain_capability_index = build_domain_capability_index(registry)
@@ -890,6 +896,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
         "filterValues": filter_values,
         "lifecycleValues": lifecycle_values,
         "referencedBy": referenced_by,
+        "indexes": catalog_indexes,
         "warnings": warnings,
         "requirements": build_requirement_payload(registry, workspace_root),
         "vocabulary": load_workspace_vocabulary(workspace_root),
@@ -899,7 +906,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
         "catalogName": workspace_repository_name(workspace_root),
         "logoDataUri": logo_data_uri(),
         "topologyEdges": topology_edges,
-        "indexes": domain_capability_index,
+        "indexes": catalog_indexes,
     }
 
 

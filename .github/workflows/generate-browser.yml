@@ -11,6 +11,8 @@ on:
       - "templates/**"
       - "framework/tools/generate_ai_index.py"
       - "framework/tools/generate_browser.py"
+      - "framework/tools/generate_indexes.py"
+      - "framework/tools/indexes.py"
       - "AGENTS.md"
       - "README.md"
       - "llms.txt"
@@ -33,6 +35,9 @@ jobs:
 
       - name: Install dependency
         run: python -m pip install pyyaml
+
+      - name: Generate indexes
+        run: python framework/tools/generate_indexes.py
 
       - name: Generate browser
         run: python framework/tools/generate_browser.py --refresh-shell

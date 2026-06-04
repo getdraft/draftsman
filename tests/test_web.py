@@ -47,6 +47,10 @@ class WebTests(unittest.TestCase):
         self.assertIn("data-service-group-link", BROWSER_JS)
         self.assertIn("data-service-group-name", BROWSER_JS)
         self.assertIn("scrollIntoView({ behavior: 'smooth', block: 'start' })", BROWSER_JS)
+    def test_browser_uses_generated_catalog_indexes(self) -> None:
+        self.assertIn("const catalogIndexes = browserData.indexes || {}", BROWSER_JS)
+        self.assertIn("catalogIndexes.domainCapability?.domains", BROWSER_JS)
+        self.assertIn("catalogIndexes.requirementImplementations?.rows", BROWSER_JS)
 
 
 if __name__ == "__main__":
