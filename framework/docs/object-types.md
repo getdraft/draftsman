@@ -23,7 +23,7 @@ by the engineering team and deployed inside or on top of Shared Services Objects
 
 | Object type | YAML `type` | What it represents | Relationship |
 |---|---|---|---|
-| ProductComponent | `product_component` | A first-party deployable runtime unit — API, worker, scheduler, or service — that runs on a RuntimeService or Host. | Uses `runsOn` to reference the RuntimeService or Host it is deployed on. |
+| ProductComponent | `product_component` | A first-party deployable runtime unit — API, worker, scheduler, or service — that runs on a RuntimeService or Host. Product teams may declare component-owned runtime ports and dependencies in `runtimeSpec`. | Uses `runsOn` to reference the RuntimeService or Host it is deployed on. |
 | DataComponent | `data_component` | A first-party data schema, dataset, or storage unit that lives inside a DataStoreService. | Uses `runsOn` to reference the DataStoreService it is deployed on. |
 | SoftwareDeploymentPattern | `software_deployment_pattern` | The intended assembly of deployable objects for a product or product capability. | Defines the deployable package shape that automation can target. |
 

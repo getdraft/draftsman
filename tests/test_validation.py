@@ -1374,6 +1374,116 @@ requirementGroups:
         self.assertFalse(result.ok, result.stdout + result.stderr)
         self.assertIn("Set protocol to one of", result.stdout)
 
+    def test_product_component_runtime_spec_validates_ports_and_dependency_refs(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            host_dir = workspace / "catalog" / "hosts"
+            product_dir = workspace / "catalog" / "product-components"
+            host_dir.mkdir(parents=True, exist_ok=True)
+            product_dir.mkdir(parents=True, exist_ok=True)
+            (host_dir / "host-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KTS0TF92-HST1
+                    type: host
+                    name: Test Host
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            (product_dir / "product-service-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KTS0TF92-PRDS
+                    type: product_component
+                    name: Messaging API
+                    repoUrl: https://github.com/test/messaging-api
+                    owner:
+                      team: test
+                    classification: api-service
+                    runsOn: 01KTS0TF92-HST1
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    runtimeSpec:
+                      ports:
+                        - number: 8080
+                          protocol: HTTP
+                          name: web
+                      dependencies:
+                        - ref: 01KTS0TF92-HST1
+                          purpose: loads external configuration files
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+
+    def test_product_component_runtime_spec_rejects_bad_port_and_unknown_dependency(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            host_dir = workspace / "catalog" / "hosts"
+            product_dir = workspace / "catalog" / "product-components"
+            host_dir.mkdir(parents=True, exist_ok=True)
+            product_dir.mkdir(parents=True, exist_ok=True)
+            (host_dir / "host-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KTS0TF93-HST1
+                    type: host
+                    name: Test Host
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            (product_dir / "product-service-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KTS0TF93-PRDS
+                    type: product_component
+                    name: Messaging API
+                    repoUrl: https://github.com/test/messaging-api
+                    owner:
+                      team: test
+                    classification: api-service
+                    runsOn: 01KTS0TF93-HST1
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    runtimeSpec:
+                      ports:
+                        - number: "8080"
+                          protocol: HTTP
+                          name: web
+                      dependencies:
+                        - ref: 01KTS0TF93-NONE
+                          purpose: loads external configuration files
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("runtimeSpec: ports[0]: Change field 'number' to type int", result.stdout)
+        self.assertIn("runtimeSpec.dependencies[0].ref references unknown object '01KTS0TF93-NONE'", result.stdout)
+
     def test_product_component_dependency_without_rationale_fails_when_approved(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
