@@ -18,9 +18,9 @@
   <rect x="8" y="8" width="622" height="198" rx="12" fill="#f0f7f8" stroke="#006064" stroke-width="1.5" stroke-dasharray="7 3"/>
   <text x="22.0" y="26.0" font-size="10" fill="#006064" text-anchor="start"  font-weight="700" letter-spacing="1.5">ENGINEERING OBJECTS</text>
 
-  <!-- ══ ARCHITECTURE OBJECTS ══ -->
+  <!-- ══ SHARED SERVICES OBJECTS ══ -->
   <rect x="8" y="214" width="622" height="194" rx="12" fill="#eef4fc" stroke="#2a6fdb" stroke-width="1.5" stroke-dasharray="7 3"/>
-  <text x="22.0" y="232.0" font-size="10" fill="#2a6fdb" text-anchor="start"  font-weight="700" letter-spacing="1.5">ARCHITECTURE OBJECTS</text>
+  <text x="22.0" y="232.0" font-size="10" fill="#2a6fdb" text-anchor="start"  font-weight="700" letter-spacing="1.5">SHARED SERVICES OBJECTS</text>
 
   <!-- ══ GOVERNANCE OBJECTS ══ -->
   <rect x="644" y="8" width="250" height="448" rx="12" fill="#f8f0f5" stroke="#7c3a6b" stroke-width="1.5" stroke-dasharray="7 3"/>
