@@ -6,22 +6,24 @@ requiredFields:
 - uid
 - type
 - name
-- capabilities
 optionalFields:
 - aliases
 - description
 - version
 - owner
 - tags
+- capabilities
 fieldTypes:
   aliases: list
   capabilities: list
+deprecatedFields:
+- capabilities
 fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   type: Use domain.
   name: Name the strategy or capability domain.
-  capabilities: List capability object UIDs owned by this domain.
+  capabilities: Deprecated; capability membership is derived from each Capability object's domain field.
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name, product-name, or taxonomy changes.
   aliases: List prior or alternate human-readable names that should resolve to this object.
-aiHint: A Domain groups capability objects so an AI can navigate from strategy area to capability to approved implementations.
+aiHint: A Domain names a strategy or technology planning area. Capability membership is derived from Capability.domain, not authored on the Domain object.
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$

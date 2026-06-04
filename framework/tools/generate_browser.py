@@ -25,6 +25,12 @@ from typing import Any
 
 import yaml
 
+TOOLS_ROOT = Path(__file__).resolve().parent
+if str(TOOLS_ROOT) not in sys.path:
+    sys.path.insert(0, str(TOOLS_ROOT))
+
+from catalog_indexes import build_domain_capability_index
+
 
 FRAMEWORK_ROOT = Path(__file__).resolve().parent.parent
 REPO_ROOT = FRAMEWORK_ROOT.parent
@@ -686,6 +692,8 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
     objects = list(registry.values())
     schemas = load_schemas(SCHEMA_ROOT)
     outbound_refs, referenced_by, warnings = build_reference_index(registry)
+    domain_capability_index = build_domain_capability_index(registry)
+    derived_domain_capabilities = domain_capability_index["domainCapabilities"]
     risk_marked_rbb_ids = {
         deployed.get("ref")
         for obj in objects
@@ -746,7 +754,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
                 "productVersion": obj.get("productVersion", ""),
                 "classification": obj.get("classification", ""),
                 "platformDependency": obj.get("platformDependency", ""),
-                "capabilities": obj.get("capabilities", []),
+                "capabilities": derived_domain_capabilities.get(object_id, []) if obj.get("type") == "domain" else obj.get("capabilities", []),
                 "configurations": obj.get("configurations", []),
                 "networkPlacement": obj.get("networkPlacement", ""),
                 "patchingOwner": obj.get("patchingOwner", ""),
@@ -891,6 +899,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
         "catalogName": workspace_repository_name(workspace_root),
         "logoDataUri": logo_data_uri(),
         "topologyEdges": topology_edges,
+        "indexes": domain_capability_index,
     }
 
 

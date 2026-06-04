@@ -97,7 +97,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/schemas/data-store-service.schema.yaml | data_store_service | schemaVersion, uid, type, name, deliveryModel, catalogStatus, lifecycleStatus |
 | framework/schemas/decision-record.schema.yaml | decision_record | schemaVersion, uid, type, name, category, status, catalogStatus, lifecycleStatus |
 | framework/schemas/deployment-target.schema.yaml | deployment_target | schemaVersion, uid, type, name, environmentTier, targetProvider, parameters, catalogStatus |
-| framework/schemas/domain.schema.yaml | domain | schemaVersion, uid, type, name, capabilities |
+| framework/schemas/domain.schema.yaml | domain | schemaVersion, uid, type, name |
 | framework/schemas/drafting-session.schema.yaml | drafting_session | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus, sessionStatus, primaryObjectType, sourceArtifacts, generatedObjects, unresolvedQuestions |
 | framework/schemas/environment-tier.schema.yaml | environment_tier | schemaVersion, uid, type, name, tierId, purpose, availabilityExpectation, catalogStatus |
 | framework/schemas/host.schema.yaml | host | schemaVersion, uid, type, name, catalogStatus, lifecycleStatus |

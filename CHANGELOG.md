@@ -3,6 +3,34 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.48.0 - 2026-06-04
+
+Moves Domain capability membership to a generated read model derived from `Capability.domain`, eliminating the duplicated authored `domain.capabilities` edge.
+
+### Compatibility Impact
+
+- Domain objects no longer require an authored `capabilities` list. Existing Domain objects with `capabilities` still validate, but the field is deprecated and generated browser data derives membership from each Capability object's `domain` field.
+
+### Added
+
+- Added a shared domain-capability index builder for generated browser and future AI/search read models.
+- Added browser payload indexes for `domainCapabilities`, `capabilityDomain`, and unassigned capabilities.
+- Added regression tests proving Domain objects validate without authored capability lists and browser data derives the capability map from `capability.domain`.
+
+### Changed
+
+- Updated framework Domain configurations to remove duplicated authored `capabilities` lists.
+- Updated browser Domain detail rendering to read the generated domain-capability index.
+- Updated Domain schema and documentation to make `Capability.domain` the source of record for domain membership.
+
+### Fixed
+
+- Fixed Domain detail implementation link resolution to resolve lifecycle implementations from the capability being rendered, not the parent domain object.
+
+### Migration Notes
+
+- Remove `capabilities` from Domain YAML files. Ensure every Capability has a valid `domain` UID; generated assets will rebuild domain→capability navigation from those capability records.
+
 ## 0.47.0 - 2026-06-04
 
 Rename all prose, headings, sidebar links, and documentation occurrences of "Architecture Objects" to "Shared Services Objects" or "Governance Objects" as appropriate, fully aligning the documentation and UI tiles with the three-role framework terminology.
