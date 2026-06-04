@@ -41,6 +41,8 @@ FRAMEWORK_ENTRYPOINTS = [
     ("framework/tools/apply_vocabulary_proposals.py", "Materializes Draftsman vocabulary_proposal files into reviewable company vocabulary entries."),
     ("framework/tools/repair_uids.py", "Explicit repair utility that adds or replaces generated object UIDs and rewrites object references."),
     ("framework/tools/generate_browser.py", "Static GitHub Pages browser generator."),
+    ("framework/tools/indexes.py", "Shared canonical catalog index builders for domain-capability mappings and requirement implementation evidence."),
+    ("framework/tools/generate_indexes.py", "Generates committed machine-readable catalog indexes consumed by derived browser and AI assets."),
     ("framework/tools/migrations/0.36.1/migrate_to_nested_catalog.py", "Automated utility to migrate flat catalog directories under catalog/ to role-nested paths."),
     ("install-draft-table.sh", "Experimental local tooling installer retained for post-v1.0 work."),
 ]

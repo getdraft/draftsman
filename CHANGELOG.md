@@ -3,6 +3,35 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.48.1 - 2026-06-04
+
+Adds canonical generated catalog indexes for domain-capability mappings and requirement implementation evidence, then wires the static browser and CI workflows to consume and verify them before derived browser and AI assets are generated.
+
+### Compatibility Impact
+
+- This release does not introduce breaking YAML changes. Existing catalogs remain valid; browser output now includes an `indexes` payload derived from existing capability and requirement implementation fields.
+
+### Added
+
+- Added shared catalog index builders for domain-capability mappings and requirement implementation evidence.
+- Added `framework/tools/generate_indexes.py` to write the committed `docs/assets/draft-indexes.json` artifact.
+- Added validation workflow freshness checks for generated catalog indexes.
+
+### Changed
+
+- Updated browser data generation to embed the canonical indexes in `browser-data.js`.
+- Updated acceptable-use and requirement evidence browser views to consume generated indexes first, with existing raw-object scans retained as compatibility fallback.
+- Updated derived-asset workflow ordering so indexes are generated before browser and AI assets.
+- Updated the AI framework index generator to document the new index tooling.
+
+### Fixed
+
+- Prevented browser/domain grouping logic from independently rediscovering domain-capability relationships when a canonical generated index is available.
+
+### Migration Notes
+
+- Run `python framework/tools/generate_indexes.py` before regenerating browser or AI assets so committed generated indexes stay current.
+
 ## 0.48.0 - 2026-06-04
 
 Moves Domain capability membership to a generated read model derived from `Capability.domain`, eliminating the duplicated authored `domain.capabilities` edge.

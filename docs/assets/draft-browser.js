@@ -1657,6 +1657,38 @@ function dependencyJustificationForInternalComponent(object, component, index) {
 }
 
 function acceptableUseGroups() {
+  const indexedDomains = catalogIndexes.domainCapability?.domains;
+  if (Array.isArray(indexedDomains)) {
+    return indexedDomains.map(indexDomain => {
+      const domainId = indexDomain.id || indexDomain.uid || 'domain.unassigned';
+      const domain = objectLookup[domainId] || {
+        id: domainId,
+        uid: domainId,
+        name: indexDomain.name || domainId,
+        description: indexDomain.description || ''
+      };
+      const rows = [];
+      (indexDomain.capabilities || []).forEach(indexCapability => {
+        const capabilityId = indexCapability.id || indexCapability.uid;
+        const capability = objectLookup[capabilityId] || {
+          id: capabilityId,
+          uid: capabilityId,
+          name: indexCapability.name || capabilityId,
+          description: indexCapability.description || '',
+          owner: indexCapability.owner || {}
+        };
+        (indexCapability.implementations || []).forEach(implementation => {
+          rows.push({
+            capability,
+            implementation,
+            technology: resolveImplementationReference(capability, implementation)?.object || null
+          });
+        });
+      });
+      return { domain, rows };
+    }).filter(group => group.rows.length > 0);
+  }
+
   const groups = new Map();
   allObjects
     .filter(object => object.type === 'capability')
@@ -1706,6 +1738,30 @@ function acceptableUseGroups() {
 }
 
 function requirementEvidenceRows() {
+  const indexedRows = catalogIndexes.requirementImplementations?.rows;
+  if (Array.isArray(indexedRows)) {
+    return indexedRows.map(row => {
+      const object = objectLookup[row.object] || null;
+      const requirementGroup = objectLookup[row.requirementGroup] || null;
+      const requirement = findRequirementInGroup(requirementGroup, row.requirementId);
+      const implementation = {
+        ...(row.implementation || {}),
+        requirementGroup: row.requirementGroup,
+        requirementId: row.requirementId,
+        status: row.status || row.implementation?.status || '',
+        evidence: row.evidence || row.implementation?.evidence || '',
+        notes: row.notes || row.implementation?.notes || ''
+      };
+      return {
+        object,
+        implementation,
+        requirementGroup,
+        requirement,
+        label: requirementDisplayLabel(requirementGroup, requirement || { id: row.requirementId })
+      };
+    }).filter(row => row.object);
+  }
+
   const rows = [];
   allObjects.forEach(object => {
     (object.requirementImplementations || []).forEach(implementation => {
@@ -3803,6 +3859,40 @@ function attachExecutiveHandlers() {
 }
 
 function acceptableUseDomainModels() {
+  const indexedDomains = catalogIndexes.domainCapability?.domains;
+  if (Array.isArray(indexedDomains)) {
+    return indexedDomains.map(indexDomain => {
+      const domainId = indexDomain.id || indexDomain.uid || 'domain.unassigned';
+      const domain = objectLookup[domainId] || {
+        id: domainId,
+        uid: domainId,
+        name: indexDomain.name || domainId,
+        description: indexDomain.description || ''
+      };
+      const capabilityGroups = (indexDomain.capabilities || []).map(indexCapability => {
+        const capabilityId = indexCapability.id || indexCapability.uid;
+        const capability = objectLookup[capabilityId] || {
+          id: capabilityId,
+          uid: capabilityId,
+          name: indexCapability.name || capabilityId,
+          description: indexCapability.description || '',
+          owner: indexCapability.owner || {}
+        };
+        const rows = (indexCapability.implementations || []).map(implementation => ({
+          capability,
+          implementation,
+          technology: resolveImplementationReference(capability, implementation)?.object || null
+        }));
+        return { capability, rows };
+      });
+      return {
+        domain,
+        capabilityGroups,
+        rows: capabilityGroups.flatMap(group => group.rows)
+      };
+    }).filter(group => group.rows.length > 0);
+  }
+
   const groups = new Map();
   allObjects
     .filter(object => object.type === 'domain')

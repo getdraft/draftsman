@@ -1,0 +1,620 @@
+{
+  "domainCapability": {
+    "version": 1,
+    "source": "capability.domain",
+    "domains": [
+      {
+        "id": "01KT0XNZEY-HGZZ",
+        "uid": "01KT0XNZEY-HGZZ",
+        "name": "Analytics",
+        "description": "Strategic domain covering analytical processing and reporting over operational and business data. Capabilities in this domain are governed by the data team, who owns the HOW decisions for analytics and reporting technology.\n",
+        "capabilities": [
+          {
+            "id": "01KT0XNZEY-A7GK",
+            "uid": "01KT0XNZEY-A7GK",
+            "name": "Analytics",
+            "description": "Operational and business data is processed and analyzed to produce insight through a managed analytics platform.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KT0XNZEY-70Y6",
+            "uid": "01KT0XNZEY-70Y6",
+            "name": "Reporting",
+            "description": "Curated metrics and datasets are presented to consumers through managed reports and dashboards.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          }
+        ]
+      },
+      {
+        "id": "01KQQ4Q027-ZTHF",
+        "uid": "01KQQ4Q027-ZTHF",
+        "name": "Compute & Runtime",
+        "description": "Strategic domain covering application runtimes, serverless functions, and physical or virtual compute resources.\n",
+        "capabilities": [
+          {
+            "id": "01KT0V5MCV-RZV0",
+            "uid": "01KT0V5MCV-RZV0",
+            "name": "Application Runtime",
+            "description": "First-party application code executes on a managed runtime that provides the process, web, or worker execution environment.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KT0V5MCV-ECR4",
+            "uid": "01KT0V5MCV-ECR4",
+            "name": "Caching",
+            "description": "Frequently accessed data is stored in a fast, ephemeral tier to reduce latency and load on the system of record.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KQQ4Q026-1HZP",
+            "uid": "01KQQ4Q026-1HZP",
+            "name": "Compute Platform",
+            "description": "Compute substrate or virtualized platform used to run Hosts.",
+            "owner": {
+              "team": "example-architecture",
+              "contact": "architecture@example.com"
+            },
+            "implementationCount": 1,
+            "implementations": [
+              {
+                "ref": "01KQQ4Q025-9N4R",
+                "lifecycleStatus": "existing-only",
+                "configuration": "",
+                "notes": "Example workspace maps EC2 to the compute platform capability."
+              }
+            ]
+          },
+          {
+            "id": "01KQQ4Q026-GW5D",
+            "uid": "01KQQ4Q026-GW5D",
+            "name": "Container Orchestration",
+            "description": "Management of containerized workload lifecycles.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KT0V5MCV-KT72",
+            "uid": "01KT0V5MCV-KT72",
+            "name": "Messaging",
+            "description": "Asynchronous messages and events are accepted, queued, and delivered between producers and consumers.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KQQ4Q026-QM2X",
+            "uid": "01KQQ4Q026-QM2X",
+            "name": "Operating System",
+            "description": "Supported operating system product used to define managed Hosts.",
+            "owner": {
+              "team": "example-architecture",
+              "contact": "architecture@example.com"
+            },
+            "implementationCount": 1,
+            "implementations": [
+              {
+                "ref": "01KQQ4Q025-3HXA",
+                "lifecycleStatus": "existing-only",
+                "configuration": "",
+                "notes": "Example operating system implementation."
+              }
+            ]
+          },
+          {
+            "id": "01KQQ4Q026-BH6E",
+            "uid": "01KQQ4Q026-BH6E",
+            "name": "Patch Management",
+            "description": "Patch orchestration and update application capability for managed runtime components.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KQQ4Q026-3ZWJ",
+            "uid": "01KQQ4Q026-3ZWJ",
+            "name": "Serverless Function Runtime",
+            "description": "Event-driven, scale-to-zero compute runtime capability.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KT0V5MCV-RM8M",
+            "uid": "01KT0V5MCV-RM8M",
+            "name": "Service Mesh",
+            "description": "Service-to-service traffic is routed, secured, and observed through a dedicated connectivity and policy layer.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          }
+        ]
+      },
+      {
+        "id": "01KSWVZSZ5-QHKZ",
+        "uid": "01KSWVZSZ5-QHKZ",
+        "name": "Data",
+        "description": "Strategic domain covering data protection and resilience. Capabilities in this domain are governed by the data and storage team, who owns the HOW decisions for encryption implementation and backup and recovery platforms.\n",
+        "capabilities": [
+          {
+            "id": "01KT0V5MCV-VD0Y",
+            "uid": "01KT0V5MCV-VD0Y",
+            "name": "Data Persistence",
+            "description": "Structured application data is durably stored, queried, and managed in a database or persistence platform.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KQQ4Q026-7T2H",
+            "uid": "01KQQ4Q026-7T2H",
+            "name": "Data Resilience",
+            "description": "Resilience of data against loss or corruption through backup, restore, replication, and recovery capabilities.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KQQ4Q026-H3B5",
+            "uid": "01KQQ4Q026-H3B5",
+            "name": "Encryption At Rest",
+            "description": "Protection of persisted data through encryption or equivalent storage safeguards.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KT0V5MCV-924J",
+            "uid": "01KT0V5MCV-924J",
+            "name": "File Storage",
+            "description": "Files are durably stored and accessed through a shared file system or file storage interface.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KT0V5MCV-E9TN",
+            "uid": "01KT0V5MCV-E9TN",
+            "name": "Object Storage",
+            "description": "Unstructured objects and blobs are durably stored and retrieved through an object storage interface.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          }
+        ]
+      },
+      {
+        "id": "01KSWVZSZ5-71PY",
+        "uid": "01KSWVZSZ5-71PY",
+        "name": "Identity & Access Management",
+        "description": "Strategic domain covering authentication and authorization. Capabilities in this domain are governed by the IAM team, who owns the HOW decisions for identity provider selection and access control model.\n",
+        "capabilities": [
+          {
+            "id": "01KQQ4Q026-4JR6",
+            "uid": "01KQQ4Q026-4JR6",
+            "name": "Access Control Model",
+            "description": "Authorization model that controls access to a service or data platform.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KQQ4Q026-MHJM",
+            "uid": "01KQQ4Q026-MHJM",
+            "name": "Authentication",
+            "description": "Identity and access authentication capability for users, services, administrators, or workloads.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          }
+        ]
+      },
+      {
+        "id": "01KT0XNZEY-QY0Y",
+        "uid": "01KT0XNZEY-QY0Y",
+        "name": "Integration",
+        "description": "Strategic domain covering the movement of messages, files, and data between systems. Capabilities in this domain are governed by the platform engineering team, who owns the HOW decisions for email delivery, managed file transfer, and data integration technology.\n",
+        "capabilities": [
+          {
+            "id": "01KT0XNZEY-DENJ",
+            "uid": "01KT0XNZEY-DENJ",
+            "name": "Data Integration",
+            "description": "Data is moved, transformed, and synchronized between systems through a managed integration or ETL platform.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KT0XNZEY-KPTW",
+            "uid": "01KT0XNZEY-KPTW",
+            "name": "Email Delivery",
+            "description": "Outbound and transactional email is accepted, routed, and delivered to recipients through a managed mail delivery service.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KT0XNZEY-K1J3",
+            "uid": "01KT0XNZEY-K1J3",
+            "name": "File Transfer",
+            "description": "Files are exchanged between systems or partners reliably and securely through a managed file transfer service.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          }
+        ]
+      },
+      {
+        "id": "01KSWVZSZ5-4WKE",
+        "uid": "01KSWVZSZ5-4WKE",
+        "name": "Network",
+        "description": "Strategic domain covering network fabric infrastructure, connectivity, and segmentation. Capabilities in this domain are governed by the network team, who owns the HOW decisions for switching, routing, WAN, and traffic management technology.\n",
+        "capabilities": [
+          {
+            "id": "01KT0V5MCV-3A6F",
+            "uid": "01KT0V5MCV-3A6F",
+            "name": "API Gateway",
+            "description": "Inbound API traffic is routed, authenticated, rate-limited, and transformed at a managed entry point in front of backend services.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KT0V5MCV-HZ37",
+            "uid": "01KT0V5MCV-HZ37",
+            "name": "CDN",
+            "description": "Static and cacheable content is distributed and served from edge locations close to consumers to reduce latency and origin load.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KT0V5MCV-GJBH",
+            "uid": "01KT0V5MCV-GJBH",
+            "name": "DNS",
+            "description": "Names are resolved to network addresses through authoritative and recursive domain name resolution.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KSWVZSZ5-Q6HW",
+            "uid": "01KSWVZSZ5-Q6HW",
+            "name": "Network Connectivity",
+            "description": "Hosts and services can reach each other across the network fabric through approved switching and routing infrastructure.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KSWVZSZ5-1RTH",
+            "uid": "01KSWVZSZ5-1RTH",
+            "name": "Network Segmentation",
+            "description": "Traffic between network zones is isolated and controlled by policy through VLANs, micro-segmentation, or software-defined networking.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KSWVZSZ5-M0FR",
+            "uid": "01KSWVZSZ5-M0FR",
+            "name": "Traffic Management",
+            "description": "Application and network traffic is distributed, shaped, and controlled across services and infrastructure through approved load balancing and traffic management technology.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KT0V5MCV-Z079",
+            "uid": "01KT0V5MCV-Z079",
+            "name": "WAF",
+            "description": "Inbound web traffic is inspected and filtered against application-layer threats through managed rule sets before reaching protected applications.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KSWVZSZ5-26F1",
+            "uid": "01KSWVZSZ5-26F1",
+            "name": "WAN Connectivity",
+            "description": "Sites, data centers, and cloud environments are interconnected reliably through approved wide area network technology.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          }
+        ]
+      },
+      {
+        "id": "01KQQ4Q027-C213",
+        "uid": "01KQQ4Q027-C213",
+        "name": "Observability & Monitoring",
+        "description": "Strategic domain covering logging, metrics, tracing, and health monitoring across infrastructure and application stacks.\n",
+        "capabilities": [
+          {
+            "id": "01KQQ4Q026-NB1W",
+            "uid": "01KQQ4Q026-NB1W",
+            "name": "Application Performance Monitoring",
+            "description": "Tracing and performance analysis of application runtimes.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KQQ4Q026-98VD",
+            "uid": "01KQQ4Q026-98VD",
+            "name": "Health and Welfare Monitoring",
+            "description": "Runtime health, uptime, metrics, and operational welfare visibility.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KQQ4Q026-D04B",
+            "uid": "01KQQ4Q026-D04B",
+            "name": "Log Management",
+            "description": "Aggregation, retention, searchability, and forwarding of system or application logs.",
+            "owner": {
+              "team": "example-architecture",
+              "contact": "architecture@example.com"
+            },
+            "implementationCount": 1,
+            "implementations": [
+              {
+                "ref": "01KQQ4Q025-3HXA",
+                "lifecycleStatus": "existing-only",
+                "configuration": "centralized-log-forwarding",
+                "notes": "Example OS configuration for centralized log forwarding."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "01KSWVZSZ5-GY67",
+        "uid": "01KSWVZSZ5-GY67",
+        "name": "Security",
+        "description": "Strategic domain covering threat detection, security event monitoring, and secure credential management. Capabilities in this domain are governed by the security team, who owns the HOW decisions for threat response and secrets governance.\n",
+        "capabilities": [
+          {
+            "id": "01KT0XNZEY-RVTG",
+            "uid": "01KT0XNZEY-RVTG",
+            "name": "Certificate Management",
+            "description": "Digital certificates are issued, distributed, renewed, and revoked through a managed certificate or PKI service.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KQQ4Q026-DTJJ",
+            "uid": "01KQQ4Q026-DTJJ",
+            "name": "Secrets Management",
+            "description": "Secure storage, rotation, and access mediation for secrets and authenticators.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KQQ4Q026-JW52",
+            "uid": "01KQQ4Q026-JW52",
+            "name": "Security Monitoring",
+            "description": "Threat detection, intrusion detection, security event monitoring, and audit telemetry.",
+            "owner": {
+              "team": "example-architecture",
+              "contact": "architecture@example.com"
+            },
+            "implementationCount": 1,
+            "implementations": [
+              {
+                "ref": "01KQQ4Q025-MQ3F",
+                "lifecycleStatus": "existing-only",
+                "configuration": "",
+                "notes": "Example endpoint security monitoring agent."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "01KT0XNZEY-GXYR",
+        "uid": "01KT0XNZEY-GXYR",
+        "name": "Software Delivery",
+        "description": "Strategic domain covering the build, integration, packaging, and configuration pipeline that delivers software into running environments. Capabilities in this domain are governed by the platform engineering team, who owns the HOW decisions for continuous integration and delivery, artifact custody, and configuration management technology.\n",
+        "capabilities": [
+          {
+            "id": "01KT0XNZEY-7HWQ",
+            "uid": "01KT0XNZEY-7HWQ",
+            "name": "Artifact Management",
+            "description": "Build outputs, packages, images, and dependencies are stored, versioned, and served from a managed artifact repository.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KT0XNZEY-Q2TF",
+            "uid": "01KT0XNZEY-Q2TF",
+            "name": "CI/CD Pipeline",
+            "description": "Source code is automatically built, tested, and promoted through environments by an automated continuous integration and delivery pipeline.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KT0XNZEY-35Y2",
+            "uid": "01KT0XNZEY-35Y2",
+            "name": "Configuration Management",
+            "description": "System and application configuration is declared, applied, and reconciled across environments through a managed configuration platform.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          }
+        ]
+      },
+      {
+        "id": "01KQQ4Q027-SGHR",
+        "uid": "01KQQ4Q027-SGHR",
+        "name": "Testing & Quality",
+        "description": "Strategic domain covering all aspects of software testing, quality assurance, and release gates.\n",
+        "capabilities": [
+          {
+            "id": "01KQQ4Q026-S5J6",
+            "uid": "01KQQ4Q026-S5J6",
+            "name": "Performance and Load Testing",
+            "description": "Capabilities to simulate load and measure system behavior under stress.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KQQ4Q026-RTWC",
+            "uid": "01KQQ4Q026-RTWC",
+            "name": "Quality Gates",
+            "description": "Promotion criteria and automated checks required for lifecycle transitions.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KQQ4Q026-QC9S",
+            "uid": "01KQQ4Q026-QC9S",
+            "name": "Test Authoring",
+            "description": "Tools and frameworks used to author automated tests.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          },
+          {
+            "id": "01KQQ4Q026-58Q3",
+            "uid": "01KQQ4Q026-58Q3",
+            "name": "Test Execution and Automation",
+            "description": "Runtimes and orchestration services used to execute automated tests.",
+            "owner": {},
+            "implementationCount": 0,
+            "implementations": []
+          }
+        ]
+      }
+    ]
+  },
+  "requirementImplementations": {
+    "version": 1,
+    "source": "object.requirementImplementations",
+    "rows": []
+  },
+  "domainCapabilities": {
+    "01KQQ4Q027-C213": [
+      "01KQQ4Q026-NB1W",
+      "01KQQ4Q026-98VD",
+      "01KQQ4Q026-D04B"
+    ],
+    "01KQQ4Q027-SGHR": [
+      "01KQQ4Q026-S5J6",
+      "01KQQ4Q026-RTWC",
+      "01KQQ4Q026-QC9S",
+      "01KQQ4Q026-58Q3"
+    ],
+    "01KQQ4Q027-ZTHF": [
+      "01KT0V5MCV-RZV0",
+      "01KT0V5MCV-ECR4",
+      "01KQQ4Q026-1HZP",
+      "01KQQ4Q026-GW5D",
+      "01KT0V5MCV-KT72",
+      "01KQQ4Q026-QM2X",
+      "01KQQ4Q026-BH6E",
+      "01KQQ4Q026-3ZWJ",
+      "01KT0V5MCV-RM8M"
+    ],
+    "01KSWVZSZ5-4WKE": [
+      "01KT0V5MCV-3A6F",
+      "01KT0V5MCV-HZ37",
+      "01KT0V5MCV-GJBH",
+      "01KSWVZSZ5-Q6HW",
+      "01KSWVZSZ5-1RTH",
+      "01KSWVZSZ5-M0FR",
+      "01KT0V5MCV-Z079",
+      "01KSWVZSZ5-26F1"
+    ],
+    "01KSWVZSZ5-71PY": [
+      "01KQQ4Q026-4JR6",
+      "01KQQ4Q026-MHJM"
+    ],
+    "01KSWVZSZ5-GY67": [
+      "01KT0XNZEY-RVTG",
+      "01KQQ4Q026-DTJJ",
+      "01KQQ4Q026-JW52"
+    ],
+    "01KSWVZSZ5-QHKZ": [
+      "01KT0V5MCV-VD0Y",
+      "01KQQ4Q026-7T2H",
+      "01KQQ4Q026-H3B5",
+      "01KT0V5MCV-924J",
+      "01KT0V5MCV-E9TN"
+    ],
+    "01KT0XNZEY-GXYR": [
+      "01KT0XNZEY-7HWQ",
+      "01KT0XNZEY-Q2TF",
+      "01KT0XNZEY-35Y2"
+    ],
+    "01KT0XNZEY-HGZZ": [
+      "01KT0XNZEY-A7GK",
+      "01KT0XNZEY-70Y6"
+    ],
+    "01KT0XNZEY-QY0Y": [
+      "01KT0XNZEY-DENJ",
+      "01KT0XNZEY-KPTW",
+      "01KT0XNZEY-K1J3"
+    ]
+  },
+  "capabilityDomain": {
+    "01KQQ4Q026-1HZP": "01KQQ4Q027-ZTHF",
+    "01KQQ4Q026-3ZWJ": "01KQQ4Q027-ZTHF",
+    "01KQQ4Q026-4JR6": "01KSWVZSZ5-71PY",
+    "01KQQ4Q026-58Q3": "01KQQ4Q027-SGHR",
+    "01KQQ4Q026-7T2H": "01KSWVZSZ5-QHKZ",
+    "01KQQ4Q026-98VD": "01KQQ4Q027-C213",
+    "01KQQ4Q026-BH6E": "01KQQ4Q027-ZTHF",
+    "01KQQ4Q026-D04B": "01KQQ4Q027-C213",
+    "01KQQ4Q026-DTJJ": "01KSWVZSZ5-GY67",
+    "01KQQ4Q026-GW5D": "01KQQ4Q027-ZTHF",
+    "01KQQ4Q026-H3B5": "01KSWVZSZ5-QHKZ",
+    "01KQQ4Q026-JW52": "01KSWVZSZ5-GY67",
+    "01KQQ4Q026-MHJM": "01KSWVZSZ5-71PY",
+    "01KQQ4Q026-NB1W": "01KQQ4Q027-C213",
+    "01KQQ4Q026-QC9S": "01KQQ4Q027-SGHR",
+    "01KQQ4Q026-QM2X": "01KQQ4Q027-ZTHF",
+    "01KQQ4Q026-RTWC": "01KQQ4Q027-SGHR",
+    "01KQQ4Q026-S5J6": "01KQQ4Q027-SGHR",
+    "01KSWVZSZ5-1RTH": "01KSWVZSZ5-4WKE",
+    "01KSWVZSZ5-26F1": "01KSWVZSZ5-4WKE",
+    "01KSWVZSZ5-M0FR": "01KSWVZSZ5-4WKE",
+    "01KSWVZSZ5-Q6HW": "01KSWVZSZ5-4WKE",
+    "01KT0V5MCV-3A6F": "01KSWVZSZ5-4WKE",
+    "01KT0V5MCV-924J": "01KSWVZSZ5-QHKZ",
+    "01KT0V5MCV-E9TN": "01KSWVZSZ5-QHKZ",
+    "01KT0V5MCV-ECR4": "01KQQ4Q027-ZTHF",
+    "01KT0V5MCV-GJBH": "01KSWVZSZ5-4WKE",
+    "01KT0V5MCV-HZ37": "01KSWVZSZ5-4WKE",
+    "01KT0V5MCV-KT72": "01KQQ4Q027-ZTHF",
+    "01KT0V5MCV-RM8M": "01KQQ4Q027-ZTHF",
+    "01KT0V5MCV-RZV0": "01KQQ4Q027-ZTHF",
+    "01KT0V5MCV-VD0Y": "01KSWVZSZ5-QHKZ",
+    "01KT0V5MCV-Z079": "01KSWVZSZ5-4WKE",
+    "01KT0XNZEY-35Y2": "01KT0XNZEY-GXYR",
+    "01KT0XNZEY-70Y6": "01KT0XNZEY-HGZZ",
+    "01KT0XNZEY-7HWQ": "01KT0XNZEY-GXYR",
+    "01KT0XNZEY-A7GK": "01KT0XNZEY-HGZZ",
+    "01KT0XNZEY-DENJ": "01KT0XNZEY-QY0Y",
+    "01KT0XNZEY-K1J3": "01KT0XNZEY-QY0Y",
+    "01KT0XNZEY-KPTW": "01KT0XNZEY-QY0Y",
+    "01KT0XNZEY-Q2TF": "01KT0XNZEY-GXYR",
+    "01KT0XNZEY-RVTG": "01KSWVZSZ5-GY67"
+  },
+  "unassignedCapabilities": []
+}
