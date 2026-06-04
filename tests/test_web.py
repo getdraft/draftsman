@@ -52,6 +52,11 @@ class WebTests(unittest.TestCase):
         self.assertIn("catalogIndexes.domainCapability?.domains", BROWSER_JS)
         self.assertIn("catalogIndexes.requirementImplementations?.rows", BROWSER_JS)
 
+    def test_browser_resolves_requirement_group_inheritance_lists(self) -> None:
+        self.assertIn("function requirementGroupParentIds(group)", BROWSER_JS)
+        self.assertIn("Array.isArray(inherits)", BROWSER_JS)
+        self.assertIn("flatMap(parentId => resolvedRequirementsForGroup(parentId, stack))", BROWSER_JS)
+
 
 if __name__ == "__main__":
     unittest.main()

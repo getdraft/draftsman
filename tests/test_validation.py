@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 import tempfile
 import textwrap
 import unittest
@@ -2057,6 +2058,58 @@ requirementGroups:
             )
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("has catalogStatus 'incomplete' instead of 'complete'", result.stdout)
+
+    def test_requirement_group_list_inheritance_resolves(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            shutil.copytree(
+                REPO_ROOT / "providers" / "owasp-asvs",
+                workspace / ".draft" / "providers" / "owasp-asvs",
+            )
+            (workspace / ".draft" / "workspace.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    workspace:
+                      name: asvs-list-inheritance
+                    requirements:
+                      activeRequirementGroups:
+                        - 01KQQ4Q027-ASV2
+                      requireActiveRequirementGroupDisposition: true
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            product_dir = workspace / "catalog" / "product-components"
+            product_dir.mkdir(parents=True, exist_ok=True)
+            (product_dir / "product-service-test-app.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KT55KGQ2-ASV2
+                    type: product_component
+                    name: Test App
+                    repoUrl: https://github.com/test/test-app
+                    owner:
+                      team: test
+                    classification: api-service
+                    runtimeRequirement: Node 20
+                    catalogStatus: complete
+                    lifecycleStatus: existing-only
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("ASVS L2.V1.1", result.stdout)
+        self.assertIn("ASVS L2.V1.2", result.stdout)
+        self.assertNotIn("TypeError", result.stderr)
 
     def test_stale_and_invalid_requirement_implementations(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

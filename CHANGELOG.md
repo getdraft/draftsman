@@ -3,6 +3,34 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.49.0 - 2026-06-04
+
+Adds OWASP ASVS v4.0.3 as a reusable third-party provider pack and keeps it optional for workspaces by moving ASVS RequirementGroups out of core framework configurations.
+
+### Compatibility Impact
+
+- OWASP ASVS RequirementGroups are no longer bundled as core framework requirement groups. Workspaces that enforce ASVS should vendor or copy `providers/owasp-asvs/` into `.draft/providers/owasp-asvs/` and keep their existing `activeRequirementGroups` entries.
+
+### Added
+
+- Added `providers/owasp-asvs/` with Level 1, Level 2, and Level 3 ASVS RequirementGroups mapped to DRAFT capability UIDs.
+- Added `framework/tools/import_asvs.py --output-dir` support so the ASVS provider pack can be regenerated from structured ASVS JSON without writing into core framework configurations.
+- Added tests for ASVS importer output and workspace validation against vendored provider packs.
+
+### Changed
+
+- Updated RequirementGroup inheritance resolution in validation and the browser to support list-valued `inherits` declarations.
+- Removed OWASP ASVS RequirementGroups from the core framework configuration set so ASVS remains a modular provider pack.
+
+### Fixed
+
+- Fixed list-valued RequirementGroup inheritance so validators and browser views resolve inherited requirements instead of treating the parent list as an invalid scalar key.
+
+### Migration Notes
+
+- To continue enforcing ASVS, copy or vendor `providers/owasp-asvs/` into your workspace at `.draft/providers/owasp-asvs/`, then activate `01KQQ4Q027-ASV1`, `01KQQ4Q027-ASV2`, or `01KQQ4Q027-ASV3` in `.draft/workspace.yaml`.
+- If you regenerate ASVS controls, run `python3 framework/tools/import_asvs.py --source <asvs.json> --output-dir providers/owasp-asvs/configurations/requirement-groups`.
+
 ## 0.48.1 - 2026-06-04
 
 Adds canonical generated catalog indexes for domain-capability mappings and requirement implementation evidence, then wires the static browser and CI workflows to consume and verify them before derived browser and AI assets are generated.

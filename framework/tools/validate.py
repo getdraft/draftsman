@@ -899,11 +899,24 @@ def validate_schema_section(
         validate_schema_section(value, child_schema, f"{context}.{field}", failures, root_schema, warnings)
 
 
+def requirement_group_parent_ids(group: dict[str, Any]) -> list[str]:
+    """Return normalized parent RequirementGroup IDs from scalar or list syntax."""
+    raw_inherits = group.get("inherits")
+    if raw_inherits is None:
+        return []
+    if isinstance(raw_inherits, list):
+        return [str(parent_id) for parent_id in raw_inherits if is_non_empty(parent_id)]
+    if is_non_empty(raw_inherits):
+        return [str(raw_inherits)]
+    return []
+
+
 def resolve_requirement_group_requirements(
     group_id: str,
     requirement_groups: dict[str, dict[str, Any]],
     stack: set[str] | None = None,
 ) -> list[dict[str, Any]]:
+    group_id = str(group_id)
     if group_id not in requirement_groups:
         raise KeyError(f"unknown RequirementGroup '{group_id}'")
     stack = stack or set()
@@ -912,8 +925,7 @@ def resolve_requirement_group_requirements(
     stack.add(group_id)
     group = requirement_groups[group_id]
     requirements: list[dict[str, Any]] = []
-    parent_id = group.get("inherits")
-    if parent_id:
+    for parent_id in requirement_group_parent_ids(group):
         requirements.extend(resolve_requirement_group_requirements(parent_id, requirement_groups, stack))
     requirements.extend(group.get("requirements", []))
     stack.remove(group_id)

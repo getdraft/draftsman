@@ -17,9 +17,10 @@ def str_presenter(dumper, data):
 
 yaml.add_representer(str, str_presenter)
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
 FRAMEWORK_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_JSON_URL = "https://raw.githubusercontent.com/ibuildingsnl/owasp-asvs/master/src/asvs.json"
-OUTPUT_DIR = FRAMEWORK_ROOT / "configurations" / "requirement-groups"
+DEFAULT_OUTPUT_DIR = REPO_ROOT / "providers" / "owasp-asvs" / "configurations" / "requirement-groups"
 
 # crockford base32 stable UIDs
 LEVEL_UIDS = {
@@ -57,6 +58,15 @@ def parse_args() -> argparse.Namespace:
         "--source",
         default=DEFAULT_JSON_URL,
         help="Local file path or URL to the ASVS requirements JSON.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=DEFAULT_OUTPUT_DIR,
+        help=(
+            "Directory for generated RequirementGroup YAML files. Defaults to the reusable "
+            "OWASP ASVS provider pack under providers/owasp-asvs/configurations/requirement-groups."
+        ),
     )
     return parser.parse_args()
 
@@ -145,10 +155,17 @@ def main() -> None:
     print(f"Grouped requirements: Level 1: {len(level_reqs[1])}, Level 2: {len(level_reqs[2])}, Level 3: {len(level_reqs[3])}")
 
     # Ensure output dir exists
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    output_dir = args.output_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    provider = {
+        "id": "provider.owasp-asvs",
+        "type": "third-party",
+        "name": "OWASP ASVS Provider Pack"
+    }
 
     # Generate Level 1 Group
-    l1_path = OUTPUT_DIR / "requirement-group-draft-asvs-l1.yaml"
+    l1_path = output_dir / "requirement-group-owasp-asvs-l1.yaml"
     l1_group = {
         "schemaVersion": "1.0",
         "uid": LEVEL_UIDS[1],
@@ -163,11 +180,7 @@ def main() -> None:
             "product_component",
             "software_deployment_pattern"
         ],
-        "provider": {
-            "id": "provider.draft-framework",
-            "type": "framework",
-            "name": "DRAFT Framework"
-        },
+        "provider": provider,
         "authority": {
             "name": "OWASP Foundation",
             "shortName": "ASVS L1",
@@ -179,7 +192,7 @@ def main() -> None:
     print(f"Wrote Level 1 RequirementGroup to {l1_path}")
 
     # Generate Level 2 Group
-    l2_path = OUTPUT_DIR / "requirement-group-draft-asvs-l2.yaml"
+    l2_path = output_dir / "requirement-group-owasp-asvs-l2.yaml"
     l2_group = {
         "schemaVersion": "1.0",
         "uid": LEVEL_UIDS[2],
@@ -195,11 +208,7 @@ def main() -> None:
             "product_component",
             "software_deployment_pattern"
         ],
-        "provider": {
-            "id": "provider.draft-framework",
-            "type": "framework",
-            "name": "DRAFT Framework"
-        },
+        "provider": provider,
         "authority": {
             "name": "OWASP Foundation",
             "shortName": "ASVS L2",
@@ -211,7 +220,7 @@ def main() -> None:
     print(f"Wrote Level 2 RequirementGroup to {l2_path}")
 
     # Generate Level 3 Group
-    l3_path = OUTPUT_DIR / "requirement-group-draft-asvs-l3.yaml"
+    l3_path = output_dir / "requirement-group-owasp-asvs-l3.yaml"
     l3_group = {
         "schemaVersion": "1.0",
         "uid": LEVEL_UIDS[3],
@@ -227,11 +236,7 @@ def main() -> None:
             "product_component",
             "software_deployment_pattern"
         ],
-        "provider": {
-            "id": "provider.draft-framework",
-            "type": "framework",
-            "name": "DRAFT Framework"
-        },
+        "provider": provider,
         "authority": {
             "name": "OWASP Foundation",
             "shortName": "ASVS L3",
