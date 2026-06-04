@@ -2058,6 +2058,117 @@ requirementGroups:
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("has catalogStatus 'incomplete' instead of 'complete'", result.stdout)
 
+    def test_stale_and_invalid_requirement_implementations(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            self._write_workspace_requirement_fixture(workspace, require_disposition=False)
+
+            # Write a requirement group
+            (workspace / "configurations" / "requirement-groups" / "requirement-group-company-control.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: requirement-group.company-control
+                    type: requirement_group
+                    name: Company Control
+                    description: Workspace-mode control group.
+                    catalogStatus: incomplete
+                    owner:
+                      team: test
+                    activation: workspace
+                    appliesTo:
+                      - product_component
+                    requirements:
+                      - id: company-required-field
+                        description: Product services must provide company evidence.
+                        rationale: Test requirement.
+                        requirementMode: mandatory
+                        naAllowed: false
+                        canBeSatisfiedBy:
+                          - mechanism: field
+                            key: architectureNotes.companyEvidence
+                        minimumSatisfactions: 1
+                        validAnswerTypes:
+                          - field
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            # 1. Stale / Non-existent requirementGroup UID
+            (workspace / "catalog" / "product-components" / "product-service-test-app.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: product-service.test.app
+                    type: product_component
+                    name: Test App
+                    repoUrl: https://github.com/test/test-app
+                    owner:
+                      team: test
+                    classification: api-service
+                    runtimeRequirement: Node 20
+                    runsOn: host.test
+                    catalogStatus: complete
+                    lifecycleStatus: existing-only
+                    requirementGroups:
+                      - requirement-group.company-control
+                    architectureNotes:
+                      companyEvidence: Provided.
+                    requirementImplementations:
+                      - requirementGroup: requirement-group.non-existent-group
+                        requirementId: company-required-field
+                        status: satisfied
+                        mechanism: field
+                        key: architectureNotes.companyEvidence
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+            result = validate_workspace(workspace)
+            self.assertFalse(result.ok, result.stdout + result.stderr)
+            self.assertIn("Set requirementGroup to an existing requirement_group UID", result.stdout)
+
+            # 2. Stale / Non-existent requirementId
+            (workspace / "catalog" / "product-components" / "product-service-test-app.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: product-service.test.app
+                    type: product_component
+                    name: Test App
+                    repoUrl: https://github.com/test/test-app
+                    owner:
+                      team: test
+                    classification: api-service
+                    runtimeRequirement: Node 20
+                    runsOn: host.test
+                    catalogStatus: complete
+                    lifecycleStatus: existing-only
+                    requirementGroups:
+                      - requirement-group.company-control
+                    architectureNotes:
+                      companyEvidence: Provided.
+                    requirementImplementations:
+                      - requirementGroup: requirement-group.company-control
+                        requirementId: non-existent-requirement-id
+                        status: satisfied
+                        mechanism: field
+                        key: architectureNotes.companyEvidence
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+            result = validate_workspace(workspace)
+            self.assertFalse(result.ok, result.stdout + result.stderr)
+            self.assertIn("Set requirementId to an applicable requirement in", result.stdout)
+
 
 
 if __name__ == "__main__":
