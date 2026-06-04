@@ -26,7 +26,7 @@ The framework uses two sources of truth for YAML validation:
 | DraftingSession | `catalog/governance/sessions/` | [drafting-session.schema.yaml](../schemas/drafting-session.schema.yaml) | Incomplete authoring state, generated objects, assumptions, and unresolved questions. |
 | Capability | `configurations/capabilities/` | [capability.schema.yaml](../schemas/capability.schema.yaml) | First-class capability with a definition owner, optional company owner, and company-approved TechnologyComponent implementations. |
 | RequirementGroup | `configurations/requirement-groups/` | [requirement-group.schema.yaml](../schemas/requirement-group.schema.yaml) | Unified authoring and validation requirements, including always-on definition requirements and workspace-activated compliance requirements. |
-| Domain | `configurations/domains/` | [domain.schema.yaml](../schemas/domain.schema.yaml) | Groups capability UIDs for strategy navigation. |
+| Domain | `configurations/domains/` | [domain.schema.yaml](../schemas/domain.schema.yaml) | Names a strategy navigation area; capability membership is generated from each Capability object's `domain` field. |
 | ObjectPatch | `configurations/object-patches/` | [object-patch.schema.yaml](../schemas/object-patch.schema.yaml) | Workspace overlay that deep-merges selected fields into a base framework object. |
 
 PaaS, SaaS, appliance, and self-managed are `deliveryModel` values on RuntimeService, DataStoreService, and NetworkService objects. They are not

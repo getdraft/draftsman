@@ -8,7 +8,10 @@ and the Draftsman can then look up the company-approved TechnologyComponents
 that implement it.
 
 Capabilities use generated `uid` values like other first-class objects. Humans
-should resolve them by name, alias, domain, or file path.
+should resolve them by name, alias, domain, or file path. A capability declares
+its strategy domain with the required `domain` field; Domain objects do not
+author a duplicate `capabilities` list. Browser, AI, and search read models
+derive domain→capability indexes from `capability.domain` during generation.
 
 ## Where Capabilities Live
 

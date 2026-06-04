@@ -47,7 +47,7 @@ engineering objects run on or connect to.
 |---|---|---|
 | Capability | `capability` | Names an ability required by architecture and records company-approved TechnologyComponents for satisfying that ability. |
 | RequirementGroup | `requirement_group` | Groups requirements used by the Draftsman during interviews and by validation after authoring. |
-| Domain | `domain` | Groups capabilities into a planning area such as compute, observability, identity, or data. |
+| Domain | `domain` | Names a planning area such as compute, observability, identity, or data; membership is generated from `Capability.domain`. |
 | DecisionRecord | `decision_record` | Records an architecture decision, risk, exception, or rationale. |
 | DraftingSession | `drafting_session` | Stores interview memory, source material, assumptions, unresolved questions, and generated work while drafting. |
 | ObjectPatch | `object_patch` | A workspace overlay that changes selected fields on a framework-owned object without copying the full object. |

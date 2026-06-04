@@ -15,6 +15,8 @@ const objectAliasLookup = (() => {
   return lookup;
 })();
 const referencedByIndex = browserData.referencedBy || {};
+const catalogIndexes = browserData.indexes || {};
+const domainCapabilitiesIndex = catalogIndexes.domainCapabilities || {};
 const repoUrl = browserData.repoUrl || '';
 const businessTaxonomy = browserData.businessTaxonomy || { pillars: [] };
 const businessPillarLookup = Object.fromEntries((businessTaxonomy.pillars || []).map(pillar => [pillar.id, pillar]));
@@ -5034,7 +5036,7 @@ function deliveryModelDetailMarkup(object) {
 }
 
 function domainDetailMarkup(object) {
-  const domainCaps = object.capabilities || [];
+  const domainCaps = domainCapabilitiesIndex[object.id] || object.capabilities || [];
   return `
     <section class="section-card">
       <h3>Capability Map: ${escapeHtml(object.name)}</h3>
@@ -5049,7 +5051,7 @@ function domainDetailMarkup(object) {
               <div class="interaction-notes"><strong>Lifecycle implementations:</strong></div>
               <div class="related-list">
                 ${(capability.implementations || []).length ? capability.implementations.map(implementation => {
-                  const implObject = resolveImplementationReference(object, implementation)?.object || {};
+                  const implObject = resolveImplementationReference(capability, implementation)?.object || {};
                   return `
                   <a href="#${escapeHtml(implementation.ref)}" class="related-link">
                     <span class="related-icon">${topologyNodeIcon({ref: implementation.ref}, 'host').icon}</span>
