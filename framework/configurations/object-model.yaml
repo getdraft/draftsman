@@ -53,7 +53,7 @@ leftSections:
             # layout: paired-center (two objects → grouped and centered)
 
   - id: architecture
-    label: ARCHITECTURE OBJECTS
+    label: SHARED SERVICES OBJECTS
     colorKey: architecture
     rows:
       - objects:

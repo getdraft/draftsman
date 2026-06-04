@@ -3,6 +3,32 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.46.0 - 2026-06-04
+
+Adds a reusable compliance and verification integration for the OWASP Application Security Verification Standard (ASVS) v4.0.3, and updates the object model UML terminology to reflect "Shared Services".
+
+### Compatibility Impact
+
+- This release does not introduce any breaking changes to existing catalogs. All additions are backwards-compatible.
+
+### Added
+
+- Added an automated OWASP ASVS parser and RequirementGroup generator tool (`framework/tools/import_asvs.py`) to download and compile the standard.
+- Bundled the standard OWASP ASVS v4.0.3 compliance pack as three modular, inheriting RequirementGroups: `asvs-l1` (Baseline), `asvs-l2` (Standard), and `asvs-l3` (Advanced).
+
+### Changed
+
+- Updated the DRAFT object model UML diagram and configurations to rename "Architecture Objects" to "Shared Services Objects", aligning with the three-role framework terminology.
+- Updated the DRAFT User Manual section 1.1 "What DRAFT replaces" to describe DRAFT conceptually as the architecture diagram, deployment manifest, and audit evidence.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No migration steps are required.
+
 ## 0.45.0 - 2026-06-02
 
 Adds validator coverage for duplicate capability and domain names across native, provider, and workspace catalog layers.

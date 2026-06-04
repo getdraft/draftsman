@@ -1,0 +1,534 @@
+schemaVersion: '1.0'
+uid: 01KQQ4Q027-ASV3
+type: requirement_group
+name: OWASP ASVS Level 3
+description: Advanced verification controls for critical infrastructure and high-value transactions, inheriting Level 2.
+version: 4.0.3
+catalogStatus: complete
+activation: workspace
+inherits:
+- 01KQQ4Q027-ASV2
+appliesTo:
+- runtime_service
+- product_component
+- software_deployment_pattern
+provider:
+  id: provider.draft-framework
+  type: framework
+  name: DRAFT Framework
+authority:
+  name: OWASP Foundation
+  shortName: ASVS L3
+  source: OWASP Application Security Verification Standard v4.0.3
+requirements:
+- id: V1.4
+  externalControlId: V1.4
+  name: ASVS V1.4
+  description: Verify that all application components are defined in terms of the business functions and/or security functions
+    they provide.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KT0XNZEY-35Y2
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-35Y2
+  - mechanism: decisionRecord
+    key: asvs.v1.4
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V1.5
+  externalControlId: V1.5
+  name: ASVS V1.5
+  description: Verify that all components that are not part of the application but that the application relies on to operate
+    are defined in terms of the functions, and/or security functions, they provide.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KT0XNZEY-35Y2
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-35Y2
+  - mechanism: decisionRecord
+    key: asvs.v1.5
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V1.6
+  externalControlId: V1.6
+  name: ASVS V1.6
+  description: Verify that a threat model for the target application has been produced and covers off risks associated with
+    Spoofing, Tampering, Repudiation, Information Disclosure, and Elevation of privilege (STRIDE).
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KT0XNZEY-35Y2
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-35Y2
+  - mechanism: decisionRecord
+    key: asvs.v1.6
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V2.28
+  externalControlId: V2.28
+  name: ASVS V2.28
+  description: Verify that all authentication challenges, whether successful or failed, should respond in the same average
+    response time.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-MHJM
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-MHJM
+  - mechanism: decisionRecord
+    key: asvs.v2.28
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V2.29
+  externalControlId: V2.29
+  name: ASVS V2.29
+  description: Verify that secrets, API keys, and passwords are not included in the source code, or online source code repositories.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-MHJM
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-MHJM
+  - mechanism: decisionRecord
+    key: asvs.v2.29
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V4.11
+  externalControlId: V4.11
+  name: ASVS V4.11
+  description: Verify that there is a centralized mechanism (including libraries that call external authorization services)
+    for protecting access to each type of protected resource.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-4JR6
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-4JR6
+  - mechanism: decisionRecord
+    key: asvs.v4.11
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V5.6
+  externalControlId: V5.6
+  name: ASVS V5.6
+  description: Verify that a single input validation control is used by the application for each type of data that is accepted.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KT0V5MCV-Z079
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0V5MCV-Z079
+  - mechanism: decisionRecord
+    key: asvs.v5.6
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V7.8
+  externalControlId: V7.8
+  name: ASVS V7.8
+  description: Verify that cryptographic modules operate in their approved mode according to their published security policies.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-H3B5
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-H3B5
+  - mechanism: decisionRecord
+    key: asvs.v7.8
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V7.11
+  externalControlId: V7.11
+  name: ASVS V7.11
+  description: Verify that all consumers of cryptographic services do not have direct access to key material. Isolate cryptographic
+    processes, including master secrets and consider the use of a hardware key vault (HSM).
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-H3B5
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-H3B5
+  - mechanism: decisionRecord
+    key: asvs.v7.11
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V7.15
+  externalControlId: V7.15
+  name: ASVS V7.15
+  description: Verify that random numbers are created with proper entropy even when the application is under heavy load, or
+    that the application degrades gracefully in such circumstances.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-H3B5
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-H3B5
+  - mechanism: decisionRecord
+    key: asvs.v7.15
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V8.5
+  externalControlId: V8.5
+  name: ASVS V8.5
+  description: Verify that all events that include untrusted data will not execute as code in the intended log viewing software.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-D04B
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-D04B
+  - mechanism: decisionRecord
+    key: asvs.v8.5
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V8.8
+  externalControlId: V8.8
+  name: ASVS V8.8
+  description: Verify that all non-printable symbols and field separators are properly encoded in log entries, to prevent
+    log injection.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-D04B
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-D04B
+  - mechanism: decisionRecord
+    key: asvs.v8.8
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V8.9
+  externalControlId: V8.9
+  name: ASVS V8.9
+  description: Verify that log fields from trusted and untrusted sources are distinguishable in log entries.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-D04B
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-D04B
+  - mechanism: decisionRecord
+    key: asvs.v8.9
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V8.11
+  externalControlId: V8.11
+  name: ASVS V8.11
+  description: Verify that security logs have some form of integrity checking or controls to prevent unauthorized modification.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-D04B
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-D04B
+  - mechanism: decisionRecord
+    key: asvs.v8.11
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V8.12
+  externalControlId: V8.12
+  name: ASVS V8.12
+  description: Verify that the logs are stored on a different partition than the application is running with proper log rotation.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-D04B
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-D04B
+  - mechanism: decisionRecord
+    key: asvs.v8.12
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V9.2
+  externalControlId: V9.2
+  name: ASVS V9.2
+  description: Verify that the list of sensitive data processed by the application is identified, and that there is an explicit
+    policy for how access to this data must be controlled, encrypted and enforced under relevant data protection directives.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-H3B5
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-H3B5
+  - mechanism: decisionRecord
+    key: asvs.v9.2
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V9.6
+  externalControlId: V9.6
+  name: ASVS V9.6
+  description: Verify that there is a method to remove each type of sensitive data from the application at the end of the
+    required retention policy.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-H3B5
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-H3B5
+  - mechanism: decisionRecord
+    key: asvs.v9.6
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V9.8
+  externalControlId: V9.8
+  name: ASVS V9.8
+  description: Verify the application has the ability to detect and alert on abnormal numbers of requests for data harvesting
+    for an example screen scraping.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-H3B5
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-H3B5
+  - mechanism: decisionRecord
+    key: asvs.v9.8
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V10.4
+  externalControlId: V10.4
+  name: ASVS V10.4
+  description: Verify that backend TLS connection failures are logged.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KSWVZSZ5-1RTH
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KSWVZSZ5-1RTH
+  - mechanism: decisionRecord
+    key: asvs.v10.4
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V10.5
+  externalControlId: V10.5
+  name: ASVS V10.5
+  description: Verify that certificate paths are built and verified for all client certificates using configured trust anchors
+    and revocation information.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KSWVZSZ5-1RTH
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KSWVZSZ5-1RTH
+  - mechanism: decisionRecord
+    key: asvs.v10.5
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V10.8
+  externalControlId: V10.8
+  name: ASVS V10.8
+  description: Verify that there is a single standard TLS implementation that is used by the application that is configured
+    to operate in an approved mode of operation.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KSWVZSZ5-1RTH
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KSWVZSZ5-1RTH
+  - mechanism: decisionRecord
+    key: asvs.v10.8
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V10.12
+  externalControlId: V10.12
+  name: ASVS V10.12
+  description: Verify that production website URL has been submitted to preloaded list of Strict Transport Security domains
+    maintained by web browser vendors. Please see the references below.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KSWVZSZ5-1RTH
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KSWVZSZ5-1RTH
+  - mechanism: decisionRecord
+    key: asvs.v10.12
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V13.1
+  externalControlId: V13.1
+  name: ASVS V13.1
+  description: Verify all malicious activity is adequately sandboxed, containerized or isolated to delay and deter attackers
+    from attacking other applications.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-JW52
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-JW52
+  - mechanism: decisionRecord
+    key: asvs.v13.1
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V13.2
+  externalControlId: V13.2
+  name: ASVS V13.2
+  description: Verify that a code review looks for malicious code, back doors, Easter eggs, and logic flaws.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-JW52
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-JW52
+  - mechanism: decisionRecord
+    key: asvs.v13.2
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V17.8
+  externalControlId: V17.8
+  name: ASVS V17.8
+  description: Verify that there are anti-debugging techniques present that are sufficient enough to deter or delay likely
+    attackers from injecting debuggers into the mobile app (For example GDB).
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KQQ4Q026-1HZP
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-1HZP
+  - mechanism: decisionRecord
+    key: asvs.v17.8
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V19.6
+  externalControlId: V19.6
+  name: ASVS V19.6
+  description: Verify that authorised administrators have the capability to verify the integrity of all security-relevant
+    configurations to ensure that they have not been tampered with.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KT0XNZEY-35Y2
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-35Y2
+  - mechanism: decisionRecord
+    key: asvs.v19.6
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V19.7
+  externalControlId: V19.7
+  name: ASVS V19.7
+  description: Verify that all application components are signed.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KT0XNZEY-35Y2
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-35Y2
+  - mechanism: decisionRecord
+    key: asvs.v19.7
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V19.8
+  externalControlId: V19.8
+  name: ASVS V19.8
+  description: Verify that third party components come from trusted repositories.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KT0XNZEY-35Y2
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-35Y2
+  - mechanism: decisionRecord
+    key: asvs.v19.8
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+- id: V19.9
+  externalControlId: V19.9
+  name: ASVS V19.9
+  description: Ensure that build processes for system level languages have all security flags enabled, such as ASLR, DEP,
+    and security checks.
+  requirementMode: mandatory
+  naAllowed: true
+  relatedCapability: 01KT0XNZEY-35Y2
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KT0XNZEY-35Y2
+  - mechanism: decisionRecord
+    key: asvs.v19.9
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - relationship
+  - decisionRecord

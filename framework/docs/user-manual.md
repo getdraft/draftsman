@@ -8,7 +8,10 @@ DRAFT is an AI-first, Git-native, repo-first framework for documenting governed 
 
 ### 1.1 What DRAFT replaces {#what-draft-replaces}
 
-Most teams document architecture in Confluence pages, PowerPoint decks, or shared diagrams. Those artifacts go stale the moment the code changes, live outside the review process, and can't be queried or validated. DRAFT replaces them with YAML objects that live in the same repository as the work they describe.
+DRAFT is the architecture diagram, the deployment manifest, and the audit evidence. 
+
+Rather than maintaining separate, static documentation artifacts that go stale the moment code changes, live outside the review process, and cannot be programmatically validated, DRAFT embeds the architecture design, operational topology, compliance posture, and deployment boundaries directly into the codebase as structured, queryable YAML.
+
 
 ### 1.2 What DRAFT actually is {#what-draft-is}
 
