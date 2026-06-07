@@ -141,7 +141,7 @@ def setup_ide():
 
     if copilot_dst.exists():
         existing_content = copilot_dst.read_text(encoding="utf-8")
-        if "Draftsman" in existing_content or "/draft" in existing_content:
+        if "/draft" in existing_content:
             print(f"  Copilot instructions already configured in {copilot_dst}")
         else:
             try:
