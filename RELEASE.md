@@ -68,6 +68,7 @@ When creating a release tag, use `vX.Y.Z` and verify it matches
 release gate. The enforced rules are:
 
 - **Pull request required before merge** — no direct pushes to `main`.
+- **Squash merge only** — all Pull Requests must be squash-merged to keep `main`'s history clean and preserve linear version bumps.
 - **Required status check: `validate`** — the `validate` job in the
   `Validate Catalog` workflow (`.github/workflows/validate-catalog.yml`). It
   runs `validate.py`, the unit tests, `check_release_notes.py`, and the AI-index
