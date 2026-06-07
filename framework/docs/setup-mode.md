@@ -195,15 +195,21 @@ Question:
 
 ### 7. IDE Integration
 
-DRAFT is AI-agnostic. The Draftsman role can be fulfilled by any capable AI
-assistant. This step wires DRAFT's built-in workflow commands into whichever
-IDE the team uses. Some tools register native slash commands, while others use
-project instructions that route the typed command phrase `/draft <verb>`
-(for example `/draft author`, `/draft session`, `/draft validate`,
-`/draft security`, `/draft update`) to the `/draft` command file.
+DRAFT is AI-agnostic. The Draftsman role can be fulfilled by any capable AI assistant. This step wires DRAFT's built-in workflow commands into whichever IDE the team uses.
 
-Ask the team which AI IDE(s) they use and follow the relevant sub-steps. More
-than one can be configured; they do not conflict.
+#### Automated Setup (Recommended)
+
+To configure Claude Code, Cursor, Windsurf, and GitHub Copilot integrations for your workspace in one go, run the following onboarding script from the root of your DRAFT workspace:
+
+```bash
+python3 .draft/framework/tools/setup_ide.py
+```
+
+The script will automatically create the necessary directories and set up the correct relative symbolic links or copy rule files. It supports macOS, Linux, and Windows (falling back to file copies if symbolic link permissions are restricted).
+
+#### Manual Setup
+
+If you prefer to configure the integrations manually, follow the relevant sub-steps below. More than one can be configured; they do not conflict.
 
 #### 7a. Claude Code
 

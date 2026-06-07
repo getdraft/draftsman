@@ -3,6 +3,31 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.51.2 - 2026-06-06
+
+Adds an automated onboarding/setup helper script to configure DRAFT integrations for Claude Code, Cursor, Windsurf, and GitHub Copilot.
+
+### Compatibility Impact
+
+- No compatibility impact. Existing workspaces remain valid.
+
+### Added
+
+- Added `framework/tools/setup_ide.py` onboarding script to automatically create directories and symlink/copy IDE rules.
+- Updated `setup-mode.md` documentation to introduce the automated helper script as the recommended setup step.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No migration is required.
+
 ## 0.51.1 - 2026-06-06
 
 Adds automated git tag creation and pushing to the Validate Catalog CI workflow for version-impacting commits on the main branch.
