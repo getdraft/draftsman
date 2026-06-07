@@ -101,7 +101,10 @@ groupings in `.draft/workspace.yaml`. The framework does not ship company
 business taxonomy values; it only validates and renders the workspace values
 when SoftwareDeploymentPatterns reference them.
 
-Example:
+There are three ways to define the business taxonomy:
+
+### 1. Simple Pillars List
+This defines a flat list of business pillars:
 
 ```yaml
 businessTaxonomy:
@@ -118,8 +121,60 @@ businessTaxonomy:
       name: Business Operations
 ```
 
-SoftwareDeploymentPatterns reference those values through
-`businessContext.pillar`. Use `businessContext.additionalPillars` only when a
+### 2. Central Inline Hierarchy
+This defines a centralized hierarchy tree in `.draft/workspace.yaml`:
+
+```yaml
+businessTaxonomy:
+  requireSoftwareDeploymentPatternPillar: true
+  hierarchy:
+    - id: org.product-dev
+      name: Product Development
+      type: business_unit
+      children:
+        - id: division.hcm
+          name: Human Capital Management
+          type: pillar
+          children:
+            - id: team.absence-time
+              name: Absence & Time Team
+              type: team
+```
+
+### 3. Federated Business Units (Recommended for Scale)
+For large organizations, you can define top-level Business Units centrally in `.draft/workspace.yaml`, and delegate the sub-tree design to BU owners by placing `business_unit_hierarchy` catalog files in `catalog/`:
+
+**In `.draft/workspace.yaml`**:
+```yaml
+businessTaxonomy:
+  requireSoftwareDeploymentPatternPillar: true
+  businessUnits:
+    - id: bu.hr
+      name: Human Resources
+    - id: bu.finance
+      name: Finance
+```
+
+**In `catalog/business-unit-hierarchies/hr.yaml`**:
+```yaml
+schemaVersion: "1.0"
+uid: BUH0000001-1234
+type: business_unit_hierarchy
+name: HR Hierarchy
+businessUnit: bu.hr
+catalogStatus: complete
+hierarchy:
+  - id: division.hcm
+    name: Human Capital Management
+    type: pillar
+    children:
+      - id: team.absence-time
+        name: Absence & Time Team
+        type: team
+```
+
+SoftwareDeploymentPatterns reference these values through
+`businessContext.pillar` or `businessContext.ownerNode` (pointing to a node in the hierarchy with a pillar in its lineage). Use `businessContext.additionalPillars` only when a
 pattern materially spans more than one business pillar; the primary `pillar`
 drives browser grouping.
 
