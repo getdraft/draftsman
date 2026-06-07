@@ -10,7 +10,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -46,10 +46,19 @@ jobs:
           python framework/tools/generate_ai_index.py
           git diff --exit-code AI_INDEX.md
 
+  tag:
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
       - name: Create and push git tag
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          VERSION=$(python3 -c "import yaml; print(yaml.safe_load(open('draft-framework.yaml'))['version'])")
+          VERSION=$(grep '^version:' draft-framework.yaml | cut -d '"' -f 2)
           TAG="v$VERSION"
           if git ls-remote --tags origin "refs/tags/$TAG" | grep -q "refs/tags/$TAG"; then
             echo "Tag $TAG already exists on remote. Skipping tag creation."
