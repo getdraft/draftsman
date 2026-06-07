@@ -100,6 +100,11 @@ check each potential finding against the seven principles. A finding that
 conflicts with a stated principle is not a simplification opportunity — it is
 a misunderstanding. Drop it silently.
 
+Specifically, apply these validation safety checks:
+1. **The AI-First Constraint:** Remember that humans do not write or edit catalog YAML files directly; the Draftsman handles all translation, validation, and file generation (Principle 8). Do not flag YAML syntax verbosity, strict schema rules, or strict vocabulary validation as "authoring friction" for human developers.
+2. **Prioritize Automation Correctness:** Any finding proposing to loosen validation matching (e.g., suggesting wildcards or regex in place of strict vocabulary lists) violates Principle 4 (automation-first) and Principle 8 (AI owns the YAML). Exact values are required for deployment automation.
+3. **Value over Laziness:** Do not propose removing governance or validation checks simply because they require effort — effort that produces downstream automation value is not friction (Principle 7).
+
 For each genuine finding, record:
 - A short title (5–8 words)
 - Severity: **High** (blocks adoption or creates persistent user friction),
@@ -108,9 +113,7 @@ For each genuine finding, record:
 - One sentence describing the issue
 
 Do not generate findings for intentional design decisions that are already
-explained by the design principles. Do not propose removing governance
-mechanisms simply because they require effort — effort that produces value
-is not friction.
+explained by the design principles.
 
 ## Step 5: Present Findings Table
 

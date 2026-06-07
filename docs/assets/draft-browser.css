@@ -596,6 +596,87 @@ html, body {
   font-size: 12px;
   white-space: nowrap;
 }
+/* Hierarchical Business Taxonomy Tree View */
+.hierarchical-tree-view {
+  display: grid;
+  gap: 16px;
+  margin-top: 12px;
+}
+.tree-node-details {
+  border: 1px solid rgba(122, 110, 96, 0.15);
+  border-radius: 8px;
+  background: #faf9f6;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+.tree-node-details:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.tree-node-details[open] {
+  background: #ffffff;
+}
+.tree-node-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #faf9f6;
+  cursor: pointer;
+  font-weight: 500;
+  user-select: none;
+  border-bottom: 1px solid transparent;
+  list-style: none;
+}
+.tree-node-summary::-webkit-details-marker {
+  display: none;
+}
+.tree-node-details[open] > .tree-node-summary {
+  border-bottom: 1px solid rgba(122, 110, 96, 0.12);
+  background: #fdfdfc;
+}
+.tree-node-summary::before {
+  content: "▶";
+  font-size: 10px;
+  color: var(--muted);
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+.tree-node-details[open] > .tree-node-summary::before {
+  transform: rotate(90deg);
+}
+.tree-node-title {
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 600;
+  flex-grow: 0;
+}
+.tree-node-type-badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(122, 110, 96, 0.1);
+  color: var(--muted);
+  font-weight: 600;
+}
+.tree-node-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--muted);
+}
+.tree-node-content {
+  padding: 16px;
+  display: grid;
+  gap: 16px;
+}
+.tree-node-children {
+  display: grid;
+  gap: 14px;
+  padding-left: 18px;
+  border-left: 1.5px dashed rgba(122, 110, 96, 0.2);
+  margin-top: 4px;
+}
 .object-card,
 .interaction-card,
 .decision-card,
