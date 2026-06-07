@@ -3,6 +3,35 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.51.0 - 2026-06-06
+
+Adds support for hierarchical business taxonomy with federated business unit ownership.
+
+### Compatibility Impact
+
+- This release adds new optional schema `business_unit_hierarchy` and fields. Existing workspace and catalog configurations remain valid.
+
+### Added
+
+- Added `business_unit_hierarchy` schema under `framework/schemas/` to define federated business unit hierarchy files.
+- Added `businessContext.ownerNode` field to SoftwareDeploymentPattern schema to allow mapping patterns directly to specific business hierarchy nodes.
+- Added support in `validate.py` for `businessTaxonomy.businessUnits` registry in `workspace.yaml` and recursively loading and stitching `business_unit_hierarchy` files from the catalog.
+- Added business unit hierarchy documentation in `workspaces.md`, `software-deployment-patterns.md`, and `draftsman.md`.
+- Added unit tests checking federated business unit validation, required pillar policies via lineage checks, and error reporting for unregistered business units.
+
+### Changed
+
+- Updated `generate_browser.py` to construct the fully stitched business unit taxonomy tree for collapsible navigation in the DRAFT browser.
+- Regenerated derived AI index (`AI_INDEX.md`) and static browser assets.
+
+### Fixed
+
+- None (this is a feature release and does not patch existing defects).
+
+### Migration Notes
+
+- Workspace administrators can migrate central inline hierarchies to federated business unit hierarchies by declaring `businessUnits` in `.draft/workspace.yaml` and moving sub-trees to separate `business_unit_hierarchy` catalog files.
+
 ## 0.50.0 - 2026-06-04
 
 Extends ProductComponent authoring with product-owned runtime metadata so engineering teams can document listener ports and simple runtime dependencies without editing shared RuntimeService definitions.
