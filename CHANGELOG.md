@@ -3,6 +3,30 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.51.1 - 2026-06-06
+
+Adds automated git tag creation and pushing to the Validate Catalog CI workflow for version-impacting commits on the main branch.
+
+### Compatibility Impact
+
+- No compatibility impact. Existing workspaces remain valid.
+
+### Added
+
+- Added `Create and push git tag` step in `.github/workflows/validate-catalog.yml` to automatically create and push a git tag for the new version when a PR is merged into `main`.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No migration is required.
+
 ## 0.51.0 - 2026-06-06
 
 Adds support for hierarchical business taxonomy with federated business unit ownership.
