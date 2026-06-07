@@ -3,17 +3,17 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
-## 0.51.4 - 2026-06-06
+## 0.52.0 - 2026-06-07
 
 Fixes the SoftwareDeploymentPattern hardcoded validator to support DecisionRecords referenced via decisionRecords.
 
 ### Compatibility Impact
 
-- No compatibility impact. Existing workspaces and inline architectureNotes remain valid and supported.
+- **Breaking Change**: Inline `architectureNotes` are no longer accepted to satisfy SoftwareDeploymentPattern verification requirements. SDPs must now reference `decision_record` objects via `decisionRecords` to satisfy these requirements.
 
 ### Added
 
-- Added `sdp_requirement_satisfied` helper to evaluate requirement satisfaction via both inline `architectureNotes` and referenced `decisionRecord` objects.
+- Added `sdp_requirement_satisfied` helper to evaluate requirement satisfaction via referenced `decisionRecord` objects.
 
 ### Changed
 
@@ -26,7 +26,7 @@ Fixes the SoftwareDeploymentPattern hardcoded validator to support DecisionRecor
 
 ### Migration Notes
 
-- No migration is required.
+- Promote inline notes in SoftwareDeploymentPatterns (e.g. `deploymentTargets`, `availabilityRequirement`, `dataClassification`, `failureDomain`, etc.) to separate `decision_record` objects and reference them in the SDP's `decisionRecords` list.
 
 ## 0.51.3 - 2026-06-06
 
