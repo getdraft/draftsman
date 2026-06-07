@@ -3,6 +3,31 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.52.0 - 2026-06-07
+
+Fixes the SoftwareDeploymentPattern hardcoded validator to support DecisionRecords referenced via decisionRecords.
+
+### Compatibility Impact
+
+- **Breaking Change**: Inline `architectureNotes` are no longer accepted to satisfy SoftwareDeploymentPattern verification requirements. SDPs must now reference `decision_record` objects via `decisionRecords` to satisfy these requirements.
+
+### Added
+
+- Added `sdp_requirement_satisfied` helper to evaluate requirement satisfaction via referenced `decisionRecord` objects.
+
+### Changed
+
+- Updated SoftwareDeploymentPattern hardcoded checks in `validate.py` (for conformance, targets, availability, interactions, classification, failure domain, and deviations) to use the new satisfaction helper, resolving the contradiction with the declarative RequirementGroup.
+- Added validation unit test `test_software_deployment_pattern_with_decision_records_satisfaction` to verify that SDPs containing only referenced DecisionRecords are successfully validated.
+
+### Fixed
+
+- Fixed hardcoded SDP validation gaps where valid DecisionRecords were ignored, forcing redundant `architectureNotes` fields.
+
+### Migration Notes
+
+- Promote inline notes in SoftwareDeploymentPatterns (e.g. `deploymentTargets`, `availabilityRequirement`, `dataClassification`, `failureDomain`, etc.) to separate `decision_record` objects and reference them in the SDP's `decisionRecords` list.
+
 ## 0.51.3 - 2026-06-06
 
 Locks squash-merging as the only allowed pull request merge method on the upstream repository.
