@@ -125,9 +125,11 @@ def setup_ide():
     # 5. Setup GitHub Copilot Instructions
     print_step("Setting up GitHub Copilot...")
     copilot_dst = cwd / ".github" / "copilot-instructions.md"
-    copilot_tmpl = framework_dir / "templates" / "workspace" / ".github" / "copilot-instructions.md.tmpl"
-    if not copilot_tmpl.is_file() and not is_company_workspace:
-        # If upstream, the templates are in templates/
+    if is_company_workspace:
+        copilot_tmpl = cwd / ".draft" / "templates" / "workspace" / ".github" / "copilot-instructions.md.tmpl"
+        if not copilot_tmpl.is_file():
+            copilot_tmpl = framework_dir / "templates" / "workspace" / ".github" / "copilot-instructions.md.tmpl"
+    else:
         copilot_tmpl = cwd / "templates" / "workspace" / ".github" / "copilot-instructions.md.tmpl"
 
     # Define the generic block to insert if the file already exists

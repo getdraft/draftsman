@@ -3,6 +3,30 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.52.2 - 2026-06-07
+
+Resolves workspace Copilot template path lookup in setup_ide.py.
+
+### Compatibility Impact
+
+- No compatibility impact. Existing workspaces remain valid.
+
+### Added
+
+- Added automated IDE setup test suite `tests/test_setup_ide.py` to verify company workspace template lookup.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- Fixed the Copilot template lookup path in `setup_ide.py` for company workspaces to search in `.draft/templates/` before falling back to the framework directory.
+
+### Migration Notes
+
+- No migration is required.
+
 ## 0.52.1 - 2026-06-07
 
 Tightens Copilot setup detection in the automated IDE onboarding script.
