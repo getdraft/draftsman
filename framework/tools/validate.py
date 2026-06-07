@@ -2577,6 +2577,21 @@ def validate_ra(
                                 )
 
 
+def sdp_requirement_satisfied(
+    obj: dict[str, Any],
+    key: str,
+    catalog_by_id: dict[str, dict[str, Any]]
+) -> bool:
+    """
+    Checks if a SoftwareDeploymentPattern requirement is satisfied either by
+    an inline architectureNotes field or by a referenced decisionRecord.
+    """
+    notes = obj.get("architectureNotes")
+    if isinstance(notes, dict) and is_non_empty(notes.get(key)):
+        return True
+    return mechanism_satisfied(obj, {"mechanism": "decisionRecord", "key": key}, catalog_by_id)
+
+
 def validate_software_deployment_pattern(
     obj: dict[str, Any],
     path: Path,
@@ -2604,11 +2619,11 @@ def validate_software_deployment_pattern(
 
     object_id = object_label(obj)
     ra_uid = obj.get("followsReferenceArchitecture")
-    if not is_non_empty(ra_uid) and not is_non_empty(obj.get("architectureNotes", {}).get("noApplicablePattern") if isinstance(obj.get("architectureNotes"), dict) else None):
+    if not is_non_empty(ra_uid) and not sdp_requirement_satisfied(obj, "noApplicablePattern", catalog_by_id):
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add followsReferenceArchitecture or architectureNotes.noApplicablePattern to satisfy requirement-group.software-deployment-pattern requirement 'reference-architecture-conformance'",
+            f"[{object_id}] Add followsReferenceArchitecture or reference a DecisionRecord (key: noApplicablePattern) to satisfy requirement-group.software-deployment-pattern requirement 'reference-architecture-conformance'",
             failures,
             warnings,
         )
@@ -2631,31 +2646,27 @@ def validate_software_deployment_pattern(
             warnings,
         )
 
-    architectural_decisions = obj.get("architectureNotes", {})
-    if not isinstance(architectural_decisions, dict):
-        architectural_decisions = {}
-
-    if not is_non_empty(architectural_decisions.get("deploymentTargets")):
+    if not sdp_requirement_satisfied(obj, "deploymentTargets", catalog_by_id):
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Describe deployment boundary or execution context in architectureNotes.deploymentTargets to satisfy DRAFT SoftwareDeploymentPattern / deployment-targets",
+            f"[{object_id}] Describe deployment boundary or execution context in a DecisionRecord (key: deploymentTargets) or architectureNotes.deploymentTargets to satisfy DRAFT SoftwareDeploymentPattern / deployment-targets",
             failures,
             warnings,
         )
 
-    if not is_non_empty(architectural_decisions.get("availabilityRequirement")):
+    if not sdp_requirement_satisfied(obj, "availabilityRequirement", catalog_by_id):
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add architectureNotes.availabilityRequirement to satisfy requirement-group.software-deployment-pattern requirement 'availability-requirement'",
+            f"[{object_id}] Reference a DecisionRecord (key: availabilityRequirement) or add architectureNotes.availabilityRequirement to satisfy requirement-group.software-deployment-pattern requirement 'availability-requirement'",
             failures,
             warnings,
         )
 
     obj_uid = obj.get("uid")
     has_additional_interactions = (
-        is_non_empty(architectural_decisions.get("externalDependencies"))
+        sdp_requirement_satisfied(obj, "externalDependencies", catalog_by_id)
         or (
             is_non_empty(obj_uid)
             and any(
@@ -2664,38 +2675,38 @@ def validate_software_deployment_pattern(
             )
         )
     )
-    if not has_additional_interactions and not is_non_empty(architectural_decisions.get("noAdditionalInteractions")):
+    if not has_additional_interactions and not sdp_requirement_satisfied(obj, "noAdditionalInteractions", catalog_by_id):
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add architectureNotes.externalDependencies (documenting external dependencies as relationship objects) or architectureNotes.noAdditionalInteractions to satisfy requirement-group.software-deployment-pattern requirement 'additional-interactions'",
+            f"[{object_id}] Reference a DecisionRecord (key: externalDependencies / noAdditionalInteractions) or add architectureNotes.externalDependencies / noAdditionalInteractions to satisfy requirement-group.software-deployment-pattern requirement 'additional-interactions'",
             failures,
             warnings,
         )
 
-    if not is_non_empty(architectural_decisions.get("dataClassification")):
+    if not sdp_requirement_satisfied(obj, "dataClassification", catalog_by_id):
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add architectureNotes.dataClassification to satisfy requirement-group.software-deployment-pattern requirement 'data-classification'",
+            f"[{object_id}] Reference a DecisionRecord (key: dataClassification) or add architectureNotes.dataClassification to satisfy requirement-group.software-deployment-pattern requirement 'data-classification'",
             failures,
             warnings,
         )
 
-    if not is_non_empty(architectural_decisions.get("failureDomain")):
+    if not sdp_requirement_satisfied(obj, "failureDomain", catalog_by_id):
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add architectureNotes.failureDomain to satisfy requirement-group.software-deployment-pattern requirement 'failure-domain'",
+            f"[{object_id}] Reference a DecisionRecord (key: failureDomain) or add architectureNotes.failureDomain to satisfy requirement-group.software-deployment-pattern requirement 'failure-domain'",
             failures,
             warnings,
         )
 
-    if not is_non_empty(architectural_decisions.get("patternDeviations")) and not is_non_empty(architectural_decisions.get("noPatternDeviations")):
+    if not sdp_requirement_satisfied(obj, "patternDeviations", catalog_by_id) and not sdp_requirement_satisfied(obj, "noPatternDeviations", catalog_by_id):
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add architectureNotes.patternDeviations or noPatternDeviations to satisfy requirement-group.software-deployment-pattern requirement 'pattern-deviations'",
+            f"[{object_id}] Reference a DecisionRecord (key: patternDeviations / noPatternDeviations) or add architectureNotes.patternDeviations / noPatternDeviations to satisfy requirement-group.software-deployment-pattern requirement 'pattern-deviations'",
             failures,
             warnings,
         )

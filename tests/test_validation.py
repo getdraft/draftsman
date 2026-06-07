@@ -2506,6 +2506,107 @@ requirementGroups:
             self.assertFalse(result.ok, result.stdout + result.stderr)
             self.assertIn("pointing to a node with a pillar in its lineage", result.stdout)
 
+    def test_software_deployment_pattern_with_decision_records_satisfaction(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            self._write_workspace_requirement_fixture(workspace, require_disposition=False)
+
+            # Write a valid runtime service
+            runtime_dir = workspace / "catalog" / "runtime-services"
+            runtime_dir.mkdir(parents=True, exist_ok=True)
+            (runtime_dir / "runtime-service-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: runtime-service.test
+                    type: runtime_service
+                    name: Test Runtime Service
+                    deliveryModel: paas
+                    vendor: "Test Vendor"
+                    productName: "Test Product"
+                    productVersion: "1.0"
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            # Write dummy decision records to satisfy requirements
+            dr_dir = workspace / "catalog" / "decision-records"
+            dr_dir.mkdir(parents=True, exist_ok=True)
+            
+            def write_dr(dr_id: str, name: str):
+                (dr_dir / f"{dr_id}.yaml").write_text(
+                    textwrap.dedent(
+                        f"""
+                        schemaVersion: "1.0"
+                        id: {dr_id}
+                        type: decision_record
+                        name: {name}
+                        category: decision
+                        status: accepted
+                        catalogStatus: complete
+                        lifecycleStatus: preferred
+                        decisionRationale: "Rationale."
+                        """
+                    ).strip()
+                    + "\n",
+                    encoding="utf-8",
+                )
+
+            write_dr("dr.no-pattern", "No Pattern Decision")
+            write_dr("dr.targets", "Targets Decision")
+            write_dr("dr.avail", "Availability Decision")
+            write_dr("dr.data", "Data Classification Decision")
+            write_dr("dr.failure", "Failure Domain Decision")
+            write_dr("dr.deviations", "Deviations Decision")
+            write_dr("dr.interactions", "Interactions Decision")
+
+            # Write the SDP with decisionRecords referencing the above DRs (and NO architectureNotes)
+            sdp_dir = workspace / "catalog" / "software-deployment-patterns"
+            sdp_dir.mkdir(parents=True, exist_ok=True)
+            (sdp_dir / "sdp-test-service.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: sdp.test-service
+                    type: software_deployment_pattern
+                    name: Test Service Pattern
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    decisionRecords:
+                      - ref: dr.no-pattern
+                        key: noApplicablePattern
+                      - ref: dr.targets
+                        key: deploymentTargets
+                      - ref: dr.avail
+                        key: availabilityRequirement
+                      - ref: dr.data
+                        key: dataClassification
+                      - ref: dr.failure
+                        key: failureDomain
+                      - ref: dr.deviations
+                        key: noPatternDeviations
+                      - ref: dr.interactions
+                        key: noAdditionalInteractions
+                    serviceGroups:
+                      - name: App Tier
+                        deploymentTarget: Test target
+                        deployableObjects:
+                          - ref: runtime-service.test
+                            diagramTier: application
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+            result = validate_workspace(workspace)
+            self.assertTrue(result.ok, result.stdout + result.stderr)
+
     def test_federated_business_unit_taxonomy_validation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
