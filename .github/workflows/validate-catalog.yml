@@ -9,6 +9,8 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -43,3 +45,18 @@ jobs:
         run: |
           python framework/tools/generate_ai_index.py
           git diff --exit-code AI_INDEX.md
+
+      - name: Create and push git tag
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          VERSION=$(python3 -c "import yaml; print(yaml.safe_load(open('draft-framework.yaml'))['version'])")
+          TAG="v$VERSION"
+          if git ls-remote --tags origin "refs/tags/$TAG" | grep -q "refs/tags/$TAG"; then
+            echo "Tag $TAG already exists on remote. Skipping tag creation."
+          else
+            echo "Tag $TAG does not exist. Creating and pushing..."
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "Release $TAG"
+            git push origin "$TAG"
+          fi
