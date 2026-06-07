@@ -3,6 +3,30 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.51.3 - 2026-06-06
+
+Locks squash-merging as the only allowed pull request merge method on the upstream repository.
+
+### Compatibility Impact
+
+- No compatibility impact. Existing workspaces remain valid.
+
+### Added
+
+- Updated `RELEASE.md` to document the squash-merge policy.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No migration is required.
+
 ## 0.51.2 - 2026-06-06
 
 Adds an automated onboarding/setup helper script to configure DRAFT integrations for Claude Code, Cursor, Windsurf, and GitHub Copilot.
