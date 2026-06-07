@@ -3,6 +3,30 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.52.1 - 2026-06-07
+
+Tightens Copilot setup detection in the automated IDE onboarding script.
+
+### Compatibility Impact
+
+- No compatibility impact. Existing workspaces remain valid.
+
+### Added
+
+- Added automated IDE setup test suite `tests/test_setup_ide.py` to verify copilot setup detection behavior.
+
+### Changed
+
+- Updated `setup_ide.py` to search for `/draft` instead of the substring `Draftsman` to identify if Copilot instructions are already configured, preventing false positives.
+
+### Fixed
+
+- Fixed false positives in Copilot onboarding setup where a pre-existing custom instruction file mentioning the Draftsman name was incorrectly treated as fully configured.
+
+### Migration Notes
+
+- No migration is required.
+
 ## 0.52.0 - 2026-06-07
 
 Fixes the SoftwareDeploymentPattern hardcoded validator to support DecisionRecords referenced via decisionRecords.
