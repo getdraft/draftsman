@@ -238,22 +238,22 @@ def load_workspace_requirements(workspace_root: Path, failures: list[str]) -> di
 def load_workspace_business_taxonomy(workspace_root: Path, failures: list[str]) -> dict[str, Any]:
     config_path = workspace_root / ".draft" / "workspace.yaml"
     if not config_path.exists():
-        return {"pillars": {}, "require_sdp_pillar": False}
+        return {"pillars": {}, "hierarchy_nodes": {}, "require_sdp_pillar": False}
     try:
         data = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
     except Exception as exc:  # noqa: BLE001
         failures.append(f"{config_path}: Fix workspace configuration YAML; parser reported {exc}")
-        return {"pillars": {}, "require_sdp_pillar": False}
+        return {"pillars": {}, "hierarchy_nodes": {}, "require_sdp_pillar": False}
     if not isinstance(data, dict):
         failures.append(f"{config_path}: Make workspace configuration a mapping at the top level")
-        return {"pillars": {}, "require_sdp_pillar": False}
+        return {"pillars": {}, "hierarchy_nodes": {}, "require_sdp_pillar": False}
 
     taxonomy = data.get("businessTaxonomy") or {}
     if not taxonomy:
-        return {"pillars": {}, "require_sdp_pillar": False}
+        return {"pillars": {}, "hierarchy_nodes": {}, "require_sdp_pillar": False}
     if not isinstance(taxonomy, dict):
         failures.append(f"{config_path}: Make businessTaxonomy a mapping with pillars")
-        return {"pillars": {}, "require_sdp_pillar": False}
+        return {"pillars": {}, "hierarchy_nodes": {}, "require_sdp_pillar": False}
 
     pillars = taxonomy.get("pillars") or []
     if not isinstance(pillars, list):
@@ -281,8 +281,123 @@ def load_workspace_business_taxonomy(workspace_root: Path, failures: list[str]) 
             failures.append(f"{context}: Change owner to a mapping with team and optional contact")
         pillar_by_id[pillar_id] = pillar
 
+    hierarchy_nodes_by_id: dict[str, dict[str, Any]] = {}
+
+    def parse_hierarchy_node(node: Any, parent_lineage: list[dict[str, Any]], context_path: str):
+        if not isinstance(node, dict):
+            failures.append(f"{context_path}: Change hierarchy node entry to a mapping with id, name, type, and optional children")
+            return
+        node_id = str(node.get("id") or "").strip()
+        if not node_id:
+            failures.append(f"{context_path}: Add id to hierarchy node")
+            return
+        if node_id in hierarchy_nodes_by_id:
+            failures.append(f"{context_path}: Remove duplicate hierarchy node id '{node_id}'")
+        
+        name = str(node.get("name") or "").strip()
+        if not name:
+            failures.append(f"{context_path}: Add name to hierarchy node '{node_id}'")
+
+        node_type = str(node.get("type") or "").strip()
+        if not node_type:
+            failures.append(f"{context_path}: Add type to hierarchy node '{node_id}'")
+
+        node_entry = {
+            "id": node_id,
+            "name": name,
+            "type": node_type,
+            "lineage": parent_lineage,
+        }
+        hierarchy_nodes_by_id[node_id] = node_entry
+
+        children = node.get("children") or []
+        if not isinstance(children, list):
+            failures.append(f"{context_path} (node '{node_id}'): Set children to a list of hierarchy node mappings")
+            children = []
+
+        current_lineage = parent_lineage + [{"id": node_id, "name": name, "type": node_type}]
+        for idx, child in enumerate(children):
+            parse_hierarchy_node(child, current_lineage, f"{context_path}.children[{idx}]")
+
+    if "businessUnits" in taxonomy:
+        business_units = taxonomy.get("businessUnits") or []
+        if not isinstance(business_units, list):
+            failures.append(f"{config_path}: Set businessTaxonomy.businessUnits to a list of business unit mappings")
+            business_units = []
+
+        business_units_by_id: dict[str, dict[str, Any]] = {}
+        for index, bu in enumerate(business_units):
+            context = f"{config_path}: businessTaxonomy.businessUnits[{index}]"
+            if not isinstance(bu, dict):
+                failures.append(f"{context}: Change business unit entry to a mapping with id and name")
+                continue
+            bu_id = str(bu.get("id") or "").strip()
+            if not bu_id:
+                failures.append(f"{context}: Add id to business unit")
+                continue
+            if bu_id in business_units_by_id:
+                failures.append(f"{context}: Remove duplicate business unit id '{bu_id}'")
+            
+            name = str(bu.get("name") or "").strip()
+            if not name:
+                failures.append(f"{context}: Add name to business unit '{bu_id}'")
+            
+            owner = bu.get("owner")
+            if owner is not None and not isinstance(owner, dict):
+                failures.append(f"{context}: Change owner to a mapping with team and optional contact")
+
+            bu_entry = {
+                "id": bu_id,
+                "name": name,
+                "type": "business_unit",
+                "lineage": [],
+            }
+            business_units_by_id[bu_id] = bu_entry
+            hierarchy_nodes_by_id[bu_id] = bu_entry
+
+        catalog_path = workspace_root / "catalog"
+        if catalog_path.exists():
+            for path in sorted(catalog_path.rglob("*.yaml")):
+                if any(part in SKIP_DIRS for part in path.relative_to(workspace_root).parts):
+                    continue
+                try:
+                    yaml_data = load_yaml(path)
+                except Exception:
+                    continue
+                if not isinstance(yaml_data, dict) or yaml_data.get("type") != "business_unit_hierarchy":
+                    continue
+
+                bu_id = yaml_data.get("businessUnit")
+                if not bu_id:
+                    failures.append(f"{display_path(path)}: Add businessUnit referencing a business unit in .draft/workspace.yaml")
+                    continue
+                bu_id = str(bu_id).strip()
+                if bu_id not in business_units_by_id:
+                    failures.append(f"{display_path(path)}: Replace businessUnit '{bu_id}' with a business unit declared in .draft/workspace.yaml")
+                    continue
+
+                hierarchy = yaml_data.get("hierarchy") or []
+                if not isinstance(hierarchy, list):
+                    failures.append(f"{display_path(path)}: Set hierarchy to a list of hierarchy node mappings")
+                    continue
+
+                parent_bu = business_units_by_id[bu_id]
+                bu_lineage = [{"id": parent_bu["id"], "name": parent_bu["name"], "type": parent_bu["type"]}]
+
+                for idx, root_node in enumerate(hierarchy):
+                    parse_hierarchy_node(root_node, bu_lineage, f"{display_path(path)}: hierarchy[{idx}]")
+
+    else:
+        hierarchy = taxonomy.get("hierarchy") or []
+        if not isinstance(hierarchy, list):
+            failures.append(f"{config_path}: Set businessTaxonomy.hierarchy to a list of hierarchy node mappings")
+        else:
+            for index, root_node in enumerate(hierarchy):
+                parse_hierarchy_node(root_node, [], f"{config_path}: businessTaxonomy.hierarchy[{index}]")
+
     return {
         "pillars": pillar_by_id,
+        "hierarchy_nodes": hierarchy_nodes_by_id,
         "require_sdp_pillar": taxonomy.get("requireSoftwareDeploymentPatternPillar") is True,
     }
 
@@ -470,25 +585,48 @@ def validate_software_deployment_business_context(
     failures: list[str],
 ) -> None:
     pillars = business_taxonomy.get("pillars", {})
+    hierarchy_nodes = business_taxonomy.get("hierarchy_nodes", {})
     require_pillar = business_taxonomy.get("require_sdp_pillar") is True
     context = obj.get("businessContext")
     if context is None:
         if require_pillar:
             failures.append(
-                f"{path}: Add businessContext.pillar because .draft/workspace.yaml requires SoftwareDeploymentPatterns to declare a business pillar"
+                f"{path}: Add businessContext.pillar or businessContext.ownerNode because .draft/workspace.yaml requires SoftwareDeploymentPatterns to declare a business pillar"
             )
         return
     if not isinstance(context, dict):
-        failures.append(f"{path}: Change businessContext to a mapping with pillar, optional additionalPillars, productFamily, and notes")
+        failures.append(f"{path}: Change businessContext to a mapping with pillar, optional additionalPillars, productFamily, ownerNode, and notes")
         return
 
+    owner_node_id = context.get("ownerNode")
+    if owner_node_id is not None:
+        owner_node_id = str(owner_node_id).strip()
+        if not owner_node_id:
+            failures.append(f"{path}: Add value to businessContext.ownerNode")
+        elif owner_node_id not in hierarchy_nodes:
+            failures.append(f"{path}: Replace businessContext.ownerNode '{owner_node_id}' with a declared hierarchy node id")
+
     pillar = str(context.get("pillar") or "").strip()
-    if not pillar:
-        failures.append(f"{path}: Add businessContext.pillar using a businessTaxonomy.pillars id from .draft/workspace.yaml")
-    elif pillars and pillar not in pillars:
-        failures.append(f"{path}: Replace businessContext.pillar '{pillar}' with a declared businessTaxonomy.pillars id")
-    elif not pillars:
-        failures.append(f"{path}: Declare businessTaxonomy.pillars in .draft/workspace.yaml before using businessContext.pillar '{pillar}'")
+    if require_pillar:
+        has_valid_pillar = bool(pillar and (pillar in pillars or (hierarchy_nodes and pillar in hierarchy_nodes and hierarchy_nodes[pillar]["type"] == "pillar")))
+        has_valid_owner_node = False
+        if owner_node_id and owner_node_id in hierarchy_nodes:
+            node = hierarchy_nodes[owner_node_id]
+            if node["type"] == "pillar" or any(p["type"] == "pillar" for p in node["lineage"]):
+                has_valid_owner_node = True
+        
+        if not (has_valid_pillar or has_valid_owner_node):
+            failures.append(
+                f"{path}: Add businessContext.pillar or businessContext.ownerNode (pointing to a node with a pillar in its lineage) to satisfy the required business pillar policy"
+            )
+
+    if pillar:
+        if pillars and pillar not in pillars:
+            if not (hierarchy_nodes and pillar in hierarchy_nodes and hierarchy_nodes[pillar]["type"] == "pillar"):
+                failures.append(f"{path}: Replace businessContext.pillar '{pillar}' with a declared businessTaxonomy.pillars id or hierarchy pillar node id")
+        elif not pillars:
+            if not (hierarchy_nodes and pillar in hierarchy_nodes and hierarchy_nodes[pillar]["type"] == "pillar"):
+                failures.append(f"{path}: Declare businessTaxonomy.pillars or hierarchy pillars in .draft/workspace.yaml before using businessContext.pillar '{pillar}'")
 
     additional = context.get("additionalPillars") or []
     if additional and not isinstance(additional, list):
@@ -500,9 +638,10 @@ def validate_software_deployment_business_context(
             if not additional_id:
                 failures.append(f"{path}: Remove empty businessContext.additionalPillars[{index}]")
             elif pillars and additional_id not in pillars:
-                failures.append(
-                    f"{path}: Replace businessContext.additionalPillars[{index}] '{additional_id}' with a declared businessTaxonomy.pillars id"
-                )
+                if not (hierarchy_nodes and additional_id in hierarchy_nodes and hierarchy_nodes[additional_id]["type"] == "pillar"):
+                    failures.append(
+                        f"{path}: Replace businessContext.additionalPillars[{index}] '{additional_id}' with a declared businessTaxonomy.pillars id or hierarchy pillar node id"
+                    )
 
 
 def deep_merge(base: Any, patch: Any) -> Any:

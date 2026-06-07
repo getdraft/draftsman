@@ -94,6 +94,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 
 | Path | Scope | Required Fields |
 |---|---|---|
+| framework/schemas/business-unit-hierarchy.schema.yaml | business_unit_hierarchy | schemaVersion, uid, type, name, businessUnit, hierarchy, catalogStatus |
 | framework/schemas/capability.schema.yaml | capability | schemaVersion, uid, type, name, description, catalogStatus, definitionOwner, domain, implementations |
 | framework/schemas/data-component.schema.yaml | data_component | schemaVersion, uid, type, name, repoUrl, owner, runsOn, targetEngine, dataClassification, containsPII, catalogStatus |
 | framework/schemas/data-store-service.schema.yaml | data_store_service | schemaVersion, uid, type, name, deliveryModel, catalogStatus, lifecycleStatus |

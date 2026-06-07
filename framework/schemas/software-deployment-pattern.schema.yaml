@@ -89,6 +89,27 @@ collectionSchemas:
   decisionRecords: decisionRecordRef
   requirementImplementations: requirementImplementation
   tierVariants: tierVariant
+dictSubSchemas:
+  businessContext: businessContext
+businessContext:
+  optionalFields:
+  - pillar
+  - additionalPillars
+  - productFamily
+  - ownerNode
+  - notes
+  fieldTypes:
+    pillar: str
+    additionalPillars: list
+    productFamily: str
+    ownerNode: str
+    notes: str
+  fieldDescriptions:
+    pillar: Reference the top-level business pillar ID (e.g. business-pillar.infrastructure).
+    additionalPillars: List of additional business pillar IDs that apply to this pattern.
+    productFamily: Text name of the product family this pattern belongs to.
+    ownerNode: ID of a node in the hierarchical business taxonomy (e.g., team, division, or business_unit).
+    notes: Additional context about the business ownership or context.
 scalingUnit:
   requiredFields:
   - name

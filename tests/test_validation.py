@@ -2332,6 +2332,431 @@ requirementGroups:
             self.assertFalse(result.ok, result.stdout + result.stderr)
             self.assertIn("Set requirementId to an applicable requirement in", result.stdout)
 
+    def test_hierarchical_business_taxonomy_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            self._write_workspace_requirement_fixture(workspace, require_disposition=False)
+
+            (workspace / ".draft" / "workspace.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    workspace:
+                      name: test-hierarchy-workspace
+                    framework:
+                      source: https://github.com/getdraft/draftsman.git
+                      vendoredPath: .draft/framework
+                      updatePolicy: explicit
+                    paths:
+                      catalog: catalog
+                      configurations: configurations
+                    businessTaxonomy:
+                      requireSoftwareDeploymentPatternPillar: true
+                      hierarchy:
+                        - id: org.product-dev
+                          name: Product Development
+                          type: business_unit
+                          children:
+                            - id: division.hcm
+                              name: Human Capital Management
+                              type: pillar
+                              children:
+                                - id: team.absence-time
+                                  name: Absence & Time Team
+                                  type: team
+                    requirements:
+                      activeRequirementGroups: []
+                      requireActiveRequirementGroupDisposition: false
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            # Write a valid runtime service for references
+            runtime_dir = workspace / "catalog" / "runtime-services"
+            runtime_dir.mkdir(parents=True, exist_ok=True)
+            (runtime_dir / "runtime-service-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: runtime-service.test
+                    type: runtime_service
+                    name: Test Runtime Service
+                    deliveryModel: paas
+                    vendor: "Test Vendor"
+                    productName: "Test Product"
+                    productVersion: "1.0"
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            # 1. Valid ownerNode referencing team.absence-time (which has a pillar division.hcm in its lineage)
+            (workspace / "catalog" / "software-deployment-patterns" / "sdp-test-service.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: sdp.test-service
+                    type: software_deployment_pattern
+                    name: Test Service Pattern
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    businessContext:
+                      ownerNode: team.absence-time
+                    architectureNotes:
+                      noApplicablePattern: Test fixture.
+                      deploymentTargets: Test target.
+                      availabilityRequirement: Test availability.
+                      dataClassification: Test data.
+                      failureDomain: Test failure domain.
+                      noPatternDeviations: Test fixture.
+                      noAdditionalInteractions: Test fixture.
+                      noCrossBoundaryConnections: Test fixture.
+                    serviceGroups:
+                      - name: App Tier
+                        deploymentTarget: Test target
+                        deployableObjects:
+                          - ref: runtime-service.test
+                            diagramTier: application
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+            result = validate_workspace(workspace)
+            self.assertTrue(result.ok, result.stdout + result.stderr)
+
+            # 2. Invalid ownerNode that doesn't exist
+            (workspace / "catalog" / "software-deployment-patterns" / "sdp-test-service.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: sdp.test-service
+                    type: software_deployment_pattern
+                    name: Test Service Pattern
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    businessContext:
+                      ownerNode: team.does-not-exist
+                    architectureNotes:
+                      noApplicablePattern: Test fixture.
+                      deploymentTargets: Test target.
+                      availabilityRequirement: Test availability.
+                      dataClassification: Test data.
+                      failureDomain: Test failure domain.
+                      noPatternDeviations: Test fixture.
+                      noAdditionalInteractions: Test fixture.
+                      noCrossBoundaryConnections: Test fixture.
+                    serviceGroups:
+                      - name: App Tier
+                        deploymentTarget: Test target
+                        deployableObjects:
+                          - ref: runtime-service.test
+                            diagramTier: application
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+            result = validate_workspace(workspace)
+            self.assertFalse(result.ok, result.stdout + result.stderr)
+            self.assertIn("Replace businessContext.ownerNode 'team.does-not-exist' with a declared hierarchy node id", result.stdout)
+
+            # 3. ownerNode pointing to a node without a pillar in its lineage (e.g. root business_unit)
+            (workspace / "catalog" / "software-deployment-patterns" / "sdp-test-service.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: sdp.test-service
+                    type: software_deployment_pattern
+                    name: Test Service Pattern
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    businessContext:
+                      ownerNode: org.product-dev
+                    architectureNotes:
+                      noApplicablePattern: Test fixture.
+                      deploymentTargets: Test target.
+                      availabilityRequirement: Test availability.
+                      dataClassification: Test data.
+                      failureDomain: Test failure domain.
+                      noPatternDeviations: Test fixture.
+                      noAdditionalInteractions: Test fixture.
+                      noCrossBoundaryConnections: Test fixture.
+                    serviceGroups:
+                      - name: App Tier
+                        deploymentTarget: Test target
+                        deployableObjects:
+                          - ref: runtime-service.test
+                            diagramTier: application
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+            result = validate_workspace(workspace)
+            self.assertFalse(result.ok, result.stdout + result.stderr)
+            self.assertIn("pointing to a node with a pillar in its lineage", result.stdout)
+
+    def test_federated_business_unit_taxonomy_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            self._write_workspace_requirement_fixture(workspace, require_disposition=False)
+
+            (workspace / ".draft" / "workspace.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    workspace:
+                      name: test-federated-hierarchy-workspace
+                    framework:
+                      source: https://github.com/getdraft/draftsman.git
+                      vendoredPath: .draft/framework
+                      updatePolicy: explicit
+                    paths:
+                      catalog: catalog
+                      configurations: configurations
+                    businessTaxonomy:
+                      requireSoftwareDeploymentPatternPillar: true
+                      businessUnits:
+                        - id: bu.hr
+                          name: Human Resources
+                        - id: bu.finance
+                          name: Finance
+                    requirements:
+                      activeRequirementGroups: []
+                      requireActiveRequirementGroupDisposition: false
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            # Write a valid runtime service for references
+            runtime_dir = workspace / "catalog" / "runtime-services"
+            runtime_dir.mkdir(parents=True, exist_ok=True)
+            (runtime_dir / "runtime-service-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: runtime-service.test
+                    type: runtime_service
+                    name: Test Runtime Service
+                    deliveryModel: paas
+                    vendor: "Test Vendor"
+                    productName: "Test Product"
+                    productVersion: "1.0"
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            # Write a valid business unit hierarchy file under catalog/business-unit-hierarchies/
+            bu_hierarchy_dir = workspace / "catalog" / "business-unit-hierarchies"
+            bu_hierarchy_dir.mkdir(parents=True, exist_ok=True)
+            (bu_hierarchy_dir / "hr-hierarchy.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: abcdefghij-1234
+                    type: business_unit_hierarchy
+                    name: HR Hierarchy
+                    businessUnit: bu.hr
+                    catalogStatus: complete
+                    hierarchy:
+                      - id: division.hcm
+                        name: Human Capital Management
+                        type: pillar
+                        children:
+                          - id: team.absence-time
+                            name: Absence & Time Team
+                            type: team
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            # 1. Valid ownerNode referencing team.absence-time (which has division.hcm [type: pillar] in its lineage)
+            (workspace / "catalog" / "software-deployment-patterns" / "sdp-test-service.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: sdp.test-service
+                    type: software_deployment_pattern
+                    name: Test Service Pattern
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    businessContext:
+                      ownerNode: team.absence-time
+                    architectureNotes:
+                      noApplicablePattern: Test fixture.
+                      deploymentTargets: Test target.
+                      availabilityRequirement: Test availability.
+                      dataClassification: Test data.
+                      failureDomain: Test failure domain.
+                      noPatternDeviations: Test fixture.
+                      noAdditionalInteractions: Test fixture.
+                      noCrossBoundaryConnections: Test fixture.
+                    serviceGroups:
+                      - name: App Tier
+                        deploymentTarget: Test target
+                        deployableObjects:
+                          - ref: runtime-service.test
+                            diagramTier: application
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+            result = validate_workspace(workspace)
+            self.assertTrue(result.ok, result.stdout + result.stderr)
+
+            # 2. Invalid ownerNode that doesn't exist
+            (workspace / "catalog" / "software-deployment-patterns" / "sdp-test-service.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: sdp.test-service
+                    type: software_deployment_pattern
+                    name: Test Service Pattern
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    businessContext:
+                      ownerNode: team.does-not-exist
+                    architectureNotes:
+                      noApplicablePattern: Test fixture.
+                      deploymentTargets: Test target.
+                      availabilityRequirement: Test availability.
+                      dataClassification: Test data.
+                      failureDomain: Test failure domain.
+                      noPatternDeviations: Test fixture.
+                      noAdditionalInteractions: Test fixture.
+                      noCrossBoundaryConnections: Test fixture.
+                    serviceGroups:
+                      - name: App Tier
+                        deploymentTarget: Test target
+                        deployableObjects:
+                          - ref: runtime-service.test
+                            diagramTier: application
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+            result = validate_workspace(workspace)
+            self.assertFalse(result.ok, result.stdout + result.stderr)
+            self.assertIn("Replace businessContext.ownerNode 'team.does-not-exist' with a declared hierarchy node id", result.stdout)
+
+            # 3. ownerNode pointing to a node without a pillar in its lineage (e.g. root business_unit bu.hr)
+            (workspace / "catalog" / "software-deployment-patterns" / "sdp-test-service.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: sdp.test-service
+                    type: software_deployment_pattern
+                    name: Test Service Pattern
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    businessContext:
+                      ownerNode: bu.hr
+                    architectureNotes:
+                      noApplicablePattern: Test fixture.
+                      deploymentTargets: Test target.
+                      availabilityRequirement: Test availability.
+                      dataClassification: Test data.
+                      failureDomain: Test failure domain.
+                      noPatternDeviations: Test fixture.
+                      noAdditionalInteractions: Test fixture.
+                      noCrossBoundaryConnections: Test fixture.
+                    serviceGroups:
+                      - name: App Tier
+                        deploymentTarget: Test target
+                        deployableObjects:
+                          - ref: runtime-service.test
+                            diagramTier: application
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+            result = validate_workspace(workspace)
+            self.assertFalse(result.ok, result.stdout + result.stderr)
+            self.assertIn("pointing to a node with a pillar in its lineage", result.stdout)
+
+            # 4. Invalid businessUnit reference in hierarchy file
+            (bu_hierarchy_dir / "hr-hierarchy.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: abcdefghij-1234
+                    type: business_unit_hierarchy
+                    name: HR Hierarchy
+                    businessUnit: bu.invalid-bu
+                    catalogStatus: complete
+                    hierarchy:
+                      - id: division.hcm
+                        name: Human Capital Management
+                        type: pillar
+                        children:
+                          - id: team.absence-time
+                            name: Absence & Time Team
+                            type: team
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            (workspace / "catalog" / "software-deployment-patterns" / "sdp-test-service.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: sdp.test-service
+                    type: software_deployment_pattern
+                    name: Test Service Pattern
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    businessContext:
+                      ownerNode: team.absence-time
+                    architectureNotes:
+                      noApplicablePattern: Test fixture.
+                      deploymentTargets: Test target.
+                      availabilityRequirement: Test availability.
+                      dataClassification: Test data.
+                      failureDomain: Test failure domain.
+                      noPatternDeviations: Test fixture.
+                      noAdditionalInteractions: Test fixture.
+                      noCrossBoundaryConnections: Test fixture.
+                    serviceGroups:
+                      - name: App Tier
+                        deploymentTarget: Test target
+                        deployableObjects:
+                          - ref: runtime-service.test
+                            diagramTier: application
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+            result = validate_workspace(workspace)
+            self.assertFalse(result.ok, result.stdout + result.stderr)
+            self.assertIn("Replace businessUnit 'bu.invalid-bu' with a business unit declared in .draft/workspace.yaml", result.stdout)
 
 
 if __name__ == "__main__":

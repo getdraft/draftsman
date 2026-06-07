@@ -71,6 +71,7 @@ CATALOG_FOLDERS = [
     "domains",
     "relationships",
     "systems",
+    "business-unit-hierarchies",
     # Nested catalog folders by content role
     "engineering/product-components",
     "engineering/data-components",
@@ -85,6 +86,7 @@ CATALOG_FOLDERS = [
     "governance/relationships",
     "governance/systems",
     "governance/reference-architectures",
+    "governance/business-unit-hierarchies",
 ]
 LIFECYCLE_COLORS = {
     "preferred": "1f8a5b",
@@ -237,21 +239,80 @@ def load_workspace_browser_config(workspace_root: Path) -> dict[str, Any]:
 def load_workspace_business_taxonomy(workspace_root: Path) -> dict[str, Any]:
     config_path = workspace_root / ".draft" / "workspace.yaml"
     if not config_path.exists():
-        return {"pillars": [], "requireSoftwareDeploymentPatternPillar": False}
+        return {"pillars": [], "hierarchy": [], "requireSoftwareDeploymentPatternPillar": False}
     try:
         data = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
     except Exception:
-        return {"pillars": [], "requireSoftwareDeploymentPatternPillar": False}
+        return {"pillars": [], "hierarchy": [], "requireSoftwareDeploymentPatternPillar": False}
     if not isinstance(data, dict):
-        return {"pillars": [], "requireSoftwareDeploymentPatternPillar": False}
+        return {"pillars": [], "hierarchy": [], "requireSoftwareDeploymentPatternPillar": False}
     taxonomy = data.get("businessTaxonomy") or {}
     if not isinstance(taxonomy, dict):
-        return {"pillars": [], "requireSoftwareDeploymentPatternPillar": False}
+        return {"pillars": [], "hierarchy": [], "requireSoftwareDeploymentPatternPillar": False}
     pillars = taxonomy.get("pillars") or []
     if not isinstance(pillars, list):
         pillars = []
+
+    # Check if businessUnits is present
+    if "businessUnits" in taxonomy:
+        business_units = taxonomy.get("businessUnits") or []
+        if not isinstance(business_units, list):
+            business_units = []
+        
+        # Build the root business_unit nodes
+        bu_nodes = []
+        bu_by_id = {}
+        for bu in business_units:
+            if not isinstance(bu, dict):
+                continue
+            bu_id = str(bu.get("id") or "").strip()
+            if not bu_id:
+                continue
+            bu_node = {
+                "id": bu_id,
+                "name": str(bu.get("name") or bu_id).strip(),
+                "type": "business_unit",
+                "children": []
+            }
+            bu_nodes.append(bu_node)
+            bu_by_id[bu_id] = bu_node
+        
+        # Scan catalog for business_unit_hierarchy files
+        catalog_path = workspace_root / "catalog"
+        if catalog_path.exists():
+            skip_dirs = {"tools", "schemas", "docs", "adrs", ".github", ".git", ".draft"}
+            for path in sorted(catalog_path.rglob("*.yaml")):
+                if any(part in skip_dirs for part in path.relative_to(workspace_root).parts):
+                    continue
+                try:
+                    yaml_data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+                except Exception:
+                    continue
+                if not isinstance(yaml_data, dict) or yaml_data.get("type") != "business_unit_hierarchy":
+                    continue
+                
+                bu_id = yaml_data.get("businessUnit")
+                if not bu_id:
+                    continue
+                bu_id = str(bu_id).strip()
+                if bu_id not in bu_by_id:
+                    continue
+                
+                hierarchy = yaml_data.get("hierarchy") or []
+                if not isinstance(hierarchy, list):
+                    continue
+                
+                bu_by_id[bu_id]["children"].extend(hierarchy)
+        
+        hierarchy = bu_nodes
+    else:
+        hierarchy = taxonomy.get("hierarchy") or []
+        if not isinstance(hierarchy, list):
+            hierarchy = []
+
     return {
         "pillars": [pillar for pillar in pillars if isinstance(pillar, dict) and str(pillar.get("id") or "").strip()],
+        "hierarchy": hierarchy,
         "requireSoftwareDeploymentPatternPillar": taxonomy.get("requireSoftwareDeploymentPatternPillar") is True,
     }
 

@@ -259,19 +259,21 @@ business pillar IDs. These are scoped local labels, not catalog object identity.
 
 Business pillars, portfolios, and product groupings are company taxonomy, not
 framework taxonomy. When authoring a SoftwareDeploymentPattern, read
-`.draft/workspace.yaml` and resolve `businessTaxonomy.pillars` before assigning
-`businessContext.pillar`.
+`.draft/workspace.yaml` and resolve `businessTaxonomy.pillars` or the business
+hierarchy (either central inline `businessTaxonomy.hierarchy` or federated
+`businessTaxonomy.businessUnits` with `business_unit_hierarchy` catalog files)
+before assigning `businessContext.pillar` or `businessContext.ownerNode`.
 
 Use this procedure:
 
-1. Read the workspace `businessTaxonomy.pillars` list.
-2. Match the product or product family to one primary pillar.
-3. Record the primary value as `businessContext.pillar`.
+1. Read the workspace taxonomy (pillars list or hierarchy tree).
+2. If using a hierarchy, match the product to the most specific team/node and assign its ID as `businessContext.ownerNode`. If using flat pillars, match the product or product family to one primary pillar and assign its ID as `businessContext.pillar`.
+3. If assigning an `ownerNode`, ensure it has a node of type `pillar` in its ancestor lineage.
 4. Record `businessContext.productFamily` when the product family is clearer
    than the SoftwareDeploymentPattern name.
 5. Use `businessContext.additionalPillars` only when the pattern materially
    spans another pillar.
-6. If the right pillar is unclear and the workspace requires one, ask one
+6. If the right pillar or node is unclear and the workspace requires one, ask one
    focused clarification question instead of inventing a new taxonomy value.
 
 Do not use Strategy Domains, Capabilities, RequirementGroups, or tags as a

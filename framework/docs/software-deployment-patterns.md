@@ -96,6 +96,7 @@ Example:
 
 ```yaml
 businessContext:
+  ownerNode: team.absence-time
   pillar: business-pillar.human-capital-management
   additionalPillars:
     - business-pillar.student-management
@@ -104,11 +105,11 @@ businessContext:
     exists through district-facing attendance workflows.
 ```
 
-If `.draft/workspace.yaml` defines `businessTaxonomy.pillars`, validation checks
-that `businessContext.pillar` and any `additionalPillars` use declared pillar
-IDs. A workspace can also set
-`businessTaxonomy.requireSoftwareDeploymentPatternPillar: true` to require every
-SoftwareDeploymentPattern to declare a primary pillar.
+If `.draft/workspace.yaml` defines `businessTaxonomy.pillars` or a business hierarchy (inline or federated), validation checks that `businessContext.pillar` (if declared) uses a declared pillar ID or a node in the hierarchy of type `pillar`.
+
+If the workspace requires a business pillar (via `businessTaxonomy.requireSoftwareDeploymentPatternPillar: true`), every SoftwareDeploymentPattern must satisfy the pillar requirement. This can be satisfied in two ways:
+1. Setting `businessContext.pillar` directly to a valid pillar ID.
+2. Setting `businessContext.ownerNode` pointing to a node in the business hierarchy (inline or federated) that has a node of type `pillar` in its lineage path.
 
 ## What `followsReferenceArchitecture` Means
 

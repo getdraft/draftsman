@@ -1,0 +1,33 @@
+schemaVersion: '1.0'
+type: business_unit_hierarchy
+defaultOwnerRole: draft-admins
+requiredFields:
+- schemaVersion
+- uid
+- type
+- name
+- businessUnit
+- hierarchy
+- catalogStatus
+optionalFields:
+- description
+- version
+- tags
+fieldTypes:
+  hierarchy: list
+  tags: list
+enumFields:
+  catalogStatus:
+  - stub
+  - incomplete
+  - complete
+fieldDescriptions:
+  schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
+  type: Use business_unit_hierarchy exactly.
+  name: Name the business unit hierarchy (e.g. "Product Development Hierarchy").
+  businessUnit: ID of the business unit this hierarchy belongs to, declared in .draft/workspace.yaml.
+  hierarchy: Recursive tree hierarchy of organizational nodes.
+  uid: Use the generated opaque UID for object identity. Do not edit it for display-name, product-name, or taxonomy changes.
+  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity.
+aiHint: A business_unit_hierarchy defines the organizational sub-tree for a specific business unit to distribute ownership and prevent central bottlenecking.
+uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$

@@ -20,6 +20,14 @@ const domainCapabilitiesIndex = catalogIndexes.domainCapabilities || {};
 const repoUrl = browserData.repoUrl || '';
 const businessTaxonomy = browserData.businessTaxonomy || { pillars: [] };
 const businessPillarLookup = Object.fromEntries((businessTaxonomy.pillars || []).map(pillar => [pillar.id, pillar]));
+const businessHierarchyNodeLookup = new Map();
+function indexHierarchyNodes(nodes) {
+  (nodes || []).forEach(node => {
+    businessHierarchyNodeLookup.set(node.id, node);
+    if (node.children) indexHierarchyNodes(node.children);
+  });
+}
+indexHierarchyNodes(businessTaxonomy.hierarchy);
 const pageRoot = document.getElementById('page-root');
 const sidebarContent = document.getElementById('sidebar-content');
 const legend = document.getElementById('legend');
@@ -814,6 +822,15 @@ function catalogSearchMarkup(matchCount, baseCount) {
 }
 
 function businessPillarForObject(object) {
+  const ownerNodeId = object.businessContext?.ownerNode;
+  if (ownerNodeId && businessHierarchyNodeLookup.has(ownerNodeId)) {
+    const node = businessHierarchyNodeLookup.get(ownerNodeId);
+    return {
+      id: ownerNodeId,
+      name: node.name,
+      owner: node.owner || null
+    };
+  }
   const pillarId = object.businessContext?.pillar || '';
   const pillar = pillarId ? businessPillarLookup[pillarId] : null;
   return {
@@ -888,6 +905,89 @@ function listRowMarkup(row, objects) {
 }
 
 function softwareDeploymentPatternRowMarkup(row, objects) {
+  if (businessTaxonomy.hierarchy && businessTaxonomy.hierarchy.length) {
+    const nodeToSdps = new Map();
+    const unassignedSdps = [];
+    
+    const allNodeIds = new Set();
+    function collectNodeIds(nodes) {
+      (nodes || []).forEach(n => {
+        allNodeIds.add(n.id);
+        if (n.children) collectNodeIds(n.children);
+      });
+    }
+    collectNodeIds(businessTaxonomy.hierarchy);
+
+    objects.forEach(sdp => {
+      const ownerNode = sdp.businessContext?.ownerNode;
+      const pillar = sdp.businessContext?.pillar;
+      if (ownerNode && allNodeIds.has(ownerNode)) {
+        if (!nodeToSdps.has(ownerNode)) nodeToSdps.set(ownerNode, []);
+        nodeToSdps.get(ownerNode).push(sdp);
+      } else if (pillar && allNodeIds.has(pillar)) {
+        if (!nodeToSdps.has(pillar)) nodeToSdps.set(pillar, []);
+        nodeToSdps.get(pillar).push(sdp);
+      } else {
+        unassignedSdps.push(sdp);
+      }
+    });
+
+    function renderTreeNode(node) {
+      const sdpList = nodeToSdps.get(node.id) || [];
+      const childNodesHtml = (node.children || []).map(child => renderTreeNode(child)).join('');
+      const sdpsHtml = sdpList.map(sdp => objectCardMarkup(sdp)).join('');
+      
+      if (sdpList.length === 0 && childNodesHtml === '') {
+        return '';
+      }
+
+      const typeLabel = node.type ? formatTitleCase(node.type.replace(/_/g, ' ')) : 'Node';
+
+      return `
+        <details class="tree-node-details" open>
+          <summary class="tree-node-summary">
+            <span class="tree-node-title">${escapeHtml(node.name)}</span>
+            <span class="tree-node-type-badge">${escapeHtml(typeLabel)}</span>
+            ${sdpList.length ? `<span class="tree-node-count">${sdpList.length} pattern${sdpList.length === 1 ? '' : 's'}</span>` : ''}
+          </summary>
+          <div class="tree-node-content">
+            ${sdpsHtml ? `<div class="cards-grid">${sdpsHtml}</div>` : ''}
+            ${childNodesHtml ? `<div class="tree-node-children">${childNodesHtml}</div>` : ''}
+          </div>
+        </details>
+      `;
+    }
+
+    const hierarchyHtml = businessTaxonomy.hierarchy.map(node => renderTreeNode(node)).join('');
+    
+    const unassignedHtml = unassignedSdps.length ? `
+      <details class="tree-node-details" open>
+        <summary class="tree-node-summary">
+          <span class="tree-node-title text-warning">Unassigned Patterns</span>
+          <span class="tree-node-count">${unassignedSdps.length} pattern${unassignedSdps.length === 1 ? '' : 's'}</span>
+        </summary>
+        <div class="tree-node-content">
+          <div class="cards-grid">
+            ${unassignedSdps.map(sdp => objectCardMarkup(sdp)).join('')}
+          </div>
+        </div>
+      </details>
+    ` : '';
+
+    return `
+      <section class="content-row">
+        <div class="content-row-header">
+          <h2 class="content-row-title">${escapeHtml(row.label)}</h2>
+          <span class="content-row-count">${objects.length} objects</span>
+        </div>
+        <div class="hierarchical-tree-view">
+          ${hierarchyHtml || '<p class="empty-state">No hierarchy nodes have patterns.</p>'}
+          ${unassignedHtml}
+        </div>
+      </section>
+    `;
+  }
+
   const groups = groupSoftwareDeploymentPatternsByPillar(objects);
   return `
     <section class="content-row">
@@ -2333,24 +2433,54 @@ function renderTaxonomiesView() {
   syncHashForTaxonomiesView();
   renderSidebarContent('');
 
-  const pillars = (browserData.businessTaxonomy?.pillars || []);
-
-  const pillarCards = pillars.map(pillar => `
-    <div class="taxonomy-card">
-      <p class="taxonomy-card-name">${escapeHtml(pillar.name || pillar.id || '')}</p>
-      ${pillar.description ? `<p class="taxonomy-card-desc">${escapeHtml(pillar.description)}</p>` : ''}
-    </div>
-  `).join('');
-
-  pageRoot.innerHTML = `
-    <div class="view-shell">
-      ${topNavMarkup()}
-      ${subviewHeaderMarkup('Home', 'home', 'Business Taxonomy', `${pillars.length} pillar${pillars.length === 1 ? '' : 's'} defined`)}
-      <div class="taxonomy-grid">
-        ${pillarCards || '<p class="empty-state">No business taxonomy pillars declared in workspace.yaml yet.</p>'}
+  if (businessTaxonomy.hierarchy && businessTaxonomy.hierarchy.length) {
+    function renderTaxonomyTreeNode(node) {
+      const childNodesHtml = (node.children || []).map(child => renderTaxonomyTreeNode(child)).join('');
+      const typeLabel = node.type ? formatTitleCase(node.type.replace(/_/g, ' ')) : 'Node';
+      return `
+        <details class="tree-node-details" open>
+          <summary class="tree-node-summary">
+            <span class="tree-node-title">${escapeHtml(node.name)}</span>
+            <span class="tree-node-type-badge">${escapeHtml(typeLabel)}</span>
+          </summary>
+          <div class="tree-node-content" style="padding-top:0; padding-bottom: 8px;">
+            ${node.description ? `<p class="taxonomy-card-desc" style="margin: 8px 0;">${escapeHtml(node.description)}</p>` : ''}
+            ${childNodesHtml ? `<div class="tree-node-children" style="margin-top: 8px;">${childNodesHtml}</div>` : ''}
+          </div>
+        </details>
+      `;
+    }
+    const hierarchyHtml = businessTaxonomy.hierarchy.map(node => renderTaxonomyTreeNode(node)).join('');
+    
+    pageRoot.innerHTML = `
+      <div class="view-shell">
+        ${topNavMarkup()}
+        ${subviewHeaderMarkup('Home', 'home', 'Business Taxonomy', 'Hierarchical taxonomy defined')}
+        <div class="hierarchical-tree-view">
+          ${hierarchyHtml}
+        </div>
       </div>
-    </div>
-  `;
+    `;
+  } else {
+    const pillars = (browserData.businessTaxonomy?.pillars || []);
+
+    const pillarCards = pillars.map(pillar => `
+      <div class="taxonomy-card">
+        <p class="taxonomy-card-name">${escapeHtml(pillar.name || pillar.id || '')}</p>
+        ${pillar.description ? `<p class="taxonomy-card-desc">${escapeHtml(pillar.description)}</p>` : ''}
+      </div>
+    `).join('');
+
+    pageRoot.innerHTML = `
+      <div class="view-shell">
+        ${topNavMarkup()}
+        ${subviewHeaderMarkup('Home', 'home', 'Business Taxonomy', `${pillars.length} pillar${pillars.length === 1 ? '' : 's'} defined`)}
+        <div class="taxonomy-grid">
+          ${pillarCards || '<p class="empty-state">No business taxonomy pillars declared in workspace.yaml yet.</p>'}
+        </div>
+      </div>
+    `;
+  }
 
   attachExecutiveHandlers();
   attachTopNavHandlers();
