@@ -14,6 +14,61 @@ from draft_table.validation import build_validate_command, validate_workspace
 
 
 class ValidationTests(unittest.TestCase):
+    def _write_decision_records_for_sdp(self, workspace: Path, indent: int = 20) -> str:
+        dr_dir = workspace / "catalog" / "decision-records"
+        dr_dir.mkdir(parents=True, exist_ok=True)
+        
+        drs = {
+            "dr.no-pattern": ("01HQ000001-DR01", "noApplicablePattern"),
+            "dr.targets": ("01HQ000001-DR02", "deploymentTargets"),
+            "dr.avail": ("01HQ000001-DR03", "availabilityRequirement"),
+            "dr.data": ("01HQ000001-DR04", "dataClassification"),
+            "dr.failure": ("01HQ000001-DR05", "failureDomain"),
+            "dr.deviations": ("01HQ000001-DR06", "noPatternDeviations"),
+            "dr.interactions": ("01HQ000001-DR07", "noAdditionalInteractions"),
+            "dr.connections": ("01HQ000001-DR08", "noCrossBoundaryConnections"),
+        }
+        
+        for name, (uid, key) in drs.items():
+            (dr_dir / f"{name}.yaml").write_text(
+                textwrap.dedent(
+                    f"""
+                    schemaVersion: "1.0"
+                    uid: "{uid}"
+                    type: decision_record
+                    name: Decision for {key}
+                    category: decision
+                    status: accepted
+                    catalogStatus: complete
+                    lifecycleStatus: preferred
+                    decisionRationale: "Rationale."
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+        
+        lines = [
+            "decisionRecords:",
+            "  - ref: \"01HQ000001-DR01\"",
+            "    key: noApplicablePattern",
+            "  - ref: \"01HQ000001-DR02\"",
+            "    key: deploymentTargets",
+            "  - ref: \"01HQ000001-DR03\"",
+            "    key: availabilityRequirement",
+            "  - ref: \"01HQ000001-DR04\"",
+            "    key: dataClassification",
+            "  - ref: \"01HQ000001-DR05\"",
+            "    key: failureDomain",
+            "  - ref: \"01HQ000001-DR06\"",
+            "    key: noPatternDeviations",
+            "  - ref: \"01HQ000001-DR07\"",
+            "    key: noAdditionalInteractions",
+            "  - ref: \"01HQ000001-DR08\"",
+            "    key: noCrossBoundaryConnections",
+        ]
+        return "\n".join(" " * indent + line for line in lines)
+
     def test_build_validate_command_targets_framework_tool(self) -> None:
         command = build_validate_command(REPO_ROOT / "examples")
 
@@ -359,23 +414,17 @@ class ValidationTests(unittest.TestCase):
             )
             pattern_dir = workspace / "catalog" / "software-deployment-patterns"
             pattern_dir.mkdir(parents=True, exist_ok=True)
+            dr_yaml = self._write_decision_records_for_sdp(workspace, indent=20)
             (pattern_dir / "software-deployment-pattern-host-ref.yaml").write_text(
                 textwrap.dedent(
-                    """
+                    f"""
                     schemaVersion: "1.0"
                     uid: 01KQS0TF53-SDMP
                     type: software_deployment_pattern
                     name: Host Ref Pattern
                     catalogStatus: incomplete
                     lifecycleStatus: candidate
-                    architectureNotes:
-                      noApplicablePattern: Test fixture.
-                      deploymentTargets: Test target.
-                      availabilityRequirement: Test availability.
-                      dataClassification: Test data.
-                      failureDomain: Test failure domain.
-                      noPatternDeviations: Test fixture.
-                      noAdditionalInteractions: Test fixture.
+{dr_yaml}
                     serviceGroups:
                       - name: Application Tier
                         deploymentTarget: Test target
@@ -1836,9 +1885,10 @@ requirementGroups:
             )
             sdp_dir = workspace / "catalog" / "software-deployment-patterns"
             sdp_dir.mkdir(parents=True, exist_ok=True)
+            dr_yaml = self._write_decision_records_for_sdp(workspace, indent=20)
             (sdp_dir / "sdp-ra-constraint-violation.yaml").write_text(
                 textwrap.dedent(
-                    """
+                    f"""
                     schemaVersion: "1.0"
                     uid: 01KQS0TF71-SDPV
                     type: software_deployment_pattern
@@ -1846,13 +1896,7 @@ requirementGroups:
                     catalogStatus: incomplete
                     lifecycleStatus: candidate
                     followsReferenceArchitecture: 01KQS0TF71-RAXC
-                    architectureNotes:
-                      deploymentTargets: Test environment.
-                      availabilityRequirement: Single instance.
-                      dataClassification: Internal.
-                      failureDomain: Single deployment.
-                      noPatternDeviations: Test fixture.
-                      noAdditionalInteractions: Test fixture.
+{dr_yaml}
                     serviceGroups:
                       - name: Presentation Tier
                         deploymentTarget: test-env
@@ -1943,9 +1987,10 @@ requirementGroups:
             )
             sdp_dir = workspace / "catalog" / "software-deployment-patterns"
             sdp_dir.mkdir(parents=True, exist_ok=True)
+            dr_yaml = self._write_decision_records_for_sdp(workspace, indent=20)
             (sdp_dir / "sdp-ra-constraint-satisfied.yaml").write_text(
                 textwrap.dedent(
-                    """
+                    f"""
                     schemaVersion: "1.0"
                     uid: 01KQS0TF72-SDPS
                     type: software_deployment_pattern
@@ -1953,13 +1998,7 @@ requirementGroups:
                     catalogStatus: incomplete
                     lifecycleStatus: candidate
                     followsReferenceArchitecture: 01KQS0TF72-RAXC
-                    architectureNotes:
-                      deploymentTargets: Test environment.
-                      availabilityRequirement: Single instance.
-                      dataClassification: Internal.
-                      failureDomain: Single deployment.
-                      noPatternDeviations: Test fixture.
-                      noAdditionalInteractions: Test fixture.
+{dr_yaml}
                     serviceGroups:
                       - name: Presentation Tier
                         deploymentTarget: test-env
@@ -2011,6 +2050,7 @@ requirementGroups:
     def _write_sdp_with_deployment_target(self, workspace: Path, deployment_target: str) -> None:
         pattern_dir = workspace / "catalog" / "software-deployment-patterns"
         pattern_dir.mkdir(parents=True, exist_ok=True)
+        dr_yaml = self._write_decision_records_for_sdp(workspace, indent=16)
         (pattern_dir / "software-deployment-pattern-vocabulary.yaml").write_text(
             textwrap.dedent(
                 f"""
@@ -2020,14 +2060,7 @@ requirementGroups:
                 name: Vocabulary Test Pattern
                 catalogStatus: incomplete
                 lifecycleStatus: candidate
-                architectureNotes:
-                  noApplicablePattern: Test fixture.
-                  deploymentTargets: Test target.
-                  availabilityRequirement: Test availability.
-                  dataClassification: Test data.
-                  failureDomain: Test failure domain.
-                  noPatternDeviations: Test fixture.
-                  noAdditionalInteractions: Test fixture.
+{dr_yaml}
                 serviceGroups:
                   - name: Application Tier
                     deploymentTarget: {deployment_target}
@@ -2397,9 +2430,10 @@ requirementGroups:
             )
 
             # 1. Valid ownerNode referencing team.absence-time (which has a pillar division.hcm in its lineage)
+            dr_yaml = self._write_decision_records_for_sdp(workspace, indent=20)
             (workspace / "catalog" / "software-deployment-patterns" / "sdp-test-service.yaml").write_text(
                 textwrap.dedent(
-                    """
+                    f"""
                     schemaVersion: "1.0"
                     id: sdp.test-service
                     type: software_deployment_pattern
@@ -2408,15 +2442,7 @@ requirementGroups:
                     lifecycleStatus: candidate
                     businessContext:
                       ownerNode: team.absence-time
-                    architectureNotes:
-                      noApplicablePattern: Test fixture.
-                      deploymentTargets: Test target.
-                      availabilityRequirement: Test availability.
-                      dataClassification: Test data.
-                      failureDomain: Test failure domain.
-                      noPatternDeviations: Test fixture.
-                      noAdditionalInteractions: Test fixture.
-                      noCrossBoundaryConnections: Test fixture.
+{dr_yaml}
                     serviceGroups:
                       - name: App Tier
                         deploymentTarget: Test target
@@ -2435,7 +2461,7 @@ requirementGroups:
             # 2. Invalid ownerNode that doesn't exist
             (workspace / "catalog" / "software-deployment-patterns" / "sdp-test-service.yaml").write_text(
                 textwrap.dedent(
-                    """
+                    f"""
                     schemaVersion: "1.0"
                     id: sdp.test-service
                     type: software_deployment_pattern
@@ -2444,15 +2470,7 @@ requirementGroups:
                     lifecycleStatus: candidate
                     businessContext:
                       ownerNode: team.does-not-exist
-                    architectureNotes:
-                      noApplicablePattern: Test fixture.
-                      deploymentTargets: Test target.
-                      availabilityRequirement: Test availability.
-                      dataClassification: Test data.
-                      failureDomain: Test failure domain.
-                      noPatternDeviations: Test fixture.
-                      noAdditionalInteractions: Test fixture.
-                      noCrossBoundaryConnections: Test fixture.
+{dr_yaml}
                     serviceGroups:
                       - name: App Tier
                         deploymentTarget: Test target
@@ -2472,7 +2490,7 @@ requirementGroups:
             # 3. ownerNode pointing to a node without a pillar in its lineage (e.g. root business_unit)
             (workspace / "catalog" / "software-deployment-patterns" / "sdp-test-service.yaml").write_text(
                 textwrap.dedent(
-                    """
+                    f"""
                     schemaVersion: "1.0"
                     id: sdp.test-service
                     type: software_deployment_pattern
@@ -2481,15 +2499,7 @@ requirementGroups:
                     lifecycleStatus: candidate
                     businessContext:
                       ownerNode: org.product-dev
-                    architectureNotes:
-                      noApplicablePattern: Test fixture.
-                      deploymentTargets: Test target.
-                      availabilityRequirement: Test availability.
-                      dataClassification: Test data.
-                      failureDomain: Test failure domain.
-                      noPatternDeviations: Test fixture.
-                      noAdditionalInteractions: Test fixture.
-                      noCrossBoundaryConnections: Test fixture.
+{dr_yaml}
                     serviceGroups:
                       - name: App Tier
                         deploymentTarget: Test target
@@ -2691,9 +2701,10 @@ requirementGroups:
             )
 
             # 1. Valid ownerNode referencing team.absence-time (which has division.hcm [type: pillar] in its lineage)
+            dr_yaml = self._write_decision_records_for_sdp(workspace, indent=20)
             (workspace / "catalog" / "software-deployment-patterns" / "sdp-test-service.yaml").write_text(
                 textwrap.dedent(
-                    """
+                    f"""
                     schemaVersion: "1.0"
                     id: sdp.test-service
                     type: software_deployment_pattern
@@ -2702,15 +2713,7 @@ requirementGroups:
                     lifecycleStatus: candidate
                     businessContext:
                       ownerNode: team.absence-time
-                    architectureNotes:
-                      noApplicablePattern: Test fixture.
-                      deploymentTargets: Test target.
-                      availabilityRequirement: Test availability.
-                      dataClassification: Test data.
-                      failureDomain: Test failure domain.
-                      noPatternDeviations: Test fixture.
-                      noAdditionalInteractions: Test fixture.
-                      noCrossBoundaryConnections: Test fixture.
+{dr_yaml}
                     serviceGroups:
                       - name: App Tier
                         deploymentTarget: Test target
@@ -2729,7 +2732,7 @@ requirementGroups:
             # 2. Invalid ownerNode that doesn't exist
             (workspace / "catalog" / "software-deployment-patterns" / "sdp-test-service.yaml").write_text(
                 textwrap.dedent(
-                    """
+                    f"""
                     schemaVersion: "1.0"
                     id: sdp.test-service
                     type: software_deployment_pattern
@@ -2738,15 +2741,7 @@ requirementGroups:
                     lifecycleStatus: candidate
                     businessContext:
                       ownerNode: team.does-not-exist
-                    architectureNotes:
-                      noApplicablePattern: Test fixture.
-                      deploymentTargets: Test target.
-                      availabilityRequirement: Test availability.
-                      dataClassification: Test data.
-                      failureDomain: Test failure domain.
-                      noPatternDeviations: Test fixture.
-                      noAdditionalInteractions: Test fixture.
-                      noCrossBoundaryConnections: Test fixture.
+{dr_yaml}
                     serviceGroups:
                       - name: App Tier
                         deploymentTarget: Test target
@@ -2766,7 +2761,7 @@ requirementGroups:
             # 3. ownerNode pointing to a node without a pillar in its lineage (e.g. root business_unit bu.hr)
             (workspace / "catalog" / "software-deployment-patterns" / "sdp-test-service.yaml").write_text(
                 textwrap.dedent(
-                    """
+                    f"""
                     schemaVersion: "1.0"
                     id: sdp.test-service
                     type: software_deployment_pattern
@@ -2775,15 +2770,7 @@ requirementGroups:
                     lifecycleStatus: candidate
                     businessContext:
                       ownerNode: bu.hr
-                    architectureNotes:
-                      noApplicablePattern: Test fixture.
-                      deploymentTargets: Test target.
-                      availabilityRequirement: Test availability.
-                      dataClassification: Test data.
-                      failureDomain: Test failure domain.
-                      noPatternDeviations: Test fixture.
-                      noAdditionalInteractions: Test fixture.
-                      noCrossBoundaryConnections: Test fixture.
+{dr_yaml}
                     serviceGroups:
                       - name: App Tier
                         deploymentTarget: Test target
@@ -2825,7 +2812,7 @@ requirementGroups:
             )
             (workspace / "catalog" / "software-deployment-patterns" / "sdp-test-service.yaml").write_text(
                 textwrap.dedent(
-                    """
+                    f"""
                     schemaVersion: "1.0"
                     id: sdp.test-service
                     type: software_deployment_pattern
@@ -2834,15 +2821,7 @@ requirementGroups:
                     lifecycleStatus: candidate
                     businessContext:
                       ownerNode: team.absence-time
-                    architectureNotes:
-                      noApplicablePattern: Test fixture.
-                      deploymentTargets: Test target.
-                      availabilityRequirement: Test availability.
-                      dataClassification: Test data.
-                      failureDomain: Test failure domain.
-                      noPatternDeviations: Test fixture.
-                      noAdditionalInteractions: Test fixture.
-                      noCrossBoundaryConnections: Test fixture.
+{dr_yaml}
                     serviceGroups:
                       - name: App Tier
                         deploymentTarget: Test target
