@@ -3,6 +3,28 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## Unreleased
+
+### Compatibility Impact
+
+- No compatibility impact. Existing workspaces that use DecisionRecords for SoftwareDeploymentPattern requirement satisfaction remain valid.
+
+### Added
+
+- Added regression coverage documenting that SoftwareDeploymentPattern `architectureNotes` placeholders do not satisfy requirements that must be committed as `decision_record` references.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No migration is required.
+
 ## 0.52.3 - 2026-06-09
 
 Adds workspace contribution onboarding defaults and guidance.
