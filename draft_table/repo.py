@@ -70,11 +70,13 @@ FRAMEWORK_VENDOR_FILES = (
 DEFAULT_FRAMEWORK_SOURCE = "https://github.com/getdraft/draftsman.git"
 COPY_IGNORE = shutil.ignore_patterns("__pycache__", "*.pyc", ".git", ".pytest_cache")
 WORKSPACE_TEMPLATE_FILES = (
+    ("templates/workspace/.draft/workspace.yaml.tmpl", ".draft/workspace.yaml"),
     ("templates/workspace/README.md.tmpl", "README.md"),
     ("templates/workspace/AGENTS.md.tmpl", "AGENTS.md"),
     ("templates/workspace/CLAUDE.md.tmpl", "CLAUDE.md"),
     ("templates/workspace/GEMINI.md.tmpl", "GEMINI.md"),
     ("templates/workspace/llms.txt.tmpl", "llms.txt"),
+    ("templates/workspace/.github/CONTRIBUTING.md.tmpl", ".github/CONTRIBUTING.md"),
     ("templates/workspace/.github/copilot-instructions.md.tmpl", ".github/copilot-instructions.md"),
     ("templates/workspace/.github/workflows/draft-framework-update.yml.tmpl", ".github/workflows/draft-framework-update.yml"),
     ("templates/workspace/.github/workflows/draft-vocabulary-proposals.yml.tmpl", ".github/workflows/draft-vocabulary-proposals.yml"),
@@ -271,6 +273,8 @@ def workspace_template_context(workspace: Path) -> dict[str, str]:
     metadata = workspace_metadata(workspace)
     workspace_data = metadata.get("workspace") if isinstance(metadata.get("workspace"), dict) else {}
     repository_data = metadata.get("repository") if isinstance(metadata.get("repository"), dict) else {}
+    contribution_raw = metadata.get("contribution")
+    contribution_data = contribution_raw if isinstance(contribution_raw, dict) else {}
 
     workspace_name = str(workspace_data.get("name") or repository_data.get("name") or workspace.name).strip()
     workspace_label = str(workspace_data.get("displayName") or "").strip() or humanize_workspace_name(workspace_name)
@@ -289,6 +293,7 @@ def workspace_template_context(workspace: Path) -> dict[str, str]:
     if repository_provider == "github" and repository_owner and repository_name:
         repository_url = f"https://github.com/{repository_owner}/{repository_name}"
     repository_reference = repository_url or repository_slug or str(workspace.resolve())
+    branching_strategy = str(contribution_data.get("branchingStrategy") or "github-flow").strip() or "github-flow"
     return {
         "workspace_name": workspace_name,
         "workspace_label": workspace_label,
@@ -296,6 +301,7 @@ def workspace_template_context(workspace: Path) -> dict[str, str]:
         "repository_slug": repository_slug,
         "repository_url": repository_url,
         "repository_reference": repository_reference,
+        "branching_strategy": branching_strategy,
     }
 
 
@@ -458,6 +464,7 @@ def ensure_workspace_layout(workspace: Path, framework_repo: Path = REPO_ROOT) -
                         "activeRequirementGroups": [],
                         "requireActiveRequirementGroupDisposition": False,
                     },
+                    "contribution": {"branchingStrategy": "github-flow"},
                     "vocabulary": {},
                 },
                 sort_keys=False,

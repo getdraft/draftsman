@@ -3,6 +3,32 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.52.3 - 2026-06-09
+
+Adds workspace contribution onboarding defaults and guidance.
+
+### Compatibility Impact
+
+- No compatibility impact. Existing workspaces remain valid.
+
+### Added
+
+- Added generated `.github/CONTRIBUTING.md` workspace guidance for branching and pull request process.
+- Added `contribution.branchingStrategy` defaulting to `github-flow` in generated workspace configuration.
+
+### Changed
+
+- Updated workspace `AGENTS.md` to treat `.github/CONTRIBUTING.md` as the single source of truth for branching and PR process.
+- Updated setup mode to ask and record the workspace branching strategy.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Existing workspaces can add `contribution.branchingStrategy: github-flow` and generate `.github/CONTRIBUTING.md` during their next framework refresh if they want the new guidance.
+
 ## 0.52.2 - 2026-06-07
 
 Resolves workspace Copilot template path lookup in setup_ide.py.

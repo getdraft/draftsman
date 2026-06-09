@@ -88,8 +88,17 @@ Questions:
 > Workspace"?
 
 Record the repo metadata in `.draft/workspace.yaml` before rendering templates:
-provider, owner, repo name, and default branch. The generated README prompt
-should tell the AI exactly which repo to connect to.
+provider, owner, repo name, default branch, and contribution branching strategy.
+Use GitHub Flow (`github-flow`) with a single `main` branch as the default unless
+the team explicitly chooses a different process. The generated README prompt
+should tell the AI exactly which repo to connect to, and the generated
+`.github/CONTRIBUTING.md` becomes the single source of truth for branching and
+pull request process.
+
+Question:
+
+> What branching strategy should contributors follow: the default GitHub Flow
+> with a single `main` branch, or a different process we should record?
 
 ### 1b. [Optional] Discovery Integration
 
