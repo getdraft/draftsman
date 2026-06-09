@@ -514,6 +514,71 @@ class ValidationTests(unittest.TestCase):
 
         self.assertTrue(result.ok, result.stdout + result.stderr)
 
+
+    def test_decision_record_implementation_requires_matching_key(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            self._write_workspace_requirement_fixture(workspace, require_disposition=False)
+
+            dr_dir = workspace / "catalog" / "decision-records"
+            dr_dir.mkdir(parents=True, exist_ok=True)
+            (dr_dir / "dr-wrong-key.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: dr.wrong-key
+                    type: decision_record
+                    name: Wrong Key Decision
+                    category: decision
+                    status: accepted
+                    catalogStatus: complete
+                    lifecycleStatus: preferred
+                    decisionRationale: Captures a different decision topic.
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            (workspace / "catalog" / "product-components" / "product-service-test-app.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: product-service.test.app
+                    type: product_component
+                    name: Test App
+                    repoUrl: https://github.com/test/test-app
+                    owner:
+                      team: test
+                    classification: api-service
+                    runtimeRequirement: Node 20
+                    runsOn: host.test
+                    catalogStatus: complete
+                    lifecycleStatus: existing-only
+                    requirementGroups:
+                      - requirement-group.company-control
+                    decisionRecords:
+                      - ref: dr.wrong-key
+                        key: unrelatedDecision
+                    requirementImplementations:
+                      - requirementGroup: requirement-group.company-control
+                        requirementId: company-required-field
+                        status: satisfied
+                        mechanism: decisionRecord
+                        key: architectureNotes.companyEvidence
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+
+            result = validate_workspace(workspace)
+
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("company-required-field", result.stdout)
+
     def _write_workspace_requirement_fixture(self, workspace: Path, require_disposition: bool) -> None:
         (workspace / ".draft" / "workspace.yaml").write_text(
             textwrap.dedent(

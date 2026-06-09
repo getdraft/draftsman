@@ -3009,6 +3009,7 @@ def implementation_resolves(
     if mechanism == "decisionRecord":
         criteria = implementation.get("criteria", {}) if isinstance(implementation.get("criteria"), dict) else {}
         capability = criteria.get("capability") or criteria.get("concern")
+        key = implementation.get("key")
         direct_ref = implementation.get("ref")
         if is_non_empty(direct_ref):
             target = catalog_by_id.get(str(direct_ref))
@@ -3020,8 +3021,15 @@ def implementation_resolves(
             target = catalog_by_id.get(str(entry.get("ref"))) if is_non_empty(entry.get("ref")) else None
             if not target or target.get("type") != "decision_record":
                 continue
-            if not capability or (entry.get("capability") or entry.get("concern")) == capability:
-                return True
+            if capability and capability != "any":
+                if (entry.get("capability") or entry.get("concern")) == capability:
+                    return True
+                continue
+            if key:
+                if (entry.get("key") or entry.get("concern")) == key:
+                    return True
+                continue
+            return True
         return False
     return False
 

@@ -3,6 +3,30 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.54.0 - 2026-06-09
+
+Tightens DecisionRecord key matching for requirement implementations.
+
+### Compatibility Impact
+
+- Requirement implementations that satisfy a requirement via `mechanism: decisionRecord` and a `key` now require a matching `decisionRecords[].key` or `decisionRecords[].concern`, instead of accepting any referenced DecisionRecord.
+
+### Added
+
+- Added a validation regression test covering mismatched DecisionRecord keys on explicit requirement implementations.
+
+### Changed
+
+- Updated `implementation_resolves` so key-scoped DecisionRecord requirement implementations use the same matching behavior as declarative DecisionRecord mechanisms.
+
+### Fixed
+
+- Fixed DecisionRecord-backed requirement implementations so unrelated DecisionRecords no longer satisfy key-scoped requirements.
+
+### Migration Notes
+
+- If validation newly reports an unsatisfied key-scoped DecisionRecord implementation, update the owning object's `decisionRecords` entry to use the required `key` or `concern`, or reference the correct DecisionRecord.
+
 ## 0.53.0 - 2026-06-09
 
 Resolves owner contact handling for team vocabulary metadata.
