@@ -101,6 +101,36 @@ class GeneratedIndexTests(unittest.TestCase):
         self.assertIn("domainCapability", payload["indexes"])
         self.assertEqual(payload["indexes"]["domainCapability"]["source"], "capability.domain")
 
+    def test_browser_payload_derives_owner_contact_from_team_vocabulary(self) -> None:
+        registry = {
+            "tech-1": {
+                "uid": "tech-1",
+                "type": "technology_component",
+                "name": "SSO",
+                "vendor": "Example",
+                "owner": {"team": "platform-engineering"},
+            },
+        }
+
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp)
+            (workspace / ".draft").mkdir(parents=True, exist_ok=True)
+            (workspace / ".draft" / "workspace.yaml").write_text(
+                "vocabulary:\n"
+                "  teams:\n"
+                "    mode: advisory\n"
+                "    values:\n"
+                "      - id: platform-engineering\n"
+                "        name: Platform Engineering\n"
+                "        contact: platform-engineering@example.com\n",
+                encoding="utf-8",
+            )
+            payload = build_browser_payload(registry, workspace)
+
+        browser_object = next(obj for obj in payload["objects"] if obj["id"] == "tech-1")
+        self.assertEqual(browser_object["owner"]["contact"], "platform-engineering@example.com")
+        self.assertNotIn("contact", registry["tech-1"]["owner"])
+
     def test_generate_indexes_writer_creates_json_artifact(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / "assets" / "draft-indexes.json"

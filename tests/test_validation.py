@@ -2047,6 +2047,86 @@ requirementGroups:
             encoding="utf-8",
         )
 
+    def _write_owner_contact_vocabulary_workspace(self, workspace: Path) -> None:
+        (workspace / ".draft" / "workspace.yaml").write_text(
+            textwrap.dedent(
+                """
+                schemaVersion: "1.0"
+                workspace:
+                  name: owner-contact-test
+                framework:
+                  source: https://github.com/getdraft/draftsman.git
+                  vendoredPath: .draft/framework
+                  updatePolicy: explicit
+                paths:
+                  catalog: catalog
+                  configurations: configurations
+                requirements:
+                  activeRequirementGroups: []
+                  requireActiveRequirementGroupDisposition: false
+                vocabulary:
+                  teams:
+                    mode: advisory
+                    values:
+                      - id: platform-engineering
+                        name: Platform Engineering
+                        contact: platform-engineering@example.com
+                """
+            ).strip()
+            + "\n",
+            encoding="utf-8",
+        )
+
+    def _write_component_with_owner(self, workspace: Path, owner_extra: str = "") -> None:
+        component_dir = workspace / "catalog" / "technology-components"
+        component_dir.mkdir(parents=True, exist_ok=True)
+        (component_dir / "technology-component-owner.yaml").write_text(
+            textwrap.dedent(
+                f"""
+                schemaVersion: "1.0"
+                uid: 01KTP8ADD1-407A
+                type: technology_component
+                name: Owner Contact Component
+                vendor: Example
+                productName: Example Product
+                productVersion: "1"
+                classification: software
+                catalogStatus: incomplete
+                lifecycleStatus: candidate
+                owner:
+                  team: platform-engineering
+{owner_extra}
+                """
+            ).strip()
+            + "\n",
+            encoding="utf-8",
+        )
+
+    def test_owner_contact_can_be_omitted_when_team_vocabulary_has_contact(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            self._write_owner_contact_vocabulary_workspace(workspace)
+            self._write_component_with_owner(workspace)
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+        self.assertNotIn("owner.contact", result.stdout)
+
+    def test_owner_contact_drift_warns_against_team_vocabulary_contact(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            self._write_owner_contact_vocabulary_workspace(workspace)
+            self._write_component_with_owner(workspace, "                  contact: old-platform@example.com")
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+        self.assertIn("owner.contact 'old-platform@example.com' differs from teams vocabulary contact", result.stdout)
+        self.assertIn("platform-engineering@example.com", result.stdout)
+
     def _write_sdp_with_deployment_target(self, workspace: Path, deployment_target: str) -> None:
         pattern_dir = workspace / "catalog" / "software-deployment-patterns"
         pattern_dir.mkdir(parents=True, exist_ok=True)
