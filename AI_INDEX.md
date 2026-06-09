@@ -455,6 +455,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | templates/workspace/.cursor/rules/draftsman.mdc.tmpl | Reusable YAML authoring template. |
 | templates/workspace/.draft/framework.lock.tmpl | Reusable YAML authoring template. |
 | templates/workspace/.draft/workspace.yaml.tmpl | Reusable YAML authoring template. |
+| templates/workspace/.github/CONTRIBUTING.md.tmpl | Contributing to Company DRAFT Workspace |
 | templates/workspace/.github/copilot-instructions.md.tmpl | Copilot Instructions |
 | templates/workspace/.github/workflows/draft-framework-update.yml.tmpl | Reusable YAML authoring template. |
 | templates/workspace/.github/workflows/draft-vocabulary-proposals.yml.tmpl | DRAFT Vocabulary Proposal PRs |
