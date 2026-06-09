@@ -1,0 +1,24 @@
+# Contributing to {{workspace_label}}
+
+This document is the single source of truth for {{company_name}} branching, pull request, and review expectations for this DRAFT workspace.
+
+## Branching Strategy
+
+Default: GitHub Flow (`{{branching_strategy}}`) with a single protected `main` branch.
+
+Use short-lived feature branches for every catalog, configuration, or documentation change. Open a pull request back to `main` when the change is ready for review, keep the branch current with `main`, and merge only after required checks and reviews pass.
+
+If {{company_name}} uses a different branching model, update `.draft/workspace.yaml` at `contribution.branchingStrategy` and revise this file before asking AI assistants or contributors to follow another process.
+
+## Pull Request Process
+
+1. Create a branch from `main` for each focused change.
+2. Keep generated framework content under `.draft/framework/**` out of normal workspace pull requests unless the change is an explicit framework update.
+3. Run DRAFT validation before requesting review:
+
+   ```bash
+   python3 .draft/framework/tools/validate.py --workspace .
+   ```
+
+4. Include a concise summary, validation result, and any follow-up work in the pull request description.
+5. Merge through the repository's normal GitHub pull request flow after required reviews and status checks pass.

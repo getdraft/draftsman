@@ -39,6 +39,7 @@ class RepoTests(unittest.TestCase):
             self.assertTrue((workspace / "configurations" / "requirement-groups").exists())
             self.assertTrue((workspace / ".github" / "workflows" / "draft-framework-update.yml").exists())
             self.assertTrue((workspace / ".github" / "copilot-instructions.md").exists())
+            self.assertTrue((workspace / ".github" / "CONTRIBUTING.md").exists())
             self.assertTrue((workspace / "README.md").exists())
             self.assertTrue((workspace / "AGENTS.md").exists())
             self.assertTrue((workspace / "CLAUDE.md").exists())
@@ -55,6 +56,12 @@ class RepoTests(unittest.TestCase):
             workspace_agents = workspace / "AGENTS.md"
             self.assertIn(".draft/framework/docs/draftsman.md", workspace_agents.read_text(encoding="utf-8"))
             self.assertIn("Do not edit `.draft/framework/**`", workspace_agents.read_text(encoding="utf-8"))
+            self.assertIn(".github/CONTRIBUTING.md", workspace_agents.read_text(encoding="utf-8"))
+            self.assertIn("source of truth", workspace_agents.read_text(encoding="utf-8"))
+            contributing = workspace / ".github" / "CONTRIBUTING.md"
+            contributing_text = contributing.read_text(encoding="utf-8")
+            self.assertIn("Default: GitHub Flow (`github-flow`)", contributing_text)
+            self.assertIn("single protected `main` branch", contributing_text)
             workspace_readme = workspace / "README.md"
             self.assertIn("Start With This Prompt", workspace_readme.read_text(encoding="utf-8"))
             self.assertIn("I want a Draftsman session", workspace_readme.read_text(encoding="utf-8"))
@@ -64,6 +71,8 @@ class RepoTests(unittest.TestCase):
             self.assertIn("activeRequirementGroups", workspace_config)
             self.assertIn("displayName: Company DRAFT", workspace_config)
             self.assertIn("updateWorkflow: enabled", workspace_config)
+            workspace_config_data = yaml.safe_load(workspace_config)
+            self.assertEqual(workspace_config_data["contribution"]["branchingStrategy"], "github-flow")
             lock = yaml.safe_load((workspace / ".draft" / "framework.lock").read_text(encoding="utf-8"))
             manifest = yaml.safe_load(Path("draft-framework.yaml").read_text(encoding="utf-8"))
             self.assertEqual(lock["framework"]["version"], manifest["version"])
@@ -110,6 +119,7 @@ class RepoTests(unittest.TestCase):
                             "displayName": "Frontline Education DRAFT Workspace",
                             "companyName": "Frontline Education",
                         },
+                        "contribution": {"branchingStrategy": "trunk-based"},
                     },
                     sort_keys=False,
                 ),
@@ -120,12 +130,14 @@ class RepoTests(unittest.TestCase):
 
             readme = (workspace / "README.md").read_text(encoding="utf-8")
             agents = (workspace / "AGENTS.md").read_text(encoding="utf-8")
+            contributing = (workspace / ".github" / "CONTRIBUTING.md").read_text(encoding="utf-8")
             llms = (workspace / "llms.txt").read_text(encoding="utf-8")
             self.assertIn("# Frontline Education DRAFT Workspace", readme)
             self.assertIn("I want a Draftsman session for Frontline Education DRAFT Workspace.", readme)
             self.assertIn("Read and follow the repository bootstrap instructions, starting with AGENTS.md.", readme)
             self.assertIn("Ask only the first question", readme)
             self.assertIn("catalog authoring requests for Frontline Education", agents)
+            self.assertIn("trunk-based", contributing)
             self.assertIn("# Frontline Education DRAFT Workspace", llms)
             self.assertNotIn("{{workspace_label}}", readme)
 
