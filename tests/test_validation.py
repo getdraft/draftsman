@@ -69,6 +69,107 @@ class ValidationTests(unittest.TestCase):
         ]
         return "\n".join(" " * indent + line for line in lines)
 
+
+    def test_owner_contact_may_be_omitted_when_team_vocabulary_has_contact(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            (workspace / ".draft" / "workspace.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    workspace:
+                      name: owner-contact-derived
+                    vocabulary:
+                      teams:
+                        mode: advisory
+                        values:
+                          - id: platform
+                            name: Platform
+                            contact: platform@example.com
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            catalog = workspace / "catalog" / "product-components"
+            catalog.mkdir(parents=True, exist_ok=True)
+            (catalog / "product-service-contact.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: product-service.contact
+                    type: product_component
+                    name: Contact Test Service
+                    repoUrl: https://github.com/test/contact
+                    owner:
+                      team: platform
+                    classification: api-service
+                    runtimeRequirement: Python 3.11
+                    catalogStatus: complete
+                    lifecycleStatus: existing-only
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+
+    def test_owner_contact_conflicting_with_team_vocabulary_warns(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            (workspace / ".draft" / "workspace.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    workspace:
+                      name: owner-contact-drift
+                    vocabulary:
+                      teams:
+                        mode: advisory
+                        values:
+                          - id: platform
+                            name: Platform
+                            contact: platform@example.com
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            catalog = workspace / "catalog" / "product-components"
+            catalog.mkdir(parents=True, exist_ok=True)
+            (catalog / "product-service-contact.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: product-service.contact
+                    type: product_component
+                    name: Contact Test Service
+                    repoUrl: https://github.com/test/contact
+                    owner:
+                      team: platform
+                      contact: stale-platform@example.com
+                    classification: api-service
+                    runtimeRequirement: Python 3.11
+                    catalogStatus: complete
+                    lifecycleStatus: existing-only
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            self._repair_workspace_uids(workspace)
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+        self.assertIn("owner.contact 'stale-platform@example.com' differs from teams vocabulary contact", result.stdout)
+
     def test_build_validate_command_targets_framework_tool(self) -> None:
         command = build_validate_command(REPO_ROOT / "examples")
 

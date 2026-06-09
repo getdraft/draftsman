@@ -3,6 +3,32 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.53.0 - 2026-06-09
+
+Derives object owner contacts from the team vocabulary.
+
+### Compatibility Impact
+
+- Object-level `owner.contact` is now optional when `owner.team` resolves to a teams vocabulary entry with a `contact`. Inline contacts that disagree with the teams vocabulary produce validation warnings.
+
+### Added
+
+- Added validation coverage for omitted derived owner contacts and stale inline contact drift warnings.
+- Added browser payload coverage for deriving `owner.contact` from the teams vocabulary.
+
+### Changed
+
+- Updated browser payload generation to populate missing object owner contacts from the canonical teams vocabulary.
+- Documented teams vocabulary contact as the source of truth for team contact aliases.
+
+### Fixed
+
+- Reduced team contact alias changes from object-by-object fan-out to a single teams vocabulary update.
+
+### Migration Notes
+
+- Existing workspaces may remove redundant `owner.contact` values from catalog objects when `owner.team` points to a teams vocabulary entry with a canonical `contact`. Keep inline contacts only for intentional overrides; validation will warn if they drift.
+
 ## 0.52.2 - 2026-06-07
 
 Resolves workspace Copilot template path lookup in setup_ide.py.

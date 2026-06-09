@@ -770,7 +770,32 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
         for deployed in group.get("deployableObjects", [])
         if isinstance(deployed, dict) and deployed.get("riskRef")
     }
+    vocabulary = load_workspace_vocabulary(workspace_root)
+    team_contacts = {
+        str(value.get("id")): value.get("contact")
+        for value in vocabulary.get("teams", {}).get("values", [])
+        if isinstance(value, dict) and value.get("id") and value.get("contact")
+    }
     browser_objects: list[dict[str, Any]] = []
+
+    def owner_with_derived_contact(obj: dict[str, Any]) -> dict[str, Any]:
+        owner = obj.get("owner")
+        if not isinstance(owner, dict):
+            return {}
+        resolved = copy.deepcopy(owner)
+        team = str(resolved.get("team") or "").strip()
+        if team and not str(resolved.get("contact") or "").strip():
+            contact = team_contacts.get(team)
+            if contact:
+                resolved["contact"] = contact
+        return resolved
+
+    def object_with_derived_owner(obj: dict[str, Any]) -> dict[str, Any]:
+        resolved = copy.deepcopy(obj)
+        owner = owner_with_derived_contact(obj)
+        if owner:
+            resolved["owner"] = owner
+        return resolved
 
     def browser_lifecycle_status(obj: dict[str, Any]) -> str:
         if obj.get("type") == "technology_component":
@@ -834,7 +859,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
                 "vendorSLA": obj.get("vendorSLA", ""),
                 "authenticationModel": obj.get("authenticationModel", ""),
                 "incidentNotificationProcess": obj.get("incidentNotificationProcess", ""),
-                "owner": obj.get("owner", {}),
+                "owner": owner_with_derived_contact(obj),
                 "definitionOwner": obj.get("definitionOwner", {}),
                 "provider": obj.get("provider", {}),
                 "authority": obj.get("authority", {}),
@@ -880,7 +905,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
                 "outboundRefs": outbound_refs.get(object_id, []),
                 "referencedBy": referenced_by.get(object_id, []),
                 "editorSchema": schema_meta,
-                "detail": to_json(obj),
+                "detail": to_json(object_with_derived_owner(obj)),
                 "existsInCatalog": True,
             }
         )
@@ -960,7 +985,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
         "indexes": catalog_indexes,
         "warnings": warnings,
         "requirements": build_requirement_payload(registry, workspace_root),
-        "vocabulary": load_workspace_vocabulary(workspace_root),
+        "vocabulary": vocabulary,
         "businessTaxonomy": load_workspace_business_taxonomy(workspace_root),
         "browserConfig": load_workspace_browser_config(workspace_root),
         "repoUrl": repository_web_url(workspace_root) or repository_web_url(REPO_ROOT),

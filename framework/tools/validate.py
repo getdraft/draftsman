@@ -1904,6 +1904,17 @@ def validate_workspace_vocabulary_references(
                 failures,
                 warnings,
             )
+            owner_team = owner.get("team")
+            owner_contact = owner.get("contact")
+            if is_non_empty(owner_team) and team_vocabulary:
+                team_values = team_vocabulary.get("values", {})
+                team_entry = team_values.get(str(owner_team)) if isinstance(team_values, dict) else None
+                vocabulary_contact = team_entry.get("contact") if isinstance(team_entry, dict) else None
+                if is_non_empty(owner_contact) and is_non_empty(vocabulary_contact) and str(owner_contact).strip() != str(vocabulary_contact).strip():
+                    warnings.append(
+                        f"{path}: owner.contact '{owner_contact}' differs from teams vocabulary contact "
+                        f"'{vocabulary_contact}' for owner.team '{owner_team}'; update the inline copy or omit owner.contact to derive it"
+                    )
 
         if obj.get("type") == "software_deployment_pattern":
             network_zones = obj.get("networkZones") or []

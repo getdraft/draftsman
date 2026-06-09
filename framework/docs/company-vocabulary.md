@@ -108,7 +108,10 @@ vocabulary:
 ```
 
 When declared, validation checks `owner.team` wherever an object declares an
-owner. `owner.contact` remains free text.
+owner. The team vocabulary entry's `contact` is the source of truth for that
+team's contact. Catalog objects may omit `owner.contact`; generated browser
+output derives it from `owner.team`. If an inline `owner.contact` is present and
+differs from the team vocabulary, validation reports a drift warning.
 
 ### Availability Tiers
 

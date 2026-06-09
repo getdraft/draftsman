@@ -54,6 +54,48 @@ class DomainCapabilityIndexTests(unittest.TestCase):
         self.assertEqual(domain_object["capabilities"], [capability_uid])
         self.assertEqual(payload["indexes"]["capabilityDomain"][capability_uid], domain_uid)
 
+
+    def test_browser_payload_derives_owner_contact_from_team_vocabulary(self) -> None:
+        generate_browser = load_generate_browser_module()
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            (workspace / ".draft" / "workspace.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    workspace:
+                      name: owner-contact-browser
+                    vocabulary:
+                      teams:
+                        mode: advisory
+                        values:
+                          - id: platform
+                            name: Platform
+                            contact: platform@example.com
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            registry = {
+                "01KT8OWNER-0001": {
+                    "schemaVersion": "1.0",
+                    "uid": "01KT8OWNER-0001",
+                    "type": "product_component",
+                    "name": "Contact Test Service",
+                    "owner": {"team": "platform"},
+                    "catalogStatus": "complete",
+                    "lifecycleStatus": "existing-only",
+                }
+            }
+
+            payload = generate_browser.build_browser_payload(registry, workspace)
+
+        owner = payload["lookup"]["01KT8OWNER-0001"]["owner"]
+        self.assertEqual(owner["contact"], "platform@example.com")
+        self.assertIn('"contact": "platform@example.com"', payload["lookup"]["01KT8OWNER-0001"]["detail"])
+
     def test_domain_without_authored_capabilities_validates(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
