@@ -356,6 +356,35 @@ def load_workspace_vocabulary(workspace_root: Path) -> dict[str, Any]:
     return result
 
 
+def team_contact_by_id(workspace_vocabulary: dict[str, Any]) -> dict[str, str]:
+    teams = workspace_vocabulary.get("teams")
+    if not isinstance(teams, dict):
+        return {}
+    values = teams.get("values")
+    if not isinstance(values, list):
+        return {}
+    contacts: dict[str, str] = {}
+    for team in values:
+        if not isinstance(team, dict):
+            continue
+        team_id = str(team.get("id") or "").strip()
+        contact = str(team.get("contact") or "").strip()
+        if team_id and contact:
+            contacts[team_id] = contact
+    return contacts
+
+
+def browser_owner(obj: dict[str, Any], team_contacts: dict[str, str]) -> dict[str, Any]:
+    owner = obj.get("owner")
+    if not isinstance(owner, dict):
+        return {}
+    browser_owner = copy.deepcopy(owner)
+    owner_team = str(browser_owner.get("team") or "").strip()
+    if owner_team and not browser_owner.get("contact") and owner_team in team_contacts:
+        browser_owner["contact"] = team_contacts[owner_team]
+    return browser_owner
+
+
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate the static DRAFT browser for a workspace.")
     parser.add_argument(
@@ -756,6 +785,8 @@ def build_sdp_connections(obj: dict[str, Any], all_objects: list[dict[str, Any]]
 
 def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: Path) -> dict[str, Any]:
     objects = list(registry.values())
+    workspace_vocabulary = load_workspace_vocabulary(workspace_root)
+    team_contacts = team_contact_by_id(workspace_vocabulary)
     catalog_indexes = build_catalog_indexes(registry)
     schemas = load_schemas(SCHEMA_ROOT)
     outbound_refs, referenced_by, warnings = build_reference_index(registry)
@@ -834,7 +865,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
                 "vendorSLA": obj.get("vendorSLA", ""),
                 "authenticationModel": obj.get("authenticationModel", ""),
                 "incidentNotificationProcess": obj.get("incidentNotificationProcess", ""),
-                "owner": obj.get("owner", {}),
+                "owner": browser_owner(obj, team_contacts),
                 "definitionOwner": obj.get("definitionOwner", {}),
                 "provider": obj.get("provider", {}),
                 "authority": obj.get("authority", {}),

@@ -1856,6 +1856,40 @@ def validate_vocabulary_value(
     )
 
 
+def team_vocabulary_contact(team_id: Any, team_vocabulary: dict[str, Any] | None) -> str | None:
+    if not team_vocabulary or team_id is None:
+        return None
+    normalized_team_id = str(team_id).strip()
+    if not normalized_team_id:
+        return None
+    team_entry = (team_vocabulary.get("values") or {}).get(normalized_team_id)
+    if not isinstance(team_entry, dict):
+        return None
+    contact = team_entry.get("contact")
+    if contact is None:
+        return None
+    normalized_contact = str(contact).strip()
+    return normalized_contact or None
+
+
+def warn_on_owner_contact_drift(
+    path: Path,
+    owner: dict[str, Any],
+    team_vocabulary: dict[str, Any] | None,
+    warnings: list[str],
+) -> None:
+    owner_team = owner.get("team")
+    vocabulary_contact = team_vocabulary_contact(owner_team, team_vocabulary)
+    if not vocabulary_contact or owner.get("contact") is None:
+        return
+    inline_contact = str(owner.get("contact") or "").strip()
+    if inline_contact and inline_contact != vocabulary_contact:
+        warnings.append(
+            f"{path}: owner.contact '{inline_contact}' differs from teams vocabulary contact "
+            f"'{vocabulary_contact}' for owner.team '{str(owner_team).strip()}'; update the team vocabulary or remove inline owner.contact"
+        )
+
+
 def validate_workspace_vocabulary_references(
     objects: dict[Path, dict[str, Any]],
     workspace_vocabulary: dict[str, dict[str, Any]],
@@ -1904,6 +1938,7 @@ def validate_workspace_vocabulary_references(
                 failures,
                 warnings,
             )
+            warn_on_owner_contact_drift(path, owner, team_vocabulary, warnings)
 
         if obj.get("type") == "software_deployment_pattern":
             network_zones = obj.get("networkZones") or []

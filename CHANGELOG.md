@@ -3,27 +3,32 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
-## Unreleased
+## 0.53.0 - 2026-06-09
+
+Resolves owner contact handling for team vocabulary metadata.
 
 ### Compatibility Impact
 
+- No compatibility impact. Existing inline `owner.contact` values remain valid; validation now warns when they drift from the declared team vocabulary contact.
 - No compatibility impact. Existing workspaces that use DecisionRecords for SoftwareDeploymentPattern requirement satisfaction remain valid.
 
 ### Added
 
+- Added owner contact derivation in browser payloads from `vocabulary.teams[].contact` when catalog objects declare `owner.team` but omit `owner.contact`.
+- Added validation tests for omitted owner contacts and drift warnings.
 - Added regression coverage documenting that SoftwareDeploymentPattern `architectureNotes` placeholders do not satisfy requirements that must be committed as `decision_record` references.
 
 ### Changed
 
-- None.
+- Documented teams vocabulary `contact` as the source of truth for owner contact metadata.
 
 ### Fixed
 
-- None.
+- Fixed duplicate owner contact maintenance by allowing `owner.contact` to be omitted when a team vocabulary contact exists.
 
 ### Migration Notes
 
-- No migration is required.
+- Teams can remove redundant inline `owner.contact` values from catalog objects after adding contacts to `.draft/workspace.yaml` teams vocabulary.
 
 ## 0.52.3 - 2026-06-09
 
