@@ -3,6 +3,31 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.52.3 - 2026-06-09
+
+Adds an AI-discoverable contribution contract to generated DRAFT workspaces.
+
+### Compatibility Impact
+
+- No breaking changes. Existing workspaces can adopt the new `.github/CONTRIBUTING.md` template when they refresh workspace scaffolding.
+
+### Added
+
+- Added `templates/workspace/.github/CONTRIBUTING.md.tmpl` covering branching strategy, branch naming, PR validation, CODEOWNER review, merge expectations, and DRAFT content boundaries.
+
+### Changed
+
+- Updated the workspace `AGENTS.md` template to link to `.github/CONTRIBUTING.md` as the single source of truth for branching and pull-request process.
+- Updated setup-mode guidance to ask for and record the workspace branching/PR strategy during onboarding, defaulting to GitHub Flow on protected `main`.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Existing workspaces can copy the new `.github/CONTRIBUTING.md` template and customize the branching strategy section to match local repository policy.
+
 ## 0.52.2 - 2026-06-07
 
 Resolves workspace Copilot template path lookup in setup_ide.py.

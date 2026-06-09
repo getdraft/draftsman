@@ -1,0 +1,67 @@
+# Contributing to {{workspace_label}}
+
+This workspace uses DRAFT to manage {{company_name}} architecture catalog and
+configuration content. Humans and AI assistants must follow this file as the
+single source of truth for branching, pull requests, validation, and merge
+expectations.
+
+## Branching Strategy
+
+Default strategy: **GitHub Flow** with a protected `main` branch.
+
+- Create a short-lived branch from `main` for each focused change.
+- Use descriptive branch names such as `draft/session-<topic>`,
+  `catalog/<object-name>`, `config/<vocabulary-or-requirement>`, or
+  `docs/<topic>`.
+- Keep each branch scoped to one drafting session, catalog update, vocabulary
+  proposal, or framework update.
+- Do not commit directly to `main` unless the repository administrators have
+  explicitly documented an emergency exception.
+
+If {{company_name}} uses a different model, replace this section during setup
+mode and keep this file authoritative. The AI bootstrap files should link here
+instead of duplicating branching rules.
+
+## Pull Request Workflow
+
+1. Open a pull request from the topic branch into `main`.
+2. Explain the user-visible catalog/configuration change and any assumptions or
+   unresolved follow-ups.
+3. Run DRAFT validation before requesting review:
+
+   ```bash
+   python3 .draft/framework/tools/validate.py --workspace .
+   ```
+
+4. When catalog or configuration content changes, regenerate the browser before
+   final review:
+
+   ```bash
+   python3 .draft/framework/tools/generate_browser.py --workspace . --output docs/index.html
+   ```
+
+5. Request review from the appropriate CODEOWNERS and wait for required checks
+   to pass.
+6. Merge using the repository's configured merge method after approval. For the
+   default GitHub Flow setup, prefer the merge method selected in repository
+   settings rather than encoding a separate rule in AI instructions.
+
+## Content Boundaries
+
+- Put company architecture inventory under `catalog/`.
+- Put company vocabularies, RequirementGroups, domains, and object patches under
+  `configurations/`.
+- Update `.draft/workspace.yaml` only for workspace-level metadata or setup
+  choices.
+- Do not edit `.draft/framework/**` as part of ordinary drafting. Use the
+  framework update workflow for vendored framework changes.
+
+## AI Assistant Expectations
+
+AI assistants connected to this workspace must:
+
+- read `AGENTS.md` first, then this file for branching and PR process;
+- create focused branches and pull requests instead of direct `main` commits;
+- run the validation commands above before claiming work is ready; and
+- keep this file as the process source of truth rather than copying branching
+  rules into tool-specific instruction files.

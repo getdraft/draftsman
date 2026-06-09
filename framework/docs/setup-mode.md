@@ -38,8 +38,11 @@ deliberately queued:
 2. Workspace identity populated in `.draft/workspace.yaml`, including
    `workspace.name`, `workspace.displayName`, and `workspace.companyName`.
 2b. [Optional] DRAFT Discovery options offered to accelerate onboarding setup.
-3. Business taxonomy defined well enough for catalog navigation.
-4. First company vocabulary lists declared in advisory mode, or deliberately
+3. Branching and pull-request strategy selected and recorded in
+   `.github/CONTRIBUTING.md` so humans and AI assistants share one discoverable
+   contribution contract.
+4. Business taxonomy defined well enough for catalog navigation.
+5. First company vocabulary lists declared in advisory mode, or deliberately
    queued for later.
 5. Initial active RequirementGroups selected.
 6. Capability owners identified for the first mapped capabilities.
@@ -90,6 +93,21 @@ Questions:
 Record the repo metadata in `.draft/workspace.yaml` before rendering templates:
 provider, owner, repo name, and default branch. The generated README prompt
 should tell the AI exactly which repo to connect to.
+
+Ask which branching strategy the workspace follows and render the answer into
+`.github/CONTRIBUTING.md`. Default to GitHub Flow with a protected `main` branch
+unless the company chooses another model; DRAFT's validation, browser
+generation, Pages deployment, and framework-update workflow are all `main`-centric
+by default. Keep `CONTRIBUTING.md` the single source of truth for branching, PR,
+validation, and merge process. Generated AI bootstrap files should reference it
+instead of duplicating those rules.
+
+Question:
+
+> Which branching and pull-request strategy should this workspace declare in
+> `.github/CONTRIBUTING.md`? If you do not already have one, use the DRAFT
+> default: GitHub Flow with short-lived branches into protected `main`, PR
+> validation, CODEOWNER review, and the repository-configured merge method.
 
 ### 1b. [Optional] Discovery Integration
 
