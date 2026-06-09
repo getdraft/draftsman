@@ -2617,6 +2617,76 @@ requirementGroups:
             result = validate_workspace(workspace)
             self.assertTrue(result.ok, result.stdout + result.stderr)
 
+    def test_software_deployment_pattern_architecture_notes_do_not_satisfy_decision_record_requirements(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            self._write_workspace_requirement_fixture(workspace, require_disposition=False)
+
+            runtime_dir = workspace / "catalog" / "runtime-services"
+            runtime_dir.mkdir(parents=True, exist_ok=True)
+            (runtime_dir / "runtime-service-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: runtime-service.test
+                    type: runtime_service
+                    name: Test Runtime Service
+                    deliveryModel: paas
+                    vendor: "Test Vendor"
+                    productName: "Test Product"
+                    productVersion: "1.0"
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            sdp_dir = workspace / "catalog" / "software-deployment-patterns"
+            sdp_dir.mkdir(parents=True, exist_ok=True)
+            (sdp_dir / "sdp-test-service.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    id: sdp.test-service
+                    type: software_deployment_pattern
+                    name: Test Service Pattern
+                    catalogStatus: complete
+                    lifecycleStatus: candidate
+                    architectureNotes:
+                      noApplicablePattern: "No reference architecture applies."
+                      deploymentTargets: "Runs in the test target."
+                      availabilityRequirement: "Best-effort availability is acceptable."
+                      dataClassification: "Internal test data only."
+                      failureDomain: "Single test failure domain."
+                      noPatternDeviations: "No deviations."
+                      noAdditionalInteractions: "No additional interactions."
+                    serviceGroups:
+                      - name: App Tier
+                        deploymentTarget: Test target
+                        deployableObjects:
+                          - ref: runtime-service.test
+                            diagramTier: application
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            self._repair_workspace_uids(workspace)
+            result = validate_workspace(workspace)
+
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("decisionRecord reference for key 'noApplicablePattern'", result.stdout)
+        self.assertIn("decisionRecord reference for key 'deploymentTargets'", result.stdout)
+        self.assertIn("decisionRecord reference for key 'availabilityRequirement'", result.stdout)
+        self.assertIn("decisionRecord reference for key 'dataClassification'", result.stdout)
+        self.assertIn("decisionRecord reference for key 'failureDomain'", result.stdout)
+        self.assertIn("decisionRecord reference for key 'externalDependencies' or 'noAdditionalInteractions'", result.stdout)
+        self.assertIn("decisionRecord reference for key 'patternDeviations' or 'noPatternDeviations'", result.stdout)
+
     def test_federated_business_unit_taxonomy_validation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
