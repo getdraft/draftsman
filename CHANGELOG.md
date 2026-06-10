@@ -1,3 +1,26 @@
+## 0.55.0 - 2026-06-10
+
+SDP governance requirements can now be satisfied structurally via fields on the SoftwareDeploymentPattern (or via data components for data-classification) in addition to DecisionRecord. DecisionRecords are now reserved for documented non-conformance.
+
+### Compatibility Impact
+- No breaking changes. Existing SDPs that use DecisionRecords continue to work.
+- New structural paths are additive.
+
+### Added
+- `field` satisfaction mechanism for `availability-requirement`, `data-classification`, `failure-domain`, `deployment-targets`, and `pattern-deviations` in the SoftwareDeploymentPattern RequirementGroup.
+- Structural satisfaction for `data-classification` via data components declaring `dataClassification` or `containsPII`.
+- `sdp_requirement_satisfied` now accepts direct fields on the SDP.
+
+### Changed
+- Updated gap messages to suggest the field option first.
+- Updated `requirement-group-software-deployment-pattern.yaml` to declare `field` as a valid satisfaction mechanism.
+
+### Fixed
+- SDP governance requirements no longer force DecisionRecord-as-attestation for normal/conformant cases.
+
+### Migration Notes
+- None required. Workspaces may now satisfy governance qualities with fields instead of (or in addition to) DecisionRecords.
+
 # Changelog
 
 All notable DRAFT Framework changes are recorded here. Every release requires

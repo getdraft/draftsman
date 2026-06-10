@@ -2385,10 +2385,15 @@ def sdp_requirement_satisfied(
     catalog_by_id: dict[str, dict[str, Any]]
 ) -> bool:
     """
-    Checks if a SoftwareDeploymentPattern requirement is satisfied by a referenced decisionRecord.
+    Checks if a SoftwareDeploymentPattern requirement is satisfied by a referenced decisionRecord
+    or by a direct field on the SDP (structural satisfaction path).
     Note: Inline architectureNotes are never considered appropriate for requirement satisfaction.
     """
-    return mechanism_satisfied(obj, {"mechanism": "decisionRecord", "key": key}, catalog_by_id)
+    if mechanism_satisfied(obj, {"mechanism": "decisionRecord", "key": key}, catalog_by_id):
+        return True
+    if key in obj and is_non_empty(obj.get(key)):
+        return True
+    return False
 
 
 def _capability_implementation_refs(
@@ -2788,7 +2793,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Describe deployment boundary or execution context with a decisionRecord reference for key 'deploymentTargets' to satisfy DRAFT SoftwareDeploymentPattern / deployment-targets",
+            f"[{object_id}] Declare deploymentTargets on the SDP or add a decisionRecord reference for key 'deploymentTargets' to satisfy requirement-group.software-deployment-pattern requirement 'deployment-targets'",
             failures,
             warnings,
         )
@@ -2797,7 +2802,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add a decisionRecord reference for key 'availabilityRequirement' to satisfy requirement-group.software-deployment-pattern requirement 'availability-requirement'",
+            f"[{object_id}] Declare availabilityRequirement on the SDP or add a decisionRecord reference for key 'availabilityRequirement' to satisfy requirement-group.software-deployment-pattern requirement 'availability-requirement'",
             failures,
             warnings,
         )
@@ -2835,7 +2840,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add a decisionRecord reference for key 'failureDomain' to satisfy requirement-group.software-deployment-pattern requirement 'failure-domain'",
+            f"[{object_id}] Declare failureDomain on the SDP or add a decisionRecord reference for key 'failureDomain' to satisfy requirement-group.software-deployment-pattern requirement 'failure-domain'",
             failures,
             warnings,
         )
@@ -2844,7 +2849,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add a decisionRecord reference for key 'patternDeviations' or 'noPatternDeviations' to satisfy requirement-group.software-deployment-pattern requirement 'pattern-deviations'",
+            f"[{object_id}] Declare patternDeviations on the SDP or add a decisionRecord reference for key 'patternDeviations' or 'noPatternDeviations' to satisfy requirement-group.software-deployment-pattern requirement 'pattern-deviations'",
             failures,
             warnings,
         )

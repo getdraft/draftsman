@@ -2,7 +2,8 @@ schemaVersion: '1.0'
 uid: 01KQQ4Q027-VK45
 type: requirement_group
 name: SoftwareDeploymentPattern RequirementGroup
-description: Structured checklist of required questions and answers used to define a complete and correct software deployment pattern.
+description: Structured checklist of required questions and answers used to define
+  a complete and correct software deployment pattern.
 version: 1.0.0
 catalogStatus: complete
 authority:
@@ -14,15 +15,18 @@ appliesTo:
 - software_deployment_pattern
 requirements:
 - id: reference-architecture-conformance
-  description: The SoftwareDeploymentPattern must reference a valid ReferenceArchitecture ID or explicitly document that no applicable ReferenceArchitecture exists yet.
-  rationale: Connecting deployments to patterns enables governance discoverability and impact analysis.
+  description: The SoftwareDeploymentPattern must reference a valid ReferenceArchitecture
+    ID or explicitly document that no applicable ReferenceArchitecture exists yet.
+  rationale: Connecting deployments to patterns enables governance discoverability
+    and impact analysis.
   canBeSatisfiedBy:
   - mechanism: field
     key: followsReferenceArchitecture
     example: reference-architecture.dotnet.three-tier.ha
   - mechanism: decisionRecord
     key: noApplicablePattern
-    example: 'A committed DecisionRecord, referenced from decisionRecords with key: noApplicablePattern, recording this decision (or why it is not applicable).'
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key:
+      noApplicablePattern, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
@@ -30,12 +34,15 @@ requirements:
   - decisionRecord
   - field
 - id: service-groups
-  description: The SoftwareDeploymentPattern must declare the service groups that make up the deployed product.
-  rationale: A deployment manifest is incomplete until the real deployed service group structure is explicit.
+  description: The SoftwareDeploymentPattern must declare the service groups that
+    make up the deployed product.
+  rationale: A deployment manifest is incomplete until the real deployed service group
+    structure is explicit.
   canBeSatisfiedBy:
   - mechanism: field
     key: serviceGroups
-    example: Non-empty serviceGroups list with named deployment groups and deployable object references
+    example: Non-empty serviceGroups list with named deployment groups and deployable
+      object references
   - mechanism: internalComponent
     criteria:
       role: service-group
@@ -47,39 +54,60 @@ requirements:
   - field
   - internalComponent
 - id: deployment-targets
-  description: Every service group must describe its deployment boundary or execution context at the level needed to understand ownership, isolation, and operational responsibility.
-  rationale: Deployment reality is not complete until the architect can explain the boundary that matters for operating and governing each service group; that boundary may be an account, cluster, data center, customer site, tenant/environment boundary, SaaS context, or another architecture-relevant execution context.
+  description: Every service group must describe its deployment boundary or execution
+    context at the level needed to understand ownership, isolation, and operational
+    responsibility.
+  rationale: Deployment reality is not complete until the architect can explain the
+    boundary that matters for operating and governing each service group; that boundary
+    may be an account, cluster, data center, customer site, tenant/environment boundary,
+    SaaS context, or another architecture-relevant execution context.
   canBeSatisfiedBy:
+  - mechanism: field
+    key: deploymentTargets
+    example: 'deploymentTargets: aws:us-east-1:prod'
   - mechanism: decisionRecord
     key: deploymentTargets
-    example: 'A committed DecisionRecord, referenced from decisionRecords with key: deploymentTargets, recording this decision (or why it is not applicable).'
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key:
+      deploymentTargets, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
+  - field
   - decisionRecord
 - id: availability-requirement
   description: The product availability tier must be documented.
-  rationale: Availability requirements justify deployment posture and inform operational support models.
+  rationale: Availability requirements justify deployment posture and inform operational
+    support models.
   canBeSatisfiedBy:
+  - mechanism: field
+    key: availabilityRequirement
+    example: 'availabilityRequirement: high-availability'
   - mechanism: decisionRecord
     key: availabilityRequirement
-    example: 'A committed DecisionRecord, referenced from decisionRecords with key: availabilityRequirement, recording this decision (or why it is not applicable).'
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key:
+      availabilityRequirement, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
   validAnswerTypes:
+  - field
   - decisionRecord
 - id: additional-interactions
-  description: Any external systems this product interacts with beyond what its component deployable objects declare must be documented via relationship objects — or explicitly stated as none.
-  rationale: Product-specific integrations are invisible to the architecture without explicit declaration.
+  description: Any external systems this product interacts with beyond what its component
+    deployable objects declare must be documented via relationship objects — or explicitly
+    stated as none.
+  rationale: Product-specific integrations are invisible to the architecture without
+    explicit declaration.
   canBeSatisfiedBy:
   - mechanism: decisionRecord
     key: externalDependencies
-    example: 'A committed DecisionRecord, referenced from decisionRecords with key: externalDependencies, recording this decision (or why it is not applicable).'
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key:
+      externalDependencies, recording this decision (or why it is not applicable).'
   - mechanism: decisionRecord
     key: noAdditionalInteractions
-    example: 'A committed DecisionRecord, referenced from decisionRecords with key: noAdditionalInteractions, recording this decision (or why it is not applicable).'
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key:
+      noAdditionalInteractions, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
@@ -87,75 +115,103 @@ requirements:
   - decisionRecord
 - id: data-classification
   description: The type of data this product stores or processes must be documented.
-  rationale: Data classification drives security posture requirements and compliance obligations.
+  rationale: Data classification drives security posture requirements and compliance
+    obligations.
   canBeSatisfiedBy:
+  - mechanism: field
+    key: dataClassification
+    example: 'dataClassification: internal'
   - mechanism: decisionRecord
     key: dataClassification
-    example: 'A committed DecisionRecord, referenced from decisionRecords with key: dataClassification, recording this decision (or why it is not applicable).'
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key:
+      dataClassification, recording this decision (or why it is not applicable).'
   minimumSatisfactions: 1
   requirementMode: mandatory
   naAllowed: false
-  validAnswerTypes:
-  - decisionRecord
-- id: failure-domain
-  description: The SoftwareDeploymentPattern must document the deployment-level failure domain of the product.
-  rationale: Product-level impact boundaries cannot be inferred from component selections alone.
-  canBeSatisfiedBy:
-  - mechanism: decisionRecord
-    key: failureDomain
-    example: 'A committed DecisionRecord, referenced from decisionRecords with key: failureDomain, recording this decision (or why it is not applicable).'
-  minimumSatisfactions: 1
-  requirementMode: mandatory
-  naAllowed: false
-  validAnswerTypes:
-  - decisionRecord
-- id: pattern-deviations
-  description: Any intentional deviation from the selected ReferenceArchitecture must be documented, or the SoftwareDeploymentPattern must explicitly state that no deviations exist.
-  rationale: The SoftwareDeploymentPattern is where pattern intent becomes product deployment reality, so departures from the ReferenceArchitecture must be visible.
-  canBeSatisfiedBy:
-  - mechanism: decisionRecord
-    key: patternDeviations
-    example: 'A committed DecisionRecord, referenced from decisionRecords with key: patternDeviations, recording this decision (or why it is not applicable).'
-  - mechanism: decisionRecord
-    key: noPatternDeviations
-    example: 'A committed DecisionRecord, referenced from decisionRecords with key: noPatternDeviations, recording this decision (or why it is not applicable).'
-  minimumSatisfactions: 1
-  requirementMode: mandatory
-  naAllowed: false
-  validAnswerTypes:
-  - decisionRecord
-- id: inter-service-connections
-  description: >
-    Primary inter-service communication paths that cross a tier boundary
-    (e.g. presentation→application) or a network zone boundary must be
-    documented as relationship objects in the catalog, or the pattern must
-    explicitly state that no cross-boundary connections exist.
-  rationale: >
-    Service-to-service communication across tiers and zones is an architecture
-    decision with security, performance, and compliance implications. Without
-    explicit connection records the architecture cannot be analyzed for data-flow
-    compliance, blast-radius, or network policy conformance.
-  canBeSatisfiedBy:
-  - mechanism: decisionRecord
-    key: interServiceConnections
-    example: 'A committed DecisionRecord, referenced from decisionRecords with key: interServiceConnections, recording this decision (or why it is not applicable).'
-  - mechanism: decisionRecord
-    key: noCrossBoundaryConnections
-    example: 'A committed DecisionRecord, referenced from decisionRecords with key: noCrossBoundaryConnections, recording this decision (or why it is not applicable).'
-  minimumSatisfactions: 1
-  requirementMode: mandatory
-  naAllowed: true
-  naRationale: Acceptable when the deployment has only a single tier and no network zones.
   validAnswerTypes:
   - field
   - decisionRecord
-  interviewHint: >
-    Use the propose-and-confirm pattern. Ask one yes/no question per tier crossing
-    (presentation→application, application→data, application→utility). For each
-    confirmed crossing, present a multi-select list of the services in the source
-    tier and ask which ones make calls across. Then ask protocol once per crossing
+- id: failure-domain
+  description: The SoftwareDeploymentPattern must document the deployment-level failure
+    domain of the product.
+  rationale: Product-level impact boundaries cannot be inferred from component selections
+    alone.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: failureDomain
+    example: 'failureDomain: regional'
+  - mechanism: decisionRecord
+    key: failureDomain
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key:
+      failureDomain, recording this decision (or why it is not applicable).'
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - field
+  - decisionRecord
+- id: pattern-deviations
+  description: Any intentional deviation from the selected ReferenceArchitecture must
+    be documented, or the SoftwareDeploymentPattern must explicitly state that no
+    deviations exist.
+  rationale: The SoftwareDeploymentPattern is where pattern intent becomes product
+    deployment reality, so departures from the ReferenceArchitecture must be visible.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: patternDeviations
+    example: 'patternDeviations: none'
+  - mechanism: decisionRecord
+    key: patternDeviations
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key:
+      patternDeviations, recording this decision (or why it is not applicable).'
+  - mechanism: decisionRecord
+    key: noPatternDeviations
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key:
+      noPatternDeviations, recording this decision (or why it is not applicable).'
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - field
+  - decisionRecord
+- id: inter-service-connections
+  description: 'Primary inter-service communication paths that cross a tier boundary
+    (e.g. presentation→application) or a network zone boundary must be documented
+    as relationship objects in the catalog, or the pattern must explicitly state that
+    no cross-boundary connections exist.
+
+    '
+  rationale: 'Service-to-service communication across tiers and zones is an architecture
+    decision with security, performance, and compliance implications. Without explicit
+    connection records the architecture cannot be analyzed for data-flow compliance,
+    blast-radius, or network policy conformance.
+
+    '
+  canBeSatisfiedBy:
+  - mechanism: decisionRecord
+    key: interServiceConnections
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key:
+      interServiceConnections, recording this decision (or why it is not applicable).'
+  - mechanism: decisionRecord
+    key: noCrossBoundaryConnections
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key:
+      noCrossBoundaryConnections, recording this decision (or why it is not applicable).'
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: true
+  naRationale: Acceptable when the deployment has only a single tier and no network
+    zones.
+  validAnswerTypes:
+  - field
+  - decisionRecord
+  interviewHint: 'Use the propose-and-confirm pattern. Ask one yes/no question per
+    tier crossing (presentation→application, application→data, application→utility).
+    For each confirmed crossing, present a multi-select list of the services in the
+    source tier and ask which ones make calls across. Then ask protocol once per crossing
     using the connectionProtocols vocabulary list. Do not ask about port or label.
     Do not attempt to enumerate every same-tier connection in a single session.
+
+    '
 lifecycleStatus: preferred
 tags:
 - software-deployment-pattern
