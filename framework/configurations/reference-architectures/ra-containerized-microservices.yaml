@@ -1,0 +1,70 @@
+schemaVersion: '1.0'
+uid: 01KV0REFAR-CMSV
+type: reference_architecture
+name: Containerized Microservices
+description: Starter pattern for independently deployable services running on a container orchestration platform with service-to-service connectivity, observability, and release isolation.
+patternType: containerized-microservices
+catalogStatus: complete
+lifecycleStatus: preferred
+tags:
+- reference-architecture
+- microservices
+- containers
+- starter
+applicableDefinitionChecklist:
+- Workloads deploy onto a governed container orchestration platform.
+- Independently deployable services are represented as ProductComponents on RuntimeServices.
+- Service-to-service traffic policy, discovery, and observability are explicit.
+- Persistent state is isolated behind governed DataStoreServices.
+serviceGroups:
+- name: Ingress
+  deployableObjects:
+  - slot: ingress-control
+    capability: 01KT0V5MCV-3A6F
+    objectType: network_service
+    diagramTier: presentation
+    notes: API gateway, ingress controller, or load balancer that accepts external traffic and routes to services.
+- name: Service Runtime
+  deployableObjects:
+  - slot: container-orchestration
+    capability: 01KQQ4Q026-GW5D
+    objectType: runtime_service
+    diagramTier: application
+    notes: Kubernetes, ECS, Nomad, or equivalent container orchestration RuntimeService. Scaffold a runtime_service stub owned by shared-services if no catalog entry exists.
+  - slot: service-mesh
+    capability: 01KT0V5MCV-RM8M
+    objectType: network_service
+    diagramTier: application
+    notes: Optional but recommended service mesh or east-west traffic control capability for routing, mTLS, policy, and service telemetry.
+- name: Service State
+  deployableObjects:
+  - slot: service-data-store
+    capability: 01KT0V5MCV-VD0Y
+    objectType: data_store_service
+    diagramTier: data
+    notes: Per-service or shared data store with explicit ownership and backup/recovery controls.
+- name: Observability
+  deployableObjects:
+  - slot: logs
+    capability: 01KQQ4Q026-D04B
+    objectType: network_service
+    diagramTier: utility
+    notes: Log aggregation or telemetry pipeline used by the microservices estate.
+architectureNotes:
+  patternRationale: The pattern supports independent deployment and scaling of services while keeping shared platform capabilities governed by shared services.
+  onboardingQuestions: Ask for the orchestration platform, ingress pattern, service mesh or east-west control approach, per-service state ownership, and observability stack.
+constraints:
+- id: container-orchestration-required
+  description: Containerized microservice SDPs need an application-tier runtime satisfying Container Orchestration.
+  require:
+  - capability: 01KQQ4Q026-GW5D
+    objectType: runtime_service
+    diagramTier: application
+- id: ingress-control-required
+  description: External microservice traffic must enter through a governed ingress or API gateway capability.
+  require:
+  - capability: 01KT0V5MCV-3A6F
+    objectType: network_service
+    diagramTier: presentation
+requirementGroups: []
+requirementImplementations: []

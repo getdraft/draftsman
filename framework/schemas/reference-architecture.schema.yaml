@@ -75,6 +75,8 @@ deployableObjectEntry:
   optionalFields:
   - ref
   - objectType
+  - capability
+  - slot
   - diagramTier
   - intent
   - instance
@@ -103,6 +105,19 @@ deployableObjectEntry:
     objectType: Declare the expected catalog object type when no specific ref is provided.
       Use in framework-level or community RAs where the company catalog defines which
       specific objects satisfy the role. Provide ref or objectType; both may be present.
+    capability: Reference a Capability UID that the selected deployable object or its
+      underlying TechnologyComponent must satisfy. Framework-level RAs should use
+      capability slots rather than company-specific catalog refs.
+    slot: Stable kebab-case role name for this capability slot, such as
+      application-runtime, managed-data-store, or api-gateway. The Draftsman uses
+      slot names to ask onboarding questions and to scaffold missing shared-service
+      placeholders.
+capabilitySlotRequirement:
+  fieldDescriptions:
+    capability: Capability UID the SDP entry must satisfy, either directly on the
+      deployable service capabilities list or through a Capability implementation
+      mapping.
+
 requirementImplementation:
   requiredFields:
   - requirementGroup

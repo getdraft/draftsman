@@ -207,7 +207,7 @@
     <aside class="sidebar">
       <a class="back-link" href="index.html">Back to catalog</a>
       <h1>Company Vocabulary</h1>
-      <p>Generated 2026-06-06 from the framework-owned Markdown source.</p>
+      <p>Generated 2026-06-10 from the framework-owned Markdown source.</p>
       <nav class="toc" aria-label="Table of contents">
         <a class="level-2" href="#modes">Modes</a>
 <a class="level-2" href="#standard-value-states">Standard Value States</a>
@@ -286,7 +286,7 @@
       - id: platform-engineering
         name: Platform Engineering
         contact: platform-engineering@example.com</code></pre>
-<p>When declared, validation checks <code>owner.team</code> wherever an object declares an owner. <code>owner.contact</code> remains free text.</p>
+<p>When declared, validation checks <code>owner.team</code> wherever an object declares an owner. <code>contact</code> on a team vocabulary value is the source of truth for that team's owner contact. Catalog objects may omit <code>owner.contact</code>; browser output resolves the contact from <code>owner.team</code> when the team vocabulary provides one. If an object still declares inline <code>owner.contact</code> and it differs from the team vocabulary contact, validation reports a drift warning so the inline value can be removed or the team vocabulary can be updated.</p>
 <h3 id="availability-tiers">Availability Tiers</h3>
 <pre><code class="language-yaml">vocabulary:
   availabilityTiers:

@@ -1,0 +1,65 @@
+schemaVersion: '1.0'
+uid: 01KV0REFAR-STRG
+type: reference_architecture
+name: Strangler Migration Pattern
+description: Starter pattern for incremental legacy modernization where new services coexist with a legacy system and traffic or capabilities move behind a controlled migration facade.
+patternType: strangler-migration
+catalogStatus: complete
+lifecycleStatus: preferred
+tags:
+- reference-architecture
+- migration
+- strangler
+- starter
+applicableDefinitionChecklist:
+- A facade, router, or gateway controls traffic between legacy and replacement capabilities.
+- Legacy coexistence boundaries and rollback behavior are documented.
+- New runtime services can be introduced incrementally without direct ownership of legacy infrastructure.
+- Data synchronization or integration paths are explicitly governed.
+serviceGroups:
+- name: Migration Facade
+  deployableObjects:
+  - slot: facade-routing
+    capability: 01KT0V5MCV-3A6F
+    objectType: network_service
+    diagramTier: presentation
+    notes: API gateway, routing proxy, WAF rule set, or facade that directs traffic between legacy and new capabilities.
+- name: Legacy System Boundary
+  deployableObjects:
+  - slot: legacy-connectivity
+    capability: 01KSWVZSZ5-Q6HW
+    objectType: network_service
+    diagramTier: application
+    notes: Network connectivity, private link, adapter, or access path to the legacy system. Model as a shared network service or relationship boundary rather than product-team-owned raw technology.
+- name: Replacement Services
+  deployableObjects:
+  - slot: replacement-runtime
+    capability: 01KT0V5MCV-RZV0
+    objectType: runtime_service
+    diagramTier: application
+    notes: RuntimeService hosting new replacement ProductComponents.
+- name: Data Synchronization
+  deployableObjects:
+  - slot: data-integration
+    capability: 01KT0XNZEY-DENJ
+    objectType: network_service
+    diagramTier: data
+    notes: ETL, CDC, API synchronization, or messaging capability used to keep legacy and replacement data aligned during migration.
+architectureNotes:
+  patternRationale: Strangler migrations reduce cutover risk by routing slices of capability to new services while preserving controlled coexistence with legacy systems.
+  onboardingQuestions: Ask which legacy boundary is being strangled, what facade controls traffic, what replacement runtime will host new code, and how data synchronization and rollback are handled.
+constraints:
+- id: migration-facade-required
+  description: Strangler SDPs require a governed facade or routing capability to control migration traffic.
+  require:
+  - capability: 01KT0V5MCV-3A6F
+    objectType: network_service
+    diagramTier: presentation
+- id: replacement-runtime-required
+  description: Strangler SDPs require an application runtime for replacement services.
+  require:
+  - capability: 01KT0V5MCV-RZV0
+    objectType: runtime_service
+    diagramTier: application
+requirementGroups: []
+requirementImplementations: []

@@ -27,14 +27,18 @@ applicableDefinitionChecklist:
 serviceGroups:
 - name: Ingestion
   deployableObjects:
-  - objectType: network_service
+  - slot: integration-entry-point
+    capability: 01KT0V5MCV-3A6F
+    objectType: network_service
     diagramTier: presentation
     notes: API gateway or event bus entry point. Routes inbound HTTP requests or events
       to processing functions. Provides authentication, throttling, and payload validation
       at the boundary.
 - name: Processing
   deployableObjects:
-  - objectType: runtime_service
+  - slot: serverless-compute
+    capability: 01KQQ4Q026-3ZWJ
+    objectType: runtime_service
     diagramTier: application
     notes: Serverless runtime (deliveryModel paas or saas). Each logical function
       group, event processor, or scheduled job should be modeled as a distinct runtime
@@ -42,7 +46,9 @@ serviceGroups:
       this service.
 - name: State
   deployableObjects:
-  - objectType: data_store_service
+  - slot: managed-state-store
+    capability: 01KT0V5MCV-VD0Y
+    objectType: data_store_service
     diagramTier: data
     notes: External data store consumed by processing functions. May be a relational
       database, object store, cache, or queue depending on the access pattern. Functions
