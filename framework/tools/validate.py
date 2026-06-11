@@ -2385,16 +2385,84 @@ def sdp_requirement_satisfied(
     catalog_by_id: dict[str, dict[str, Any]]
 ) -> bool:
     """
-    Checks if a SoftwareDeploymentPattern requirement is satisfied by a referenced decisionRecord.
+    Checks if a SoftwareDeploymentPattern requirement is satisfied by a referenced decisionRecord
+    or by a direct field on the SDP (structural satisfaction path).
     Note: Inline architectureNotes are never considered appropriate for requirement satisfaction.
     """
-    return mechanism_satisfied(obj, {"mechanism": "decisionRecord", "key": key}, catalog_by_id)
+    if mechanism_satisfied(obj, {"mechanism": "decisionRecord", "key": key}, catalog_by_id):
+        return True
+    if key in obj and is_non_empty(obj.get(key)):
+        return True
+    return False
+
+
+def _capability_implementation_refs(
+    capability_uid: str, catalog_by_id: dict[str, dict[str, Any]]
+) -> set[str]:
+    capability = catalog_by_id.get(capability_uid)
+    if not isinstance(capability, dict) or capability.get("type") != "capability":
+        return set()
+    refs: set[str] = set()
+    for implementation in capability.get("implementations") or []:
+        if not isinstance(implementation, dict):
+            continue
+        ref = implementation.get("ref")
+        if is_non_empty(ref):
+            refs.add(str(ref))
+    return refs
+
+
+
+def _object_capabilities(obj: dict[str, Any] | None) -> set[str]:
+    if not isinstance(obj, dict):
+        return set()
+    capabilities: set[str] = set()
+    direct = obj.get("capabilities")
+    if isinstance(direct, list):
+        capabilities.update(str(capability) for capability in direct if is_non_empty(capability))
+    for configuration in obj.get("configurations") or []:
+        if not isinstance(configuration, dict):
+            continue
+        config_caps = configuration.get("capabilities")
+        if isinstance(config_caps, list):
+            capabilities.update(str(capability) for capability in config_caps if is_non_empty(capability))
+    return capabilities
+
+
+
+def _target_satisfies_capability(
+    target_ref: str | None,
+    target: dict[str, Any] | None,
+    capability_uid: str,
+    catalog_by_id: dict[str, dict[str, Any]],
+) -> bool:
+    if not is_non_empty(capability_uid):
+        return True
+    implementation_refs = _capability_implementation_refs(str(capability_uid), catalog_by_id)
+    if target_ref and str(target_ref) in implementation_refs:
+        return True
+    if capability_uid in _object_capabilities(target):
+        return True
+    if not isinstance(target, dict):
+        return False
+    for field in ("primaryTechnologyComponent", "technologyComponent", "technologyComponents", "enabledBy", "underlyingTechnology"):
+        value = target.get(field)
+        values = value if isinstance(value, list) else [value]
+        for candidate in values:
+            if not is_non_empty(candidate):
+                continue
+            candidate_ref = str(candidate)
+            candidate_obj = catalog_by_id.get(candidate_ref)
+            if candidate_ref in implementation_refs or capability_uid in _object_capabilities(candidate_obj):
+                return True
+    return False
+
 
 
 def _sdp_deployable_objects(
     sdp: dict[str, Any], catalog_by_id: dict[str, dict[str, Any]]
 ) -> list[dict[str, Any]]:
-    """Return {objectType, diagramTier} for every deployable object in an SDP's service groups."""
+    """Return object metadata for every deployable object in an SDP's service groups."""
     objects: list[dict[str, Any]] = []
     for group in sdp.get("serviceGroups") or []:
         if not isinstance(group, dict):
@@ -2403,23 +2471,33 @@ def _sdp_deployable_objects(
             if not isinstance(entry, dict):
                 continue
             ref = entry.get("ref")
+            target = catalog_by_id.get(str(ref)) if ref else None
             obj_type: str | None = None
-            if ref:
-                target = catalog_by_id.get(str(ref))
-                if target:
-                    obj_type = target.get("type")
+            if target:
+                obj_type = target.get("type")
             if not obj_type:
                 obj_type = entry.get("objectType")
-            objects.append({"objectType": obj_type, "diagramTier": entry.get("diagramTier")})
+            objects.append(
+                {
+                    "ref": str(ref) if ref else None,
+                    "target": target,
+                    "objectType": obj_type,
+                    "diagramTier": entry.get("diagramTier"),
+                }
+            )
     return objects
 
 
-def _matches_object_condition(obj: dict[str, Any], condition: dict[str, Any]) -> bool:
+
+def _matches_object_condition(obj: dict[str, Any], condition: dict[str, Any], catalog_by_id: dict[str, dict[str, Any]]) -> bool:
     for key, value in condition.items():
         if key in ("diagramTier", "objectType") and obj.get(key) != value:
             return False
+        if key == "capability" and not _target_satisfies_capability(
+            obj.get("ref"), obj.get("target"), str(value), catalog_by_id
+        ):
+            return False
     return True
-
 
 def evaluate_ra_constraints(
     sdp: dict[str, Any],
@@ -2445,7 +2523,7 @@ def evaluate_ra_constraints(
         if isinstance(when, dict) and when:
             any_sg_cond = when.get("anyServiceGroup")
             if isinstance(any_sg_cond, dict) and any_sg_cond:
-                if not any(_matches_object_condition(o, any_sg_cond) for o in sdp_objects):
+                if not any(_matches_object_condition(o, any_sg_cond, catalog_by_id) for o in sdp_objects):
                     continue  # condition not met; constraint does not apply to this SDP
 
         require = constraint.get("require")
@@ -2457,9 +2535,13 @@ def evaluate_ra_constraints(
                 continue
             req_type = req.get("objectType")
             req_tier = req.get("diagramTier")
+            req_capability = req.get("capability")
             satisfied = any(
                 (not req_type or o.get("objectType") == req_type)
                 and (not req_tier or o.get("diagramTier") == req_tier)
+                and (not req_capability or _target_satisfies_capability(
+                    o.get("ref"), o.get("target"), str(req_capability), catalog_by_id
+                ))
                 for o in sdp_objects
             )
             if not satisfied:
@@ -2469,6 +2551,8 @@ def evaluate_ra_constraints(
                     parts.append(f"diagramTier '{req_tier}'")
                 if req_type:
                     parts.append(f"objectType '{req_type}'")
+                if req_capability:
+                    parts.append(f"capability '{req_capability}'")
                 req_desc = " and ".join(parts) if parts else "a required object"
                 failures.append(
                     f"{path}: [{sdp_id}] RA constraint '{constraint_id}' violated — "
@@ -2557,6 +2641,22 @@ def validate_ra(
                 failures,
                 warnings,
             )
+        for group_index, group in enumerate(service_groups):
+            if not isinstance(group, dict):
+                continue
+            for entry_index, entry in enumerate(group.get("deployableObjects") or []):
+                if not isinstance(entry, dict):
+                    continue
+                if not any(is_non_empty(entry.get(key)) for key in ("ref", "objectType", "capability")):
+                    failures.append(
+                        f"{path}: serviceGroups[{group_index}].deployableObjects[{entry_index}] must declare at least one of ref, objectType, or capability"
+                    )
+                capability = entry.get("capability")
+                if capability is not None and capability not in capability_ids:
+                    failures.append(
+                        f"{path}: serviceGroups[{group_index}].deployableObjects[{entry_index}].capability "
+                        f"'{capability}' must reference a capability object UID from configurations/capabilities"
+                    )
 
     if not is_non_empty(obj.get("architectureNotes")):
         record_requirement_gap(
@@ -2601,6 +2701,11 @@ def validate_ra(
                                             f"{path}: constraints[{idx}].when.anyServiceGroup.objectType "
                                             f"'{cval}' must be one of {sorted(STANDARD_TYPES)}"
                                         )
+                                    elif ckey == "capability" and cval not in capability_ids:
+                                        failures.append(
+                                            f"{path}: constraints[{idx}].when.anyServiceGroup.capability "
+                                            f"'{cval}' must reference a capability object UID from configurations/capabilities"
+                                        )
                 require = constraint.get("require")
                 if require is not None:
                     if not isinstance(require, list):
@@ -2621,6 +2726,12 @@ def validate_ra(
                                 failures.append(
                                     f"{path}: constraints[{idx}].require[{ridx}].diagramTier "
                                     f"'{req_tier}' must be one of {sorted(VALID_DIAGRAM_TIERS)}"
+                                )
+                            req_capability = req.get("capability")
+                            if req_capability is not None and req_capability not in capability_ids:
+                                failures.append(
+                                    f"{path}: constraints[{idx}].require[{ridx}].capability "
+                                    f"'{req_capability}' must reference a capability object UID from configurations/capabilities"
                                 )
 
 
@@ -2682,7 +2793,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Describe deployment boundary or execution context with a decisionRecord reference for key 'deploymentTargets' to satisfy DRAFT SoftwareDeploymentPattern / deployment-targets",
+            f"[{object_id}] Declare deploymentTargets on the SDP or add a decisionRecord reference for key 'deploymentTargets' to satisfy requirement-group.software-deployment-pattern requirement 'deployment-targets'",
             failures,
             warnings,
         )
@@ -2691,7 +2802,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add a decisionRecord reference for key 'availabilityRequirement' to satisfy requirement-group.software-deployment-pattern requirement 'availability-requirement'",
+            f"[{object_id}] Declare availabilityRequirement on the SDP or add a decisionRecord reference for key 'availabilityRequirement' to satisfy requirement-group.software-deployment-pattern requirement 'availability-requirement'",
             failures,
             warnings,
         )
@@ -2729,7 +2840,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add a decisionRecord reference for key 'failureDomain' to satisfy requirement-group.software-deployment-pattern requirement 'failure-domain'",
+            f"[{object_id}] Declare failureDomain on the SDP or add a decisionRecord reference for key 'failureDomain' to satisfy requirement-group.software-deployment-pattern requirement 'failure-domain'",
             failures,
             warnings,
         )
@@ -2738,7 +2849,7 @@ def validate_software_deployment_pattern(
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add a decisionRecord reference for key 'patternDeviations' or 'noPatternDeviations' to satisfy requirement-group.software-deployment-pattern requirement 'pattern-deviations'",
+            f"[{object_id}] Declare patternDeviations on the SDP or add a decisionRecord reference for key 'patternDeviations' or 'noPatternDeviations' to satisfy requirement-group.software-deployment-pattern requirement 'pattern-deviations'",
             failures,
             warnings,
         )

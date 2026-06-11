@@ -25,24 +25,32 @@ applicableDefinitionChecklist:
 serviceGroups:
 - name: Tenant Runtime
   deployableObjects:
-  - objectType: network_service
+  - slot: tenant-entry-point
+    capability: 01KT0V5MCV-3A6F
+    objectType: network_service
     diagramTier: presentation
     notes: Per-tenant or shared API gateway providing tenant routing, authentication
       enforcement, and per-tenant rate limiting.
-  - objectType: runtime_service
+  - slot: tenant-runtime
+    capability: 01KT0V5MCV-RZV0
+    objectType: runtime_service
     diagramTier: application
     notes: Tenant-scoped runtime service. May be shared across tenants with row-level
       isolation or deployed per-tenant depending on the chosen isolation model.
 - name: Platform Services
   deployableObjects:
-  - objectType: runtime_service
+  - slot: tenant-runtime
+    capability: 01KT0V5MCV-RZV0
+    objectType: runtime_service
     diagramTier: application
     notes: Shared platform service consumed by all tenants — for example identity,
       billing, notifications, or audit log. Must not store tenant data without a
       documented isolation mechanism.
 - name: Data Tier
   deployableObjects:
-  - objectType: data_store_service
+  - slot: tenant-data-store
+    capability: 01KT0V5MCV-VD0Y
+    objectType: data_store_service
     diagramTier: data
     notes: Tenant data store. The isolation model must be documented in the SDP's
       architectureNotes. DataComponents are deployed onto this service.
@@ -73,7 +81,9 @@ constraints:
     anyServiceGroup:
       diagramTier: presentation
   require:
-  - objectType: network_service
+  - slot: tenant-entry-point
+    capability: 01KT0V5MCV-3A6F
+    objectType: network_service
     diagramTier: presentation
     notes: Add a NetworkService to the presentation tier. The company catalog defines which API gateway, WAF, or tenant-routing service satisfies this role.
 - id: saas-requires-utility-tier

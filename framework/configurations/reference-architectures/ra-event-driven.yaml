@@ -1,0 +1,59 @@
+schemaVersion: '1.0'
+uid: 01KV0REFAR-EVNT
+type: reference_architecture
+name: Event-Driven Architecture
+description: Starter pattern for asynchronous systems coordinated by messaging, event routing, producers, consumers, and eventually consistent state.
+patternType: event-driven
+catalogStatus: complete
+lifecycleStatus: preferred
+tags:
+- reference-architecture
+- event-driven
+- messaging
+- starter
+applicableDefinitionChecklist:
+- Producers and consumers communicate through a governed messaging backbone.
+- Event schema ownership, delivery semantics, retry, and dead-letter behavior are documented.
+- Consumers use application runtime services and do not rely on synchronous coupling for core flows.
+- Eventual consistency and reconciliation decisions are recorded.
+serviceGroups:
+- name: Event Backbone
+  deployableObjects:
+  - slot: messaging-backbone
+    capability: 01KT0V5MCV-KT72
+    objectType: network_service
+    diagramTier: application
+    notes: Message broker, event bus, stream platform, or queueing service used as the asynchronous backbone.
+- name: Producers
+  deployableObjects:
+  - slot: producer-runtime
+    capability: 01KT0V5MCV-RZV0
+    objectType: runtime_service
+    diagramTier: application
+    notes: RuntimeService hosting producers that emit events.
+- name: Consumers
+  deployableObjects:
+  - slot: consumer-runtime
+    capability: 01KT0V5MCV-RZV0
+    objectType: runtime_service
+    diagramTier: application
+    notes: RuntimeService hosting consumers that process events independently.
+- name: Event State
+  deployableObjects:
+  - slot: consumer-state-store
+    capability: 01KT0V5MCV-VD0Y
+    objectType: data_store_service
+    diagramTier: data
+    notes: Data store for consumer state, projections, offsets, or reconciliation data.
+architectureNotes:
+  patternRationale: Event-driven systems decouple producers and consumers through asynchronous delivery while accepting eventual consistency and explicit failure handling.
+  onboardingQuestions: Ask for the messaging backbone, event ownership model, producer/consumer runtimes, retry and dead-letter handling, and consistency expectations.
+constraints:
+- id: messaging-backbone-required
+  description: Event-driven SDPs must include a deployable object satisfying the Messaging capability.
+  require:
+  - capability: 01KT0V5MCV-KT72
+    objectType: network_service
+    diagramTier: application
+requirementGroups: []
+requirementImplementations: []

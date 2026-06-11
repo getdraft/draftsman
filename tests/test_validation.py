@@ -2083,6 +2083,233 @@ requirementGroups:
         self.assertTrue(result.ok, result.stdout + result.stderr)
         self.assertNotIn("presentation-requires-network-service", result.stdout)
 
+    def test_ra_capability_constraint_satisfied_by_capability_implementation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            cap_dir = workspace / "configurations" / "capabilities"
+            cap_dir.mkdir(parents=True, exist_ok=True)
+            (cap_dir / "capability-test-ingress.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF73-CAP0
+                    type: capability
+                    name: Test Ingress Capability
+                    description: Test capability for reference architecture slots.
+                    catalogStatus: incomplete
+                    owner:
+                      team: test-architecture
+                    definitionOwner:
+                      provider: test
+                    domain: 01KQQ4Q027-ZTHF
+                    implementations:
+                      - ref: 01KQS0TF73-EGWS
+                        lifecycleStatus: preferred
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            ra_dir = workspace / "configurations" / "reference-architectures"
+            ra_dir.mkdir(parents=True, exist_ok=True)
+            (ra_dir / "ra-test-capability-constraint.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF73-RAXC
+                    type: reference_architecture
+                    name: Test Capability Constraint RA
+                    patternType: capability-test
+                    catalogStatus: incomplete
+                    lifecycleStatus: preferred
+                    applicableDefinitionChecklist:
+                      - Ingress capability slot is filled.
+                    serviceGroups:
+                      - name: Presentation Tier
+                        deployableObjects:
+                          - slot: ingress
+                            capability: 01KQS0TF73-CAP0
+                            objectType: network_service
+                            diagramTier: presentation
+                    architectureNotes:
+                      patternRationale: Test capability slots.
+                    constraints:
+                      - id: ingress-capability-required
+                        description: Presentation tier needs an ingress capability.
+                        require:
+                          - capability: 01KQS0TF73-CAP0
+                            objectType: network_service
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            network_dir = workspace / "catalog" / "network-services"
+            network_dir.mkdir(parents=True, exist_ok=True)
+            (network_dir / "network-service-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF73-EGWS
+                    type: network_service
+                    name: Test NetworkService
+                    deliveryModel: appliance
+                    vendor: Test Vendor
+                    productName: Test Gateway
+                    productVersion: "1.0"
+                    catalogStatus: incomplete
+                    lifecycleStatus: preferred
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            sdp_dir = workspace / "catalog" / "software-deployment-patterns"
+            sdp_dir.mkdir(parents=True, exist_ok=True)
+            dr_yaml = self._write_decision_records_for_sdp(workspace, indent=20)
+            (sdp_dir / "sdp-ra-capability-satisfied.yaml").write_text(
+                textwrap.dedent(
+                    f"""
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF73-SDPS
+                    type: software_deployment_pattern
+                    name: Test RA Capability Constraint Satisfied
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    followsReferenceArchitecture: 01KQS0TF73-RAXC
+{dr_yaml}
+                    serviceGroups:
+                      - name: Presentation Tier
+                        deploymentTarget: test-env
+                        deployableObjects:
+                          - ref: 01KQS0TF73-EGWS
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+        self.assertNotIn("ingress-capability-required", result.stdout)
+
+    def test_ra_capability_constraint_reports_missing_capability(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            cap_dir = workspace / "configurations" / "capabilities"
+            cap_dir.mkdir(parents=True, exist_ok=True)
+            (cap_dir / "capability-test-ingress.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF74-CAP0
+                    type: capability
+                    name: Test Ingress Capability
+                    description: Test capability for reference architecture slots.
+                    catalogStatus: incomplete
+                    owner:
+                      team: test-architecture
+                    definitionOwner:
+                      provider: test
+                    domain: 01KQQ4Q027-ZTHF
+                    implementations: []
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            ra_dir = workspace / "configurations" / "reference-architectures"
+            ra_dir.mkdir(parents=True, exist_ok=True)
+            (ra_dir / "ra-test-capability-constraint.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF74-RAXC
+                    type: reference_architecture
+                    name: Test Capability Constraint RA
+                    patternType: capability-test
+                    catalogStatus: incomplete
+                    lifecycleStatus: preferred
+                    applicableDefinitionChecklist:
+                      - Ingress capability slot is filled.
+                    serviceGroups:
+                      - name: Presentation Tier
+                        deployableObjects:
+                          - slot: ingress
+                            capability: 01KQS0TF74-CAP0
+                            objectType: network_service
+                            diagramTier: presentation
+                    architectureNotes:
+                      patternRationale: Test capability slots.
+                    constraints:
+                      - id: ingress-capability-required
+                        description: Presentation tier needs an ingress capability.
+                        require:
+                          - capability: 01KQS0TF74-CAP0
+                            objectType: network_service
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            network_dir = workspace / "catalog" / "network-services"
+            network_dir.mkdir(parents=True, exist_ok=True)
+            (network_dir / "network-service-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF74-EGWS
+                    type: network_service
+                    name: Test NetworkService
+                    deliveryModel: appliance
+                    vendor: Test Vendor
+                    productName: Test Gateway
+                    productVersion: "1.0"
+                    catalogStatus: incomplete
+                    lifecycleStatus: preferred
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            sdp_dir = workspace / "catalog" / "software-deployment-patterns"
+            sdp_dir.mkdir(parents=True, exist_ok=True)
+            dr_yaml = self._write_decision_records_for_sdp(workspace, indent=20)
+            (sdp_dir / "sdp-ra-capability-violation.yaml").write_text(
+                textwrap.dedent(
+                    f"""
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF74-SDPV
+                    type: software_deployment_pattern
+                    name: Test RA Capability Constraint Violation
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    followsReferenceArchitecture: 01KQS0TF74-RAXC
+{dr_yaml}
+                    serviceGroups:
+                      - name: Presentation Tier
+                        deploymentTarget: test-env
+                        deployableObjects:
+                          - ref: 01KQS0TF74-EGWS
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("ingress-capability-required", result.stdout)
+        self.assertIn("capability '01KQS0TF74-CAP0'", result.stdout)
+
     def _write_vocabulary_workspace(self, workspace: Path, mode: str) -> None:
         (workspace / ".draft" / "workspace.yaml").write_text(
             textwrap.dedent(
