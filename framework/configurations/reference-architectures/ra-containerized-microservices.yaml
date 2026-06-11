@@ -1,0 +1,76 @@
+schemaVersion: '1.0'
+uid: BX3H6KC1J1-P765
+type: reference_architecture
+name: Containerized Microservices
+description: Deployment pattern for independently deployable services running on a
+  container orchestration platform. Use this when teams need service autonomy,
+  horizontal scaling, progressive delivery, and explicit service-to-service controls.
+patternType: containerized-microservices
+catalogStatus: complete
+lifecycleStatus: preferred
+tags:
+- reference-architecture
+- containers
+- microservices
+applicableDefinitionChecklist:
+- The orchestration substrate must be a governed RuntimeService or Host that provides container scheduling and lifecycle management.
+- Each independently deployable service boundary should be modeled as a ProductComponent deployed onto the container runtime.
+- East-west service communication must use approved traffic-management, service-mesh, or relationship patterns.
+- Persistent state must be outside ephemeral containers and modeled as DataStoreService objects.
+- Observability, logging, and deployment quality gates must be documented for service-level operations.
+serviceGroups:
+- name: Ingress and Traffic Control
+  deployableObjects:
+  - objectType: network_service
+    capability: 01KT0V5MCV-3A6F
+    diagramTier: presentation
+    notes: API gateway, ingress controller, or edge service that mediates inbound traffic into the service mesh or cluster.
+  - objectType: network_service
+    capability: 01KT0V5MCV-RM8M
+    diagramTier: application
+    notes: Service mesh or equivalent traffic-management plane for east-west policy, mTLS, retries, and observability.
+- name: Service Runtime
+  deployableObjects:
+  - objectType: runtime_service
+    capability: 01KQQ4Q026-GW5D
+    diagramTier: application
+    notes: Container orchestration platform such as Kubernetes, ECS, Nomad, or an approved managed equivalent.
+  - objectType: runtime_service
+    capability: 01KT0V5MCV-RZV0
+    diagramTier: application
+    notes: Application runtime slot for each independently deployable service workload hosted by the orchestration platform.
+- name: State and Messaging
+  deployableObjects:
+  - objectType: data_store_service
+    capability: 01KT0V5MCV-VD0Y
+    diagramTier: data
+    notes: External durable state for services; containers must not be the system of record.
+  - objectType: runtime_service
+    capability: 01KT0V5MCV-KT72
+    diagramTier: utility
+    notes: Optional messaging backbone for asynchronous service coordination when the pattern uses events or queues.
+architectureNotes:
+  patternRationale: Containerized microservices separate deployable service boundaries from their shared orchestration substrate. The reference architecture makes the orchestration, traffic-control, state, and observability slots explicit so SDPs do not model raw TechnologyComponents as deployed application ownership.
+  stubbingGuidance: If the company catalog lacks an approved orchestration, service mesh, or data service object, Draftsman should scaffold shared-services-owned stubs for those service-layer objects before attaching engineering-owned product components.
+constraints:
+- id: microservices-requires-container-orchestration
+  description: Microservice SDPs must include a runtime service satisfying container orchestration.
+  rationale: Independent deployability and horizontal scaling depend on a governed orchestration substrate rather than unmanaged container hosts.
+  require:
+  - objectType: runtime_service
+    capability: 01KQQ4Q026-GW5D
+    diagramTier: application
+    notes: Add a RuntimeService for the approved container orchestration platform.
+- id: microservices-requires-external-state
+  description: Microservice SDPs with a data tier must use data_store_service objects for durable state.
+  rationale: Containers are ephemeral; persistent state must be externalized into governed data services.
+  when:
+    anyServiceGroup:
+      diagramTier: data
+  require:
+  - objectType: data_store_service
+    capability: 01KT0V5MCV-VD0Y
+    diagramTier: data
+    notes: Add a DataStoreService for each durable state boundary.
+requirementGroups: []
+requirementImplementations: []

@@ -2083,6 +2083,179 @@ requirementGroups:
         self.assertTrue(result.ok, result.stdout + result.stderr)
         self.assertNotIn("presentation-requires-network-service", result.stdout)
 
+    def test_ra_capability_constraint_requires_matching_service_capability(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            ra_dir = workspace / "configurations" / "reference-architectures"
+            ra_dir.mkdir(parents=True, exist_ok=True)
+            (ra_dir / "ra-test-capability-constraint.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF73-RAXC
+                    type: reference_architecture
+                    name: API Gateway RA
+                    catalogStatus: incomplete
+                    lifecycleStatus: preferred
+                    serviceGroups:
+                      - name: Ingestion
+                        deployableObjects:
+                          - objectType: network_service
+                            capability: 01KT0V5MCV-3A6F
+                            diagramTier: presentation
+                    constraints:
+                      - id: ingestion-requires-api-gateway
+                        description: Presentation tier needs an API gateway capability.
+                        require:
+                          - objectType: network_service
+                            capability: 01KT0V5MCV-3A6F
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            network_dir = workspace / "catalog" / "network-services"
+            network_dir.mkdir(parents=True, exist_ok=True)
+            (network_dir / "network-service-waf.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF73-EGWS
+                    type: network_service
+                    name: Test WAF NetworkService
+                    deliveryModel: appliance
+                    vendor: Test Vendor
+                    productName: Test WAF
+                    productVersion: "1.0"
+                    capabilities:
+                      - 01KT0V5MCV-Z079
+                    catalogStatus: incomplete
+                    lifecycleStatus: preferred
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            sdp_dir = workspace / "catalog" / "software-deployment-patterns"
+            sdp_dir.mkdir(parents=True, exist_ok=True)
+            dr_yaml = self._write_decision_records_for_sdp(workspace, indent=20)
+            (sdp_dir / "sdp-ra-capability-constraint-violation.yaml").write_text(
+                textwrap.dedent(
+                    f"""
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF73-SDPV
+                    type: software_deployment_pattern
+                    name: Test RA Capability Constraint Violation
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    followsReferenceArchitecture: 01KQS0TF73-RAXC
+{dr_yaml}
+                    serviceGroups:
+                      - name: Presentation Tier
+                        deploymentTarget: test-env
+                        deployableObjects:
+                          - ref: 01KQS0TF73-EGWS
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("ingestion-requires-api-gateway", result.stdout)
+        self.assertIn("capability '01KT0V5MCV-3A6F'", result.stdout)
+
+    def test_ra_capability_constraint_satisfied_by_service_capability(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            ra_dir = workspace / "configurations" / "reference-architectures"
+            ra_dir.mkdir(parents=True, exist_ok=True)
+            (ra_dir / "ra-test-capability-constraint.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF74-RAXC
+                    type: reference_architecture
+                    name: API Gateway RA
+                    catalogStatus: incomplete
+                    lifecycleStatus: preferred
+                    serviceGroups:
+                      - name: Ingestion
+                        deployableObjects:
+                          - objectType: network_service
+                            capability: 01KT0V5MCV-3A6F
+                            diagramTier: presentation
+                    constraints:
+                      - id: ingestion-requires-api-gateway
+                        description: Presentation tier needs an API gateway capability.
+                        require:
+                          - objectType: network_service
+                            capability: 01KT0V5MCV-3A6F
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            network_dir = workspace / "catalog" / "network-services"
+            network_dir.mkdir(parents=True, exist_ok=True)
+            (network_dir / "network-service-api-gateway.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF74-EGWS
+                    type: network_service
+                    name: Test API Gateway NetworkService
+                    deliveryModel: appliance
+                    vendor: Test Vendor
+                    productName: Test Gateway
+                    productVersion: "1.0"
+                    capabilities:
+                      - 01KT0V5MCV-3A6F
+                    catalogStatus: incomplete
+                    lifecycleStatus: preferred
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            sdp_dir = workspace / "catalog" / "software-deployment-patterns"
+            sdp_dir.mkdir(parents=True, exist_ok=True)
+            dr_yaml = self._write_decision_records_for_sdp(workspace, indent=20)
+            (sdp_dir / "sdp-ra-capability-constraint-satisfied.yaml").write_text(
+                textwrap.dedent(
+                    f"""
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF74-SDPS
+                    type: software_deployment_pattern
+                    name: Test RA Capability Constraint Satisfied
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    followsReferenceArchitecture: 01KQS0TF74-RAXC
+{dr_yaml}
+                    serviceGroups:
+                      - name: Presentation Tier
+                        deploymentTarget: test-env
+                        deployableObjects:
+                          - ref: 01KQS0TF74-EGWS
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+        self.assertNotIn("ingestion-requires-api-gateway", result.stdout)
+
     def _write_vocabulary_workspace(self, workspace: Path, mode: str) -> None:
         (workspace / ".draft" / "workspace.yaml").write_text(
             textwrap.dedent(

@@ -28,6 +28,7 @@ serviceGroups:
 - name: Ingestion
   deployableObjects:
   - objectType: network_service
+    capability: 01KT0V5MCV-3A6F
     diagramTier: presentation
     notes: API gateway or event bus entry point. Routes inbound HTTP requests or events
       to processing functions. Provides authentication, throttling, and payload validation
@@ -35,6 +36,7 @@ serviceGroups:
 - name: Processing
   deployableObjects:
   - objectType: runtime_service
+    capability: 01KQQ4Q026-3ZWJ
     diagramTier: application
     notes: Serverless runtime (deliveryModel paas or saas). Each logical function
       group, event processor, or scheduled job should be modeled as a distinct runtime
@@ -43,6 +45,7 @@ serviceGroups:
 - name: State
   deployableObjects:
   - objectType: data_store_service
+    capability: 01KT0V5MCV-VD0Y
     diagramTier: data
     notes: External data store consumed by processing functions. May be a relational
       database, object store, cache, or queue depending on the access pattern. Functions
@@ -70,6 +73,7 @@ constraints:
       diagramTier: presentation
   require:
   - objectType: network_service
+    capability: 01KT0V5MCV-3A6F
     diagramTier: presentation
     notes: Add a NetworkService (API gateway or event bus) to the presentation tier. The company catalog defines which specific platform (API Gateway, EventBridge, SNS, etc.) satisfies this role.
 - id: state-requires-data-store-service
@@ -80,6 +84,7 @@ constraints:
       diagramTier: data
   require:
   - objectType: data_store_service
+    capability: 01KT0V5MCV-VD0Y
     diagramTier: data
     notes: Model all durable state as data_store_service objects. Using runtime services for state storage bypasses data-tier governance controls and creates implicit state in ephemeral compute.
 requirementGroups: []

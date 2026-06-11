@@ -11,9 +11,13 @@ company is not required to use any particular framework RA.
 
 | RA | UID | Use when |
 |---|---|---|
+| Two-Tier Client/Data | `8Q79XMD460-MQ5A` | A client, static site, or low-code front end talks directly to a managed data service without a separately operated application tier. |
 | Three-Tier Web Application | `01KS8N4KR2-3TWA` | The deployment serves web or API traffic to external users through a presentation, application, and data tier. |
-| Multi-Tenant SaaS | `01KS8N4KR3-MTSA` | The product serves multiple customer tenants from shared infrastructure with explicit isolation requirements. |
 | Serverless Event-Driven | `01KS8N4KR4-SVED` | The deployment has no persistent compute tier; all logic executes in response to events, API calls, or scheduled triggers. |
+| Containerized Microservices | `BX3H6KC1J1-P765` | Independently deployable services run on a governed container orchestration platform with explicit service-to-service controls. |
+| Event-Driven Integration | `GM7YJ3ZSA0-WHSN` | Producers and consumers coordinate through asynchronous queues, streams, event buses, or pub/sub topics. |
+| Strangler Migration | `R10A3TXM3E-RFC3` | A legacy system and replacement services coexist while traffic or data responsibility moves incrementally. |
+| Multi-Tenant SaaS | `01KS8N4KR3-MTSA` | The product serves multiple customer tenants from shared infrastructure with explicit isolation requirements. |
 
 Companies may author their own RAs in `configurations/reference-architectures/`
 inside the company workspace. These are private to the workspace and not vendored
@@ -21,20 +25,66 @@ upstream.
 
 Companies may also contribute reusable RAs back to the DRAFT community library.
 The contribution path is the same as for compliance requirement group starter
-packs: generalize the RA (replace company-specific UIDs with `objectType`
-declarations, remove internal names), then submit a pull request.
+packs: generalize the RA by replacing company-specific UIDs with `objectType` and
+`capability` slot declarations, remove internal names, then submit a pull
+request.
 
-## Framework RA objectType Entries
+## Capability Slot Model
 
-Framework-level RAs use `objectType` instead of `ref` in `deployableObjects`
-entries. `objectType` declares the expected catalog object type without pinning
-to a specific company catalog object. The company catalog defines which specific
-Host, RuntimeService, DataStoreService, or NetworkService objects satisfy
-each role when the SDP is drafted.
+Framework and community ReferenceArchitectures should describe **capability
+slots**, not company-specific catalog objects. A slot is a role that the target
+SoftwareDeploymentPattern must address, such as:
 
-When a company authors their own RA or extends a framework RA, they may use
-`ref` to point to specific catalog objects, `objectType` for type-level
-constraints, or both.
+- API Gateway or WAF at the presentation boundary
+- Serverless Function Runtime or Application Runtime for compute
+- Data Persistence, Object Storage, Messaging, or Caching for state and integration
+- Service Mesh, Traffic Management, Log Management, APM, or Health Monitoring for operations
+
+Each `serviceGroups[].deployableObjects[]` entry may use:
+
+- `objectType` — the kind of service-layer object required (`runtime_service`,
+  `data_store_service`, `network_service`, etc.).
+- `capability` — the Capability UID the selected service object must provide.
+- `diagramTier` — where the slot lands in the SDP diagram (`presentation`,
+  `application`, `data`, or `utility`).
+- `ref` — an optional concrete catalog object UID, normally used only in company
+  workspaces where the RA deliberately pins to an approved service object.
+
+For portable starter RAs, prefer `objectType` + `capability` and omit `ref`.
+This lets the framework say "this pattern needs an API Gateway" while each
+company decides which `NetworkService` object satisfies the API Gateway
+capability.
+
+Example slot:
+
+```yaml
+serviceGroups:
+- name: Ingestion
+  deployableObjects:
+  - objectType: network_service
+    capability: 01KT0V5MCV-3A6F   # API Gateway
+    diagramTier: presentation
+    notes: API gateway or event boundary for inbound requests.
+```
+
+## Populating Slots From A Company Catalog
+
+When drafting an SDP that follows an RA, the Draftsman should resolve each slot
+against the effective catalog:
+
+1. Find service objects of the requested `objectType` whose `capabilities` list
+   contains the requested `capability`.
+2. Prefer objects with `lifecycleStatus: preferred`; fall back to
+   `existing-only` only when needed and call out the gap.
+3. Never propose `deprecated` or `retired` objects for new SDP work.
+4. If no service object exists for an infrastructure-layer slot, scaffold a
+   placeholder service object with `catalogStatus: stub` and the appropriate
+   Shared Services owner role instead of making the engineering-owned SDP deploy
+   a raw `TechnologyComponent`.
+
+This keeps role ownership separated: Engineering owns the product SDP and
+ProductComponents; Shared Services owns reusable runtime, data, network, and
+operations service objects.
 
 ## What A ReferenceArchitecture Is
 
@@ -70,8 +120,8 @@ At minimum, a ReferenceArchitecture YAML should include:
 - `lifecycleStatus`
 - `serviceGroups`
 
-Most ReferenceArchitectures also include `description`, `patternType`, and
-`architectureNotes`.
+Most ReferenceArchitectures also include `description`, `patternType`,
+`applicableDefinitionChecklist`, `architectureNotes`, and `constraints`.
 
 ## Lifecycle Policy
 
@@ -87,8 +137,8 @@ position on using that deployment pattern:
 
 A ReferenceArchitecture that includes a TechnologyComponent whose
 `vendorLifecycle.extendedSupportEnd` date has passed must be marked
-`deprecated`. The validator follows the pattern's `serviceGroups` through the
-referenced deployable objects to the underlying TechnologyComponents and
+`deprecated`. The validator follows the pattern's concrete `ref` entries through
+the referenced deployable objects to the underlying TechnologyComponents and
 enforces this rule.
 
 A ReferenceArchitecture that includes a TechnologyComponent whose
@@ -104,24 +154,13 @@ The core field in a ReferenceArchitecture is `serviceGroups`. Each group cluster
 services that work together in the deployment pattern. Inside each group, the
 pattern declares:
 
-- the deployable objects that must exist
+- the deployable object slots that must exist
+- the capabilities those slots must provide
 - the `diagramTier` each deployable object belongs to
 - any group-local interactions or notes that matter to the pattern
 
 This does more than list ingredients. It shows how the pattern is meant to be
 assembled using the same tiered service-group grammar the SoftwareDeploymentPattern uses later.
-
-## Concrete Example
-
-A representative reference architecture says that a three-tier .NET
-high-availability pattern includes service groups such as:
-
-- `Frontend UI` with presentation-tier web services
-- `Application RuntimeServices` with application-tier runtime services
-- `Data Services` with data-tier DataStoreServices
-
-The ReferenceArchitecture also carries architectural decision entries that explain what the deployment
-pattern assumes, such as web-tier autoscaling and AlwaysOn on the data tier.
 
 ## Why A ReferenceArchitecture Is Never A Node In A SoftwareDeploymentPattern Diagram
 

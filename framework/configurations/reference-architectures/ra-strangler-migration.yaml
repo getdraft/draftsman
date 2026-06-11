@@ -1,0 +1,75 @@
+schemaVersion: '1.0'
+uid: R10A3TXM3E-RFC3
+type: reference_architecture
+name: Strangler Migration
+description: Deployment pattern for incrementally replacing or decomposing a legacy
+  system while it continues to serve production traffic. Use this when new services
+  coexist with a legacy application and traffic or data responsibility moves over time.
+patternType: strangler-migration
+catalogStatus: complete
+lifecycleStatus: preferred
+tags:
+- reference-architecture
+- migration
+- strangler
+applicableDefinitionChecklist:
+- The legacy system boundary must be modeled explicitly and marked with the appropriate lifecycle disposition.
+- A routing, facade, or traffic-management layer must control which requests go to legacy versus replacement services.
+- Replacement services must be modeled as independently governed runtime services or product components.
+- Data synchronization, dual writes, cutover, rollback, and retirement decisions must be documented.
+- Observability must compare legacy and replacement behavior during migration.
+serviceGroups:
+- name: Routing Facade
+  deployableObjects:
+  - objectType: network_service
+    capability: 01KSWVZSZ5-M0FR
+    diagramTier: presentation
+    notes: Facade, API gateway, reverse proxy, routing rules, or feature-flag-controlled traffic manager that directs flows between legacy and replacement paths.
+- name: Legacy Capability
+  deployableObjects:
+  - objectType: runtime_service
+    capability: 01KT0V5MCV-RZV0
+    diagramTier: application
+    notes: Existing legacy runtime boundary. Keep lifecycle status and migration exceptions visible until retirement.
+  - objectType: data_store_service
+    capability: 01KT0V5MCV-VD0Y
+    diagramTier: data
+    notes: Legacy data store or shared data boundary whose migration, synchronization, and ownership model must be documented.
+- name: Replacement Services
+  deployableObjects:
+  - objectType: runtime_service
+    capability: 01KT0V5MCV-RZV0
+    diagramTier: application
+    notes: New replacement runtime services introduced incrementally behind the routing facade.
+  - objectType: runtime_service
+    capability: 01KT0XNZEY-DENJ
+    diagramTier: utility
+    notes: Integration or synchronization service used for data replication, anti-corruption layers, or migration pipelines.
+- name: Migration Observability
+  deployableObjects:
+  - objectType: runtime_service
+    capability: 01KQQ4Q026-NB1W
+    diagramTier: utility
+    notes: Monitoring, tracing, comparison, or audit services used to verify migration behavior before cutover.
+architectureNotes:
+  patternRationale: Strangler migrations reduce replacement risk by routing slices of behavior from legacy to new services over time. The pattern keeps legacy, facade, replacement, integration, and observability slots distinct so ownership and retirement decisions are explicit.
+  stubbingGuidance: If a company has not cataloged the facade, legacy runtime, data store, or observability service yet, Draftsman should create shared-services-owned stubs instead of letting the product SDP point directly at raw technologies.
+constraints:
+- id: strangler-requires-routing-facade
+  description: Strangler SDPs must include a routing or traffic-management service.
+  rationale: Incremental migration depends on a controlled boundary that can send traffic to legacy or replacement paths and support rollback.
+  require:
+  - objectType: network_service
+    capability: 01KSWVZSZ5-M0FR
+    diagramTier: presentation
+    notes: Add an API gateway, reverse proxy, routing facade, or equivalent traffic-management service.
+- id: strangler-requires-replacement-runtime
+  description: Strangler SDPs must include at least one replacement runtime service.
+  rationale: The pattern is not just legacy documentation; it must show the new governed runtime boundary taking over responsibility.
+  require:
+  - objectType: runtime_service
+    capability: 01KT0V5MCV-RZV0
+    diagramTier: application
+    notes: Add the replacement service runtime boundary and connect it to the routing facade and any required data migration path.
+requirementGroups: []
+requirementImplementations: []

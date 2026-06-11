@@ -75,6 +75,7 @@ deployableObjectEntry:
   optionalFields:
   - ref
   - objectType
+  - capability
   - diagramTier
   - intent
   - instance
@@ -103,6 +104,10 @@ deployableObjectEntry:
     objectType: Declare the expected catalog object type when no specific ref is provided.
       Use in framework-level or community RAs where the company catalog defines which
       specific objects satisfy the role. Provide ref or objectType; both may be present.
+    capability: Reference the capability UID this slot requires. Use with objectType
+      when a framework or community RA needs a portable role such as API Gateway,
+      Serverless Function Runtime, Data Persistence, Messaging, or Observability
+      without pinning the pattern to a company-specific catalog object.
 requirementImplementation:
   requiredFields:
   - requirementGroup

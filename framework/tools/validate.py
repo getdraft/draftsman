@@ -2394,7 +2394,7 @@ def sdp_requirement_satisfied(
 def _sdp_deployable_objects(
     sdp: dict[str, Any], catalog_by_id: dict[str, dict[str, Any]]
 ) -> list[dict[str, Any]]:
-    """Return {objectType, diagramTier} for every deployable object in an SDP's service groups."""
+    """Return normalized facts for every deployable object in an SDP's service groups."""
     objects: list[dict[str, Any]] = []
     for group in sdp.get("serviceGroups") or []:
         if not isinstance(group, dict):
@@ -2408,9 +2408,18 @@ def _sdp_deployable_objects(
                 target = catalog_by_id.get(str(ref))
                 if target:
                     obj_type = target.get("type")
+                    capabilities = target.get("capabilities", [])
+                else:
+                    capabilities = []
+            else:
+                capabilities = []
             if not obj_type:
                 obj_type = entry.get("objectType")
-            objects.append({"objectType": obj_type, "diagramTier": entry.get("diagramTier")})
+            objects.append({
+                "objectType": obj_type,
+                "diagramTier": entry.get("diagramTier"),
+                "capabilities": capabilities if isinstance(capabilities, list) else [],
+            })
     return objects
 
 
@@ -2418,6 +2427,10 @@ def _matches_object_condition(obj: dict[str, Any], condition: dict[str, Any]) ->
     for key, value in condition.items():
         if key in ("diagramTier", "objectType") and obj.get(key) != value:
             return False
+        if key == "capability":
+            capabilities = obj.get("capabilities", [])
+            if not isinstance(capabilities, list) or value not in capabilities:
+                return False
     return True
 
 
@@ -2457,9 +2470,11 @@ def evaluate_ra_constraints(
                 continue
             req_type = req.get("objectType")
             req_tier = req.get("diagramTier")
+            req_capability = req.get("capability")
             satisfied = any(
                 (not req_type or o.get("objectType") == req_type)
                 and (not req_tier or o.get("diagramTier") == req_tier)
+                and (not req_capability or req_capability in (o.get("capabilities") or []))
                 for o in sdp_objects
             )
             if not satisfied:
@@ -2469,6 +2484,8 @@ def evaluate_ra_constraints(
                     parts.append(f"diagramTier '{req_tier}'")
                 if req_type:
                     parts.append(f"objectType '{req_type}'")
+                if req_capability:
+                    parts.append(f"capability '{req_capability}'")
                 req_desc = " and ".join(parts) if parts else "a required object"
                 failures.append(
                     f"{path}: [{sdp_id}] RA constraint '{constraint_id}' violated — "
@@ -2601,6 +2618,18 @@ def validate_ra(
                                             f"{path}: constraints[{idx}].when.anyServiceGroup.objectType "
                                             f"'{cval}' must be one of {sorted(STANDARD_TYPES)}"
                                         )
+                                    elif ckey == "capability":
+                                        cap_obj = catalog_by_id.get(str(cval))
+                                        if not cap_obj:
+                                            failures.append(
+                                                f"{path}: constraints[{idx}].when.anyServiceGroup.capability "
+                                                f"references unknown capability '{cval}'"
+                                            )
+                                        elif cap_obj.get("type") != "capability":
+                                            failures.append(
+                                                f"{path}: constraints[{idx}].when.anyServiceGroup.capability "
+                                                f"'{cval}' must reference a Capability object"
+                                            )
                 require = constraint.get("require")
                 if require is not None:
                     if not isinstance(require, list):
@@ -2622,6 +2651,19 @@ def validate_ra(
                                     f"{path}: constraints[{idx}].require[{ridx}].diagramTier "
                                     f"'{req_tier}' must be one of {sorted(VALID_DIAGRAM_TIERS)}"
                                 )
+                            req_capability = req.get("capability")
+                            if req_capability is not None:
+                                cap_obj = catalog_by_id.get(str(req_capability))
+                                if not cap_obj:
+                                    failures.append(
+                                        f"{path}: constraints[{idx}].require[{ridx}].capability "
+                                        f"references unknown capability '{req_capability}'"
+                                    )
+                                elif cap_obj.get("type") != "capability":
+                                    failures.append(
+                                        f"{path}: constraints[{idx}].require[{ridx}].capability "
+                                        f"'{req_capability}' must reference a Capability object"
+                                    )
 
 
 def validate_software_deployment_pattern(
@@ -3502,10 +3544,11 @@ def validate_service_group_structure(
             is_ra = obj.get("type") == "reference_architecture"
             target = catalog_by_id.get(ref) if ref else None
             target_type = target.get("type") if target else None
+            capability_ref = entry.get("capability")
             if is_ra:
-                if not ref and not object_type:
+                if not ref and not object_type and not capability_ref:
                     failures.append(
-                        f"{path}: serviceGroup '{group_name}' deployable object entry must include ref or objectType"
+                        f"{path}: serviceGroup '{group_name}' deployable object entry must include ref, objectType, or capability"
                     )
                 elif object_type and object_type not in STANDARD_TYPES:
                     failures.append(
@@ -3514,6 +3557,15 @@ def validate_service_group_structure(
                     )
                 if ref and not target:
                     failures.append(f"{path}: serviceGroup '{group_name}' references unknown deployable object '{ref}'")
+                if capability_ref and str(capability_ref) not in catalog_by_id:
+                    failures.append(
+                        f"{path}: serviceGroup '{group_name}' deployable object entry references unknown capability '{capability_ref}'"
+                    )
+                elif capability_ref and catalog_by_id.get(str(capability_ref), {}).get("type") != "capability":
+                    failures.append(
+                        f"{path}: serviceGroup '{group_name}' deployable object entry capability '{capability_ref}' "
+                        "must reference a Capability object"
+                    )
             else:
                 if ref and not target:
                     failures.append(f"{path}: serviceGroup '{group_name}' references unknown deployable object '{ref}'")

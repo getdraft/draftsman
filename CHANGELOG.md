@@ -3,6 +3,36 @@
 All notable DRAFT Framework changes are recorded here. Every release requires
 notes, including patch releases.
 
+## 0.55.0 - 2026-06-10
+
+Adds capability-based ReferenceArchitecture starter patterns.
+
+### Compatibility Impact
+
+- ReferenceArchitecture `deployableObjects` entries may now declare `capability` slots in addition to `objectType` and optional `ref`.
+- Existing ReferenceArchitecture and SoftwareDeploymentPattern YAML remains valid; capability slots add stricter validation only when an RA constraint explicitly requires a capability.
+
+### Added
+
+- Added capability-slot validation for ReferenceArchitecture service group entries and RA constraints.
+- Added starter ReferenceArchitectures for two-tier client/data, containerized microservices, event-driven integration, and strangler migration patterns.
+- Added capability slot metadata to existing three-tier, serverless, and multi-tenant SaaS ReferenceArchitectures.
+- Added validator regression tests for capability-based RA constraints.
+
+### Changed
+
+- Updated Draftsman guidance to ask for a plain-language reference architecture shape early in SDP authoring and resolve slots through company service objects.
+- Updated ReferenceArchitecture documentation and template to use portable `objectType` + `capability` slots.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Company-authored RAs can gradually add `capability` to deployable object slots and constraints to make pattern matching more precise.
+- When no service object satisfies a required infrastructure capability, scaffold a shared-services-owned `catalogStatus: stub` service object instead of pointing SDPs directly at raw TechnologyComponents.
+
 ## 0.54.0 - 2026-06-09
 
 Tightens DecisionRecord key matching for requirement implementations.

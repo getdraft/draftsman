@@ -512,16 +512,20 @@ behavior needed by that pattern.
 
 ## RA-Guided Drafting
 
-The Draftsman should use ReferenceArchitectures as drafting maps, not as form
-questions. Do not ask the user "what ReferenceArchitecture are you using?"
-unless the user is already operating in catalog terms.
+The Draftsman should use ReferenceArchitectures as drafting maps, not as opaque
+form questions. Early in a net-new SoftwareDeploymentPattern session, ask which
+plain-language reference architecture shape the user is building on — for
+example two-tier, three-tier, serverless, containerized microservices,
+event-driven, or strangler migration — and then map that answer to the matching
+`ReferenceArchitecture` object. Do not require the user to know the
+ReferenceArchitecture UID or exact catalog name.
 
 For a SoftwareDeploymentPattern session:
 
 1. Infer the deployment shape from the user's description and source material.
 2. Search the effective catalog for candidate ReferenceArchitectures.
-3. Explain the closest match in plain language and ask for confirmation,
-   deviation, or permission to continue without an exact match.
+3. Ask the user to confirm the closest plain-language pattern or choose a
+   different one from the available ReferenceArchitecture set.
 4. If no suitable ReferenceArchitecture exists, record that gap in the
    DraftingSession and continue drafting against the active RequirementGroups.
 5. Do not invent a ReferenceArchitecture match to make the session feel
@@ -539,9 +543,12 @@ Each constraint has a `when` condition and a `require` list:
   deployable object in any service group has that diagram tier.
 - `when.anyServiceGroup.objectType: Y` — the constraint fires if any
   deployable object resolves to that catalog object type.
+- `when.anyServiceGroup.capability: Z` — the constraint fires if any
+  deployable object declares that capability.
 - If `when` is absent the constraint fires unconditionally.
 - `require` lists the object characteristics that must be present in the SDP's
-  service groups when the constraint fires (`objectType`, `diagramTier`).
+  service groups when the constraint fires (`objectType`, `diagramTier`, and/or
+  `capability`).
 
 **Draftsman behavior during SDP authoring:**
 
@@ -553,14 +560,22 @@ validator to report a failure after the fact.
 When a constraint fires and the required object is not yet present, the
 resolution is a two-step lookup — not a free choice:
 
-1. **Identify what is required.** The constraint names an `objectType` (and
-   optionally a `diagramTier`). This is the pattern requirement: "the SDP
-   needs a `network_service` here."
+1. **Identify what is required.** The constraint names an `objectType`, a
+   `capability`, and optionally a `diagramTier`. This is the pattern
+   requirement: "the SDP needs a `network_service` that provides API Gateway
+   here."
 2. **Resolve which catalog object satisfies it.** Search the effective catalog
-   for objects of that type with `lifecycleStatus: preferred`. That is the
-   company's current acceptable-use answer to "which one." If no `preferred`
-   object exists, fall back to `existing-only` and note the gap. Never propose
-   an object in `deprecated` or `retired` state to satisfy a constraint.
+   for objects of that type whose `capabilities` list includes the requested
+   capability and whose `lifecycleStatus` is `preferred`. That is the company's
+   current acceptable-use answer to "which one." If no `preferred` object
+   exists, fall back to `existing-only` and note the gap. Never propose an
+   object in `deprecated` or `retired` state to satisfy a constraint.
+3. **Stub missing service-layer roles.** If no service object exists but the RA
+   slot requires infrastructure owned by Shared Services — for example an API
+   gateway, data store, runtime platform, message broker, or service mesh —
+   scaffold a placeholder service object with `catalogStatus: stub` and the
+   appropriate shared-services owner role. Do not let an engineering SDP deploy
+   or own the raw `TechnologyComponent` as a substitute for the service object.
 
 The RA is intentionally abstract — it says "use a WAF," not "use product X."
 The lifecycle status on catalog objects is what resolves the pattern to a

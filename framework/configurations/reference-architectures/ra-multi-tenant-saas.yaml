@@ -26,16 +26,19 @@ serviceGroups:
 - name: Tenant Runtime
   deployableObjects:
   - objectType: network_service
+    capability: 01KT0V5MCV-3A6F
     diagramTier: presentation
     notes: Per-tenant or shared API gateway providing tenant routing, authentication
       enforcement, and per-tenant rate limiting.
   - objectType: runtime_service
+    capability: 01KT0V5MCV-RZV0
     diagramTier: application
     notes: Tenant-scoped runtime service. May be shared across tenants with row-level
       isolation or deployed per-tenant depending on the chosen isolation model.
 - name: Platform Services
   deployableObjects:
   - objectType: runtime_service
+    capability: 01KT0V5MCV-RZV0
     diagramTier: application
     notes: Shared platform service consumed by all tenants — for example identity,
       billing, notifications, or audit log. Must not store tenant data without a
@@ -43,12 +46,14 @@ serviceGroups:
 - name: Data Tier
   deployableObjects:
   - objectType: data_store_service
+    capability: 01KT0V5MCV-VD0Y
     diagramTier: data
     notes: Tenant data store. The isolation model must be documented in the SDP's
       architectureNotes. DataComponents are deployed onto this service.
 - name: Management Plane
   deployableObjects:
   - objectType: runtime_service
+    capability: 01KQQ4Q026-98VD
     diagramTier: utility
     notes: Control-plane services including tenant provisioning, observability aggregation,
       and administrative tooling. Must be isolated from tenant-facing network paths.
@@ -74,6 +79,7 @@ constraints:
       diagramTier: presentation
   require:
   - objectType: network_service
+    capability: 01KT0V5MCV-3A6F
     diagramTier: presentation
     notes: Add a NetworkService to the presentation tier. The company catalog defines which API gateway, WAF, or tenant-routing service satisfies this role.
 - id: saas-requires-utility-tier
@@ -84,6 +90,7 @@ constraints:
       diagramTier: application
   require:
   - objectType: runtime_service
+    capability: 01KQQ4Q026-98VD
     diagramTier: utility
     notes: Add a utility-tier runtime service representing the management plane. This may be a tenant provisioning service, administrative API, or observability aggregator.
 requirementGroups: []

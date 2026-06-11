@@ -127,3 +127,9 @@ decisionRecords:
   key: access_control_model
 - ref: 01KT1340GP-RX87
   key: backup_strategy
+
+- requirementGroup: requirement-group-service-capability
+  status: satisfied
+  mechanism: technologyComponentConfiguration
+  criteria:
+  notes: Provided via primaryTechnologyComponent in this example SDP.

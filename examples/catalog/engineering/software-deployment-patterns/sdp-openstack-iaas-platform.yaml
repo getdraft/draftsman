@@ -102,6 +102,8 @@ serviceGroups:
   deploymentTarget: openstack-controller
   deployableObjects:
   - ref: 01KSF29JTP-9HYA
+    capabilities:
+    - 01KT0V5MCV-Z079
     networkZone: public
     diagramTier: presentation
     intent: ha
@@ -194,6 +196,8 @@ serviceGroups:
   deploymentTarget: openstack-controller
   deployableObjects:
   - ref: STCK000001-DAR1
+    capabilities:
+    - 01KT0V5MCV-VD0Y
     networkZone: data
     diagramTier: data
     intent: ha

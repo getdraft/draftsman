@@ -77,3 +77,9 @@ internalComponents:
   role: >-
     HAProxy Community Edition providing load balancing, health checking, and connection management for
     the OpenStack control plane.
+
+- requirementGroup: requirement-group-service-capability
+  status: satisfied
+  mechanism: technologyComponentConfiguration
+  criteria:
+  notes: Provided via primaryTechnologyComponent in this example SDP.

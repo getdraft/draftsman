@@ -26,12 +26,14 @@ serviceGroups:
 - name: Presentation Tier
   deployableObjects:
   - objectType: network_service
+    capability: 01KT0V5MCV-Z079
     diagramTier: presentation
     notes: Traffic inspection and protection service (WAF, application delivery controller,
       or equivalent). Provides DDoS mitigation, rate limiting, and request filtering
       before traffic reaches the application tier. The company catalog defines which
       NetworkService objects satisfy this role.
   - objectType: network_service
+    capability: 01KSWVZSZ5-M0FR
     diagramTier: presentation
     notes: Load balancer distributing stateless traffic across application tier instances.
       May be combined with the WAF/ADC in a single NetworkService depending on the chosen
@@ -39,12 +41,14 @@ serviceGroups:
 - name: Application Tier
   deployableObjects:
   - objectType: runtime_service
+    capability: 01KT0V5MCV-RZV0
     diagramTier: application
     notes: Primary application runtime. Stateless; may be replicated across availability
       zones. ProductComponents are deployed onto this service.
 - name: Data Tier
   deployableObjects:
   - objectType: data_store_service
+    capability: 01KT0V5MCV-VD0Y
     diagramTier: data
     notes: Primary persistent data store. Must document backup strategy, RTO, and RPO.
       DataComponents are deployed onto this service.
@@ -67,6 +71,7 @@ constraints:
       diagramTier: presentation
   require:
   - objectType: network_service
+    capability: 01KT0V5MCV-Z079
     diagramTier: presentation
     notes: Add a NetworkService to the presentation tier. The company catalog defines which specific WAF, ADC, or load balancer objects satisfy this role. Internal-only SDPs that operate behind a network boundary without a dedicated traffic-control service should document the exception in architectureNotes.reference_architecture_conformance and reference a DecisionRecord.
 - id: data-tier-requires-data-store-service
@@ -77,6 +82,7 @@ constraints:
       diagramTier: data
   require:
   - objectType: data_store_service
+    capability: 01KT0V5MCV-VD0Y
     diagramTier: data
     notes: Replace any runtime_service acting as a data store with a data_store_service object so that data-tier requirement groups are correctly applied.
 requirementGroups: []
