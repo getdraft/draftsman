@@ -1,0 +1,100 @@
+schemaVersion: '1.0'
+uid: 01KS8N4KR3-MTSA
+type: reference_architecture
+name: Multi-Tenant SaaS
+description: Deployment pattern for software-as-a-service products that serve multiple
+  customer tenants from shared infrastructure. Defines tenant, platform, data, and
+  management zones with explicit isolation requirements.
+patternType: multi-tenant
+catalogStatus: complete
+lifecycleStatus: candidate
+tags:
+- reference-architecture
+- multi-tenant
+- saas
+applicableDefinitionChecklist:
+- Tenant isolation strategy must be documented in architectureNotes — separate
+  database per tenant, shared database with separate schema, or shared schema with
+  row-level security.
+- Platform tier services must not store tenant-identifiable data without an explicit
+  isolation rationale in architectureNotes.
+- Management plane must be in a separate network zone from tenant-facing services.
+- The data tier must document which tenants share which stores and what isolation
+  mechanism applies.
+- The SDP must document the tenant provisioning and de-provisioning path.
+serviceGroups:
+- name: Tenant Runtime
+  deployableObjects:
+  - slot: tenant-entry-point
+    capability: 01KT0V5MCV-3A6F
+    objectType: network_service
+    diagramTier: presentation
+    notes: Per-tenant or shared API gateway providing tenant routing, authentication
+      enforcement, and per-tenant rate limiting.
+  - slot: tenant-runtime
+    capability: 01KT0V5MCV-RZV0
+    objectType: runtime_service
+    diagramTier: application
+    notes: Tenant-scoped runtime service. May be shared across tenants with row-level
+      isolation or deployed per-tenant depending on the chosen isolation model.
+- name: Platform Services
+  deployableObjects:
+  - slot: tenant-runtime
+    capability: 01KT0V5MCV-RZV0
+    objectType: runtime_service
+    diagramTier: application
+    notes: Shared platform service consumed by all tenants — for example identity,
+      billing, notifications, or audit log. Must not store tenant data without a
+      documented isolation mechanism.
+- name: Data Tier
+  deployableObjects:
+  - slot: tenant-data-store
+    capability: 01KT0V5MCV-VD0Y
+    objectType: data_store_service
+    diagramTier: data
+    notes: Tenant data store. The isolation model must be documented in the SDP's
+      architectureNotes. DataComponents are deployed onto this service.
+- name: Management Plane
+  deployableObjects:
+  - objectType: runtime_service
+    diagramTier: utility
+    notes: Control-plane services including tenant provisioning, observability aggregation,
+      and administrative tooling. Must be isolated from tenant-facing network paths.
+architectureNotes:
+  patternRationale: Multi-tenant SaaS deployments require explicit isolation guarantees
+    at the data, runtime, and network layers. The pattern separates tenant-facing runtime
+    from shared platform services to prevent cross-tenant data leakage and allow platform
+    services to evolve independently of tenant workloads.
+  tenantIsolationModels: 'Three isolation models are supported: (1) separate database
+    per tenant — highest isolation, highest operational cost; (2) shared database with
+    separate schema per tenant — moderate isolation, moderate cost; (3) shared schema
+    with row-level security — lowest isolation, lowest cost. The chosen model must
+    be documented in the SDP''s architectureNotes.'
+  managementPlaneIsolation: The management plane must not share network paths with
+    tenant-facing services. Administrative access to tenant data must flow through
+    the management plane, not through tenant runtime endpoints.
+constraints:
+- id: presentation-tier-requires-network-service
+  description: All multi-tenant SaaS SDPs with a presentation-tier service must include at least one network service in the presentation tier.
+  rationale: The tenant-facing boundary must enforce per-tenant authentication, rate limiting, and traffic inspection before requests reach tenant runtime services. A NetworkService at the presentation tier is the governance point for those controls.
+  when:
+    anyServiceGroup:
+      diagramTier: presentation
+  require:
+  - slot: tenant-entry-point
+    capability: 01KT0V5MCV-3A6F
+    objectType: network_service
+    diagramTier: presentation
+    notes: Add a NetworkService to the presentation tier. The company catalog defines which API gateway, WAF, or tenant-routing service satisfies this role.
+- id: saas-requires-utility-tier
+  description: Multi-tenant SaaS SDPs must include at least one utility-tier service for management-plane operations.
+  rationale: SaaS platforms require a management plane for tenant provisioning, observability aggregation, and administrative operations that must be isolated from tenant-facing runtime paths. A utility-tier service makes this boundary explicit.
+  when:
+    anyServiceGroup:
+      diagramTier: application
+  require:
+  - objectType: runtime_service
+    diagramTier: utility
+    notes: Add a utility-tier runtime service representing the management plane. This may be a tenant provisioning service, administrative API, or observability aggregator.
+requirementGroups: []
+requirementImplementations: []

@@ -1,3 +1,27 @@
+## 0.57.0 - 2026-06-12
+
+Introduce opt-in `community/` layer for framework starter content.
+
+### Compatibility Impact
+- ReferenceArchitectures previously located under `framework/configurations/reference-architectures/` have been moved to `community/reference-architectures/`.
+- These RAs now ship at `lifecycleStatus: candidate` instead of `preferred`.
+- They are **not** vendored by default into company workspaces during `draft-framework-update`.
+
+### Added
+- New top-level `community/reference-architectures/` directory for framework-provided starter patterns.
+- All seven baseline ReferenceArchitectures moved and downgraded to `candidate`.
+
+### Changed
+- Updated `framework/docs/reference-architectures.md` to document the new community layer and opt-in model.
+- Regenerated `AI_INDEX.md` and browser data.
+
+### Fixed
+- Framework starter ReferenceArchitectures no longer implicitly become `preferred` in company workspaces upon framework upgrade.
+
+### Migration Notes
+- Workspaces that previously relied on framework RAs at `preferred` status should explicitly adopt the desired RAs from the `community/` layer and set the lifecycle status they endorse.
+- Compliance RequirementGroups remain under `framework/` and are unaffected.
+
 ## 0.55.0 - 2026-06-10
 
 SDP governance requirements can now be satisfied structurally via fields on the SoftwareDeploymentPattern (or via data components for data-classification) in addition to DecisionRecord. DecisionRecords are now reserved for documented non-conformance.

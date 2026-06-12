@@ -1,0 +1,50 @@
+schemaVersion: '1.0'
+uid: 01KV0REFAR-2TR0
+type: reference_architecture
+name: Two-Tier Client Data Application
+description: Starter pattern for applications where a client or presentation layer talks directly to a managed data tier without a separate application server tier. Use this for simple internal tools, static clients, reporting front ends, or legacy client/server designs that intentionally have no middle tier.
+patternType: two-tier
+catalogStatus: complete
+lifecycleStatus: candidate
+tags:
+- reference-architecture
+- two-tier
+- starter
+applicableDefinitionChecklist:
+- A presentation or client entry point is present.
+- Durable state is externalized to a governed DataStoreService.
+- Direct client-to-data access is documented with authentication, network, and least-privilege controls.
+- The absence of an application tier is intentional and reviewed for security and maintainability.
+serviceGroups:
+- name: Client Tier
+  deployableObjects:
+  - slot: client-entry-point
+    capability: 01KT0V5MCV-3A6F
+    objectType: network_service
+    diagramTier: presentation
+    notes: API gateway, CDN, static hosting edge, or other managed entry point that exposes the client or routes client requests. If no shared service exists, scaffold a network_service stub owned by shared services rather than assigning raw technology directly to the product team.
+- name: Data Tier
+  deployableObjects:
+  - slot: persistent-data-store
+    capability: 01KT0V5MCV-VD0Y
+    objectType: data_store_service
+    diagramTier: data
+    notes: Governed relational, NoSQL, file, or object data store consumed by the client tier. The catalog implementation should be a DataStoreService or a capability implementation that resolves to one.
+architectureNotes:
+  patternRationale: Two-tier applications reduce moving parts by eliminating a middle runtime tier, but they require explicit controls for direct data access and client authorization.
+  onboardingQuestions: Ask which client entry point and managed data store the product will use, then confirm why no application tier is needed.
+constraints:
+- id: client-entry-point-capability-required
+  description: Two-tier SDPs need a presentation-tier entry point satisfying the API Gateway or equivalent client entry capability.
+  require:
+  - capability: 01KT0V5MCV-3A6F
+    objectType: network_service
+    diagramTier: presentation
+- id: persistent-data-capability-required
+  description: Two-tier SDPs need a data-tier deployable object satisfying the Data Persistence capability.
+  require:
+  - capability: 01KT0V5MCV-VD0Y
+    objectType: data_store_service
+    diagramTier: data
+requirementGroups: []
+requirementImplementations: []
