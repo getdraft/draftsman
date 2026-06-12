@@ -1,3 +1,32 @@
+## 0.56.0 - 2026-06-12
+
+Introduces native support for AI and Machine Learning as a strategic domain, defining a new first-class `ai_gateway` service object type, core capabilities, and base requirements.
+
+### Compatibility Impact
+
+- No breaking changes. Existing service types (`runtime_service`, `network_service`, `data_store_service`) remain unaffected.
+- The new `ai_gateway` service type is additive.
+
+### Added
+
+- Added `ai_gateway` service type schema ([ai-gateway.schema.yaml](file:///Users/dsackrider/draftsman/framework/schemas/ai-gateway.schema.yaml)).
+- Added `AI & Machine Learning` strategic domain ([ai-ml.yaml](file:///Users/dsackrider/draftsman/framework/configurations/domains/ai-ml.yaml)) governed by the AI Platform / MLOps team.
+- Added `AI Gateway` capability ([capability-ai-gateway.yaml](file:///Users/dsackrider/draftsman/framework/configurations/capabilities/capability-ai-gateway.yaml)) and `Model Inference & Serving` capability ([capability-model-inference.yaml](file:///Users/dsackrider/draftsman/framework/configurations/capabilities/capability-model-inference.yaml)).
+- Added `AI Gateway RequirementGroup` ([requirement-group-ai-gateway.yaml](file:///Users/dsackrider/draftsman/framework/configurations/requirement-groups/requirement-group-ai-gateway.yaml)) containing baseline requirements: `model-routing`, `token-rate-limiting`, `pii-masking`, and `audit-logging`.
+
+### Changed
+
+- Registered `ai_gateway` as a valid deployable service type in Reference Architectures and the validation engine.
+- Regenerated the documentation index and static browser outputs to incorporate the new domain and capabilities.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- None required. Workspaces can begin using the `ai_gateway` service type and the `AI Gateway` capability immediately.
+
 ## 0.55.0 - 2026-06-10
 
 SDP governance requirements can now be satisfied structurally via fields on the SoftwareDeploymentPattern (or via data components for data-classification) in addition to DecisionRecord. DecisionRecords are now reserved for documented non-conformance.

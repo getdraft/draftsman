@@ -46,6 +46,7 @@ VALID_REQUIREMENT_SCOPES = {
     "runtime_service",
     "data_store_service",
     "network_service",
+    "ai_gateway",
     "product_component",
     "data_component",
     "reference_architecture",
@@ -69,11 +70,12 @@ STANDARD_TYPES = {
     "runtime_service",
     "data_store_service",
     "network_service",
+    "ai_gateway",
     "product_component",
     "data_component",
 }
-SERVICE_TYPES = {"runtime_service", "data_store_service", "network_service"}
-RELATIONSHIP_ENDPOINT_TYPES = STANDARD_TYPES | {"runtime_service", "data_store_service", "network_service", "software_deployment_pattern", "reference_architecture", "technology_component", "host"}
+SERVICE_TYPES = {"runtime_service", "data_store_service", "network_service", "ai_gateway"}
+RELATIONSHIP_ENDPOINT_TYPES = STANDARD_TYPES | {"runtime_service", "data_store_service", "network_service", "ai_gateway", "software_deployment_pattern", "reference_architecture", "technology_component", "host"}
 BUSINESS_PILLAR_ID_PATTERN = re.compile(r"^business-pillar\.[a-z0-9-]+$")
 UID_PATTERN = re.compile(UID_PATTERN_TEXT)
 WORKSPACE_DOCUMENT_TYPES = {"vocabulary", "vocabulary_proposal"}
@@ -3206,7 +3208,7 @@ def validate_capability(
             continue
         ref = implementation.get("ref")
         target = catalog_by_id.get(str(ref)) if is_non_empty(ref) else None
-        if not target or target.get("type") not in {"technology_component", "runtime_service", "data_store_service", "network_service"}:
+        if not target or target.get("type") not in {"technology_component", "runtime_service", "data_store_service", "network_service", "ai_gateway"}:
             failures.append(f"{context}: Set ref to an existing TechnologyComponent or shared service UID; capability lifecycle applies only to discrete vendor product versions or shared enterprise services")
         lifecycle_status = implementation.get("lifecycleStatus")
         if lifecycle_status not in VALID_IMPLEMENTATION_STATUSES:

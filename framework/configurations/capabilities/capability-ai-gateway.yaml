@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KTWS3D6T-5TAZ
+type: capability
+name: AI Gateway
+description: Outbound LLM/AI request traffic is routed, authenticated, rate-limited, and audited at a managed proxy layer that enforces safety, prompt templating, and budget/cost metrics.
+version: 1.0.0
+catalogStatus: complete
+definitionOwner:
+  provider: draft-framework
+  team: ai-platform
+  contact: ai-platform@example.com
+domain: 01KTWS3D6T-ABD1
+implementations: []

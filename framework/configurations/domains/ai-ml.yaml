@@ -1,0 +1,9 @@
+schemaVersion: '1.0'
+uid: 01KTWS3D6T-ABD1
+type: domain
+name: AI & Machine Learning
+description: >
+  Strategic domain covering model training, inference serving, vector storage,
+  and AI gateway routing. Capabilities in this domain are governed by the
+  AI Platform / MLOps team, who owns the HOW decisions for model endpoints, 
+  prompt safety firewalls, and vector query tools.

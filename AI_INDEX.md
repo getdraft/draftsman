@@ -94,6 +94,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 
 | Path | Scope | Required Fields |
 |---|---|---|
+| framework/schemas/ai-gateway.schema.yaml | ai_gateway | schemaVersion, uid, type, name, deliveryModel, catalogStatus, lifecycleStatus |
 | framework/schemas/business-unit-hierarchy.schema.yaml | business_unit_hierarchy | schemaVersion, uid, type, name, businessUnit, hierarchy, catalogStatus |
 | framework/schemas/capability.schema.yaml | capability | schemaVersion, uid, type, name, description, catalogStatus, definitionOwner, domain, implementations |
 | framework/schemas/data-component.schema.yaml | data_component | schemaVersion, uid, type, name, repoUrl, owner, runsOn, targetEngine, dataClassification, containsPII, catalogStatus |
@@ -122,6 +123,7 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | UID | Name | Type | Tags | Description | Path |
 |---|---|---|---|---|---|
 | 01KQQ4Q026-4JR6 | Access Control Model | capability |  | Authorization model that controls access to a service or data platform. | framework/configurations/capabilities/capability-access-control-model.yaml |
+| 01KTWS3D6T-5TAZ | AI Gateway | capability |  | Outbound LLM/AI request traffic is routed, authenticated, rate-limited, and audited at a managed proxy layer that enf... | framework/configurations/capabilities/capability-ai-gateway.yaml |
 | 01KT0XNZEY-A7GK | Analytics | capability |  | Operational and business data is processed and analyzed to produce insight through a managed analytics platform. | framework/configurations/capabilities/capability-analytics.yaml |
 | 01KT0V5MCV-3A6F | API Gateway | capability |  | Inbound API traffic is routed, authenticated, rate-limited, and transformed at a managed entry point in front of back... | framework/configurations/capabilities/capability-api-gateway.yaml |
 | 01KQQ4Q026-NB1W | Application Performance Monitoring | capability |  | Tracing and performance analysis of application runtimes. | framework/configurations/capabilities/capability-apm.yaml |
@@ -146,6 +148,7 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KQQ4Q026-98VD | Health and Welfare Monitoring | capability |  | Runtime health, uptime, metrics, and operational welfare visibility. | framework/configurations/capabilities/capability-health-welfare-monitoring.yaml |
 | 01KQQ4Q026-D04B | Log Management | capability |  | Aggregation, retention, searchability, and forwarding of system or application logs. | framework/configurations/capabilities/capability-log-management.yaml |
 | 01KT0V5MCV-KT72 | Messaging | capability |  | Asynchronous messages and events are accepted, queued, and delivered between producers and consumers. | framework/configurations/capabilities/capability-messaging.yaml |
+| 01KTWS3D6T-T6F6 | Model Inference & Serving | capability |  | Runtimes and infrastructure for deploying, hosting, and serving machine learning and large language model weights via... | framework/configurations/capabilities/capability-model-inference.yaml |
 | 01KSWVZSZ5-Q6HW | Network Connectivity | capability |  | Hosts and services can reach each other across the network fabric through approved switching and routing infrastructure. | framework/configurations/capabilities/capability-network-connectivity.yaml |
 | 01KSWVZSZ5-1RTH | Network Segmentation | capability |  | Traffic between network zones is isolated and controlled by policy through VLANs, micro-segmentation, or software-def... | framework/configurations/capabilities/capability-network-segmentation.yaml |
 | 01KT0V5MCV-E9TN | Object Storage | capability |  | Unstructured objects and blobs are durably stored and retrieved through an object storage interface. | framework/configurations/capabilities/capability-object-storage.yaml |
@@ -163,6 +166,7 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KSWVZSZ5-M0FR | Traffic Management | capability |  | Application and network traffic is distributed, shaped, and controlled across services and infrastructure through app... | framework/configurations/capabilities/capability-traffic-management.yaml |
 | 01KT0V5MCV-Z079 | WAF | capability |  | Inbound web traffic is inspected and filtered against application-layer threats through managed rule sets before reac... | framework/configurations/capabilities/capability-waf.yaml |
 | 01KSWVZSZ5-26F1 | WAN Connectivity | capability |  | Sites, data centers, and cloud environments are interconnected reliably through approved wide area network technology. | framework/configurations/capabilities/capability-wan-connectivity.yaml |
+| 01KTWS3D6T-NB0E | AI Gateway RequirementGroup | requirement_group | ai-gateway, requirement-group, definition | Structured checklist of required questions and answers used to define a complete and correct AI Gateway. | framework/configurations/requirement-groups/requirement-group-ai-gateway.yaml |
 | 01KQQ4Q027-DSDD | Appliance Delivery RequirementGroup | requirement_group | appliance, requirement-group, definition | Structured requirements used when a Runtime, Data Store, or NetworkService uses appliance delivery and the underlying... | framework/configurations/requirement-groups/requirement-group-appliance-delivery.yaml |
 | 01KRWRRNM7-VJ5A | DataComponent RequirementGroup | requirement_group | data-component, requirement-group, definition | Built-in checklist for first-party data artifacts deployed onto DataStoreServices. Establishes what must be known abo... | framework/configurations/requirement-groups/requirement-group-data-component.yaml |
 | 01KQQ4Q027-VBF0 | DataStoreService RequirementGroup | requirement_group | service, dbms, requirement-group, definition | Additional DataStoreService checklist items extending the service behavior RequirementGroup for durable data, recover... | framework/configurations/requirement-groups/requirement-group-data-store-service.yaml |
@@ -190,6 +194,7 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KV0REFAR-STRG | Strangler Migration Pattern | reference_architecture | reference-architecture, migration, strangler, starter | Starter pattern for incremental legacy modernization where new services coexist with a legacy system and traffic or c... | framework/configurations/reference-architectures/ra-strangler-migration.yaml |
 | 01KS8N4KR2-3TWA | Three-Tier Web Application | reference_architecture | reference-architecture, three-tier, web | Standard pattern for web-facing applications with a presentation tier (network services), an application tier (runtim... | framework/configurations/reference-architectures/ra-three-tier-web.yaml |
 | 01KV0REFAR-2TR0 | Two-Tier Client Data Application | reference_architecture | reference-architecture, two-tier, starter | Starter pattern for applications where a client or presentation layer talks directly to a managed data tier without a... | framework/configurations/reference-architectures/ra-two-tier-web.yaml |
+| 01KTWS3D6T-ABD1 | AI & Machine Learning | domain |  | Strategic domain covering model training, inference serving, vector storage, and AI gateway routing. Capabilities in... | framework/configurations/domains/ai-ml.yaml |
 | 01KT0XNZEY-HGZZ | Analytics | domain |  | Strategic domain covering analytical processing and reporting over operational and business data. Capabilities in thi... | framework/configurations/domains/analytics.yaml |
 | 01KQQ4Q027-ZTHF | Compute & Runtime | domain |  | Strategic domain covering application runtimes, serverless functions, and physical or virtual compute resources. | framework/configurations/domains/compute.yaml |
 | 01KSWVZSZ5-QHKZ | Data | domain |  | Strategic domain covering data protection and resilience. Capabilities in this domain are governed by the data and st... | framework/configurations/domains/data.yaml |
@@ -421,10 +426,10 @@ These are sample catalog objects used to validate and demonstrate the framework.
 
 | Folder | YAML Count |
 |---|---|
-| framework/configurations/capabilities | 42 |
-| framework/configurations/requirement-groups | 20 |
+| framework/configurations/capabilities | 44 |
+| framework/configurations/requirement-groups | 21 |
 | framework/configurations/reference-architectures | 7 |
-| framework/configurations/domains | 10 |
+| framework/configurations/domains | 11 |
 | examples/catalog/engineering/product-components | 1 |
 | examples/catalog/engineering/data-components | 1 |
 | examples/catalog/engineering/software-deployment-patterns | 1 |
