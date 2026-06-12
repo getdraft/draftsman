@@ -1,0 +1,62 @@
+schemaVersion: '1.0'
+uid: 01KTWYEE98-D3QV
+type: reference_architecture
+name: AI-Enabled Application Pattern
+description: >
+  Standard pattern for applications utilizing Artificial Intelligence and Large
+  Language Models (LLMs). Integrates an application runtime tier, a vector database
+  data tier for contextual retrieval (RAG), and a mandatory AI Gateway tier for 
+  egress routing, prompt safety, and cost controls.
+patternType: ai-enabled-rag
+catalogStatus: complete
+lifecycleStatus: preferred
+tags:
+- reference-architecture
+- ai
+- rag
+applicableDefinitionChecklist:
+- The deployment must route all outbound model traffic through an approved AI Gateway.
+- Any vector embeddings database must be modeled as a DataStoreService with vector search capabilities.
+- Direct outbound connections from the application tier to external LLM providers are prohibited.
+serviceGroups:
+- name: Application Tier
+  deployableObjects:
+  - slot: application-runtime
+    capability: 01KT0V5MCV-RZV0
+    objectType: runtime_service
+    diagramTier: application
+    notes: Primary runtime hosting the first-party product component.
+- name: AI Gateway Tier
+  deployableObjects:
+  - slot: model-gateway
+    capability: 01KTWS3D6T-5TAZ
+    objectType: ai_gateway
+    diagramTier: utility
+    notes: Shared or dedicated LLM proxy managing prompt safety, auditing, and token quotas.
+- name: Data Tier
+  deployableObjects:
+  - slot: vector-store
+    capability: 01KT0V5MCV-VD0Y
+    objectType: data_store_service
+    diagramTier: data
+    notes: Optional vector database storing embeddings for retrieval-augmented generation (RAG).
+constraints:
+- id: ai-applications-require-ai-gateway
+  description: AI-enabled application patterns must declare and deploy an AI Gateway.
+  rationale: Bypassing the AI Gateway to call model APIs directly violates data protection and cost auditing policies.
+  when:
+    anyServiceGroup:
+      diagramTier: application
+  require:
+  - objectType: ai_gateway
+    diagramTier: utility
+    notes: Ensure an AI Gateway service is declared in the utility tier. All outbound LLM relationships must target this gateway.
+architectureNotes:
+  patternRationale: >
+    The AI-enabled RAG pattern routes all external model provider traffic through a governed AI Gateway 
+    and leverages a vector storage layer for prompt context enrichment. This isolates model integrations, 
+    allowing prompt security filtering and token usage telemetry to be centrally managed.
+  egressIsolation: >
+    Application components do not call external API endpoints directly. Routing LLM interactions 
+    exclusively through the AI Gateway ensures data protection policies (PII scrubbing) and API rate limits 
+    are consistently enforced.
