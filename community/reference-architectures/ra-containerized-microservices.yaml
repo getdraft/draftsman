@@ -5,7 +5,7 @@ name: Containerized Microservices
 description: Starter pattern for independently deployable services running on a container orchestration platform with service-to-service connectivity, observability, and release isolation.
 patternType: containerized-microservices
 catalogStatus: complete
-lifecycleStatus: preferred
+lifecycleStatus: candidate
 tags:
 - reference-architecture
 - microservices

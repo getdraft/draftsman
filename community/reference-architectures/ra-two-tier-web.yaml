@@ -5,7 +5,7 @@ name: Two-Tier Client Data Application
 description: Starter pattern for applications where a client or presentation layer talks directly to a managed data tier without a separate application server tier. Use this for simple internal tools, static clients, reporting front ends, or legacy client/server designs that intentionally have no middle tier.
 patternType: two-tier
 catalogStatus: complete
-lifecycleStatus: preferred
+lifecycleStatus: candidate
 tags:
 - reference-architecture
 - two-tier

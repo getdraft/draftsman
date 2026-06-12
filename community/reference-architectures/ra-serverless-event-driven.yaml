@@ -8,7 +8,7 @@ description: Deployment pattern for event-driven applications using serverless c
   function execution environment.
 patternType: serverless
 catalogStatus: complete
-lifecycleStatus: preferred
+lifecycleStatus: candidate
 tags:
 - reference-architecture
 - serverless

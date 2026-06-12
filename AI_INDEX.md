@@ -187,14 +187,6 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KT0VM061-CRN7 | Service Capability RequirementGroup | requirement_group | service, capability, requirement-group, definition | Self-declared capability requirements for shared service objects. When a RuntimeService, DataStoreService, or Network... | framework/configurations/requirement-groups/requirement-group-service-capability.yaml |
 | 01KSF29JTP-SRVE | Service Engineering Practices RequirementGroup | requirement_group | service, requirement-group, engineering, optional | Optional checklist for self-managed Runtime and NetworkServices covering advanced observability and runtime patterns.... | framework/configurations/requirement-groups/requirement-group-service-engineering.yaml |
 | 01KQQ4Q027-VK45 | SoftwareDeploymentPattern RequirementGroup | requirement_group | software-deployment-pattern, requirement-group, definition | Structured checklist of required questions and answers used to define a complete and correct software deployment patt... | framework/configurations/requirement-groups/requirement-group-software-deployment-pattern.yaml |
-| 01KTWYEE98-D3QV | AI-Enabled Application Pattern | reference_architecture | reference-architecture, ai, rag | Standard pattern for applications utilizing Artificial Intelligence and Large Language Models (LLMs). Integrates an a... | framework/configurations/reference-architectures/ra-ai-enabled-application.yaml |
-| 01KV0REFAR-CMSV | Containerized Microservices | reference_architecture | reference-architecture, microservices, containers, starter | Starter pattern for independently deployable services running on a container orchestration platform with service-to-s... | framework/configurations/reference-architectures/ra-containerized-microservices.yaml |
-| 01KV0REFAR-EVNT | Event-Driven Architecture | reference_architecture | reference-architecture, event-driven, messaging, starter | Starter pattern for asynchronous systems coordinated by messaging, event routing, producers, consumers, and eventuall... | framework/configurations/reference-architectures/ra-event-driven.yaml |
-| 01KS8N4KR3-MTSA | Multi-Tenant SaaS | reference_architecture | reference-architecture, multi-tenant, saas | Deployment pattern for software-as-a-service products that serve multiple customer tenants from shared infrastructure... | framework/configurations/reference-architectures/ra-multi-tenant-saas.yaml |
-| 01KS8N4KR4-SVED | Serverless Event-Driven | reference_architecture | reference-architecture, serverless, event-driven | Deployment pattern for event-driven applications using serverless compute runtimes. No persistent application-tier co... | framework/configurations/reference-architectures/ra-serverless-event-driven.yaml |
-| 01KV0REFAR-STRG | Strangler Migration Pattern | reference_architecture | reference-architecture, migration, strangler, starter | Starter pattern for incremental legacy modernization where new services coexist with a legacy system and traffic or c... | framework/configurations/reference-architectures/ra-strangler-migration.yaml |
-| 01KS8N4KR2-3TWA | Three-Tier Web Application | reference_architecture | reference-architecture, three-tier, web | Standard pattern for web-facing applications with a presentation tier (network services), an application tier (runtim... | framework/configurations/reference-architectures/ra-three-tier-web.yaml |
-| 01KV0REFAR-2TR0 | Two-Tier Client Data Application | reference_architecture | reference-architecture, two-tier, starter | Starter pattern for applications where a client or presentation layer talks directly to a managed data tier without a... | framework/configurations/reference-architectures/ra-two-tier-web.yaml |
 | 01KTWS3D6T-ABD1 | AI & Machine Learning | domain |  | Strategic domain covering model training, inference serving, vector storage, and AI gateway routing. Capabilities in... | framework/configurations/domains/ai-ml.yaml |
 | 01KT0XNZEY-HGZZ | Analytics | domain |  | Strategic domain covering analytical processing and reporting over operational and business data. Capabilities in thi... | framework/configurations/domains/analytics.yaml |
 | 01KQQ4Q027-ZTHF | Compute & Runtime | domain |  | Strategic domain covering application runtimes, serverless functions, and physical or virtual compute resources. | framework/configurations/domains/compute.yaml |
@@ -206,6 +198,21 @@ These YAML files are framework-owned base configurations. Company workspaces add
 | 01KSWVZSZ5-GY67 | Security | domain |  | Strategic domain covering threat detection, security event monitoring, and secure credential management. Capabilities... | framework/configurations/domains/security.yaml |
 | 01KT0XNZEY-GXYR | Software Delivery | domain |  | Strategic domain covering the build, integration, packaging, and configuration pipeline that delivers software into r... | framework/configurations/domains/software-delivery.yaml |
 | 01KQQ4Q027-SGHR | Testing & Quality | domain |  | Strategic domain covering all aspects of software testing, quality assurance, and release gates. | framework/configurations/domains/testing.yaml |
+
+## Community Configurations
+
+These YAML files are framework-provided opt-in patterns. Company workspaces may copy them into their private repositories to endorse or adapt them.
+
+| UID | Name | Type | Tags | Description | Path |
+|---|---|---|---|---|---|
+| 01KTWYEE98-D3QV | AI-Enabled Application Pattern | reference_architecture | reference-architecture, ai, rag | Standard pattern for applications utilizing Artificial Intelligence and Large Language Models (LLMs). Integrates an a... | community/reference-architectures/ra-ai-enabled-application.yaml |
+| 01KV0REFAR-CMSV | Containerized Microservices | reference_architecture | reference-architecture, microservices, containers, starter | Starter pattern for independently deployable services running on a container orchestration platform with service-to-s... | community/reference-architectures/ra-containerized-microservices.yaml |
+| 01KV0REFAR-EVNT | Event-Driven Architecture | reference_architecture | reference-architecture, event-driven, messaging, starter | Starter pattern for asynchronous systems coordinated by messaging, event routing, producers, consumers, and eventuall... | community/reference-architectures/ra-event-driven.yaml |
+| 01KS8N4KR3-MTSA | Multi-Tenant SaaS | reference_architecture | reference-architecture, multi-tenant, saas | Deployment pattern for software-as-a-service products that serve multiple customer tenants from shared infrastructure... | community/reference-architectures/ra-multi-tenant-saas.yaml |
+| 01KS8N4KR4-SVED | Serverless Event-Driven | reference_architecture | reference-architecture, serverless, event-driven | Deployment pattern for event-driven applications using serverless compute runtimes. No persistent application-tier co... | community/reference-architectures/ra-serverless-event-driven.yaml |
+| 01KV0REFAR-STRG | Strangler Migration Pattern | reference_architecture | reference-architecture, migration, strangler, starter | Starter pattern for incremental legacy modernization where new services coexist with a legacy system and traffic or c... | community/reference-architectures/ra-strangler-migration.yaml |
+| 01KS8N4KR2-3TWA | Three-Tier Web Application | reference_architecture | reference-architecture, three-tier, web | Standard pattern for web-facing applications with a presentation tier (network services), an application tier (runtim... | community/reference-architectures/ra-three-tier-web.yaml |
+| 01KV0REFAR-2TR0 | Two-Tier Client Data Application | reference_architecture | reference-architecture, two-tier, starter | Starter pattern for applications where a client or presentation layer talks directly to a managed data tier without a... | community/reference-architectures/ra-two-tier-web.yaml |
 
 ## Example Catalog Inventory
 
@@ -429,8 +436,9 @@ These are sample catalog objects used to validate and demonstrate the framework.
 |---|---|
 | framework/configurations/capabilities | 44 |
 | framework/configurations/requirement-groups | 21 |
-| framework/configurations/reference-architectures | 8 |
+| framework/configurations/reference-architectures | 0 |
 | framework/configurations/domains | 11 |
+| community/reference-architectures | 8 |
 | examples/catalog/engineering/product-components | 1 |
 | examples/catalog/engineering/data-components | 1 |
 | examples/catalog/engineering/software-deployment-patterns | 1 |

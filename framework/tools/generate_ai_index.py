@@ -54,6 +54,10 @@ CONFIGURATION_FOLDERS = [
     "framework/configurations/domains",
 ]
 
+COMMUNITY_FOLDERS = [
+    "community/reference-architectures",
+]
+
 EXAMPLE_CATALOG_FOLDERS = [
     "examples/catalog/engineering/product-components",
     "examples/catalog/engineering/data-components",
@@ -205,6 +209,21 @@ def main() -> None:
             config_rows.append(yaml_row(path))
     append_table(lines, ["UID", "Name", "Type", "Tags", "Description", "Path"], config_rows)
 
+    lines.extend(["", "## Community Configurations", ""])
+    lines.append(
+        "These YAML files are framework-provided opt-in patterns. Company workspaces "
+        "may copy them into their private repositories to endorse or adapt them."
+    )
+    lines.append("")
+    community_rows = []
+    for folder_name in COMMUNITY_FOLDERS:
+        for path in yaml_files(folder_name):
+            community_rows.append(yaml_row(path))
+    if community_rows:
+        append_table(lines, ["UID", "Name", "Type", "Tags", "Description", "Path"], community_rows)
+    else:
+        lines.append("No community configurations are present in this checkout yet.")
+
     lines.extend(["", "## Example Catalog Inventory", ""])
     lines.append(
         "These are sample catalog objects used to validate and demonstrate the framework. "
@@ -224,7 +243,7 @@ def main() -> None:
     append_table(
         lines,
         ["Folder", "YAML Count"],
-        [(folder_name, len(yaml_files(folder_name))) for folder_name in CONFIGURATION_FOLDERS + EXAMPLE_CATALOG_FOLDERS],
+        [(folder_name, len(yaml_files(folder_name))) for folder_name in CONFIGURATION_FOLDERS + COMMUNITY_FOLDERS + EXAMPLE_CATALOG_FOLDERS],
     )
 
     lines.extend(["", "## Templates", ""])

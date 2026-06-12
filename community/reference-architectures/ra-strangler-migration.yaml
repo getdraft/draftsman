@@ -5,7 +5,7 @@ name: Strangler Migration Pattern
 description: Starter pattern for incremental legacy modernization where new services coexist with a legacy system and traffic or capabilities move behind a controlled migration facade.
 patternType: strangler-migration
 catalogStatus: complete
-lifecycleStatus: preferred
+lifecycleStatus: candidate
 tags:
 - reference-architecture
 - migration

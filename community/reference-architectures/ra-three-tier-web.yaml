@@ -8,7 +8,7 @@ description: Standard pattern for web-facing applications with a presentation ti
   to external users or partners.
 patternType: three-tier
 catalogStatus: complete
-lifecycleStatus: preferred
+lifecycleStatus: candidate
 tags:
 - reference-architecture
 - three-tier
