@@ -88,6 +88,7 @@ deployableObjectEntry:
     - runtime_service
     - data_store_service
     - network_service
+    - ai_gateway
     - product_component
     - data_component
     diagramTier:

@@ -1,0 +1,105 @@
+schemaVersion: '1.0'
+uid: 01KTWS3D6T-NB0E
+type: requirement_group
+name: AI Gateway RequirementGroup
+description: Structured checklist of required questions and answers used to define a complete and correct AI Gateway.
+version: 1.0.0
+catalogStatus: complete
+authority:
+  name: DRAFT Framework
+  shortName: DRAFT
+  source: DRAFT Framework
+activation: always
+appliesTo:
+- ai_gateway
+requirements:
+- id: model-routing
+  description: The AI Gateway must declare which model providers, endpoints, or backend model runtimes it routes traffic to.
+  rationale: >
+    AI gateways exist to abstract model providers. The gateway is incomplete until the target model
+    providers and fallback routing configuration are explicit.
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: modelRouting
+    example: 'modelRouting: Routes queries to OpenAI, Anthropic, and Azure OpenAI with failover'
+  - mechanism: decisionRecord
+    key: modelRoutingApproach
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: modelRoutingApproach, recording this routing strategy.'
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - field
+  - decisionRecord
+- id: token-rate-limiting
+  description: The AI Gateway must address token-level rate limiting, concurrency controls, or cost tracking.
+  rationale: >
+    Large language model usage incurs significant per-token costs and strict API rate limits.
+    An approved gateway must specify how it prevents run-away costs and manages provider quotas.
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KSWVZSZ5-M0FR  # Traffic Management
+    example: Routes to a central token-management or rate-limiting service.
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KTWS3D6T-5TAZ  # AI Gateway itself
+    example: A native rate-limiting or budget configuration on the gateway component.
+  - mechanism: decisionRecord
+    key: rateLimitingApproach
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: rateLimitingApproach, explaining how consumption is capped.'
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - relationship
+  - technologyComponentConfiguration
+  - decisionRecord
+- id: pii-masking
+  description: The AI Gateway must address how sensitive data, credentials, and personally identifiable information (PII) are masked or filtered.
+  rationale: >
+    To protect corporate data and comply with privacy regulations, gateways forwarding requests to
+    external model providers must ensure sensitive data is not leaked.
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-JW52  # Security Monitoring / protection
+    example: Integration with a data loss prevention (DLP) service.
+  - mechanism: technologyComponentConfiguration
+    criteria:
+      capability: 01KTWS3D6T-5TAZ  # AI Gateway itself
+    example: Local regex-masking or PII scrubbing plugins enabled on the gateway.
+  - mechanism: decisionRecord
+    key: dataProtectionApproach
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: dataProtectionApproach, documenting how PII leaks are mitigated.'
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: true
+  naRationale: Acceptable only for internal-only gateway deployments processing non-sensitive, pre-approved data.
+  validAnswerTypes:
+  - relationship
+  - technologyComponentConfiguration
+  - decisionRecord
+- id: audit-logging
+  description: The AI Gateway must address how prompt and response logs are captured and routed for compliance auditing.
+  rationale: >
+    Logs are required to audit model outputs, investigate security policy violations, and debug prompt behavior.
+  canBeSatisfiedBy:
+  - mechanism: relationship
+    criteria:
+      capability: 01KQQ4Q026-D04B  # Log Management
+    example: Outbound relationship forwarding request logs to a central security log management service.
+  - mechanism: decisionRecord
+    key: loggingApproach
+    example: 'A committed DecisionRecord, referenced from decisionRecords with key: loggingApproach, documenting why prompting audit logs are not required.'
+  minimumSatisfactions: 1
+  requirementMode: mandatory
+  naAllowed: false
+  validAnswerTypes:
+  - relationship
+  - decisionRecord
+lifecycleStatus: preferred
+tags:
+- ai-gateway
+- requirement-group
+- definition
