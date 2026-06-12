@@ -174,13 +174,25 @@ jobs:
 
           def vendored_text(text: str) -> str:
               replacements = {
-                  "framework/docs/": "docs/",
-                  "framework/schemas/": "schemas/",
+                  "framework/browser/": "browser/",
+                  "framework/commands/": "commands/",
                   "framework/configurations/": "configurations/",
+                  "framework/docs/": "docs/",
+                  "framework/draft-actions/": "draft-actions/",
+                  "framework/integrations/": "integrations/",
+                  "framework/reviews/": "reviews/",
+                  "framework/schemas/": "schemas/",
+                  "framework/templates/": "templates/",
                   "framework/tools/": "tools/",
-                  "framework/docs": "docs",
-                  "framework/schemas": "schemas",
+                  "framework/browser": "browser",
+                  "framework/commands": "commands",
                   "framework/configurations": "configurations",
+                  "framework/docs": "docs",
+                  "framework/draft-actions": "draft-actions",
+                  "framework/integrations": "integrations",
+                  "framework/reviews": "reviews",
+                  "framework/schemas": "schemas",
+                  "framework/templates": "templates",
                   "framework/tools": "tools",
               }
               for old, new in replacements.items():
@@ -203,7 +215,18 @@ jobs:
                   shutil.rmtree(destination)
               destination.mkdir(parents=True, exist_ok=True)
               framework_root = source_repo / "framework"
-              for relative in ("browser", "configurations", "docs", "schemas", "tools"):
+              for relative in (
+                  "browser",
+                  "commands",
+                  "configurations",
+                  "docs",
+                  "draft-actions",
+                  "integrations",
+                  "reviews",
+                  "schemas",
+                  "templates",
+                  "tools",
+              ):
                   source_dir = framework_root / relative
                   if source_dir.exists():
                       shutil.copytree(source_dir, destination / relative, dirs_exist_ok=True, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))

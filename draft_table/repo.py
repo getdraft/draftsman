@@ -38,12 +38,15 @@ WORKSPACE_DIRS = (
 
 FRAMEWORK_VENDOR_DIRS = (
     "browser",
+    "commands",
     "configurations",
     "docs",
-    "schemas",
-    "tools",
-    "commands",
+    "draft-actions",
     "integrations",
+    "reviews",
+    "schemas",
+    "templates",
+    "tools",
 )
 
 FRAMEWORK_VENDOR_OPTIONAL_DIRS = (
@@ -212,11 +215,12 @@ def framework_lock_data(framework_repo: Path = REPO_ROOT, source_label: str | No
 
 
 def copy_optional_framework_dir(source_root: Path, source_repo: Path, relative: str, destination: Path) -> bool:
+    copied = False
     for source in (source_root / relative, source_repo / relative):
         if source.exists():
             shutil.copytree(source, destination / relative, dirs_exist_ok=True, ignore=COPY_IGNORE)
-            return True
-    return False
+            copied = True
+    return copied
 
 
 def copy_optional_framework_file(source_root: Path, source_repo: Path, filename: str, destination: Path) -> bool:
@@ -349,14 +353,24 @@ def vendored_framework_text(text: str) -> str:
     text = text.replace(".draft/framework", protected_vendor_root)
     replacements = {
         "framework/browser/": "browser/",
-        "framework/docs/": "docs/",
-        "framework/schemas/": "schemas/",
+        "framework/commands/": "commands/",
         "framework/configurations/": "configurations/",
+        "framework/docs/": "docs/",
+        "framework/draft-actions/": "draft-actions/",
+        "framework/integrations/": "integrations/",
+        "framework/reviews/": "reviews/",
+        "framework/schemas/": "schemas/",
+        "framework/templates/": "templates/",
         "framework/tools/": "tools/",
         "framework/browser": "browser",
-        "framework/docs": "docs",
-        "framework/schemas": "schemas",
+        "framework/commands": "commands",
         "framework/configurations": "configurations",
+        "framework/docs": "docs",
+        "framework/draft-actions": "draft-actions",
+        "framework/integrations": "integrations",
+        "framework/reviews": "reviews",
+        "framework/schemas": "schemas",
+        "framework/templates": "templates",
         "framework/tools": "tools",
     }
     for old, new in replacements.items():

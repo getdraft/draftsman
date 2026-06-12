@@ -1,3 +1,27 @@
+## 0.56.2 - 2026-06-12
+
+Fixes a bug where several framework directories were not copied or path-replaced during automated updates or local workspace vendoring.
+
+### Compatibility Impact
+
+- No breaking changes. Existing workspaces and workflow files remain unaffected.
+
+### Added
+
+- None.
+
+### Changed
+
+- Updated local vendoring scripts (`draft_table/repo.py`) and workflow templates (`draft-framework-update.yml` and its `.tmpl` workspace counterpart) to ensure all 10 framework subdirectories are copied and path-replaced.
+
+### Fixed
+
+- Fixed copying and path-replacement of `draft-actions/`, `reviews/`, `commands/`, `integrations/`, and `templates/` directories in framework updates.
+
+### Migration Notes
+
+- None required. Workspaces can update to this framework release immediately.
+
 ## 0.56.1 - 2026-06-12
 
 Introduces the AI-Enabled Application ReferenceArchitecture, establishing the standard composition pattern and traffic-routing constraints for LLM-integrated systems.
