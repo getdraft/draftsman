@@ -1,3 +1,29 @@
+## 0.56.1 - 2026-06-12
+
+Introduces the AI-Enabled Application ReferenceArchitecture, establishing the standard composition pattern and traffic-routing constraints for LLM-integrated systems.
+
+### Compatibility Impact
+
+- No breaking changes. Existing ReferenceArchitectures and SoftwareDeploymentPatterns remain unaffected.
+- The new ReferenceArchitecture is additive.
+
+### Added
+
+- Added `AI-Enabled Application Pattern` ReferenceArchitecture ([ra-ai-enabled-application.yaml](file:///Users/dsackrider/draftsman/framework/configurations/reference-architectures/ra-ai-enabled-application.yaml)), UID: `01KTWYEE98-D3QV`.
+- Added the `ai-applications-require-ai-gateway` architecture constraint to enforce routing LLM traffic through an `ai_gateway`.
+
+### Changed
+
+- Regenerated documentation mapping index and static browser data to include the new ReferenceArchitecture.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- None required. Workspaces can begin following the new `AI-Enabled Application Pattern` ReferenceArchitecture immediately.
+
 ## 0.56.0 - 2026-06-12
 
 Introduces native support for AI and Machine Learning as a strategic domain, defining a new first-class `ai_gateway` service object type, core capabilities, and base requirements.
