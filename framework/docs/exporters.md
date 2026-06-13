@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "DRAFT Exporters"
+description: "DRAFT catalogs are authoritative YAML — the source of truth for architecture"
+tags:
+  - draft
+  - documentation
+  - exporters
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # DRAFT Exporters
 
 DRAFT catalogs are authoritative YAML — the source of truth for architecture

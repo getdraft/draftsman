@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Draft Operations Guide"
+description: "The Draft Operations Guide defines how Draft work is routed, reviewed, ticketed, triaged, assigned, and closed in a Git-based company workspace."
+tags:
+  - draft
+  - documentation
+  - operations_guide
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Draft Operations Guide
 
 > **Audience:** Draft Admins, Shared Services, and Engineering Representatives.

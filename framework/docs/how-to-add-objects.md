@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "How To Add Objects"
+description: "The fastest way to add a new object correctly is to decide what kind of thing you are modeling before you write YAML."
+tags:
+  - draft
+  - documentation
+  - how_to_add_objects
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # How To Add Objects
 
 ## Start With The Right Question

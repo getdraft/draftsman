@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Company Vocabulary"
+description: "Company vocabulary lists are optional governed lists in `.draft/workspace.yaml`."
+tags:
+  - draft
+  - documentation
+  - company_vocabulary
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Company Vocabulary
 
 Company vocabulary lists are optional governed lists in `.draft/workspace.yaml`.

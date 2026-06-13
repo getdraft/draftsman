@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Roles and Layers"
+description: "DRAFT recognizes three roles."
+tags:
+  - draft
+  - documentation
+  - roles_and_layers
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Roles and Layers
 
 ## The Three Roles

@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Shared Services Onboarding Guide"
+description: "As a Shared Services representative, you are accountable for the **shared-services layer** of the architecture catalog."
+tags:
+  - draft
+  - documentation
+  - shared_services_onboarding
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Shared Services Onboarding Guide
 
 > **Audience:** Platform Engineers, Infrastructure Leads, Security Architects, and Database Administrators.

@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "DRAFT Object Types"
+description: "DRAFT object types are split into deployable objects and non-deployable"
+tags:
+  - draft
+  - documentation
+  - object_types
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # DRAFT Object Types
 
 ## Purpose

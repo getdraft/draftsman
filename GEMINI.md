@@ -1,3 +1,14 @@
+---
+type: ai-instructions
+title: "Gemini Instructions"
+description: "Use [AGENTS.md](AGENTS.md) as the canonical AI bootstrap for this repository."
+tags:
+  - draft
+  - ai
+  - bootstrap
+  - gemini
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Gemini Instructions
 
 Use [AGENTS.md](AGENTS.md) as the canonical AI bootstrap for this repository.

@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "DRAFT User Manual"
+description: "DRAFT is an AI-first, Git-native, repo-first framework for documenting governed architecture."
+tags:
+  - draft
+  - documentation
+  - user_manual
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # DRAFT User Manual
 
 DRAFT is an AI-first, Git-native, repo-first framework for documenting governed architecture. It turns architecture conversations into structured YAML that lives in an ordinary Git repository, validates like code, and is reviewed in pull requests — with no DRAFT app, no hosted service, and no separate CLI.

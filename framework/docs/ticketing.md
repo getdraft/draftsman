@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Ticketing and Issue Creation Workflow"
+description: "DRAFT is a repo-first, automation-friendly framework."
+tags:
+  - draft
+  - documentation
+  - ticketing
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Ticketing and Issue Creation Workflow
 
 > **Audience:** Draft Admins, Shared Services, and Engineering Representatives.

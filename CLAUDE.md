@@ -1,3 +1,14 @@
+---
+type: ai-instructions
+title: "Claude Instructions"
+description: "Use [AGENTS.md](AGENTS.md) as the canonical AI bootstrap for this repository."
+tags:
+  - draft
+  - ai
+  - bootstrap
+  - claude
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Claude Instructions
 
 Use [AGENTS.md](AGENTS.md) as the canonical AI bootstrap for this repository.

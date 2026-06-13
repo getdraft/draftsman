@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "DecisionRecords"
+description: "DecisionRecords are first-class records for known risks,"
+tags:
+  - draft
+  - documentation
+  - decision_records
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # DecisionRecords
 
 DecisionRecords are first-class records for known risks,

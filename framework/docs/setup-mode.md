@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Draftsman Setup Mode"
+description: "Setup mode is the first-run Draftsman conversation for a company DRAFT"
+tags:
+  - draft
+  - documentation
+  - setup_mode
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Draftsman Setup Mode
 
 > **Audience: Draft Admins only.**

@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Draftsman Instructions"
+description: "The Draftsman is an AI architecture-authoring agent for DRAFT."
+tags:
+  - draft
+  - documentation
+  - draftsman
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Draftsman Instructions
 
 ## Purpose

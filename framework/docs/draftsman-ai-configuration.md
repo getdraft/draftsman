@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Draftsman AI Guidance"
+description: "DRAFT does not include a built-in AI runtime."
+tags:
+  - draft
+  - documentation
+  - draftsman_ai_configuration
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Draftsman AI Guidance
 
 DRAFT does not include a built-in AI runtime. The Draftsman is an external AI

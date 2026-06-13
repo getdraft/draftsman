@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "TechnologyComponents"
+description: "A TechnologyComponent is a discrete vendor product object."
+tags:
+  - draft
+  - documentation
+  - technology_components
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # TechnologyComponents
 
 ## What A TechnologyComponent Is

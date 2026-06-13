@@ -1499,6 +1499,10 @@ def write_markdown_page(source_path: Path, output_path: Path, fallback_title: st
     if not source_path.exists():
         return False
     markdown_text = source_path.read_text(encoding="utf-8")
+    if markdown_text.startswith("---"):
+        parts = markdown_text.split("---", 2)
+        if len(parts) >= 3:
+            markdown_text = parts[2].lstrip()
     title = markdown_document_title(markdown_text, fallback_title)
     content, headings = render_markdown_document(markdown_text)
     toc = "\n".join(

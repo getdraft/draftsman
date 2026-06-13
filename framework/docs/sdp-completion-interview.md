@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "SDP Completion Interview"
+description: "The SDP Completion Interview is a structured protocol for enriching an existing"
+tags:
+  - draft
+  - documentation
+  - sdp_completion_interview
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # SDP Completion Interview
 
 ## Purpose

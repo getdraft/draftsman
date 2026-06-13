@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Delivery Models"
+description: "Delivery models explain how a deployable service is operated."
+tags:
+  - draft
+  - documentation
+  - delivery_models
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Delivery Models
 
 ## Purpose

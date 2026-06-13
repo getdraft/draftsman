@@ -144,6 +144,17 @@ def template_files() -> list[Path]:
 
 def main() -> None:
     lines: list[str] = [
+        "---",
+        "type: ai-index",
+        "title: \"AI Framework Index\"",
+        "description: \"Generated index mapping all schemas, base configurations, and tools in the DRAFT framework checkout.\"",
+        "tags:",
+        "  - draft",
+        "  - ai_index",
+        "  - index",
+        "timestamp: 2026-06-12T21:06:02-07:00",
+        "---",
+        "",
         "# AI Framework Index",
         "",
         "This generated file gives AI assistants a fast map of the DRAFT framework checkout.",
