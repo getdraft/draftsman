@@ -1,3 +1,29 @@
+## 0.57.4 - 2026-06-12
+
+Introduces new 3rd-party personality (cast) packs to customize Draftsman personas.
+
+### Compatibility Impact
+
+- No breaking changes. Existing workspaces and workflows remain unaffected.
+
+### Added
+
+- Added `framework/personalities/` directory with three alternative cast packs: `friends`, `big-bang-theory`, and `cheers`.
+- Added `framework/personalities/README.md` documenting personality pack activation and customization.
+
+### Changed
+
+- Updated `draft_table/repo.py` and automated update workflows to support copying and path-replacing the `personalities/` framework directory.
+- Updated `generate_ai_index.py` to index the new `framework/personalities/README.md` entrypoint.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- None required. Workspaces can update immediately.
+
 ## 0.57.3 - 2026-06-12
 
 Fixes a bug where document summaries in `AI_INDEX.md` showed `---` due to OKF frontmatter, and removes the hardcoded timestamp from `AI_INDEX.md`.
