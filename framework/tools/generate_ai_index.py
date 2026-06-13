@@ -38,6 +38,7 @@ FRAMEWORK_ENTRYPOINTS = [
     ("framework/docs/requirement-groups.md", "Unified requirement group authoring and validation behavior."),
     ("framework/docs/capabilities.md", "Capability object model and implementation lookup behavior."),
     ("framework/docs/drafting-sessions.md", "How to persist incomplete authoring work."),
+    ("framework/personalities/README.md", "Draftsman personality packs and alternative cast configuration guidance."),
     ("framework/tools/validate.py", "Executable validation for schemas, RequirementGroups, capabilities, and references."),
     ("framework/tools/apply_vocabulary_proposals.py", "Materializes Draftsman vocabulary_proposal files into reviewable company vocabulary entries."),
     ("framework/tools/repair_uids.py", "Explicit repair utility that adds or replaces generated object UIDs and rewrites object references."),
