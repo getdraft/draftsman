@@ -7,7 +7,7 @@ description: Deployment pattern for software-as-a-service products that serve mu
   management zones with explicit isolation requirements.
 patternType: multi-tenant
 catalogStatus: complete
-lifecycleStatus: preferred
+lifecycleStatus: candidate
 tags:
 - reference-architecture
 - multi-tenant

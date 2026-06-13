@@ -176,6 +176,9 @@ def workspace_yaml_roots(workspace_root: Path) -> list[Path]:
             for provider_config in sorted(provider_root.glob("*/configurations"))
             if provider_config.exists()
         )
+    for community_path in (REPO_ROOT / "community", workspace_root / "community", workspace_root / ".draft" / "framework" / "community"):
+        if community_path.exists() and community_path not in roots:
+            roots.append(community_path)
     workspace_config = workspace_root / "configurations"
     workspace_catalog = workspace_root / "catalog"
     if workspace_config.exists():

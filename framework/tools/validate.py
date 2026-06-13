@@ -143,6 +143,9 @@ def workspace_yaml_roots(workspace_root: Path) -> list[Path]:
             for provider_config in sorted(provider_root.glob("*/configurations"))
             if provider_config.exists()
         )
+    for community_path in (REPO_ROOT / "community", workspace_root / "community", workspace_root / ".draft" / "framework" / "community"):
+        if community_path.exists() and community_path not in roots:
+            roots.append(community_path)
     workspace_config = workspace_root / "configurations"
     workspace_catalog = workspace_root / "catalog"
     if workspace_config.exists():
@@ -1913,7 +1916,11 @@ def validate_workspace_vocabulary_references(
 
         # Validate owner.team presence based on catalog status
         obj_type = obj.get("type")
-        is_framework_file = "framework/configurations/" in path.as_posix() or "framework/schemas/" in path.as_posix()
+        is_framework_file = (
+            "framework/configurations/" in path.as_posix()
+            or "framework/schemas/" in path.as_posix()
+            or "community/" in path.as_posix()
+        )
         import tempfile
         is_test_file = Path(tempfile.gettempdir()).resolve().as_posix() in Path(path).resolve().as_posix()
         if not is_framework_file and not is_test_file and obj_type in (STANDARD_TYPES | {"software_deployment_pattern", "reference_architecture", "decision_record"}):

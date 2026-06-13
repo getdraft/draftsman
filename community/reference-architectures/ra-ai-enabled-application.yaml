@@ -9,7 +9,7 @@ description: >
   egress routing, prompt safety, and cost controls.
 patternType: ai-enabled-rag
 catalogStatus: complete
-lifecycleStatus: preferred
+lifecycleStatus: candidate
 tags:
 - reference-architecture
 - ai

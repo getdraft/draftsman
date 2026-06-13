@@ -5,7 +5,7 @@ name: Event-Driven Architecture
 description: Starter pattern for asynchronous systems coordinated by messaging, event routing, producers, consumers, and eventually consistent state.
 patternType: event-driven
 catalogStatus: complete
-lifecycleStatus: preferred
+lifecycleStatus: candidate
 tags:
 - reference-architecture
 - event-driven
