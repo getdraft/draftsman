@@ -189,11 +189,17 @@ deployableObjectEntry:
   - ref
   optionalFields:
   - networkZone
+  - diagramTier
   - intent
   - instance
   - riskRef
   - notes
   enumFields:
+    diagramTier:
+    - presentation
+    - application
+    - data
+    - utility
     intent:
     - ha
     - sa
