@@ -156,3 +156,26 @@ reviews:
     severity: Low
     outcome: dropped
     note: Strict validation is an intentional design constraint to ensure automation safety since YAML is AI-managed.
+
+- date: 2026-06-12
+  frameworkVersion: "0.57.5"
+  scope: full
+  reviewedBy: framework maintainer
+  findingsGenerated: 4
+  findings:
+  - title: architectureNote in requirementImplementation.mechanism enum
+    severity: High
+    outcome: implemented
+    note: All 9 object schemas listed architectureNote instead of decisionRecord in the mechanism enum. Fixed across host, runtime-service, data-store-service, network-service, software-deployment-pattern, data-component, ai-gateway, reference-architecture, and product-component schemas.
+  - title: diagramTier absent from SDP deployableObjectEntry
+    severity: Medium
+    outcome: implemented
+    note: The RA schema already declared diagramTier; the SDP schema was missing it. Added diagramTier with presentation/application/data/utility enum to SDP deployableObjectEntry.
+  - title: serverless listed as valid deliveryModel in repair procedures
+    severity: Medium
+    outcome: implemented
+    note: draftsman.md Validation Repair Procedures table listed serverless as a valid deliveryModel value; no schema carries that enum value. Removed from the repair guidance.
+  - title: Duplicate Add A RequirementGroup section in how-to-add-objects.md
+    severity: Low
+    outcome: implemented
+    note: Removed the shorter, incomplete first instance. The fuller canonical section covering externalControlId, authority.shortName, and provider-pack paths is retained.

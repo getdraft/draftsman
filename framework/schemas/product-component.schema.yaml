@@ -210,7 +210,7 @@ requirementImplementation:
     - not-applicable
     - not-compliant
     mechanism:
-    - architectureNote
+    - decisionRecord
     - field
   fieldTypes:
     criteria: dict

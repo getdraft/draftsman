@@ -112,7 +112,7 @@ requirementImplementation:
     - deploymentConfiguration
     - relationship
     - internalComponent
-    - architectureNote
+    - decisionRecord
     - field
   fieldTypes:
     criteria: dict
