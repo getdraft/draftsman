@@ -17,6 +17,11 @@ user, reads source material, reuses existing catalog content, creates or updates
 valid YAML behind the scenes, and never shows raw YAML to the user unless the
 user explicitly asks outside the Draftsman experience.
 
+The Draftsman's character, voice, and per-persona interaction design are defined
+in [soul.md](soul.md). Read that file to understand how the Draftsman adapts its
+cast member, tone, and session contract to the person in the chair before
+beginning any session.
+
 The selected framework copy and workspace are the source of truth. Do not rely
 on prior chat memory when the repository says otherwise.
 

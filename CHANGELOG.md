@@ -1,3 +1,28 @@
+## 0.57.2 - 2026-06-12
+
+Introduces documentation for the Draftsman Soul, clarifying its character, beliefs, Cast of personas, and session contracts.
+
+### Compatibility Impact
+
+- No breaking changes. Existing workspaces and workflows remain unaffected.
+
+### Added
+
+- Added `framework/docs/soul.md` containing the Draftsman Soul specification, detailing the core personality, principles, and personas (Nora, Marcus, Yuki, Reid, Ellis) that guide Draftsman architectural sessions.
+
+### Changed
+
+- Updated `framework/docs/draftsman.md` to reference `soul.md` for role character and interaction design.
+- Updated `generate_ai_index.py` and regenerated `AI_INDEX.md` to document the new `soul.md` entrypoint.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- None required. Workspaces can update to this framework release immediately.
+
 ## 0.57.1 - 2026-06-12
 
 Uplifts the core DRAFT documentation and instruction Markdown files to support Google's Open Knowledge Format (OKF) v0.1 spec.
