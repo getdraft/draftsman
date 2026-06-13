@@ -23,6 +23,7 @@ FRAMEWORK_ENTRYPOINTS = [
     ("framework/browser", "Static browser shell, CSS, JavaScript, and default theme assets copied by generate_browser.py."),
     ("security.md", "Credential and local security boundary notes for optional local tooling."),
     ("framework/docs/draftsman.md", "Draftsman role, intent routing, and authoring rules."),
+    ("framework/docs/soul.md", "Draftsman character, cast of named personas, per-persona session contracts, routing logic, and personality pack extensibility. Read this to understand how the Draftsman adapts its voice and interaction style to the person in the chair."),
     ("framework/docs/setup-mode.md", "Draftsman first-run setup mode and guided interview cadence."),
     ("framework/docs/engineering-onboarding.md", "Targeted onboarding tutorial for product engineering teams."),
     ("framework/docs/shared-services-onboarding.md", "Targeted onboarding tutorial for platform/shared services teams."),
