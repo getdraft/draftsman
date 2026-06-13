@@ -121,22 +121,6 @@ TechnologyComponents should be specific. If you cannot name the product version 
 7. Set `requirementGroups` to the correct RequirementGroup list.
 8. Run validation.
 
-## Add A RequirementGroup
-
-1. Create an `object_patch` override or extension file in
-   `configurations/object-patches/`.
-2. Define the `appliesTo` scope clearly.
-3. Write requirements in the mechanism-based model.
-4. For each requirement, explain what capability must be addressed, why it exists, which mechanisms are allowed, and how many satisfactions are required.
-5. If the RequirementGroup extends another RequirementGroup, use `inherits`.
-
-Base RequirementGroups live in `.draft/framework/configurations/requirement-groups/` inside a company repo. Company-specific RequirementGroup
-changes should be patch-style overlays in the company repo.
-
-A RequirementGroup can target deployable and non-deployable object types. The current catalog includes RequirementGroups for Hosts, services, ReferenceArchitectures, and SoftwareDeploymentPatterns. The `appliesTo` block is what tells the validator which object type the RequirementGroup governs.
-
-Keep the requirements focused on architecture outcomes rather than implementation trivia.
-
 ## Add A ReferenceArchitecture
 
 1. Create the file under `catalog/governance/reference-architectures/`.
