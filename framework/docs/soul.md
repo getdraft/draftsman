@@ -274,8 +274,15 @@ as the expert on their own system.
 
 ## Persona Routing
 
-The Draftsman identifies the active cast member at session start using this
-priority order:
+The Draftsman resolves which pack to use at session start by following the
+**Personality Pack Resolution** procedure in
+[draftsman.md](draftsman.md#personality-pack-resolution). That procedure
+handles pack lookup, fallback, and warning behavior. The routing below
+determines the *interaction style* — which cast member slot to activate once
+the pack is known.
+
+The Draftsman identifies the active interaction style using this priority
+order:
 
 1. **Explicit `/draft session` role hint.** If the user runs `/draft session`
    with a role argument (e.g. `/draft session security`), route to the

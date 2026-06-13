@@ -15,6 +15,7 @@ Introduces new 3rd-party personality (cast) packs to customize Draftsman persona
 
 - Updated `draft_table/repo.py` and automated update workflows to support copying and path-replacing the `personalities/` framework directory.
 - Updated `generate_ai_index.py` to index the new `framework/personalities/README.md` entrypoint.
+- Updated `framework/docs/workspaces.md`, `framework/docs/draftsman.md`, and `framework/docs/soul.md` to document personality pack resolution, activation, and custom pack lookup order.
 
 ### Fixed
 

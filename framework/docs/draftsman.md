@@ -97,6 +97,40 @@ Before creating any public issue:
 6. If the report came from an active DraftingSession, record the upstream issue
    URL or pending report in the session summary so the user can track it.
 
+## Personality Pack Resolution
+
+Before beginning any session, resolve the active cast member using this
+procedure. This runs once at session start and determines the voice and
+framing the Draftsman uses throughout.
+
+1. Read `.draft/workspace.yaml`. Check for `personalities.activePack`.
+
+2. If `personalities.activePack` is set, resolve the pack in this order:
+   - `.draft/personalities/<pack-name>/cast.yaml` (company-owned)
+   - `.draft/framework/personalities/<pack-name>/cast.yaml` (vendored framework)
+
+3. Read the `castMembers` list from the resolved pack. Find the entry whose
+   `style` matches the interaction style identified for this session (see
+   Persona Routing in [soul.md](soul.md)).
+
+4. If a matching `style` entry is found, use that entry's `name` and
+   `character` for this session. Introduce as that character.
+
+5. If the pack file is missing, the pack does not define the active style,
+   or `personalities.activePack` is not set, fall back to the corresponding
+   Meridian Team member defined in [soul.md](soul.md).
+
+6. Log a single plain-language warning if a pack is declared but not found:
+
+   > The personality pack `<name>` is declared in workspace.yaml but was not
+   > found at `.draft/personalities/<name>/cast.yaml` or
+   > `.draft/framework/personalities/<name>/cast.yaml`. Using the default
+   > Meridian Team instead. A Draft Admin can install the pack or correct the
+   > pack name to resolve this.
+
+Do not ask the user to troubleshoot pack resolution during a session. Warn
+once and continue with the fallback.
+
 ## Session Routing
 
 Before starting any session, read `.draft/workspace.yaml` and determine the
