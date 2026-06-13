@@ -252,6 +252,78 @@ submit a `vocabulary_proposal` for review.
 See [Company Vocabulary](company-vocabulary.md) for the complete model,
 proposal file shape, and Draftsman interview behavior.
 
+## Personality Packs
+
+A personality pack swaps the Draftsman's default cast (the Meridian Team) for
+an alternative set of named personas. The underlying routing, catalog rules,
+and authoring behavior are unchanged — only the character voice and session
+framing differ.
+
+### Packs that ship with the framework
+
+The DRAFT framework ships three built-in packs alongside the Meridian default:
+
+| Pack name | Cast |
+|---|---|
+| `friends` | Monica, Rachel, Phoebe, Ross, Chandler, Joey |
+| `big-bang-theory` | Howard, Penny, Raj, Sheldon, Amy, Bernadette |
+| `cheers` | Carla, Norm, Woody, Cliff, Frasier, Sam |
+
+These packs vendor automatically with the framework into
+`.draft/framework/personalities/` when a workspace runs `/draft update`.
+No separate download or install step is needed.
+
+### Activating a pack
+
+Add a `personalities` block to `.draft/workspace.yaml`:
+
+```yaml
+personalities:
+  activePack: cheers
+```
+
+That is the entire activation step. The Draftsman reads this setting at session
+start, locates the pack, and routes to the matching cast member for the current
+interaction style. Any style not present in the pack falls back to the
+corresponding Meridian Team member.
+
+### Custom and proprietary packs
+
+Packs not distributed with the framework belong in the company workspace
+outside the vendored framework tree so they survive framework updates:
+
+```
+.draft/
+  personalities/
+    my-company-pack/
+      cast.yaml
+```
+
+Activate the same way:
+
+```yaml
+personalities:
+  activePack: my-company-pack
+```
+
+The Draftsman checks `.draft/personalities/` before `.draft/framework/personalities/`,
+so a company pack with the same name as a built-in pack takes precedence.
+
+### Pack lookup order
+
+When `personalities.activePack` is set, the Draftsman resolves the pack in
+this order:
+
+1. `.draft/personalities/<pack-name>/cast.yaml` — company-owned pack
+2. `.draft/framework/personalities/<pack-name>/cast.yaml` — vendored framework pack
+3. If neither is found, log a warning and fall back to the full Meridian Team
+
+### Writing a custom pack
+
+See [framework/personalities/README.md](../personalities/README.md) for the
+`cast.yaml` schema and [framework/docs/soul.md](soul.md) for the cast member
+fields and interaction style identifiers.
+
 ## Authoring Workflow
 
 The default workspace workflow is source based:
