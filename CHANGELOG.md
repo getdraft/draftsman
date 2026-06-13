@@ -1,3 +1,29 @@
+## 0.57.6 - 2026-06-13
+
+Fixes schema and documentation contradictions surfaced by the 2026-06-12 full framework review.
+
+### Compatibility Impact
+
+- No breaking changes. `decisionRecord` was already the documented valid value; this release makes the schema match. Any workspace that had `mechanism: architectureNote` in a `requirementImplementations` entry will now fail validation — change those to `mechanism: decisionRecord`.
+
+### Added
+
+- Added `diagramTier` field (`presentation` / `application` / `data` / `utility`) to `deployableObjectEntry` in `software-deployment-pattern.schema.yaml`, matching the existing RA schema.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- Replaced `architectureNote` with `decisionRecord` in `requirementImplementation.mechanism` enum across all 9 object schemas (`host`, `runtime-service`, `data-store-service`, `network-service`, `software-deployment-pattern`, `data-component`, `ai-gateway`, `reference-architecture`, `product-component`).
+- Removed `serverless` from the `deliveryModel` repair procedure in `draftsman.md`; it is not a valid enum value in any schema.
+- Removed duplicate "Add A RequirementGroup" section from `how-to-add-objects.md`; the shorter incomplete copy is gone and the fuller canonical section is retained.
+
+### Migration Notes
+
+- If any `requirementImplementations` entry uses `mechanism: architectureNote`, change it to `mechanism: decisionRecord`.
+
 ## 0.57.5 - 2026-06-12
 
 Documents personality pack resolution, activation, and custom pack lookup.
