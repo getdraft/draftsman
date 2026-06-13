@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Security And Compliance RequirementGroups"
+description: "DRAFT treats compliance as an explicitly activated authoring and validation layer."
+tags:
+  - draft
+  - documentation
+  - security_and_compliance_controls
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Security And Compliance RequirementGroups
 
 ## What This Layer Does

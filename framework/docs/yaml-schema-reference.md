@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "YAML Schema Reference"
+description: "This page is the quickest way to understand how to build a valid YAML object in"
+tags:
+  - draft
+  - documentation
+  - yaml_schema_reference
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # YAML Schema Reference
 
 This page is the quickest way to understand how to build a valid YAML object in

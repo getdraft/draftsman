@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Framework Overview"
+description: "This page is the high-level object map for DRAFT."
+tags:
+  - draft
+  - documentation
+  - overview
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Framework Overview
 
 This page is the high-level object map for DRAFT. For the complete object type

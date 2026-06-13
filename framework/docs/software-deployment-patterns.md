@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "SoftwareDeploymentPatterns"
+description: "A SoftwareDeploymentPattern is a declaration that a specific product is intended"
+tags:
+  - draft
+  - documentation
+  - software_deployment_patterns
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # SoftwareDeploymentPatterns
 
 ## What A SoftwareDeploymentPattern Is

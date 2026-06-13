@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Engineering Onboarding Guide"
+description: "As an Engineering representative, you are accountable for the **engineering layer** of the architecture catalog."
+tags:
+  - draft
+  - documentation
+  - engineering_onboarding
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Engineering Onboarding Guide
 
 > **Audience:** Product Developers, Tech Leads, and Software Architects.

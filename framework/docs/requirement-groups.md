@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "RequirementGroups"
+description: "A RequirementGroup is the unified DRAFT requirement model."
+tags:
+  - draft
+  - documentation
+  - requirement_groups
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # RequirementGroups
 
 ## What A RequirementGroup Is

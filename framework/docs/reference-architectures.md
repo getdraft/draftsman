@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "ReferenceArchitectures"
+description: "The DRAFT framework ships a set of baseline ReferenceArchitectures in"
+tags:
+  - draft
+  - documentation
+  - reference_architectures
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # ReferenceArchitectures
 
 ## Framework and Community RAs

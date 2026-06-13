@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "DraftingSessions"
+description: "A DraftingSession is a machine-readable record of partial architecture work."
+tags:
+  - draft
+  - documentation
+  - drafting_sessions
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # DraftingSessions
 
 ## What A DraftingSession Is

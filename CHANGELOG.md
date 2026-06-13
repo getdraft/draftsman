@@ -1,3 +1,29 @@
+## 0.57.1 - 2026-06-12
+
+Uplifts the core DRAFT documentation and instruction Markdown files to support Google's Open Knowledge Format (OKF) v0.1 spec.
+
+### Compatibility Impact
+
+- No breaking changes. Existing workspaces and workflows remain unaffected.
+
+### Added
+
+- None.
+
+### Changed
+
+- Prepended OKF v0.1 compliant YAML frontmatter blocks containing `type`, `title`, `description`, `tags`, and `timestamp` fields to all framework instruction files (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`) and all 30 Markdown documentation files under `framework/docs/`.
+- Updated `generate_browser.py` to strip the YAML frontmatter before rendering Markdown to HTML, keeping the generated browser shell clean.
+- Updated `generate_ai_index.py` to output the OKF frontmatter in the generated `AI_INDEX.md` file.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- None required. Workspaces can update to this framework release immediately.
+
 ## 0.57.0 - 2026-06-12
 
 Introduce opt-in `community/` layer for framework starter content.

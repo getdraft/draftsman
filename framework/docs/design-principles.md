@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Design Principles"
+description: "DRAFT is opinionated."
+tags:
+  - draft
+  - documentation
+  - design_principles
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Design Principles
 
 DRAFT is opinionated. These principles explain the reasoning behind the

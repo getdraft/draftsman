@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Capabilities"
+description: "A Capability is a first-class framework object that names an architecture"
+tags:
+  - draft
+  - documentation
+  - capabilities
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Capabilities
 
 ## What A Capability Is

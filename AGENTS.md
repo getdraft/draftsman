@@ -1,3 +1,14 @@
+---
+type: ai-instructions
+title: "AI Agent Instructions"
+description: "This repository is AI-first."
+tags:
+  - draft
+  - ai
+  - bootstrap
+  - agents
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # AI Agent Instructions
 
 This repository is AI-first. Any AI assistant connected to this repo should use

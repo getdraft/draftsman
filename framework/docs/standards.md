@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Deployable Objects"
+description: "DRAFT previously used the word \"Standard\" for reusable deployable building"
+tags:
+  - draft
+  - documentation
+  - standards
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Deployable Objects
 
 ## Current Terminology

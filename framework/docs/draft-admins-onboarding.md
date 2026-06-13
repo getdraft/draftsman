@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Draft Admins Onboarding Guide"
+description: "As a Draft Admin, you own the DRAFT **platform configuration** and **governance layers** inside the repository."
+tags:
+  - draft
+  - documentation
+  - draft_admins_onboarding
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Draft Admins Onboarding Guide
 
 > **Audience:** Workspace Administrators, Enterprise Architects, and Devops Leads.

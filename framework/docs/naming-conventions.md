@@ -1,3 +1,13 @@
+---
+type: documentation
+title: "Naming Conventions"
+description: "When a DRAFT object type is referred to by name in prose, headings, schema"
+tags:
+  - draft
+  - documentation
+  - naming_conventions
+timestamp: 2026-06-12T21:06:02-07:00
+---
 # Naming Conventions
 
 ## Object Type Names
