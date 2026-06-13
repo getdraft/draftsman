@@ -1,4 +1,4 @@
-## 0.57.6 - 2026-06-13
+## 0.58.0 - 2026-06-13
 
 Fixes schema and documentation contradictions surfaced by the 2026-06-12 full framework review.
 
