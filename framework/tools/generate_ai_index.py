@@ -153,7 +153,6 @@ def main() -> None:
         "  - draft",
         "  - ai_index",
         "  - index",
-        "timestamp: 2026-06-12T21:06:02-07:00",
         "---",
         "",
         "# AI Framework Index",
@@ -293,21 +292,49 @@ def first_comment(path: Path) -> str:
 
 
 def markdown_title(path: Path) -> str:
-    with path.open("r", encoding="utf-8") as handle:
-        for line in handle:
-            stripped = line.strip()
-            if stripped.startswith("# "):
-                return display_template_text(stripped.lstrip("#").strip())
+    text = path.read_text(encoding="utf-8")
+    content = text
+    if text.startswith("---"):
+        parts = text.split("---", 2)
+        if len(parts) >= 3:
+            content = parts[2]
+            try:
+                frontmatter = yaml.safe_load(parts[1]) or {}
+                if isinstance(frontmatter, dict) and "title" in frontmatter:
+                    title = frontmatter["title"]
+                    if title:
+                        return display_template_text(oneline(title))
+            except Exception:
+                pass
+    for line in content.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("# "):
+            return display_template_text(stripped.lstrip("#").strip())
     return path.stem.replace("-", " ").title()
 
 
 def markdown_summary(path: Path) -> str:
-    with path.open("r", encoding="utf-8") as handle:
-        for line in handle:
-            stripped = line.strip()
-            if not stripped or stripped.startswith("#"):
-                continue
-            return truncate(display_template_text(stripped), 120)
+    text = path.read_text(encoding="utf-8")
+    content = text
+    description = ""
+    if text.startswith("---"):
+        parts = text.split("---", 2)
+        if len(parts) >= 3:
+            content = parts[2]
+            try:
+                frontmatter = yaml.safe_load(parts[1]) or {}
+                if isinstance(frontmatter, dict):
+                    description = frontmatter.get("description", "")
+            except Exception:
+                pass
+    if description:
+        return truncate(display_template_text(oneline(description)), 120)
+
+    for line in content.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        return truncate(display_template_text(stripped), 120)
     return ""
 
 

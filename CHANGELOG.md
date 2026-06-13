@@ -1,3 +1,27 @@
+## 0.57.3 - 2026-06-12
+
+Fixes a bug where document summaries in `AI_INDEX.md` showed `---` due to OKF frontmatter, and removes the hardcoded timestamp from `AI_INDEX.md`.
+
+### Compatibility Impact
+
+- No breaking changes. Existing workspaces and workflows remain unaffected.
+
+### Added
+
+- None.
+
+### Changed
+
+- Updated `generate_ai_index.py` to strip and parse YAML frontmatter from documentation before extracting titles and summaries, and removed the hardcoded `timestamp` field from the generated `AI_INDEX.md` frontmatter.
+
+### Fixed
+
+- Fixed bug where `AI_INDEX.md` doc summaries showed `---` after OKF frontmatter was added in `v0.57.1`.
+
+### Migration Notes
+
+- None required. Workspaces can update to this framework release immediately.
+
 ## 0.57.2 - 2026-06-12
 
 Introduces documentation for the Draftsman Soul, clarifying its character, beliefs, Cast of personas, and session contracts.
