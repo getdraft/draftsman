@@ -1,0 +1,61 @@
+schemaVersion: '1.0'
+uid: 8Q79XMD460-MQ5A
+type: reference_architecture
+name: Two-Tier Client/Data
+description: Deployment pattern for simple applications where a client or static presentation
+  layer talks directly to a managed data service without a separately operated application
+  runtime tier. Use this for static sites, thick clients, reporting front ends, or low-code
+  applications whose business logic is primarily in the client and managed data platform.
+patternType: two-tier
+catalogStatus: complete
+lifecycleStatus: preferred
+tags:
+- reference-architecture
+- two-tier
+- client-data
+applicableDefinitionChecklist:
+- The client or presentation boundary must be explicit and protected by an approved edge or traffic-management service when externally reachable.
+- Durable state must be modeled as a DataStoreService; client-local or browser-local state is not the system of record.
+- Authentication and access-control behavior must be documented because there is no application runtime tier mediating every request.
+- Any direct client-to-data path must document authorization, data classification, and audit implications.
+serviceGroups:
+- name: Client Boundary
+  deployableObjects:
+  - objectType: network_service
+    capability: 01KT0V5MCV-HZ37
+    diagramTier: presentation
+    notes: CDN, static hosting edge, client delivery endpoint, or equivalent boundary for serving the client experience.
+  - objectType: network_service
+    capability: 01KT0V5MCV-3A6F
+    diagramTier: presentation
+    notes: API gateway or managed data access boundary used when direct client calls need authentication, throttling, or payload validation.
+- name: Data Tier
+  deployableObjects:
+  - objectType: data_store_service
+    capability: 01KT0V5MCV-VD0Y
+    diagramTier: data
+    notes: Managed data platform, database, object store, or reporting data service used as the durable system of record.
+architectureNotes:
+  patternRationale: Two-tier deployment is appropriate when the product does not need a separately operated application server. The pattern keeps the client boundary and data boundary explicit so authorization, data classification, and audit controls remain visible.
+  ownershipGuidance: Shared services owns the edge and data service objects when no approved catalog service exists yet; engineering owns the ProductComponent and DataComponent entries that use those services.
+constraints:
+- id: two-tier-requires-data-store-service
+  description: Two-tier SDPs must include a data_store_service for durable state.
+  rationale: Without an application tier, the data service is the main governed backend boundary. Modeling it explicitly keeps backup, encryption, data classification, and access-control requirements visible.
+  require:
+  - objectType: data_store_service
+    capability: 01KT0V5MCV-VD0Y
+    diagramTier: data
+    notes: Add a DataStoreService or documented exception if no durable state exists.
+- id: two-tier-presentation-requires-client-boundary
+  description: Two-tier SDPs with a presentation tier must include a network service for the client boundary.
+  rationale: Direct client access needs an explicit boundary for authentication, throttling, TLS termination, static delivery, or API mediation.
+  when:
+    anyServiceGroup:
+      diagramTier: presentation
+  require:
+  - objectType: network_service
+    diagramTier: presentation
+    notes: Add a CDN, API gateway, traffic-management service, or equivalent presentation boundary.
+requirementGroups: []
+requirementImplementations: []

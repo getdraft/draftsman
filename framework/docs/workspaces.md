@@ -35,6 +35,7 @@ A company private DRAFT repo owns:
 
 - `.draft/framework/` for the vendored framework copy used by that company
 - `.draft/providers/` for optional third-party DRAFT requirement packs
+- `.draft/instructions/` for optional company-specific AI instruction and prompt overlays
 - `.draft/workspace.yaml` for tracked workspace metadata
 - `.draft/framework.lock` for the reviewed upstream framework source and synced commit
 - `README.md` with a copy/paste Draftsman start prompt for connected AI tools
@@ -323,6 +324,28 @@ this order:
 See [framework/personalities/README.md](../personalities/README.md) for the
 `cast.yaml` schema and [framework/docs/soul.md](soul.md) for the cast member
 fields and interaction style identifiers.
+
+## AI Instruction Overlays
+
+A company workspace can define organization-specific AI instructions, prompts, and assistant guidance by placing Markdown files in a reserved folder:
+
+```
+.draft/
+  instructions/
+    custom-instructions.md
+    review-policies.md
+```
+
+### Purpose and Precedence
+
+The overlay directory is company-owned and is preserved across framework refreshes/updates because it lives outside the `.draft/framework/` directory.
+
+When an AI assistant bootstraps in the workspace, it resolves instructions in this precedence order:
+1. **Framework Core contract:** Vendored framework instructions (`.draft/framework/AGENTS.md`, `.draft/framework/docs/draftsman.md`).
+2. **Workspace Metadata & Vocabulary:** The effective configurations and metadata defined in `.draft/workspace.yaml` and `configurations/`.
+3. **Company AI Instruction Overlays:** Custom guidelines and prompt extensions found under `.draft/instructions/`.
+
+All standard workspace templates (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `.cursor/rules/draftsman.mdc`, and `.windsurfrules`) are pre-configured to instruct connected AI tools to read this directory when it is present.
 
 ## Authoring Workflow
 
