@@ -1,6 +1,32 @@
+## 0.58.1 - 2026-06-18
+
+Allows company-specific AI instruction overlays outside of the vendored framework directory.
+
+### Compatibility Impact
+
+- No breaking changes. Existing workspaces can adopt the overlay without breaking current AGENTS.md, CLAUDE.md, GEMINI.md, or Copilot instruction behavior.
+
+### Added
+
+- Added support for `.draft/instructions/` as a reserved company-owned folder for AI instruction/prompt overlays.
+- Updated workspaces documentation (`framework/docs/workspaces.md`) to document purpose, precedence, and load order of the instruction overlays.
+
+### Changed
+
+- Updated all standard workspace templates (`AGENTS.md.tmpl`, `CLAUDE.md.tmpl`, `GEMINI.md.tmpl`, `llms.txt.tmpl`, `.cursor/rules/draftsman.mdc.tmpl`, `.windsurfrules.tmpl`, `.github/copilot-instructions.md.tmpl`) to explicitly instruct connected AI tools to read this directory when present.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- None required. Workspaces can optionally create `.draft/instructions/` and add custom markdown instruction/prompt files.
+
 ## 0.58.0 - 2026-06-13
 
 Fixes schema and documentation contradictions surfaced by the 2026-06-12 full framework review.
+
 
 ### Compatibility Impact
 
