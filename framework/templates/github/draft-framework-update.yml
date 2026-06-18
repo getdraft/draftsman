@@ -197,13 +197,13 @@ jobs:
                   return f"{cleaned}/releases/tag/v{version}"
               return cleaned
 
-          def copy_framework(source_repo: Path) -> None:
+          def copy_framework(source_repo: Path, include_community: bool = False) -> None:
               destination = workspace / ".draft" / "framework"
               if destination.exists():
                   shutil.rmtree(destination)
               destination.mkdir(parents=True, exist_ok=True)
               framework_root = source_repo / "framework"
-              for relative in ("browser", "configurations", "docs", "schemas", "tools"):
+              for relative in ("browser", "configurations", "docs", "draft-actions", "schemas", "tools"):
                   source_dir = framework_root / relative
                   if source_dir.exists():
                       shutil.copytree(source_dir, destination / relative, dirs_exist_ok=True, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
@@ -211,6 +211,10 @@ jobs:
                   source_dir = source_repo / relative
                   if source_dir.exists():
                       shutil.copytree(source_dir, destination / relative, dirs_exist_ok=True, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+              if include_community:
+                  community_dir = source_repo / "community"
+                  if community_dir.exists():
+                      shutil.copytree(community_dir, destination / "community", dirs_exist_ok=True, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
               for filename in (
                   "AGENTS.md",
                   "AI_INDEX.md",
@@ -276,7 +280,8 @@ jobs:
           else:
               run(["git", "checkout", "-B", branch_name])
 
-          copy_framework(source_repo)
+          include_community = str(framework_lock.get("communityContent", "")).lower() in ("true", "yes", "1")
+          copy_framework(source_repo, include_community=include_community)
 
           lock_path.parent.mkdir(parents=True, exist_ok=True)
           lock_data: dict[str, Any] = {
