@@ -1,0 +1,67 @@
+schemaVersion: '1.0'
+uid: GM7YJ3ZSA0-WHSN
+type: reference_architecture
+name: Event-Driven Integration
+description: Deployment pattern for systems coordinated through asynchronous events,
+  queues, streams, or pub/sub topics. Use this when producers and consumers evolve
+  independently and eventual consistency is an accepted architectural property.
+patternType: event-driven
+catalogStatus: complete
+lifecycleStatus: preferred
+tags:
+- reference-architecture
+- event-driven
+- integration
+applicableDefinitionChecklist:
+- The messaging backbone must be modeled as a governed runtime or network service rather than an implicit connection.
+- Producers and consumers must be represented as deployable services with relationship objects documenting event flow.
+- Event schemas, retention, replay, dead-letter handling, and ordering assumptions must be documented.
+- Eventual consistency and idempotency decisions must be explicit in architectureNotes or DecisionRecords.
+- Durable state and audit stores must be modeled as DataStoreService objects when events affect persisted data.
+serviceGroups:
+- name: Producers
+  deployableObjects:
+  - objectType: runtime_service
+    capability: 01KT0V5MCV-RZV0
+    diagramTier: application
+    notes: Producer runtime services that publish domain events, integration events, or commands to the messaging backbone.
+- name: Messaging Backbone
+  deployableObjects:
+  - objectType: runtime_service
+    capability: 01KT0V5MCV-KT72
+    diagramTier: utility
+    notes: Queue, stream, event bus, broker, or pub/sub platform that transports and persists asynchronous messages.
+- name: Consumers
+  deployableObjects:
+  - objectType: runtime_service
+    capability: 01KT0V5MCV-RZV0
+    diagramTier: application
+    notes: Consumer runtime services, workers, or processors that subscribe to the messaging backbone.
+- name: Event State
+  deployableObjects:
+  - objectType: data_store_service
+    capability: 01KT0V5MCV-VD0Y
+    diagramTier: data
+    notes: Optional event store, projection store, audit log, or persistent data store affected by event processing.
+architectureNotes:
+  patternRationale: Event-driven systems trade synchronous coordination for decoupled producers and consumers. The pattern makes the messaging backbone and state boundaries explicit so eventual consistency, replay, and failure handling are governed.
+  consistencyGuidance: SDPs following this pattern should document ordering, idempotency, retry, dead-letter, and replay behavior for every critical event flow.
+constraints:
+- id: event-driven-requires-messaging-backbone
+  description: Event-driven SDPs must include a messaging-capable runtime service.
+  rationale: Without an explicit messaging backbone, asynchronous producer/consumer behavior is hidden in relationships or application code and cannot be governed.
+  require:
+  - objectType: runtime_service
+    capability: 01KT0V5MCV-KT72
+    diagramTier: utility
+    notes: Add the approved queue, broker, stream, event bus, or pub/sub service.
+- id: event-driven-requires-producer-or-consumer-runtime
+  description: Event-driven SDPs must include application runtime services that produce or consume events.
+  rationale: The messaging service alone is not the application architecture; at least one runtime boundary must publish or process events.
+  require:
+  - objectType: runtime_service
+    capability: 01KT0V5MCV-RZV0
+    diagramTier: application
+    notes: Add producer and consumer runtime service entries, then document event flow with relationship objects.
+requirementGroups: []
+requirementImplementations: []
