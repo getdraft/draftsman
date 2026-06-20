@@ -115,6 +115,6 @@ python3 framework/tools/generate_ai_index.py
 ### Ongoing Governance Workflows
 * **Vocabulary Promotion**: Developers will submit new technology or team vocabulary requests as files under `configurations/vocabulary-proposals/`. Review these proposals periodically and merge approved values into the gated active lists under `configurations/vocabulary/`.
 * **Advisory Triage**: Monitor the workspace's `needs-routing` ticket queue. Review issues where `owner.team` is missing or ambiguous, resolve the correct team assignment, and route the tickets to the proper team backlogs.
-* **CODEOWNERS Refresh**: Ensure that `generate_codeowners.py` is run to rebuild the `.github/CODEOWNERS` file whenever vocabulary teams, folder structures, or file ownership targets are modified in the catalog.
+* **CODEOWNERS Refresh**: Update the `.github/CODEOWNERS` file (seeded from `.draft/framework/templates/workspace/CODEOWNERS.tmpl`) whenever vocabulary teams, folder structures, or file ownership targets are modified in the catalog.
 
 For detailed guidelines on issue ticketing, lifecycle states, standard dispositions, and CODEOWNERS review routing, see the [Draft Operations Guide](operations-guide.md).

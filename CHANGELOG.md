@@ -1,3 +1,32 @@
+## 0.58.2 - 2026-06-20
+
+Fixes documentation and template drift surfaced by the same 2026-06-12 framework review: nonexistent tooling references, stale flat catalog paths, wrong vendored-framework paths, an invalid `catalogStatus` repair value, and `serverless` listed as a delivery model.
+
+### Compatibility Impact
+
+- No breaking changes. Documentation and template corrections only; no schema, object contract, or validation behavior changed. Workspaces can update immediately.
+
+### Added
+
+- None.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- Removed references to the nonexistent `generate_codeowners.py` script in `operations-guide.md` and `draft-admins-onboarding.md`; CODEOWNERS is seeded by copying `.draft/framework/templates/workspace/CODEOWNERS.tmpl` to `.github/CODEOWNERS` and maintained by hand, and the docs now describe that mechanism.
+- Corrected `templates/workspace/CODEOWNERS.tmpl` to use the real role-layered catalog paths (`catalog/shared-services/...`, `catalog/engineering/...`, `catalog/governance/decision-records/`) instead of nonexistent flat paths, and refreshed the engineering example block to the default object-type layout.
+- Fixed three docs that dropped the `framework/` segment from the vendored framework path: `setup-mode.md`, `draftsman.md`, and `workspaces.md` now point at `.draft/framework/templates/...`.
+- Corrected the `/draft session` catalog path to `catalog/governance/sessions/` in `framework/draft-actions/session.md` and `workspaces.md`.
+- Corrected the lifecycle repair guidance in `draftsman.md` to set `lifecycleStatus: deprecated` (the value the validator actually emits and a valid enum value) instead of the invalid `catalogStatus: deprecated`.
+- Removed `serverless` from the `deliveryModel` guidance in `draftsman.md` and `software-deployment-patterns.md`; valid delivery models are `self-managed`, `paas`, `saas`, and `appliance`. Legitimate references to serverless runtimes were left intact.
+
+### Migration Notes
+
+- None required. These are upstream documentation and template corrections; refreshing the framework picks them up with no workspace changes needed.
+
 ## 0.58.1 - 2026-06-18
 
 Allows company-specific AI instruction overlays outside of the vendored framework directory.

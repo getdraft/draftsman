@@ -151,7 +151,7 @@ referenced by a service group brings its own RequirementGroups. A
 self-managed RuntimeService, DataStoreService, or NetworkService
 must identify the Host Standard that provides its execution substrate. If the
 Draftsman does not know whether a service is self-managed, PaaS, SaaS,
-appliance, or serverless, that delivery model is the next architecture question.
+or appliance, that delivery model is the next architecture question.
 
 ## RA-Guided Drafting
 
@@ -175,7 +175,7 @@ For each service group, the Draftsman should:
 2. Resolve whether each object already exists in the catalog.
 3. Classify the delivery model for each service object.
 4. For self-managed service objects, select or ask for the Host Standard.
-5. For PaaS, SaaS, appliance, or serverless objects, record why no
+5. For PaaS, SaaS, or appliance objects, record why no
    self-managed Host is required.
 6. Record unresolved substrate choices in a DraftingSession rather than
    assuming a platform.

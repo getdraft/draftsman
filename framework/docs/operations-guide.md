@@ -152,12 +152,12 @@ If an issue must be created for a validator failure where `owner.team` is missin
 
 ## 6. CODEOWNERS
 
-### The Generation Model
-To maintain Git-native governance, the DRAFT workspace CODEOWNERS file is programmatically generated from the team registry and artifact ownership. It should not be modified manually.
+### The Ownership Model
+To maintain Git-native governance, the DRAFT workspace seeds its CODEOWNERS file by copying the framework template (`.draft/framework/templates/workspace/CODEOWNERS.tmpl`) to `.github/CODEOWNERS`, then keeping it current as the team registry and artifact ownership change.
 
-CODEOWNERS generation follows a two-tier strategy:
+The CODEOWNERS file follows a two-tier ownership strategy:
 1. **Broad Role/Folder Fallbacks:** Establishes catch-all owners for major folders. This protects new or unmapped files during a pull request, as GitHub evaluates CODEOWNERS from the base branch (where per-file rules for a new file do not exist yet).
-2. **Per-File Artifact Ownership:** Generates precise per-file rules for existing artifacts based on their resolved `owner.team`. This is the steady-state governance mechanism.
+2. **Per-File Artifact Ownership:** Adds precise per-file rules for existing artifacts based on their resolved `owner.team`. This is the steady-state governance mechanism.
 
 ### Default Path Conventions:
 * **draft-admins** (Governance files):
@@ -175,12 +175,12 @@ CODEOWNERS generation follows a two-tier strategy:
   - `catalog/engineering/data-components/`
   - `catalog/engineering/software-deployment-patterns/`
 
-### Example Generated CODEOWNERS Output:
+### Example CODEOWNERS Output:
 
 ```text
 # ==============================================================================
-# GENERATED FILE — DO NOT EDIT MANUALLY
-# Rebuild with: python3 .draft/framework/tools/generate_codeowners.py
+# Seeded from .draft/framework/templates/workspace/CODEOWNERS.tmpl
+# Maintained by Draft Admins as teams, paths, and ownership change.
 # ==============================================================================
 
 # Broad Role/Folder Fallbacks
@@ -301,6 +301,6 @@ Not all architectural gaps must be resolved by changing code or architecture. In
 The Draft Admins team is accountable for maintaining the workspace's operational health. Their ongoing responsibilities include:
 1. **Vocabulary Curation:** Reviewing vocabulary proposals in `configurations/vocabulary-proposals/` and promoting them to the active gated lists.
 2. **Registry Governance:** Keeping the team registry (`vocabulary.teams`) current and removing obsolete teams or handles.
-3. **CODEOWNERS Sync:** Ensuring that `generate_codeowners.py` is run whenever vocabulary, paths, or file ownership change.
+3. **CODEOWNERS Sync:** Updating `.github/CODEOWNERS` (seeded from `.draft/framework/templates/workspace/CODEOWNERS.tmpl`) whenever vocabulary, paths, or file ownership change.
 4. **Advisory Triage:** Monitoring the `needs-routing` queue daily, resolving ambiguous ownership, and routing orphaned issues to the correct teams.
 5. **Policy Refresh:** Keeping the company-specific operations guide, command documentation, and base configurations in sync with upstream framework releases.
