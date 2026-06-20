@@ -22,12 +22,12 @@ configurations/                          @YOUR-ORG/draft-admins
 # Owns the shared technology catalog. Engineering teams reference these objects
 # in their SDPs; they do not modify them directly.
 
-catalog/technology-components/           @YOUR-ORG/shared-services
-catalog/runtime-services/                @YOUR-ORG/shared-services
-catalog/hosts/                           @YOUR-ORG/shared-services
-catalog/data-store-services/             @YOUR-ORG/shared-services
-catalog/network-services/                @YOUR-ORG/shared-services
-catalog/decision-records/                @YOUR-ORG/shared-services @YOUR-ORG/draft-admins
+catalog/shared-services/technology-components/  @YOUR-ORG/shared-services
+catalog/shared-services/runtime-services/        @YOUR-ORG/shared-services
+catalog/shared-services/hosts/                   @YOUR-ORG/shared-services
+catalog/shared-services/data-store-services/     @YOUR-ORG/shared-services
+catalog/shared-services/network-services/        @YOUR-ORG/shared-services
+catalog/governance/decision-records/             @YOUR-ORG/shared-services @YOUR-ORG/draft-admins
 
 # ── Engineering ──────────────────────────────────────────────────────────────
 # Each engineering team owns their product components, data components, and
@@ -37,10 +37,10 @@ catalog/decision-records/                @YOUR-ORG/shared-services @YOUR-ORG/dra
 # Team-first structure (recommended):
 #   catalog/engineering/[team-slug]/     @YOUR-ORG/[github-team-slug]
 #
-# Flat structure (current default):
-#   catalog/product-components/          @YOUR-ORG/engineering-team
-#   catalog/data-components/             @YOUR-ORG/engineering-team
-#   catalog/software-deployment-patterns/ @YOUR-ORG/engineering-team
+# Object-type structure (default seeded layout):
+#   catalog/engineering/product-components/           @YOUR-ORG/engineering-team
+#   catalog/engineering/data-components/              @YOUR-ORG/engineering-team
+#   catalog/engineering/software-deployment-patterns/ @YOUR-ORG/engineering-team
 #
 # Example team-first lines — replace with your teams:
 # catalog/engineering/absence-management/  @YOUR-ORG/absence-management

@@ -21,10 +21,10 @@ Read:
 ## Step 2: Find or Create a Session
 
 **If `$ARGUMENTS` is provided:** Use the argument as the system name or topic.
-Search `catalog/sessions/` for an existing session file whose `uid` or `name`
+Search `catalog/governance/sessions/` for an existing session file whose `uid` or `name`
 matches that value (case-insensitive).
 
-**If no arguments:** List any existing session files in `catalog/sessions/`
+**If no arguments:** List any existing session files in `catalog/governance/sessions/`
 and ask:
 
 > Which system or product area would you like to draft? I can resume an

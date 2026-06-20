@@ -213,7 +213,7 @@ The minimum useful setup path is:
    object-patch file in `configurations/object-patches/` setting `owner`; use
    `owner.team: TBD` for any capability the user cannot assign today so the gap
    is visible rather than silent; use the templates in
-   `.draft/templates/workspace/configurations/object-patches/` as the
+   `.draft/framework/templates/workspace/configurations/object-patches/` as the
    starting structure
 8. seed acceptable-use TechnologyComponents for owned capabilities
 9. draft baseline deployable standards
@@ -658,7 +658,7 @@ Use this procedure:
    and NetworkService.
 6. For every self-managed service, resolve the `host` substrate from approved
    Host Standards or ask a catalog-grounded multiple-choice question.
-7. For PaaS, SaaS, appliance, or serverless delivery, record why no
+7. For PaaS, SaaS, or appliance delivery, record why no
    self-managed Host is required and apply the appropriate delivery RequirementGroup.
 8. Follow each object's RequirementGroups and capability lookups until the
    graph is closed.
@@ -966,7 +966,7 @@ output to the user.
 | `Replace malformed uid '...' with generated value` | uid exists but does not match the Crockford Base32 pattern | Run `repair_uids.py` with the suggested generated value |
 | `RA constraint '...' violated` | An SDP following an RA is missing a required object type in a service group | Add a deployable object entry of the required `objectType` and `diagramTier` to the appropriate service group, then resolve the specific catalog object using the Capability Lookup procedure |
 | `Satisfy ... / ...` | An active workspace RequirementGroup requires evidence not yet present | Add a `requirementImplementations` entry with `status: satisfied` citing the applicable mechanism, or mark it `not-applicable` if the requirement does not apply |
-| `Set catalogStatus: deprecated` | A TechnologyComponent in the object's graph has passed its vendor end-of-support date | Set `catalogStatus: deprecated` and add `architectureNotes.lifecycleRationale` explaining the transition plan |
+| `Set lifecycleStatus: deprecated` | A TechnologyComponent in the object's graph has passed its vendor end-of-support date | Set `lifecycleStatus: deprecated` and add `architectureNotes.lifecycleRationale` explaining the transition plan |
 | `deliveryModel must be one of` | An invalid delivery model value was used | Replace with one of `self-managed`, `saas`, `paas`, `appliance` |
 | `classification must be one of` (technology_component) | Invalid classification field | Replace with one of `software`, `agent`, `operating-system`, `compute-platform` |
 | `relationship must have either target or externalTarget` | A relationship object has neither a catalog target nor an externalTarget name | Set `target` to a catalog UID or `externalTarget` to the external system name |
