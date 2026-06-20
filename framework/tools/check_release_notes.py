@@ -299,6 +299,13 @@ def validate_version_bump(old_version: Version, current_version: Version, has_co
     return []
 
 
+def detect_bump_type(base: str | None = None, head: str | None = None, files: list[str] | None = None) -> str:
+    """Return 'minor' if any contract-path files changed, else 'patch'."""
+    if files is None:
+        files = changed_files(base or "", head or "HEAD")
+    return "minor" if any(is_contract_change(f) for f in files) else "patch"
+
+
 def validate_changed_files(
     files: list[str],
     current_version: Version,
@@ -309,16 +316,22 @@ def validate_changed_files(
     governed = [path for path in files if is_governed_change(path)]
     contract = [path for path in files if is_contract_change(path)]
     version_changed = old_version is not None and old_version != current_version
+    has_unreleased = "Unreleased" in entries
     change_entry_key = str(current_version) if version_changed or "draft-framework.yaml" in files else "Unreleased"
 
     if governed and "CHANGELOG.md" not in files:
         errors.append("Framework-governed files changed, but CHANGELOG.md was not updated.")
 
     if governed and old_version is not None:
-        errors.extend(validate_version_bump(old_version, current_version, bool(contract)))
+        # Skip version-bump enforcement when changes are staged under Unreleased —
+        # the promote-release workflow converts Unreleased → numbered version on merge.
+        if not (has_unreleased and not version_changed):
+            errors.extend(validate_version_bump(old_version, current_version, bool(contract)))
 
     if governed and "CHANGELOG.md" in files:
-        errors.extend(validate_change_notes(change_entry_key, entries, bool(contract)))
+        # Unreleased entries always require Migration Notes (full 5-section quality).
+        require_migration = bool(contract) or (change_entry_key == "Unreleased")
+        errors.extend(validate_change_notes(change_entry_key, entries, require_migration))
 
     if (
         old_version
@@ -359,7 +372,16 @@ def main() -> int:
     parser.add_argument("--base", default="", help="Base git ref for changed-file checks.")
     parser.add_argument("--head", default="HEAD", help="Head git ref for changed-file checks.")
     parser.add_argument("--tag", default="", help="Optional release tag to compare with draft-framework.yaml.")
+    parser.add_argument(
+        "--detect-bump",
+        action="store_true",
+        help="Print the required bump type (minor or patch) based on changed files and exit 0.",
+    )
     args = parser.parse_args()
+
+    if args.detect_bump:
+        print(detect_bump_type(args.base or None, args.head or None))
+        return 0
 
     errors = validate(args.base, args.head, args.tag)
     if errors:

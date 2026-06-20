@@ -1,0 +1,101 @@
+name: Promote Release
+
+# Fires on every push to main. If CHANGELOG.md contains an `## Unreleased`
+# section, this workflow computes the next version, replaces the header with
+# the numbered entry, bumps draft-framework.yaml, regenerates AI_INDEX.md,
+# and commits the result back to main.
+#
+# Serialised via concurrency group so that back-to-back merges don't race.
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: promote-release
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Check for Unreleased section
+        id: check
+        run: |
+          if grep -q "^## Unreleased$" CHANGELOG.md; then
+            echo "has_unreleased=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_unreleased=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Python
+        if: steps.check.outputs.has_unreleased == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install dependency
+        if: steps.check.outputs.has_unreleased == 'true'
+        run: python -m pip install pyyaml
+
+      - name: Detect bump type
+        if: steps.check.outputs.has_unreleased == 'true'
+        id: bump
+        run: |
+          BUMP=$(python framework/tools/check_release_notes.py \
+            --detect-bump \
+            --base "${{ github.event.before }}" \
+            --head "${{ github.sha }}")
+          echo "type=$BUMP" >> "$GITHUB_OUTPUT"
+
+      - name: Compute next version
+        if: steps.check.outputs.has_unreleased == 'true'
+        id: version
+        run: |
+          CURRENT=$(grep '^version:' draft-framework.yaml \
+            | sed 's/version: "//' | sed 's/"//')
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          if [ "${{ steps.bump.outputs.type }}" = "minor" ]; then
+            NEW="$MAJOR.$((MINOR + 1)).0"
+          else
+            NEW="$MAJOR.$MINOR.$((PATCH + 1))"
+          fi
+          echo "new_version=$NEW" >> "$GITHUB_OUTPUT"
+          echo "date=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
+      - name: Promote CHANGELOG.md
+        if: steps.check.outputs.has_unreleased == 'true'
+        run: |
+          VERSION="${{ steps.version.outputs.new_version }}"
+          DATE="${{ steps.version.outputs.date }}"
+          sed -i "s/^## Unreleased$/## $VERSION - $DATE/" CHANGELOG.md
+
+      - name: Bump draft-framework.yaml
+        if: steps.check.outputs.has_unreleased == 'true'
+        run: |
+          VERSION="${{ steps.version.outputs.new_version }}"
+          sed -i "s/^version: .*/version: \"$VERSION\"/" draft-framework.yaml
+
+      - name: Regenerate AI index
+        if: steps.check.outputs.has_unreleased == 'true'
+        run: python framework/tools/generate_ai_index.py
+
+      - name: Commit and push
+        if: steps.check.outputs.has_unreleased == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md draft-framework.yaml AI_INDEX.md
+          git commit -m "chore: promote Unreleased to ${{ steps.version.outputs.new_version }}"
+          # Rebase in case a concurrent merge landed between our checkout and now.
+          git pull --rebase origin main
+          git push origin main

@@ -1,3 +1,31 @@
+## Unreleased
+
+Introduces the Unreleased PR pattern: PRs write changelog entries under `## Unreleased` and leave `draft-framework.yaml` alone. The new `promote-release` GitHub Actions workflow converts `Unreleased` to a numbered version automatically on every merge to `main`, eliminating version-number conflicts between concurrent PRs.
+
+### Compatibility Impact
+
+- No breaking changes. Existing workspaces and workflows are unaffected. The change affects only the contributor/AI-agent release workflow for this repository.
+
+### Added
+
+- Added `.github/workflows/promote-release.yml`: fires on push to `main`, detects `## Unreleased` in CHANGELOG.md, computes the next version (minor if contract-path files changed, patch otherwise), promotes the entry, bumps `draft-framework.yaml`, and regenerates `AI_INDEX.md` in a follow-up bot commit.
+- Added `detect_bump_type()` helper and `--detect-bump` CLI flag to `framework/tools/check_release_notes.py` so the promote workflow can compute the correct version bump type.
+
+### Changed
+
+- `check_release_notes.py`: governed file changes with an `## Unreleased` entry and no version bump are now accepted (the promote workflow handles versioning). `Unreleased` entries always require `Migration Notes` (full five-section quality).
+- Updated `VERSIONING.md` AI Release Decision Procedure to document the new PR pattern and retire the manual version-bump-in-PR requirement.
+- Updated `AGENTS.md` Editing Rules to tell AI agents to use `## Unreleased` in PRs and not touch `draft-framework.yaml`.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No workspace migration required. This only changes how contributors and AI agents author PRs to this upstream framework repository.
+- From now on: write `## Unreleased` in CHANGELOG.md in your PR, omit any change to `draft-framework.yaml`, and the promote workflow assigns the version on merge.
+
 ## 0.58.2 - 2026-06-20
 
 Fixes documentation and template drift surfaced by the same 2026-06-12 framework review: nonexistent tooling references, stale flat catalog paths, wrong vendored-framework paths, an invalid `catalogStatus` repair value, and `serverless` listed as a delivery model.

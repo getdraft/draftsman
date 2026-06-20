@@ -32,27 +32,43 @@ Rules:
 
 ## AI Release Decision Procedure
 
-Every AI agent, human maintainer, and automation workflow must classify a
-framework change before committing it. Use this decision tree in order:
+### In a Pull Request (normal workflow)
 
-1. If the change alters schemas, RequirementGroups, Capability definitions,
-   domain definitions, object contracts, or validation behavior, use the next
-   pre-1.0 minor release: `0.(MINOR+1).0`.
-2. If the change alters generated browser behavior, generated browser assets,
-   framework docs, templates, DRAFT Table code, install scripts, packaging,
-   release governance, or AI-facing guidance without changing the object
-   contract, use the next patch release: `0.MINOR.(PATCH+1)`.
-3. If the change only regenerates derived files such as `AI_INDEX.md` or
-   `docs/index.html` from already-versioned source changes, use the version
-   required by the source change.
-4. If the change has no framework behavior, documentation, asset, generated UI,
-   schema, validation, packaging, or AI-facing effect, it does not require a
-   framework release.
+AI agents and human contributors submitting PRs must:
 
-An AI agent must not leave release-impacting framework changes only under an
-`Unreleased` changelog entry when preparing a commit to `main`. It must update
-`draft-framework.yaml` and create a numbered `CHANGELOG.md` entry in the same
-commit or change set.
+1. Add a `## Unreleased` section at the top of `CHANGELOG.md` with all five
+   required subsections (`Compatibility Impact`, `Added`, `Changed`, `Fixed`,
+   `Migration Notes`). Every section must be meaningful — no placeholders.
+2. Do **not** touch `draft-framework.yaml`. Version promotion is automated.
+3. The `promote-release` GitHub Actions workflow fires on merge to `main`,
+   detects the `Unreleased` section, computes the correct next version
+   (patch or minor based on changed files), replaces the `## Unreleased`
+   header with `## X.Y.Z - date`, bumps `draft-framework.yaml`, and
+   regenerates `AI_INDEX.md` in a follow-up commit.
+
+The bump type is determined automatically by the promote workflow:
+
+- Any file under `framework/schemas/`, `framework/configurations/capabilities/`,
+  `framework/configurations/domains/`, `framework/configurations/requirement-groups/`,
+  or `framework/tools/validate.py` → **minor** (`0.MINOR+1.0`).
+- Everything else → **patch** (`0.MINOR.PATCH+1`).
+
+### Classifying your change (for reference)
+
+Use this to predict the bump type your PR will receive:
+
+1. Schema, RequirementGroup, Capability, domain, or validation-behavior change → minor.
+2. Docs, templates, browser assets, AI-facing guidance, install scripts,
+   packaging, or release governance change → patch.
+3. Derived-file-only regeneration (e.g. `AI_INDEX.md` from already-committed
+   source changes) → same as the source change.
+4. No governed files changed → no release entry needed.
+
+### Direct commits to `main` (exceptional, pre-1.0 only)
+
+If committing directly to `main`, either use `## Unreleased` (the promote
+workflow handles the rest) or include a fully numbered `CHANGELOG.md` entry
+and bump `draft-framework.yaml` in the same commit.
 
 ## At 1.0.0
 
