@@ -399,7 +399,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         system_name = "System"
         container_uids = {str(c.get("uid") or "") for c in all_containers}
-        rels = relationships_for_containers(container_uids, all_relationships if all_relationships else [])
+        rels = relationships_for_containers(container_uids, catalog)
         groups = group_containers_by_sdp(all_containers, catalog)
 
         if args.format in ("structurizr", "both"):

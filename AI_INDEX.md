@@ -6,6 +6,7 @@ tags:
   - draft
   - ai_index
   - index
+timestamp: 2026-06-12T21:06:02-07:00
 ---
 
 # AI Framework Index
@@ -42,7 +43,6 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/browser | Static browser shell, CSS, JavaScript, and default theme assets copied by generate_browser.py. |
 | security.md | Credential and local security boundary notes for optional local tooling. |
 | framework/docs/draftsman.md | Draftsman role, intent routing, and authoring rules. |
-| framework/docs/soul.md | Draftsman character, cast of named personas, per-persona session contracts, routing logic, and personality pack extensibility. Read this to understand how the Draftsman adapts its voice and interaction style to the person in the chair. |
 | framework/docs/setup-mode.md | Draftsman first-run setup mode and guided interview cadence. |
 | framework/docs/engineering-onboarding.md | Targeted onboarding tutorial for product engineering teams. |
 | framework/docs/shared-services-onboarding.md | Targeted onboarding tutorial for platform/shared services teams. |
@@ -57,7 +57,6 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/requirement-groups.md | Unified requirement group authoring and validation behavior. |
 | framework/docs/capabilities.md | Capability object model and implementation lookup behavior. |
 | framework/docs/drafting-sessions.md | How to persist incomplete authoring work. |
-| framework/personalities/README.md | Draftsman personality packs and alternative cast configuration guidance. |
 | framework/tools/validate.py | Executable validation for schemas, RequirementGroups, capabilities, and references. |
 | framework/tools/apply_vocabulary_proposals.py | Materializes Draftsman vocabulary_proposal files into reviewable company vocabulary entries. |
 | framework/tools/repair_uids.py | Explicit repair utility that adds or replaces generated object UIDs and rewrites object references. |
@@ -95,7 +94,6 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/setup-mode.md | Draftsman Setup Mode | Setup mode is the first-run Draftsman conversation for a company DRAFT |
 | framework/docs/shared-services-onboarding.md | Shared Services Onboarding Guide | As a Shared Services representative, you are accountable for the **shared-services layer** of the architecture catalog. |
 | framework/docs/software-deployment-patterns.md | SoftwareDeploymentPatterns | A SoftwareDeploymentPattern is a declaration that a specific product is intended |
-| framework/docs/soul.md | Draftsman Soul | The character, voice, and interaction design of the Draftsman — who it is, how it feels, and how it adapts to the per... |
 | framework/docs/standards.md | Deployable Objects | DRAFT previously used the word "Standard" for reusable deployable building |
 | framework/docs/technology-components.md | TechnologyComponents | A TechnologyComponent is a discrete vendor product object. |
 | framework/docs/ticketing.md | Ticketing and Issue Creation Workflow | DRAFT is a repo-first, automation-friendly framework. |
@@ -220,13 +218,11 @@ These YAML files are framework-provided opt-in patterns. Company workspaces may 
 |---|---|---|---|---|---|
 | 01KTWYEE98-D3QV | AI-Enabled Application Pattern | reference_architecture | reference-architecture, ai, rag | Standard pattern for applications utilizing Artificial Intelligence and Large Language Models (LLMs). Integrates an a... | community/reference-architectures/ra-ai-enabled-application.yaml |
 | 01KV0REFAR-CMSV | Containerized Microservices | reference_architecture | reference-architecture, microservices, containers, starter | Starter pattern for independently deployable services running on a container orchestration platform with service-to-s... | community/reference-architectures/ra-containerized-microservices.yaml |
-| GM7YJ3ZSA0-WHSN | Event-Driven Integration | reference_architecture | reference-architecture, event-driven, integration | Deployment pattern for systems coordinated through asynchronous events, queues, streams, or pub/sub topics. Use this... | community/reference-architectures/ra-event-driven-integration.yaml |
 | 01KV0REFAR-EVNT | Event-Driven Architecture | reference_architecture | reference-architecture, event-driven, messaging, starter | Starter pattern for asynchronous systems coordinated by messaging, event routing, producers, consumers, and eventuall... | community/reference-architectures/ra-event-driven.yaml |
 | 01KS8N4KR3-MTSA | Multi-Tenant SaaS | reference_architecture | reference-architecture, multi-tenant, saas | Deployment pattern for software-as-a-service products that serve multiple customer tenants from shared infrastructure... | community/reference-architectures/ra-multi-tenant-saas.yaml |
 | 01KS8N4KR4-SVED | Serverless Event-Driven | reference_architecture | reference-architecture, serverless, event-driven | Deployment pattern for event-driven applications using serverless compute runtimes. No persistent application-tier co... | community/reference-architectures/ra-serverless-event-driven.yaml |
 | 01KV0REFAR-STRG | Strangler Migration Pattern | reference_architecture | reference-architecture, migration, strangler, starter | Starter pattern for incremental legacy modernization where new services coexist with a legacy system and traffic or c... | community/reference-architectures/ra-strangler-migration.yaml |
 | 01KS8N4KR2-3TWA | Three-Tier Web Application | reference_architecture | reference-architecture, three-tier, web | Standard pattern for web-facing applications with a presentation tier (network services), an application tier (runtim... | community/reference-architectures/ra-three-tier-web.yaml |
-| 8Q79XMD460-MQ5A | Two-Tier Client/Data | reference_architecture | reference-architecture, two-tier, client-data | Deployment pattern for simple applications where a client or static presentation layer talks directly to a managed da... | community/reference-architectures/ra-two-tier-client-data.yaml |
 | 01KV0REFAR-2TR0 | Two-Tier Client Data Application | reference_architecture | reference-architecture, two-tier, starter | Starter pattern for applications where a client or presentation layer talks directly to a managed data tier without a... | community/reference-architectures/ra-two-tier-web.yaml |
 
 ## Example Catalog Inventory
@@ -453,7 +449,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | framework/configurations/requirement-groups | 21 |
 | framework/configurations/reference-architectures | 0 |
 | framework/configurations/domains | 11 |
-| community/reference-architectures | 10 |
+| community/reference-architectures | 8 |
 | examples/catalog/engineering/product-components | 1 |
 | examples/catalog/engineering/data-components | 1 |
 | examples/catalog/engineering/software-deployment-patterns | 1 |

@@ -3754,11 +3754,16 @@ def validate_relationship(
 
 def scan_for_secrets(data: Any, path: Path, failures: list[str], current_field_path: str = "") -> None:
     if isinstance(data, dict):
-        if "secretReference" in data:
-            return
         for k, v in data.items():
             field_name = f"{current_field_path}.{k}" if current_field_path else k
             k_lower = str(k).lower()
+            # A secretReference is the approved indirection: its value points at a
+            # secret store rather than holding a literal secret. Skip the
+            # secretReference key itself, but keep scanning sibling keys so a
+            # plaintext secret cannot hide inside a mapping merely because that
+            # mapping also declares a secretReference.
+            if k_lower == "secretreference":
+                continue
             if k_lower in ("description", "architecturenotes", "notes", "rationale", "rationales", "decisionrecords"):
                 continue
             if isinstance(v, str) and any(sub in k_lower for sub in ("password", "token", "secret", "privatekey", "apikey", "private_key", "api_key")):
