@@ -18,7 +18,7 @@ Before doing anything else, confirm the user understands this action:
 
 > This command checks for a newer DRAFT framework version and, if one is
 > available, walks you through updating the vendored copy in `.draft/framework/`.
-> It should only be run by Draft Admins. Are you a Draft Admins representative for this
+> It should only be run by Draft Admins. Are you a Draft Admin representative for this
 > workspace?
 
 If the user says no or is unsure, stop and direct them to Draft Admins.
@@ -99,15 +99,18 @@ git clone --depth 1 --branch <target-ref> <framework.source> /tmp/draft-framewor
 rm -rf .draft/framework
 cp -r /tmp/draft-framework-update/framework .draft/framework
 cp -r /tmp/draft-framework-update/templates .draft/framework/../templates 2>/dev/null || true
-
-# Clean up
-rm -rf /tmp/draft-framework-update
 ```
 
 Resolve the exact commit SHA of the selected ref:
 
 ```bash
 git -C /tmp/draft-framework-update rev-parse HEAD
+```
+
+Clean up the temporary clone:
+
+```bash
+rm -rf /tmp/draft-framework-update
 ```
 
 ## Step 6: Update the Lock File

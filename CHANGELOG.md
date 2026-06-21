@@ -24,6 +24,7 @@ Closes a security gap in the catalog validator's plaintext-secret scanner and fi
 
 - `framework/tools/validate.py`: `scan_for_secrets` no longer skips an entire mapping when it contains a `secretReference` key. The function now skips only the `secretReference` key itself and continues scanning siblings, so a plaintext `password`, `token`, `secret`, `apiKey`, or `privateKey` can no longer hide next to an approved secret-reference.
 - `framework/tools/generate_c4.py`: C4 export no longer crashes with `AttributeError: 'list' object has no attribute 'values'` for catalogs that contain relationships but no `system` object. The system-less branch now correctly passes the full catalog dict to `relationships_for_containers`, which also restores relationship rendering for those catalogs.
+- `framework/draft-actions/update.md`: moved cleanup of the temporary clone to run after the commit SHA capture, resolving a bug where the `rev-parse HEAD` command failed due to the clone directory having already been deleted. Also resolved a minor singular/plural grammar typo.
 
 ### Migration Notes
 
