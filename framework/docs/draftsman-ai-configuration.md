@@ -117,11 +117,9 @@ routed by the workspace bootstrap instructions.
 | Command | Purpose |
 |---|---|
 | `/draft` (or `/draft help`) | List available DRAFT verbs |
-| `/draft author [intent]` | Activate the Draftsman for authoring or workspace setup |
-| `/draft session [topic]` | Start or resume a guided DraftingSession |
+| `/draft guide [intent]` | Bootstrap, then start or resume a guided DraftingSession or ad hoc authoring |
 | `/draft validate` | Run the validator and report issues with fix guidance |
-| `/draft review` | Review company catalog/content in a vendored workspace |
-| `/draft security [scope]` | Run security RequirementGroup, satisfaction, review, and audit workflows |
+| `/draft audit [scope]` | Run general catalog review or security RequirementGroup, satisfaction, review, and artifact audit workflows |
 | `/draft triage` | Pull open GitHub issues and work through selected ones |
 | `/draft update` | Check for framework updates and guide a safe upgrade |
 

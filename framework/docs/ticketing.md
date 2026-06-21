@@ -119,7 +119,7 @@ draft:
   schemaVersion: "1.0"        # The version of the metadata schema (currently "1.0")
   source:
     kind: string              # Either "validation" or "content-review"
-    command: string           # The exact DRAFT command run (e.g., "/draft validate" or "/draft review")
+    command: string           # The exact DRAFT command run (e.g., "/draft validate" or "/draft audit")
   artifact:
     uid: string               # The unique identifier of the target object
     name: string              # The display name of the target object
@@ -252,7 +252,7 @@ draft:<artifact.uid>:<source.kind>:<rule-id-or-feedback-hash>
 
 ## 7. Interactive Issue UX Protocol
 
-The ticketing workflow is an interactive sub-action embedded in both `/draft validate` and `/draft review`. The Draftsman must follow this 6-step protocol:
+The ticketing workflow is an interactive sub-action embedded in both `/draft validate` and `/draft audit`. The Draftsman must follow this 6-step protocol:
 
 ```mermaid
 graph TD

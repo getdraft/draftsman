@@ -17,7 +17,7 @@ and interacts with the Draftsman differently.
 
 | Role | What they own | How they start |
 |---|---|---|
-| **Draft Admins** | Workspace configuration — vocabulary lists, RequirementGroups, business taxonomy, governance rules | Run setup mode once to configure the workspace |
+| **Draft Admins** | Workspace configuration — vocabulary lists, RequirementGroups, ReferenceArchitectures, business taxonomy, governance rules | Run setup mode once to configure the workspace |
 | **Shared Services** | Shared infrastructure — Hosts, RuntimeServices, DataStoreServices, NetworkServices, TechnologyComponents | Regular Draftsman session; author reusable building blocks |
 | **Engineering** | Product content — ProductComponents, DataComponents, SDPs | Regular Draftsman session; describe their service and the Draftsman handles the rest |
 
@@ -79,6 +79,7 @@ ongoing work is governance maintenance:
 
 - Declaring and updating vocabulary lists
 - Activating RequirementGroups for new compliance obligations
+- Authoring and maintaining ReferenceArchitectures as shared deployment standards
 - Reviewing vocabulary proposals submitted by Engineering
 - Maintaining business taxonomy as the company evolves
 - Updating capability owner assignments when teams change

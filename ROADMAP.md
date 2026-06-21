@@ -1,17 +1,31 @@
 # DRAFT v1.0 Readiness Roadmap
 
-This roadmap tracks the remaining MVP work needed to move DRAFT from a credible
+This roadmap tracked the MVP work needed to move DRAFT from a credible
 architecture catalog framework to a version 1.0 deployable architecture
 platform.
 
-The v1.0 goal is narrow and concrete: a Draftsman conversation should produce a
-complete, compliant, reviewable architecture graph that can be translated into a
-deployment plan without hiding operational or security gaps.
+The v1.0 goal was narrow and concrete: a Draftsman conversation should produce
+a complete, compliant, reviewable architecture graph that can be translated
+into a deployment plan without hiding operational or security gaps.
 
 v1.0 is repo-first. It will not launch with a required DRAFT app, hosted
 service, or DRAFT-specific CLI. A company should be able to connect its
 preferred AI tool to a company DRAFT repo and have that AI become the
 Draftsman by reading the repo bootstrap files and vendored framework copy.
+
+## Status: All Tracked Issues Closed
+
+The `v1.0` GitHub milestone is **100% complete**: all three canonical work
+items (issues #3, #4, and #5) are closed and merged into `main`. This file is
+kept as the historical record of that work and the rationale behind each
+issue's resolution; GitHub Issues remain the source of truth for execution
+detail, discussion, and ownership.
+
+Cutting an actual `1.0.0` release (tagging, updating `draft-framework.yaml`,
+and applying the post-1.0 versioning and branch-protection rules in
+[VERSIONING.md](VERSIONING.md)) is a separate decision from milestone
+completion and is intentionally not made by this roadmap file. That decision
+belongs to the project maintainer.
 
 ## Tracking Model
 
@@ -22,97 +36,74 @@ Track execution in GitHub with:
 - area labels: `deployment`, `automation`, `catalog`, `compliance`,
   `draftsman`
 
-The canonical v1.0 work items are GitHub issues #3, #4, and #5. Keep this file
-as the stable narrative and use GitHub Issues for execution, discussion, and
-ownership.
-
-## Issue 1: v1.0: executable deployment contract
+## Issue #3: v1.0: executable deployment contract — Closed (PR #95)
 
 Problem:
 
-DRAFT currently captures deployable architecture facts, but deployable is still
-mostly a semantic promise. The framework needs one explicit path from approved
-DRAFT objects to a generated deployment plan.
+DRAFT captured deployable architecture facts, but deployable was still mostly
+a semantic promise. The framework needed one explicit path from approved DRAFT
+objects to a generated deployment plan.
 
-MVP outcome:
+Resolution:
 
-Define a minimal executable deployment contract that can translate one approved
-SoftwareDeploymentPattern graph into a deployment manifest and dry-run plan.
+Delivered a machine-readable deployment target and environment binding
+contract, deployment manifest generation from an approved
+SoftwareDeploymentPattern and its closed deployable object graph, a dry-run
+adapter path, graph-gating against unresolved DraftingSession questions and
+invalid or non-compliant references, secrets represented only as references,
+and validator coverage and documentation for the contract.
 
-Acceptance criteria:
-
-- Add a machine-readable deployment target and environment binding contract.
-- Generate a deployment manifest from an approved SoftwareDeploymentPattern
-  and its closed deployable object graph.
-- Add one narrow adapter path for dry-run output, even if the first adapter only
-  emits a neutral plan format rather than applying infrastructure.
-- Block deployment plan generation when the graph contains unresolved DraftingSession questions, invalid references, not-compliant requirements, or
-  unapproved required objects.
-- Represent secrets only as references, never as literal values.
-- Add validator coverage and documentation for the contract.
-
-Recommended labels: `v1.0`, `mvp`, `deployment`, `automation`
-
-## Issue 2: v1.0: complete golden reference workspace
+## Issue #4: v1.0: complete golden reference workspace — Closed (PR #24)
 
 Problem:
 
-The framework has strong schemas, RequirementGroups, and validation logic, but
-the example catalog does not yet prove a complete product deployment path with
+The framework had strong schemas, RequirementGroups, and validation logic, but
+the example catalog did not yet prove a complete product deployment path with
 compliance evidence.
 
-MVP outcome:
+Resolution:
 
-Ship one complete golden workspace that demonstrates the intended DRAFT loop end
-to end.
+Shipped a golden workspace covering TechnologyComponents, Host, RuntimeService,
+DataStoreService, NetworkService, ProductComponent, ReferenceArchitecture,
+SoftwareDeploymentPattern, DecisionRecord, and DraftingSession examples, with
+an activated compliance RequirementGroup, recorded `requirementImplementations`
+evidence, acceptable-use TechnologyComponent mappings through capabilities, a
+clean validation run, a regenerated browser, and documentation on using the
+golden workspace as a regression target for v1.0 changes.
 
-Acceptance criteria:
-
-- Include TechnologyComponents, Host, RuntimeService, DataStoreService,
-  NetworkService, ProductComponent, ReferenceArchitecture, SoftwareDeploymentPattern, DecisionRecord, and DraftingSession examples.
-- Activate at least one workspace-mode security or compliance RequirementGroup.
-- Record valid `requirementImplementations` evidence for the active group.
-- Demonstrate acceptable-use TechnologyComponent mappings through
-  capabilities.
-- Ensure the golden workspace validates without warnings.
-- Regenerate the browser so topology, relationships, requirements, evidence,
-  and acceptable-use views can be inspected.
-- Document how maintainers should use the golden workspace as a regression
-  target for v1.0 changes.
-
-Recommended labels: `v1.0`, `mvp`, `catalog`, `compliance`
-
-## Issue 3: v1.0: deterministic Draftsman production workflow
+## Issue #5: v1.0: deterministic Draftsman production workflow — Closed (PR #26)
 
 Problem:
 
-Production authoring depends on general-purpose AI tools connected to a repo.
-The framework needs enough bootstrap instructions, templates, examples,
-validation, and PR workflow guidance for those tools to behave as a deterministic
-Draftsman without a DRAFT-specific app.
+Production authoring depended on general-purpose AI tools connected to a repo.
+The framework needed enough bootstrap instructions, templates, examples,
+validation, and PR workflow guidance for those tools to behave as a
+deterministic Draftsman without a DRAFT-specific app.
 
-MVP outcome:
+Resolution:
 
-Make Draftsman output structured, reviewable, repairable, and safe enough for
-governed company workspaces using ordinary AI coding tools and Git pull
-requests.
+Delivered an advisory pre-write review step (`preview_proposals` plus the Pre-
+Write Review documentation), a validation-failure-to-repair-step mapping
+(Validation Repair Procedures), source provenance recording on generated and
+materially updated artifacts, and resumable DraftingSession state
+(`resumptionContext`) with a documented resume procedure. Test coverage was
+added for the pre-write gate and the Reference Architecture constraint
+enforcement that the work also touched.
 
-Acceptance criteria:
+Two items from the issue's original acceptance criteria were deliberately
+descoped rather than carried forward as follow-up work, based on the merged
+PR's own resolution rationale:
 
-- Replace opaque YAML proposal content with a structured proposal model that can
-  be validated before writing files.
-- Require schema-aware summaries and diffs before applying proposed changes.
-- Map validation failures to actionable repair steps that the Draftsman can
-  propose or perform.
-- Record source provenance on every generated or materially updated artifact.
-- Preserve DraftingSession state so interrupted work can resume without relying
-  on chat history.
-- Document the minimum supported Git branch, commit, push, and pull request
-  path for connected AI tools using the user's credentials.
-- Add tests that cover proposal validation, failed validation recovery,
-  provenance capture, and resumable sessions.
-
-Recommended labels: `v1.0`, `mvp`, `draftsman`, `compliance`
+- A fully structured (non-YAML) proposal data model and a dedicated
+  schema-aware review-card UI were not built. DRAFT's repo-first, no-required-
+  app design (above) makes a document-level advisory review — what shipped —
+  the appropriate mechanism rather than purpose-built tooling.
+- Pre-write validation was implemented and then deliberately reverted from a
+  hard blocking gate to an advisory check, because stub and incomplete
+  objects are expected to have validation gaps; enforcement happens at the
+  `complete` catalog-status boundary, not at write time. Blocking writes of
+  incomplete work would have prevented legitimately parking a session
+  mid-draft.
 
 ## Future Enhancements: DRAFT Table And CLI
 

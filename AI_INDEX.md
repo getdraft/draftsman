@@ -94,7 +94,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/setup-mode.md | Draftsman Setup Mode | Setup mode is the first-run Draftsman conversation for a company DRAFT |
 | framework/docs/shared-services-onboarding.md | Shared Services Onboarding Guide | As a Shared Services representative, you are accountable for the **shared-services layer** of the architecture catalog. |
 | framework/docs/software-deployment-patterns.md | SoftwareDeploymentPatterns | A SoftwareDeploymentPattern is a declaration that a specific product is intended |
-| framework/docs/soul.md | Draftsman Soul | The character, voice, and interaction design of the Draftsman — who it is, how it feels, and how it adapts to the per... |
+| framework/docs/soul.md | Draftsman Soul | The character, voice, and interaction design of the Draftsman — who it is, how it feels, and how it speaks to the per... |
 | framework/docs/standards.md | Deployable Objects | DRAFT previously used the word "Standard" for reusable deployable building |
 | framework/docs/technology-components.md | TechnologyComponents | A TechnologyComponent is a discrete vendor product object. |
 | framework/docs/ticketing.md | Ticketing and Issue Creation Workflow | DRAFT is a repo-first, automation-friendly framework. |

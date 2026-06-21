@@ -17,11 +17,9 @@ framework/commands/
   draft.md              ← /draft dispatcher: parses the verb, routes to an action
 
 framework/draft-actions/
-  author.md             ← /draft author — draftsman authoring/setup workflow
-  session.md            ← /draft session — guided drafting session workflow
+  guide.md              ← /draft guide — draftsman authoring/setup and guided drafting session workflow
   validate.md           ← /draft validate — catalog validation workflow
-  review.md             ← /draft review — company catalog/content review
-  security.md           ← /draft security — security review and compliance audit
+  audit.md              ← /draft audit — company catalog/content review and security/compliance audit
   triage.md             ← /draft triage — GitHub issue triage workflow
   update.md             ← /draft update — framework refresh workflow
   review-framework.md   ← /draft review-framework — upstream-only framework review
