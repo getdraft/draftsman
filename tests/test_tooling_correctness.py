@@ -130,5 +130,301 @@ class GenerateC4Tests(unittest.TestCase):
             self.assertIn("01TESTAAAA_0002", stdout.getvalue())
 
 
+class DecisionRecordApprovalTests(unittest.TestCase):
+    def test_open_record_passes_regardless_of_policy(self) -> None:
+        obj = {
+            "uid": "01TESTAAAA-0001",
+            "type": "decision_record",
+            "category": "risk",
+            "status": "open",
+        }
+        failures: list[str] = []
+        warnings: list[str] = []
+        from framework.tools.validate import validate_decision_record
+        validate_decision_record(
+            obj,
+            Path("dr.yaml"),
+            catalog_by_id={},
+            requirement_groups={},
+            policy={"default": {"approver": "team:arb"}},
+            failures=failures,
+            warnings=warnings,
+        )
+        self.assertEqual(failures, [])
+
+    def test_accepted_record_fails_without_approver_and_date(self) -> None:
+        obj = {
+            "uid": "01TESTAAAA-0001",
+            "type": "decision_record",
+            "category": "risk",
+            "status": "accepted",
+            "affectedComponent": "COMP-0001",
+        }
+        failures: list[str] = []
+        warnings: list[str] = []
+        from framework.tools.validate import validate_decision_record
+        validate_decision_record(
+            obj,
+            Path("dr.yaml"),
+            catalog_by_id={"COMP-0001": {"uid": "COMP-0001", "type": "product_component"}},
+            requirement_groups={},
+            policy={"default": {"approver": "team:arb"}},
+            failures=failures,
+            warnings=warnings,
+        )
+        self.assertTrue(any("requires an approver" in f for f in failures), failures)
+        self.assertTrue(any("missing approvalDate" in f for f in failures), failures)
+
+    def test_accepted_record_fails_without_scope(self) -> None:
+        obj = {
+            "uid": "01TESTAAAA-0001",
+            "type": "decision_record",
+            "category": "risk",
+            "status": "accepted",
+            "approver": "team:arb",
+            "approvalDate": "2026-01-01",
+        }
+        failures: list[str] = []
+        warnings: list[str] = []
+        from framework.tools.validate import validate_decision_record
+        validate_decision_record(
+            obj,
+            Path("dr.yaml"),
+            catalog_by_id={},
+            requirement_groups={},
+            policy={"default": {"approver": "team:arb"}},
+            failures=failures,
+            warnings=warnings,
+        )
+        self.assertTrue(any("must declare an affectedComponent or linkedObject" in f for f in failures), failures)
+
+    def test_accepted_record_fails_if_reused(self) -> None:
+        obj = {
+            "uid": "DR-0001",
+            "type": "decision_record",
+            "category": "risk",
+            "status": "accepted",
+            "affectedComponent": "COMP-0001",
+            "approver": "team:arb",
+            "approvalDate": "2026-01-01",
+        }
+        catalog = {
+            "DR-0001": obj,
+            "COMP-0001": {
+                "uid": "COMP-0001",
+                "type": "product_component",
+                "requirementImplementations": [
+                    {"requirementGroup": "RG-1", "requirementId": "REQ-1", "mechanism": "decisionRecord", "ref": "DR-0001"},
+                ]
+            },
+            "COMP-0002": {
+                "uid": "COMP-0002",
+                "type": "product_component",
+                "requirementImplementations": [
+                    {"requirementGroup": "RG-1", "requirementId": "REQ-2", "mechanism": "decisionRecord", "ref": "DR-0001"},
+                ]
+            }
+        }
+        failures: list[str] = []
+        warnings: list[str] = []
+        from framework.tools.validate import validate_decision_record
+        validate_decision_record(
+            obj,
+            Path("dr.yaml"),
+            catalog_by_id=catalog,
+            requirement_groups={},
+            policy={"default": {"approver": "team:arb"}},
+            failures=failures,
+            warnings=warnings,
+        )
+        self.assertTrue(any("is reused across multiple requirement implementations" in f for f in failures), failures)
+
+    def test_policy_category_rule_matching(self) -> None:
+        obj = {
+            "uid": "DR-0001",
+            "type": "decision_record",
+            "category": "risk",
+            "status": "accepted",
+            "affectedComponent": "COMP-0001",
+            "approver": "team:security",
+            "approvalDate": "2026-01-01",
+        }
+        policy = {
+            "default": {"approver": "team:arb"},
+            "rules": [
+                {"match": {"category": "risk"}, "approver": "team:security"}
+            ]
+        }
+        failures: list[str] = []
+        warnings: list[str] = []
+        from framework.tools.validate import validate_decision_record
+        validate_decision_record(
+            obj,
+            Path("dr.yaml"),
+            catalog_by_id={"COMP-0001": {"uid": "COMP-0001", "type": "product_component"}},
+            requirement_groups={},
+            policy=policy,
+            failures=failures,
+            warnings=warnings,
+        )
+        self.assertEqual(failures, [])
+
+    def test_policy_requirement_rule_matching(self) -> None:
+        obj = {
+            "uid": "DR-0001",
+            "type": "decision_record",
+            "category": "decision",
+            "status": "accepted",
+            "affectedComponent": "COMP-0001",
+            "approver": "team:data-gov",
+            "approvalDate": "2026-01-01",
+            "decisionRationale": "Rationale",
+        }
+        catalog = {
+            "DR-0001": obj,
+            "COMP-0001": {
+                "uid": "COMP-0001",
+                "type": "product_component",
+                "requirementImplementations": [
+                    {"requirementGroup": "RG-1", "requirementId": "data-classification", "mechanism": "decisionRecord", "ref": "DR-0001"},
+                ]
+            }
+        }
+        policy = {
+            "default": {"approver": "team:arb"},
+            "rules": [
+                {"match": {"requirement": "data-classification"}, "approver": "team:data-gov"}
+            ]
+        }
+        failures: list[str] = []
+        warnings: list[str] = []
+        from framework.tools.validate import validate_decision_record
+        validate_decision_record(
+            obj,
+            Path("dr.yaml"),
+            catalog_by_id=catalog,
+            requirement_groups={},
+            policy=policy,
+            failures=failures,
+            warnings=warnings,
+        )
+        self.assertEqual(failures, [])
+
+    def test_policy_domain_rule_matching(self) -> None:
+        obj = {
+            "uid": "DR-0001",
+            "type": "decision_record",
+            "category": "decision",
+            "status": "accepted",
+            "affectedComponent": "COMP-0001",
+            "approver": "team:security-grc",
+            "approvalDate": "2026-01-01",
+            "decisionRationale": "Rationale",
+        }
+        catalog = {
+            "DR-0001": obj,
+            "COMP-0001": {
+                "uid": "COMP-0001",
+                "type": "product_component",
+                "requirementImplementations": [
+                    {"requirementGroup": "RG-1", "requirementId": "REQ-1", "mechanism": "decisionRecord", "ref": "DR-0001"},
+                ]
+            },
+            "CAP-1": {
+                "uid": "CAP-1",
+                "type": "capability",
+                "domain": "security",
+            }
+        }
+        requirement_groups = {
+            "RG-1": {
+                "uid": "RG-1",
+                "type": "requirement_group",
+                "requirements": [
+                    {"uid": "REQ-1", "relatedCapability": "CAP-1"}
+                ]
+            }
+        }
+        policy = {
+            "default": {"approver": "team:arb"},
+            "rules": [
+                {"match": {"domain": "security"}, "approver": "team:security-grc"}
+            ]
+        }
+        failures: list[str] = []
+        warnings: list[str] = []
+        from framework.tools.validate import validate_decision_record
+        validate_decision_record(
+            obj,
+            Path("dr.yaml"),
+            catalog_by_id=catalog,
+            requirement_groups=requirement_groups,
+            policy=policy,
+            failures=failures,
+            warnings=warnings,
+        )
+        self.assertEqual(failures, [])
+
+    def test_policy_affected_component_owner_matching(self) -> None:
+        obj = {
+            "uid": "DR-0001",
+            "type": "decision_record",
+            "category": "decision",
+            "status": "accepted",
+            "affectedComponent": "COMP-0001",
+            "approver": "team:platform-engineering",
+            "approvalDate": "2026-06-21",
+            "decisionRationale": "Rationale",
+        }
+        catalog = {
+            "DR-0001": obj,
+            "COMP-0001": {
+                "uid": "COMP-0001",
+                "type": "product_component",
+                "owner": {"team": "platform-engineering"},
+            }
+        }
+        policy = {
+            "default": {"approver": "team:arb"},
+            "rules": [
+                {"match": {"affectedComponentOwner": True}, "approver": "ownerTeam"}
+            ]
+        }
+        failures: list[str] = []
+        warnings: list[str] = []
+        from framework.tools.validate import validate_decision_record
+        validate_decision_record(
+            obj,
+            Path("dr.yaml"),
+            catalog_by_id=catalog,
+            requirement_groups={},
+            policy=policy,
+            failures=failures,
+            warnings=warnings,
+        )
+        self.assertEqual(failures, [])
+
+    def test_policy_enforcement_none(self) -> None:
+        obj = {
+            "uid": "DR-0001",
+            "type": "decision_record",
+            "category": "decision",
+            "status": "accepted",
+        }
+        failures: list[str] = []
+        warnings: list[str] = []
+        from framework.tools.validate import validate_decision_record
+        validate_decision_record(
+            obj,
+            Path("dr.yaml"),
+            catalog_by_id={},
+            requirement_groups={},
+            policy={"enforcement": "none"},
+            failures=failures,
+            warnings=warnings,
+        )
+        self.assertEqual(failures, [])
+
+
 if __name__ == "__main__":
     unittest.main()

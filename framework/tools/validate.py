@@ -240,6 +240,31 @@ def load_workspace_requirements(workspace_root: Path, failures: list[str]) -> di
     }
 
 
+def load_workspace_decision_record_approval_policy(workspace_root: Path, failures: list[str]) -> dict[str, Any]:
+    config_path = workspace_root / ".draft" / "workspace.yaml"
+    if not config_path.exists():
+        return {"enforcement": "none"}
+    try:
+        data = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+    except Exception as exc:  # noqa: BLE001
+        failures.append(f"{config_path}: Fix workspace configuration YAML; parser reported {exc}")
+        return {"enforcement": "none"}
+    if not isinstance(data, dict):
+        failures.append(f"{config_path}: Make workspace configuration a mapping at the top level")
+        return {"enforcement": "none"}
+
+    policy = data.get("decisionRecordApproval")
+    if policy is None:
+        return {"enforcement": "none"}
+    if not isinstance(policy, dict):
+        failures.append(f"{config_path}: Make decisionRecordApproval a mapping")
+        return {"enforcement": "none"}
+    if not policy:
+        return {"enforcement": "none"}
+
+    return policy
+
+
 def load_workspace_business_taxonomy(workspace_root: Path, failures: list[str]) -> dict[str, Any]:
     config_path = workspace_root / ".draft" / "workspace.yaml"
     if not config_path.exists():
@@ -2943,9 +2968,208 @@ def validate_environment_tier(obj: dict[str, Any], path: Path, failures: list[st
                         failures.append(f"{path}: parameterSurface[{idx}].{bool_field} must be true or false")
 
 
-def validate_decision_record(obj: dict[str, Any], path: Path, failures: list[str], warnings: list[str]) -> None:
+def get_decision_record_instantiations(dr_uid: str, catalog_by_id: dict[str, dict[str, Any]]) -> set[tuple[str, str]]:
+    instantiations = set()
+    for cat_obj in catalog_by_id.values():
+        obj_uid = cat_obj.get("uid") or ""
+        req_impls = cat_obj.get("requirementImplementations") or []
+        for impl in req_impls:
+            if not isinstance(impl, dict):
+                continue
+            req_id = impl.get("requirementId") or ""
+            if impl.get("mechanism") == "decisionRecord" and str(impl.get("ref")) == dr_uid:
+                instantiations.add((str(obj_uid), str(req_id)))
+    return instantiations
+
+
+def dr_matches_requirement(
+    obj: dict[str, Any],
+    req_id: str,
+    catalog_by_id: dict[str, dict[str, Any]],
+) -> bool:
+    control_refs = obj.get("controlReferences") or []
+    for ref in control_refs:
+        if str(ref) == req_id:
+            return True
+
+    dr_uid = obj.get("uid")
+    if not dr_uid:
+        return False
+
+    for cat_obj in catalog_by_id.values():
+        req_impls = cat_obj.get("requirementImplementations") or []
+        for impl in req_impls:
+            if not isinstance(impl, dict):
+                continue
+            if str(impl.get("requirementId")) == req_id:
+                if impl.get("mechanism") == "decisionRecord" and str(impl.get("ref")) == dr_uid:
+                    return True
+    return False
+
+
+def dr_matches_domain(
+    obj: dict[str, Any],
+    domain_id: str,
+    catalog_by_id: dict[str, dict[str, Any]],
+    requirement_groups: dict[str, dict[str, Any]],
+) -> bool:
+    tags = obj.get("tags") or []
+    if domain_id in tags:
+        return True
+
+    linked_uid = obj.get("linkedObject") or obj.get("affectedComponent")
+    if linked_uid:
+        linked_obj = catalog_by_id.get(str(linked_uid))
+        if linked_obj:
+            if linked_obj.get("type") == "capability" and linked_obj.get("domain") == domain_id:
+                return True
+            if linked_obj.get("type") == "domain" and linked_obj.get("uid") == domain_id:
+                return True
+
+    dr_uid = obj.get("uid")
+    if not dr_uid:
+        return False
+
+    for cat_obj in catalog_by_id.values():
+        req_impls = cat_obj.get("requirementImplementations") or []
+        for impl in req_impls:
+            if not isinstance(impl, dict):
+                continue
+            is_ref = False
+            if impl.get("mechanism") == "decisionRecord" and str(impl.get("ref")) == dr_uid:
+                is_ref = True
+
+            if is_ref:
+                req_group_uid = impl.get("requirementGroup")
+                req_id = impl.get("requirementId")
+                group = requirement_groups.get(str(req_group_uid))
+                if group:
+                    for req in group.get("requirements", []) or []:
+                        if isinstance(req, dict) and str(req.get("uid")) == str(req_id):
+                            related_cap = req.get("relatedCapability")
+                            if related_cap:
+                                cap_obj = catalog_by_id.get(str(related_cap))
+                                if cap_obj and cap_obj.get("domain") == domain_id:
+                                    return True
+    return False
+
+
+def get_expected_approver(
+    obj: dict[str, Any],
+    policy: dict[str, Any],
+    catalog_by_id: dict[str, dict[str, Any]],
+    requirement_groups: dict[str, dict[str, Any]],
+    path: Path,
+    failures: list[str],
+) -> str | None:
+    if policy.get("enforcement") == "none":
+        return None
+
+    rules = policy.get("rules") or []
+    for rule_idx, rule in enumerate(rules):
+        if not isinstance(rule, dict):
+            continue
+        match_criteria = rule.get("match")
+        if not isinstance(match_criteria, dict):
+            continue
+
+        matched = True
+        if "category" in match_criteria:
+            if obj.get("category") != match_criteria["category"]:
+                matched = False
+
+        if matched and "domain" in match_criteria:
+            target_domain = match_criteria["domain"]
+            if not dr_matches_domain(obj, target_domain, catalog_by_id, requirement_groups):
+                matched = False
+
+        if matched and "requirement" in match_criteria:
+            target_req = match_criteria["requirement"]
+            if not dr_matches_requirement(obj, target_req, catalog_by_id):
+                matched = False
+
+        if matched and match_criteria.get("affectedComponentOwner") is True:
+            affected_uid = obj.get("affectedComponent") or obj.get("linkedObject")
+            if not affected_uid:
+                matched = False
+            else:
+                affected_obj = catalog_by_id.get(str(affected_uid))
+                if not affected_obj or not affected_obj.get("owner", {}).get("team"):
+                    matched = False
+
+        if matched:
+            approver = rule.get("approver")
+            if approver == "ownerTeam":
+                affected_uid = obj.get("affectedComponent") or obj.get("linkedObject")
+                affected_obj = catalog_by_id.get(str(affected_uid))
+                owner_team = affected_obj.get("owner", {}).get("team") if affected_obj else None
+                if owner_team:
+                    return f"team:{owner_team}"
+                else:
+                    failures.append(f"{path}: Could not resolve ownerTeam for matching rule {rule_idx} (no owner team on linked/affected component)")
+                    return None
+            return approver
+
+    # Fallback to default
+    default_config = policy.get("default")
+    if isinstance(default_config, dict):
+        approver = default_config.get("approver")
+        if approver == "ownerTeam":
+            affected_uid = obj.get("affectedComponent") or obj.get("linkedObject")
+            affected_obj = catalog_by_id.get(str(affected_uid))
+            owner_team = affected_obj.get("owner", {}).get("team") if affected_obj else None
+            if owner_team:
+                return f"team:{owner_team}"
+            else:
+                failures.append(f"{path}: Could not resolve ownerTeam for default approval policy (no owner team on linked/affected component)")
+                return None
+        return approver
+
+    return None
+
+
+def validate_decision_record(
+    obj: dict[str, Any],
+    path: Path,
+    catalog_by_id: dict[str, dict[str, Any]],
+    requirement_groups: dict[str, dict[str, Any]],
+    policy: dict[str, Any],
+    failures: list[str],
+    warnings: list[str],
+) -> None:
     if obj.get("category") == "decision" and not is_non_empty(obj.get("decisionRationale")):
         warnings.append(f"{path}: decision DecisionRecords should include decisionRationale")
+
+    dr_uid = obj.get("uid")
+    if not dr_uid:
+        return
+
+    # Check 1: Scoping (1:1 with affected component + requirement)
+    if obj.get("status") == "accepted":
+        instantiations = get_decision_record_instantiations(dr_uid, catalog_by_id)
+        if len(instantiations) > 1:
+            failures.append(
+                f"{path}: DecisionRecord '{dr_uid}' is reused across multiple requirement implementations: "
+                f"{sorted(list(instantiations))}. It must be 1:1 with its affectedComponent and requirement."
+            )
+
+        # Check that it defines either affectedComponent or linkedObject
+        if policy.get("enforcement") != "none":
+            if not is_non_empty(obj.get("affectedComponent")) and not is_non_empty(obj.get("linkedObject")):
+                failures.append(f"{path}: Accepted DecisionRecord '{dr_uid}' must declare an affectedComponent or linkedObject to define its scope.")
+
+        # Check 2: Policy rules and markings
+        expected_approver = get_expected_approver(obj, policy, catalog_by_id, requirement_groups, path, failures)
+        if expected_approver is not None:
+            actual_approver = obj.get("approver")
+            if not is_non_empty(actual_approver):
+                failures.append(f"{path}: Accepted DecisionRecord '{dr_uid}' requires an approver under the active policy (expected '{expected_approver}')")
+            elif actual_approver != expected_approver:
+                failures.append(f"{path}: Accepted DecisionRecord '{dr_uid}' has wrong approver '{actual_approver}' (expected '{expected_approver}')")
+
+            # Transition open -> accepted requires approvalDate
+            if not is_non_empty(obj.get("approvalDate")):
+                failures.append(f"{path}: Accepted DecisionRecord '{dr_uid}' transitioned to accepted without proper markings (missing approvalDate)")
 
 
 def validate_drafting_session(
@@ -3804,6 +4028,7 @@ def main(argv: list[str] | None = None) -> int:
     workspace_requirements = load_workspace_requirements(workspace_root, failures)
     business_taxonomy = load_workspace_business_taxonomy(workspace_root, failures)
     workspace_vocabulary = load_workspace_vocabulary(workspace_root, failures, warnings)
+    workspace_decision_record_approval = load_workspace_decision_record_approval_policy(workspace_root, failures)
 
     for path in files:
         try:
@@ -3863,7 +4088,15 @@ def main(argv: list[str] | None = None) -> int:
                 require_active_group_disposition,
             )
         if obj.get("type") == "decision_record":
-            validate_decision_record(obj, path, failures, warnings)
+            validate_decision_record(
+                obj,
+                path,
+                catalog_by_id,
+                requirement_groups,
+                workspace_decision_record_approval,
+                failures,
+                warnings,
+            )
         if obj.get("type") == "relationship":
             validate_relationship(obj, path, catalog_by_id, failures)
         if obj.get("type") == "system":
