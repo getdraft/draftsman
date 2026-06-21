@@ -1,4 +1,4 @@
-## Unreleased
+## 0.58.3 - 2026-06-21
 
 Introduces the Unreleased PR pattern: PRs write changelog entries under `## Unreleased` and leave `draft-framework.yaml` alone. The new `promote-release` GitHub Actions workflow converts `Unreleased` to a numbered version automatically on every merge to `main`, eliminating version-number conflicts between concurrent PRs.
 
