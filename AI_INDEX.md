@@ -6,7 +6,6 @@ tags:
   - draft
   - ai_index
   - index
-timestamp: 2026-06-12T21:06:02-07:00
 ---
 
 # AI Framework Index
@@ -43,6 +42,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/browser | Static browser shell, CSS, JavaScript, and default theme assets copied by generate_browser.py. |
 | security.md | Credential and local security boundary notes for optional local tooling. |
 | framework/docs/draftsman.md | Draftsman role, intent routing, and authoring rules. |
+| framework/docs/soul.md | Draftsman character, cast of named personas, per-persona session contracts, routing logic, and personality pack extensibility. Read this to understand how the Draftsman adapts its voice and interaction style to the person in the chair. |
 | framework/docs/setup-mode.md | Draftsman first-run setup mode and guided interview cadence. |
 | framework/docs/engineering-onboarding.md | Targeted onboarding tutorial for product engineering teams. |
 | framework/docs/shared-services-onboarding.md | Targeted onboarding tutorial for platform/shared services teams. |
@@ -57,6 +57,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/requirement-groups.md | Unified requirement group authoring and validation behavior. |
 | framework/docs/capabilities.md | Capability object model and implementation lookup behavior. |
 | framework/docs/drafting-sessions.md | How to persist incomplete authoring work. |
+| framework/personalities/README.md | Draftsman personality packs and alternative cast configuration guidance. |
 | framework/tools/validate.py | Executable validation for schemas, RequirementGroups, capabilities, and references. |
 | framework/tools/apply_vocabulary_proposals.py | Materializes Draftsman vocabulary_proposal files into reviewable company vocabulary entries. |
 | framework/tools/repair_uids.py | Explicit repair utility that adds or replaces generated object UIDs and rewrites object references. |
