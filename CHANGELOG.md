@@ -2,9 +2,12 @@
 
 Introduces the Unreleased PR pattern: PRs write changelog entries under `## Unreleased` and leave `draft-framework.yaml` alone. The new `promote-release` GitHub Actions workflow converts `Unreleased` to a numbered version automatically on every merge to `main`, eliminating version-number conflicts between concurrent PRs.
 
+Closes a security gap in the catalog validator's plaintext-secret scanner and fixes a crash in the C4 diagram generator for system-less workspaces.
+
 ### Compatibility Impact
 
 - No breaking changes. Existing workspaces and workflows are unaffected. The change affects only the contributor/AI-agent release workflow for this repository.
+- The catalog validator's plaintext-secret scanner now inspects every key in a mapping even when a sibling key is named `secretReference`. Workspaces with a plaintext secret hidden alongside a `secretReference` key will now correctly fail validation. No other validation behavior changes.
 
 ### Added
 
@@ -19,12 +22,14 @@ Introduces the Unreleased PR pattern: PRs write changelog entries under `## Unre
 
 ### Fixed
 
-- None.
+- `framework/tools/validate.py`: `scan_for_secrets` no longer skips an entire mapping when it contains a `secretReference` key. The function now skips only the `secretReference` key itself and continues scanning siblings, so a plaintext `password`, `token`, `secret`, `apiKey`, or `privateKey` can no longer hide next to an approved secret-reference.
+- `framework/tools/generate_c4.py`: C4 export no longer crashes with `AttributeError: 'list' object has no attribute 'values'` for catalogs that contain relationships but no `system` object. The system-less branch now correctly passes the full catalog dict to `relationships_for_containers`, which also restores relationship rendering for those catalogs.
 
 ### Migration Notes
 
 - No workspace migration required. This only changes how contributors and AI agents author PRs to this upstream framework repository.
 - From now on: write `## Unreleased` in CHANGELOG.md in your PR, omit any change to `draft-framework.yaml`, and the promote workflow assigns the version on merge.
+- After refreshing the framework, re-run `python3 .draft/framework/tools/validate.py --workspace .`. If validation now reports a plaintext secret, move that value to a `secretReference` mapping so no literal secret sits in a sibling field. No other workspace changes are required.
 
 ## 0.58.2 - 2026-06-20
 
@@ -114,13 +119,13 @@ Documents personality pack resolution, activation, and custom pack lookup.
 ### Compatibility Impact
 
 - No breaking changes. Existing workspaces and workflows remain unaffected.
-
 ### Added
 
 - None.
 
 ### Changed
 
+<<<<<<< HEAD
 - Updated `framework/docs/workspaces.md`, `framework/docs/draftsman.md`, and `framework/docs/soul.md` to document personality pack resolution, activation, and custom pack lookup order.
 
 ### Fixed
@@ -205,6 +210,19 @@ Introduces documentation for the Draftsman Soul, clarifying its character, belie
 ### Migration Notes
 
 - None required. Workspaces can update to this framework release immediately.
+=======
+- None.
+
+### Fixed
+
+- `framework/tools/validate.py`: `scan_for_secrets` no longer skips an entire mapping when it contains a `secretReference` key. It now skips only the `secretReference` key itself and keeps scanning sibling keys, so a plaintext `password`, `token`, `secret`, `apiKey`, or `privateKey` can no longer hide next to an approved secret reference.
+- `framework/tools/generate_ai_index.py`: `markdown_summary` now reads the OKF frontmatter `description` (introduced in 0.57.1) instead of returning the leading `---` frontmatter delimiter. Every "Framework Docs" summary in `AI_INDEX.md` had been emitted as `---`; summaries now show each document's curated description, falling back to the first body line for files without frontmatter. `AI_INDEX.md` is regenerated accordingly.
+- `framework/tools/generate_c4.py`: C4 export no longer crashes with `AttributeError: 'list' object has no attribute 'values'` for catalogs that contain relationships but no `system` object. The system-less branch now passes the catalog (not a relationship list) to `relationships_for_containers`, which also restores relationship rendering for those catalogs.
+
+### Migration Notes
+
+- After refreshing the framework, re-run `python3 .draft/framework/tools/validate.py --workspace .`. If validation now reports a plaintext secret, move that value behind a `secretReference` mapping and ensure no literal secret sits in any sibling of a `secretReference`. No other workspace content migration is required.
+>>>>>>> eeedbd5 (fix(tools): harden validator secret scan and fix AI-index and C4 generators (0.58.0))
 
 ## 0.57.1 - 2026-06-12
 
