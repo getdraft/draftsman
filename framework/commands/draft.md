@@ -1,6 +1,6 @@
 ---
-description: Unified DRAFT command family — run a verb (validate, session, triage, …) or show the verb list
-argument-hint: "[verb] (e.g. validate, session, security, triage, review, author, update; empty shows the list)"
+description: Unified DRAFT command family — run a verb (validate, guide, triage, …) or show the verb list
+argument-hint: "[verb] (e.g. validate, guide, audit, triage, update; empty shows the list)"
 allowed-tools: [Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion]
 ---
 
@@ -28,11 +28,9 @@ vendored under `.draft/framework/draft-actions/` (company workspace).
 
 | Verb | Action file | Purpose |
 |---|---|---|
-| `author` | `draft-actions/author.md` | Activate the Draftsman to author the catalog or set up the workspace. |
-| `session` | `draft-actions/session.md` | Start or resume a guided DraftingSession. |
+| `guide` | `draft-actions/guide.md` | Bootstrap, then start or resume a guided DraftingSession or ad hoc authoring. |
 | `validate` | `draft-actions/validate.md` | Validate the DRAFT catalog and report fixes. |
-| `review` | `draft-actions/review.md` | Review **company** catalog/content (vendored workspaces). |
-| `security` | `draft-actions/security.md` | Run security RequirementGroup, satisfaction, review, and audit workflows. |
+| `audit` | `draft-actions/audit.md` | Run general catalog review or security RequirementGroup, satisfaction, posture, and artifact audit workflows. |
 | `triage` | `draft-actions/triage.md` | Pull open GitHub issues and work through selected ones. |
 | `review-framework` | `draft-actions/review-framework.md` | Upstream-only: review the DRAFT framework itself. |
 | `update` | `draft-actions/update.md` | Check for framework updates and guide a safe upgrade. |
@@ -56,11 +54,9 @@ Output **only** this table — no preamble, setup guides, or symlink notes:
 | Verb | Who runs it | Purpose |
 |---|---|---|
 | `/draft help` | All Users | Show this list of DRAFT verbs. |
-| `/draft author` | Engineering & Shared Services | Activate the Draftsman for catalog authoring or workspace setup. |
-| `/draft session` | Engineering & Shared Services | Start or resume a guided DraftingSession. |
+| `/draft guide` | Engineering & Shared Services | Bootstrap and start or resume guided catalog authoring. |
 | `/draft validate` | All Users | Validate the DRAFT catalog and report issues with fix guidance. |
-| `/draft review` | Engineering & Shared Services | Review company catalog/content in a vendored workspace. |
-| `/draft security` | Security, GRC & Draft Admins | Run security RequirementGroup, satisfaction, review, and audit workflows. |
+| `/draft audit` | Engineering, Security, GRC & Draft Admins | Run general catalog review or security RequirementGroup, satisfaction, review, and audit workflows. |
 | `/draft triage` | Draft Admins | Pull open GitHub issues and work through selected ones. |
 | `/draft update` | Draft Admins | Check for DRAFT framework updates and guide a safe upgrade. |
 

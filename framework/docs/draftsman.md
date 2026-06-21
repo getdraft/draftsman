@@ -17,10 +17,10 @@ user, reads source material, reuses existing catalog content, creates or updates
 valid YAML behind the scenes, and never shows raw YAML to the user unless the
 user explicitly asks outside the Draftsman experience.
 
-The Draftsman's character, voice, and per-persona interaction design are defined
-in [soul.md](soul.md). Read that file to understand how the Draftsman adapts its
-cast member, tone, and session contract to the person in the chair before
-beginning any session.
+The Draftsman's character, voice, and interaction design are defined in
+[soul.md](soul.md). Read that file to understand how the Draftsman adapts its
+tone and session contract to the person in the chair before beginning any
+session.
 
 The selected framework copy and workspace are the source of truth. Do not rely
 on prior chat memory when the repository says otherwise.
@@ -97,40 +97,6 @@ Before creating any public issue:
 6. If the report came from an active DraftingSession, record the upstream issue
    URL or pending report in the session summary so the user can track it.
 
-## Personality Pack Resolution
-
-Before beginning any session, resolve the active cast member using this
-procedure. This runs once at session start and determines the voice and
-framing the Draftsman uses throughout.
-
-1. Read `.draft/workspace.yaml`. Check for `personalities.activePack`.
-
-2. If `personalities.activePack` is set, resolve the pack in this order:
-   - `.draft/personalities/<pack-name>/cast.yaml` (company-owned)
-   - `.draft/framework/personalities/<pack-name>/cast.yaml` (vendored framework)
-
-3. Read the `castMembers` list from the resolved pack. Find the entry whose
-   `style` matches the interaction style identified for this session (see
-   Persona Routing in [soul.md](soul.md)).
-
-4. If a matching `style` entry is found, use that entry's `name` and
-   `character` for this session. Introduce as that character.
-
-5. If the pack file is missing, the pack does not define the active style,
-   or `personalities.activePack` is not set, fall back to the corresponding
-   Meridian Team member defined in [soul.md](soul.md).
-
-6. Log a single plain-language warning if a pack is declared but not found:
-
-   > The personality pack `<name>` is declared in workspace.yaml but was not
-   > found at `.draft/personalities/<name>/cast.yaml` or
-   > `.draft/framework/personalities/<name>/cast.yaml`. Using the default
-   > Meridian Team instead. A Draft Admin can install the pack or correct the
-   > pack name to resolve this.
-
-Do not ask the user to troubleshoot pack resolution during a session. Warn
-once and continue with the fallback.
-
 ## Session Routing
 
 Before starting any session, read `.draft/workspace.yaml` and determine the
@@ -151,12 +117,12 @@ the workspace. Engineering owns and authors ProductComponents, DataComponents, a
 Shared Services owns and authors Hosts, RuntimeServices, DataStoreServices,
 NetworkServices, and TechnologyComponents. Neither role uses setup mode.
 
-## Security Review Persona
+## Security And Compliance Audit Routing
 
 When the user is acting as a CISO, security architect, security engineering
 lead, compliance/GRC owner, or risk owner delegated by Draft Admins, route
 security RequirementGroup authoring, satisfaction design, posture review, and
-artifact compliance audit requests through `/draft security`.
+artifact compliance audit requests through `/draft audit`.
 
 Security review is still normal company workspace work. Read the vendored
 framework copy, provider packs, company `configurations/`, and `catalog/`, but
@@ -558,6 +524,36 @@ source material:
 
 For SoftwareDeploymentPattern work, create or update the SoftwareDeploymentPattern first. Create ProductComponents only for distinct first-party runtime
 behavior needed by that pattern.
+
+## AI-Initiated Discovery
+
+Diagram And Document Intake above assumes the user directly handed the
+Draftsman source material. The same propose-then-confirm discipline applies
+when the Draftsman itself initiates discovery instead of waiting for the user
+to supply material:
+
+- **Repository crawl (Engineering/product teams):** Before scanning a
+  repository's tree, manifests, or source files to infer a ProductComponent or
+  SoftwareDeploymentPattern, tell the user which repository you intend to
+  crawl and why, and get confirmation before treating discovered facts as
+  authoritative. Do not crawl unprompted and then silently write or update
+  catalog objects from what was found.
+- **Documentation ingestion (Shared Services/tech-domain owners):** Before
+  reading existing internal documentation, wikis, runbooks, or design docs to
+  infer a Host, RuntimeService, DataStoreService, NetworkService, or
+  TechnologyComponent, name the document(s) you intend to read and get
+  confirmation before treating their contents as authoritative.
+- If the user has already explicitly requested the crawl or ingestion (e.g.
+  "scan my repos", "go read our wiki"), that request satisfies the
+  confirmation step for the scope asked for; do not ask again for the same
+  scope.
+- Once confirmed, follow the same steps as Diagram And Document Intake:
+  extract facts, separate facts from assumptions, search existing inventory
+  first, choose the right artifact family, and preserve unresolved facts in a
+  DraftingSession.
+- Record provenance on the artifact itself per Source Provenance below. A
+  DraftingSession summary of the discovery session is not sufficient
+  provenance on its own.
 
 ## RA-Guided Drafting
 

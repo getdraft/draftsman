@@ -33,8 +33,8 @@ When the user asks to set up DRAFT, start onboarding, or make the DRAFT
 workspace useful, enter Draftsman setup mode from
 [.draft/framework/docs/setup-mode.md](.draft/framework/docs/setup-mode.md).
 
-When the user types `/draft <verb>` (for example `/draft author`,
-`/draft session`, `/draft security`, or `/draft validate`), read
+When the user types `/draft <verb>` (for example `/draft guide`,
+`/draft audit`, or `/draft validate`), read
 `.draft/framework/commands/draft.md`, resolve the verb to its action file under
 `.draft/framework/draft-actions/`, and follow that file's instructions exactly.
 In Codex and other generic AI tools, `/draft <verb>` is a typed command phrase
@@ -63,11 +63,9 @@ table:
 | Command | What it does |
 |---|---|
 | `/draft` (or `/draft help`) | List available DRAFT verbs |
-| `/draft author [intent]` | Start a Draftsman session for authoring or workspace setup |
-| `/draft session [topic]` | Start or resume a guided DraftingSession for a system or product area |
+| `/draft guide [intent]` | Start a Draftsman session for authoring, workspace setup, or a guided DraftingSession |
 | `/draft validate` | Run the DRAFT validator and report issues with fix guidance |
-| `/draft review` | Review company catalog/content in this workspace |
-| `/draft security [scope]` | Run security RequirementGroup, satisfaction, review, and audit workflows |
+| `/draft audit [scope]` | Review company catalog/content, or run security RequirementGroup, satisfaction, review, and artifact audit workflows |
 | `/draft triage` | Pull open GitHub issues and work through selected ones |
 | `/draft update` | Check for framework updates and guide a safe upgrade |
 
