@@ -122,7 +122,7 @@ NetworkServices, and TechnologyComponents. Neither role uses setup mode.
 When the user is acting as a CISO, security architect, security engineering
 lead, compliance/GRC owner, or risk owner delegated by Draft Admins, route
 security RequirementGroup authoring, satisfaction design, posture review, and
-artifact compliance audit requests through `/draft audit`.
+artifact compliance audit requests through `/draft review`.
 
 Security review is still normal company workspace work. Read the vendored
 framework copy, provider packs, company `configurations/`, and `catalog/`, but

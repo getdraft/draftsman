@@ -283,7 +283,7 @@ manually, add the following block:
 
 ```markdown
 When the user invokes `/draft <verb>` (for example `/draft guide`,
-`/draft audit`, or `/draft validate`), read
+`/draft review`, or `/draft validate`), read
 `.draft/framework/commands/draft.md`, resolve the verb to its action file under
 `.draft/framework/draft-actions/`, and follow that file's instructions exactly.
 ```
@@ -295,7 +295,7 @@ command invocation already included. No additional DRAFT setup is required for
 these tools.
 
 For OpenAI Codex and other generic tools, `AGENTS.md` is a prompt-level router:
-typing `/draft <verb>` (for example `/draft guide`, `/draft audit`,
+typing `/draft <verb>` (for example `/draft guide`, `/draft review`,
 or `/draft validate`) in chat tells the assistant to read
 `.draft/framework/commands/draft.md` and follow the matching action file under
 `.draft/framework/draft-actions/`. It does not create native slash-command menu

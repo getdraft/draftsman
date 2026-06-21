@@ -59,10 +59,8 @@ The primary interface for developers and AI assistants inside a DRAFT workspace 
 | Verb | Command | Context | Action |
 |---|---|---|---|
 | `help` | `/draft` or `/draft help` | Framework & Workspace | Displays available verbs, arguments, and command usage. |
-| `validate` | `/draft validate [path]` | Workspace | Runs the schema, reference, and requirement validator against target files or the entire workspace. |
-| `audit` | `/draft audit [path\|requirements\|satisfaction\|review\|artifact]` | Workspace | Runs a static review of catalog files to check design completeness, advisory standards, and missing information, or runs security RequirementGroup authoring, satisfaction design, posture review, and artifact compliance audit workflows. |
-| `triage` | `/draft triage` | Git Repo | Pulls open GitHub issues for the repository and runs the interactive selection/triage interface. |
 | `guide` | `/draft guide [intent]` | Workspace | Bootstraps the workspace, launches a guided interface to author new catalog objects, and manages drafting sessions, saving incomplete state, and recording open questions. |
+| `review` | `/draft review [PR number\|security\|path]` | Workspace | Reviews an open pull request for catalog correctness, or audits catalog content for quality and security compliance. |
 | `update` | `/draft update` | Workspace | Refreshes the vendored framework copy (`.draft/framework/`) in a company workspace. |
 
 ### Command Rules
@@ -218,14 +216,14 @@ catalog/engineering/product-components/billing-api.yaml              @my-org/bil
 
 ## 7. Issue Creation
 
-When a developer or security reviewer runs `/draft validate` or
-`/draft audit`, the Draftsman identifies gaps (e.g. missing
-dependencies, outdated technologies, non-compliant controls).
+When a developer or security reviewer runs `/draft review`, the Draftsman
+identifies gaps (e.g. missing dependencies, outdated technologies,
+non-compliant controls).
 
 ### Sub-Actions
-* **validate sub-action:** Highlights hard errors (failed schema formats, unresolved UIDs, broken references) and offers to generate issues to repair them.
-* **audit (general review) sub-action:** Highlights advisory architectural gaps or design reviews (e.g. missing backup configurations or unmapped scaling policies) and generates issues for enrichment.
-* **audit (security) sub-action:** Highlights unsatisfied controls, weak evidence,
+* **review (PR) sub-action:** Validates catalog changes in an open pull request for schema correctness, ownership, vocabulary compliance, and dependency completeness.
+* **review (catalog quality) sub-action:** Highlights advisory architectural gaps or design reviews (e.g. missing backup configurations or unmapped scaling policies) and generates issues for enrichment.
+* **review (security) sub-action:** Highlights unsatisfied controls, weak evidence,
   incorrect satisfaction mechanisms, or artifact audit findings and offers
   DecisionRecords, DraftingSession items, or issues for follow-up.
 

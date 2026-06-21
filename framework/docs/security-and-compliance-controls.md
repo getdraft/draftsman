@@ -49,19 +49,19 @@ the auditor, regulator, control owner, or company compliance program.
 
 ## Security Review Command
 
-Use `/draft audit` when a CISO, security architect, security engineering
+Use `/draft review` when a CISO, security architect, security engineering
 lead, compliance/GRC owner, or delegated risk owner wants to manage security
 controls or audit architecture evidence.
 
 The command supports these scopes:
 
-- `/draft audit requirements` creates or updates company security
+- `/draft review requirements` creates or updates company security
   RequirementGroups under `configurations/requirement-groups/`.
-- `/draft audit satisfaction` defines or repairs the satisfaction mechanisms
+- `/draft review satisfaction` defines or repairs the satisfaction mechanisms
   for each requirement.
-- `/draft audit review` reviews current RequirementGroups and explains which
+- `/draft review security` reviews current RequirementGroups and explains which
   catalog artifacts satisfy, fail, or weakly satisfy them.
-- `/draft audit artifact [name]` audits a selected artifact, UID, path, or
+- `/draft review artifact [name]` audits a selected artifact, UID, path, or
   scoped set of artifacts against active security RequirementGroups.
 
 Normal command work writes company controls and evidence to `configurations/`

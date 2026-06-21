@@ -135,7 +135,7 @@ def setup_ide():
     # Define the generic block to insert if the file already exists
     copilot_block = (
         "\n\nWhen the user invokes `/draft <verb>` (for example `/draft guide`, "
-        "`/draft audit`, or `/draft validate`), read "
+        "`/draft review`, or `/draft validate`), read "
         "`.draft/framework/commands/draft.md` (or `framework/commands/draft.md`), "
         "resolve the verb to its action file under the framework's `draft-actions/` directory, "
         "and follow that file's instructions exactly."

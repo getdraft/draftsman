@@ -118,9 +118,7 @@ routed by the workspace bootstrap instructions.
 |---|---|
 | `/draft` (or `/draft help`) | List available DRAFT verbs |
 | `/draft guide [intent]` | Bootstrap, then start or resume a guided DraftingSession or ad hoc authoring |
-| `/draft validate` | Run the validator and report issues with fix guidance |
-| `/draft audit [scope]` | Run general catalog review or security RequirementGroup, satisfaction, review, and artifact audit workflows |
-| `/draft triage` | Pull open GitHub issues and work through selected ones |
+| `/draft review [PR\|security\|path]` | Review an open PR for catalog correctness, or audit catalog content for quality and security compliance |
 | `/draft update` | Check for framework updates and guide a safe upgrade |
 
 The upstream `getdraft/draftsman` repository also exposes `/draft

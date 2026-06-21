@@ -34,7 +34,7 @@ workspace useful, enter Draftsman setup mode from
 [.draft/framework/docs/setup-mode.md](.draft/framework/docs/setup-mode.md).
 
 When the user types `/draft <verb>` (for example `/draft guide`,
-`/draft audit`, or `/draft validate`), read
+`/draft review`, or `/draft validate`), read
 `.draft/framework/commands/draft.md`, resolve the verb to its action file under
 `.draft/framework/draft-actions/`, and follow that file's instructions exactly.
 In Codex and other generic AI tools, `/draft <verb>` is a typed command phrase
@@ -64,9 +64,7 @@ table:
 |---|---|
 | `/draft` (or `/draft help`) | List available DRAFT verbs |
 | `/draft guide [intent]` | Start a Draftsman session for authoring, workspace setup, or a guided DraftingSession |
-| `/draft validate` | Run the DRAFT validator and report issues with fix guidance |
-| `/draft audit [scope]` | Review company catalog/content, or run security RequirementGroup, satisfaction, review, and artifact audit workflows |
-| `/draft triage` | Pull open GitHub issues and work through selected ones |
+| `/draft review [PR\|security\|path]` | Review an open PR for catalog correctness, or audit catalog content for quality and security compliance |
 | `/draft update` | Check for framework updates and guide a safe upgrade |
 
 Claude Code users see `/draft` in `/` autocomplete when the command symlink is

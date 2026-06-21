@@ -34,8 +34,8 @@ If the workspace appears fresh or unconfigured, enter **Setup Mode**: read
 ## Step 3: Find Or Start The Work
 
 **If `$ARGUMENTS` is provided:** Treat it as a system name, product, topic, or
-authoring intent. Search `catalog/sessions/` for an existing session file whose
-`uid` or `name` matches it (case-insensitive).
+authoring intent. Search `catalog/governance/sessions/` for an existing session
+file whose `uid` or `name` matches it (case-insensitive).
 
 - If a matching session is found, load it (see Step 4).
 - If no matching session is found but the argument names a concrete system or
@@ -45,7 +45,7 @@ authoring intent. Search `catalog/sessions/` for an existing session file whose
   address it directly under the Draftsman role without creating a session
   file.
 
-**If no arguments:** List any existing session files in `catalog/sessions/`,
+**If no arguments:** List any existing session files in `catalog/governance/sessions/`,
 then ask:
 
 > What would you like to draft or update today? You can describe a system, a
