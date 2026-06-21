@@ -51,7 +51,7 @@ constraints:
   - objectType: ai_gateway
     diagramTier: utility
     notes: Ensure an AI Gateway service is declared in the utility tier. All outbound LLM relationships must target this gateway.
-architectureNotes:
+notes:
   patternRationale: >
     The AI-enabled RAG pattern routes all external model provider traffic through a governed AI Gateway 
     and leverages a vector storage layer for prompt context enrichment. This isolates model integrations, 

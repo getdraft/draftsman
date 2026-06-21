@@ -218,7 +218,7 @@ Valid satisfaction mechanisms: `technologyComponent`,
 `technologyComponentConfiguration`, `deploymentConfiguration`, `relationship`,
 `internalComponent`, `decisionRecord`, `field`.
 
-`architectureNotes` is a placeholder and must not be presented as completed
+`notes` is a placeholder and must not be presented as completed
 security evidence.
 
 ### Satisfaction Design

@@ -6,6 +6,8 @@ Closes a security gap in the catalog validator's plaintext-secret scanner and fi
 
 ### Compatibility Impact
 
+- **Inline context field rename**: Renamed inline context field `architectureNotes`/`architecturalDecisions` to `notes` globally across schemas, validator, templates, catalog, docs, and browser code. Existing company workspaces will need to rename this field to pass validation.
+- **Mechanism rename**: Replaced legacy mechanism `architecturalDecision` / `architectureNote` with `decisionRecord` and `note` globally. Inline notes are scratchpads and do not satisfy compliance requirements; exception-handling must use `decisionRecord` objects.
 - No breaking changes. Existing workspaces and workflows are unaffected. The change affects only the contributor/AI-agent release workflow for this repository.
 - The catalog validator's plaintext-secret scanner now inspects every key in a mapping even when a sibling key is named `secretReference`. Workspaces with a plaintext secret hidden alongside a `secretReference` key will now correctly fail validation. No other validation behavior changes.
 - No breaking changes for decision record approval. Existing workspaces are unaffected unless they configure the optional `decisionRecordApproval` policy in `workspace.yaml`.
@@ -14,6 +16,9 @@ Closes a security gap in the catalog validator's plaintext-secret scanner and fi
 
 ### Added
 
+- Added `templates/relationship.yaml.tmpl` to provide a template for first-class relationship objects.
+- Added documentation for the standalone `deploymentConfiguration` pattern in `framework/docs/how-to-add-objects.md` and linked to the new relationship template.
+- Added schema validation coverage for `decisionRecords` in service and component schemas (fixing a silent validation bypass where `decisionRecords` collections on components were not locally defined).
 - Added `upstream/` directory at the repository root for maintainer-only tooling that must not be vendored into company workspaces. Includes `upstream/README.md` explaining the directory's purpose.
 - Added `framework/draft-actions/review.md`: the new `/draft review` verb that handles PR review, catalog quality review, and security/compliance audit in a single command routed by argument.
 - Added `.github/workflows/promote-release.yml`: fires on push to `main`, detects `## Unreleased` in CHANGELOG.md, computes the next version (minor if contract-path files changed, patch otherwise), promotes the entry, bumps `draft-framework.yaml`, and regenerates `AI_INDEX.md` in a follow-up bot commit.
@@ -24,6 +29,11 @@ Closes a security gap in the catalog validator's plaintext-secret scanner and fi
 
 ### Changed
 
+- Renamed `architectureNotes` -> `notes` (type `dict`) in schemas: `ai-gateway`, `data-component`, `data-store-service`, `host`, `network-service`, `product-component`, `reference-architecture`, `runtime-service`, and `software-deployment-pattern`.
+- Renamed `addsArchitecturalDecisions` -> `addsNotes` in service and host schemas.
+- Updated `framework/tools/validate.py` to use `notes` instead of `architectureNotes` and reject `note` mechanism as a requirement satisfaction.
+- Updated `framework/browser/draft-browser.js` (and `docs/assets/draft-browser.js`) UI panel and labels to show "Notes" instead of "Architecture Decisions".
+- Updated all 300+ example catalog files and reference architectures to conform to the new `notes` schema field.
 - Simplified the `/draft` command family for company workspaces from six verbs to three: `guide`, `review`, `update`. The `validate` verb still works as a convenience alias but is no longer in the help table. The `audit` and `triage` verbs are retired.
 - Moved `framework/draft-actions/review-framework.md` to `upstream/review-framework.md` so it is not vendored into company workspaces. The `review-framework` verb routes to `upstream/review-framework.md` and gracefully reports unavailability if the file is not found.
 - Updated all references to `/draft audit`, `/draft triage`, and the retired action files across `operations-guide.md`, `security-and-compliance-controls.md`, `draftsman.md`, `draftsman-ai-configuration.md`, `setup-mode.md`, `ticketing.md`, `integrations/`, and all workspace templates.
@@ -34,6 +44,8 @@ Closes a security gap in the catalog validator's plaintext-secret scanner and fi
 
 ### Fixed
 
+- Fixed silent schema validation bypass where `decisionRecords` arrays on services/components were skipped due to missing local `decisionRecordRef` definitions.
+- Fixed template-schema mismatch where default templates used the deprecated `architecturalDecisions` field.
 - `framework/tools/validate.py`: `scan_for_secrets` no longer skips an entire mapping when it contains a `secretReference` key. The function now skips only the `secretReference` key itself and continues scanning siblings, so a plaintext `password`, `token`, `secret`, `apiKey`, or `privateKey` can no longer hide next to an approved secret-reference.
 - `framework/tools/generate_c4.py`: C4 export no longer crashes with `AttributeError: 'list' object has no attribute 'values'` for catalogs that contain relationships but no `system` object. The system-less branch now correctly passes the full catalog dict to `relationships_for_containers`, which also restores relationship rendering for those catalogs.
 - `framework/draft-actions/update.md`: moved cleanup of the temporary clone to run after the commit SHA capture, resolving a bug where the `rev-parse HEAD` command failed due to the clone directory having already been deleted. Also resolved a minor singular/plural grammar typo.
@@ -41,6 +53,8 @@ Closes a security gap in the catalog validator's plaintext-secret scanner and fi
 
 ### Migration Notes
 
+- **Field migration in workspaces**: Company workspaces must rename the inline `architectureNotes` field to `notes` in all YAML catalog files to comply with version 0.59.0 schemas and validator.
+- **Mechanism migration in requirements**: RequirementGroups specifying `mechanism: architecturalDecision` or `mechanism: architectureNote` must use `mechanism: decisionRecord` (for compliant exceptions) or `mechanism: note` (which will fail validation for completed items but serve as scratchpads).
 - Replace `/draft audit` with `/draft review` in any runbooks, CI scripts, or documented procedures. Replace `/draft triage` with `/draft review` (or `/draft review pr` for explicit PR review). No catalog YAML changes required.
 - No workspace migration required. This only changes how contributors and AI agents author PRs to this upstream framework repository.
 - From now on: write `## Unreleased` in CHANGELOG.md in your PR, omit any change to `draft-framework.yaml`, and the promote workflow assigns the version on merge.
@@ -109,7 +123,7 @@ Fixes schema and documentation contradictions surfaced by the 2026-06-12 full fr
 
 ### Compatibility Impact
 
-- No breaking changes. `decisionRecord` was already the documented valid value; this release makes the schema match. Any workspace that had `mechanism: architectureNote` in a `requirementImplementations` entry will now fail validation — change those to `mechanism: decisionRecord`.
+- No breaking changes. `decisionRecord` was already the documented valid value; this release makes the schema match. Any workspace that had `mechanism: note` in a `requirementImplementations` entry will now fail validation — change those to `mechanism: decisionRecord`.
 
 ### Added
 
@@ -121,13 +135,13 @@ Fixes schema and documentation contradictions surfaced by the 2026-06-12 full fr
 
 ### Fixed
 
-- Replaced `architectureNote` with `decisionRecord` in `requirementImplementation.mechanism` enum across all 9 object schemas (`host`, `runtime-service`, `data-store-service`, `network-service`, `software-deployment-pattern`, `data-component`, `ai-gateway`, `reference-architecture`, `product-component`).
+- Replaced `note` with `decisionRecord` in `requirementImplementation.mechanism` enum across all 9 object schemas (`host`, `runtime-service`, `data-store-service`, `network-service`, `software-deployment-pattern`, `data-component`, `ai-gateway`, `reference-architecture`, `product-component`).
 - Removed `serverless` from the `deliveryModel` repair procedure in `draftsman.md`; it is not a valid enum value in any schema.
 - Removed duplicate "Add A RequirementGroup" section from `how-to-add-objects.md`; the shorter incomplete copy is gone and the fuller canonical section is retained.
 
 ### Migration Notes
 
-- If any `requirementImplementations` entry uses `mechanism: architectureNote`, change it to `mechanism: decisionRecord`.
+- If any `requirementImplementations` entry uses `mechanism: note`, change it to `mechanism: decisionRecord`.
 
 ## 0.57.5 - 2026-06-12
 
@@ -449,7 +463,7 @@ Resolves owner contact handling for team vocabulary metadata.
 
 - Added owner contact derivation in browser payloads from `vocabulary.teams[].contact` when catalog objects declare `owner.team` but omit `owner.contact`.
 - Added validation tests for omitted owner contacts and drift warnings.
-- Added regression coverage documenting that SoftwareDeploymentPattern `architectureNotes` placeholders do not satisfy requirements that must be committed as `decision_record` references.
+- Added regression coverage documenting that SoftwareDeploymentPattern `notes` placeholders do not satisfy requirements that must be committed as `decision_record` references.
 
 ### Changed
 
@@ -543,7 +557,7 @@ Fixes the SoftwareDeploymentPattern hardcoded validator to support DecisionRecor
 
 ### Compatibility Impact
 
-- **Breaking Change**: Inline `architectureNotes` are no longer accepted to satisfy SoftwareDeploymentPattern verification requirements. SDPs must now reference `decision_record` objects via `decisionRecords` to satisfy these requirements.
+- **Breaking Change**: Inline `notes` are no longer accepted to satisfy SoftwareDeploymentPattern verification requirements. SDPs must now reference `decision_record` objects via `decisionRecords` to satisfy these requirements.
 
 ### Added
 
@@ -556,7 +570,7 @@ Fixes the SoftwareDeploymentPattern hardcoded validator to support DecisionRecor
 
 ### Fixed
 
-- Fixed hardcoded SDP validation gaps where valid DecisionRecords were ignored, forcing redundant `architectureNotes` fields.
+- Fixed hardcoded SDP validation gaps where valid DecisionRecords were ignored, forcing redundant `notes` fields.
 
 ### Migration Notes
 
@@ -1164,7 +1178,7 @@ template if they want automatic stale-tag fallback behavior.
 
 ## 0.41.0 - 2026-06-01
 
-Completes the `architectureNote`→DecisionRecord cleanup by applying the rule to the opt-in compliance packs and removing `architectureNote` from the satisfaction allowlist entirely (closes #74). With every shipped RequirementGroup now free of note-based satisfiers, `architectureNote` is no longer an accepted answer type anywhere — it is purely a drafting annotation.
+Completes the `note`→DecisionRecord cleanup by applying the rule to the opt-in compliance packs and removing `note` from the satisfaction allowlist entirely (closes #74). With every shipped RequirementGroup now free of note-based satisfiers, `note` is no longer an accepted answer type anywhere — it is purely a drafting annotation.
 
 ### Added
 
@@ -1172,8 +1186,8 @@ Completes the `architectureNote`→DecisionRecord cleanup by applying the rule t
 
 ### Changed
 
-- **Compliance packs converted**: `requirement-group-draft-nist-csf.yaml`, `requirement-group-draft-soc2.yaml`, `requirement-group-draft-tx-ramp.yaml`, and `requirement-group-draft-security-compliance.yaml` had their `architectureNote` satisfiers (53) and `field`-into-`architectureNotes` satisfiers (19) replaced with `decisionRecord` (keyed by the former note key); `validAnswerTypes` recomputed.
-- **`architectureNote` removed from `VALID_REQUIREMENT_ANSWER_TYPES`** — no RequirementGroup may declare it as a satisfaction mechanism.
+- **Compliance packs converted**: `requirement-group-draft-nist-csf.yaml`, `requirement-group-draft-soc2.yaml`, `requirement-group-draft-tx-ramp.yaml`, and `requirement-group-draft-security-compliance.yaml` had their `note` satisfiers (53) and `field`-into-`notes` satisfiers (19) replaced with `decisionRecord` (keyed by the former note key); `validAnswerTypes` recomputed.
+- **`note` removed from `VALID_REQUIREMENT_ANSWER_TYPES`** — no RequirementGroup may declare it as a satisfaction mechanism.
 - **Compliance re-activated in the examples workspace** (`Security & Security Compliance`), and the OpenStack SDP's compliance satisfactions restored via DecisionRecords.
 - **Fixed a latent key-collision from #71**: runtime/data example objects referenced the Host requirement's `healthWelfareMonitoringApproach` key instead of the Service Behavior/DataStoreService `healthWelfareMonitoring` key; corrected so the health-welfare-monitoring requirement resolves under the re-activated compliance pack.
 - Regenerated `AI_INDEX.md` for the new DecisionRecords.
@@ -1188,11 +1202,11 @@ Completes the `architectureNote`→DecisionRecord cleanup by applying the rule t
 
 ### Migration Notes
 
-Workspaces that activate the NIST CSF, SOC 2, TX-RAMP, or Security & Security Compliance packs should commit DecisionRecords for any control previously satisfied by an inline `architectureNote`, referencing them from the object's `decisionRecords` list with a `key` matching the control. `architectureNote` is no longer a valid `canBeSatisfiedBy`/`validAnswerTypes` mechanism in any RequirementGroup.
+Workspaces that activate the NIST CSF, SOC 2, TX-RAMP, or Security & Security Compliance packs should commit DecisionRecords for any control previously satisfied by an inline `note`, referencing them from the object's `decisionRecords` list with a `key` matching the control. `note` is no longer a valid `canBeSatisfiedBy`/`validAnswerTypes` mechanism in any RequirementGroup.
 
 ## 0.40.0 - 2026-06-01
 
-Enforces the DRAFT principle that an `architectureNote` is a drafting placeholder, not a requirement satisfaction (closes #71). A note lets a DraftingSession continue when information or the right decision-maker is not yet available, but the requirement is met only when the decision is committed as a DecisionRecord (or satisfied by concrete implementation). Because requirement gaps already warn for `stub`/`incomplete` objects and fail only for `complete` ones, drafting is unaffected — only completion now requires a real answer. Scope is the always-on core RequirementGroups; the opt-in compliance packs are deferred to a follow-up.
+Enforces the DRAFT principle that an `note` is a drafting placeholder, not a requirement satisfaction (closes #71). A note lets a DraftingSession continue when information or the right decision-maker is not yet available, but the requirement is met only when the decision is committed as a DecisionRecord (or satisfied by concrete implementation). Because requirement gaps already warn for `stub`/`incomplete` objects and fail only for `complete` ones, drafting is unaffected — only completion now requires a real answer. Scope is the always-on core RequirementGroups; the opt-in compliance packs are deferred to a follow-up.
 
 ### Added
 
@@ -1201,8 +1215,8 @@ Enforces the DRAFT principle that an `architectureNote` is a drafting placeholde
 
 ### Changed
 
-- **`architectureNote` no longer satisfies a requirement** (`validate.py`: `mechanism_satisfied` and `implementation_resolves` return `False` for it). It remains a recognized answer type so deferred RequirementGroups still parse, but it never resolves a requirement.
-- **Core RequirementGroups converted**: all `architectureNote` satisfiers (and `field`-into-`architectureNotes` satisfiers) in the 13 always-on RGs were replaced with `decisionRecord` (keyed by the former note key). The ReferenceArchitecture `deployment-qualities` requirement is now also satisfiable by the structured `applicableDefinitionChecklist` field.
+- **`note` no longer satisfies a requirement** (`validate.py`: `mechanism_satisfied` and `implementation_resolves` return `False` for it). It remains a recognized answer type so deferred RequirementGroups still parse, but it never resolves a requirement.
+- **Core RequirementGroups converted**: all `note` satisfiers (and `field`-into-`notes` satisfiers) in the 13 always-on RGs were replaced with `decisionRecord` (keyed by the former note key). The ReferenceArchitecture `deployment-qualities` requirement is now also satisfiable by the structured `applicableDefinitionChecklist` field.
 - Regenerated `AI_INDEX.md` for the new DecisionRecords.
 
 ### Fixed
@@ -1211,7 +1225,7 @@ Enforces the DRAFT principle that an `architectureNote` is a drafting placeholde
 
 ### Compatibility Impact
 
-- **Behavioral.** A `complete` object that previously satisfied a requirement with an inline `architectureNote` now fails until the decision is committed as a DecisionRecord or satisfied by concrete evidence. `stub`/`incomplete` objects only warn, so in-progress drafting is unaffected. No object model or schema field was removed.
+- **Behavioral.** A `complete` object that previously satisfied a requirement with an inline `note` now fails until the decision is committed as a DecisionRecord or satisfied by concrete evidence. `stub`/`incomplete` objects only warn, so in-progress drafting is unaffected. No object model or schema field was removed.
 
 ### Migration Notes
 
@@ -1242,7 +1256,7 @@ Phase 2 of the native capability vocabulary (follow-up to #66 via #70): promotes
 
 ### Migration Notes
 
-No manual workspace migration is required. As with Phase 1, workspaces that created generic local capabilities for these outcomes should declare the native capability UID on the providing service over time. Remaining open design work (consumer-side demand for outcomes a ProductComponent *needs*, and a possible migration helper) stays tracked under #70; the framework-wide `architectureNote`-as-satisfier cleanup is tracked under #71.
+No manual workspace migration is required. As with Phase 1, workspaces that created generic local capabilities for these outcomes should declare the native capability UID on the providing service over time. Remaining open design work (consumer-side demand for outcomes a ProductComponent *needs*, and a possible migration helper) stays tracked under #70; the framework-wide `note`-as-satisfier cleanup is tracked under #71.
 
 ## 0.38.0 - 2026-05-31
 
@@ -1253,7 +1267,7 @@ Begins promoting generic architecture outcomes into native DRAFT capability voca
 - **Eleven native capabilities**: `API Gateway`, `DNS`, `CDN`, `WAF` (Network domain); `Application Runtime`, `Service Mesh`, `Caching`, `Messaging` (Compute & Runtime domain); `Data Persistence`, `Object Storage`, `File Storage` (Data domain). All ship `complete` with framework `definitionOwner` and empty `implementations`.
 - **Service Capability RequirementGroup** (`requirement-group-service-capability.yaml`, always-on, applies to `runtime_service`/`data_store_service`/`network_service` across all delivery models): one conditional self-declared requirement per native capability, gated on `capabilities contains <uid>` and scoped per requirement via `appliesTo`. Each requirement traces its capability through `relatedCapability` and is satisfiable by concrete technical evidence (a TechnologyComponent configuration/internal component, or a relationship to a providing service) **or** a committed DecisionRecord — never by a bare architecture note.
 - **`decisionRecord` satisfaction mechanism** in `validate.py`: a requirement can now be satisfied by a committed DecisionRecord referenced from the object's `decisionRecords` list with a `capability` key matching the requirement's capability. Added to `VALID_REQUIREMENT_ANSWER_TYPES` and to both the auto-resolution (`mechanism_satisfied`) and object-implementation (`implementation_resolves`) paths. This makes the "decision instead of implementation" path a first-class, capability-specific way to resolve a requirement.
-- **Native vs company-local capability guidance** in `framework/docs/capabilities.md`: when to use a native capability versus minting a company-local one, how native service capabilities are self-declared, and the rule that an inline `architectureNote` is a drafting placeholder that does not satisfy a requirement until it is committed as a DecisionRecord.
+- **Native vs company-local capability guidance** in `framework/docs/capabilities.md`: when to use a native capability versus minting a company-local one, how native service capabilities are self-declared, and the rule that an inline `note` is a drafting placeholder that does not satisfy a requirement until it is committed as a DecisionRecord.
 
 ### Changed
 
@@ -1281,7 +1295,7 @@ Traces the four framework-native network capabilities (Network Connectivity, Net
 
 ### Fixed
 
-- **Untraced native network capabilities**: Added capability-keyed satisfaction mechanisms to the `network-function` requirement in `requirement-group-network-service.yaml`, referencing `01KSWVZSZ5-Q6HW` (Network Connectivity), `01KSWVZSZ5-1RTH` (Network Segmentation), `01KSWVZSZ5-M0FR` (Traffic Management), and `01KSWVZSZ5-26F1` (WAN Connectivity). A NetworkService can now declare its function either with the existing `networkFunction` field/architectureNote or by referencing a TechnologyComponent that provides one of the native network capabilities. `minimumSatisfactions` remains `1`, so existing NetworkService objects are unaffected.
+- **Untraced native network capabilities**: Added capability-keyed satisfaction mechanisms to the `network-function` requirement in `requirement-group-network-service.yaml`, referencing `01KSWVZSZ5-Q6HW` (Network Connectivity), `01KSWVZSZ5-1RTH` (Network Segmentation), `01KSWVZSZ5-M0FR` (Traffic Management), and `01KSWVZSZ5-26F1` (WAN Connectivity). A NetworkService can now declare its function either with the existing `networkFunction` field/note or by referencing a TechnologyComponent that provides one of the native network capabilities. `minimumSatisfactions` remains `1`, so existing NetworkService objects are unaffected.
 
 ### Changed
 
@@ -1581,7 +1595,7 @@ new object type is warranted.
   service-like fields needed by delivery-model RequirementGroups, including
   `host`, `primaryTechnologyComponent`, `internalComponents`,
   `deploymentConfigurations`, `configurations`, `vendorGovernance`,
-  `authenticationModel`, `patchingOwner`, `architectureNotes`,
+  `authenticationModel`, `patchingOwner`, `notes`,
   `decisionRecords`, and requirement implementations.
 - **Tightened hosting semantics**: ProductComponent `runsOn` and SDP
   `serviceGroup.substrate` now reference only a RuntimeService or Host.
@@ -1640,7 +1654,7 @@ DecisionRecords, and ReferenceArchitecture conformance.
 4. For traffic-control objects migrated to `network_service`, fill in
    `networkFunction`, `networkTopology`, and `protocols`, then keep or add
    service evidence such as `host`, `primaryTechnologyComponent`,
-   `internalComponents`, `architectureNotes`, and `decisionRecords` as
+   `internalComponents`, `notes`, and `decisionRecords` as
    applicable.
 5. Update ReferenceArchitecture constraints, SDP service-group entries,
    relationships, RequirementGroup `appliesTo` scopes, templates, and generated
@@ -2080,7 +2094,7 @@ Two breaking changes:
 
 - **`externalInteractions` field fully removed**: The deprecated `externalInteractions` field (plural) is removed from all service, host, and SDP schemas, all framework configurations, all example catalog objects, all documentation, and the `migrate_interactions.py` tool (deleted). The `externalInteraction` mechanism name (singular) is retained in requirement groups and the validator — it now resolves against outbound `relationship` objects where the relationship carries the required capability. Closes #34.
 
-- **`architectureNotes.externalInteractionRationales` renamed to `relationshipRationales`**: The machine-readable dependency rationale key inside `architectureNotes` has been renamed to match the relationship object model. All 22 affected example catalog objects updated.
+- **`notes.externalInteractionRationales` renamed to `relationshipRationales`**: The machine-readable dependency rationale key inside `notes` has been renamed to match the relationship object model. All 22 affected example catalog objects updated.
 
 - **Detail view now shows relationship objects**: The browser detail view for services and hosts renders outbound and inbound relationship data instead of the removed `externalInteractions` field.
 
@@ -2096,7 +2110,7 @@ Breaking change for workspaces that have not yet migrated `externalInteractions`
 
 1. **Migrate `externalInteractions` to relationship objects before upgrading**: Use the last available version of `migrate_interactions.py` (removed in this release) to generate relationship stubs, or create them manually. Each entry needs a `relationship` YAML file with `source`, `target` or `externalTarget`, `label`, `technology`, and `capabilities` (list of capability UIDs the relationship satisfies).
 
-2. **Rename `architectureNotes.externalInteractionRationales` to `relationshipRationales`** in any workspace objects that use this key.
+2. **Rename `notes.externalInteractionRationales` to `relationshipRationales`** in any workspace objects that use this key.
 
 ## 0.28.4 - 2026-05-28
 
@@ -2142,17 +2156,17 @@ Schema change: `owner` moved from required to optional on `requirement_group`. N
 
 ### Fixed
 
-- **`architectureNote` rejected as `requirementImplementations` mechanism**: `validate_requirement_implementations` now fails any implementation entry that sets `mechanism: architectureNote`. Inline notes are scratchpad, not evidence — proper mechanisms (`externalInteraction`, `technologyComponentConfiguration`, `field`, etc.) or a promoted `decision_record` are required. All 26 example catalog objects that carried `mechanism: architectureNote` implementation entries have been corrected: entries were removed (requirements remain automatically satisfied via `canBeSatisfiedBy` group scanning against `architectureNotes` keys) or replaced with valid mechanisms. The `validate_architectural_decisions` inline-notes suppression added in 0.28.0 is reverted — the warning is correct and should fire.
+- **`note` rejected as `requirementImplementations` mechanism**: `validate_requirement_implementations` now fails any implementation entry that sets `mechanism: note`. Inline notes are scratchpad, not evidence — proper mechanisms (`externalInteraction`, `technologyComponentConfiguration`, `field`, etc.) or a promoted `decision_record` are required. All 26 example catalog objects that carried `mechanism: note` implementation entries have been corrected: entries were removed (requirements remain automatically satisfied via `canBeSatisfiedBy` group scanning against `notes` keys) or replaced with valid mechanisms. The `validate_architectural_decisions` inline-notes suppression added in 0.28.0 is reverted — the warning is correct and should fire.
 
-- **SDP `decisionRecords` reference added**: The `sdp-openstack-iaas-platform` object is `complete` and has inline `architectureNotes`; it now declares `decisionRecords: [{ref: 01KSE5V73Z-CRZV}]` to resolve the inline-notes promotion warning.
+- **SDP `decisionRecords` reference added**: The `sdp-openstack-iaas-platform` object is `complete` and has inline `notes`; it now declares `decisionRecords: [{ref: 01KSE5V73Z-CRZV}]` to resolve the inline-notes promotion warning.
 
 ### Compatibility Impact
 
-No schema changes. Behavioral change: `mechanism: architectureNote` in `requirementImplementations` is now a validation failure (was silently accepted in 0.28.0). Workspaces that authored implementation entries with `mechanism: architectureNote` must remove those entries or migrate to structural mechanism types.
+No schema changes. Behavioral change: `mechanism: note` in `requirementImplementations` is now a validation failure (was silently accepted in 0.28.0). Workspaces that authored implementation entries with `mechanism: note` must remove those entries or migrate to structural mechanism types.
 
 ### Migration Notes
 
-1. **Remove `mechanism: architectureNote` from `requirementImplementations`**: Requirements that were documented with `mechanism: architectureNote` can be satisfied automatically — if the corresponding `architectureNotes` key is present on the object, the requirement group scanner resolves it via `canBeSatisfiedBy`. No manual implementation entry is needed.
+1. **Remove `mechanism: note` from `requirementImplementations`**: Requirements that were documented with `mechanism: note` can be satisfied automatically — if the corresponding `notes` key is present on the object, the requirement group scanner resolves it via `canBeSatisfiedBy`. No manual implementation entry is needed.
 
 2. **Promote inline decisions to `decision_record` objects** for complete objects that want to suppress the inline-notes warning without a `decisionRecords` reference.
 
@@ -2166,11 +2180,11 @@ No schema changes. Behavioral change: `mechanism: architectureNote` in `requirem
 
 - **Open drafting session example**: `session-nova-compute-runtime-service.yaml` added to demonstrate an in-progress authoring session with unresolved questions about Nova scheduler election and conductor failover behavior.
 
-- **Security compliance evidence across the examples catalog**: All 14 runtime services, 7 data-store-services, the edge gateway, the OpenStack host, and the Lambda host now carry `architectureNotes` keys that satisfy active `Security and Security Compliance Requirement Group` requirements, plus corresponding `requirementImplementations` entries.
+- **Security compliance evidence across the examples catalog**: All 14 runtime services, 7 data-store-services, the edge gateway, the OpenStack host, and the Lambda host now carry `notes` keys that satisfy active `Security and Security Compliance Requirement Group` requirements, plus corresponding `requirementImplementations` entries.
 
 ### Changed
 
-- **`architectureNotes` inline warning suppressed when requirement evidence is present**: `validate_architectural_decisions` no longer warns about inline `architectureNotes` when the object has `decisionRecords` references OR when any `requirementImplementations` entry uses `mechanism: architectureNote`. Objects whose notes serve as requirement satisfaction evidence are no longer prompted to promote those keys — doing so would remove the only satisfaction mechanism for those requirements. Closes #31.: `validate_architectural_decisions` no longer warns about inline `architectureNotes` on complete objects that already declare `decisionRecords` references. Objects that have promoted their narrative to decision records but retain minimal `architectureNotes` for requirement satisfaction are no longer flagged.
+- **`notes` inline warning suppressed when requirement evidence is present**: `validate_architectural_decisions` no longer warns about inline `notes` when the object has `decisionRecords` references OR when any `requirementImplementations` entry uses `mechanism: note`. Objects whose notes serve as requirement satisfaction evidence are no longer prompted to promote those keys — doing so would remove the only satisfaction mechanism for those requirements. Closes #31.: `validate_architectural_decisions` no longer warns about inline `notes` on complete objects that already declare `decisionRecords` references. Objects that have promoted their narrative to decision records but retain minimal `notes` for requirement satisfaction are no longer flagged.
 
 - **Examples workspace `requireActiveRequirementGroupDisposition` enabled**: The examples workspace now sets `requireActiveRequirementGroupDisposition: true`, requiring all objects to have explicit dispositions for every requirement in the active security compliance requirement group. The workspace validates with zero failures and zero warnings at 159 catalog objects.
 
@@ -2184,9 +2198,9 @@ No breaking changes. New `decisionRecords` field is optional on all affected sch
 
 ### Migration Notes
 
-1. **Add `decisionRecords` references** to any complete service, host, or product objects that have inline `architectureNotes` to suppress the inline-notes warning. The decision record content can be authored incrementally — the warning only fires when the object has neither inline decisions nor linked records.
+1. **Add `decisionRecords` references** to any complete service, host, or product objects that have inline `notes` to suppress the inline-notes warning. The decision record content can be authored incrementally — the warning only fires when the object has neither inline decisions nor linked records.
 
-2. **Add compliance `architectureNotes` keys** (e.g. `secrets_management`, `access_control_model`, `backup_strategy`) to objects that should satisfy active security compliance requirement groups. Existing camelCase `architectureNotes` keys (e.g. `secretsManagement`) are not automatically recognized by compliance requirements that use snake_case keys.
+2. **Add compliance `notes` keys** (e.g. `secrets_management`, `access_control_model`, `backup_strategy`) to objects that should satisfy active security compliance requirement groups. Existing camelCase `notes` keys (e.g. `secretsManagement`) are not automatically recognized by compliance requirements that use snake_case keys.
 
 ## 0.27.0 - 2026-05-27
 
@@ -2196,7 +2210,7 @@ No breaking changes. New `decisionRecords` field is optional on all affected sch
 
 ### Changed
 
-- **`architecturalDecisions` renamed to `architectureNotes`**: The inline scratchpad field for architectural context is renamed across all 67 files (schemas, validator, requirement groups, docs, examples, tests). The `architecturalDecision` mechanism type in requirement group `validAnswerTypes` and `canBeSatisfiedBy` entries is renamed to `architectureNote`.
+- **`notes` renamed to `notes`**: The inline scratchpad field for architectural context is renamed across all 67 files (schemas, validator, requirement groups, docs, examples, tests). The `architecturalDecision` mechanism type in requirement group `validAnswerTypes` and `canBeSatisfiedBy` entries is renamed to `note`.
 
 ### Fixed
 
@@ -2220,7 +2234,7 @@ No breaking changes. New `decisionRecords` field is optional on all affected sch
 
 - **`migrate_interactions.py`** (`framework/tools/`): New script that reads a workspace, finds objects with deprecated `externalInteractions` entries, and generates stub relationship YAML files. Entries with a `ref` to an existing catalog object get `target`; bare-name entries get `externalTarget`. Supports `--dry-run`.
 
-- **`architecturalDecisions` promotion warning**: The validator now warns when a `catalogStatus: complete` object has inline `architecturalDecisions` content, recommending promotion to `decision_record` objects.
+- **`notes` promotion warning**: The validator now warns when a `catalogStatus: complete` object has inline `notes` content, recommending promotion to `decision_record` objects.
 
 ### Changed
 
@@ -2552,7 +2566,7 @@ is optional and backwards-compatible.
 - Renamed all `data-at-rest-*.yaml` files in `examples/catalog/data-store-services/`
   to `data-store-service-*.yaml` to match the object type naming convention used
   by all other catalog file types.
-- Completed `architecturalDecisions` and `externalInteractionRationales` on the
+- Completed `notes` and `externalInteractionRationales` on the
   remaining five data store services (Cinder, Glance, Keystone, Neutron, OpenStack
   Shared, Swift) and the Keystone and RabbitMQ runtime services to resolve all
   outstanding requirement group compliance gaps.
@@ -2586,14 +2600,14 @@ is optional and backwards-compatible.
   `approved`, added `followsReferenceArchitecture: 01KS8N4KR2-3TWA`, added
   `requirementGroups` and `requirementImplementations` for the three SDP-scoped
   security compliance requirements (10.1.1, 10.1.2, 00.2.1), and added
-  `architecturalDecisions.deploymentTargets` and
-  `architecturalDecisions.reference_architecture_conformance`.
+  `notes.deploymentTargets` and
+  `notes.reference_architecture_conformance`.
 - Updated `data-at-rest-nova-database.yaml`: added `access_control_model` and
-  `backup.platform` to `architecturalDecisions`; added `requirementGroups` and
+  `backup.platform` to `notes`; added `requirementGroups` and
   `requirementImplementations` for four applicable security compliance requirements;
   added `externalInteractionRationales` for the Backup Service interaction.
 - Updated `runtime-service-nova.yaml`: added `secrets_management` to
-  `architecturalDecisions`; added `requirementGroups` and
+  `notes`; added `requirementGroups` and
   `requirementImplementations` for `CC.SecurityCompliance.04.3.1`.
 - Removed obsolete empty placeholder directories: `examples/catalog/ards/`,
   `examples/catalog/sdms/`, `examples/catalog/saas-services/`.
@@ -2617,7 +2631,7 @@ UIDs.
 - Added three baseline framework RAs: Three-Tier Web Application
   (`01KS8N4KR2-3TWA`), Multi-Tenant SaaS (`01KS8N4KR3-MTSA`), and Serverless
   Event-Driven (`01KS8N4KR4-SVED`). Each defines service group tiers, an
-  `applicableDefinitionChecklist`, and `architecturalDecisions` capturing the
+  `applicableDefinitionChecklist`, and `notes` capturing the
   key pattern rules.
 - Added `objectType` optional field to the Reference Architecture schema's
   `deployableObjectEntry`. Accepts any standard deployable object type
@@ -3197,7 +3211,7 @@ No migration is required. This patch improves browser detail-view rendering for
 
 - Existing workspaces can continue unchanged.
 - Workspaces that already document
-  `architecturalDecisions.externalInteractionRationales`,
+  `notes.externalInteractionRationales`,
   `internalComponentRationales`, or `dependencyRationales` will now see those
   rationales surfaced directly in the browser.
 
@@ -3987,7 +4001,7 @@ workspaces remain valid.
 
 No workspace data migration is required. Repository-discovered Software
 Deployment Patterns can optionally add
-`architecturalDecisions.sourceRepositories` to make per-pattern provenance
+`notes.sourceRepositories` to make per-pattern provenance
 visible in the generated browser.
 
 ## 0.8.1 - 2026-05-03
@@ -4078,7 +4092,7 @@ catalog objects and capability implementation mappings: `pre-invest` becomes
 - Fixed generated browser payloads so Capability domain assignments are included
   in the Acceptable Use Technology view instead of appearing as unassigned.
 - Fixed Reference Architecture and Software Deployment Pattern requirement
-  evidence so `serviceGroups`, `patternType`, and `architecturalDecisions`
+  evidence so `serviceGroups`, `patternType`, and `notes`
   fields satisfy the matching requirement group checks directly.
 - Fixed requirement satisfaction for external interactions declared inside
   `serviceGroups`, so nested service group interactions count toward the same

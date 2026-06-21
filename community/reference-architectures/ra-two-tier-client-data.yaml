@@ -35,7 +35,7 @@ serviceGroups:
     capability: 01KT0V5MCV-VD0Y
     diagramTier: data
     notes: Managed data platform, database, object store, or reporting data service used as the durable system of record.
-architectureNotes:
+notes:
   patternRationale: Two-tier deployment is appropriate when the product does not need a separately operated application server. The pattern keeps the client boundary and data boundary explicit so authorization, data classification, and audit controls remain visible.
   ownershipGuidance: Shared services owns the edge and data service objects when no approved catalog service exists yet; engineering owns the ProductComponent and DataComponent entries that use those services.
 constraints:

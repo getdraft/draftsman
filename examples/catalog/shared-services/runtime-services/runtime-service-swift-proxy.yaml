@@ -20,7 +20,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000006-TC06
-architectureNotes:
+notes:
   serviceAuthentication: >-
     All Swift API requests are authenticated via the Keystone auth middleware configured in the Swift
     proxy pipeline. Requests include a Keystone token that is validated against the Keystone service before

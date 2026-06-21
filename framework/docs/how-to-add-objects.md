@@ -58,22 +58,39 @@ matches an applicable requirement's `canBeSatisfiedBy` mechanism, or a valid
 `requirementImplementations` entry points at that mechanism.
 
 External dependencies (outbound calls, data reads, platform integrations) are
-modeled as standalone `relationship` objects in the catalog. Set `source` to
+modeled as standalone `relationship` objects in the catalog (see [templates/relationship.yaml.tmpl](../../templates/relationship.yaml.tmpl) for a starting point). Set `source` to
 the calling object's UID and `target` to the receiving object's UID (or
 `externalTarget` for systems with no catalog representation).
 
 When an internal component is present for a reason outside the applicable
 requirements, document the reason under:
 
-- `architectureNotes.internalComponentRationales` for locally composed
+- `notes.internalComponentRationales` for locally composed
   TechnologyComponents
-- `architectureNotes.dependencyRationales` when one shared rationale is
+- `notes.dependencyRationales` when one shared rationale is
   clearer than separate buckets
 
 Use the component `ref`, `enabledBy`, role, or capability ID as the rationale
 key. If the dependency is actually intended to satisfy a requirement, update the
 entry with the matching capability or add valid `requirementImplementations`
 evidence instead of adding rationale.
+
+## Model Deployment Configurations
+
+When a host, runtime service, network service, or other deployable service supports different deployment topology variants (e.g. active-passive, active-active, standalone), these are modeled using the `deploymentConfigurations` list on the object.
+
+Each configuration entry requires:
+- `id`: A unique string ID (e.g., `standalone`, `ha`).
+- `name`: A short human-readable name.
+- `description`: Details on how the service is deployed and run in this configuration.
+
+Optionally, it can declare:
+- `addressesQualities`: A list of qualities satisfied by this configuration, such as `availability`, `scalability`, or `recoverability`. RequirementGroups can use these qualities to automatically satisfy requirements (e.g. high availability rules) when a service is deployed with a configuration that addresses that quality.
+- `addsInternalComponents`: Additional components physically included only when this configuration is active.
+- `addsExternalInteractions`: Additional external interactions required only in this configuration.
+- `addsNotes`: Rationale and context specific to this configuration.
+
+To satisfy high-availability requirements, the `intent` field of the service instance when placed in a SoftwareDeploymentPattern service group should match the target configuration `id` (e.g. `intent: ha` or `intent: standalone`).
 
 ## Add A TechnologyComponent
 
@@ -85,7 +102,7 @@ evidence instead of adding rationale.
 6. Add `capabilities` if the TechnologyComponent itself satisfies reusable host capabilities.
 7. Add `configurations` if a named TechnologyComponent configuration satisfies reusable host capabilities.
 8. Fill in any remaining TechnologyComponent-specific metadata such as vendor lifecycle and optional platform dependency.
-9. If the TechnologyComponent is classified as `agent`, make sure any deployable object that uses it also documents the corresponding external interaction or an architectural decision exception under `architectureNotes.agentInteractionExceptions`.
+9. If the TechnologyComponent is classified as `agent`, make sure any deployable object that uses it also documents the corresponding external interaction or an architectural decision exception under `notes.agentInteractionExceptions`.
 10. Run validation.
 
 TechnologyComponents should be specific. If you cannot name the product version clearly, you probably are not ready to create the object yet.
@@ -96,7 +113,7 @@ TechnologyComponents should be specific. If you cannot name the product version 
 2. Reference the Operating System and Compute Platform TechnologyComponents explicitly.
 3. Add any Agent TechnologyComponents or other internal components that physically live on the host.
 4. Create relationship objects for identity, logging, security, monitoring, patching, or other platform dependencies.
-5. Add `architectureNotes` when the host must answer a RequirementGroup or compliance question that is not expressed directly in the object, or when an internal component exists for a reason outside the applicable Host requirements.
+5. Add `notes` when the host must answer a RequirementGroup or compliance question that is not expressed directly in the object, or when an internal component exists for a reason outside the applicable Host requirements.
 6. Add `requirementGroups` only for RequirementGroups the host explicitly claims to
    satisfy, then add valid `requirementImplementations` for every applicable
    control in each declared profile.
@@ -113,8 +130,8 @@ TechnologyComponents should be specific. If you cannot name the product version 
 4. Document the decisions that describe scaling, health, secrets handling, and, for DataStoreServices, durability and protection.
    DataStoreServices must document backup strategy, backup platform, RTO,
    and RPO; create a relationship object pointing to a separate backup platform
-   or use `architectureNotes.backup.platform` for provider-managed backups.
-5. Use `architectureNotes` whenever the service must answer a RequirementGroup or compliance question that is not expressed directly in the object, or when an internal component exists for a reason outside the applicable service requirements.
+   or use `notes.backup.platform` for provider-managed backups.
+5. Use `notes` whenever the service must answer a RequirementGroup or compliance question that is not expressed directly in the object, or when an internal component exists for a reason outside the applicable service requirements.
 6. Add `requirementGroups` only for RequirementGroups the service explicitly claims
    to satisfy, then add valid `requirementImplementations` for every applicable
    control in each declared profile.
@@ -127,7 +144,7 @@ TechnologyComponents should be specific. If you cannot name the product version 
 2. Add or repair the generated `uid`; choose a clear human `name`.
 3. Populate `serviceGroups` with the reusable building blocks that define the deployment pattern.
 4. Set `diagramTier` on every deployable object entry and cluster related functionality into the right service group.
-5. Add `architectureNotes` that explain what non-functional qualities the pattern is meant to deliver and how.
+5. Add `notes` that explain what non-functional qualities the pattern is meant to deliver and how.
 6. Make sure the file satisfies the ReferenceArchitecture RequirementGroup by documenting `patternType`, tiered service groups, and deployment-quality decisions.
 
 A ReferenceArchitecture should be generic enough to guide many products, not just one.
@@ -143,7 +160,7 @@ A ReferenceArchitecture should be generic enough to guide many products, not jus
    ProductComponent is not a starting-point RequirementGroup object; use it here only when the SoftwareDeploymentPattern needs to express a distinct first-party runtime-behavior component deployed on a substrate.
 7. Set `diagramTier` on every deployable object entry using one of `presentation`, `application`, `data`, or `utility`.
 8. Use `intent` only when the architect is explicitly deviating from the ReferenceArchitecture or when no ReferenceArchitecture exists.
-9. Add product-level `architectureNotes`, including availability requirement and data classification, so the SoftwareDeploymentPattern satisfies the SoftwareDeploymentPattern RequirementGroup.
+9. Add product-level `notes`, including availability requirement and data classification, so the SoftwareDeploymentPattern satisfies the SoftwareDeploymentPattern RequirementGroup.
 
 ## Add A DraftingSession
 
@@ -189,7 +206,7 @@ A ReferenceArchitecture should be generic enough to guide many products, not jus
    declared.
 5. Confirm every modeled internal component and external interaction either
    satisfies a claimed or always-on requirement, or has dependency rationale in
-   `architectureNotes`.
+   `notes`.
 6. Run validation.
 
 Artifacts with no declared group are unclaimed inventory, not failed inventory.

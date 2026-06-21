@@ -30,7 +30,7 @@ serviceGroups:
     objectType: data_store_service
     diagramTier: data
     notes: Governed relational, NoSQL, file, or object data store consumed by the client tier. The catalog implementation should be a DataStoreService or a capability implementation that resolves to one.
-architectureNotes:
+notes:
   patternRationale: Two-tier applications reduce moving parts by eliminating a middle runtime tier, but they require explicit controls for direct data access and client authorization.
   onboardingQuestions: Ask which client entry point and managed data store the product will use, then confirm why no application tier is needed.
 constraints:

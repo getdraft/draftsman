@@ -15,7 +15,7 @@ optionalFields:
 - owner
 - tags
 - patternType
-- architectureNotes
+- notes
 - applicableDefinitionChecklist
 - scalingUnits
 - serviceGroups
@@ -37,7 +37,7 @@ fieldTypes:
   aliases: list
   owner: dict
   tags: list
-  architectureNotes: dict
+  notes: dict
   scalingUnits: list
   serviceGroups: list
   requirementGroups: list

@@ -50,7 +50,7 @@ serviceGroups:
     objectType: network_service
     diagramTier: utility
     notes: Log aggregation or telemetry pipeline used by the microservices estate.
-architectureNotes:
+notes:
   patternRationale: The pattern supports independent deployment and scaling of services while keeping shared platform capabilities governed by shared services.
   onboardingQuestions: Ask for the orchestration platform, ingress pattern, service mesh or east-west control approach, per-service state ownership, and observability stack.
 constraints:

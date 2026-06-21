@@ -51,7 +51,7 @@ environmentConfiguration:
   description: URL for the enterprise SAML identity provider metadata document.
   required: true
   sensitive: false
-architectureNotes:
+notes:
   product_component: >-
     Application secrets (OPS_CONSOLE_SECRET_KEY, SAML credentials) are injected at deploy time from the
     platform secret store. No secrets present in source code or container images. See decision record

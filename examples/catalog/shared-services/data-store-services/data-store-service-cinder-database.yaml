@@ -21,7 +21,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000E-TC0E
-architectureNotes:
+notes:
   serviceAuthentication: >-
     Cinder connects to its database schema using a dedicated MariaDB service account with credentials
     configured in cinder.conf.

@@ -226,7 +226,7 @@ RuntimeService, DataStoreService, and NetworkService objects describe reusable b
 
 For RuntimeService, DataStoreService, and NetworkService objects, the primary TechnologyComponent is the main functional component. Do not add a separate dependency rationale for the primary component when it is the object core.
 
-DataStoreServices should document backup strategy, backup platform, RTO, and RPO. Use an external interaction for a separate backup platform, or use `architectureNotes.backup.platform` when the backup capability is provider-managed inside the service.
+DataStoreServices should document backup strategy, backup platform, RTO, and RPO. Use an external interaction for a separate backup platform, or use `notes.backup.platform` when the backup capability is provider-managed inside the service.
 
 #### 3a.8 Modeling ProductComponents {#modeling-product-components}
 
@@ -323,13 +323,13 @@ Every `internalComponents` entry must either directly satisfy an applicable requ
 
 Use these machine-readable buckets:
 
-- `architectureNotes.internalComponentRationales`
-- `architectureNotes.dependencyRationales`
+- `notes.internalComponentRationales`
+- `notes.dependencyRationales`
 
 Use stable keys such as the component `ref`, `enabledBy`, role, or capability ID.
 
 ```yaml
-architectureNotes:
+notes:
   internalComponentRationales:
     01KQS0TF60-STVW: Dynatrace agent is included because the local agent sends telemetry to the APM platform; it satisfies the optional APM requirement.
 ```
@@ -340,7 +340,7 @@ External dependencies are modeled as standalone `relationship` objects in the ca
 
 #### 3b.4 Agent rule {#agent-rule}
 
-Agent TechnologyComponents have an additional rule: any deployable object that includes an agent must have a relationship object where this object is the source, or record an exception under `architectureNotes.agentInteractionExceptions`.
+Agent TechnologyComponents have an additional rule: any deployable object that includes an agent must have a relationship object where this object is the source, or record an exception under `notes.agentInteractionExceptions`.
 
 ---
 

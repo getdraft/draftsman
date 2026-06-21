@@ -17,4 +17,4 @@ tags:
 decisionRationale: >-
   Records the resilience and availability decisions for OpenStack IaaS Platform. These decisions address
   the availabilityRequirement, failureDomain requirement(s); supporting detail is documented in this object's
-  architectureNotes. This DecisionRecord is the committed answer that satisfies the requirement(s).
+  notes. This DecisionRecord is the committed answer that satisfies the requirement(s).

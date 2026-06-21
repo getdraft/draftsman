@@ -30,7 +30,6 @@ optionalFields:
 - authenticationModel
 - patchingOwner
 - vendorGovernance
-- architectureNotes
 - notes
 - decisionRecords
 - requirementImplementations
@@ -84,7 +83,7 @@ fieldTypes:
   requirementImplementations: list
   vendorGovernance: dict
   protocols: list
-  architectureNotes: dict
+  notes: dict
   configurations: list
 collectionSchemas:
   internalComponents: internalComponent
@@ -120,7 +119,7 @@ deploymentConfiguration:
   - addressesQualities
   - addsInternalComponents
   - addsExternalInteractions
-  - addsArchitecturalDecisions
+  - addsNotes
   - notes
   enumListFields:
     addressesQualities:
@@ -131,7 +130,7 @@ deploymentConfiguration:
     addressesQualities: list
     addsInternalComponents: list
     addsExternalInteractions: list
-    addsArchitecturalDecisions: dict
+    addsNotes: dict
 configuration:
   requiredFields:
   - id
@@ -209,3 +208,11 @@ aiHint: >
   ReferenceArchitecture concerns expressed through SDP network zones, service groups, relationships,
   capabilities, and DecisionRecords.
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
+decisionRecordRef:
+  requiredFields:
+  - ref
+  optionalFields:
+  - key
+  - concern
+  - capability
+

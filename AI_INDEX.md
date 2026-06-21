@@ -480,6 +480,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | templates/network-service.yaml.tmpl | Reusable YAML authoring template. |
 | templates/object-patch.yaml.tmpl | Reusable YAML authoring template. |
 | templates/reference-architecture.yaml.tmpl | Reusable YAML authoring template. |
+| templates/relationship.yaml.tmpl | Reusable YAML authoring template. |
 | templates/requirement-group.yaml.tmpl | Reusable YAML authoring template. |
 | templates/runtime-service.yaml.tmpl | Reusable YAML authoring template. |
 | templates/software-deployment-pattern.yaml.tmpl | Reusable YAML authoring template. |

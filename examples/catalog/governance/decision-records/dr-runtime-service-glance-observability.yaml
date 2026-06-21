@@ -17,4 +17,4 @@ tags:
 decisionRationale: >-
   Records the observability and logging decisions for Glance Image Service. These decisions address the
   healthWelfareMonitoringApproach, serviceLogging requirement(s); supporting detail is documented in this
-  object's architectureNotes. This DecisionRecord is the committed answer that satisfies the requirement(s).
+  object's notes. This DecisionRecord is the committed answer that satisfies the requirement(s).

@@ -20,7 +20,7 @@ tags:
 businessContext:
   pillar: business-pillar.infrastructure
   productFamily: Cloud Infrastructure
-architectureNotes:
+notes:
   availabilityTarget: 99.9%
   availabilityRequirement: >-
     All control plane services target 99.9% availability via active-active deployment on a minimum 3-node
@@ -56,7 +56,7 @@ decisionRecords:
 - ref: 01KSE5V73Z-CRZV
   key: edge-protection
   notes: >-
-    Data classification is Internal per architectureNotes.dataClassification. The platform does not process
+    Data classification is Internal per notes.dataClassification. The platform does not process
     public or confidential data directly; tenant workloads inherit their own classification independently
     of this SDP.
 - ref: 01KT11AQTR-KH1S

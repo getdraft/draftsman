@@ -16,5 +16,5 @@ tags:
 - compliance
 decisionRationale: >-
   Records the security and compliance decisions for Keystone Database addressing the access_control_model,
-  backup_strategy control requirement(s); supporting detail is documented in this object's architectureNotes.
+  backup_strategy control requirement(s); supporting detail is documented in this object's notes.
   This DecisionRecord is the committed answer that satisfies the requirement(s).

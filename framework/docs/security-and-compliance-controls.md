@@ -72,7 +72,7 @@ is explicitly maintaining the framework itself.
 Security RequirementGroups should prefer concrete evidence over prose. Valid
 satisfaction mechanisms are `technologyComponent`,
 `technologyComponentConfiguration`, `deploymentConfiguration`, `relationship`,
-`internalComponent`, `decisionRecord`, and `field`. `architectureNotes` may
+`internalComponent`, `decisionRecord`, and `field`. `notes` may
 preserve rationale, but it is not completed evidence for an active security
 requirement.
 

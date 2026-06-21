@@ -64,7 +64,7 @@ Common optional fields include:
 - `primaryObjectUid`
 - `assumptions`
 - `nextSteps`
-- `architectureNotes`
+- `notes`
 
 ## How To Use It
 

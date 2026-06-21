@@ -134,7 +134,7 @@ Security RequirementGroups should use `activation: workspace`, scoped
 `appliesTo`, and concrete satisfaction mechanisms. The valid mechanisms are
 `technologyComponent`, `technologyComponentConfiguration`,
 `deploymentConfiguration`, `relationship`, `internalComponent`,
-`decisionRecord`, and `field`. `architectureNotes` can record rationale or
+`decisionRecord`, and `field`. `notes` can record rationale or
 temporary context, but it is placeholder information and must not be treated as
 completed security evidence.
 
@@ -434,8 +434,8 @@ a valid `requirementImplementations` entry points at that mechanism.
 If the dependency is real but does not directly satisfy a requirement, ask why
 it belongs on the object and record the answer as an architectural decision:
 
-- `architectureNotes.internalComponentRationales` for local components
-- `architectureNotes.dependencyRationales` when a shared dependency
+- `notes.internalComponentRationales` for local components
+- `notes.dependencyRationales` when a shared dependency
   rationale is clearer
 
 Do not treat adjacent capabilities as equivalent. For example, an APM agent or
@@ -624,7 +624,7 @@ network or traffic-control products, only the `preferred` one is proposed.
 When an SDP legitimately cannot satisfy an RA constraint (internal-only
 deployment, operator-accepted deviation, etc.) the author should:
 
-1. Document the exception in `architectureNotes.reference_architecture_conformance`.
+1. Document the exception in `notes.reference_architecture_conformance`.
 2. Reference a DecisionRecord explaining the rationale.
 3. Note that the validator will still report a failure unless the constraint is
    structurally satisfied — the exception is architectural documentation, not a
@@ -802,11 +802,11 @@ overall intake, but it is not sufficient provenance for every generated object.
 For repository discovery:
 
 - ProductComponents should record their direct repository evidence in
-  `architectureNotes.sourceRepository`, `repositoryName`,
+  `notes.sourceRepository`, `repositoryName`,
   `repositoryPrimaryLanguage`, `observedRuntimeSignals`, and
   `observedManifestPaths` when those facts are available.
 - SoftwareDeploymentPatterns generated from repositories should aggregate the
-  contributing repositories in `architectureNotes.sourceRepositories`.
+  contributing repositories in `notes.sourceRepositories`.
   Each entry should include the ProductComponent ref, repository name, repository
   URL, primary language, and runtime signals.
 - If one SoftwareDeploymentPattern groups multiple repositories, record every
@@ -962,13 +962,13 @@ output to the user.
 | `Replace malformed uid '...' with generated value` | uid exists but does not match the Crockford Base32 pattern | Run `repair_uids.py` with the suggested generated value |
 | `RA constraint '...' violated` | An SDP following an RA is missing a required object type in a service group | Add a deployable object entry of the required `objectType` and `diagramTier` to the appropriate service group, then resolve the specific catalog object using the Capability Lookup procedure |
 | `Satisfy ... / ...` | An active workspace RequirementGroup requires evidence not yet present | Add a `requirementImplementations` entry with `status: satisfied` citing the applicable mechanism, or mark it `not-applicable` if the requirement does not apply |
-| `Set lifecycleStatus: deprecated` | A TechnologyComponent in the object's graph has passed its vendor end-of-support date | Set `lifecycleStatus: deprecated` and add `architectureNotes.lifecycleRationale` explaining the transition plan |
+| `Set lifecycleStatus: deprecated` | A TechnologyComponent in the object's graph has passed its vendor end-of-support date | Set `lifecycleStatus: deprecated` and add `notes.lifecycleRationale` explaining the transition plan |
 | `deliveryModel must be one of` | An invalid delivery model value was used | Replace with one of `self-managed`, `saas`, `paas`, `appliance` |
 | `classification must be one of` (technology_component) | Invalid classification field | Replace with one of `software`, `agent`, `operating-system`, `compute-platform` |
 | `relationship must have either target or externalTarget` | A relationship object has neither a catalog target nor an externalTarget name | Set `target` to a catalog UID or `externalTarget` to the external system name |
 | `relationship source references unknown object` | Relationship source UID not found in catalog | Fix the source UID or add the missing object |
 | `relationship target references unknown object` | Relationship target UID not found in catalog | Fix the target UID or add the missing object |
-| `internalComponentRationales['...']` + `does not directly satisfy any applicable requirement` | An internal component is present but does not satisfy a requirement and no rationale explains why | Add `architectureNotes.internalComponentRationales.<uid>` explaining the reason |
+| `internalComponentRationales['...']` + `does not directly satisfy any applicable requirement` | An internal component is present but does not satisfy a requirement and no rationale explains why | Add `notes.internalComponentRationales.<uid>` explaining the reason |
 
 ## Resuming a DraftingSession
 

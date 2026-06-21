@@ -19,7 +19,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000001-TC01
-architectureNotes:
+notes:
   serviceAuthentication: >-
     All Nova API requests are validated via Keystone token authentication. Service-to-service calls use
     service accounts with scoped tokens issued by Keystone.

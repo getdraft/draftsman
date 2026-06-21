@@ -17,5 +17,5 @@ tags:
 decisionRationale: >-
   Records the resilience and availability decisions for Heat Orchestration Service. These decisions address
   the availabilityModel, failureDomain, recoverabilityModel, scalabilityModel requirement(s); supporting
-  detail is documented in this object's architectureNotes. This DecisionRecord is the committed answer
+  detail is documented in this object's notes. This DecisionRecord is the committed answer
   that satisfies the requirement(s).

@@ -14,7 +14,7 @@ optionalFields:
 - version
 - owner
 - tags
-- architectureNotes
+- notes
 - operatingSystemComponent
 - computePlatformComponent
 - internalComponents
@@ -36,7 +36,7 @@ fieldTypes:
   aliases: list
   owner: dict
   tags: list
-  architectureNotes: dict
+  notes: dict
   internalComponents: list
   deploymentConfigurations: list
   requirementGroups: list
@@ -73,7 +73,7 @@ deploymentConfiguration:
   - addressesQualities
   - addsInternalComponents
   - addsExternalInteractions
-  - addsArchitecturalDecisions
+  - addsNotes
   - notes
   enumListFields:
     addressesQualities:
@@ -84,7 +84,7 @@ deploymentConfiguration:
     addressesQualities: list
     addsInternalComponents: list
     addsExternalInteractions: list
-    addsArchitecturalDecisions: dict
+    addsNotes: dict
 requirementImplementation:
   requiredFields:
   - requirementGroup
@@ -126,3 +126,11 @@ fieldDescriptions:
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name, product-name, or taxonomy changes.
   aliases: List prior or alternate human-readable names that should resolve to this object.
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
+decisionRecordRef:
+  requiredFields:
+  - ref
+  optionalFields:
+  - key
+  - concern
+  - capability
+

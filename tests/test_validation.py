@@ -371,7 +371,7 @@ class ValidationTests(unittest.TestCase):
                     deliveryModel: self-managed
                     catalogStatus: complete
                     lifecycleStatus: candidate
-                    architectureNotes:
+                    notes:
                       serviceAuthentication: Uses centralized identity.
                       secretsManagement: Uses managed secrets injection.
                       serviceLogging: Emits logs to the central logging platform.
@@ -469,7 +469,7 @@ class ValidationTests(unittest.TestCase):
                         naAllowed: false
                         canBeSatisfiedBy:
                           - mechanism: field
-                            key: architectureNotes.companyEvidence
+                            key: notes.companyEvidence
                         minimumSatisfactions: 1
                         validAnswerTypes:
                           - field
@@ -495,14 +495,14 @@ class ValidationTests(unittest.TestCase):
                     lifecycleStatus: existing-only
                     requirementGroups:
                       - requirement-group.company-control
-                    architectureNotes:
+                    notes:
                       companyEvidence: Provided by explicit object-level evidence.
                     requirementImplementations:
                       - requirementGroup: requirement-group.company-control
                         requirementId: company-required-field
                         status: satisfied
                         mechanism: field
-                        key: architectureNotes.companyEvidence
+                        key: notes.companyEvidence
                     """
                 ).strip()
                 + "\n",
@@ -566,7 +566,7 @@ class ValidationTests(unittest.TestCase):
                         requirementId: company-required-field
                         status: satisfied
                         mechanism: decisionRecord
-                        key: architectureNotes.companyEvidence
+                        key: notes.companyEvidence
                     """
                 ).strip()
                 + "\n",
@@ -814,7 +814,7 @@ internalComponents:
     role: agent
   - ref: 01KQS0TF60-STVW
     role: agent
-architectureNotes:
+notes:
 {decision_lines}
 decisionRecords:
   - ref: 01KQS0TF60-DR01
@@ -865,7 +865,7 @@ requirementGroups:
                     networkPlacement: public-facing
                     patchingOwner: aws-managed
                     complianceCerts: []
-                    architectureNotes:
+                    notes:
                       resilienceModel: Managed multi-AZ control plane.
                       configurableSurface: Listeners, rules, certificates, and target groups.
                       failureDomain: Shared ingress dependency for the protected application path.
@@ -994,7 +994,7 @@ requirementGroups:
                         role: host
                       - ref: 01KQS0TF61-DBMS
                         role: function
-                    architectureNotes:
+                    notes:
                       serviceAuthentication: Uses centralized identity.
                       secretsManagement: Uses managed secrets injection.
                       serviceLogging: Emits logs to the central logging platform.
@@ -1118,7 +1118,7 @@ requirementGroups:
                         role: host
                       - ref: 01KQS0TF62-DBMS
                         role: function
-                    architectureNotes:
+                    notes:
                       serviceAuthentication: Uses centralized identity.
                       secretsManagement: Uses managed secrets injection.
                       serviceLogging: Emits logs to the central logging platform.
@@ -1423,7 +1423,7 @@ requirementGroups:
                       - ref: 01KQS0TF66-RBMQ
                         role: broker-client
                         configuration: amqp-listener
-                    architectureNotes:
+                    notes:
                       internalComponentRationales:
                         01KQS0TF66-RBMQ: Required broker client dependency for queue-mediated message publishing.
                     """
@@ -2132,7 +2132,7 @@ requirementGroups:
                             capability: 01KQS0TF73-CAP0
                             objectType: network_service
                             diagramTier: presentation
-                    architectureNotes:
+                    notes:
                       patternRationale: Test capability slots.
                     constraints:
                       - id: ingress-capability-required
@@ -2244,7 +2244,7 @@ requirementGroups:
                             capability: 01KQS0TF74-CAP0
                             objectType: network_service
                             diagramTier: presentation
-                    architectureNotes:
+                    notes:
                       patternRationale: Test capability slots.
                     constraints:
                       - id: ingress-capability-required
@@ -2875,7 +2875,7 @@ requirementGroups:
                         naAllowed: false
                         canBeSatisfiedBy:
                           - mechanism: field
-                            key: architectureNotes.companyEvidence
+                            key: notes.companyEvidence
                         minimumSatisfactions: 1
                         validAnswerTypes:
                           - field
@@ -2903,14 +2903,14 @@ requirementGroups:
                     lifecycleStatus: existing-only
                     requirementGroups:
                       - requirement-group.company-control
-                    architectureNotes:
+                    notes:
                       companyEvidence: Provided.
                     requirementImplementations:
                       - requirementGroup: requirement-group.non-existent-group
                         requirementId: company-required-field
                         status: satisfied
                         mechanism: field
-                        key: architectureNotes.companyEvidence
+                        key: notes.companyEvidence
                     """
                 ).strip()
                 + "\n",
@@ -2939,14 +2939,14 @@ requirementGroups:
                     lifecycleStatus: existing-only
                     requirementGroups:
                       - requirement-group.company-control
-                    architectureNotes:
+                    notes:
                       companyEvidence: Provided.
                     requirementImplementations:
                       - requirementGroup: requirement-group.company-control
                         requirementId: non-existent-requirement-id
                         status: satisfied
                         mechanism: field
-                        key: architectureNotes.companyEvidence
+                        key: notes.companyEvidence
                     """
                 ).strip()
                 + "\n",
@@ -3167,7 +3167,7 @@ requirementGroups:
             write_dr("dr.deviations", "Deviations Decision")
             write_dr("dr.interactions", "Interactions Decision")
 
-            # Write the SDP with decisionRecords referencing the above DRs (and NO architectureNotes)
+            # Write the SDP with decisionRecords referencing the above DRs (and NO notes)
             sdp_dir = workspace / "catalog" / "software-deployment-patterns"
             sdp_dir.mkdir(parents=True, exist_ok=True)
             (sdp_dir / "sdp-test-service.yaml").write_text(
@@ -3247,7 +3247,7 @@ requirementGroups:
                     name: Test Service Pattern
                     catalogStatus: complete
                     lifecycleStatus: candidate
-                    architectureNotes:
+                    notes:
                       noApplicablePattern: "No reference architecture applies."
                       deploymentTargets: "Runs in the test target."
                       availabilityRequirement: "Best-effort availability is acceptable."

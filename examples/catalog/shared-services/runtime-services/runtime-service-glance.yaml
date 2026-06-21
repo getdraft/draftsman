@@ -19,7 +19,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000003-TC03
-architectureNotes:
+notes:
   serviceAuthentication: >-
     All Glance API requests are authenticated via Keystone token validation. Glance service account is
     registered in the Keystone service catalog.

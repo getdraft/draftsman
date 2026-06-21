@@ -19,7 +19,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000A-TC0A
-architectureNotes:
+notes:
   serviceAuthentication: >-
     All Ironic API requests are authenticated via Keystone token validation. Ironic service account is
     registered in the Keystone service catalog. Node IPMI/BMC credentials are stored encrypted in the

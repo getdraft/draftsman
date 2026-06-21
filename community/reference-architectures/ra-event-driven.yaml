@@ -45,7 +45,7 @@ serviceGroups:
     objectType: data_store_service
     diagramTier: data
     notes: Data store for consumer state, projections, offsets, or reconciliation data.
-architectureNotes:
+notes:
   patternRationale: Event-driven systems decouple producers and consumers through asynchronous delivery while accepting eventual consistency and explicit failure handling.
   onboardingQuestions: Ask for the messaging backbone, event ownership model, producer/consumer runtimes, retry and dead-letter handling, and consistency expectations.
 constraints:

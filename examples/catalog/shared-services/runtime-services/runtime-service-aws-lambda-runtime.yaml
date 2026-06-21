@@ -20,7 +20,7 @@ productVersion: managed
 networkPlacement: vpc-private
 patchingOwner: provider-managed
 authenticationModel: iam
-architectureNotes:
+notes:
   resilienceModel: >-
     Inherently multi-tenant and highly available within the AWS Lambda managed execution fabric.
   authenticationAccessModel: >-
