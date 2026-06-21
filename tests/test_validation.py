@@ -2310,6 +2310,226 @@ requirementGroups:
         self.assertIn("ingress-capability-required", result.stdout)
         self.assertIn("capability '01KQS0TF74-CAP0'", result.stdout)
 
+    def test_ra_slot_validation_fails_when_unsatisfied(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            cap_dir = workspace / "configurations" / "capabilities"
+            cap_dir.mkdir(parents=True, exist_ok=True)
+            (cap_dir / "capability-test-slot.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF75-CAP0
+                    type: capability
+                    name: Test Slot Capability
+                    description: Test capability for slot validation.
+                    catalogStatus: incomplete
+                    owner:
+                      team: test-architecture
+                    definitionOwner:
+                      provider: test
+                    domain: 01KQQ4Q027-ZTHF
+                    implementations: []
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            ra_dir = workspace / "configurations" / "reference-architectures"
+            ra_dir.mkdir(parents=True, exist_ok=True)
+            (ra_dir / "ra-test-slots.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF75-RAXC
+                    type: reference_architecture
+                    name: Test Slots RA
+                    catalogStatus: incomplete
+                    lifecycleStatus: preferred
+                    serviceGroups:
+                      - name: Presentation Tier
+                        deployableObjects:
+                          - slot: test-slot
+                            capability: 01KQS0TF75-CAP0
+                            objectType: network_service
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            network_dir = workspace / "catalog" / "network-services"
+            network_dir.mkdir(parents=True, exist_ok=True)
+            (network_dir / "network-service-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF75-EGWS
+                    type: network_service
+                    name: Test NetworkService
+                    deliveryModel: appliance
+                    vendor: Test Vendor
+                    productName: Test Gateway
+                    productVersion: "1.0"
+                    catalogStatus: incomplete
+                    lifecycleStatus: preferred
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            sdp_dir = workspace / "catalog" / "software-deployment-patterns"
+            sdp_dir.mkdir(parents=True, exist_ok=True)
+            dr_yaml = self._write_decision_records_for_sdp(workspace, indent=20)
+            (sdp_dir / "sdp-ra-slot-violation.yaml").write_text(
+                textwrap.dedent(
+                    f"""
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF75-SDPV
+                    type: software_deployment_pattern
+                    name: Test RA Slot Violation
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    followsReferenceArchitecture: 01KQS0TF75-RAXC
+{dr_yaml}
+                    serviceGroups:
+                      - name: Presentation Tier
+                        deploymentTarget: test-env
+                        deployableObjects:
+                          - ref: 01KQS0TF75-EGWS
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("RA capability slot 'test-slot' unsatisfied", result.stdout)
+        self.assertIn("no deployable object satisfies capability '01KQS0TF75-CAP0'", result.stdout)
+
+    def test_ra_slot_validation_passes_when_bypassed_by_decision_record(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            cap_dir = workspace / "configurations" / "capabilities"
+            cap_dir.mkdir(parents=True, exist_ok=True)
+            (cap_dir / "capability-test-slot.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF76-CAP0
+                    type: capability
+                    name: Test Slot Capability
+                    description: Test capability for slot validation.
+                    catalogStatus: incomplete
+                    owner:
+                      team: test-architecture
+                    definitionOwner:
+                      provider: test
+                    domain: 01KQQ4Q027-ZTHF
+                    implementations: []
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            ra_dir = workspace / "configurations" / "reference-architectures"
+            ra_dir.mkdir(parents=True, exist_ok=True)
+            (ra_dir / "ra-test-slots.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF76-RAXC
+                    type: reference_architecture
+                    name: Test Slots RA
+                    catalogStatus: incomplete
+                    lifecycleStatus: preferred
+                    serviceGroups:
+                      - name: Presentation Tier
+                        deployableObjects:
+                          - slot: test-slot
+                            capability: 01KQS0TF76-CAP0
+                            objectType: network_service
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            network_dir = workspace / "catalog" / "network-services"
+            network_dir.mkdir(parents=True, exist_ok=True)
+            (network_dir / "network-service-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF76-EGWS
+                    type: network_service
+                    name: Test NetworkService
+                    deliveryModel: appliance
+                    vendor: Test Vendor
+                    productName: Test Gateway
+                    productVersion: "1.0"
+                    catalogStatus: incomplete
+                    lifecycleStatus: preferred
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            dr_dir = workspace / "catalog" / "decision-records"
+            dr_dir.mkdir(parents=True, exist_ok=True)
+            (dr_dir / "dr-test-bypass.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: "01KQS0TF76-DRBP"
+                    type: decision_record
+                    name: Test Bypass Decision Record
+                    category: decision
+                    status: accepted
+                    catalogStatus: complete
+                    lifecycleStatus: preferred
+                    decisionRationale: "Rationale."
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            sdp_dir = workspace / "catalog" / "software-deployment-patterns"
+            sdp_dir.mkdir(parents=True, exist_ok=True)
+            dr_yaml = self._write_decision_records_for_sdp(workspace, indent=20)
+            dr_yaml += "\n" + " " * 22 + '- ref: "01KQS0TF76-DRBP"\n' + " " * 24 + 'key: test-slot'
+            (sdp_dir / "sdp-ra-slot-bypassed.yaml").write_text(
+                textwrap.dedent(
+                    f"""
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF76-SDPV
+                    type: software_deployment_pattern
+                    name: Test RA Slot Bypassed
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    followsReferenceArchitecture: 01KQS0TF76-RAXC
+{dr_yaml}
+                    serviceGroups:
+                      - name: Presentation Tier
+                        deploymentTarget: test-env
+                        deployableObjects:
+                          - ref: 01KQS0TF76-EGWS
+                            diagramTier: presentation
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+
     def _write_vocabulary_workspace(self, workspace: Path, mode: str) -> None:
         (workspace / ".draft" / "workspace.yaml").write_text(
             textwrap.dedent(

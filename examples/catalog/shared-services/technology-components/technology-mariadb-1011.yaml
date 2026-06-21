@@ -29,3 +29,6 @@ vendorLifecycle:
   notes: MariaDB 10.11 is the current long-term support (LTS) release with mainstream
     support through February 2028. It is the recommended MariaDB version for OpenStack
     2024.1 (Caracal) deployments.
+capabilities:
+- 01KT0V5MCV-VD0Y
+

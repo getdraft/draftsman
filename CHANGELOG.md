@@ -9,24 +9,29 @@ Closes a security gap in the catalog validator's plaintext-secret scanner and fi
 - No breaking changes. Existing workspaces and workflows are unaffected. The change affects only the contributor/AI-agent release workflow for this repository.
 - The catalog validator's plaintext-secret scanner now inspects every key in a mapping even when a sibling key is named `secretReference`. Workspaces with a plaintext secret hidden alongside a `secretReference` key will now correctly fail validation. No other validation behavior changes.
 - No breaking changes for decision record approval. Existing workspaces are unaffected unless they configure the optional `decisionRecordApproval` policy in `workspace.yaml`.
+- No breaking changes for reference architecture slot validation. While SoftwareDeploymentPatterns following a ReferenceArchitecture must now satisfy all capability slots of the RA, all example catalog files have been updated and remain fully compliant.
 
 ### Added
 
 - Added `.github/workflows/promote-release.yml`: fires on push to `main`, detects `## Unreleased` in CHANGELOG.md, computes the next version (minor if contract-path files changed, patch otherwise), promotes the entry, bumps `draft-framework.yaml`, and regenerates `AI_INDEX.md` in a follow-up bot commit.
 - Added `detect_bump_type()` helper and `--detect-bump` CLI flag to `framework/tools/check_release_notes.py` so the promote workflow can compute the correct version bump type.
 - Added support for the `decisionRecordApproval` workspace policy in `.draft/workspace.yaml` allowing workspaces to declare central or decentralized approval routing (by category, domain, requirement, or owning team) and validator-enforced markings/scoping checks. Added optional fields `approver` and `approvalDate` to `decision_record` schema. Added unit tests and documentation.
+- Added Reference Architecture capability slot validation in `framework/tools/validate.py`. When a SoftwareDeploymentPattern follows a ReferenceArchitecture, it validates that each capability slot specified in the ReferenceArchitecture's service groups is satisfied by a deployable object in the SDP of the matching `objectType` and `diagramTier` (if specified), or is explicitly bypassed via a matching `DecisionRecord` referenced on the SDP.
+- Added unit tests in `tests/test_validation.py` for reference architecture slot validation success, failure, and DecisionRecord bypass behaviors.
 
 ### Changed
 
 - `check_release_notes.py`: governed file changes with an `## Unreleased` entry and no version bump are now accepted (the promote workflow handles versioning). `Unreleased` entries always require `Migration Notes` (full five-section quality).
 - Updated `VERSIONING.md` AI Release Decision Procedure to document the new PR pattern and retire the manual version-bump-in-PR requirement.
 - Updated `AGENTS.md` Editing Rules to tell AI agents to use `## Unreleased` in PRs and not touch `draft-framework.yaml`.
+- Updated example TechnologyComponents (`technology-haproxy-29`, `technology-mariadb-1011`, `technology-openstack-nova`) and the `sdp-openstack-iaas-platform` SoftwareDeploymentPattern in the example catalog to declare capabilities and decision records satisfying their reference architecture slots.
 
 ### Fixed
 
 - `framework/tools/validate.py`: `scan_for_secrets` no longer skips an entire mapping when it contains a `secretReference` key. The function now skips only the `secretReference` key itself and continues scanning siblings, so a plaintext `password`, `token`, `secret`, `apiKey`, or `privateKey` can no longer hide next to an approved secret-reference.
 - `framework/tools/generate_c4.py`: C4 export no longer crashes with `AttributeError: 'list' object has no attribute 'values'` for catalogs that contain relationships but no `system` object. The system-less branch now correctly passes the full catalog dict to `relationships_for_containers`, which also restores relationship rendering for those catalogs.
 - `framework/draft-actions/update.md`: moved cleanup of the temporary clone to run after the commit SHA capture, resolving a bug where the `rev-parse HEAD` command failed due to the clone directory having already been deleted. Also resolved a minor singular/plural grammar typo.
+- None.
 
 ### Migration Notes
 
@@ -34,6 +39,7 @@ Closes a security gap in the catalog validator's plaintext-secret scanner and fi
 - From now on: write `## Unreleased` in CHANGELOG.md in your PR, omit any change to `draft-framework.yaml`, and the promote workflow assigns the version on merge.
 - After refreshing the framework, re-run `python3 .draft/framework/tools/validate.py --workspace .`. If validation now reports a plaintext secret, move that value to a `secretReference` mapping so no literal secret sits in a sibling field. No other workspace changes are required.
 - No immediate action required. To activate validation-enforced decision record approvals, add a `decisionRecordApproval` section to `.draft/workspace.yaml` (see `framework/docs/decision-records.md` for options).
+- SoftwareDeploymentPatterns following a ReferenceArchitecture must satisfy all required capability slots. If a slot is bypassed, add a corresponding `DecisionRecord` with a key or capability/concern matching the slot's name or capability UID.
 
 ## 0.58.2 - 2026-06-20
 
