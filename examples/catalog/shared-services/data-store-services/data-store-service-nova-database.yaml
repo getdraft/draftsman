@@ -20,7 +20,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK00000E-TC0E
-architectureNotes:
+notes:
   serviceAuthentication: >-
     Nova connects to its database schema using a dedicated MariaDB service account with credentials configured
     in nova.conf. Access is restricted to the Nova service account; no shared credentials with other OpenStack

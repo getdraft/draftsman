@@ -16,5 +16,5 @@ tags:
 - compliance
 decisionRationale: >-
   Records the security and compliance decisions for Heat Orchestration Service addressing the secrets_management
-  control requirement(s); supporting detail is documented in this object's architectureNotes. This DecisionRecord
+  control requirement(s); supporting detail is documented in this object's notes. This DecisionRecord
   is the committed answer that satisfies the requirement(s).

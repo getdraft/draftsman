@@ -109,7 +109,7 @@ not required). The DecisionRecord is referenced from the service's
 `decisionRecords` list with a `capability` key naming the capability it
 addresses.
 
-An inline `architectureNote` is a *drafting placeholder*, not a satisfaction. It
+An inline `note` is a *drafting placeholder*, not a satisfaction. It
 lets a DraftingSession continue when the information or the right decision-maker
 is not yet available, but it does not resolve the requirement. The requirement
 is only met once that note is committed as a DecisionRecord (or the capability is

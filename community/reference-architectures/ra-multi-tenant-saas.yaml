@@ -13,11 +13,11 @@ tags:
 - multi-tenant
 - saas
 applicableDefinitionChecklist:
-- Tenant isolation strategy must be documented in architectureNotes — separate
+- Tenant isolation strategy must be documented in notes — separate
   database per tenant, shared database with separate schema, or shared schema with
   row-level security.
 - Platform tier services must not store tenant-identifiable data without an explicit
-  isolation rationale in architectureNotes.
+  isolation rationale in notes.
 - Management plane must be in a separate network zone from tenant-facing services.
 - The data tier must document which tenants share which stores and what isolation
   mechanism applies.
@@ -53,14 +53,14 @@ serviceGroups:
     objectType: data_store_service
     diagramTier: data
     notes: Tenant data store. The isolation model must be documented in the SDP's
-      architectureNotes. DataComponents are deployed onto this service.
+      notes. DataComponents are deployed onto this service.
 - name: Management Plane
   deployableObjects:
   - objectType: runtime_service
     diagramTier: utility
     notes: Control-plane services including tenant provisioning, observability aggregation,
       and administrative tooling. Must be isolated from tenant-facing network paths.
-architectureNotes:
+notes:
   patternRationale: Multi-tenant SaaS deployments require explicit isolation guarantees
     at the data, runtime, and network layers. The pattern separates tenant-facing runtime
     from shared platform services to prevent cross-tenant data leakage and allow platform
@@ -69,7 +69,7 @@ architectureNotes:
     per tenant — highest isolation, highest operational cost; (2) shared database with
     separate schema per tenant — moderate isolation, moderate cost; (3) shared schema
     with row-level security — lowest isolation, lowest cost. The chosen model must
-    be documented in the SDP''s architectureNotes.'
+    be documented in the SDP''s notes.'
   managementPlaneIsolation: The management plane must not share network paths with
     tenant-facing services. Administrative access to tenant data must flow through
     the management plane, not through tenant runtime endpoints.

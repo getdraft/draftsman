@@ -93,7 +93,7 @@ When an Agent TechnologyComponent is used inside a deployable object, the
 deployable object must also have a relationship object (with this object as
 source) that represents the agent's platform dependency, unless an architectural
 decision explains why the interaction is intentionally omitted via
-`architectureNotes.agentInteractionExceptions`.
+`notes.agentInteractionExceptions`.
 
 ## Appliance Products
 

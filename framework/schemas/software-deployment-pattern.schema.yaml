@@ -16,7 +16,7 @@ optionalFields:
 - tags
 - businessContext
 - followsReferenceArchitecture
-- architectureNotes
+- notes
 - scalingUnits
 - networkZones
 - serviceGroups
@@ -39,8 +39,8 @@ fieldTypes:
   owner: dict
   tags: list
   businessContext: dict
-  architectureNotes: dict
-architectureNotes:
+  notes: dict
+notes:
   optionalFields:
   - availabilityTarget
   - availabilityRequirement
@@ -203,6 +203,7 @@ deployableObjectEntry:
     intent:
     - ha
     - sa
+    - standalone
   fieldDescriptions:
     networkZone: >
       ID of a networkZone declared on this SDP. The zone's tier classification

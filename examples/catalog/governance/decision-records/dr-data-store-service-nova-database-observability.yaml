@@ -16,5 +16,5 @@ tags:
 - observability
 decisionRationale: >-
   Records the observability and logging decisions for Nova Database. These decisions address the healthWelfareMonitoringApproach,
-  serviceLogging requirement(s); supporting detail is documented in this object's architectureNotes. This
+  serviceLogging requirement(s); supporting detail is documented in this object's notes. This
   DecisionRecord is the committed answer that satisfies the requirement(s).

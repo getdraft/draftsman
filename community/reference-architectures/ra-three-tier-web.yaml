@@ -56,7 +56,7 @@ serviceGroups:
     diagramTier: data
     notes: Primary persistent data store. Must document backup strategy, RTO, and RPO.
       DataComponents are deployed onto this service.
-architectureNotes:
+notes:
   patternRationale: The three-tier pattern separates traffic control, application logic,
     and data persistence so that each tier can be governed, scaled, and secured independently.
     The presentation tier is the only tier with direct internet exposure.
@@ -76,7 +76,7 @@ constraints:
   require:
   - objectType: network_service
     diagramTier: presentation
-    notes: Add a NetworkService to the presentation tier. The company catalog defines which specific WAF, ADC, or load balancer objects satisfy this role. Internal-only SDPs that operate behind a network boundary without a dedicated traffic-control service should document the exception in architectureNotes.reference_architecture_conformance and reference a DecisionRecord.
+    notes: Add a NetworkService to the presentation tier. The company catalog defines which specific WAF, ADC, or load balancer objects satisfy this role. Internal-only SDPs that operate behind a network boundary without a dedicated traffic-control service should document the exception in notes.reference_architecture_conformance and reference a DecisionRecord.
 - id: data-tier-requires-data-store-service
   description: All SDPs with a data-tier service must model persistent data using data_store_service objects, not runtime services.
   rationale: Modelling persistent data as a data_store_service ensures that backup strategy, encryption-at-rest, and access-control requirements are governed through the data store requirement group. Using a runtime_service for data persistence bypasses data-tier governance controls.

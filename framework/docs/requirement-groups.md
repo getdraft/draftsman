@@ -121,7 +121,7 @@ workspace disposition is enabled.
 `internalComponents` entries are also evidence only when they map to an
 applicable requirement. If an internal component is modeled for a reason that
 does not directly satisfy an applicable requirement, the object must document
-that reason in `architectureNotes` using `internalComponentRationales` or
+that reason in `notes` using `internalComponentRationales` or
 `dependencyRationales`. External dependencies are modeled as standalone
 `relationship` objects; use the `relationship` mechanism in requirement
 groups to point to a relationship object where this object is the source

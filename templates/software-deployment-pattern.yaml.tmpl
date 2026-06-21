@@ -16,7 +16,7 @@ businessContext:
   pillar: business-pillar.<company-pillar-slug>
   productFamily: <Product family or portfolio name>
 followsReferenceArchitecture: <reference-architecture-uid>
-architecturalDecisions:
+notes:
   availabilityRequirement: <Business availability requirement.>
   dataClassification: <Data classification.>
   failureDomain: <Product-level failure domain.>
@@ -28,7 +28,7 @@ serviceGroups:
   deployableObjects:
   - ref: <existing-deployable-object-uid>
     diagramTier: <presentation|application|data|utility>
-    intent: <ha|sa>
+    intent: <ha|standalone>
     notes: <How this block is used by the product.>
   externalInteractions:
   - name: <External System>

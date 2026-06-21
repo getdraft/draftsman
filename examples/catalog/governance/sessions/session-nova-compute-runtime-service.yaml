@@ -25,7 +25,7 @@ sourceArtifacts:
 - name: runtime-service-nova.yaml
   type: catalog-object
   location: examples/catalog/runtime-services/runtime-service-nova.yaml
-  notes: Current Nova runtime service object. architectureNotes document the
+  notes: Current Nova runtime service object. notes document the
     availability and scalability model at a high level but deployment configuration
     entries have not been authored.
 - name: OpenStack Nova Administration Guide
@@ -66,7 +66,7 @@ assumptions:
 nextSteps:
 - id: NS1
   action: Confirm nova-scheduler leader election behavior with the platform-engineering
-    team and document the answer in an architectureNotes.schedulerElection key
+    team and document the answer in an notes.schedulerElection key
     on the Nova runtime service.
   status: open
   owner: platform-engineering

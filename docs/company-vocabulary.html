@@ -277,7 +277,7 @@
         description: Highest sensitivity data.
       - id: confidential
         name: Confidential</code></pre>
-<p>When declared, validation checks <code>architectureNotes.dataClassification</code> on SoftwareDeploymentPatterns and deployable service objects.</p>
+<p>When declared, validation checks <code>notes.dataClassification</code> on SoftwareDeploymentPatterns and deployable service objects.</p>
 <h3 id="teams">Teams</h3>
 <pre><code class="language-yaml">vocabulary:
   teams:
@@ -296,7 +296,7 @@
         name: Tier 1 Mission Critical
         target: &quot;99.95%&quot;
         notes: Incident response required.</code></pre>
-<p>When declared, validation checks <code>architectureNotes.availabilityRequirement</code> on SoftwareDeploymentPatterns and deployable service objects.</p>
+<p>When declared, validation checks <code>notes.availabilityRequirement</code> on SoftwareDeploymentPatterns and deployable service objects.</p>
 <h3 id="failure-domains">Failure Domains</h3>
 <pre><code class="language-yaml">vocabulary:
   failureDomains:
@@ -306,7 +306,7 @@
         name: Per Product
       - id: shared-platform
         name: Shared Platform</code></pre>
-<p>When declared, validation checks <code>architectureNotes.failureDomain</code> on SoftwareDeploymentPatterns and deployable service objects.</p>
+<p>When declared, validation checks <code>notes.failureDomain</code> on SoftwareDeploymentPatterns and deployable service objects.</p>
 <h3 id="connection-protocols">Connection Protocols</h3>
 <pre><code class="language-yaml">vocabulary:
   connectionProtocols:

@@ -19,7 +19,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000008-TC08
-architectureNotes:
+notes:
   serviceAuthentication: >-
     All Heat API requests are authenticated via Keystone token validation. Heat uses trust tokens to allow
     the heat-engine to perform deferred operations on behalf of users without holding long-lived user

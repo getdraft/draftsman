@@ -149,3 +149,16 @@ A catalog with visible, tracked gaps is more trustworthy than one with hidden
 assumptions. DraftingSessions make uncertainty actionable — they preserve
 context, identify who needs to answer what, and make it possible to resume work
 without re-interviewing.
+
+---
+
+## 10. Notes are scratchpads, not compliance evidence
+
+Inline notes (stored under the `notes` field) are drafting placeholders to keep a session moving when information is missing. They are informational only and can **never** satisfy a requirement. Requirements must be satisfied structurally by concrete catalog objects (e.g., referenced `DecisionRecord` objects, `relationships`, or `TechnologyComponents`).
+
+---
+
+## 11. DecisionRecords represent exceptions, not standard configurations
+
+`DecisionRecords` are reserved for risk acceptance, approved deviations, and architectural exceptions. Standard configurations and properties (e.g., data backups, SAML integration, standard data retention) must be modeled using concrete technical components, relationships, or configurations. They must not use `DecisionRecords` as a substitute for modeling real technical relationships or components.
+

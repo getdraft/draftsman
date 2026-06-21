@@ -28,7 +28,7 @@ networkTopology: >-
 protocols:
 - HTTPS
 - HTTP
-architectureNotes:
+notes:
   serviceAuthentication: >-
     HAProxy does not authenticate requests itself. Authentication is delegated to backend services (Keystone
     for API requests, nginx/Django for Horizon). HAProxy operates in pass-through mode; backends receive

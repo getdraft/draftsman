@@ -22,7 +22,7 @@ optionalFields:
 - primaryObjectUid
 - assumptions
 - nextSteps
-- architectureNotes
+- notes
 - resumptionContext
 enumFields:
   catalogStatus:
@@ -48,7 +48,7 @@ fieldTypes:
   unresolvedQuestions: list
   assumptions: list
   nextSteps: list
-  architectureNotes: dict
+  notes: dict
   resumptionContext: dict
 collectionSchemas:
   sourceArtifacts: sourceArtifact

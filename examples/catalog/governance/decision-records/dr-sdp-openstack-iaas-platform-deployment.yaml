@@ -17,4 +17,4 @@ tags:
 decisionRationale: >-
   Records the deployment topology and qualities decisions for OpenStack IaaS Platform. These decisions
   address the deploymentTargets, patternDeviations requirement(s); supporting detail is documented in
-  this object's architectureNotes. This DecisionRecord is the committed answer that satisfies the requirement(s).
+  this object's notes. This DecisionRecord is the committed answer that satisfies the requirement(s).

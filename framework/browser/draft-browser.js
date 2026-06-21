@@ -1677,7 +1677,7 @@ function rationaleEntriesForCandidates(bucketValue, candidates) {
 }
 
 function dependencyRationales(object, entry, context) {
-  const decisions = object?.architecturalDecisions;
+  const decisions = object?.notes;
   if (!decisions || typeof decisions !== 'object') {
     return [];
   }
@@ -4751,17 +4751,17 @@ function flattenDecisionEntries(prefix, value, entries) {
 function decisionMarkup(object, excludedRootKeys = []) {
   const excluded = new Set(excludedRootKeys);
   const decisions = Object.fromEntries(
-    Object.entries(object.architecturalDecisions || {}).filter(([key]) => !excluded.has(key))
+    Object.entries(object.notes || {}).filter(([key]) => !excluded.has(key))
   );
   const entries = [];
   flattenDecisionEntries('', decisions, entries);
   if (!entries.length) {
-    return '<div class="empty-card">No architectural decisions are defined for this object.</div>';
+    return '<div class="empty-card">No notes are defined for this object.</div>';
   }
   return `
     <div class="decisions-grid single">
       <section class="decision-card">
-        <h4>Architecture Decisions</h4>
+        <h4>Notes</h4>
         <dl class="definition-list">
           ${entries.map(entry => `<dt>${escapeHtml(entry.key)}</dt><dd>${escapeHtml(entry.value)}</dd>`).join('')}
         </dl>
@@ -4797,7 +4797,7 @@ function businessContextMarkup(object) {
 }
 
 function sourceRepositoryMarkup(object) {
-  const repos = object.architecturalDecisions?.sourceRepositories || [];
+  const repos = object.notes?.sourceRepositories || [];
   if (!Array.isArray(repos) || !repos.length) {
     return '';
   }
@@ -4922,8 +4922,8 @@ function requirementMechanismSentence(mechanism) {
   if (mechanism.mechanism === 'internalComponent') {
     return `internalComponent(role=${mechanism.criteria?.role || 'unknown'})`;
   }
-  if (mechanism.mechanism === 'architecturalDecision') {
-    return `architecturalDecision(key=${mechanism.key || 'unknown'})`;
+  if (mechanism.mechanism === 'decisionRecord') {
+    return `decisionRecord(key=${mechanism.key || 'unknown'})`;
   }
   return mechanism.mechanism || 'unknown';
 }
@@ -5120,7 +5120,7 @@ function preferredComponentSource(object, fallbackObject) {
 }
 
 function preferredDecisionSource(object, fallbackObject) {
-  const ownDecisions = object?.architecturalDecisions || {};
+  const ownDecisions = object?.notes || {};
   if (Object.keys(ownDecisions).length) {
     return object;
   }
@@ -6179,8 +6179,8 @@ function architectureDetailMarkup(componentSource, interactionSource, decisionSo
       </div>
     </section>
     <section class="decisions-card">
-      <h3>Architecture Decisions</h3>
-      ${decisionSource ? decisionMarkup(decisionSource) : `<div class="empty-card">${escapeHtml(emptyDecisionText || 'No architectural decisions are documented for this object.')}</div>`}
+      <h3>Notes</h3>
+      ${decisionSource ? decisionMarkup(decisionSource) : `<div class="empty-card">${escapeHtml(emptyDecisionText || 'No notes are documented for this object.')}</div>`}
     </section>
   `;
 }
@@ -6477,7 +6477,7 @@ function _sdpLifecycleBadge(status) {
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function _sdpHeroMarkup(object) {
-  const d = object.architecturalDecisions || {};
+  const d = object.notes || {};
   const fd = d.failureDomain || {};
   const owner = object.owner || {};
   const bc = object.businessContext || {};
@@ -6507,7 +6507,7 @@ function _sdpHeroMarkup(object) {
 
 // ── KPI strip ─────────────────────────────────────────────────────────────────
 function _sdpKpiMarkup(object, vm) {
-  const d = object.architecturalDecisions || {};
+  const d = object.notes || {};
   const n = vm.members.length;
   const haCount  = vm.members.filter(m => m.intent === 'ha').length;
   const saGap    = vm.members.filter(m => m.intent !== 'ha' && !m.riskRef).length;
@@ -6851,7 +6851,7 @@ function _sdpGroupsMarkup(object, vm) {
 
 // ── Decisions section ─────────────────────────────────────────────────────────
 function _sdpDecisionsMarkup(object) {
-  const d = object.architecturalDecisions || {};
+  const d = object.notes || {};
   const cards = [];
 
   if (d.availabilityTarget || d.availabilityRequirement) {
@@ -6871,8 +6871,8 @@ function _sdpDecisionsMarkup(object) {
   }
 
   if (!cards.length) return `<div class="sdp-section" id="sdp-s-decisions">
-    <div class="section-head"><div><span class="eyebrow">03 — Decisions</span><h2>Architectural Decisions</h2></div></div>
-    <p style="color:var(--muted)">No architectural decisions documented.</p>
+    <div class="section-head"><div><span class="eyebrow">03 — Decisions</span><h2>Notes</h2></div></div>
+    <p style="color:var(--muted)">No notes documented.</p>
   </div>`;
 
   const cardsHtml = cards.map(c => `<div class="decision-card">
@@ -6885,7 +6885,7 @@ function _sdpDecisionsMarkup(object) {
   return `<div class="sdp-section" id="sdp-s-decisions">
     <div class="section-head"><div>
       <span class="eyebrow">03 — Decisions</span>
-      <h2>Architectural Decisions</h2>
+      <h2>Notes</h2>
     </div></div>
     <div class="decisions-grid">${cardsHtml}</div>
   </div>`;
@@ -7252,7 +7252,7 @@ function renderDetailView() {
         interactionSource,
         decisionSource,
         'The underlying deployable object is not available for this ProductComponent.',
-        'No architectural decisions are available because the underlying deployable object is not documented.'
+        'No notes are available because the underlying deployable object is not documented.'
       )}
       ${secondaryDetailMarkup([
         { title: 'ProductComponent Classification', body: productServiceDetailMarkup(object) },
@@ -7277,7 +7277,7 @@ function renderDetailView() {
         ${requirementEvidenceMarkup(object)}
         ${sdmServiceGroupsMarkup(object)}
         <section class="decisions-card">
-          <h3>Architecture Decisions</h3>
+          <h3>Notes</h3>
           ${decisionMarkup(object)}
         </section>
       </div>

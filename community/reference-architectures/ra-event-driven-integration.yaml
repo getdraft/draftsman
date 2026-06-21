@@ -16,7 +16,7 @@ applicableDefinitionChecklist:
 - The messaging backbone must be modeled as a governed runtime or network service rather than an implicit connection.
 - Producers and consumers must be represented as deployable services with relationship objects documenting event flow.
 - Event schemas, retention, replay, dead-letter handling, and ordering assumptions must be documented.
-- Eventual consistency and idempotency decisions must be explicit in architectureNotes or DecisionRecords.
+- Eventual consistency and idempotency decisions must be explicit in notes or DecisionRecords.
 - Durable state and audit stores must be modeled as DataStoreService objects when events affect persisted data.
 serviceGroups:
 - name: Producers
@@ -43,7 +43,7 @@ serviceGroups:
     capability: 01KT0V5MCV-VD0Y
     diagramTier: data
     notes: Optional event store, projection store, audit log, or persistent data store affected by event processing.
-architectureNotes:
+notes:
   patternRationale: Event-driven systems trade synchronous coordination for decoupled producers and consumers. The pattern makes the messaging backbone and state boundaries explicit so eventual consistency, replay, and failure handling are governed.
   consistencyGuidance: SDPs following this pattern should document ordering, idempotency, retry, dead-letter, and replay behavior for every critical event flow.
 constraints:

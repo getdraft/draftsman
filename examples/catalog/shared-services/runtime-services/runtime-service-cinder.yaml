@@ -19,7 +19,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000005-TC05
-architectureNotes:
+notes:
   serviceAuthentication: >-
     All Cinder API requests are authenticated via Keystone token validation. Cinder service account is
     registered in the Keystone service catalog.

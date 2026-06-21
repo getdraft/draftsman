@@ -27,7 +27,7 @@ organized around:
 - `scalingUnits`
 - `serviceGroups`
 - `businessContext`
-- `architectureNotes`
+- `notes`
 - `decisionRecords`
 
 Each service group contains deployable object references. Inter-service
@@ -68,7 +68,7 @@ The main SoftwareDeploymentPattern structure is:
 
 - optional `followsReferenceArchitecture`
 - optional `businessContext`
-- optional `architectureNotes`
+- optional `notes`
 - optional `scalingUnits`
 - optional `serviceGroups`
 - optional `decisionRecords`

@@ -15,7 +15,7 @@ owner:
 tags:
 - lambda
 - serverless
-architectureNotes:
+notes:
   authenticationApproach: IAM-based invocation and execution roles managed by AWS
   loggingApproach: Function and platform logs emitted to CloudWatch Logs
   securityMonitoringApproach: AWS-native monitoring and audit integration for the managed runtime

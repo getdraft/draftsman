@@ -16,5 +16,5 @@ tags:
 - deployment
 decisionRationale: >-
   Records the deployment topology and qualities decisions for AWS Lambda Runtime. These decisions address
-  the configurableSurface requirement(s); supporting detail is documented in this object's architectureNotes.
+  the configurableSurface requirement(s); supporting detail is documented in this object's notes.
   This DecisionRecord is the committed answer that satisfies the requirement(s).

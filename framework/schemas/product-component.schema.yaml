@@ -22,7 +22,6 @@ optionalFields:
 - networkBindings
 - environmentConfiguration
 - runtimeSpec
-- architectureNotes
 - notes
 - decisionRecords
 - requirementImplementations
@@ -53,7 +52,7 @@ fieldTypes:
   networkBindings: list
   environmentConfiguration: list
   runtimeSpec: dict
-  architectureNotes: dict
+  notes: dict
   requirementGroups: list
   decisionRecords: list
   requirementImplementations: list
@@ -243,3 +242,11 @@ fieldDescriptions:
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired.
   aliases: List prior or alternate names for this component.
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
+decisionRecordRef:
+  requiredFields:
+  - ref
+  optionalFields:
+  - key
+  - concern
+  - capability
+

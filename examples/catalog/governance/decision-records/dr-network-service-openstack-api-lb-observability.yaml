@@ -16,5 +16,5 @@ tags:
 - observability
 decisionRationale: >-
   Records the observability and logging decisions for OpenStack API Load Balancer. These decisions address
-  the serviceLogging requirement(s); supporting detail is documented in this object's architectureNotes.
+  the serviceLogging requirement(s); supporting detail is documented in this object's notes.
   This DecisionRecord is the committed answer that satisfies the requirement(s).

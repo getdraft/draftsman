@@ -878,7 +878,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
                 "tags": obj.get("tags", []),
                 "ardCategory": obj.get("category", "") if obj.get("type") == "decision_record" else "",
                 "internalComponents": internal_component_refs(obj),
-                "architectureNotes": obj.get("architectureNotes", {}),
+                "notes": obj.get("notes", {}),
                 "requirements": obj.get("requirements", []),
                 "implementations": obj.get("implementations", []),
                 "appliesTo": obj.get("appliesTo", {}),

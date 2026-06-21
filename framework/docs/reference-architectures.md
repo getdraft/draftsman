@@ -97,7 +97,7 @@ At minimum, a ReferenceArchitecture YAML should include:
 - `serviceGroups`
 
 Most ReferenceArchitectures also include `description`, `patternType`, and
-`architectureNotes`.
+`notes`.
 
 ## Lifecycle Policy
 
@@ -122,7 +122,7 @@ A ReferenceArchitecture that includes a TechnologyComponent whose
 `extendedSupportEnd` date has not passed is in extended support. The default
 position for these patterns is `deprecated`. A company may mark the pattern
 `existing-only` while extended support is active, but it must document that exception
-in `architectureNotes.lifecycleRationale`. Extended-support TechnologyComponents must not appear in a `preferred` ReferenceArchitecture.
+in `notes.lifecycleRationale`. Extended-support TechnologyComponents must not appear in a `preferred` ReferenceArchitecture.
 
 ## What `serviceGroups` Means
 

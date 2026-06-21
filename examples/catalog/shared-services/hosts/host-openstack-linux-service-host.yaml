@@ -16,7 +16,7 @@ tags:
 - linux
 operatingSystemComponent: 01KQQ4Q025-3HXA
 computePlatformComponent: STCK00000F-TC0F
-architectureNotes:
+notes:
   authentication: >-
     Centralized authentication via enterprise LDAP/Active Directory integrated with PAM. SSH key-based
     access only for service accounts; password auth disabled. Sudo access restricted to named platform-engineering

@@ -28,7 +28,6 @@ optionalFields:
 - patchingOwner
 - authenticationModel
 - vendorGovernance
-- architectureNotes
 - notes
 - decisionRecords
 - requirementImplementations
@@ -82,7 +81,7 @@ fieldTypes:
   deploymentConfigurations: list
   capabilities: list
   configurations: list
-  architectureNotes: dict
+  notes: dict
   vendorGovernance: dict
   requirementGroups: list
   decisionRecords: list
@@ -121,7 +120,7 @@ deploymentConfiguration:
   - addressesQualities
   - addsInternalComponents
   - addsExternalInteractions
-  - addsArchitecturalDecisions
+  - addsNotes
   - notes
   enumListFields:
     addressesQualities:
@@ -132,7 +131,7 @@ deploymentConfiguration:
     addressesQualities: list
     addsInternalComponents: list
     addsExternalInteractions: list
-    addsArchitecturalDecisions: dict
+    addsNotes: dict
 configuration:
   requiredFields:
   - id
@@ -201,3 +200,11 @@ fieldDescriptions:
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired for this deployable service pattern.
   aliases: List prior or alternate human-readable names that should resolve to this object.
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
+decisionRecordRef:
+  requiredFields:
+  - ref
+  optionalFields:
+  - key
+  - concern
+  - capability
+

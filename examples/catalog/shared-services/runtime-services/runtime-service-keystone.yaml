@@ -20,7 +20,7 @@ tags:
 deliveryModel: self-managed
 host: STCK00000F-HS0F
 primaryTechnologyComponent: STCK000002-TC02
-architectureNotes:
+notes:
   serviceAuthentication: >-
     Keystone is the root of trust for all OpenStack API authentication. Keystone itself authenticates
     administrative users via local credential store or LDAP federation. Bootstrap credentials are managed

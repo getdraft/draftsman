@@ -23,7 +23,6 @@ optionalFields:
 - storedProcedures
 - scheduledJobs
 - retentionPolicy
-- architectureNotes
 - notes
 - decisionRecords
 - requirementImplementations
@@ -63,7 +62,7 @@ fieldTypes:
   storedProcedures: list
   scheduledJobs: list
   containsPII: bool
-  architectureNotes: dict
+  notes: dict
   requirementGroups: list
   decisionRecords: list
   requirementImplementations: list
@@ -161,3 +160,11 @@ fieldDescriptions:
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired.
   aliases: List prior or alternate names for this component.
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
+decisionRecordRef:
+  requiredFields:
+  - ref
+  optionalFields:
+  - key
+  - concern
+  - capability
+

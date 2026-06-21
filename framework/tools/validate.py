@@ -1192,8 +1192,8 @@ def mechanism_description(mechanism: dict[str, Any]) -> str:
     if mechanism_type == "deploymentConfiguration":
         quality = mechanism.get("criteria", {}).get("quality", "unknown")
         return f"deploymentConfiguration(quality={quality})"
-    if mechanism_type == "architectureNote":
-        return f"architectureNote({mechanism.get('key', 'unknown')})"
+    if mechanism_type == "note":
+        return f"note({mechanism.get('key', 'unknown')})"
     if mechanism_type == "decisionRecord":
         key = mechanism.get("key")
         if key:
@@ -1431,8 +1431,8 @@ def mechanism_satisfied(obj: dict[str, Any], mechanism: dict[str, Any], catalog_
                 if isinstance(caps, list) and capability in caps:
                     return True
         return False
-    if mechanism_type == "architectureNote":
-        # An architectureNote is a drafting placeholder, not a satisfaction. It lets a
+    if mechanism_type == "note":
+        # A note is a drafting placeholder, not a satisfaction. It lets a
         # DraftingSession continue when information or the right decision-maker is not yet
         # available, but it never resolves a requirement — the decision must be committed
         # as a DecisionRecord (or the requirement satisfied by concrete implementation).
@@ -1700,7 +1700,7 @@ def rationale_bucket_matches(value: Any, candidates: list[str]) -> bool:
 
 
 def dependency_rationale_present(obj: dict[str, Any], entry: dict[str, Any], context: str) -> bool:
-    decisions = obj.get("architectureNotes", {})
+    decisions = obj.get("notes", {})
     if not isinstance(decisions, dict):
         return False
     candidates = entry_rationale_candidates(entry, context)
@@ -1710,7 +1710,7 @@ def dependency_rationale_present(obj: dict[str, Any], entry: dict[str, Any], con
 
 def dependency_rationale_guidance(entry: dict[str, Any], context: str) -> str:
     key = entry.get("name") or entry.get("ref") or entry.get("enabledBy") or entry.get("role") or context
-    return f"architectureNotes.internalComponentRationales[{key!r}]"
+    return f"notes.internalComponentRationales[{key!r}]"
 
 
 def validate_unrequired_dependency_rationales(
@@ -2020,13 +2020,13 @@ def validate_workspace_vocabulary_references(
 
         if obj.get("type") not in deployable_or_pattern_types:
             continue
-        decisions = obj.get("architectureNotes") or {}
+        decisions = obj.get("notes") or {}
         if not isinstance(decisions, dict):
             continue
         validate_vocabulary_value(
             obj,
             path,
-            "architectureNotes.dataClassification",
+            "notes.dataClassification",
             decisions.get("dataClassification"),
             data_vocabulary,
             failures,
@@ -2035,7 +2035,7 @@ def validate_workspace_vocabulary_references(
         validate_vocabulary_value(
             obj,
             path,
-            "architectureNotes.availabilityRequirement",
+            "notes.availabilityRequirement",
             decisions.get("availabilityRequirement"),
             availability_vocabulary,
             failures,
@@ -2044,7 +2044,7 @@ def validate_workspace_vocabulary_references(
         validate_vocabulary_value(
             obj,
             path,
-            "architectureNotes.failureDomain",
+            "notes.failureDomain",
             decisions.get("failureDomain"),
             failure_vocabulary,
             failures,
@@ -2094,7 +2094,7 @@ def validate_architectural_decisions(
     obj: dict[str, Any], path: Path, failures: list[str], warnings: list[str] | None = None
 ) -> None:
     decision_sets: list[dict[str, Any]] = []
-    direct_decisions = obj.get("architectureNotes", {})
+    direct_decisions = obj.get("notes", {})
     if isinstance(direct_decisions, dict) and direct_decisions:
         decision_sets.append(direct_decisions)
 
@@ -2103,7 +2103,7 @@ def validate_architectural_decisions(
             and obj.get("catalogStatus") == "complete"
             and not has_decision_records):
         warnings.append(
-            f"{path}: [{object_label(obj)}] architectureNotes are inline — promote each decision to a "
+            f"{path}: [{object_label(obj)}] notes are inline — promote each decision to a "
             "decision_record object and reference it via decisionRecords for complete catalog objects"
         )
 
@@ -2112,13 +2112,13 @@ def validate_architectural_decisions(
             if key in decisions and decisions[key] not in allowed_values:
                 allowed_text = ", ".join(sorted(allowed_values))
                 failures.append(
-                    f'{path}: [{object_label(obj)}] architectureNotes.{key} must be one of: '
+                    f'{path}: [{object_label(obj)}] notes.{key} must be one of: '
                     f'{allowed_text} — got "{decisions[key]}"'
                 )
 
         if "minNodes" in decisions and not isinstance(decisions["minNodes"], int):
             failures.append(
-                f'{path}: [{object_label(obj)}] architectureNotes.minNodes must be an integer — '
+                f'{path}: [{object_label(obj)}] notes.minNodes must be an integer — '
                 f'got "{decisions["minNodes"]}"'
             )
 
@@ -2232,7 +2232,7 @@ def validate_component(
 
 
 def agent_interaction_exception(obj: dict[str, Any], abb_id: str) -> bool:
-    decisions = obj.get("architectureNotes", {})
+    decisions = obj.get("notes", {})
     if not isinstance(decisions, dict):
         return False
     exceptions = decisions.get("agentInteractionExceptions")
@@ -2300,7 +2300,7 @@ def validate_classified_component_refs(
             )
             if not has_outbound_rel and not agent_interaction_exception(obj, ref):
                 failures.append(
-                    f"{path}: agent TechnologyComponent '{ref}' requires a relationship object with source == this object or architectureNotes.agentInteractionExceptions"
+                    f"{path}: agent TechnologyComponent '{ref}' requires a relationship object with source == this object or notes.agentInteractionExceptions"
                 )
 
 
@@ -2421,7 +2421,7 @@ def sdp_requirement_satisfied(
     """
     Checks if a SoftwareDeploymentPattern requirement is satisfied by a referenced decisionRecord
     or by a direct field on the SDP (structural satisfaction path).
-    Note: Inline architectureNotes are never considered appropriate for requirement satisfaction.
+    Note: Inline notes are never considered appropriate for requirement satisfaction.
     """
     if mechanism_satisfied(obj, {"mechanism": "decisionRecord", "key": key}, catalog_by_id):
         return True
@@ -2705,14 +2705,14 @@ def validate_ra(
             for ref, mainstream_end, support_end in extended_support_technologies
         )
         failures.append(
-            f"{path}: Set lifecycleStatus: deprecated by default, or existing-only with architectureNotes.lifecycleRationale, on ReferenceArchitecture '{object_id}' because it includes TechnologyComponents in extended support: {details}"
+            f"{path}: Set lifecycleStatus: deprecated by default, or existing-only with notes.lifecycleRationale, on ReferenceArchitecture '{object_id}' because it includes TechnologyComponents in extended support: {details}"
         )
     if extended_support_technologies and obj.get("lifecycleStatus") == "existing-only":
-        decisions = obj.get("architectureNotes") or {}
+        decisions = obj.get("notes") or {}
         if not isinstance(decisions, dict) or not is_non_empty(decisions.get("lifecycleRationale")):
             details = ", ".join(f"{ref} mainstreamSupportEnd {mainstream_end.isoformat()}" for ref, mainstream_end, _ in extended_support_technologies)
             failures.append(
-                f"{path}: Add architectureNotes.lifecycleRationale to explain why ReferenceArchitecture '{object_id}' remains existing-only while these TechnologyComponents are in extended support: {details}"
+                f"{path}: Add notes.lifecycleRationale to explain why ReferenceArchitecture '{object_id}' remains existing-only while these TechnologyComponents are in extended support: {details}"
             )
 
     if not is_non_empty(obj.get("patternType")):
@@ -2764,11 +2764,11 @@ def validate_ra(
                         f"'{capability}' must reference a capability object UID from configurations/capabilities"
                     )
 
-    if not is_non_empty(obj.get("architectureNotes")):
+    if not is_non_empty(obj.get("notes")):
         record_requirement_gap(
             obj,
             path,
-            f"[{object_id}] Add architectureNotes to satisfy requirement-group.reference-architecture requirement 'deployment-qualities'",
+            f"[{object_id}] Add notes to satisfy requirement-group.reference-architecture requirement 'deployment-qualities'",
             failures,
             warnings,
         )
@@ -3412,8 +3412,8 @@ def implementation_resolves(
     if mechanism == "field":
         key = implementation.get("key")
         return is_non_empty(key) and is_non_empty(get_nested_value(obj, str(key)))
-    if mechanism == "architectureNote":
-        # architectureNote is a drafting placeholder and does not resolve a requirement.
+    if mechanism == "note":
+        # note is a drafting placeholder and does not resolve a requirement.
         return False
     if mechanism == "relationship":
         return find_relationship_for_implementation(obj, implementation, catalog_by_id)
@@ -3786,9 +3786,9 @@ def validate_requirement_implementations(
         mechanism = implementation.get("mechanism")
         valid_answer_types = requirement.get("validAnswerTypes", [])
         label = requirement_display_label(group, requirement)
-        if mechanism == "architectureNote":
+        if mechanism == "note":
             failures.append(
-                f"{context}: architectureNote is not a valid implementation mechanism — "
+                f"{context}: note is not a valid implementation mechanism — "
                 "use a structural mechanism (relationship, technologyComponentConfiguration, field, etc.); "
                 "inline notes are scratchpad, not evidence"
             )

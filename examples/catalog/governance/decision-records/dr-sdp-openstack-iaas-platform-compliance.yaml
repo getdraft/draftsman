@@ -17,5 +17,5 @@ tags:
 decisionRationale: >-
   Records the security and compliance decisions for OpenStack IaaS Platform addressing the availability_requirement,
   data_classification, reference_architecture_conformance control requirement(s); supporting detail is
-  documented in this object's architectureNotes. This DecisionRecord is the committed answer that satisfies
+  documented in this object's notes. This DecisionRecord is the committed answer that satisfies
   the requirement(s).
