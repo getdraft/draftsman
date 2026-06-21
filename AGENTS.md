@@ -101,3 +101,8 @@ for the user to submit manually.
   unless the schemas and docs are updated deliberately.
 - Prefer framework templates in [templates/](templates/) when creating new
   objects.
+- **Release notes in PRs:** add a `## Unreleased` section at the top of
+  `CHANGELOG.md` with all five subsections (`Compatibility Impact`, `Added`,
+  `Changed`, `Fixed`, `Migration Notes`). Do **not** edit `draft-framework.yaml`
+  — the `promote-release` workflow assigns the version number automatically on
+  merge. See [VERSIONING.md](VERSIONING.md) for the bump-type rules.
