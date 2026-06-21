@@ -2596,6 +2596,78 @@ def evaluate_ra_constraints(
                 )
 
 
+def validate_sdp_reference_architecture_slots(
+    sdp: dict[str, Any],
+    path: Path,
+    ra: dict[str, Any],
+    catalog_by_id: dict[str, dict[str, Any]],
+    failures: list[str],
+) -> None:
+    ra_service_groups = ra.get("serviceGroups")
+    if not isinstance(ra_service_groups, list):
+        return
+
+    sdp_objects = _sdp_deployable_objects(sdp, catalog_by_id)
+    ra_name = ra.get("name") or ra.get("uid") or "unknown"
+    sdp_id = object_label(sdp)
+
+    for group in ra_service_groups:
+        if not isinstance(group, dict):
+            continue
+        deployable_objects = group.get("deployableObjects")
+        if not isinstance(deployable_objects, list):
+            continue
+        for entry in deployable_objects:
+            if not isinstance(entry, dict):
+                continue
+            cap_uid = entry.get("capability")
+            if not is_non_empty(cap_uid):
+                continue
+
+            slot_name = entry.get("slot") or "unnamed-slot"
+            req_type = entry.get("objectType")
+            req_tier = entry.get("diagramTier")
+
+            satisfied = False
+            for o in sdp_objects:
+                if req_type and o.get("objectType") != req_type:
+                    continue
+                if req_tier and o.get("diagramTier") != req_tier:
+                    continue
+                if _target_satisfies_capability(o.get("ref"), o.get("target"), str(cap_uid), catalog_by_id):
+                    satisfied = True
+                    break
+
+            if not satisfied:
+                # Check if bypassed/satisfied by a DecisionRecord referenced on the SDP
+                sdp_decision_records = sdp.get("decisionRecords") or []
+                if isinstance(sdp_decision_records, list):
+                    for dr_entry in sdp_decision_records:
+                        if not isinstance(dr_entry, dict):
+                            continue
+                        entry_key = dr_entry.get("key")
+                        entry_cap = dr_entry.get("capability") or dr_entry.get("concern")
+                        if (entry_key and entry_key == slot_name) or (entry_cap and entry_cap in (cap_uid, slot_name)):
+                            dr_ref = dr_entry.get("ref")
+                            dr_obj = catalog_by_id.get(str(dr_ref)) if is_non_empty(dr_ref) else None
+                            if dr_obj and dr_obj.get("type") == "decision_record":
+                                satisfied = True
+                                break
+
+            if not satisfied:
+                parts = [f"capability '{cap_uid}'"]
+                if req_type:
+                    parts.append(f"objectType '{req_type}'")
+                if req_tier:
+                    parts.append(f"diagramTier '{req_tier}'")
+                slot_desc = " and ".join(parts)
+                failures.append(
+                    f"{path}: [{sdp_id}] RA capability slot '{slot_name}' unsatisfied — "
+                    f"no deployable object satisfies {slot_desc}. "
+                    f"Required by ReferenceArchitecture '{ra_name}'."
+                )
+
+
 def validate_ra(
     obj: dict[str, Any],
     path: Path,
@@ -2809,6 +2881,7 @@ def validate_software_deployment_pattern(
         ra_obj = catalog_by_id.get(str(ra_uid))
         if ra_obj and ra_obj.get("type") == "reference_architecture":
             evaluate_ra_constraints(obj, path, ra_obj, catalog_by_id, failures)
+            validate_sdp_reference_architecture_slots(obj, path, ra_obj, catalog_by_id, failures)
 
     service_groups = obj.get("serviceGroups", [])
     if not isinstance(service_groups, list):

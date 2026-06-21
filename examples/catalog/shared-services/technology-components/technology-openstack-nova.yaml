@@ -29,3 +29,6 @@ vendorLifecycle:
     release is supported by the upstream community under a rolling support model.
     Long-term support variants are available from downstream distributors such as
     Red Hat OpenStack Platform and Canonical OpenStack.
+capabilities:
+- 01KT0V5MCV-RZV0
+

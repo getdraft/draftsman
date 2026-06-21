@@ -54,6 +54,7 @@ architectureNotes:
     Backup Service for point-in-time recovery.
 decisionRecords:
 - ref: 01KSE5V73Z-CRZV
+  key: edge-protection
   notes: >-
     Data classification is Internal per architectureNotes.dataClassification. The platform does not process
     public or confidential data directly; tenant workloads inherit their own classification independently
