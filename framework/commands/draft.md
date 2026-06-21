@@ -1,6 +1,6 @@
 ---
-description: Unified DRAFT command family — run a verb (validate, guide, triage, …) or show the verb list
-argument-hint: "[verb] (e.g. validate, guide, audit, triage, update; empty shows the list)"
+description: Unified DRAFT command family — run a verb (guide, review, update) or show the verb list
+argument-hint: "[verb] (e.g. guide, review, update; empty shows the list)"
 allowed-tools: [Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion]
 ---
 
@@ -21,22 +21,34 @@ If `$ARGUMENTS` is empty, or `VERB` is `help`, go to **Show the verb list**.
 
 ## Step 2: Route the verb
 
-Map `VERB` to an action file. Every action lives in a `draft-actions/`
-directory. Locate it with Glob (`**/draft-actions/<file>`) so it resolves whether
-the framework sits at the repo root (`framework/draft-actions/`, upstream) or is
+Map `VERB` to an action file. Action files live in a `draft-actions/` directory.
+Locate them with Glob (`**/draft-actions/<file>`) so routing works whether the
+framework sits at the repo root (`framework/draft-actions/`, upstream) or is
 vendored under `.draft/framework/draft-actions/` (company workspace).
 
 | Verb | Action file | Purpose |
 |---|---|---|
 | `guide` | `draft-actions/guide.md` | Bootstrap, then start or resume a guided DraftingSession or ad hoc authoring. |
-| `validate` | `draft-actions/validate.md` | Validate the DRAFT catalog and report fixes. |
-| `audit` | `draft-actions/audit.md` | Run general catalog review or security RequirementGroup, satisfaction, posture, and artifact audit workflows. |
-| `triage` | `draft-actions/triage.md` | Pull open GitHub issues and work through selected ones. |
-| `review-framework` | `draft-actions/review-framework.md` | Upstream-only: review the DRAFT framework itself. |
+| `review` | `draft-actions/review.md` | Review an open PR for catalog correctness, or audit catalog content for quality and security compliance. |
 | `update` | `draft-actions/update.md` | Check for framework updates and guide a safe upgrade. |
+| `validate` | `draft-actions/validate.md` | Validate the DRAFT catalog and report fixes. *(Internal — called by `guide` and `review`. Works as a standalone verb but is not in the help table.)* |
 
 Once you have matched the verb, **read that action file and follow it exactly**,
 treating `REST` as the action's `$ARGUMENTS`.
+
+### Upstream-only verb
+
+One additional verb is available only in the upstream `getdraft/draftsman`
+repository. It is **not** vendored into company workspaces and must not appear
+in company workspace help output:
+
+| Verb | Action file | Purpose |
+|---|---|---|
+| `review-framework` | `upstream/review-framework.md` | Expert consultant review of the DRAFT framework itself. |
+
+To route `review-framework`, locate the file with Glob (`upstream/review-framework.md`)
+from the repository root. If the file is not found, tell the user this verb is
+not available in this workspace.
 
 If any verb reveals a likely reusable framework bug or feature request while
 running in a vendored company workspace, follow **Upstream Framework Feedback
@@ -49,22 +61,13 @@ If `VERB` does not match any row, tell the user it is not a known verb and then
 
 ## Show the verb list
 
-Output **only** this table — no preamble, setup guides, or symlink notes:
+Output **only** this table — no preamble, setup guides, or extra notes:
 
-| Verb | Who runs it | Purpose |
+| Command | Who runs it | Purpose |
 |---|---|---|
-| `/draft help` | All Users | Show this list of DRAFT verbs. |
+| `/draft help` | Everyone | Show this list. |
 | `/draft guide` | Engineering & Shared Services | Bootstrap and start or resume guided catalog authoring. |
-| `/draft validate` | All Users | Validate the DRAFT catalog and report issues with fix guidance. |
-| `/draft audit` | Engineering, Security, GRC & Draft Admins | Run general catalog review or security RequirementGroup, satisfaction, review, and audit workflows. |
-| `/draft triage` | Draft Admins | Pull open GitHub issues and work through selected ones. |
+| `/draft review` | Everyone | Review an open PR for catalog correctness, or audit catalog content for quality and security compliance. |
 | `/draft update` | Draft Admins | Check for DRAFT framework updates and guide a safe upgrade. |
 
-In the upstream `getdraft/draftsman` repository, one additional verb is available
-for maintainers and is **not** documented in vendored company workspaces:
-
-| Verb | Who runs it | Purpose |
-|---|---|---|
-| `/draft review-framework` | Framework Maintainers | Expert consultant review of the DRAFT framework for simplification and adoption. |
-
-End with one line: `Run /draft <verb> to start, e.g. /draft validate.`
+End with one line: `Run /draft <verb> to start, e.g. /draft guide.`

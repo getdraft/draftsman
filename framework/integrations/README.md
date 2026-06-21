@@ -18,11 +18,12 @@ framework/commands/
 
 framework/draft-actions/
   guide.md              ← /draft guide — draftsman authoring/setup and guided drafting session workflow
-  validate.md           ← /draft validate — catalog validation workflow
-  audit.md              ← /draft audit — company catalog/content review and security/compliance audit
-  triage.md             ← /draft triage — GitHub issue triage workflow
+  review.md             ← /draft review — PR review, catalog quality review, and security/compliance audit
+  validate.md           ← /draft validate — catalog validation workflow (internal; called by guide and review)
   update.md             ← /draft update — framework refresh workflow
-  review-framework.md   ← /draft review-framework — upstream-only framework review
+
+upstream/
+  review-framework.md   ← /draft review-framework — upstream maintainers only; not vendored
 
 framework/integrations/
   cursor/

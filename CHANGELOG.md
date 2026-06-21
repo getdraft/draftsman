@@ -10,9 +10,12 @@ Closes a security gap in the catalog validator's plaintext-secret scanner and fi
 - The catalog validator's plaintext-secret scanner now inspects every key in a mapping even when a sibling key is named `secretReference`. Workspaces with a plaintext secret hidden alongside a `secretReference` key will now correctly fail validation. No other validation behavior changes.
 - No breaking changes for decision record approval. Existing workspaces are unaffected unless they configure the optional `decisionRecordApproval` policy in `workspace.yaml`.
 - No breaking changes for reference architecture slot validation. While SoftwareDeploymentPatterns following a ReferenceArchitecture must now satisfy all capability slots of the RA, all example catalog files have been updated and remain fully compliant.
+- The `/draft audit` and `/draft triage` verbs are removed from company workspaces. All functionality is available under `/draft review` with equivalent arguments. The `/draft validate` verb continues to work as a standalone alias but is no longer listed in the help table.
 
 ### Added
 
+- Added `upstream/` directory at the repository root for maintainer-only tooling that must not be vendored into company workspaces. Includes `upstream/README.md` explaining the directory's purpose.
+- Added `framework/draft-actions/review.md`: the new `/draft review` verb that handles PR review, catalog quality review, and security/compliance audit in a single command routed by argument.
 - Added `.github/workflows/promote-release.yml`: fires on push to `main`, detects `## Unreleased` in CHANGELOG.md, computes the next version (minor if contract-path files changed, patch otherwise), promotes the entry, bumps `draft-framework.yaml`, and regenerates `AI_INDEX.md` in a follow-up bot commit.
 - Added `detect_bump_type()` helper and `--detect-bump` CLI flag to `framework/tools/check_release_notes.py` so the promote workflow can compute the correct version bump type.
 - Added support for the `decisionRecordApproval` workspace policy in `.draft/workspace.yaml` allowing workspaces to declare central or decentralized approval routing (by category, domain, requirement, or owning team) and validator-enforced markings/scoping checks. Added optional fields `approver` and `approvalDate` to `decision_record` schema. Added unit tests and documentation.
@@ -21,6 +24,9 @@ Closes a security gap in the catalog validator's plaintext-secret scanner and fi
 
 ### Changed
 
+- Simplified the `/draft` command family for company workspaces from six verbs to three: `guide`, `review`, `update`. The `validate` verb still works as a convenience alias but is no longer in the help table. The `audit` and `triage` verbs are retired.
+- Moved `framework/draft-actions/review-framework.md` to `upstream/review-framework.md` so it is not vendored into company workspaces. The `review-framework` verb routes to `upstream/review-framework.md` and gracefully reports unavailability if the file is not found.
+- Updated all references to `/draft audit`, `/draft triage`, and the retired action files across `operations-guide.md`, `security-and-compliance-controls.md`, `draftsman.md`, `draftsman-ai-configuration.md`, `setup-mode.md`, `ticketing.md`, `integrations/`, and all workspace templates.
 - `check_release_notes.py`: governed file changes with an `## Unreleased` entry and no version bump are now accepted (the promote workflow handles versioning). `Unreleased` entries always require `Migration Notes` (full five-section quality).
 - Updated `VERSIONING.md` AI Release Decision Procedure to document the new PR pattern and retire the manual version-bump-in-PR requirement.
 - Updated `AGENTS.md` Editing Rules to tell AI agents to use `## Unreleased` in PRs and not touch `draft-framework.yaml`.
@@ -35,6 +41,7 @@ Closes a security gap in the catalog validator's plaintext-secret scanner and fi
 
 ### Migration Notes
 
+- Replace `/draft audit` with `/draft review` in any runbooks, CI scripts, or documented procedures. Replace `/draft triage` with `/draft review` (or `/draft review pr` for explicit PR review). No catalog YAML changes required.
 - No workspace migration required. This only changes how contributors and AI agents author PRs to this upstream framework repository.
 - From now on: write `## Unreleased` in CHANGELOG.md in your PR, omit any change to `draft-framework.yaml`, and the promote workflow assigns the version on merge.
 - After refreshing the framework, re-run `python3 .draft/framework/tools/validate.py --workspace .`. If validation now reports a plaintext secret, move that value to a `secretReference` mapping so no literal secret sits in a sibling field. No other workspace changes are required.
