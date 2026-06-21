@@ -23,6 +23,8 @@ optionalFields:
 - relatedDecisionRecords
 - controlReferences
 - linkedObject
+- approver
+- approvalDate
 enumFields:
   catalogStatus:
   - stub
@@ -48,6 +50,8 @@ fieldTypes:
   tags: list
   relatedDecisionRecords: list
   controlReferences: list
+  approver: str
+  approvalDate: str
 conditionalRequired:
 - when:
     category: decision

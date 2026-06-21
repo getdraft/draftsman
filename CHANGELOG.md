@@ -8,11 +8,13 @@ Closes a security gap in the catalog validator's plaintext-secret scanner and fi
 
 - No breaking changes. Existing workspaces and workflows are unaffected. The change affects only the contributor/AI-agent release workflow for this repository.
 - The catalog validator's plaintext-secret scanner now inspects every key in a mapping even when a sibling key is named `secretReference`. Workspaces with a plaintext secret hidden alongside a `secretReference` key will now correctly fail validation. No other validation behavior changes.
+- No breaking changes for decision record approval. Existing workspaces are unaffected unless they configure the optional `decisionRecordApproval` policy in `workspace.yaml`.
 
 ### Added
 
 - Added `.github/workflows/promote-release.yml`: fires on push to `main`, detects `## Unreleased` in CHANGELOG.md, computes the next version (minor if contract-path files changed, patch otherwise), promotes the entry, bumps `draft-framework.yaml`, and regenerates `AI_INDEX.md` in a follow-up bot commit.
 - Added `detect_bump_type()` helper and `--detect-bump` CLI flag to `framework/tools/check_release_notes.py` so the promote workflow can compute the correct version bump type.
+- Added support for the `decisionRecordApproval` workspace policy in `.draft/workspace.yaml` allowing workspaces to declare central or decentralized approval routing (by category, domain, requirement, or owning team) and validator-enforced markings/scoping checks. Added optional fields `approver` and `approvalDate` to `decision_record` schema. Added unit tests and documentation.
 
 ### Changed
 
@@ -31,6 +33,7 @@ Closes a security gap in the catalog validator's plaintext-secret scanner and fi
 - No workspace migration required. This only changes how contributors and AI agents author PRs to this upstream framework repository.
 - From now on: write `## Unreleased` in CHANGELOG.md in your PR, omit any change to `draft-framework.yaml`, and the promote workflow assigns the version on merge.
 - After refreshing the framework, re-run `python3 .draft/framework/tools/validate.py --workspace .`. If validation now reports a plaintext secret, move that value to a `secretReference` mapping so no literal secret sits in a sibling field. No other workspace changes are required.
+- No immediate action required. To activate validation-enforced decision record approvals, add a `decisionRecordApproval` section to `.draft/workspace.yaml` (see `framework/docs/decision-records.md` for options).
 
 ## 0.58.2 - 2026-06-20
 
