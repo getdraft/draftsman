@@ -1,3 +1,36 @@
+## Unreleased
+
+### Compatibility Impact
+
+- **Validation integration:** `generate_browser.py` now runs `validate.py` automatically before generating the browser, refusing to output browser files if validation fails (a `--skip-validation` option is provided to bypass).
+- **Multi-value enum fields:** The schema validator (`validate.py`) now accepts either a single string or a list of strings for enums defined as `enumFields` (such as `authenticationModel` inside services or interfaces) to support fronting multiple authentication mechanisms simultaneously.
+- No breaking changes. Existing workspaces and workflows are unaffected.
+
+### Added
+
+- Added support for auto-deriving deterministic virtual relationships from `runsOn` (on product and data components) and `host` (on self-managed services) fields, automatically populating topology diagrams.
+- Added support for auto-deriving relationships from `product_component` `runtimeSpec.dependencies`.
+- Added empty configurations/requirement-groups/ scaffolding to the workspace bootstrap template.
+- Added unit tests in `tests/test_inline_relationships.py` to verify deterministic UID generation and relationship parsing.
+
+### Changed
+
+- Updated `framework/tools/uid_utils.py` to include `derive_inline_relationships` and `generate_relationship_uid` helper functions.
+- Updated `framework/tools/validate.py` to merge derived inline relationships before executing validation and requirement satisfaction checks.
+- Updated `framework/tools/generate_browser.py` to merge derived inline relationships into the browser registry and recursively scan catalog folders by default.
+- Updated `framework/tools/generate_c4.py` to load and merge derived inline relationships for rendering C4 container diagrams.
+- Updated schemas and templates with explicit inline documentation for `applicability` structure and `activeRequirementGroups` activation.
+
+### Fixed
+
+- Fixed missing connections in C4 container diagrams and the catalog browser for workspaces using inline dependencies.
+- Fixed topology diagram line styling in `draft-browser-sdp.css` by adding fallback default connection colors for custom protocols.
+- Fixed a bug where always-on (`activation: always`) requirement groups rendered as inactive in the browser payload.
+
+### Migration Notes
+
+- No manual migration is required. Workspaces using `runtimeSpec.dependencies` or `runsOn`/`host` fields will automatically have virtual first-class relationships generated.
+
 ## 0.60.0 - 2026-06-22
 
 ### Compatibility Impact

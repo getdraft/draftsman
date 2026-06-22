@@ -21,8 +21,11 @@ import re
 import sys
 from pathlib import Path
 from typing import Any
-
 import yaml
+
+TOOLS_ROOT = Path(__file__).resolve().parent
+if str(TOOLS_ROOT) not in sys.path:
+    sys.path.insert(0, str(TOOLS_ROOT))
 
 FRAMEWORK_ROOT = Path(__file__).resolve().parent.parent
 REPO_ROOT = FRAMEWORK_ROOT.parent
@@ -85,6 +88,10 @@ def load_catalog(workspace_root: Path) -> dict[str, dict[str, Any]]:
                     catalog[str(data["uid"])] = data
             except Exception:
                 pass
+    
+    from uid_utils import derive_inline_relationships
+    derived = derive_inline_relationships(catalog)
+    catalog.update(derived)
     return catalog
 
 

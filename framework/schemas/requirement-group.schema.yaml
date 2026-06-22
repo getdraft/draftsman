@@ -56,7 +56,7 @@ fieldDescriptions:
   catalogStatus: Use catalog maturity for the requirement group definition.
   owner: Identify the team accountable for maintaining this requirement group.
   authority: Identify the source authority for external or framework-owned requirements; use authority.shortName as the human citation prefix, such as SOC 2, NIST CSF, TX-RAMP, or DRAFT Security.
-  activation: Use always for base authoring requirements or workspace for explicitly activated compliance/control groups.
+  activation: "Use always for base authoring requirements, or workspace for explicitly activated compliance/control groups. Note: workspace-scoped groups must be explicitly activated by listing their UIDs in `.draft/workspace.yaml` under `requirements.activeRequirementGroups`."
   appliesTo: List object types governed by this group.
   requirements: List the requirement entries the Draftsman asks and the validator checks.
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name, product-name, or taxonomy changes.
@@ -87,6 +87,10 @@ requirement:
     canBeSatisfiedBy: List the mechanisms that can satisfy this requirement.
     minimumSatisfactions: Set how many mechanisms must resolve for the requirement to be satisfied.
     validAnswerTypes: List the allowed mechanisms for object-level requirement implementation evidence.
+    applicability: >
+      A dictionary specifying the conditions under which this conditional requirement applies to an object.
+      Supports logical operators like anyOf, allOf, or direct field matches. Example:
+      `applicability: { anyOf: [ { field: "complianceContext.txRampInScope", equals: true } ] }`
   enumFields:
     requirementMode:
     - mandatory

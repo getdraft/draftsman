@@ -1003,14 +1003,23 @@ def validate_schema_section(
         value = node.get(field)
         if value is None or value == "":
             continue
-        if value not in allowed_values:
-            failures.append(f"{context}: Set {field} to one of {allowed_values}; '{value}' is not valid")
+        if isinstance(value, list):
+            invalid = [item for item in value if item not in allowed_values]
+            if invalid:
+                failures.append(f"{context}: Set elements in list {field} to one of {allowed_values}; invalid values: {invalid}")
+        else:
+            if value not in allowed_values:
+                failures.append(f"{context}: Set {field} to one of {allowed_values}; '{value}' is not valid")
 
     for field, expected_type in (schema.get("fieldTypes") or {}).items():
         if field not in node or node.get(field) is None:
             continue
+        val = node.get(field)
+        if expected_type == "str" and isinstance(val, list):
+            if all(isinstance(item, str) for item in val):
+                continue
         checker = TYPE_CHECKERS.get(str(expected_type))
-        if checker and not isinstance(node.get(field), checker):
+        if checker and not isinstance(val, checker):
             failures.append(f"{context}: Change field '{field}' to type {expected_type}")
 
     for field, allowed_values in (schema.get("enumListFields") or {}).items():
@@ -4118,6 +4127,11 @@ def main(argv: list[str] | None = None) -> int:
         for obj in objects.values()
         if isinstance(obj, dict) and is_non_empty(obj.get("uid"))
     }
+    
+    from uid_utils import derive_inline_relationships
+    derived = derive_inline_relationships(catalog_by_id)
+    catalog_by_id.update(derived)
+
     requirement_groups = {
         object_id: obj for object_id, obj in catalog_by_id.items() if obj.get("type") == "requirement_group"
     }

@@ -425,6 +425,7 @@
 .sdp-detail .svc-card { position: relative; z-index: 2; }
 .sdp-detail .conn-path {
   fill: none;
+  stroke: var(--proto-other);
   stroke-width: 1;
   stroke-linecap: round;
   transition: stroke-opacity 160ms ease, stroke-width 160ms ease;
@@ -583,6 +584,7 @@
   border-radius: 4px;
   text-transform: uppercase;
 }
+.sdp-detail .drawer-conn .pill { background: var(--surface-sunk); color: var(--proto-other); }
 .sdp-detail .drawer-conn .pill.rest  { background: oklch(0.96 0.03 250); color: var(--proto-rest); }
 .sdp-detail .drawer-conn .pill.amqp  { background: oklch(0.96 0.04 30);  color: var(--proto-amqp); }
 .sdp-detail .drawer-conn .pill.other { background: var(--surface-sunk);   color: var(--proto-other); }
@@ -808,6 +810,7 @@
   border-radius: 4px;
   text-transform: uppercase;
 }
+.sdp-detail .conn-table .proto { background: var(--surface-sunk); color: var(--proto-other); }
 .sdp-detail .conn-table .proto.rest  { background: oklch(0.96 0.03 250); color: var(--proto-rest); }
 .sdp-detail .conn-table .proto.amqp  { background: oklch(0.96 0.04 30);  color: var(--proto-amqp); }
 .sdp-detail .conn-table .proto.other { background: var(--surface-sunk);   color: var(--proto-other); }
