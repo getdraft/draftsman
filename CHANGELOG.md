@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- Always-on (`activation: always`) requirement groups listed in the workspace configuration (`activeRequirementGroups`) will now trigger a warning rather than blocking catalog validation with a hard failure.
+- No breaking changes.
+
+### Added
+
+- Added empty catalog and empty governance warnings to the browser generator payload builder (`generate_browser.py`) to notify the user if no catalog or governance objects were loaded.
+
+### Changed
+
+- Demoted the validator's check for always-on requirement groups in `activeRequirementGroups` from a hard failure to a validation warning.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- None required.
+
 ## 0.59.0 - 2026-06-21
 
 Introduces the Unreleased PR pattern: PRs write changelog entries under `## Unreleased` and leave `draft-framework.yaml` alone. The new `promote-release` GitHub Actions workflow converts `Unreleased` to a numbered version automatically on every merge to `main`, eliminating version-number conflicts between concurrent PRs.
