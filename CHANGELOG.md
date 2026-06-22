@@ -1,3 +1,29 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No breaking changes. Existing workspaces and workflows are unaffected.
+
+### Added
+
+- Added support for inline relationships defined in `product_component` objects under `runtimeSpec.dependencies`.
+- Added unit tests in `tests/test_inline_relationships.py` to verify deterministic UID generation and relationship parsing.
+
+### Changed
+
+- Updated `framework/tools/uid_utils.py` to include `derive_inline_relationships` and `generate_relationship_uid` helper functions.
+- Updated `framework/tools/validate.py` to merge derived inline relationships before executing validation and requirement satisfaction checks.
+- Updated `framework/tools/generate_browser.py` to merge derived inline relationships into the browser object registry.
+- Updated `framework/tools/generate_c4.py` to load and merge derived inline relationships for rendering C4 container diagrams.
+
+### Fixed
+
+- Fixed missing connections in C4 diagrams and the catalog browser for workspaces using inline dependencies.
+
+### Migration Notes
+
+- No manual migration is required. Workspaces using `runtimeSpec.dependencies` on `product_component` will automatically have virtual first-class relationships generated.
+
 ## 0.59.0 - 2026-06-21
 
 Introduces the Unreleased PR pattern: PRs write changelog entries under `## Unreleased` and leave `draft-framework.yaml` alone. The new `promote-release` GitHub Actions workflow converts `Unreleased` to a numbered version automatically on every merge to `main`, eliminating version-number conflicts between concurrent PRs.

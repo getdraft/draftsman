@@ -4117,6 +4117,11 @@ def main(argv: list[str] | None = None) -> int:
         for obj in objects.values()
         if isinstance(obj, dict) and is_non_empty(obj.get("uid"))
     }
+    
+    from uid_utils import derive_inline_relationships
+    derived = derive_inline_relationships(catalog_by_id)
+    catalog_by_id.update(derived)
+
     requirement_groups = {
         object_id: obj for object_id, obj in catalog_by_id.items() if obj.get("type") == "requirement_group"
     }

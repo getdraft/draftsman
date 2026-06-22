@@ -7,18 +7,18 @@ C4Container
     System_Ext(External_Identity_Provider, "External Identity Provider", "Enterprise identity provider integrated via Keystone federation for SSO.")
 
     Boundary(b0, "Presentation & API Layer") {
-        Container(STCK000005_RS05, "Cinder Block Storage Service", "", "Self-managed deployment of OpenStack Cinder providing persistent block storage v")
-        Container(STCK000001_RS01, "Nova Compute Service", "", "Self-managed deployment of OpenStack Nova providing virtual machine lifecycle ma")
         Container(01KSF29JTP_9HYA, "OpenStack API Load Balancer", "", "HAProxy load balancer co-located on OpenStack controller nodes. Distributes inbo")
+        Container(STCK000001_RS01, "Nova Compute Service", "", "Self-managed deployment of OpenStack Nova providing virtual machine lifecycle ma")
+        Container(STCK000005_RS05, "Cinder Block Storage Service", "", "Self-managed deployment of OpenStack Cinder providing persistent block storage v")
         Container(STCK000004_RS04, "Neutron Networking Service", "", "Self-managed deployment of OpenStack Neutron providing software-defined networki")
         Container(STCK000002_RS02, "Keystone Identity Service", "", "Self-managed deployment of OpenStack Keystone providing identity, authentication")
     }
 
     Boundary(b1, "Data Infrastructure") {
-        ContainerDb(STCK000001_DAR1, "Nova Database", "", "MariaDB database schema dedicated to OpenStack Nova for persisting all compute s")
         ContainerDb(STCK000005_DAR5, "Cinder Database", "", "MariaDB database schema dedicated to OpenStack Cinder for persisting all block s")
         Container(STCK00000D_RS0D, "RabbitMQ Message Broker Service", "", "Self-managed deployment of RabbitMQ serving as the shared AMQP message broker fo")
         ContainerDb(STCK000002_DAR2, "Keystone Database", "", "MariaDB database schema dedicated to OpenStack Keystone for persisting all ident")
+        ContainerDb(STCK000001_DAR1, "Nova Database", "", "MariaDB database schema dedicated to OpenStack Nova for persisting all compute s")
         ContainerDb(STCK000004_DAR4, "Neutron Database", "", "MariaDB database schema dedicated to OpenStack Neutron for persisting all networ")
     }
 

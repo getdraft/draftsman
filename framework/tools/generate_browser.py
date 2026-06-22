@@ -439,7 +439,12 @@ def load_objects(workspace_root: Path) -> dict[str, dict[str, Any]]:
             if isinstance(data, dict) and data.get("uid"):
                 data["_source"] = display_path(path)
                 objects[str(data["uid"])] = data
-    return apply_object_patches(objects)
+    objects = apply_object_patches(objects)
+    
+    from uid_utils import derive_inline_relationships
+    derived = derive_inline_relationships(objects)
+    objects.update(derived)
+    return objects
 
 
 def deep_merge(base: Any, patch: Any) -> Any:
