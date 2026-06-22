@@ -810,6 +810,12 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
     catalog_indexes = build_catalog_indexes(registry)
     schemas = load_schemas(SCHEMA_ROOT)
     outbound_refs, referenced_by, warnings = build_reference_index(registry)
+    if not registry:
+        warnings.append("Warning: The catalog is empty. No objects were loaded.")
+    else:
+        gov_types = {"decision_record", "relationship", "reference_architecture", "business_unit_hierarchy", "drafting_session", "system"}
+        if not any(obj.get("type") in gov_types for obj in objects):
+            warnings.append("Warning: No governance objects (DecisionRecords, Relationships, ReferenceArchitectures, Systems, Sessions, or Hierarchies) were found in the catalog.")
     domain_capability_index = build_domain_capability_index(registry)
     derived_domain_capabilities = domain_capability_index["domainCapabilities"]
     risk_marked_rbb_ids = {

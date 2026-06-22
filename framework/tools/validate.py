@@ -594,6 +594,7 @@ def validate_workspace_requirements(
     active_group_ids: set[str],
     catalog_by_id: dict[str, dict[str, Any]],
     failures: list[str],
+    warnings: list[str],
 ) -> None:
     config_path = workspace_root / ".draft" / "workspace.yaml"
     for group_id in sorted(active_group_ids):
@@ -603,7 +604,7 @@ def validate_workspace_requirements(
                 f"{config_path}: Activate only existing workspace-mode requirement groups; '{group_id}' was not found"
             )
         elif group.get("activation") != "workspace":
-            failures.append(
+            warnings.append(
                 f"{config_path}: Remove '{group_id}' from requirements.activeRequirementGroups; always-on requirement groups do not need workspace activation"
             )
 
@@ -4141,7 +4142,7 @@ def main(argv: list[str] | None = None) -> int:
     catalog_ids = set(catalog_by_id.keys())
     active_group_ids = workspace_requirements["active_groups"]
     require_active_group_disposition = workspace_requirements["require_active_group_disposition"]
-    validate_workspace_requirements(workspace_root, active_group_ids, catalog_by_id, failures)
+    validate_workspace_requirements(workspace_root, active_group_ids, catalog_by_id, failures, warnings)
     validate_workspace_vocabulary_references(objects, workspace_vocabulary, failures, warnings)
     validate_duplicate_capability_domain_names(objects, workspace_root, warnings)
 
