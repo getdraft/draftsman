@@ -157,13 +157,20 @@ def load_workspace_catalog_folders(workspace_root: Path) -> list[str] | None:
 
 
 def discover_yaml_files(root: Path, folder_names: list[str] | None = None) -> list[Path]:
-    folders = folder_names if folder_names is not None else CATALOG_FOLDERS
     files: list[Path] = []
-    for folder_name in folders:
-        folder = root / folder_name
-        if not folder.exists():
-            continue
-        files.extend(sorted(folder.rglob("*.yaml")))
+    if folder_names is not None:
+        for folder_name in folder_names:
+            folder = root / folder_name
+            if not folder.exists():
+                continue
+            files.extend(sorted(folder.rglob("*.yaml")))
+    else:
+        # Default behavior: recursive scan of the root folder, matching validate.py
+        skip_dirs = {"tools", "schemas", "docs", "adrs", ".github", ".git", ".draft"}
+        for path in sorted(root.rglob("*.yaml")):
+            if any(part in skip_dirs for part in path.relative_to(root).parts):
+                continue
+            files.append(path)
     return files
 
 
@@ -423,6 +430,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
             "so that design-layer edits made directly to docs/assets/ are preserved "
             "across content regeneration runs."
         ),
+    )
+    parser.add_argument(
+        "--skip-validation",
+        action="store_true",
+        help="Skip running DRAFT validation before generating the browser.",
     )
     return parser.parse_args(argv)
 
@@ -744,7 +756,7 @@ def build_requirement_payload(registry: dict[str, dict[str, Any]], workspace_roo
                 "catalogStatus": group.get("catalogStatus", ""),
                 "provider": group.get("provider", {}),
                 "authority": group.get("authority", {}),
-                "active": group["uid"] in active_ids,
+                "active": group.get("activation") == "always" or group["uid"] in active_ids,
                 "description": group.get("description", ""),
                 "requirementCount": len(group.get("requirements", [])) if isinstance(group.get("requirements"), list) else 0,
             }
@@ -1549,6 +1561,25 @@ def write_user_manual(source_path: Path, output_path: Path) -> bool:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
+    
+    if not args.skip_validation:
+        try:
+            import validate
+        except ImportError:
+            try:
+                from framework.tools import validate
+            except ImportError:
+                validate = None
+        
+        if validate is not None:
+            print("Running DRAFT catalog validation...")
+            val_code = validate.main(["--workspace", str(args.workspace.resolve()), "--quiet"])
+            if val_code != 0:
+                print("\nERROR: DRAFT catalog validation failed. Refusing to generate browser payload. Use --skip-validation to bypass.", file=sys.stderr)
+                return val_code
+        else:
+            print("Warning: validate.py tool not found. Skipping validation.", file=sys.stderr)
+
     output_path = args.output.resolve()
     manual_output_path = (args.manual_output.resolve() if args.manual_output else output_path.parent / USER_MANUAL_OUTPUT_NAME)
     vocabulary_output_path = output_path.parent / COMPANY_VOCABULARY_OUTPUT_NAME

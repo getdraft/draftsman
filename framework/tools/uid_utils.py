@@ -28,10 +28,13 @@ def generate_uid(existing: Iterable[str] | None = None) -> str:
             return uid
 
 
-def generate_relationship_uid(source: str, target: str) -> str:
+def generate_relationship_uid(source: str, target: str, suffix: str = "") -> str:
     import hashlib
-    # Hash the source and target to make it deterministic
-    hasher = hashlib.sha256(f"{source}:{target}".encode("utf-8"))
+    # Hash the source, target, and optional suffix to make it deterministic
+    key = f"{source}:{target}"
+    if suffix:
+        key += f":{suffix}"
+    hasher = hashlib.sha256(key.encode("utf-8"))
     digest = hasher.digest()
     
     # 14 Crockford base32 characters = 70 bits. Take first 9 bytes (72 bits)
@@ -51,7 +54,7 @@ def generate_relationship_uid(source: str, target: str) -> str:
 def derive_inline_relationships(catalog: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
     """
     Scans a catalog dictionary (mapping UID -> object) and yields dynamically
-    generated relationship objects for any runtimeSpec.dependencies found on product_components.
+    generated relationship objects for dependencies (runtimeSpec.dependencies, runsOn, host).
     Returns a dictionary of the derived relationship objects.
     """
     from typing import Any
@@ -59,41 +62,112 @@ def derive_inline_relationships(catalog: dict[str, dict[str, Any]]) -> dict[str,
     for obj_uid, obj in list(catalog.items()):
         if not isinstance(obj, dict):
             continue
-        if obj.get("type") != "product_component":
-            continue
-        runtime_spec = obj.get("runtimeSpec")
-        if not isinstance(runtime_spec, dict):
-            continue
-        dependencies = runtime_spec.get("dependencies")
-        if not isinstance(dependencies, list):
-            continue
-        for idx, dep in enumerate(dependencies):
-            if not isinstance(dep, dict) or not dep.get("ref"):
-                continue
-            target_uid = str(dep["ref"])
-            source_uid = str(obj_uid)
+        
+        # 1. ProductComponent
+        if obj.get("type") == "product_component":
+            # runsOn field
+            runs_on = obj.get("runsOn")
+            if isinstance(runs_on, str) and runs_on.strip():
+                target_uid = runs_on.strip()
+                source_uid = str(obj_uid)
+                rel_uid = generate_relationship_uid(source_uid, target_uid, suffix="runsOn")
+                source_name = obj.get("name") or source_uid
+                target_name = catalog[target_uid].get("name") if target_uid in catalog else target_uid
+                rel_obj = {
+                    "schemaVersion": "1.0",
+                    "uid": rel_uid,
+                    "type": "relationship",
+                    "name": f"{source_name} → {target_name}",
+                    "source": source_uid,
+                    "target": target_uid,
+                    "label": "runs on",
+                    "notes": "Derived from runsOn field",
+                    "catalogStatus": "complete",
+                    "_source": f"derived from {obj.get('_source', 'product_component')} [runsOn]",
+                    "_derived": True
+                }
+                derived[rel_uid] = rel_obj
             
-            # Generate deterministic UID for the relationship
-            rel_uid = generate_relationship_uid(source_uid, target_uid)
-            
-            # Resolve human-readable names if available in catalog
-            source_name = obj.get("name") or source_uid
-            target_name = catalog[target_uid].get("name") if target_uid in catalog else target_uid
-            
-            # Build the virtual relationship object
-            rel_obj = {
-                "schemaVersion": "1.0",
-                "uid": rel_uid,
-                "type": "relationship",
-                "name": f"{source_name} → {target_name}",
-                "source": source_uid,
-                "target": target_uid,
-                "label": dep.get("interface") or dep.get("purpose") or "depends on",
-                "notes": dep.get("notes") or dep.get("purpose") or "",
-                "catalogStatus": "complete",
-                "_source": f"derived from {obj.get('_source', 'product_component')} [inline dependency]",
-                "_derived": True
-            }
-            derived[rel_uid] = rel_obj
+            # runtimeSpec dependencies
+            runtime_spec = obj.get("runtimeSpec")
+            if isinstance(runtime_spec, dict):
+                dependencies = runtime_spec.get("dependencies")
+                if isinstance(dependencies, list):
+                    for idx, dep in enumerate(dependencies):
+                        if not isinstance(dep, dict) or not dep.get("ref"):
+                            continue
+                        target_uid = str(dep["ref"])
+                        source_uid = str(obj_uid)
+                        
+                        # Generate deterministic UID for the relationship (no suffix for backwards compatibility/tests)
+                        rel_uid = generate_relationship_uid(source_uid, target_uid)
+                        
+                        # Resolve human-readable names if available in catalog
+                        source_name = obj.get("name") or source_uid
+                        target_name = catalog[target_uid].get("name") if target_uid in catalog else target_uid
+                        
+                        # Build the virtual relationship object
+                        rel_obj = {
+                            "schemaVersion": "1.0",
+                            "uid": rel_uid,
+                            "type": "relationship",
+                            "name": f"{source_name} → {target_name}",
+                            "source": source_uid,
+                            "target": target_uid,
+                            "label": dep.get("interface") or dep.get("purpose") or "depends on",
+                            "notes": dep.get("notes") or dep.get("purpose") or "",
+                            "catalogStatus": "complete",
+                            "_source": f"derived from {obj.get('_source', 'product_component')} [inline dependency]",
+                            "_derived": True
+                        }
+                        derived[rel_uid] = rel_obj
+
+        # 2. DataComponent
+        elif obj.get("type") == "data_component":
+            runs_on = obj.get("runsOn")
+            if isinstance(runs_on, str) and runs_on.strip():
+                target_uid = runs_on.strip()
+                source_uid = str(obj_uid)
+                rel_uid = generate_relationship_uid(source_uid, target_uid, suffix="runsOn")
+                source_name = obj.get("name") or source_uid
+                target_name = catalog[target_uid].get("name") if target_uid in catalog else target_uid
+                rel_obj = {
+                    "schemaVersion": "1.0",
+                    "uid": rel_uid,
+                    "type": "relationship",
+                    "name": f"{source_name} → {target_name}",
+                    "source": source_uid,
+                    "target": target_uid,
+                    "label": "runs on",
+                    "notes": "Derived from runsOn field",
+                    "catalogStatus": "complete",
+                    "_source": f"derived from {obj.get('_source', 'data_component')} [runsOn]",
+                    "_derived": True
+                }
+                derived[rel_uid] = rel_obj
+
+        # 3. Self-Managed Services (host field)
+        elif obj.get("type") in ("ai_gateway", "data_store_service", "network_service", "runtime_service"):
+            host = obj.get("host")
+            if isinstance(host, str) and host.strip():
+                target_uid = host.strip()
+                source_uid = str(obj_uid)
+                rel_uid = generate_relationship_uid(source_uid, target_uid, suffix="host")
+                source_name = obj.get("name") or source_uid
+                target_name = catalog[target_uid].get("name") if target_uid in catalog else target_uid
+                rel_obj = {
+                    "schemaVersion": "1.0",
+                    "uid": rel_uid,
+                    "type": "relationship",
+                    "name": f"{source_name} → {target_name}",
+                    "source": source_uid,
+                    "target": target_uid,
+                    "label": "runs on",
+                    "notes": "Derived from host field",
+                    "catalogStatus": "complete",
+                    "_source": f"derived from {obj.get('_source', obj.get('type'))} [host]",
+                    "_derived": True
+                }
+                derived[rel_uid] = rel_obj
     return derived
 
