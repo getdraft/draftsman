@@ -446,11 +446,15 @@ def load_objects(workspace_root: Path) -> dict[str, dict[str, Any]]:
     for root in workspace_yaml_roots(workspace_root):
         folder_override = catalog_folders if (catalog_folders is not None and root == workspace_catalog) else None
         for path in discover_yaml_files(root, folder_override):
-            with path.open("r", encoding="utf-8") as handle:
-                data = yaml.safe_load(handle) or {}
-            if isinstance(data, dict) and data.get("uid"):
-                data["_source"] = display_path(path)
-                objects[str(data["uid"])] = data
+            try:
+                with path.open("r", encoding="utf-8") as handle:
+                    docs = list(yaml.safe_load_all(handle))
+                for doc in docs:
+                    if isinstance(doc, dict) and doc.get("uid"):
+                        doc["_source"] = display_path(path)
+                        objects[str(doc["uid"])] = doc
+            except Exception:
+                pass
     objects = apply_object_patches(objects)
     
     from uid_utils import derive_inline_relationships

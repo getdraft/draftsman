@@ -41,5 +41,47 @@ class TestInlineRelationships(unittest.TestCase):
         self.assertEqual(rel["notes"], "Reads user profiles")
         self.assertEqual(rel["catalogStatus"], "complete")
 
+    def test_derive_inline_relationships_deduplication(self):
+        catalog = {
+            "comp-1": {
+                "uid": "comp-1",
+                "type": "product_component",
+                "name": "My Component",
+                "runsOn": "service-2",
+                "runtimeSpec": {
+                    "dependencies": [
+                        {
+                            "ref": "service-2",
+                            "purpose": "Reads user profiles",
+                            "interface": "gRPC"
+                        }
+                    ]
+                }
+            },
+            "service-2": {
+                "uid": "service-2",
+                "type": "runtime_service",
+                "name": "Target Service"
+            },
+            # Hand-authored relationship already exists
+            "hand-authored-rel": {
+                "uid": "hand-authored-rel",
+                "type": "relationship",
+                "source": "comp-1",
+                "target": "service-2",
+                "label": "hand-authored"
+            }
+        }
+        
+        derived = derive_inline_relationships(catalog)
+        
+        # Since a hand-authored relationship already exists, no derived relationship should be created for comp-1 -> service-2
+        self.assertEqual(len(derived), 0)
+
+        # Remove hand-authored relationship to test that only one derived is generated instead of two
+        catalog.pop("hand-authored-rel")
+        derived = derive_inline_relationships(catalog)
+        self.assertEqual(len(derived), 1)
+
 if __name__ == "__main__":
     unittest.main()

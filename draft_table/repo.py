@@ -84,8 +84,14 @@ WORKSPACE_TEMPLATE_FILES = (
     ("templates/workspace/.github/copilot-instructions.md.tmpl", ".github/copilot-instructions.md"),
     ("templates/workspace/.github/workflows/draft-framework-update.yml.tmpl", ".github/workflows/draft-framework-update.yml"),
     ("templates/workspace/.github/workflows/draft-vocabulary-proposals.yml.tmpl", ".github/workflows/draft-vocabulary-proposals.yml"),
+    ("templates/workspace/.github/workflows/generate-browser.yml.tmpl", ".github/workflows/generate-browser.yml"),
+    ("templates/workspace/CODEOWNERS.tmpl", ".github/CODEOWNERS"),
     ("templates/workspace/.windsurfrules.tmpl", ".windsurfrules"),
     ("templates/workspace/.cursor/rules/draftsman.mdc.tmpl", ".cursor/rules/draftsman.mdc"),
+    ("templates/workspace/configurations/object-patches/capability-ownership-compute-runtime.yaml.tmpl", "configurations/object-patches/capability-ownership-compute-runtime.yaml"),
+    ("templates/workspace/configurations/object-patches/capability-ownership-data-engineering-quality.yaml.tmpl", "configurations/object-patches/capability-ownership-data-engineering-quality.yaml"),
+    ("templates/workspace/configurations/object-patches/capability-ownership-observability.yaml.tmpl", "configurations/object-patches/capability-ownership-observability.yaml"),
+    ("templates/workspace/configurations/object-patches/capability-ownership-security-identity.yaml.tmpl", "configurations/object-patches/capability-ownership-security-identity.yaml"),
 )
 
 TEMPLATE_ACRONYMS = {
@@ -331,7 +337,31 @@ def copy_workspace_template_file(
         if target.exists() and not overwrite:
             return False
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(render_workspace_template(source.read_text(encoding="utf-8"), context), encoding="utf-8")
+        
+        # Render template context variables
+        content = render_workspace_template(source.read_text(encoding="utf-8"), context)
+        
+        # Replace `<generated-uid>` placeholders with unique generated UIDs
+        if "<generated-uid>" in content:
+            try:
+                import sys
+                tools_path = str(source_root / "tools")
+                if tools_path not in sys.path:
+                    sys.path.append(tools_path)
+                from uid_utils import generate_uid
+            except ImportError:
+                def generate_uid():
+                    # Fallback simple Crockford Base32-like generator
+                    import random
+                    chars = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+                    part1 = "".join(random.choice(chars) for _ in range(10))
+                    part2 = "".join(random.choice(chars) for _ in range(4))
+                    return f"{part1}-{part2}"
+            
+            while "<generated-uid>" in content:
+                content = content.replace("<generated-uid>", generate_uid(), 1)
+
+        target.write_text(content, encoding="utf-8")
         return True
     return False
 

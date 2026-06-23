@@ -836,6 +836,39 @@ def validate_duplicate_capability_domain_names(
                 )
 
 
+def validate_capability_ownership_patches(
+    objects: dict[Path, dict[str, Any]],
+    catalog_by_id: dict[str, dict[str, Any]],
+    capability_ids: set[str],
+    warnings: list[str],
+) -> None:
+    # Check if there are any active capability-ownership patches in the workspace configurations
+    has_patches = False
+    for obj in objects.values():
+        if isinstance(obj, dict) and obj.get("type") == "object_patch":
+            target_uid = obj.get("target")
+            if target_uid in capability_ids:
+                has_patches = True
+                break
+
+    if not has_patches:
+        # Check if there is any capability with zero implementations
+        has_zero_impl_caps = False
+        for cap_uid in capability_ids:
+            cap = catalog_by_id.get(cap_uid)
+            if isinstance(cap, dict):
+                impls = cap.get("implementations")
+                if not impls or not isinstance(impls, list) or len(impls) == 0:
+                    has_zero_impl_caps = True
+                    break
+        if has_zero_impl_caps:
+            warnings.append(
+                "No active capability-ownership object patches found in workspace configurations. "
+                "Capabilities have zero implementations, which will result in empty Acceptable Use grids. "
+                "Ensure capability-ownership patches are configured under configurations/object-patches/"
+            )
+
+
 def requirement_group_name(group: dict[str, Any], fallback: str = "RequirementGroup") -> str:
     name = str(group.get("name") or fallback)
     return re.sub(r"\s+RequirementGroup$", "", name).strip() or fallback
@@ -4115,7 +4148,23 @@ def main(argv: list[str] | None = None) -> int:
 
     for path in files:
         try:
-            objects[path] = load_yaml(path)
+            with path.open("r", encoding="utf-8") as handle:
+                docs = list(yaml.safe_load_all(handle))
+            docs = [d for d in docs if d is not None]
+            if not docs:
+                objects[path] = {}
+            elif len(docs) == 1:
+                if not isinstance(docs[0], dict):
+                    failures.append(f"{path}: top-level YAML document must be a mapping")
+                else:
+                    objects[path] = docs[0]
+            else:
+                for idx, doc in enumerate(docs):
+                    if not isinstance(doc, dict):
+                        failures.append(f"{path} (document {idx+1}): top-level YAML document must be a mapping")
+                    else:
+                        doc_path = Path(f"{path.as_posix()}:{idx}")
+                        objects[doc_path] = doc
         except Exception as exc:  # noqa: BLE001
             failures.append(f"{path}: failed to parse YAML ({exc})")
 
@@ -4145,6 +4194,7 @@ def main(argv: list[str] | None = None) -> int:
     validate_workspace_requirements(workspace_root, active_group_ids, catalog_by_id, failures, warnings)
     validate_workspace_vocabulary_references(objects, workspace_vocabulary, failures, warnings)
     validate_duplicate_capability_domain_names(objects, workspace_root, warnings)
+    validate_capability_ownership_patches(objects, catalog_by_id, capability_ids, warnings)
 
     for path, obj in objects.items():
         if obj.get("type") is None:

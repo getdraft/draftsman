@@ -3500,6 +3500,85 @@ requirementGroups:
             self.assertFalse(result.ok, result.stdout + result.stderr)
             self.assertIn("Replace businessUnit 'bu.invalid-bu' with a business unit declared in .draft/workspace.yaml", result.stdout)
 
+    def test_validate_capability_ownership_patches(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            self._write_workspace_requirement_fixture(workspace, require_disposition=False)
+
+            # Remove scaffolded object-patch templates to ensure none are present initially
+            patches_dir = workspace / "configurations" / "object-patches"
+            if patches_dir.exists():
+                for f in patches_dir.glob("*.yaml"):
+                    f.unlink()
+
+            # Write a capability with zero implementations
+            cap_dir = workspace / "configurations" / "capabilities"
+            cap_dir.mkdir(parents=True, exist_ok=True)
+            (cap_dir / "cap-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQQ4Q026-CAPP
+                    type: capability
+                    name: Test Capability
+                    domain: 01KQQ4Q026-DMMN
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    implementations: []
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            
+            # Write the domain
+            dom_dir = workspace / "configurations" / "domains"
+            dom_dir.mkdir(parents=True, exist_ok=True)
+            (dom_dir / "dom-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQQ4Q026-DMMN
+                    type: domain
+                    name: Test Domain
+                    catalogStatus: incomplete
+                    lifecycleStatus: candidate
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            # Validate. Since there is a capability with zero implementations and no patches,
+            # we expect a validation warning.
+            result = validate_workspace(workspace)
+            self.assertIn("No active capability-ownership object patches found", result.stdout)
+
+            # Write a capability-ownership object patch targeting the capability
+            patches_dir = workspace / "configurations" / "object-patches"
+            patches_dir.mkdir(parents=True, exist_ok=True)
+            (patches_dir / "capability-ownership-patch.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQQ4Q026-PATC
+                    type: object_patch
+                    target: 01KQQ4Q026-CAPP
+                    patch:
+                      owner:
+                        team: "Test Team"
+                      implementations: []
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            # Validate again. Now the patch is present, so the warning should go away.
+            result = validate_workspace(workspace)
+            self.assertNotIn("No active capability-ownership object patches found", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

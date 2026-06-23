@@ -1,3 +1,27 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No breaking changes.
+
+### Added
+
+- Added `validate_capability_ownership_patches` validator check in `validate.py` to warn when capabilities have zero implementations and no active capability-ownership patches are defined in the workspace.
+- Added capability-ownership template files (and missing workflow/CODEOWNERS templates) to workspace templates scaffolding in `draft_table/repo.py` and the `draft-framework-update` template workflow.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- Fixed duplicate derived relationships being generated when hand-authored relationship objects already exist for the same source and target, or when multiple inline references define the same link.
+- Fixed a bug where `repair_uids.py` crashed when loading multi-document YAML files by adding multi-document YAML support (load/dump) to the tool.
+
+### Migration Notes
+
+- No manual migration actions are required. The new validators, templates, and bug fixes apply automatically during regular catalog verification and scaffolding.
+
 ## 0.61.0 - 2026-06-22
 
 ### Compatibility Impact

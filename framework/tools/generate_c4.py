@@ -83,9 +83,10 @@ def load_catalog(workspace_root: Path) -> dict[str, dict[str, Any]]:
             seen.add(resolved)
             try:
                 with path.open("r", encoding="utf-8") as handle:
-                    data = yaml.safe_load(handle) or {}
-                if isinstance(data, dict) and data.get("uid") and data.get("type"):
-                    catalog[str(data["uid"])] = data
+                    docs = list(yaml.safe_load_all(handle))
+                for doc in docs:
+                    if isinstance(doc, dict) and doc.get("uid") and doc.get("type"):
+                        catalog[str(doc["uid"])] = doc
             except Exception:
                 pass
     
