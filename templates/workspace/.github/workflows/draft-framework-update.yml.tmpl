@@ -277,6 +277,10 @@ jobs:
                   ("templates/workspace/.github/workflows/draft-vocabulary-proposals.yml.tmpl", ".github/workflows/draft-vocabulary-proposals.yml"),
                   ("templates/workspace/.github/workflows/generate-browser.yml.tmpl", ".github/workflows/generate-browser.yml"),
                   ("templates/workspace/CODEOWNERS.tmpl", ".github/CODEOWNERS"),
+                  ("templates/workspace/configurations/object-patches/capability-ownership-compute-runtime.yaml.tmpl", "configurations/object-patches/capability-ownership-compute-runtime.yaml"),
+                  ("templates/workspace/configurations/object-patches/capability-ownership-data-engineering-quality.yaml.tmpl", "configurations/object-patches/capability-ownership-data-engineering-quality.yaml"),
+                  ("templates/workspace/configurations/object-patches/capability-ownership-observability.yaml.tmpl", "configurations/object-patches/capability-ownership-observability.yaml"),
+                  ("templates/workspace/configurations/object-patches/capability-ownership-security-identity.yaml.tmpl", "configurations/object-patches/capability-ownership-security-identity.yaml"),
               ):
                   source_file = source_repo / template
                   target_file = workspace / target

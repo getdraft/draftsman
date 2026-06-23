@@ -42,7 +42,7 @@ notes:
       runtime is governed by PaaS delivery requirements.
   secrets_management: AWS Lambda Runtime credentials stored in service configuration managed by Ansible.
 capabilities:
-- 01KQQ4Q026-9K8G
+- 01KQQ4Q026-1HZP
 decisionRecords:
 - ref: 01KT11AQX1-55F1
   key: configurableSurface

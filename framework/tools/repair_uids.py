@@ -221,6 +221,15 @@ def display_path(path: Path) -> str:
     return path.as_posix()
 
 
+def get_base_path(path: Path) -> Path:
+    s = path.as_posix()
+    if ":" in s:
+        parts = s.rsplit(":", 1)
+        if parts[1].isdigit():
+            return Path(parts[0])
+    return path
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     workspace_root = args.workspace.resolve()
@@ -232,10 +241,23 @@ def main(argv: list[str] | None = None) -> int:
             raise ValueError(f"--uid must match {UID_PATTERN_TEXT}")
     requested_files = resolve_requested_files(workspace_root, args.file)
     files = discover_workspace_yaml_files(workspace_root)
-    loaded: dict[Path, Any] = {path: load_yaml(path) for path in files}
+    
+    loaded: dict[Path, Any] = {}
+    for path in files:
+        with path.open("r", encoding="utf-8") as handle:
+            docs = list(yaml.safe_load_all(handle))
+        docs = [d for d in docs if d is not None]
+        if not docs:
+            loaded[path] = {}
+        elif len(docs) == 1:
+            loaded[path] = docs[0]
+        else:
+            for idx, doc in enumerate(docs):
+                doc_path = Path(f"{path.as_posix()}:{idx}")
+                loaded[doc_path] = doc
 
     object_paths = [path for path, data in loaded.items() if is_first_class_object(data)]
-    selected = requested_files or {path.resolve() for path in object_paths}
+    selected = requested_files or {get_base_path(path).resolve() for path in object_paths}
     used_uids = {
         str(data.get("uid"))
         for data in loaded.values()
@@ -250,17 +272,18 @@ def main(argv: list[str] | None = None) -> int:
         data = updated[path]
         uid = str(data.get("uid") or "").strip()
         if UID_PATTERN.match(uid):
-            for legacy_id in legacy_ids_for_path(path, data):
+            for legacy_id in legacy_ids_for_path(get_base_path(path), data):
                 replacements.setdefault(legacy_id, uid)
 
     for path in object_paths:
         data = updated[path]
         data = migrate_legacy_uid_fields(data)
         updated[path] = data
-        if path.resolve() not in selected and "id" not in data:
+        resolved_path = get_base_path(path).resolve()
+        if resolved_path not in selected and "id" not in data:
             uid = str(data.get("uid") or "")
             if uid in seen:
-                selected.add(path.resolve())
+                selected.add(resolved_path)
             elif uid:
                 seen.add(uid)
             continue
@@ -268,9 +291,9 @@ def main(argv: list[str] | None = None) -> int:
         old_id = data.get("id")
         old_uid = data.get("uid")
         uid = str(old_uid or "").strip()
-        needs_new = not uid or not UID_PATTERN.match(uid) or uid in seen or path.resolve() in selected and "id" in data
+        needs_new = not uid or not UID_PATTERN.match(uid) or uid in seen or resolved_path in selected and "id" in data
         if needs_new:
-            uid = forced_uid if forced_uid and path.resolve() in selected else generate_uid(used_uids)
+            uid = forced_uid if forced_uid and resolved_path in selected else generate_uid(used_uids)
             if uid in used_uids and uid != old_uid:
                 raise ValueError(f"--uid {uid} is already used by another object")
             used_uids.add(uid)
@@ -282,15 +305,15 @@ def main(argv: list[str] | None = None) -> int:
         migrated = ordered_with_uid(data, uid)
         if migrated != data:
             updated[path] = migrated
-            changes.append(f"{display_path(path)} -> {uid}")
+            changes.append(f"{display_path(get_base_path(path))} -> {uid}")
 
     if replacements:
         for path, data in list(updated.items()):
             replaced = replace_refs(data, replacements)
             if replaced != data:
                 updated[path] = replaced
-                if f"{display_path(path)} ->" not in "\n".join(changes):
-                    changes.append(f"{display_path(path)} references updated")
+                if f"{display_path(get_base_path(path))} ->" not in "\n".join(changes):
+                    changes.append(f"{display_path(get_base_path(path))} references updated")
 
     if not changes:
         print("No UID repairs needed.")
@@ -303,9 +326,37 @@ def main(argv: list[str] | None = None) -> int:
     if args.dry_run:
         return 0
 
-    for path, data in updated.items():
-        if data != loaded[path]:
-            dump_yaml(path, data)
+    # Group updated documents by their base path
+    files_to_rewrite: set[Path] = set()
+    for key in loaded:
+        if loaded[key] != updated[key]:
+            files_to_rewrite.add(get_base_path(key))
+
+    for path in sorted(files_to_rewrite):
+        # Gather all documents for this path in order
+        if path in updated:
+            # Single-document file
+            docs = [updated[path]]
+        else:
+            # Multi-document file
+            idx = 0
+            docs = []
+            while True:
+                vpath = Path(f"{path.as_posix()}:{idx}")
+                if vpath in updated:
+                    docs.append(updated[vpath])
+                    idx += 1
+                else:
+                    break
+        
+        # Write them back
+        if not docs:
+            continue
+        with path.open("w", encoding="utf-8") as handle:
+            if len(docs) == 1:
+                yaml.safe_dump(docs[0], handle, sort_keys=False, allow_unicode=True, width=1000)
+            else:
+                yaml.safe_dump_all(docs, handle, sort_keys=False, allow_unicode=True, width=1000)
     return 0
 
 

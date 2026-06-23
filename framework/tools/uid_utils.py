@@ -59,6 +59,16 @@ def derive_inline_relationships(catalog: dict[str, dict[str, Any]]) -> dict[str,
     """
     from typing import Any
     derived: dict[str, dict[str, Any]] = {}
+    
+    # Collect existing hand-authored relationships (source, target) to avoid duplicates
+    existing_relationships = set()
+    for obj in catalog.values():
+        if isinstance(obj, dict) and obj.get("type") == "relationship" and not obj.get("_derived"):
+            src = obj.get("source")
+            tgt = obj.get("target")
+            if isinstance(src, str) and isinstance(tgt, str):
+                existing_relationships.add((src.strip(), tgt.strip()))
+
     for obj_uid, obj in list(catalog.items()):
         if not isinstance(obj, dict):
             continue
@@ -70,23 +80,25 @@ def derive_inline_relationships(catalog: dict[str, dict[str, Any]]) -> dict[str,
             if isinstance(runs_on, str) and runs_on.strip():
                 target_uid = runs_on.strip()
                 source_uid = str(obj_uid)
-                rel_uid = generate_relationship_uid(source_uid, target_uid, suffix="runsOn")
-                source_name = obj.get("name") or source_uid
-                target_name = catalog[target_uid].get("name") if target_uid in catalog else target_uid
-                rel_obj = {
-                    "schemaVersion": "1.0",
-                    "uid": rel_uid,
-                    "type": "relationship",
-                    "name": f"{source_name} → {target_name}",
-                    "source": source_uid,
-                    "target": target_uid,
-                    "label": "runs on",
-                    "notes": "Derived from runsOn field",
-                    "catalogStatus": "complete",
-                    "_source": f"derived from {obj.get('_source', 'product_component')} [runsOn]",
-                    "_derived": True
-                }
-                derived[rel_uid] = rel_obj
+                if (source_uid.strip(), target_uid.strip()) not in existing_relationships:
+                    rel_uid = generate_relationship_uid(source_uid, target_uid, suffix="runsOn")
+                    source_name = obj.get("name") or source_uid
+                    target_name = catalog[target_uid].get("name") if target_uid in catalog else target_uid
+                    rel_obj = {
+                        "schemaVersion": "1.0",
+                        "uid": rel_uid,
+                        "type": "relationship",
+                        "name": f"{source_name} → {target_name}",
+                        "source": source_uid,
+                        "target": target_uid,
+                        "label": "runs on",
+                        "notes": "Derived from runsOn field",
+                        "catalogStatus": "complete",
+                        "_source": f"derived from {obj.get('_source', 'product_component')} [runsOn]",
+                        "_derived": True
+                    }
+                    derived[rel_uid] = rel_obj
+                    existing_relationships.add((source_uid.strip(), target_uid.strip()))
             
             # runtimeSpec dependencies
             runtime_spec = obj.get("runtimeSpec")
@@ -99,28 +111,30 @@ def derive_inline_relationships(catalog: dict[str, dict[str, Any]]) -> dict[str,
                         target_uid = str(dep["ref"])
                         source_uid = str(obj_uid)
                         
-                        # Generate deterministic UID for the relationship (no suffix for backwards compatibility/tests)
-                        rel_uid = generate_relationship_uid(source_uid, target_uid)
-                        
-                        # Resolve human-readable names if available in catalog
-                        source_name = obj.get("name") or source_uid
-                        target_name = catalog[target_uid].get("name") if target_uid in catalog else target_uid
-                        
-                        # Build the virtual relationship object
-                        rel_obj = {
-                            "schemaVersion": "1.0",
-                            "uid": rel_uid,
-                            "type": "relationship",
-                            "name": f"{source_name} → {target_name}",
-                            "source": source_uid,
-                            "target": target_uid,
-                            "label": dep.get("interface") or dep.get("purpose") or "depends on",
-                            "notes": dep.get("notes") or dep.get("purpose") or "",
-                            "catalogStatus": "complete",
-                            "_source": f"derived from {obj.get('_source', 'product_component')} [inline dependency]",
-                            "_derived": True
-                        }
-                        derived[rel_uid] = rel_obj
+                        if (source_uid.strip(), target_uid.strip()) not in existing_relationships:
+                            # Generate deterministic UID for the relationship (no suffix for backwards compatibility/tests)
+                            rel_uid = generate_relationship_uid(source_uid, target_uid)
+                            
+                            # Resolve human-readable names if available in catalog
+                            source_name = obj.get("name") or source_uid
+                            target_name = catalog[target_uid].get("name") if target_uid in catalog else target_uid
+                            
+                            # Build the virtual relationship object
+                            rel_obj = {
+                                "schemaVersion": "1.0",
+                                "uid": rel_uid,
+                                "type": "relationship",
+                                "name": f"{source_name} → {target_name}",
+                                "source": source_uid,
+                                "target": target_uid,
+                                "label": dep.get("interface") or dep.get("purpose") or "depends on",
+                                "notes": dep.get("notes") or dep.get("purpose") or "",
+                                "catalogStatus": "complete",
+                                "_source": f"derived from {obj.get('_source', 'product_component')} [inline dependency]",
+                                "_derived": True
+                            }
+                            derived[rel_uid] = rel_obj
+                            existing_relationships.add((source_uid.strip(), target_uid.strip()))
 
         # 2. DataComponent
         elif obj.get("type") == "data_component":
@@ -128,23 +142,25 @@ def derive_inline_relationships(catalog: dict[str, dict[str, Any]]) -> dict[str,
             if isinstance(runs_on, str) and runs_on.strip():
                 target_uid = runs_on.strip()
                 source_uid = str(obj_uid)
-                rel_uid = generate_relationship_uid(source_uid, target_uid, suffix="runsOn")
-                source_name = obj.get("name") or source_uid
-                target_name = catalog[target_uid].get("name") if target_uid in catalog else target_uid
-                rel_obj = {
-                    "schemaVersion": "1.0",
-                    "uid": rel_uid,
-                    "type": "relationship",
-                    "name": f"{source_name} → {target_name}",
-                    "source": source_uid,
-                    "target": target_uid,
-                    "label": "runs on",
-                    "notes": "Derived from runsOn field",
-                    "catalogStatus": "complete",
-                    "_source": f"derived from {obj.get('_source', 'data_component')} [runsOn]",
-                    "_derived": True
-                }
-                derived[rel_uid] = rel_obj
+                if (source_uid.strip(), target_uid.strip()) not in existing_relationships:
+                    rel_uid = generate_relationship_uid(source_uid, target_uid, suffix="runsOn")
+                    source_name = obj.get("name") or source_uid
+                    target_name = catalog[target_uid].get("name") if target_uid in catalog else target_uid
+                    rel_obj = {
+                        "schemaVersion": "1.0",
+                        "uid": rel_uid,
+                        "type": "relationship",
+                        "name": f"{source_name} → {target_name}",
+                        "source": source_uid,
+                        "target": target_uid,
+                        "label": "runs on",
+                        "notes": "Derived from runsOn field",
+                        "catalogStatus": "complete",
+                        "_source": f"derived from {obj.get('_source', 'data_component')} [runsOn]",
+                        "_derived": True
+                    }
+                    derived[rel_uid] = rel_obj
+                    existing_relationships.add((source_uid.strip(), target_uid.strip()))
 
         # 3. Self-Managed Services (host field)
         elif obj.get("type") in ("ai_gateway", "data_store_service", "network_service", "runtime_service"):
@@ -152,22 +168,24 @@ def derive_inline_relationships(catalog: dict[str, dict[str, Any]]) -> dict[str,
             if isinstance(host, str) and host.strip():
                 target_uid = host.strip()
                 source_uid = str(obj_uid)
-                rel_uid = generate_relationship_uid(source_uid, target_uid, suffix="host")
-                source_name = obj.get("name") or source_uid
-                target_name = catalog[target_uid].get("name") if target_uid in catalog else target_uid
-                rel_obj = {
-                    "schemaVersion": "1.0",
-                    "uid": rel_uid,
-                    "type": "relationship",
-                    "name": f"{source_name} → {target_name}",
-                    "source": source_uid,
-                    "target": target_uid,
-                    "label": "runs on",
-                    "notes": "Derived from host field",
-                    "catalogStatus": "complete",
-                    "_source": f"derived from {obj.get('_source', obj.get('type'))} [host]",
-                    "_derived": True
-                }
-                derived[rel_uid] = rel_obj
+                if (source_uid.strip(), target_uid.strip()) not in existing_relationships:
+                    rel_uid = generate_relationship_uid(source_uid, target_uid, suffix="host")
+                    source_name = obj.get("name") or source_uid
+                    target_name = catalog[target_uid].get("name") if target_uid in catalog else target_uid
+                    rel_obj = {
+                        "schemaVersion": "1.0",
+                        "uid": rel_uid,
+                        "type": "relationship",
+                        "name": f"{source_name} → {target_name}",
+                        "source": source_uid,
+                        "target": target_uid,
+                        "label": "runs on",
+                        "notes": "Derived from host field",
+                        "catalogStatus": "complete",
+                        "_source": f"derived from {obj.get('_source', obj.get('type'))} [host]",
+                        "_derived": True
+                    }
+                    derived[rel_uid] = rel_obj
+                    existing_relationships.add((source_uid.strip(), target_uid.strip()))
     return derived
 
