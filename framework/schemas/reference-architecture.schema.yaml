@@ -153,19 +153,63 @@ requirementImplementation:
 raConstraint:
   requiredFields:
   - id
-  - require
   optionalFields:
+  - require
+  - requireRelationships
   - description
   - rationale
   - when
   - notes
+  fieldTypes:
+    require: list
+    requireRelationships: list
+  collectionSchemas:
+    requireRelationships: raRelationshipConstraint
   fieldDescriptions:
     id: Stable kebab-case identifier for this constraint. Used in validator failure messages and exception references.
     description: Human-readable description of what this constraint enforces.
     rationale: Explanation of why this constraint exists and the risk it mitigates.
     when: Optional condition that must be true for this constraint to fire. If absent the constraint fires unconditionally.
     require: List of object characteristics that must be present in the SDP when the constraint fires.
+    requireRelationships: List of topological connection patterns that must or must not exist between SDP entries.
     notes: Additional guidance for authors satisfying or documenting exceptions to this constraint.
+
+raRelationshipConstraint:
+  requiredFields: []
+  optionalFields:
+  - source
+  - target
+  - allowed
+  fieldTypes:
+    source: dict
+    target: dict
+    allowed: bool
+  dictSubSchemas:
+    source: raRelationshipEndpointFilter
+    target: raRelationshipEndpointFilter
+
+raRelationshipEndpointFilter:
+  requiredFields: []
+  optionalFields:
+  - diagramTier
+  - slot
+  - capability
+  - objectType
+  enumFields:
+    diagramTier:
+    - presentation
+    - application
+    - data
+    - utility
+    objectType:
+    - host
+    - runtime_service
+    - data_store_service
+    - network_service
+    - ai_gateway
+    - product_component
+    - data_component
+
 aiHint: A ReferenceArchitecture defines a reusable deployment pattern that SoftwareDeploymentPatterns can follow.
 fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
