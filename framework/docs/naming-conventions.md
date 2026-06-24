@@ -25,7 +25,7 @@ This is the display convention only. The machine identifier for each type stays
 snake_case (`technology_component`, `data_store_service`, `network_service`,
 `reference_architecture`), and schema filenames and catalog folder names keep
 their existing kebab-case form (`data-store-service.schema.yaml`,
-`catalog/network-services/`). When a type name appears as an ordinary
+`catalog/shared-services/network-services/`). When a type name appears as an ordinary
 lowercase common noun inside a sentence ("the runtime service tier"), no
 PascalCase is required.
 
@@ -59,9 +59,9 @@ them. They are not global object identity.
 
 File names should remain descriptive and stable enough for review:
 
-- `catalog/technology-components/technology-os-microsoft-windows-server-2022.yaml`
-- `catalog/hosts/host-windows-server-2022-ec2.yaml`
-- `catalog/software-deployment-patterns/software-deployment-student-health.yaml`
+- `catalog/shared-services/technology-components/technology-os-microsoft-windows-server-2022.yaml`
+- `catalog/shared-services/hosts/host-windows-server-2022-ec2.yaml`
+- `catalog/engineering/software-deployment-patterns/software-deployment-student-health.yaml`
 
 Changing a file name does not change object identity. The `uid` is the stable
 reference.
