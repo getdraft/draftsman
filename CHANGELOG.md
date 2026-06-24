@@ -1,4 +1,4 @@
-## Unreleased
+## 0.63.0 - 2026-06-24
 
 ### Compatibility Impact
 
