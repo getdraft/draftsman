@@ -179,3 +179,30 @@ reviews:
     severity: Low
     outcome: implemented
     note: Removed the shorter, incomplete first instance. The fuller canonical section covering externalControlId, authority.shortName, and provider-pack paths is retained.
+
+- date: 2026-06-24
+  frameworkVersion: "0.62.0"
+  scope: full
+  reviewedBy: framework maintainer
+  findingsGenerated: 5
+  findings:
+  - title: Lack of tagged framework releases
+    severity: High
+    outcome: implemented
+    note: Automated Git tag creation and push added to the promote-release workflow.
+  - title: Scheduled/batch-task SDP constructs
+    severity: Medium
+    outcome: dropped
+    note: Confirming DRAFT's boundary; static topology and hosting are in scope, but transient scheduling frequency is out of scope.
+  - title: Logical subdivisions in DataStoreService
+    severity: Medium
+    outcome: dropped
+    note: Confirming DRAFT's boundary; high-level persistence architecture is in scope, but database schemas and logical database subdivisions are out of scope.
+  - title: Build-time / library dependencies
+    severity: Low
+    outcome: dropped
+    note: Confirming DRAFT's boundary; runtime dependencies are in scope, but package-level and build-time dependencies are out of scope.
+  - title: Catalog layout onboarding docs reconciliation
+    severity: Low
+    outcome: implemented
+    note: Corrected flat catalog paths to nested role-based paths in naming-conventions.md.
