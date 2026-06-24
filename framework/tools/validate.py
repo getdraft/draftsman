@@ -2576,6 +2576,63 @@ def _matches_object_condition(obj: dict[str, Any], condition: dict[str, Any], ca
             return False
     return True
 
+def _sdp_deployable_entries(
+    sdp: dict[str, Any], catalog_by_id: dict[str, dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """Return entry metadata for every deployable object in an SDP's service groups."""
+    entries: list[dict[str, Any]] = []
+    for group in sdp.get("serviceGroups") or []:
+        if not isinstance(group, dict):
+            continue
+        for entry in group.get("deployableObjects") or []:
+            if not isinstance(entry, dict):
+                continue
+            ref = entry.get("ref")
+            target = catalog_by_id.get(str(ref)) if ref else None
+            obj_type: str | None = None
+            if target:
+                obj_type = target.get("type")
+            if not obj_type:
+                obj_type = entry.get("objectType")
+            entries.append(
+                {
+                    "ref": str(ref) if ref else None,
+                    "target": target,
+                    "objectType": obj_type,
+                    "diagramTier": entry.get("diagramTier"),
+                    "slot": entry.get("slot"),
+                }
+            )
+    return entries
+
+
+def _matches_endpoint_filter(
+    entry: dict[str, Any], filter_dict: dict[str, Any], catalog_by_id: dict[str, dict[str, Any]]
+) -> bool:
+    if not isinstance(filter_dict, dict) or not filter_dict:
+        return True
+    
+    req_tier = filter_dict.get("diagramTier")
+    if req_tier and entry.get("diagramTier") != req_tier:
+        return False
+        
+    req_slot = filter_dict.get("slot")
+    if req_slot and entry.get("slot") != req_slot:
+        return False
+        
+    req_type = filter_dict.get("objectType")
+    if req_type and entry.get("objectType") != req_type:
+        return False
+        
+    req_cap = filter_dict.get("capability")
+    if req_cap and not _target_satisfies_capability(
+        entry.get("ref"), entry.get("target"), str(req_cap), catalog_by_id
+    ):
+        return False
+        
+    return True
+
+
 def evaluate_ra_constraints(
     sdp: dict[str, Any],
     path: Path,
@@ -2588,7 +2645,13 @@ def evaluate_ra_constraints(
         return
 
     sdp_objects = _sdp_deployable_objects(sdp, catalog_by_id)
+    sdp_entries = _sdp_deployable_entries(sdp, catalog_by_id)
     ra_name = ra.get("name") or ra.get("uid") or "unknown"
+
+    catalog_relationships = [
+        v for v in catalog_by_id.values()
+        if isinstance(v, dict) and v.get("type") == "relationship"
+    ]
 
     for constraint in constraints:
         if not isinstance(constraint, dict):
@@ -2604,39 +2667,83 @@ def evaluate_ra_constraints(
                     continue  # condition not met; constraint does not apply to this SDP
 
         require = constraint.get("require")
-        if not require or not isinstance(require, list):
-            continue
-
-        for req in require:
-            if not isinstance(req, dict):
-                continue
-            req_type = req.get("objectType")
-            req_tier = req.get("diagramTier")
-            req_capability = req.get("capability")
-            satisfied = any(
-                (not req_type or o.get("objectType") == req_type)
-                and (not req_tier or o.get("diagramTier") == req_tier)
-                and (not req_capability or _target_satisfies_capability(
-                    o.get("ref"), o.get("target"), str(req_capability), catalog_by_id
-                ))
-                for o in sdp_objects
-            )
-            if not satisfied:
-                sdp_id = object_label(sdp)
-                parts = []
-                if req_tier:
-                    parts.append(f"diagramTier '{req_tier}'")
-                if req_type:
-                    parts.append(f"objectType '{req_type}'")
-                if req_capability:
-                    parts.append(f"capability '{req_capability}'")
-                req_desc = " and ".join(parts) if parts else "a required object"
-                failures.append(
-                    f"{path}: [{sdp_id}] RA constraint '{constraint_id}' violated — "
-                    f"no service group entry satisfies {req_desc}. "
-                    f"Required by ReferenceArchitecture '{ra_name}'. "
-                    f"See constraint description: {constraint.get('description') or constraint_id}"
+        if isinstance(require, list):
+            for req in require:
+                if not isinstance(req, dict):
+                    continue
+                req_type = req.get("objectType")
+                req_tier = req.get("diagramTier")
+                req_capability = req.get("capability")
+                satisfied = any(
+                    (not req_type or o.get("objectType") == req_type)
+                    and (not req_tier or o.get("diagramTier") == req_tier)
+                    and (not req_capability or _target_satisfies_capability(
+                        o.get("ref"), o.get("target"), str(req_capability), catalog_by_id
+                    ))
+                    for o in sdp_objects
                 )
+                if not satisfied:
+                    sdp_id = object_label(sdp)
+                    parts = []
+                    if req_tier:
+                        parts.append(f"diagramTier '{req_tier}'")
+                    if req_type:
+                        parts.append(f"objectType '{req_type}'")
+                    if req_capability:
+                        parts.append(f"capability '{req_capability}'")
+                    req_desc = " and ".join(parts) if parts else "a required object"
+                    failures.append(
+                        f"{path}: [{sdp_id}] RA constraint '{constraint_id}' violated — "
+                        f"no service group entry satisfies {req_desc}. "
+                        f"Required by ReferenceArchitecture '{ra_name}'. "
+                        f"See constraint description: {constraint.get('description') or constraint_id}"
+                    )
+
+        req_rels = constraint.get("requireRelationships")
+        if isinstance(req_rels, list):
+            for req_rel in req_rels:
+                if not isinstance(req_rel, dict):
+                    continue
+                source_filter = req_rel.get("source", {})
+                target_filter = req_rel.get("target", {})
+                allowed = req_rel.get("allowed")
+                if allowed is None:
+                    allowed = True
+
+                if allowed:
+                    satisfied = False
+                    for rel in catalog_relationships:
+                        rel_source = rel.get("source")
+                        rel_target = rel.get("target")
+                        src_entry = next((e for e in sdp_entries if e.get("ref") == rel_source), None)
+                        tgt_entry = next((e for e in sdp_entries if e.get("ref") == rel_target), None)
+                        if src_entry and tgt_entry:
+                            if _matches_endpoint_filter(src_entry, source_filter, catalog_by_id) and \
+                               _matches_endpoint_filter(tgt_entry, target_filter, catalog_by_id):
+                                satisfied = True
+                                break
+                    if not satisfied:
+                        sdp_id = object_label(sdp)
+                        failures.append(
+                            f"{path}: [{sdp_id}] RA constraint '{constraint_id}' violated — "
+                            f"required relationship from source '{source_filter}' to target '{target_filter}' is missing. "
+                            f"Required by ReferenceArchitecture '{ra_name}'."
+                        )
+                else:
+                    for rel in catalog_relationships:
+                        rel_source = rel.get("source")
+                        rel_target = rel.get("target")
+                        src_entry = next((e for e in sdp_entries if e.get("ref") == rel_source), None)
+                        tgt_entry = next((e for e in sdp_entries if e.get("ref") == rel_target), None)
+                        if src_entry and tgt_entry:
+                            if _matches_endpoint_filter(src_entry, source_filter, catalog_by_id) and \
+                               _matches_endpoint_filter(tgt_entry, target_filter, catalog_by_id):
+                                sdp_id = object_label(sdp)
+                                failures.append(
+                                    f"{path}: [{sdp_id}] RA constraint '{constraint_id}' violated — "
+                                    f"forbidden relationship from source '{source_filter}' to target '{target_filter}' was found. "
+                                    f"Forbidden by ReferenceArchitecture '{ra_name}'."
+                                )
 
 
 def validate_sdp_reference_architecture_slots(
@@ -2827,8 +2934,8 @@ def validate_ra(
                     continue
                 if not is_non_empty(constraint.get("id")):
                     failures.append(f"{path}: constraints[{idx}] missing required field 'id'")
-                if not constraint.get("require"):
-                    failures.append(f"{path}: constraints[{idx}] missing required field 'require'")
+                if not constraint.get("require") and not constraint.get("requireRelationships"):
+                    failures.append(f"{path}: constraints[{idx}] missing required field 'require' or 'requireRelationships'")
                 when = constraint.get("when")
                 if when is not None:
                     if not isinstance(when, dict):
@@ -2910,8 +3017,19 @@ def validate_software_deployment_pattern(
     validate_software_deployment_business_context(obj, path, business_taxonomy, failures)
 
     object_id = object_label(obj)
-    ra_uid = obj.get("followsReferenceArchitecture")
-    if not is_non_empty(ra_uid) and not sdp_requirement_satisfied(obj, "noApplicablePattern", catalog_by_id):
+    ra_val = obj.get("followsReferenceArchitecture")
+    has_ra = False
+    ra_uids = []
+    if isinstance(ra_val, str):
+        if ra_val.strip():
+            ra_uids = [ra_val]
+            has_ra = True
+    elif isinstance(ra_val, list):
+        ra_uids = [str(x) for x in ra_val if x]
+        if ra_uids:
+            has_ra = True
+
+    if not has_ra and not sdp_requirement_satisfied(obj, "noApplicablePattern", catalog_by_id):
         record_requirement_gap(
             obj,
             path,
@@ -2920,8 +3038,8 @@ def validate_software_deployment_pattern(
             warnings,
         )
 
-    if is_non_empty(ra_uid):
-        ra_obj = catalog_by_id.get(str(ra_uid))
+    for ra_uid in ra_uids:
+        ra_obj = catalog_by_id.get(ra_uid)
         if ra_obj and ra_obj.get("type") == "reference_architecture":
             evaluate_ra_constraints(obj, path, ra_obj, catalog_by_id, failures)
             validate_sdp_reference_architecture_slots(obj, path, ra_obj, catalog_by_id, failures)

@@ -1,3 +1,30 @@
+## Unreleased
+
+### Compatibility Impact
+
+- Reference Architecture constraints (`constraints`) now support declarative topological relationship validation via the `requireRelationships` field, permitting architectural patterns to mandate or forbid connections between services based on diagram tiers, slots, object types, and capabilities.
+- Software Deployment Patterns (`software_deployment_pattern`) can now specify multiple Reference Architectures in the `followsReferenceArchitecture` field as a list of strings, checking conformance against all referenced RAs. Backward compatibility for a single string is fully preserved.
+
+### Added
+
+- Added `requireRelationships` constraints validation to `evaluate_ra_constraints` in `framework/tools/validate.py`.
+- Added helpers `_sdp_deployable_entries` and `_matches_endpoint_filter` to resolve and match SDP service group deployable objects against catalog relationships.
+- Added support for multiple Reference Architectures in `validate_software_deployment_pattern` in `framework/tools/validate.py`.
+- Added unit tests in `tests/test_validation.py` checking list layout of `followsReferenceArchitecture`, required topological relationships, and forbidden topological relationships.
+
+### Changed
+
+- Updated `framework/schemas/reference-architecture.schema.yaml` to include `requireRelationships` schema details under `raConstraint`, `raRelationshipConstraint`, and `raRelationshipEndpointFilter`.
+- Updated `framework/schemas/software-deployment-pattern.schema.yaml` to declare `followsReferenceArchitecture` field validation.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No manual migration is required. Existing single-string `followsReferenceArchitecture` references and custom Reference Architecture schemas will continue to validate correctly.
+
 ## 0.62.0 - 2026-06-23
 
 ### Compatibility Impact

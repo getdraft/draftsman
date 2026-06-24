@@ -39,6 +39,7 @@ fieldTypes:
   owner: dict
   tags: list
   businessContext: dict
+  followsReferenceArchitecture: str
   notes: dict
 notes:
   optionalFields:
