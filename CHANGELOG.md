@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None.
+
+### Added
+
+- Automated git tag generation on release promotion: the `promote-release` GitHub Actions workflow now automatically creates and pushes a git release tag (e.g. `v0.62.1`) matching the version promoted.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No manual migration actions are required. Release tagging is now automated during the upstream merge process.
+
 ## 0.62.0 - 2026-06-23
 
 ### Compatibility Impact

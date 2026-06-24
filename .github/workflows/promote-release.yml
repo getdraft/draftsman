@@ -100,3 +100,5 @@ jobs:
           # Rebase in case a concurrent merge landed between our checkout and now.
           git pull --rebase origin main
           git push origin main
+          git tag -a "v${{ steps.version.outputs.new_version }}" -m "Release v${{ steps.version.outputs.new_version }}"
+          git push origin "v${{ steps.version.outputs.new_version }}"
