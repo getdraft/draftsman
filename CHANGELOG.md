@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. Additive change to the generated browser bundle only.
+
+### Added
+
+- Added `framework/browser/mermaid-config.js`, loaded after `draft-browser.js`, which: (1) patches `mermaid.initialize` to raise `maxTextSize` from Mermaid's 50 KB default to 1 MB, since generated C4 diagrams for catalogs with many deployable objects were exceeding that limit and failing to render; (2) replaces the catalog-wide Diagrams view's diagram generation with a `flowchart LR` renderer scoped to `system` objects and, new in this release, individual Software Deployment Patterns (grouped by service group, connected via relationship objects), rather than a single dump-everything fallback; (3) exposes a `window.DraftDiagrams` API (`buildSdpDiagram`, `buildMermaid`, `objectBadge`, `ensureStyles`, `renderDiagramsIntoSlots`) so a single SDP's diagram can be embedded elsewhere in the bundle.
+- Added a "Diagrams" section to the Software Deployment Pattern detail page (`_sdpDiagramsMarkup` in `draft-browser.js`), between Topology and Service Groups, showing that SDP's own container diagram via the new `window.DraftDiagrams` API — scoped to just that pattern's deployable objects, rather than requiring a trip to the catalog-wide Diagrams view. The section is omitted when an SDP has no deployable objects, matching the existing Connections/Tier Variants sections' pattern.
+
+### Changed
+
+- Reordered `<script>` tags in `framework/browser/index.template.html` so `assets/mermaid-config.js` loads after `assets/draft-browser.js`.
+
+### Fixed
+
+- Fixed "maximum text size in diagram exceeded" errors on the catalog-wide Diagrams view for catalogs with enough deployable objects to exceed Mermaid's default text-size limit.
+
+### Migration Notes
+
+- No manual migration required. Consumers running `generate_browser.py --refresh-shell` (or a first-time install) will pick up `mermaid-config.js` automatically; existing local-only patches some consumers may have made ahead of this change (e.g. downstream repos that vendored a similar workaround before it landed upstream) should be reconciled against this version to avoid double-patching `mermaid.initialize`.
+
 ## 0.63.0 - 2026-06-24
 
 ### Compatibility Impact

@@ -4,9 +4,12 @@ import unittest
 from pathlib import Path
 
 from draft_table.web import INDEX_HTML
+from framework.tools.generate_browser import BROWSER_STATIC_ASSET_NAMES
 
 
 BROWSER_JS = (Path(__file__).resolve().parents[1] / "framework" / "browser" / "draft-browser.js").read_text(encoding="utf-8")
+MERMAID_CONFIG_JS = (Path(__file__).resolve().parents[1] / "framework" / "browser" / "mermaid-config.js").read_text(encoding="utf-8")
+INDEX_TEMPLATE_HTML = (Path(__file__).resolve().parents[1] / "framework" / "browser" / "index.template.html").read_text(encoding="utf-8")
 
 
 class WebTests(unittest.TestCase):
@@ -56,6 +59,36 @@ class WebTests(unittest.TestCase):
         self.assertIn("function requirementGroupParentIds(group)", BROWSER_JS)
         self.assertIn("Array.isArray(inherits)", BROWSER_JS)
         self.assertIn("flatMap(parentId => resolvedRequirementsForGroup(parentId, stack))", BROWSER_JS)
+
+    def test_sdp_detail_page_embeds_scoped_diagram(self) -> None:
+        self.assertIn("function _sdpDiagramsMarkup(vm)", BROWSER_JS)
+        self.assertIn("window.DraftDiagrams.buildSdpDiagram(object)", BROWSER_JS)
+        self.assertIn("id: 'sdp-s-diagrams',    label: 'Diagrams', skip: !vm.diagram", BROWSER_JS)
+        self.assertIn("window.DraftDiagrams.renderDiagramsIntoSlots([vm.diagram], vm.diagramRenderId)", BROWSER_JS)
+
+    def test_mermaid_config_patches_max_text_size_and_exposes_sdp_api(self) -> None:
+        # Generated C4/flowchart diagrams for catalogs with many deployable
+        # objects were exceeding Mermaid's 50 KB default text-size limit.
+        self.assertIn("maxTextSize: safeConfig.maxTextSize ?? MERMAID_MAX_TEXT_SIZE", MERMAID_CONFIG_JS)
+        self.assertIn("function buildSdpDiagram(sdp)", MERMAID_CONFIG_JS)
+        self.assertIn("window.DraftDiagrams = {", MERMAID_CONFIG_JS)
+        self.assertIn("renderDiagramsIntoSlots", MERMAID_CONFIG_JS)
+
+    def test_index_template_loads_mermaid_config_after_browser_bundle(self) -> None:
+        browser_pos = INDEX_TEMPLATE_HTML.index('<script defer src="assets/draft-browser.js"></script>')
+        mermaid_config_pos = INDEX_TEMPLATE_HTML.index('<script defer src="assets/mermaid-config.js"></script>')
+        self.assertGreater(
+            mermaid_config_pos, browser_pos,
+            "mermaid-config.js must load after draft-browser.js so its mermaid.initialize patch applies "
+            "before any view calls mermaid.initialize.",
+        )
+
+    def test_generator_copies_mermaid_config_as_a_shell_asset(self) -> None:
+        # Regression: mermaid-config.js was added directly under framework/browser/
+        # without being added to the generator's static-asset list, so a fresh
+        # install or --refresh-shell run would never copy it and the script tag
+        # added in index.template.html would 404.
+        self.assertIn("mermaid-config.js", BROWSER_STATIC_ASSET_NAMES)
 
 
 if __name__ == "__main__":
