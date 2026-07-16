@@ -7864,12 +7864,27 @@ window.addEventListener('hashchange', () => {
   applyRouteFromHash();
 });
 
-initSidebarNav();
-initPalette();
-applyRouteFromHash();
+function initialRender() {
+  initSidebarNav();
+  initPalette();
+  applyRouteFromHash();
 
-// Warm up the world-atlas fetch in the background so the map is ready
-// immediately when the user navigates to the Deployment Targets view.
-if (typeof topojson !== 'undefined') {
-  _dtLoadWorld().catch(() => {});
+  // Warm up the world-atlas fetch in the background so the map is ready
+  // immediately when the user navigates to the Deployment Targets view.
+  if (typeof topojson !== 'undefined') {
+    _dtLoadWorld().catch(() => {});
+  }
+}
+
+// This script and mermaid-config.js both load with `defer`, so they execute
+// in document order before DOMContentLoaded fires. Calling applyRouteFromHash()
+// immediately here would race mermaid-config.js: on a direct/bookmarked SDP
+// detail URL, the initial render would run before window.DraftDiagrams exists,
+// silently skipping the scoped diagram section. Waiting for DOMContentLoaded
+// guarantees every deferred script — including mermaid-config.js — has already
+// run.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initialRender);
+} else {
+  initialRender();
 }

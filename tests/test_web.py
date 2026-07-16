@@ -66,6 +66,33 @@ class WebTests(unittest.TestCase):
         self.assertIn("id: 'sdp-s-diagrams',    label: 'Diagrams', skip: !vm.diagram", BROWSER_JS)
         self.assertIn("window.DraftDiagrams.renderDiagramsIntoSlots([vm.diagram], vm.diagramRenderId)", BROWSER_JS)
 
+    def test_sdp_diagram_initial_render_waits_for_dom_content_loaded(self) -> None:
+        # Regression: draft-browser.js called applyRouteFromHash() (the initial
+        # page render) synchronously at the bottom of the script. Both this
+        # script and mermaid-config.js load with `defer`, so they execute in
+        # document order before DOMContentLoaded fires — but a synchronous call
+        # here ran before mermaid-config.js (next in the defer queue) had
+        # installed window.DraftDiagrams, so a direct/bookmarked SDP detail URL
+        # would render with the scoped diagram section silently skipped.
+        # Gating the initial render on DOMContentLoaded guarantees every
+        # deferred script has already run first.
+        self.assertIn("function initialRender() {", BROWSER_JS)
+        self.assertIn("document.addEventListener('DOMContentLoaded', initialRender)", BROWSER_JS)
+        initial_render_pos = BROWSER_JS.index("function initialRender() {")
+        dom_gate_pos = BROWSER_JS.index("document.addEventListener('DOMContentLoaded', initialRender)")
+        self.assertGreater(
+            dom_gate_pos, initial_render_pos,
+            "the DOMContentLoaded gate must come after initialRender is defined",
+        )
+        # There must be no bare top-level applyRouteFromHash() call outside of
+        # initialRender()/the hashchange listener that would reintroduce the race.
+        top_level_calls = BROWSER_JS.count("\napplyRouteFromHash();")
+        self.assertEqual(
+            top_level_calls, 0,
+            "applyRouteFromHash() must only run inside initialRender(), gated on "
+            "DOMContentLoaded, not as a bare top-level statement",
+        )
+
     def test_mermaid_config_patches_max_text_size_and_exposes_sdp_api(self) -> None:
         # Generated C4/flowchart diagrams for catalogs with many deployable
         # objects were exceeding Mermaid's 50 KB default text-size limit.
