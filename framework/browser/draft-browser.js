@@ -822,6 +822,21 @@ function catalogSearchMarkup(matchCount, baseCount) {
 }
 
 function businessPillarForObject(object) {
+  // The primary pillar drives browser grouping (see docs/workspaces.md).
+  // ownerNode is a secondary drill-down within that pillar, not a
+  // replacement for it, so it is only consulted when pillar is unset.
+  const pillarId = object.businessContext?.pillar || '';
+  if (pillarId) {
+    const pillar = businessPillarLookup[pillarId];
+    const hierarchyNode = !pillar && businessHierarchyNodeLookup.has(pillarId)
+      ? businessHierarchyNodeLookup.get(pillarId)
+      : null;
+    return {
+      id: pillarId,
+      name: pillar?.name || hierarchyNode?.name || formatTitleCase(pillarId.replace(/^business-pillar\./, '').replace(/-/g, ' ')),
+      owner: pillar?.owner || hierarchyNode?.owner || null
+    };
+  }
   const ownerNodeId = object.businessContext?.ownerNode;
   if (ownerNodeId && businessHierarchyNodeLookup.has(ownerNodeId)) {
     const node = businessHierarchyNodeLookup.get(ownerNodeId);
@@ -831,12 +846,10 @@ function businessPillarForObject(object) {
       owner: node.owner || null
     };
   }
-  const pillarId = object.businessContext?.pillar || '';
-  const pillar = pillarId ? businessPillarLookup[pillarId] : null;
   return {
-    id: pillarId || 'unassigned',
-    name: pillar?.name || (pillarId ? formatTitleCase(pillarId.replace(/^business-pillar\./, '').replace(/-/g, ' ')) : 'Unassigned Business Pillar'),
-    owner: pillar?.owner || null
+    id: 'unassigned',
+    name: 'Unassigned Business Pillar',
+    owner: null
   };
 }
 

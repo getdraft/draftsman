@@ -60,6 +60,24 @@ class WebTests(unittest.TestCase):
         self.assertIn("Array.isArray(inherits)", BROWSER_JS)
         self.assertIn("flatMap(parentId => resolvedRequirementsForGroup(parentId, stack))", BROWSER_JS)
 
+    def test_sdp_business_pillar_grouping_prefers_pillar_over_owner_node(self) -> None:
+        # Regression: businessPillarForObject looked up businessContext.ownerNode
+        # before businessContext.pillar, so SDPs with both fields set were grouped
+        # by the (often much more specific) owner node instead of their primary
+        # business pillar, contradicting the documented model in workspaces.md
+        # ("the primary pillar drives browser grouping").
+        start = BROWSER_JS.index("function businessPillarForObject(object) {")
+        end = BROWSER_JS.index("\nfunction ", start + 1)
+        body = BROWSER_JS[start:end]
+        pillar_check_pos = body.index("object.businessContext?.pillar")
+        owner_node_check_pos = body.index("object.businessContext?.ownerNode")
+        self.assertLess(
+            pillar_check_pos, owner_node_check_pos,
+            "businessContext.pillar must be checked before businessContext.ownerNode "
+            "so the primary pillar drives grouping and ownerNode is only a fallback "
+            "used when no pillar is declared.",
+        )
+
     def test_sdp_detail_page_embeds_scoped_diagram(self) -> None:
         self.assertIn("function _sdpDiagramsMarkup(vm)", BROWSER_JS)
         self.assertIn("window.DraftDiagrams.buildSdpDiagram(object)", BROWSER_JS)
