@@ -114,7 +114,10 @@ class WebTests(unittest.TestCase):
     def test_mermaid_config_patches_max_text_size_and_exposes_sdp_api(self) -> None:
         # Generated C4/flowchart diagrams for catalogs with many deployable
         # objects were exceeding Mermaid's 50 KB default text-size limit.
+        # We now also provide better defaults for dense/complex application diagrams.
         self.assertIn("maxTextSize: safeConfig.maxTextSize ?? MERMAID_MAX_TEXT_SIZE", MERMAID_CONFIG_JS)
+        self.assertIn("flowchart:", MERMAID_CONFIG_JS)
+        self.assertIn("nodeSpacing: 25", MERMAID_CONFIG_JS)
         self.assertIn("function buildSdpDiagram(sdp)", MERMAID_CONFIG_JS)
         self.assertIn("window.DraftDiagrams = {", MERMAID_CONFIG_JS)
         self.assertIn("renderDiagramsIntoSlots", MERMAID_CONFIG_JS)
