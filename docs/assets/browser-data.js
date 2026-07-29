@@ -20941,6 +20941,7 @@ window.DRAFT_BROWSER_DATA = {
           "owner": "dict",
           "tags": "list",
           "businessContext": "dict",
+          "followsReferenceArchitecture": "str",
           "notes": "dict"
         },
         "enumFields": {
@@ -85738,6 +85739,7 @@ window.DRAFT_BROWSER_DATA = {
           "owner": "dict",
           "tags": "list",
           "businessContext": "dict",
+          "followsReferenceArchitecture": "str",
           "notes": "dict"
         },
         "enumFields": {

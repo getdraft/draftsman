@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. Browser diagram rendering improvements only.
+
+### Added
+
+- N/A
+
+### Changed
+
+- Updated Mermaid initialization defaults (`nodeSpacing`, `rankSpacing`, `curve`) to produce tighter, more readable layouts for dense/complex application diagrams.
+- Updated diagram slot CSS so SVGs scale gracefully when the user zooms out (`max-width: 100%; height: auto`), allowing more content to be visible on complex diagrams.
+
+### Fixed
+
+- N/A
+
+### Migration Notes
+
+- No manual migration required. Run `generate_browser.py --refresh-shell` (or update the framework) to pick up the improved diagram rendering.
+
 ## 0.63.3 - 2026-07-24
 
 ### Compatibility Impact
