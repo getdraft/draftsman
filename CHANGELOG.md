@@ -32,6 +32,10 @@
 - Added regression test asserting SDP initial render waits for `DOMContentLoaded`.
 - Added regression test asserting `businessPillarForObject` checks `pillar` before `ownerNode`.
 
+### Changed
+
+- N/A
+
 ### Fixed
 
 - Fixed diagram load-order race on direct/bookmarked SDP pages (gated initial render on `DOMContentLoaded`). Closes #177.
