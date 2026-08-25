@@ -18,6 +18,8 @@ channels:
   github_webhooks: true
 skills:
   - draftsman
+  - draftsman-diagram
+  - draftsman-query
   - github-workflow
 mcps:
   - mcps/github-mcp.json
