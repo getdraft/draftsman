@@ -20,6 +20,7 @@ channels:
 skills:
   - draftsman
   - draftsman-author
+  - draftsman-autodiscover
   - draftsman-diagram
   - draftsman-query
   - draftsman-standards
