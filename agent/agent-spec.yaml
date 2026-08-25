@@ -1,0 +1,29 @@
+name: draftsman
+display_name: "Draftsman"
+description: "Official DRAFT Framework Agent specification: autonomous architecture catalog authoring, validation, maturity rubric scoring, and CI/CD PR governance."
+version: "1.0.0"
+role: "Enterprise Software Architect"
+runtime:
+  cpu: "1"
+  memory: "2Gi"
+  min_instances: 0
+  max_instances: 1
+  timeout_seconds: 300
+limits:
+  max_iterations_per_task: 20
+  max_output_tokens: 8192
+channels:
+  discord: true
+  slack: true
+  voice_reachy: false
+  github_webhooks: true
+skills:
+  - draftsman
+  - github-workflow
+mcps:
+  - agent/mcp/draftsman-mcp.json
+capabilities:
+  - catalog_authoring
+  - workspace_validation
+  - maturity_rubric_scoring
+  - pr_governance_review

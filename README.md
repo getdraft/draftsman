@@ -83,6 +83,7 @@ work.
 ## Repository Layout
 
 ```text
+agent/                  # Official Draftsman Agent specification, prompts, skills, and factory bindings
 framework/              # Core schemas, tools, docs, and base configurations
 framework/browser/      # Static browser shell, CSS, JavaScript, and theme assets
 framework/configurations/

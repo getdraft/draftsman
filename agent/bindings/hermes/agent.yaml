@@ -1,0 +1,23 @@
+name: draftsman
+display_name: "Draftsman"
+description: "Enterprise software architecture draftsman, DRAFT catalog manager, and architecture compliance scorer."
+role: "Enterprise Software Architect"
+runtime:
+  cpu: "1"
+  memory: "2Gi"
+  min_instances: 0
+  max_instances: 1
+  timeout_seconds: 300
+limits:
+  max_iterations_per_task: 20
+  max_output_tokens: 8192
+channels:
+  discord: true
+  slack: true
+  voice_reachy: false
+  github_webhooks: true
+skills:
+  - draftsman
+  - github-workflow
+mcps:
+  - mcps/github-mcp.json

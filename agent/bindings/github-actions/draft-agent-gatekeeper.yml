@@ -1,0 +1,44 @@
+name: DRAFT Architecture Gatekeeper
+
+on:
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'catalog/**'
+      - 'configurations/**'
+      - '.draft/**'
+
+jobs:
+  validate-architecture:
+    name: Validate DRAFT Catalog & Compliance
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+
+      - name: Run DRAFT Workspace Validator
+        run: |
+          if [ -d ".draft/framework" ]; then
+            python .draft/framework/tools/validate.py --workspace .
+          else
+            python framework/tools/validate.py
+          fi
+
+      - name: Check Static Browser Generation
+        run: |
+          if [ -d ".draft/framework" ]; then
+            python .draft/framework/tools/generate_browser.py --workspace . --output docs/index.html
+          else
+            python framework/tools/generate_browser.py
+          fi
