@@ -141,6 +141,31 @@ def build_requirement_implementation_index(registry: dict[str, dict[str, Any]]) 
     }
 
 
+# Fields an index consumer needs to find an object and say what it is. The whole object would be
+# several times larger -- a real catalog runs to thousands of entries -- and an index is meant to
+# be small enough for an agent to load, so this is a projection rather than a dump.
+OBJECT_INDEX_FIELDS = ("uid", "name", "type", "catalogStatus", "description", "domain")
+
+
+def build_object_index(registry: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    """A flat, searchable list of catalog objects.
+
+    The relationship indexes above answer "what implements this capability". They cannot answer
+    "is there anything called X", which is what a search tool needs, and there was no key in the
+    generated index that carried the objects themselves.
+    """
+    objects = []
+    for obj in registry.values():
+        if not object_id(obj):
+            continue
+        objects.append({
+            field: obj.get(field)
+            for field in OBJECT_INDEX_FIELDS
+            if obj.get(field) is not None
+        })
+    return sorted(objects, key=lambda o: (str(o.get("type") or ""), str(o.get("name") or "")))
+
+
 def build_catalog_indexes(registry: dict[str, dict[str, Any]]) -> dict[str, Any]:
     try:
         from catalog_indexes import build_domain_capability_index as build_raw_index
@@ -149,6 +174,7 @@ def build_catalog_indexes(registry: dict[str, dict[str, Any]]) -> dict[str, Any]
 
     raw_idx = build_raw_index(registry)
     return {
+        "objects": build_object_index(registry),
         "domainCapability": build_domain_capability_index(registry),
         "requirementImplementations": build_requirement_implementation_index(registry),
         "domainCapabilities": raw_idx["domainCapabilities"],

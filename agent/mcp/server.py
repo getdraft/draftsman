@@ -70,6 +70,33 @@ TOOLS_MANIFEST = [
 ]
 
 
+
+def _text(payload: dict[str, Any]) -> dict[str, Any]:
+    return {"content": [{"type": "text", "text": json.dumps(payload, indent=2)}]}
+
+
+def _objects(index_data: dict[str, Any]) -> list[dict[str, Any]]:
+    objects = index_data.get("objects", [])
+    if isinstance(objects, dict):
+        objects = list(objects.values())
+    return [o for o in objects if isinstance(o, dict)]
+
+
+def _find_object(index_data: dict[str, Any], needle: str) -> dict[str, Any] | None:
+    """Resolve a name or uid to a catalog object, or None. Exact match before substring."""
+    wanted = needle.strip().lower()
+    if not wanted:
+        return None
+    candidates = _objects(index_data)
+    for obj in candidates:
+        if wanted in (str(obj.get("name", "")).lower(), str(obj.get("uid", "")).lower()):
+            return obj
+    for obj in candidates:
+        if wanted in str(obj.get("name", "")).lower():
+            return obj
+    return None
+
+
 def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
     index_data = load_catalog_index()
 
@@ -104,26 +131,58 @@ def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
 
     if name == "get_c4_diagram":
         product_name = str(arguments.get("product_name", ""))
-        diagram = f"graph TD\n  subgraph {product_name}\n    API[Product API]\n    DB[(Database)]\n    API --> DB\n  end"
+        target = _find_object(index_data, product_name)
+        if target is None:
+            return _text({
+                "product": product_name,
+                "error": "No object with that name or uid is in the catalog index.",
+            })
+        diagram = f"graph TD\n  subgraph {target.get('name') or product_name}\n    API[Product API]\n    DB[(Database)]\n    API --> DB\n  end"
         return {
             "content": [
                 {
                     "type": "text",
-                    "text": f"```mermaid\n{diagram}\n```",
+                    # Still a placeholder shape rather than the object's real relationships, and
+                    # labelled as one so it is not mistaken for the catalog's own topology.
+                    "text": f"```mermaid\n{diagram}\n```\n\n_Placeholder topology: generated from the object's identity, not its recorded relationships._",
                 }
             ]
         }
 
     if name == "check_compliance":
         product_name = str(arguments.get("product_name", ""))
-        return {
-            "content": [
-                {
-                    "type": "text",
-                    "text": json.dumps({"product": product_name, "complianceStatus": "compliant", "satisfiedRequirements": ["authentication", "logging", "encryption"]}, indent=2),
-                }
-            ]
-        }
+        target = _find_object(index_data, product_name)
+        if target is None:
+            return _text({
+                "product": product_name,
+                "complianceStatus": "unknown",
+                "reason": "No object with that name or uid is in the catalog index.",
+            })
+
+        rows = (index_data.get("requirementImplementations") or {}).get("rows") or []
+        mine = [r for r in rows if str(r.get("object")) == str(target.get("uid"))]
+        if not mine:
+            # Distinct from "compliant". Nothing was assessed, and saying otherwise is the kind of
+            # answer that gets believed precisely because someone asked the question.
+            return _text({
+                "product": target.get("name") or product_name,
+                "uid": target.get("uid"),
+                "complianceStatus": "unknown",
+                "reason": "The object is in the catalog but has no requirement implementations recorded.",
+            })
+
+        satisfied = sorted({str(r.get("requirementId")) for r in mine if r.get("status") == "satisfied"})
+        unsatisfied = sorted({
+            str(r.get("requirementId")) for r in mine if r.get("status") not in (None, "", "satisfied")
+        })
+        return _text({
+            "product": target.get("name") or product_name,
+            "uid": target.get("uid"),
+            "complianceStatus": "compliant" if not unsatisfied else "non_compliant",
+            "satisfiedRequirements": satisfied,
+            "unsatisfiedRequirements": unsatisfied,
+            "assessedCount": len(mine),
+        })
 
     if name == "validate_yaml_object":
         yaml_str = str(arguments.get("yaml_content", ""))
