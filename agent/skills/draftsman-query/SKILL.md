@@ -10,6 +10,17 @@ Enables the Draftsman Agent to answer precise natural-language architecture ques
 
 ---
 
+## Answering Rules
+
+These bind every workflow below. `SOUL.md` § Evidence Discipline is the full statement; this is what it means when you are answering a query.
+
+1. **Read fields, not names.** A value is recorded only if you read it from a named field. A name that looks structured — `A → B`, `service-x-prod` — is prose that resembles data. Using it is inference, and inference is labelled.
+2. **Absent field, absent answer.** If `technology`, `port`, `protocol` or `label` is not present, the answer is "the index does not carry it". Never fill the gap with a category you inferred from the object's name.
+3. **Say what your index cannot see.** Answer about *your index*, never about *the catalog*. You are reading a projection and cannot enumerate what it dropped.
+4. **Qualify every count.** Report how a number was obtained — "14 objects whose name matched `platform msvc`" — and never call a substring-matched result complete.
+
+---
+
 ## Query Capabilities & Workflows
 
 ### 1. Developer Onboarding Guidance ("How do I get my product into DRAFT?")
