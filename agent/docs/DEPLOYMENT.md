@@ -1,24 +1,24 @@
 # Draftsman Agent Deployment & Integration Guide
 
-This guide details how to provision, configure secrets, and deploy the **Draftsman Agent** across company agent factories (`hermes-gcp-factory`, `das-hermes-poc`), internal web environments (`web_ui`), chat platforms (Slack, Discord), and GitHub workspace repositories.
+This guide details how to provision, configure secrets, and deploy the unified **Draftsman Agent** across company agent factories (`hermes-gcp-factory`, `das-hermes-poc`), internal web environments (`web_ui`), chat platforms (Slack, Discord), and connected developer IDE workspaces.
 
 ---
 
-## 1. Identity & Operational Models
+## 1. Unified Identity & Execution Contexts
 
-DRAFT separates agent interaction into two distinct models:
+DRAFT defines a single canonical agent specification—**Draftsman** (`draftsman`)—which operates across two distinct execution contexts:
 
-### A. Singleton Factory Agent (`draftsman`)
+### A. Central Chat / Factory Deployment Mode (Slack, Discord, Web UI, Webhooks)
 - **Deployment**: Factory-deployed singleton container running on AWS Fargate, GCP Cloud Run, or Kubernetes.
 - **Scope**: **Strictly Read-Only Query & Guidance.** Answers architecture questions, searches ports, database engines, dependencies, generates C4 diagrams, and guides engineers to onboarding workflows.
 - **Channels**: `web_ui` (Web chat page & `/health` endpoint), `slack`, `discord`, `github_webhooks`.
-- **Identity Model**: Uses `ANTHROPIC_API_KEY` for reasoning and reads pre-compiled `catalog_indexes.json` / `AI_INDEX.md`. Holds **zero write credentials** to product code repositories.
+- **Identity & Security Model**: Uses `ANTHROPIC_API_KEY` for reasoning and reads pre-compiled `catalog_indexes.json` / `AI_INDEX.md`. Holds **zero write credentials** to private application code repositories.
 
-### B. Product Engineering Agent (`draftsman-engineer`)
-- **Deployment**: Connected AI coding assistants in developer IDEs (Cursor, VS Code, Claude Code, GitHub Copilot, Antigravity CLI).
-- **Scope**: **Authoring, Registration, Scaffolding, & Local Validation.**
+### B. Connected Developer IDE / Workstation Mode (Cursor, Claude Code, Copilot, Antigravity, VS Code, CLI)
+- **Deployment**: Connected AI coding assistants in developer IDEs loading DRAFT workspace rules (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.cursor/rules/draftsman.mdc`).
+- **Scope**: **Authoring, Product Registration, Scaffolding, & Local Validation.**
 - **Channels**: IDE Chat window & Terminal CLI.
-- **Identity Model**: Runs locally under the developer's working copy and developer Git credentials. Authoring, `.draft/sdp.yaml` edits, and PR creation happen under the engineer's identity.
+- **Identity Model**: Runs locally under the developer's working copy and Git credentials. Edits `.draft/sdp.yaml`, runs local `validate.py`, and creates PRs under the developer's verified identity. Central catalog sync happens via **Pattern 2 Token Push**.
 
 ---
 

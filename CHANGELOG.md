@@ -1,3 +1,27 @@
+## 1.2.0 - 2026-08-28
+
+### Compatibility Impact
+
+- Consolidates `draftsman` (Factory Agent) and `draftsman-engineer` (Product Engineering Agent) into a single canonical **Draftsman Agent** (`draftsman`).
+- Establishes Environment-Aware Execution Modes: Central Chat Mode (Slack/Discord/Web UI) operates in Read-Only Query & Guidance Mode, while Connected IDE Mode (Cursor/Claude/Antigravity) operates in Authoring & Scaffolding Mode under the developer's local Git identity.
+
+### Added
+
+- Added Dual-Mode Operational identity to `agent/SOUL.md` and `agent/skills/draftsman/SKILL.md`.
+
+### Changed
+
+- Updated `agent/agent-spec.yaml`, `agent/bindings/hermes/agent.yaml`, `agent/docs/DEPLOYMENT.md`, `README.md`, and `framework/docs/COMPOSITION_ROADMAP.md` to reference the unified Draftsman agent.
+- Bumped framework version to `1.2.0` in `draft-framework.yaml`.
+
+### Fixed
+
+- Removed redundant `agent/skills/draftsman-engineer/` skill directory.
+
+### Migration Notes
+
+- Existing agent factory deployments and IDE connections automatically pick up the unified `draftsman` agent definition.
+
 ## 1.1.1 - 2026-08-28
 
 ### Compatibility Impact

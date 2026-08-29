@@ -1,7 +1,7 @@
 name: draftsman
 display_name: "Draftsman"
-description: "Official DRAFT Framework Factory Agent: read-only architecture search, dependency mapping, C4 diagrams, maturity rubric scoring, and compliance guidance."
-version: "1.1.1"
+description: "Official DRAFT Framework Agent: read-only architecture search, dependency mapping, C4 diagrams, maturity rubric scoring, product registration, local SDP scaffolding, and compliance guidance."
+version: "1.2.0"
 role: "Enterprise Software Architect"
 runtime:
   cpu: "1"
@@ -34,12 +34,16 @@ requirements:
       purpose: "Slack Bot Token for interactive chat interface"
 skills:
   - draftsman
-  - draftsman-query
+  - draftsman-author
+  - draftsman-autodiscover
   - draftsman-diagram
+  - draftsman-query
   - draftsman-standards
 mcps:
   - agent/mcp/draftsman-mcp.json
 capabilities:
   - architecture_search_and_query
+  - catalog_authoring_and_registration
   - workspace_validation
   - maturity_rubric_scoring
+  - pr_governance_review

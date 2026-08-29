@@ -23,7 +23,7 @@ DRAFT operates via a decentralized Architecture-as-Code architecture:
    - **`reference-only`**: Legacy standards and "acceptable use" platforms without IaC modules. These satisfy `RequirementGroups` for compliance/audit purposes, but any pattern relying on them is capped at `catalogStatus: documentation` and cannot be marked `deployment-ready`.
 
 3. **AI Pair Programming via Draftsman**:
-   Engineers pair with AI coding assistants (Cursor, Claude Code, Copilot, Antigravity) running the `draftsman-engineer` agent persona locally, or query central architecture via the `draftsman` factory agent over Slack, Discord, or Web UI.
+   Engineers pair with AI coding assistants (Cursor, Claude Code, Copilot, Antigravity) running the `draftsman` agent locally, or query central architecture via the `draftsman` factory agent over Slack, Discord, or Web UI.
 
 ---
 

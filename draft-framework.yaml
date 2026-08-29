@@ -1,8 +1,8 @@
 schemaVersion: "1.0"
 id: draft-framework
 name: DRAFT Framework
-version: "1.1.1"
+version: "1.2.0"
 releasePhase: GA
 compatibility:
   minDraftTableVersion: "1.0.0"
-  contract: DRAFT Framework 1.1.1 release; incorporates multi-persona adoption feedback (vibe coding intent clarification, Pattern 2 push-sync sequence diagram, inter-module variable binding spec, app secret handoff contracts, and AI auto-validation rules).
+  contract: DRAFT Framework 1.2.0 release; consolidates draftsman and draftsman-engineer into single canonical Draftsman Agent with dual-mode runtime behavior.

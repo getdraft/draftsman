@@ -91,7 +91,7 @@ Enforce policy rules governing which components can be recommended by Draftsman 
 
 ### Rules
 1. **`preferred` Lifecycle Gate**: Only shared services with `provisioningModel: deployable` may be marked `lifecycleStatus: preferred`.
-2. **AI Recommendation Prioritization**: Draftsman AI agents (`draftsman-engineer`) are instructed to select `deployable` shared services by default when assisting product engineers.
+2. **AI Recommendation Prioritization**: Draftsman AI agent (`draftsman`) is instructed to select `deployable` shared services by default when assisting product engineers.
 3. **Reference-Only Exception Approval**: Selecting a `reference-only` shared service requires an explicit `decision_record` explaining the deviation.
 
 ---
