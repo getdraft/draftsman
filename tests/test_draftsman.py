@@ -131,7 +131,7 @@ class DraftsmanTests(unittest.TestCase):
         self.assertIn("no Host wrapper", prompt)
 
     def test_prompt_requires_company_workspace_before_content_updates(self) -> None:
-        prompt = build_draftsman_prompt(REPO_ROOT, REPO_ROOT, "Create a Frontline host.", {"uploads": []})
+        prompt = build_draftsman_prompt(REPO_ROOT, REPO_ROOT, "Create an Acme host.", {"uploads": []})
 
         self.assertIn("upstream draft-framework", prompt)
         self.assertIn("company-specific DRAFT repo path", prompt)

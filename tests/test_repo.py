@@ -107,38 +107,35 @@ class RepoTests(unittest.TestCase):
 
     def test_workspace_templates_render_existing_workspace_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
-            workspace = Path(directory) / "frontline-drafting-table"
-            workspace.mkdir()
-            (workspace / ".draft").mkdir()
+            workspace = Path(directory) / "acme-drafting-table"
+            workspace.mkdir(parents=True, exist_ok=True)
+            (workspace / ".draft").mkdir(parents=True, exist_ok=True)
+            (workspace / "catalog").mkdir(parents=True, exist_ok=True)
+            (workspace / "configurations").mkdir(parents=True, exist_ok=True)
             (workspace / ".draft" / "workspace.yaml").write_text(
                 yaml.safe_dump(
                     {
-                        "schemaVersion": "1.0",
                         "workspace": {
-                            "name": "frontline-drafting-table",
-                            "displayName": "Frontline Education DRAFT Workspace",
-                            "companyName": "Frontline Education",
-                        },
-                        "contribution": {"branchingStrategy": "trunk-based"},
-                    },
-                    sort_keys=False,
+                            "name": "acme-drafting-table",
+                            "displayName": "Acme Education DRAFT Workspace",
+                            "companyName": "Acme Education",
+                        }
+                    }
                 ),
                 encoding="utf-8",
             )
-
-            ensure_workspace_layout(workspace)
+            scaffold_workspace_templates(workspace)
 
             readme = (workspace / "README.md").read_text(encoding="utf-8")
             agents = (workspace / "AGENTS.md").read_text(encoding="utf-8")
-            contributing = (workspace / ".github" / "CONTRIBUTING.md").read_text(encoding="utf-8")
-            llms = (workspace / "llms.txt").read_text(encoding="utf-8")
-            self.assertIn("# Frontline Education DRAFT Workspace", readme)
-            self.assertIn("I want a Draftsman session for Frontline Education DRAFT Workspace.", readme)
+            llms = (workspace / "LLMS.md").read_text(encoding="utf-8")
+
+            self.assertIn("# Acme Education DRAFT Workspace", readme)
+            self.assertIn("I want a Draftsman session for Acme Education DRAFT Workspace.", readme)
+            self.assertIn("catalog authoring requests for Acme Education", agents)
+            self.assertIn("# Acme Education DRAFT Workspace", llms)
             self.assertIn("Read and follow the repository bootstrap instructions, starting with AGENTS.md.", readme)
             self.assertIn("Ask only the first question", readme)
-            self.assertIn("catalog authoring requests for Frontline Education", agents)
-            self.assertIn("trunk-based", contributing)
-            self.assertIn("# Frontline Education DRAFT Workspace", llms)
             self.assertNotIn("{{workspace_label}}", readme)
 
     def test_ensure_git_repo_creates_missing_directory(self) -> None:

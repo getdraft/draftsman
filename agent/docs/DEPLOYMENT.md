@@ -67,7 +67,7 @@ module "draftsman_agent" {
 
 ---
 
-### B. AWS Fargate & ECS Deployment (`das-hermes-poc` / Frontline)
+### B. AWS Fargate & ECS Deployment (AWS Cloud Infrastructure)
 
 For AWS environments using Terraform:
 
