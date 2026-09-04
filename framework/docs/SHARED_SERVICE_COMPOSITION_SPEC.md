@@ -32,9 +32,9 @@ Every shared service object in the catalog (`host`, `runtime_service`, `data_sto
 
 ---
 
-## 2. Pattern 2 Sync & Composition Resolution Flow
+## 2. Automated Manifest Synchronization & Composition Resolution Flow
 
-DRAFT reuses the existing **Pattern 2 Least-Privilege Sync** architecture (`.draft/sdp.yaml` + GitHub token push):
+DRAFT reuses the existing **Automated Manifest Synchronization** architecture (`.draft/sdp.yaml` + GitHub token push):
 
 ```text
  ┌─────────────────────────────────────────┐         ┌──────────────────────────────────────────┐
@@ -49,7 +49,7 @@ DRAFT reuses the existing **Pattern 2 Least-Privilege Sync** architecture (`.dra
                       │ 2. Compose Engine (`compose_iac.py`)             │
                       │    Stitches IaC Modules into `main.tf`            │
                       │                                                   │
-                      │ 3. Pattern 2 Token Push                           │
+                      │ 3. Automated Token Push                           │
                       │    Syncs `.draft/sdp.yaml` to catalog ───────────►│
 ```
 

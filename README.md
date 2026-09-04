@@ -14,8 +14,7 @@ Speed and compliance are achieved together because product specifications can **
 
 DRAFT operates via a decentralized Architecture-as-Code architecture:
 
-1. **Decentralized Product Specs (Pattern 2)**:
-   Product teams own their `.draft/sdp.yaml` pattern manifests directly in their application repositories. On pull request merge, a least-privilege GitHub Action automatically syncs the pattern payload to the central company `drafting-table` catalog using ephemeral tokens. `drafting-table` holds **zero read access** to private product source code repositories.
+1. **Decentralized Product Specs**: Engineering teams house their architectural manifests inside their own code repositories (`.draft/sdp.yaml`) and register with `drafting-table`. On pull request merge, a least-privilege GitHub Action automatically syncs the pattern payload to the central company `drafting-table` catalog using ephemeral tokens. `drafting-table` holds **zero read access** to private product source code repositories.
 
 2. **Shared Services Composition Split**:
    Shared services in the catalog are explicitly split by `provisioningModel`:
@@ -59,7 +58,7 @@ DRAFT v1.0+ is repo-first and Git-native:
 2. **Register Products**: Engineering teams register product repositories in `catalog/engineering/product-registrations/`.
 3. **Scaffold Local Repo (`/draft init`)**: Product teams run `/draft init` in their code repos to auto-discover runtimes and scaffold `.draft/sdp.yaml`.
 4. **Local Validation**: Engineers validate architecture locally using `python3 .draft/framework/tools/validate.py --workspace .`.
-5. **Pattern 2 Auto-Sync**: PR merges automatically sync the SDP payload to `drafting-table` via ephemeral GitHub App tokens.
+5. **Automated Manifest Sync**: PR merges automatically sync the SDP payload to `drafting-table` via ephemeral GitHub App tokens.
 
 ---
 

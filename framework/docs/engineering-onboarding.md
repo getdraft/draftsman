@@ -73,27 +73,27 @@ The SDP is your product's "architectural blueprint." Product engineering teams o
 
 ---
 
-## 4. Decentralized Repository Setup & Pattern 2 Auto-Sync
+## 4. Decentralized Repository Setup & Automated Manifest Sync
 
-DRAFT uses **Pattern 2 Least-Privilege Sync**: your product repository pushes its `.draft/sdp.yaml` payload to the central company catalog (`drafting-table`) via ephemeral tokens on PR merge. The central catalog has **ZERO read credentials to your private source code repository**!
+DRAFT uses **Automated Manifest Synchronization**: your product repository pushes its `.draft/sdp.yaml` payload to the central company catalog (`drafting-table`) via ephemeral tokens on PR merge. The central catalog has **ZERO read credentials to your private source code repository**!
 
 ```text
- ┌──────────────────────────────────────────────┐          ┌─────────────────────────────────────────────┐
- │  PRODUCT CODE REPO (e.g. github.com/acme/app)│          │  CENTRAL CATALOG REPO (drafting-table)      │
- └──────────────────────┬───────────────────────┘          └──────────────────────┬──────────────────────┘
-                        │                                                         │
- 1. Local IDE Assistant │                                                         │
-    runs `/draft init`  │                                                         │
-    to scaffold SDP     │                                                         │
-                        │                                                         │
- 2. Validate locally    │                                                         │
-    python3 .draft/...  │                                                         │
-    validate.py         │                                                         │
-                        │                                                         │
- 3. Merge PR in app repo│                                                         │
-    GitHub Action fires ├───────────────── Pattern 2 Token Push ──────────────────►│
-    ephemeral token     │                 (Payload: .draft/sdp.yaml)              │ Syncs payload & validates
-                        │                                                         │ catalog automatically
+┌───────────────────────────┐                        ┌───────────────────────────────┐
+│   Product Codebase Repo   │                        │  Company Drafting Table Repo  │
+│ (e.g. company/absence-svc)│                        │    (company/drafting-table)   │
+└─────────────┬─────────────┘                        └───────────────┬───────────────┘
+              │                                                      │
+              │ 1. Engineer merges PR in Product Repo                │
+              ├──────────────────────────────────────────────────────┤
+              │                                                      │
+              │ 2. Ephemeral token requested (60 min validity)       │
+              ├──────────────────────────────────────────────────────┤
+              │                                                      │
+              │ 3. Manifest Payload Auto-Sync                        │
+              │    GitHub Action fires ├────────── Payload Push ────►│
+              │                                                      │ 4. Run validate.py
+              │                                                      │    Update catalog index
+              │                                                      │    Regenerate AI_INDEX.md
 ```
 
 ### 3-Step Local Developer Onboarding:

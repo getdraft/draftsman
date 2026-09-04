@@ -70,7 +70,7 @@ serviceGroups:
         diagramTier: application
 ```
 
-## Event-Driven Least-Privilege Synchronization (Pattern 2)
+## Event-Driven Least-Privilege Synchronization
 
 When an engineering team merges a PR updating `.draft/sdp.yaml`:
 
