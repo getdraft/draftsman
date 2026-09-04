@@ -17,8 +17,8 @@ timestamp: 2026-08-26T00:00:00-04:00
 
 DRAFT 1.0 establishes a clean line of demarcation across three content groups:
 
-1. **Product Content (Product Engineering)**: Housed inside individual product repositories (`.draft/sdp.yaml`) and registered centrally via `ProductRegistration` objects in `drafting-table`.
-2. **Shared Services & Infrastructure (Internal Providers)**: Housed centrally in `drafting-table` (`catalog/shared-services/`). Internal platform teams document hosts, runtimes, data stores, networks, and technology components here for product teams to consume.
+1. **Product Architecture (Product Engineering Teams)**: Housed inside individual product repositories (`.draft/sdp.yaml`) and registered centrally via `ProductRegistration` objects in `drafting-table`.
+2. **Shared Services & Infrastructure (Internal Provider Teams)**: Housed inside individual provider repositories (`.draft/catalog/`) with explicit IaC module pointers (`deployablePackage: { registry, source, version, modulePath }`) and registered centrally in `drafting-table`.
 3. **External Provider Hooks (Third-Party SaaS/PaaS)**: Governed under `.draft/providers/` and SaaS/PaaS delivery models.
 
 ## Product Registration Contract

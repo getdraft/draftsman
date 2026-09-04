@@ -19,7 +19,7 @@ timestamp: 2026-06-12T21:06:02-07:00
 
 As a Shared Services representative, you are accountable for the **shared-services layer** of the architecture catalog. You define the approved infrastructure platforms, database systems, networks, and third-party vendor software that Engineering product teams reference in their application models.
 
-The Shared Services layer comprises five core object types inside `catalog/shared-services/`:
+The Shared Services layer comprises five core object types authored in provider repositories (`.draft/catalog/`) and synced to `drafting-table`:
 1. **TechnologyComponent** (`technology-components/`): Represents a discrete vendor product or release (e.g. Ubuntu 22.04 LTS, PostgreSQL 15, HAProxy 2.9).
 2. **Host** (`hosts/`): Represents a standard operating platform combining an operating system, compute substrate, and base capabilities.
 3. **RuntimeService** (`runtime-services/`): Represents a reusable execution runtime (e.g. AWS Lambda runtime, OpenStack Horizon, Nginx app runtime).
@@ -27,7 +27,7 @@ The Shared Services layer comprises five core object types inside `catalog/share
 5. **NetworkService** (`network-services/`): Represents standard network and traffic-control standards (e.g. WAF profiles, shared load balancers).
 
 ```text
-catalog/shared-services/
+<provider-repo>/.draft/catalog/
   technology-components/  ← Standard vendor products, OS types, software releases
   hosts/                  ← Reusable virtual/physical servers and substrates
   runtime-services/       ← Container runtimes, serverless runtimes, app runtimes
