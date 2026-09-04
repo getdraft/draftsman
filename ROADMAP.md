@@ -121,3 +121,13 @@ Future work may revive the app as optional convenience tooling for:
 - framework refresh helpers
 
 Until then, the canonical workflow is the repo plus the user's chosen AI tool.
+
+## Future Enhancements: Vector Database Indexing
+
+Research is open for integrating embedded vector search capabilities into the Draftsman MCP agent (`agent/mcp/`) and index generator (`framework/tools/generate_ai_index.py`).
+
+Key objectives:
+- Enable natural language semantic retrieval over distributed SDPs, Shared Services, and Requirement Groups.
+- Maintain DRAFT's "repo-first, zero mandatory cloud infrastructure" model using embedded stores (`sqlite-vec`, `duckdb`, or local `chromadb`).
+- See [RFC: Vector Database Integration for Semantic Index Searches](framework/docs/proposals/rfc-vector-database-indexing.md) for execution details.
+
