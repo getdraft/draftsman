@@ -18,6 +18,8 @@ The verbatim procedure for every step below is in `references/steps.md`. Follow 
 - **Step 7, run validation:** run the validator; the clean, new-errors and abandon paths are each spelled out in `references/steps.md`.
 - **Step 8, post-update notes:** after the PR merges, remind Draft Admins about the one-time `/draft` command link and to review the CHANGELOG for new setup steps.
 
+After the framework copy is replaced, rerun `python3 .draft/framework/tools/setup_ide.py` so the projected skills in `.claude/skills/` and the skill index in `AGENTS.md` match the new framework, then run `python3 .draft/framework/tools/validate_skills.py --workspace .` to confirm they are fresh.
+
 ## References
 
 - `references/steps.md`: the full, verbatim step bodies.

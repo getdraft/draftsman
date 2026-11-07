@@ -1,6 +1,6 @@
-"""The agent's MCP tools, called with data rather than only started.
+"""The optional MCP adapter's tools, called with data rather than only started.
 
-`validate_agent_package.py` proves the server starts and lists tools. That is a different claim
+A handshake check proves the server starts and lists tools. That is a different claim
 from the tools returning anything: `query_architecture` read an `objects` key the index generator
 never produced, so every query returned nothing, and `check_compliance` answered "compliant" for
 any input without consulting the catalog.
@@ -21,7 +21,7 @@ from pathlib import Path
 from framework.tools.indexes import build_catalog_indexes
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-SERVER = REPO_ROOT / "agent" / "mcp" / "server.py"
+SERVER = REPO_ROOT / "framework" / "tools" / "mcp_server.py"
 
 # Small by design: two objects, one fully satisfied and one not, so a verdict that ignores the
 # catalog cannot pass by luck.
