@@ -31,3 +31,6 @@ htmlcov/
 
 # Local AI tooling
 .antigravitycli/
+
+# Run artifacts (never committed)
+.sdlc/
