@@ -335,35 +335,65 @@ def check_markdown(skill_root: Path, md_file: Path, text: str) -> list[str]:
     return list(dict.fromkeys(failures))
 
 
+def skill_files(skill_root: Path) -> list[tuple[str, Path]]:
+    """Every regular file under one skill, as (skill-relative path, file path).
+
+    Symlinked directories are followed. Each directory is walked once, by its
+    resolved path, so a symlink loop ends and a directory reached twice is
+    listed under the first relative path the walk reaches. A file reached by
+    two routes (for example a symlinked file plus its real directory) is listed
+    once, under its smallest relative path. Unreadable entries are skipped.
+    """
+    by_resolved: dict[Path, str] = {}
+    seen_dirs: set[Path] = set()
+    stack: list[Path] = [skill_root]
+    while stack:
+        directory = stack.pop()
+        try:
+            key = directory.resolve()
+            if key in seen_dirs:
+                continue
+            seen_dirs.add(key)
+            entries = sorted(os.scandir(directory), key=lambda entry: entry.name)
+        except (OSError, RuntimeError, ValueError):
+            continue
+        for entry in entries:
+            path = Path(entry.path)
+            try:
+                if entry.is_dir():
+                    stack.append(path)
+                elif entry.is_file():
+                    resolved = path.resolve()
+                    rel = path.relative_to(skill_root).as_posix()
+                    by_resolved[resolved] = min(by_resolved.get(resolved, rel), rel)
+            except (OSError, RuntimeError, ValueError):
+                continue
+    pairs = [(rel, resolved) for resolved, rel in by_resolved.items()]
+    return sorted(pairs, key=lambda pair: pair[0])
+
+
 def check_banned_terms(skill_root: Path) -> list[str]:
     """Portability lint over every file under one skill directory. Never raises.
 
-    Each (file, line, term) is reported once. Paths are checked as well, so a
-    file or folder named after a banned term also fails.
+    Each file is scanned as one text, so a term split across a line break is
+    still matched. A match is reported at the line where it starts, once per
+    (file, line, term). Paths are checked too, so a file or folder named after
+    a banned term also fails.
     """
     failures: list[str] = []
-    for dirpath, dirnames, filenames in os.walk(skill_root, followlinks=False):
-        dirnames.sort()
-        for filename in sorted(filenames):
-            path = Path(dirpath) / filename
-            try:
-                if not path.is_file():
-                    continue
-            except (OSError, ValueError):
-                continue
-            rel = path.relative_to(skill_root).as_posix()
-            for label, rx in BANNED_TERM_RES:
-                if rx.search(rel):
-                    failures.append(f"banned term '{label}' in path {rel}")
-            try:
-                text = path.read_text(encoding="utf-8", errors="replace")
-            except OSError as exc:
-                failures.append(f"unreadable file {rel}: {type(exc).__name__}: {exc}")
-                continue
-            for number, line in enumerate(text.splitlines(), start=1):
-                for label, rx in BANNED_TERM_RES:
-                    if rx.search(line):
-                        failures.append(f"banned term '{label}' in {rel} line {number}")
+    for rel, file_path in skill_files(skill_root):
+        for label, rx in BANNED_TERM_RES:
+            if rx.search(rel):
+                failures.append(f"banned term '{label}' in path {rel}")
+        try:
+            text = file_path.read_text(encoding="utf-8", errors="replace")
+        except OSError as exc:
+            failures.append(f"unreadable file {rel}: {type(exc).__name__}: {exc}")
+            continue
+        for label, rx in BANNED_TERM_RES:
+            for match in rx.finditer(text):
+                line = text.count("\n", 0, match.start()) + 1
+                failures.append(f"banned term '{label}' in {rel} line {line}")
     return list(dict.fromkeys(failures))
 
 
