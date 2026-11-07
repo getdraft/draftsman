@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None yet. The Draftsman skill pack work is staged on the integration branch `feat/draftsman-skill-pack`; later stories record removals here.
+
+### Added
+
+- Added the RFC `framework/docs/proposals/rfc-draftsman-skill-pack.md` describing the skill-pack replacement for the deployed agent.
+
+### Changed
+
+- Ignored `.sdlc/` run artifacts in `.gitignore`.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No action required.
+
 ## 1.2.0 - 2026-08-28
 
 ### Compatibility Impact
