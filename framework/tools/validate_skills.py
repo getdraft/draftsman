@@ -527,10 +527,16 @@ def check_workspace(workspace: Path) -> list[str]:
             continue
         if front.get("source_sha256") != skill_hash.skill_source_sha256(source):
             failures.append(f"{source.name}: projection is stale (source_sha256 differs); run setup_ide.py")
+            continue
+        problems = skill_hash.projection_problems(source, workspace / ".claude" / "skills" / source.name)
+        if problems:
+            failures.append(f"{source.name}: projection was edited or is incomplete ({'; '.join(problems[:3])}); run setup_ide.py")
     agents = workspace / "AGENTS.md"
     if agents.is_file():
-        match = skill_hash.BLOCK_RE.search(agents.read_text(encoding="utf-8"))
-        if not match:
+        status, match = skill_hash.find_block(agents.read_bytes().decode("utf-8"))
+        if status == "malformed":
+            failures.append("AGENTS.md: skill index block is malformed (unmatched or repeated markers); fix it by hand")
+        elif status == "none":
             failures.append("AGENTS.md: skill index missing; run setup_ide.py")
         elif match.group(1) != skill_hash.skills_set_sha256(source_root):
             failures.append("AGENTS.md: skill index is stale; run setup_ide.py")
@@ -556,7 +562,10 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.workspace is not None:
-        failures = check_workspace(args.workspace)
+        try:
+            failures = check_workspace(args.workspace)
+        except (OSError, UnicodeError, ValueError) as exc:
+            failures = [f"cannot check workspace projections: {type(exc).__name__}: {exc}"]
         for failure in failures:
             print(f"FAIL {failure}")
         if failures:

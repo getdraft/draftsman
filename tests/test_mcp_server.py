@@ -182,5 +182,33 @@ class DiagramTests(unittest.TestCase):
         self.assertIn("```mermaid", output_text)
 
 
+class AmbiguousNameTests(unittest.TestCase):
+    def test_a_fragment_matching_several_objects_is_unknown_not_a_verdict(self) -> None:
+        index = {
+            "objects": [
+                {"uid": "a", "name": "Payments Service", "type": "runtime_service", "catalogStatus": "complete"},
+                {"uid": "b", "name": "Payments Gateway", "type": "edge_gateway_service", "catalogStatus": "complete"},
+            ],
+            "requirementImplementations": {"rows": [{"object": "a", "requirementId": "r", "status": "satisfied"}]},
+        }
+
+        result = call_tool(index, "check_compliance", {"product_name": "payments"})
+
+        self.assertEqual(result["complianceStatus"], "unknown")
+
+    def test_an_exact_name_still_resolves_when_a_fragment_would_not(self) -> None:
+        index = {
+            "objects": [
+                {"uid": "a", "name": "Payments Service", "type": "runtime_service", "catalogStatus": "complete"},
+                {"uid": "b", "name": "Payments Gateway", "type": "edge_gateway_service", "catalogStatus": "complete"},
+            ],
+            "requirementImplementations": {"rows": [{"object": "a", "requirementId": "r", "status": "satisfied"}]},
+        }
+
+        result = call_tool(index, "check_compliance", {"product_name": "Payments Service"})
+
+        self.assertEqual(result["complianceStatus"], "compliant")
+
+
 if __name__ == "__main__":
     unittest.main()
