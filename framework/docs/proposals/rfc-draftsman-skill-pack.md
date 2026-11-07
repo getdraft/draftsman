@@ -77,7 +77,7 @@ flowchart LR
 
 | Skill | Replaces | Contents |
 | :--- | :--- | :--- |
-| `draftsman-core` | `agent/SOUL.md`, the identity half of `framework/docs/draftsman.md`, `framework/docs/soul.md` | Role, voice, **Evidence Discipline (Recorded / Inferred / Unknown)**, the capability profiles in 4.3, routing to the other skills. Always loaded. Target: under 150 lines, with detail in `references/`. |
+| `draftsman-core` | `agent/SOUL.md`, `agent/skills/draftsman`, the identity half of `framework/docs/draftsman.md`, `framework/docs/soul.md` | Role, voice, **Evidence Discipline (Recorded / Inferred / Unknown)**, the capability profiles in 4.3, routing to the other skills. Always loaded. Target: under 150 lines, with detail in `references/`. |
 | `draftsman-author` | `draft-actions/guide.md`, `agent/skills/draftsman-author`, `draftsman-autodiscover` | Guided DraftingSession, SDP completion interview, autodiscovery, schema-valid authoring, validate loop, PR hygiene. |
 | `draftsman-query` | `agent/skills/draftsman-query`, `draftsman-standards` | Catalog Q&A and standards/compliance Q&A. Reads `catalog_indexes.json` / `AI_INDEX.md`. |
 | `draftsman-review` | `draft-actions/review.md`, the `/draft review` flow | PR and catalog review for correctness, quality, and security compliance. |
@@ -104,7 +104,7 @@ A skill states which profile it needs. A harness with only read access to an ind
 
 ### 4.4 Scripts do the deterministic work; MCP is optional
 
-Everything a skill needs to *do* already exists as a script under `framework/tools/` (`validate.py`, `generate_ai_index.py`, `generate_c4.py`, `generate_diagram.py`, `catalog_indexes.py`). Skills call these directly through the shell. This is the default path and needs nothing but Python.
+Everything a skill needs to *do* already exists as a script under `framework/tools/` (`validate.py`, `generate_ai_index.py`, `generate_c4.py`, `catalog_indexes.py`; `generate_diagram.py` joins them once PR #196 merges). Skills call these directly through the shell. This is the default path and needs nothing but Python.
 
 For harnesses with no shell access, keep an **optional** MCP adapter that wraps the same scripts. The adapter already exists as `framework/tools/mcp_server.py`, which is kept in place; `agent/mcp/` is deleted rather than moved. It may grow to cover validation and diagram rendering, and is documented as an adapter, not a requirement. It must call the scripts rather than reimplement their logic, so the two paths cannot disagree.
 
@@ -174,7 +174,7 @@ This also gives #195 a smaller target. The skill pack has no multi-node runtime 
 ## 6. Compatibility and Migration
 
 - **Schemas and validation**: no change.
-- **Company workspaces** that follow the repo-first path keep working. They gain `.draft/framework/skills/` on their next `draft update`, and `/draft` verbs keep their names.
+- **Company workspaces** that follow the repo-first path keep working. Once E4 vendoring lands, they gain `.draft/framework/skills/` on their next `draft update`, and `/draft` verbs keep their names.
 - **Removed content**: `agent/` and the Slack and Discord parts of `framework/integrations/` are deleted in the same release, with no deprecation window, because there are no known deployments of them. The CHANGELOG migration notes say so and tell any unknown consumer to load `framework/skills/` instead.
 - **Versioning**: moving skills into `framework/` changes vendored content, so treat the release as a minor bump even though no object contract changes. Confirm with the promote workflow's path rules.
 - **Dependency on `beta`**: the unmerged `beta` branch renames "Pattern 2" to "Automated Manifest Synchronization" in the onboarding text. Skills must use whichever name `main` settles on. Land the rename first or write the skills against `beta`'s wording.
