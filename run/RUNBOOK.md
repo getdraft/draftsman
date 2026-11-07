@@ -41,3 +41,6 @@ At the end of each run, comment on the epic issue (#197 E1, #198 E2, #199 E3, #2
 
 ## When all stories except E6-S4 are closed
 Open the single release PR from `feat/draftsman-skill-pack` into `main` (E6-S4) after `main` has been merged into the branch and CI is green. Do NOT merge it. Label it `deploy-point` and comment that a human merges it.
+
+## Known input locations (overrides story text)
+- **E1-S1 RFC source:** the story text says to copy the RFC from an untracked local working tree. That file is not on the integration branch. Use `run/rfc-draftsman-skill-pack.md` on THIS branch (`git show origin/sdlc/run-state:run/rfc-draftsman-skill-pack.md`) as the source. Copy it to `framework/docs/proposals/rfc-draftsman-skill-pack.md` on the story branch, then apply the corrections the story and the plan's "RFC corrections" list. Do not write the RFC from scratch.
