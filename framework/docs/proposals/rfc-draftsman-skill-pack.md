@@ -116,6 +116,7 @@ The skills directory is the single source. `framework/tools/setup_ide.py` alread
 | :--- | :--- |
 | Claude Code | `.claude/skills/<name>/` (native `SKILL.md`) |
 | Cursor | `.cursor/rules/<name>.mdc` generated from each skill |
+| Windsurf | `.windsurf/rules/<name>.md` generated from each skill |
 | GitHub Copilot | Section per skill in `.github/copilot-instructions.md` |
 | Gemini CLI | Import list in `GEMINI.md` |
 | Anything else | `AGENTS.md` index pointing at `.draft/framework/skills/*/SKILL.md` |
@@ -190,8 +191,8 @@ This also gives #195 a smaller target. The skill pack has no multi-node runtime 
 | :--- | :--- | :--- |
 | 0 | Review and decide on this RFC. | Maintainers agree on location, skill set, and the removal list in 4.6. |
 | 1 | Extract `draftsman-core` from `SOUL.md`, `soul.md`, and `draftsman.md`. Strip harness text from the workflow skills. Delete `switch-game-architect` and every Archie and Switch reference. | Portability lint passes on all skills. |
-| 2 | Move skills to `framework/skills/`. Extend `setup_ide.py` adapters. Make `/draft` verbs point at skills. Add `validate_skills.py` and the behavior fixtures. Extend the `draft_table/repo.py` vendoring list to include `framework/skills/` and remove the `validate.py` agent-package hook (E4). | A fresh workspace refresh delivers working skills in Claude Code and one non-Claude harness. |
-| 3 | Publish the bring-your-own-agent guide. Keep the optional MCP adapter (`framework/tools/mcp_server.py`). Delete `agent/`, `framework/integrations/slack/`, `framework/integrations/discord/`, the gatekeeper, and the Slack and Discord text. | `git grep -i -E "slack\|discord\|hermes\|gatekeeper\|archie\|switch-game"` finds nothing outside CHANGELOG history and this RFC. |
+| 2 | Move skills to `framework/skills/`. Extend `setup_ide.py` adapters. Make `/draft` verbs point at skills. Add `validate_skills.py` and the behavior fixtures. Extend the `draft_table/repo.py` vendoring list to include `framework/skills/` (E4). | A fresh workspace refresh delivers working skills in Claude Code and one non-Claude harness. |
+| 3 | Publish the bring-your-own-agent guide. Keep the optional MCP adapter (`framework/tools/mcp_server.py`). Delete `agent/` together with the `validate.py` agent-package hook (the hook requires `agent/`, so both go in the same story), `framework/integrations/slack/`, `framework/integrations/discord/`, the gatekeeper, and the Slack and Discord text. | `git grep -i -E "slack\|discord\|hermes\|gatekeeper\|archie\|switch-game"` finds nothing outside CHANGELOG history and this RFC. |
 
 ---
 
