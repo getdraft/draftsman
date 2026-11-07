@@ -54,10 +54,31 @@ class DraftsmanCoreTests(unittest.TestCase):
                 self.assertIn(phrase, self.text)
         self.assertRegex(self.text, r"\*\*R6\*\*")
 
+    def test_rule_rationale_sentences_kept(self):
+        for sentence in (
+            "indistinguishable from retrieved facts",
+            "document what is already documented",
+            "you have no standing to make",
+            "Say how you counted",
+            "spend that trust carefully",
+            "read from relationship names rather than recorded endpoints",
+        ):
+            with self.subTest(sentence=sentence):
+                self.assertIn(sentence, self.text)
+
+    def test_direct_file_mapping(self):
+        self.assertIn("reading catalog files directly applies it to the files it has actually opened", self.text)
+
     def test_r6_content(self):
         r6 = next(l for l in self.text.splitlines() if "**R6**" in l)
-        self.assertIn("inferred", r6)
-        self.assertIn("relationship", r6)
+        for phrase in (
+            "labeled as inferred",
+            "asked to confirm",
+            "never assert a relationship between two records",
+            "list it as unknown",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, r6)
 
     def test_evidence_table(self):
         for basis in ("Recorded", "Inferred", "Unknown"):
