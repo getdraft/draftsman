@@ -521,6 +521,89 @@ class ValidateSkillsTests(unittest.TestCase):
             self.assertIn("FAIL broken", output)
             self.assertIn("1 of 2 skill(s) failed", output)
 
+    # --- review round 1: resolved roots (F1) ------------------------------
+
+    def test_relative_skills_dir_passes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skill = make_skill(root / "skills", "draftsman-core", skill_text("draftsman-core", body="See [r](references/page.md) and `scripts/check.py`.\n"))
+            write(skill / "references" / "page.md", "# Page\n")
+            write(skill / "scripts" / "check.py", "x = 1\n")
+            previous = os.getcwd()
+            os.chdir(root)
+            try:
+                out, err = io.StringIO(), io.StringIO()
+                with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+                    code = validate_skills.main(["--skills-dir", "skills"])
+            finally:
+                os.chdir(previous)
+            self.assertEqual(code, 0, out.getvalue() + err.getvalue())
+            self.assertIn("OK   draftsman-core", out.getvalue())
+            self.assertNotIn("internal error", out.getvalue())
+
+    def test_symlinked_skills_dir_passes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            real = root / "real-skills"
+            skill = make_skill(real, "draftsman-core", skill_text("draftsman-core", body="See [r](references/page.md).\n"))
+            write(skill / "references" / "page.md", "# Page\n")
+            link = root / "linked-skills"
+            try:
+                os.symlink(real, link, target_is_directory=True)
+            except (OSError, NotImplementedError):
+                self.skipTest("symlinks not available on this platform")
+            code, output = self.run_main(link)
+            self.assertEqual(code, 0, output)
+            self.assertIn("OK   draftsman-core", output)
+            self.assertNotIn("internal error", output)
+
+    def test_symlinked_skill_directory_passes_and_keeps_its_name(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            elsewhere = root / "elsewhere" / "pack-copy"
+            write(elsewhere / "SKILL.md", skill_text("draftsman-core", 150))
+            skills = root / "skills"
+            skills.mkdir()
+            try:
+                os.symlink(elsewhere, skills / "draftsman-core", target_is_directory=True)
+            except (OSError, NotImplementedError):
+                self.skipTest("symlinks not available on this platform")
+            code, output = self.run_main(skills)
+            self.assertEqual(code, 0, output)
+            self.assertIn("OK   draftsman-core", output)
+
+    # --- review round 1: a script path inside a link is reported once (F2) --
+
+    def test_script_inside_link_target_is_reported_once(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            make_skill(root, "draftsman-core", skill_text("draftsman-core", body="[x](scripts/foo.py)\n"))
+            failures = self.failures_for(root)
+            matching = [f for f in failures if "foo.py" in f]
+            self.assertEqual(len(matching), 1, failures)
+            self.assertIn("broken relative link", matching[0])
+            code, _ = self.run_main(root)
+            self.assertEqual(code, 1)
+
+    def test_link_from_references_resolves_once_against_its_own_directory(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skill = make_skill(root, "draftsman-core", skill_text("draftsman-core"))
+            write(skill / "references" / "page.md", "[x](scripts/foo.py)\n")
+            write(skill / "scripts" / "foo.py", "x = 1\n")
+            failures = self.failures_for(root)
+            matching = [f for f in failures if "foo.py" in f]
+            self.assertEqual(len(matching), 1, failures)
+            self.assertIn("broken relative link in references/page.md", matching[0])
+
+    def test_bare_script_path_on_a_link_line_is_still_checked(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            text = skill_text("draftsman-core", body="See [docs](references/page.md) then run scripts/absent.py.\n")
+            skill = make_skill(root, "draftsman-core", text)
+            write(skill / "references" / "page.md", "# Page\n")
+            self.assert_fails(root, "missing script path")
+
 
 if __name__ == "__main__":
     unittest.main()

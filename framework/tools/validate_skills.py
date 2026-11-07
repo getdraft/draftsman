@@ -175,20 +175,42 @@ def parse_destination(text: str, start: int) -> tuple[str, int] | None:
     return dest, i + tail.end()
 
 
-def link_targets(line: str) -> list[str]:
-    """Return raw inline and reference link destinations on one line (code spans removed)."""
-    targets: list[str] = []
+def link_spans(line: str) -> list[tuple[str, int, int]]:
+    """Return (raw destination, start, end) for each link on one line.
+
+    start and end are offsets into `line` that cover the destination text
+    (for inline links, through the closing parenthesis). Code spans are not links.
+    """
+    spans: list[tuple[str, int, int]] = []
     visible = strip_code_spans(line)
     pos = visible.find("](")
     while pos != -1:
         parsed = parse_destination(visible, pos + 2)
-        if parsed and parsed[0]:
-            targets.append(parsed[0])
+        if parsed:
+            dest, end = parsed
+            spans.append((dest, pos + 2, end))
         pos = visible.find("](", pos + 2)
     definition = REFERENCE_DEF_RE.match(line)
     if definition:
-        targets.append(definition.group(1).strip("<>"))
-    return targets
+        spans.append((definition.group(1).strip("<>"), definition.start(1), definition.end(1)))
+    return spans
+
+
+def link_targets(line: str) -> list[str]:
+    """Return raw inline and reference link destinations on one line (code spans removed)."""
+    return [dest for dest, _, _ in link_spans(line) if dest]
+
+
+def mask_link_destinations(line: str) -> str:
+    """Blank link destinations so script paths inside them are not scanned twice.
+
+    The link check owns those; link text and prose stay visible to the script scan.
+    """
+    chars = list(line)
+    for _, start, end in link_spans(line):
+        for k in range(start, min(end, len(chars))):
+            chars[k] = " "
+    return "".join(chars)
 
 
 def normalise_target(raw: str) -> str:
@@ -272,7 +294,7 @@ def check_markdown(skill_root: Path, md_file: Path, text: str) -> list[str]:
             reason = check_path(skill_root, md_file.parent, path_part)
             if reason:
                 failures.append(f"{reason} in {rel} line {line.number}: '{raw_target}'")
-        for match in SCRIPT_PATH_RE.finditer(line.text):
+        for match in SCRIPT_PATH_RE.finditer(mask_link_destinations(line.text)):
             script = match.group(1)
             reason = check_path(skill_root, skill_root, script)
             if reason == "broken relative link":
@@ -287,9 +309,16 @@ def markdown_files(skill_dir: Path) -> list[Path]:
 
 
 def validate_skill(skill_dir: Path) -> list[str]:
-    """Return every failure for one skill directory. Never raises."""
+    """Return every failure for one skill directory. Never raises.
+
+    The directory is resolved once, and every file is taken from that resolved
+    root, so relative --skills-dir values and symlinked paths compare correctly.
+    The budget uses the directory name as given (a symlink may point elsewhere).
+    """
     try:
-        skill_file = skill_dir / "SKILL.md"
+        name = skill_dir.name
+        root = skill_dir.resolve()
+        skill_file = root / "SKILL.md"
         if not skill_file.is_file():
             return ["SKILL.md missing"]
         failures: list[str] = []
@@ -298,15 +327,15 @@ def validate_skill(skill_dir: Path) -> list[str]:
         except (OSError, UnicodeError) as exc:
             return [f"SKILL.md unreadable: {type(exc).__name__}: {exc}"]
         failures.extend(check_frontmatter(text))
-        failures.extend(check_line_budget(skill_dir.name, text))
-        for md_file in markdown_files(skill_dir):
-            rel = md_file.relative_to(skill_dir).as_posix()
+        failures.extend(check_line_budget(name, text))
+        for md_file in markdown_files(root):
+            rel = md_file.relative_to(root).as_posix()
             try:
                 md_text = md_file.read_text(encoding="utf-8-sig")
             except (OSError, UnicodeError) as exc:
                 failures.append(f"unreadable file {rel}: {type(exc).__name__}: {exc}")
                 continue
-            failures.extend(check_markdown(skill_dir.resolve(), md_file, md_text))
+            failures.extend(check_markdown(root, md_file, md_text))
         return failures
     except Exception as exc:  # last-resort guard: report, never traceback
         return [f"internal error while checking skill: {type(exc).__name__}: {exc}"]
