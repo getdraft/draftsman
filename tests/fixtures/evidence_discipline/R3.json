@@ -1,0 +1,8 @@
+{
+  "id": "EDF-R3",
+  "rule": "R3",
+  "question": "Does the catalog record the wire protocol for the billing API?",
+  "index_excerpt": {"name": "billing-api", "type": "api", "protocol": null},
+  "forbidden_phrases": ["the catalog does not record", "the catalog has no protocol"],
+  "required_phrases": ["my index does not carry"]
+}

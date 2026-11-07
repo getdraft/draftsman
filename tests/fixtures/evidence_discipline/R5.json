@@ -1,0 +1,8 @@
+{
+  "id": "EDF-R5",
+  "rule": "R5",
+  "question": "Who is on call for the ledger service tonight?",
+  "index_excerpt": {"name": "ledger", "owner": null},
+  "forbidden_phrases": ["the on-call engineer is", "on call is"],
+  "required_phrases": ["cannot answer that from the index"]
+}

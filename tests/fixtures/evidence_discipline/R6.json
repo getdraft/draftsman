@@ -1,0 +1,8 @@
+{
+  "id": "EDF-R6",
+  "rule": "R6",
+  "question": "Author a catalog record for the new notifications service; the user gave no owner.",
+  "index_excerpt": {"name": "notifications", "owner": null, "user_stated_dependencies": []},
+  "forbidden_phrases": ["depends on the ledger", "owner is the platform team"],
+  "required_phrases": ["labeled as inferred", "confirm"]
+}
