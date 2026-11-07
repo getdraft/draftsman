@@ -35,6 +35,9 @@ from urllib.parse import unquote
 
 import yaml
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import skill_hash  # noqa: E402
+
 
 TOOLS_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = TOOLS_ROOT.parent.parent
@@ -356,6 +359,60 @@ def validate_skills(skills_dir: Path) -> dict[str, list[str]]:
     return results
 
 
+def projected_frontmatter(path: Path) -> dict | None:
+    try:
+        lines = path.read_text(encoding="utf-8-sig").splitlines()
+    except (OSError, UnicodeError):
+        return None
+    if not lines or lines[0].rstrip() != "---":
+        return None
+    end = next((i for i in range(1, len(lines)) if lines[i].rstrip() == "---"), None)
+    if end is None:
+        return None
+    try:
+        data = yaml.safe_load("\n".join(lines[1:end]))
+    except (yaml.YAMLError, ValueError, RecursionError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def check_workspace(workspace: Path) -> list[str]:
+    """Compare projections in <workspace>/.claude/skills and the AGENTS.md index
+    with the vendored skills in <workspace>/.draft/framework/skills.
+
+    There is no lock file: freshness is the source_sha256 marker that setup_ide.py
+    wrote into each projection.
+    """
+    source_root = workspace / ".draft" / "framework" / "skills"
+    if not source_root.is_dir():
+        return [f"no vendored skills at {source_root} (refresh the framework first)"]
+    failures: list[str] = []
+    sources = sorted(p for p in source_root.iterdir() if p.is_dir() and (p / "SKILL.md").is_file())
+    if not sources:
+        return [f"no skills found in {source_root}"]
+    for source in sources:
+        projection = workspace / ".claude" / "skills" / source.name / "SKILL.md"
+        if not projection.is_file():
+            failures.append(f"{source.name}: projection missing; run setup_ide.py")
+            continue
+        front = projected_frontmatter(projection) or {}
+        if front.get("generated") is not True:
+            failures.append(f"{source.name}: projection lacks 'generated: true'; run setup_ide.py")
+            continue
+        if front.get("source_sha256") != skill_hash.skill_source_sha256(source):
+            failures.append(f"{source.name}: projection is stale (source_sha256 differs); run setup_ide.py")
+    agents = workspace / "AGENTS.md"
+    if agents.is_file():
+        match = skill_hash.BLOCK_RE.search(agents.read_text(encoding="utf-8"))
+        if not match:
+            failures.append("AGENTS.md: skill index missing; run setup_ide.py")
+        elif match.group(1) != skill_hash.skills_set_sha256(source_root):
+            failures.append("AGENTS.md: skill index is stale; run setup_ide.py")
+    else:
+        failures.append("AGENTS.md: missing; run setup_ide.py")
+    return failures
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Validate DRAFT skill packs.")
     parser.add_argument(
@@ -364,7 +421,22 @@ def main(argv: list[str] | None = None) -> int:
         default=DEFAULT_SKILLS_DIR,
         help="directory containing one subdirectory per skill",
     )
+    parser.add_argument(
+        "--workspace",
+        type=Path,
+        default=None,
+        help="check that projections under <path>/.claude/skills match <path>/.draft/framework/skills",
+    )
     args = parser.parse_args(argv)
+
+    if args.workspace is not None:
+        failures = check_workspace(args.workspace)
+        for failure in failures:
+            print(f"FAIL {failure}")
+        if failures:
+            return 1
+        print("projections are fresh")
+        return 0
 
     skills_dir = args.skills_dir
     if not skills_dir.is_dir():
