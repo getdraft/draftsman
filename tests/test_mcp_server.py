@@ -1,6 +1,6 @@
-"""The agent's MCP tools, called with data rather than only started.
+"""The optional MCP adapter's tools, called with data rather than only started.
 
-`validate_agent_package.py` proves the server starts and lists tools. That is a different claim
+A handshake check proves the server starts and lists tools. That is a different claim
 from the tools returning anything: `query_architecture` read an `objects` key the index generator
 never produced, so every query returned nothing, and `check_compliance` answered "compliant" for
 any input without consulting the catalog.
@@ -21,7 +21,7 @@ from pathlib import Path
 from framework.tools.indexes import build_catalog_indexes
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-SERVER = REPO_ROOT / "agent" / "mcp" / "server.py"
+SERVER = REPO_ROOT / "framework" / "tools" / "mcp_server.py"
 
 # Small by design: two objects, one fully satisfied and one not, so a verdict that ignores the
 # catalog cannot pass by luck.
@@ -180,6 +180,34 @@ class DiagramTests(unittest.TestCase):
         self.assertIn("Payments Service", output_text)
         self.assertIn("calls via HTTPS/REST", output_text)
         self.assertIn("```mermaid", output_text)
+
+
+class AmbiguousNameTests(unittest.TestCase):
+    def test_a_fragment_matching_several_objects_is_unknown_not_a_verdict(self) -> None:
+        index = {
+            "objects": [
+                {"uid": "a", "name": "Payments Service", "type": "runtime_service", "catalogStatus": "complete"},
+                {"uid": "b", "name": "Payments Gateway", "type": "edge_gateway_service", "catalogStatus": "complete"},
+            ],
+            "requirementImplementations": {"rows": [{"object": "a", "requirementId": "r", "status": "satisfied"}]},
+        }
+
+        result = call_tool(index, "check_compliance", {"product_name": "payments"})
+
+        self.assertEqual(result["complianceStatus"], "unknown")
+
+    def test_an_exact_name_still_resolves_when_a_fragment_would_not(self) -> None:
+        index = {
+            "objects": [
+                {"uid": "a", "name": "Payments Service", "type": "runtime_service", "catalogStatus": "complete"},
+                {"uid": "b", "name": "Payments Gateway", "type": "edge_gateway_service", "catalogStatus": "complete"},
+            ],
+            "requirementImplementations": {"rows": [{"object": "a", "requirementId": "r", "status": "satisfied"}]},
+        }
+
+        result = call_tool(index, "check_compliance", {"product_name": "Payments Service"})
+
+        self.assertEqual(result["complianceStatus"], "compliant")
 
 
 if __name__ == "__main__":

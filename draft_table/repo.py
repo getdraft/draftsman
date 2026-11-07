@@ -46,6 +46,7 @@ FRAMEWORK_VENDOR_DIRS = (
     "personalities",
     "reviews",
     "schemas",
+    "skills",
     "templates",
     "tools",
 )
@@ -392,6 +393,7 @@ def vendored_framework_text(text: str) -> str:
         "framework/personalities/": "personalities/",
         "framework/reviews/": "reviews/",
         "framework/schemas/": "schemas/",
+        "framework/skills/": "skills/",
         "framework/templates/": "templates/",
         "framework/tools/": "tools/",
         "framework/browser": "browser",
@@ -403,6 +405,7 @@ def vendored_framework_text(text: str) -> str:
         "framework/personalities": "personalities",
         "framework/reviews": "reviews",
         "framework/schemas": "schemas",
+        "framework/skills": "skills",
         "framework/templates": "templates",
         "framework/tools": "tools",
     }

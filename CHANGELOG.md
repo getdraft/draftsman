@@ -15,15 +15,20 @@
 - Added `framework/skills/draftsman-core/references/role.md` (product registration, repository initialisation and architecture-question protocols) and a workflow-skill index in `draftsman-core`.
 - Added `tests/test_skill_set.py` (exact skill set, `switch-game-architect` absent, frontmatter checks, each workflow skill names its profile, script paths exist) and `tests/test_skill_step_lists.py` with heading fixtures in `tests/fixtures/skills/step_lists/` (every `##` and `###` heading of the review and update action files must appear in the matching skill).
 - CI now runs `python framework/tools/validate_skills.py` in `.github/workflows/validate-catalog.yml`.
+- Added `framework/tools/skill_hash.py` (shared sha256 and marker helpers). `framework/tools/setup_ide.py` now also projects each skill into `.claude/skills/<name>/` as a copy (never a symlink), with `generated: true` and `source_sha256` added to the SKILL.md frontmatter (frontmatter stays first), and writes a managed skill index block into `AGENTS.md` that starts with a marker comment. An existing `AGENTS.md` keeps all its text and line endings; only the managed block is added or replaced, and a file with an unmatched or repeated marker is left untouched with a warning. `setup_ide.py` never overwrites a `.claude/skills/<name>/` directory that is not a generated projection. The framework repo itself gets projections only locally (`.claude/skills/` is git-ignored) and its tracked `AGENTS.md` is left alone.
+- Added `python3 framework/tools/validate_skills.py --workspace <path>`: fails when a projection under `.claude/skills/` is missing, unmarked, stale against `.draft/framework/skills/`, or edited (every projected file is compared with the expected copy, including extra or missing files), or when the `AGENTS.md` skill index is missing, stale or malformed. No lock file is involved. Tests are in `tests/test_skill_distribution.py`, including a vendoring refresh test and an independently computed sha256.
 - Added the portability lint to `framework/tools/validate_skills.py`: it fails on case-insensitive banned terms (`slack`, `discord`, `hermes`, `fargate`, `archie`, `central chat`, `switch-game-architect`, `ANTHROPIC_API_KEY`, `Pattern 2`) anywhere under `framework/skills/`, with word boundaries so bare words such as "switch" and "hierarchy" pass. Tests are in `tests/test_validate_skills.py`.
 
 ### Changed
 
 - Ignored `.sdlc/` run artifacts in `.gitignore`.
+- `draft_table/repo.py` now vendors `framework/skills/` into `.draft/framework/skills/` on refresh and rewrites `framework/skills` paths like the other vendored directories (a governed `draft_table/` path change).
+- `/draft guide`, `/draft review` and `/draft update` action files are now routers to the `draftsman-author`, `draftsman-review` and `draftsman-update` skills; the full step text lives in the skills. `/draft validate` stays a direct action.
+- `KPF-DFT-004` now describes the optional MCP adapter and points at `tests/test_mcp_server.py` (renamed from `tests/test_agent_mcp_tools.py` and retargeted to `framework/tools/mcp_server.py`).
 
 ### Fixed
 
-- None.
+- `framework/tools/mcp_server.py` answered `check_compliance` with a fixed "compliant" verdict for any product and drew `get_c4_diagram` from a fixed template. Both now read the catalog index: an unknown product or an object with nothing assessed is reported as `unknown`, gaps are reported as `non_compliant`, and the diagram shows the recorded relationships. A name fragment that matches several objects is reported as unknown instead of picking one, and diagram labels are escaped. This brings it in line with the tool logic that `agent/mcp/server.py` already had.
 
 ### Migration Notes
 
