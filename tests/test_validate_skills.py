@@ -866,6 +866,59 @@ class PortabilityLintTests(unittest.TestCase):
     def test_repo_skill_pack_has_no_banned_terms(self) -> None:
         self.assertEqual(self.lint_failures(SKILLS / "draftsman-core"), [])
 
+    # --- top-level files directly under the skills directory (review round 2) --
+
+    def test_top_level_readme_with_banned_term_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            make_skill(root, "draftsman-core", skill_text("draftsman-core"))
+            write(root / "README.md", "Ask in Slack.\n")
+            code, output = self.run_main(root)
+            self.assertEqual(code, 1, output)
+            self.assertIn("FAIL skills directory (top-level files)", output)
+            self.assertIn("banned term 'slack' in README.md line 1", output)
+            self.assertEqual(output.count("banned term 'slack'"), 1, output)
+            self.assertNotIn("Traceback", output)
+
+    def test_clean_top_level_file_passes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            make_skill(root, "draftsman-core", skill_text("draftsman-core"))
+            write(root / "README.md", "Nothing banned here.\n")
+            code, output = self.run_main(root)
+            self.assertEqual(code, 0, output)
+
+    def test_banned_term_in_top_level_file_name_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            make_skill(root, "draftsman-core", skill_text("draftsman-core"))
+            write(root / "hermes.txt", "clean\n")
+            code, output = self.run_main(root)
+            self.assertEqual(code, 1, output)
+            self.assertIn("banned term 'hermes' in path hermes.txt", output)
+
+    def test_hidden_top_level_directory_contents_are_scanned(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            make_skill(root, "draftsman-core", skill_text("draftsman-core"))
+            write(root / ".notes" / "x.md", "Post to Discord.\n")
+            code, output = self.run_main(root)
+            self.assertEqual(code, 1, output)
+            self.assertIn("banned term 'discord' in .notes/x.md line 1", output)
+
+    def test_term_in_skill_file_is_reported_once_not_again_at_top_level(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skill = make_skill(root, "draftsman-core", skill_text("draftsman-core", body="Slack\n"))
+            try:
+                os.symlink(skill / "SKILL.md", root / "README.md")
+            except (OSError, NotImplementedError):
+                self.skipTest("symlinks not available on this platform")
+            code, output = self.run_main(root)
+            self.assertEqual(code, 1, output)
+            self.assertEqual(output.count("banned term 'slack'"), 1, output)
+            self.assertNotIn("FAIL skills directory (top-level files)", output)
+
 
 if __name__ == "__main__":
     unittest.main()

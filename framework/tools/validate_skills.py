@@ -372,8 +372,8 @@ def skill_files(skill_root: Path) -> list[tuple[str, Path]]:
     return sorted(pairs, key=lambda pair: pair[0])
 
 
-def check_banned_terms(skill_root: Path) -> list[str]:
-    """Portability lint over every file under one skill directory. Never raises.
+def scan_banned_terms(files: list[tuple[str, Path]]) -> list[str]:
+    """Portability lint over (relative path, file) pairs. Never raises.
 
     Each file is scanned as one text, so a term split across a line break is
     still matched. A match is reported at the line where it starts, once per
@@ -381,7 +381,7 @@ def check_banned_terms(skill_root: Path) -> list[str]:
     a banned term also fails.
     """
     failures: list[str] = []
-    for rel, file_path in skill_files(skill_root):
+    for rel, file_path in files:
         for label, rx in BANNED_TERM_RES:
             if rx.search(rel):
                 failures.append(f"banned term '{label}' in path {rel}")
@@ -395,6 +395,42 @@ def check_banned_terms(skill_root: Path) -> list[str]:
                 line = text.count("\n", 0, match.start()) + 1
                 failures.append(f"banned term '{label}' in {rel} line {line}")
     return list(dict.fromkeys(failures))
+
+
+def check_banned_terms(skill_root: Path) -> list[str]:
+    """Portability lint over every file under one skill directory. Never raises."""
+    return scan_banned_terms(skill_files(skill_root))
+
+
+def top_level_files(skills_dir: Path) -> list[tuple[str, Path]]:
+    """Files directly under the skills directory, plus the contents of hidden
+    directories (which are not skills). Files inside a skill directory are left
+    to that skill's check, so each file is scanned exactly once. Never raises.
+    """
+    try:
+        skill_roots = [p.resolve() for p in skill_directories(skills_dir)]
+        entries = sorted(os.scandir(skills_dir), key=lambda entry: entry.name)
+    except (OSError, RuntimeError, ValueError):
+        return []
+    pairs: list[tuple[str, Path]] = []
+    for entry in entries:
+        path = Path(entry.path)
+        try:
+            if entry.is_file():
+                resolved = path.resolve()
+                if any(resolved.is_relative_to(root) for root in skill_roots):
+                    continue
+                pairs.append((entry.name, path))
+            elif entry.is_dir() and entry.name.startswith("."):
+                pairs.extend((f"{entry.name}/{rel}", file_path) for rel, file_path in skill_files(path))
+        except (OSError, RuntimeError, ValueError):
+            continue
+    return pairs
+
+
+def check_top_level_banned_terms(skills_dir: Path) -> list[str]:
+    """Portability lint for everything in framework/skills/ outside a skill directory."""
+    return scan_banned_terms(top_level_files(skills_dir))
 
 
 def markdown_files(skill_dir: Path) -> list[Path]:
@@ -479,8 +515,14 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"  - {failure}")
         else:
             print(f"OK   {skill_dir.name}")
+    top_failures = check_top_level_banned_terms(skills_dir)
+    if top_failures:
+        print("FAIL skills directory (top-level files)")
+        for failure in top_failures:
+            print(f"  - {failure}")
     if failed:
         print(f"{failed} of {len(names)} skill(s) failed")
+    if failed or top_failures:
         return 1
     print(f"{len(names)} skill(s) passed")
     return 0
