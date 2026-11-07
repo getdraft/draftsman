@@ -7,7 +7,7 @@ description: Use when a Draft Admin wants to check for a newer DRAFT framework v
 
 Load `draftsman-core` first. This skill needs the **Author profile** and changes the vendored framework copy, so it is for Draft Admins only. Stop if the user is not one.
 
-The verbatim procedure for every step below is in `references/steps.md`. Follow that file; the lines here are the map.
+The verbatim procedure for every step below is in `references/steps.md`. Follow that file; the lines here are the map. This skill needs git and network access to the framework source; if you do not have them, say so and stop.
 
 - **Step 1, confirm role:** confirm the user is a Draft Admin for this workspace; if not, stop and direct them to the Draft Admins.
 - **Step 2, read current state:** read `.draft/framework.lock` and report the current version, commit and source.
@@ -17,8 +17,6 @@ The verbatim procedure for every step below is in `references/steps.md`. Follow 
 - **Step 6, update the lock file:** write the new version, ref and commit to `.draft/framework.lock`.
 - **Step 7, run validation:** run the validator; the clean, new-errors and abandon paths are each spelled out in `references/steps.md`.
 - **Step 8, post-update notes:** after the PR merges, remind Draft Admins about the one-time `/draft` command link and to review the CHANGELOG for new setup steps.
-
-After the framework copy is replaced, rerun `python3 .draft/framework/tools/setup_ide.py` so the projected skills and agent files match the new framework.
 
 ## References
 

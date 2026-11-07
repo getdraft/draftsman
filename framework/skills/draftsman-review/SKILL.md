@@ -1,13 +1,13 @@
 ---
 name: draftsman-review
-description: Use when someone asks to review an open pull request that changes catalog files, audit catalog quality, or run a security and compliance audit (requirements, satisfaction, posture, artifact compliance). Needs the Author profile, with read-only use of git hosting tools.
+description: Use when someone asks to review an open pull request that changes catalog files, audit catalog quality, or run a security and compliance audit (requirements, satisfaction, posture, artifact compliance). Needs the Author profile; reviewing a pull request needs read access to the git host, and committing fixes needs write access and the user's confirmation.
 ---
 
 # Draftsman Review
 
 Load `draftsman-core` first. This skill needs the **Author profile** because it runs the validator and may fix findings. Review what exists; do not author what is missing unless the user asks. Apply Evidence Discipline: report only what the diff, the validator output or a file you opened shows.
 
-The verbatim procedure for every step below is in `references/steps.md`. Follow that file; the lines here are the map.
+The verbatim procedure for every step below is in `references/steps.md`. Follow that file; the lines here are the map. Where it says to follow `draft-actions/validate.md`, run `python3 .draft/framework/tools/validate.py --workspace .` and report the result. If there is no git host, offer a Catalog Quality Review or a Security and Compliance Audit instead of PR Review.
 
 ## Step 1: Determine scope
 
@@ -20,7 +20,7 @@ Pick a scope from the argument or the request: a PR number or none means PR Revi
 - **Step PR-3, validate changed files:** run the validator and keep only errors and warnings that touch changed files.
 - **Step PR-4, architecture review:** check ownership, vocabulary compliance, dependency completeness, naming consistency and RequirementGroup coverage.
 - **Step PR-5, present findings:** group by severity and file, give the field, the issue and a one-line fix, then an overall assessment.
-- **Step PR-6, offer to fix:** if the user agrees, fix under the Draftsman role, validate after each fix, and commit to the PR branch only with confirmation.
+- **Step PR-6, offer to fix:** if the user agrees, fix under the Draftsman role, validate after each fix, and commit to the PR branch only with confirmation. Without write access, hand the fixes back as a list.
 
 ## Catalog Quality Review
 

@@ -46,11 +46,20 @@ class StepListTests(unittest.TestCase):
     def test_update_keeps_every_step_heading(self):
         self.check("update.txt", "draftsman-update")
 
-    def test_skill_md_maps_every_step_in_one_line(self):
-        for skill in ("draftsman-review", "draftsman-update"):
+    def test_skill_md_maps_every_step(self):
+        """SKILL.md must carry a line for every recorded step id (Step 1, Step PR-3, ...)."""
+        for fixture, skill in (("review.txt", "draftsman-review"), ("update.txt", "draftsman-update")):
             text = (SKILLS / skill / "SKILL.md").read_text(encoding="utf-8")
             self.assertIn("references/steps.md", text)
             self.assertLessEqual(len(text.splitlines()), 200)
+            step_ids = []
+            for heading in (FIXTURES / fixture).read_text(encoding="utf-8").splitlines():
+                match = re.match(r"^#{2,3} (Step [\w-]+)", heading)
+                if match:
+                    step_ids.append(match.group(1))
+            self.assertGreaterEqual(len(step_ids), 7, fixture)
+            for step_id in step_ids:
+                self.assertRegex(text, rf"(?i)\b{re.escape(step_id)}\b", f"{skill} SKILL.md lacks {step_id}")
 
 
 if __name__ == "__main__":

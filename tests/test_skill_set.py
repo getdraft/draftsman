@@ -44,6 +44,14 @@ class SkillSetTests(unittest.TestCase):
             text = (SKILLS / name / "SKILL.md").read_text(encoding="utf-8")
             self.assertIn(f"{profile} profile", text, name)
 
+    def test_profile_matches_declared_need(self):
+        for name, profile in EXPECTED.items():
+            if profile is None:
+                continue
+            text = (SKILLS / name / "SKILL.md").read_text(encoding="utf-8")
+            other = "Query" if profile == "Author" else "Author"
+            self.assertNotIn(f"needs the **{other} profile**", text, name)
+
     def test_script_paths_exist(self):
         pattern = re.compile(r"framework/tools/[\w./-]*\.py")
         for path in SKILLS.rglob("*.md"):

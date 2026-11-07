@@ -9,7 +9,7 @@
 5. For an existing session: summarise what is known and what is open, then ask whether to continue or start fresh.
 6. For a new session: confirm the topic, read `.draft/framework/docs/drafting-sessions.md`, and ask at most three questions at a time.
 7. Do the work under the Draftsman role in `.draft/framework/docs/draftsman.md`. Record open questions, assumptions and next steps in the session file so the work can be resumed. Save it before you stop.
-8. If authoring reveals a reusable framework bug, schema gap or missing template, follow the Upstream Framework Feedback Routing procedure in `.draft/framework/docs/draftsman.md` before creating any public issue, and only with the user's approval.
+8. If authoring reveals a reusable framework bug, schema gap or missing template, follow the Upstream Framework Feedback Routing procedure in `.draft/framework/docs/draftsman.md` before creating any public issue, and only with the user's approval; record the issue URL in the session summary or follow-ups. Keep the live conversation on the current step instead of showing a running backlog.
 
 ## Repository scan mapping
 
@@ -28,4 +28,4 @@ Never copy a secret value from a configuration file into the catalog.
 
 ## Committing the work
 
-If git and a remote are available and the user agrees: create `draft/<feature-name>`, stage `catalog/` and `configurations/`, commit with `feat(draft): add <feature-name> architecture catalog entries`, push, and open a pull request that states the validation result. Otherwise report the changed files and stop.
+If git and a remote are available and the user agrees: create `draft/<feature-name>`, stage `catalog/`, `configurations/` and `docs/`, commit with `feat(draft): add <feature-name> architecture catalog entries`, push, and open a pull request that states the validation result. Otherwise report the changed files and stop.
