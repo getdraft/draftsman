@@ -136,7 +136,7 @@ Nothing here is relocated except the skills (4.2); the MCP adapter (`framework/t
 | `agent/skills/switch-game-architect` | Deleted. |
 | `agent/SOUL.md`, `framework/docs/soul.md` | Merged into `draftsman-core`, then deleted. |
 | `agent/mcp/` | Deleted. The existing `framework/tools/mcp_server.py` is kept as the optional adapter. |
-| `framework/tools/validate.py` agent-package hook (`validate_agent_package`) | Removed with `agent/`, in the same story that deletes `agent/`. |
+| `framework/tools/validate.py` agent-package hook and `framework/tools/validate_agent_package.py` | Removed with `agent/`, in the same story that deletes `agent/`, because the check requires `agent/`. `validate_skills.py` replaces it (section 5). |
 | `draft_table/repo.py` vendoring list | Extended so `framework/skills/` is vendored into `.draft/framework/skills/` (E4). Skills reach workspaces only after this change. |
 | `agent/skills/*` (the rest) | Become `framework/skills/*` per 4.2, with channel and company-agent text removed. |
 | `agent/` (directory) | Deleted once the above are done. |
@@ -183,7 +183,7 @@ This also gives #195 a smaller target. The skill pack has no multi-node runtime 
 
 - All work lands on the integration branch `feat/draftsman-skill-pack`, created from `main`. Story PRs target the integration branch only, so `promote-release.yml` (which fires on pushes to `main`) does not cut a release per story.
 - A single release PR from the integration branch into `main` is opened at the end and merged by a human, producing one complete release.
-- Skills need E4 vendoring: until `draft_table/repo.py` vendors `framework/skills/` and `validate.py` drops the `agent/` package hook, workspaces do not receive the skills.
+- Skills need E4 vendoring: until `draft_table/repo.py` vendors `framework/skills/`, workspaces do not receive the skills. Removing the `validate.py` agent-package hook is separate and happens with the `agent/` deletion (phase 3).
 
 ### Phased plan
 
@@ -192,7 +192,7 @@ This also gives #195 a smaller target. The skill pack has no multi-node runtime 
 | 0 | Review and decide on this RFC. | Maintainers agree on location, skill set, and the removal list in 4.6. |
 | 1 | Extract `draftsman-core` from `SOUL.md`, `soul.md`, and `draftsman.md`. Strip harness text from the workflow skills. Delete `switch-game-architect` and every Archie and Switch reference. | Portability lint passes on all skills. |
 | 2 | Move skills to `framework/skills/`. Extend `setup_ide.py` adapters. Make `/draft` verbs point at skills. Add `validate_skills.py` and the behavior fixtures. Extend the `draft_table/repo.py` vendoring list to include `framework/skills/` (E4). | A fresh workspace refresh delivers working skills in Claude Code and one non-Claude harness. |
-| 3 | Publish the bring-your-own-agent guide. Keep the optional MCP adapter (`framework/tools/mcp_server.py`). Delete `agent/` together with the `validate.py` agent-package hook (the hook requires `agent/`, so both go in the same story), `framework/integrations/slack/`, `framework/integrations/discord/`, the gatekeeper, and the Slack and Discord text. | `git grep -i -E "slack\|discord\|hermes\|gatekeeper\|archie\|switch-game"` finds nothing outside CHANGELOG history and this RFC. |
+| 3 | Publish the bring-your-own-agent guide. Keep the optional MCP adapter (`framework/tools/mcp_server.py`). Delete `agent/` together with the `validate.py` agent-package hook and `validate_agent_package.py` (the check requires `agent/`, so all go in the same story), `framework/integrations/slack/`, `framework/integrations/discord/`, `framework/integrations/README.md`, the gatekeeper, and the Slack and Discord text. | `git grep -i -E "slack\|discord\|hermes\|gatekeeper\|archie\|switch-game"` finds nothing outside CHANGELOG history and this RFC. |
 
 ---
 
