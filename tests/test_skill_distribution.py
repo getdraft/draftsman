@@ -31,6 +31,7 @@ def load(name: str, relative: str):
 
 setup_ide = load("setup_ide_dist", "framework/tools/setup_ide.py")
 validate_skills = load("validate_skills_dist", "framework/tools/validate_skills.py")
+skill_hash_mod = load("skill_hash_dist", "framework/tools/skill_hash.py")
 
 
 def independent_sha(skill_dir: Path) -> str:
@@ -144,7 +145,7 @@ class ProjectionTests(unittest.TestCase):
             ws.run_setup()
             stale = ws.projected / "draftsman-gone"
             stale.mkdir()
-            (stale / "SKILL.md").write_text("---\nname: draftsman-gone\ndescription: x\ngenerated: true\nsource_sha256: 0\n---\n", encoding="utf-8")
+            (stale / "SKILL.md").write_text("---\nname: draftsman-gone\ndescription: x\ngenerated: true\nsource_sha256: 0000000000000000000000000000000000000000000000000000000000000000\n---\n", encoding="utf-8")
             manual = ws.projected / "my-own"
             manual.mkdir()
             (manual / "SKILL.md").write_text("---\nname: my-own\ndescription: mine\n---\n", encoding="utf-8")
@@ -342,6 +343,37 @@ class EdgeCaseTests(unittest.TestCase):
                 os.chmod(ref, stat.S_IRUSR | stat.S_IWUSR)
             self.assertEqual(code, 1)
             self.assertIn("FAIL", out)
+
+
+class GeneratedMarkerTests(unittest.TestCase):
+    def test_only_a_top_level_marker_with_a_hash_counts(self):
+        sha = "a" * 64
+        cases = {
+            "metadata:\n  generated: true\n": False,
+            "description: |\n  generated: true\n  source_sha256: " + sha + "\n": False,
+            "generated: true\n": False,
+            "generated: true\nsource_sha256: short\n": False,
+            "generated: 'true'\nsource_sha256: " + sha + "\n": False,
+            "generated: true\nsource_sha256: " + sha + "\n": True,
+        }
+        for front, expected in cases.items():
+            with tempfile.TemporaryDirectory() as d:
+                path = Path(d) / "SKILL.md"
+                path.write_text("---\nname: x\ndescription: y\n" + front + "---\nBody\n", encoding="utf-8")
+                self.assertEqual(skill_hash_mod.is_generated_skill(path), expected, front)
+
+    def test_setup_does_not_delete_user_skills_with_nested_markers(self):
+        with Workspace() as ws:
+            ws.run_setup()
+            nested = ws.projected / "odd"
+            nested.mkdir()
+            (nested / "SKILL.md").write_text("---\nname: odd\ndescription: x\nmetadata:\n  generated: true\n---\n", encoding="utf-8")
+            block = ws.projected / "usr"
+            block.mkdir()
+            (block / "SKILL.md").write_text("---\nname: usr\ndescription: |\n  generated: true\n---\n", encoding="utf-8")
+            ws.run_setup()
+            self.assertTrue(nested.exists())
+            self.assertTrue(block.exists())
 
 
 if __name__ == "__main__":

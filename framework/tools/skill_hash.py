@@ -11,6 +11,8 @@ import hashlib
 import re
 from pathlib import Path
 
+import yaml
+
 IGNORED_PARTS = {"__pycache__"}
 IGNORED_NAMES = {".DS_Store", "Thumbs.db", "desktop.ini"}
 IGNORED_SUFFIXES = {".pyc", ".pyo"}
@@ -44,19 +46,27 @@ def find_block(text: str):
 
 
 def is_generated_skill(skill_md: Path) -> bool:
-    """True when SKILL.md exists and its frontmatter says generated: true."""
+    """True only for a projection this tool wrote: the YAML frontmatter has a
+    top-level ``generated: true`` and a 64-hex ``source_sha256``. A nested or
+    quoted occurrence (metadata, block scalars, body text) does not count."""
     try:
-        lines = skill_md.read_text(encoding="utf-8-sig").splitlines()
+        text = skill_md.read_text(encoding="utf-8-sig")
     except (OSError, UnicodeError):
         return False
+    lines = text.splitlines()
     if not lines or lines[0].rstrip() != "---":
         return False
-    for line in lines[1:]:
-        if line.rstrip() == "---":
-            return False
-        if line.strip() == "generated: true":
-            return True
-    return False
+    end = next((i for i in range(1, len(lines)) if lines[i].rstrip() == "---"), None)
+    if end is None:
+        return False
+    try:
+        front = yaml.safe_load("\n".join(lines[1:end]))
+    except (yaml.YAMLError, ValueError, RecursionError):
+        return False
+    if not isinstance(front, dict):
+        return False
+    digest = front.get("source_sha256")
+    return front.get("generated") is True and isinstance(digest, str) and re.fullmatch(r"[0-9a-f]{64}", digest) is not None
 
 
 def expected_projection(skill_dir: Path) -> dict[str, bytes]:
