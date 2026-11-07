@@ -2,7 +2,9 @@
 
 ### Compatibility Impact
 
-- None yet. The Draftsman skill pack work is staged on the integration branch `feat/draftsman-skill-pack`; later stories record removals here.
+- The Draftsman is now delivered as portable skills under `framework/skills/`, not as a DRAFT-operated agent. These are **removed**: the whole `agent/` directory (agent spec, `SOUL.md`, skills, MCP server copy, runtime bindings and deployment docs), `framework/integrations/slack/` and `framework/integrations/discord/`, `framework/tools/validate_agent_package.py`, and `framework/docs/soul.md` (its character content now lives in `framework/skills/draftsman-core/references/character.md`). `framework/integrations/cursor/` and `windsurf/` stay.
+- `framework/tools/validate.py` no longer runs the agent-package check. It is a contract path, so the release version bump is a minor bump (the bump tooling never selects major).
+- Any consumer that read `agent/`, the chat integration manifests, or `soul.md` must load `framework/skills/` instead.
 
 ### Added
 
@@ -25,6 +27,9 @@
 - `draft_table/repo.py` now vendors `framework/skills/` into `.draft/framework/skills/` on refresh and rewrites `framework/skills` paths like the other vendored directories (a governed `draft_table/` path change).
 - `/draft guide`, `/draft review` and `/draft update` action files are now routers to the `draftsman-author`, `draftsman-review` and `draftsman-update` skills; the full step text lives in the skills. `/draft validate` stays a direct action.
 - `KPF-DFT-004` now describes the optional MCP adapter and points at `tests/test_mcp_server.py` (renamed from `tests/test_agent_mcp_tools.py` and retargeted to `framework/tools/mcp_server.py`).
+- Replaced the "Interaction Modes" and "Dual AI Agent Modes" text in `framework/docs/draftsman.md` and `framework/docs/decentralized-sdp-setup.md` with the Query and Author capability profiles, and rewrote `framework/integrations/README.md` for Cursor and Windsurf only.
+- Rewrote the agent sections of `README.md` to describe the skill pack.
+- Added `tests/test_no_agent_delivery_content.py` (no tracked file outside an explicit allowlist names the removed delivery model) and `tests/test_doc_links.py` (no markdown link points at a deleted path).
 
 ### Fixed
 
@@ -32,7 +37,7 @@
 
 ### Migration Notes
 
-- No action required.
+- If you used the DRAFT agent package, its Slack or Discord manifests, or `soul.md`, load the skills in `framework/skills/` into your own agent instead. A workspace gets them as `.draft/framework/skills/` on the next framework refresh; run `python3 .draft/framework/tools/setup_ide.py` to project them. There is no deprecation window.
 
 ## 1.2.0 - 2026-08-28
 
