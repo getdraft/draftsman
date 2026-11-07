@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Any
@@ -23,6 +24,15 @@ if str(TOOLS_ROOT) not in sys.path:
 from indexes import build_catalog_indexes, sorted_objects
 
 
+def token_allowed_for(url: str) -> bool:
+    """Send a read token only over https to GitHub's own hosts, judged by parsed hostname."""
+    parsed = urllib.parse.urlparse(url)
+    host = (parsed.hostname or "").lower()
+    if parsed.scheme != "https" or not host:
+        return False
+    return any(host == base or host.endswith("." + base) for base in ("github.com", "githubusercontent.com"))
+
+
 def load_catalog_index() -> dict[str, Any]:
     url = os.getenv("DRAFT_CATALOG_INDEX_URL")
     path_str = os.getenv("DRAFT_CATALOG_INDEX_PATH")
@@ -31,7 +41,7 @@ def load_catalog_index() -> dict[str, Any]:
     if url:
         try:
             req = urllib.request.Request(url)
-            if read_token and ("github" in url.lower() or "githubusercontent" in url.lower()):
+            if read_token and token_allowed_for(url):
                 req.add_header("Authorization", f"Bearer {read_token}")
             with urllib.request.urlopen(req, timeout=10) as response:
                 if response.status == 200:
@@ -65,7 +75,11 @@ def load_catalog_index() -> dict[str, Any]:
             except Exception:
                 pass
 
-    return build_catalog_indexes(REPO_ROOT)
+    sys.stderr.write(
+        "Warning: no catalog index found. Set DRAFT_CATALOG_INDEX_PATH or DRAFT_CATALOG_INDEX_URL; "
+        "answering from an empty index.\n"
+    )
+    return {"objects": []}
 
 
 TOOLS_MANIFEST = [

@@ -53,13 +53,13 @@ Launch it over stdio from your harness's MCP configuration:
     "draftsman-query-server": {
       "command": "python3",
       "args": [".draft/framework/tools/mcp_server.py"],
-      "env": { "DRAFT_WORKSPACE_MODE": "read_only" }
+      "env": { "DRAFT_CATALOG_INDEX_PATH": "docs/assets/draft-indexes.json" }
     }
   }
 }
 ```
 
-It finds the index in this order: `DRAFT_CATALOG_INDEX_URL` (fetched over HTTP), `DRAFT_CATALOG_INDEX_PATH` (a local `catalog_indexes.json`), a `catalog_indexes.json` in the working directory or `docs/`, then an index built from the repository. For a private URL, set `GITHUB_READ_TOKEN` (or `GITHUB_TOKEN`) in the harness environment; the adapter sends it only to GitHub hosts. This is the harness's credential, not a DRAFT one.
+The server needs an index file; it does not build one. It looks in this order: `DRAFT_CATALOG_INDEX_URL` (fetched over HTTP), `DRAFT_CATALOG_INDEX_PATH` (a local JSON index such as `docs/assets/draft-indexes.json`, which `framework/tools/generate_indexes.py` writes), then a file named `catalog_indexes.json` next to the framework or in the working directory (also under `docs/`). With none of these it answers from an empty index and says so on stderr. For a private URL, set `GITHUB_READ_TOKEN` (or `GITHUB_TOKEN`) in the harness environment; the adapter sends it only over https to `github.com` and `githubusercontent.com` hosts. That token is the harness's credential, not a DRAFT one.
 
 ## What the skills do not do
 

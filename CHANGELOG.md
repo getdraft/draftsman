@@ -35,6 +35,7 @@
 ### Fixed
 
 - `framework/tools/mcp_server.py` answered `check_compliance` with a fixed "compliant" verdict for any product and drew `get_c4_diagram` from a fixed template. Both now read the catalog index: an unknown product or an object with nothing assessed is reported as `unknown`, gaps are reported as `non_compliant`, and the diagram shows the recorded relationships. A name fragment that matches several objects is reported as unknown instead of picking one, and diagram labels are escaped. This brings it in line with the tool logic that `agent/mcp/server.py` already had.
+- `framework/tools/mcp_server.py` sent the read token to any URL containing the text "github". It now sends it only over https to `github.com` and `githubusercontent.com` hosts, judged by parsed hostname. With no index file found it used to fail with an internal error; it now answers from an empty index and says so on stderr.
 
 ### Migration Notes
 
