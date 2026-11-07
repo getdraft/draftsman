@@ -124,7 +124,7 @@ Projections are **generated, never hand-edited**. `draft update` regenerates the
 
 ### 4.6 What is removed
 
-Nothing in this table is relocated. Only the skills and the MCP adapter survive, as described in 4.2 and 4.4.
+Nothing here is relocated except the skills (4.2); the MCP adapter (`framework/tools/mcp_server.py`, 4.4) and `framework/integrations/cursor/` and `windsurf/` stay in place.
 
 | Item | Disposition |
 | :--- | :--- |
@@ -190,7 +190,7 @@ This also gives #195 a smaller target. The skill pack has no multi-node runtime 
 | :--- | :--- | :--- |
 | 0 | Review and decide on this RFC. | Maintainers agree on location, skill set, and the removal list in 4.6. |
 | 1 | Extract `draftsman-core` from `SOUL.md`, `soul.md`, and `draftsman.md`. Strip harness text from the workflow skills. Delete `switch-game-architect` and every Archie and Switch reference. | Portability lint passes on all skills. |
-| 2 | Move skills to `framework/skills/`. Extend `setup_ide.py` adapters. Make `/draft` verbs point at skills. Add `validate_skills.py` and the behavior fixtures. | A fresh workspace refresh delivers working skills in Claude Code and one non-Claude harness. |
+| 2 | Move skills to `framework/skills/`. Extend `setup_ide.py` adapters. Make `/draft` verbs point at skills. Add `validate_skills.py` and the behavior fixtures. Extend the `draft_table/repo.py` vendoring list to include `framework/skills/` and remove the `validate.py` agent-package hook (E4). | A fresh workspace refresh delivers working skills in Claude Code and one non-Claude harness. |
 | 3 | Publish the bring-your-own-agent guide. Keep the optional MCP adapter (`framework/tools/mcp_server.py`). Delete `agent/`, `framework/integrations/slack/`, `framework/integrations/discord/`, the gatekeeper, and the Slack and Discord text. | `git grep -i -E "slack\|discord\|hermes\|gatekeeper\|archie\|switch-game"` finds nothing outside CHANGELOG history and this RFC. |
 
 ---
