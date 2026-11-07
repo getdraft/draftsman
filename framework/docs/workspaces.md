@@ -322,8 +322,7 @@ this order:
 ### Writing a custom pack
 
 See [framework/personalities/README.md](../personalities/README.md) for the
-`cast.yaml` schema and [framework/docs/soul.md](soul.md) for the cast member
-fields and interaction style identifiers.
+`cast.yaml` schema.
 
 ## AI Instruction Overlays
 

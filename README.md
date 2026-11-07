@@ -23,7 +23,7 @@ DRAFT operates via a decentralized Architecture-as-Code architecture:
    - **`reference-only`**: Legacy standards and "acceptable use" platforms without IaC modules. These satisfy `RequirementGroups` for compliance/audit purposes, but any pattern relying on them is capped at `catalogStatus: documentation` and cannot be marked `deployment-ready`.
 
 3. **AI Pair Programming via Draftsman**:
-   Engineers pair with AI coding assistants (Cursor, Claude Code, Copilot, Antigravity) running the `draftsman` agent locally, or query central architecture via the `draftsman` factory agent over Slack, Discord, or Web UI.
+   Engineers pair with AI coding assistants (Cursor, Claude Code, Copilot, Antigravity) using the Draftsman skills in `framework/skills/`, which any agent or harness can load.
 
 ---
 
@@ -75,7 +75,6 @@ Agent responsibility is determined by the real GitHub identity that performed th
 ## Repository Layout
 
 ```text
-agent/                  # Official Draftsman Agent specification, prompts, skills, and factory bindings
 framework/              # Core schemas, tools, docs, and base configurations
 framework/browser/      # Static browser shell, CSS, JavaScript, and theme assets
 framework/configurations/
@@ -108,14 +107,9 @@ configurations/object-patches/
 
 ---
 
-## Official Draftsman Agent Package & Deployment
+## Draftsman Skills
 
-`draftsman` includes a turn-key, official agent package located in [`agent/`](agent/) containing:
-* **`agent/SOUL.md`**: Canonical persona, core identity, strict evidence discipline, and developer onboarding playbooks.
-* **`agent/agent-spec.yaml`**: Universal runtime & resource specification.
-* **`agent/skills/`**: Specialized agent skills (`draftsman`, `draftsman-engineer`, `draftsman-autodiscover`, `draftsman-diagram`, `draftsman-query`, `draftsman-standards`).
-* **`agent/bindings/`**: Factory bindings for **Hermes Agent Factories** (`agent/bindings/hermes/agent.yaml`) and **GitHub Actions** (`agent/bindings/github-actions/draft-agent-gatekeeper.yml`).
-* **`agent/docs/DEPLOYMENT.md`**: Deployment blueprints (GCP Cloud Run, AWS Fargate) and secret management.
+The Draftsman is delivered as portable skills, not as a deployed agent. `framework/skills/` holds `draftsman-core` (the always-loaded base with Evidence Discipline and the Query and Author capability profiles) and the workflow skills `draftsman-author`, `draftsman-query`, `draftsman-review`, `draftsman-update` and `draftsman-maturity`. A company workspace receives them as `.draft/framework/skills/` when the framework is refreshed, and `framework/tools/setup_ide.py` projects them into `.claude/skills/` and an `AGENTS.md` skill index. Any agent that can read these files and run local commands can use them; the harness keeps its own credentials.
 
 ---
 

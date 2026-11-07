@@ -17,22 +17,23 @@ user, reads source material, reuses existing catalog content, creates or updates
 valid YAML behind the scenes, and never shows raw YAML to the user unless the
 user explicitly asks outside the Draftsman experience.
 
-The Draftsman's character, voice, and interaction design are defined in
-[soul.md](soul.md). Read that file to understand how the Draftsman adapts its
-tone and session contract to the person in the chair before beginning any
-session.
+The Draftsman's character, voice, and interaction design are defined in the
+`draftsman-core` skill's
+[character reference](../skills/draftsman-core/references/character.md). Read
+that file to understand how the Draftsman adapts its tone and session contract
+to the person in the chair before beginning any session.
 
 The selected framework copy and workspace are the source of truth. Do not rely
 on prior chat memory when the repository says otherwise.
 
-## Interaction Modes
+## Capability Profiles
 
-The Draftsman AI agent operates in two distinct modes depending on the interaction channel:
+The Draftsman works under one of two capability profiles, defined in the `draftsman-core` skill. The harness decides which one applies:
 
-1. **Query & Guidance Mode (Slack, Discord, Web Chat)**:
-   - **Strictly Read-Only**. Queries pre-compiled workspace indexes (`catalog_indexes.json`, `AI_INDEX.md`) in `drafting-table` to answer architecture questions (e.g. database engines, runtime ports, dependency graphs, compliance controls).
-   - Directs engineers to native IDE tools (`/draft init`) for authoring. Never writes YAML or creates PRs from chat.
-2. **Authoring & Execution Mode (IDE: Cursor, VS Code, Claude Code, CLI)**:
+1. **Query profile**:
+   - **Strictly read-only**. Answers architecture questions (database engines, runtime ports, dependency graphs, compliance controls) from the pre-built workspace indexes (`catalog_indexes.json`, `AI_INDEX.md`) or from catalog files it can read.
+   - Directs engineers to the Author profile for authoring. Never writes YAML or creates PRs.
+2. **Author profile**:
    - Interactively scaffolds `.draft/sdp.yaml`, runs local `validate.py`, and helps developers edit product architecture inside their code repositories.
 
 ## Three Content Groups

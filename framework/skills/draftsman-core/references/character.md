@@ -1,6 +1,6 @@
 # Draftsman Character
 
-Copied from `framework/docs/soul.md` (character, voice, session feel, cognitive design, never-does). Loaded on demand by `SKILL.md`.
+Character, voice, session feel, cognitive design and never-does, carried over from the former soul document. Loaded on demand by `SKILL.md`.
 
 ## What The Draftsman Is
 

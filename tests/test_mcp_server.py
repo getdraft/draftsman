@@ -210,5 +210,63 @@ class AmbiguousNameTests(unittest.TestCase):
         self.assertEqual(result["complianceStatus"], "compliant")
 
 
+class IndexLoadingTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location("mcp_server_under_test", SERVER)
+        cls.mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.mod)
+
+    def test_the_token_goes_only_to_https_github_hosts(self) -> None:
+        allowed = self.mod.token_allowed_for
+        for url in (
+            "https://raw.githubusercontent.com/org/repo/main/draft-indexes.json",
+            "https://api.github.com/repos/org/repo/contents/x.json",
+            "https://github.com/org/repo/raw/main/x.json",
+        ):
+            self.assertTrue(allowed(url), url)
+        for url in (
+            "https://evil.example.com/github/x.json",
+            "https://github.com.evil.example.com/x.json",
+            "https://evilgithub.com/x.json",
+            "http://raw.githubusercontent.com/x.json",
+            "https://example.com/?u=github.com",
+            "not a url",
+        ):
+            self.assertFalse(allowed(url), url)
+
+    def test_a_redirect_off_github_does_not_carry_the_token(self) -> None:
+        import urllib.request
+
+        handler = self.mod._KeepTokenOnGitHubOnly()
+        original = urllib.request.Request("https://raw.githubusercontent.com/o/r/main/x.json")
+        original.add_header("Authorization", "Bearer secret")
+        for target, keeps in (
+            ("https://evil.example.com/x.json", False),
+            ("http://raw.githubusercontent.com/x.json", False),
+            ("https://objects.githubusercontent.com/x.json", True),
+        ):
+            redirected = handler.redirect_request(original, None, 302, "Found", {}, target)
+            has = any(k.lower() == "authorization" for k in redirected.headers) or any(
+                k.lower() == "authorization" for k in redirected.unredirected_hdrs
+            )
+            self.assertEqual(has, keeps, target)
+
+    def test_no_index_found_is_an_empty_index_not_a_crash(self) -> None:
+        saved = {k: os.environ.pop(k, None) for k in ("DRAFT_CATALOG_INDEX_URL", "DRAFT_CATALOG_INDEX_PATH")}
+        cwd = os.getcwd()
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                os.chdir(tmp)
+                self.assertEqual(self.mod.load_catalog_index(), {"objects": []})
+        finally:
+            os.chdir(cwd)
+            for key, value in saved.items():
+                if value is not None:
+                    os.environ[key] = value
+
+
 if __name__ == "__main__":
     unittest.main()
