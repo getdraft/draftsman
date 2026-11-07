@@ -33,6 +33,21 @@ def token_allowed_for(url: str) -> bool:
     return any(host == base or host.endswith("." + base) for base in ("github.com", "githubusercontent.com"))
 
 
+class _KeepTokenOnGitHubOnly(urllib.request.HTTPRedirectHandler):
+    """Drop the Authorization header when a redirect leads anywhere the token may not go."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        new_req = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if new_req is not None and not token_allowed_for(newurl):
+            for name in list(new_req.headers):
+                if name.lower() == "authorization":
+                    del new_req.headers[name]
+            for name in list(new_req.unredirected_hdrs):
+                if name.lower() == "authorization":
+                    del new_req.unredirected_hdrs[name]
+        return new_req
+
+
 def load_catalog_index() -> dict[str, Any]:
     url = os.getenv("DRAFT_CATALOG_INDEX_URL")
     path_str = os.getenv("DRAFT_CATALOG_INDEX_PATH")
@@ -43,7 +58,7 @@ def load_catalog_index() -> dict[str, Any]:
             req = urllib.request.Request(url)
             if read_token and token_allowed_for(url):
                 req.add_header("Authorization", f"Bearer {read_token}")
-            with urllib.request.urlopen(req, timeout=10) as response:
+            with urllib.request.build_opener(_KeepTokenOnGitHubOnly).open(req, timeout=10) as response:
                 if response.status == 200:
                     data = json.loads(response.read().decode("utf-8"))
                     if isinstance(data, dict):

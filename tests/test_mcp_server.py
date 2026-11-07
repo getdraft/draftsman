@@ -237,6 +237,23 @@ class IndexLoadingTests(unittest.TestCase):
         ):
             self.assertFalse(allowed(url), url)
 
+    def test_a_redirect_off_github_does_not_carry_the_token(self) -> None:
+        import urllib.request
+
+        handler = self.mod._KeepTokenOnGitHubOnly()
+        original = urllib.request.Request("https://raw.githubusercontent.com/o/r/main/x.json")
+        original.add_header("Authorization", "Bearer secret")
+        for target, keeps in (
+            ("https://evil.example.com/x.json", False),
+            ("http://raw.githubusercontent.com/x.json", False),
+            ("https://objects.githubusercontent.com/x.json", True),
+        ):
+            redirected = handler.redirect_request(original, None, 302, "Found", {}, target)
+            has = any(k.lower() == "authorization" for k in redirected.headers) or any(
+                k.lower() == "authorization" for k in redirected.unredirected_hdrs
+            )
+            self.assertEqual(has, keeps, target)
+
     def test_no_index_found_is_an_empty_index_not_a_crash(self) -> None:
         saved = {k: os.environ.pop(k, None) for k in ("DRAFT_CATALOG_INDEX_URL", "DRAFT_CATALOG_INDEX_PATH")}
         cwd = os.getcwd()
