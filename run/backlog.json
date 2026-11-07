@@ -1,0 +1,2000 @@
+{
+ "epics": [
+  {
+   "id": "E1",
+   "title": "Core skill, Evidence Discipline, RFC commit, and the Unreleased release-notes entry",
+   "issue": 197
+  },
+  {
+   "id": "E2",
+   "title": "Skill validator, portability lint, and Evidence Discipline fixtures",
+   "issue": 198
+  },
+  {
+   "id": "E3",
+   "title": "Workflow skills extracted and made harness-neutral",
+   "issue": 199
+  },
+  {
+   "id": "E4",
+   "title": "Distribution: vendoring, projections, /draft routers, MCP adapter, freshness check",
+   "issue": 200
+  },
+  {
+   "id": "E5",
+   "title": "Removal of agent-delivery content",
+   "issue": 201
+  },
+  {
+   "id": "E6",
+   "title": "Bring-your-own-agent guide, release-notes completion, and the release PR",
+   "issue": 202
+  }
+ ],
+ "stories": [
+  {
+   "id": "E1-S1",
+   "epic": "E1",
+   "title": "Commit RFC with corrections, ignore .sdlc/, open Unreleased section",
+   "outcome": "The integration branch has the corrected RFC committed, .sdlc/ ignored, and a release-notes-valid ## Unreleased section.",
+   "in_scope": [
+    "The RFC is untracked in the working tree at framework/docs/proposals/rfc-draftsman-skill-pack.md on branch docs/rfc-draftsman-skill-pack; the coder copies that file onto the integration branch, then applies the four 'RFC corrections' from plan.md",
+    "Commit framework/docs/proposals/rfc-draftsman-skill-pack.md with the four RFC corrections (integrations partial delete, mcp_server.py kept, validate.py hook/repo.py vendoring/release model added, skills need E4 vendoring)",
+    "Add .sdlc/ to .gitignore",
+    "Add ## Unreleased with Compatibility Impact, Added, Changed, Fixed, Migration Notes",
+    "Regenerate indexes if the RFC feeds them"
+   ],
+   "out_of_scope": [
+    "Any skill content",
+    "Any change under agent/"
+   ],
+   "acceptance": [
+    {
+     "given": "the PR branch",
+     "when": "I run grep -n '^.sdlc/$' .gitignore",
+     "then": "the line is present"
+    },
+    {
+     "given": "the PR branch",
+     "when": "I run python framework/tools/check_release_notes.py",
+     "then": "it exits 0 and CHANGELOG.md has exactly one '## Unreleased' with the five subsections"
+    },
+    {
+     "given": "the PR branch",
+     "when": "I run the index command",
+     "then": "git diff --exit-code docs/assets/draft-indexes.json AI_INDEX.md is clean"
+    },
+    {
+     "given": "the RFC file on the integration branch",
+     "when": "I grep it",
+     "then": "it contains 'framework/tools/mcp_server.py', contains 'cursor/' and 'windsurf/' as kept, does not contain 'framework/tools/mcp/', and contains 'integration branch'"
+    },
+    {
+     "given": "the RFC file",
+     "when": "I read the corrections",
+     "then": "only slack/, discord/ and the README are removed from framework/integrations/, the validate.py hook removal and draft_table/repo.py vendoring are listed, and E4 vendoring is stated"
+    }
+   ],
+   "files": [
+    "framework/docs/proposals/rfc-draftsman-skill-pack.md",
+    ".gitignore",
+    "CHANGELOG.md",
+    "docs/assets/draft-indexes.json",
+    "AI_INDEX.md"
+   ],
+   "depends_on": [],
+   "order": 1,
+   "test_plan": [
+    "python framework/tools/check_release_notes.py",
+    "python framework/tools/generate_indexes.py && python framework/tools/generate_ai_index.py && git diff --exit-code docs/assets/draft-indexes.json AI_INDEX.md",
+    "python framework/tools/validate.py",
+    "python -m unittest discover -s tests",
+    "git ls-files .sdlc | wc -l  # must be 0",
+    "grep -q 'framework/tools/mcp_server.py' framework/docs/proposals/rfc-draftsman-skill-pack.md && grep -q 'cursor/' framework/docs/proposals/rfc-draftsman-skill-pack.md && grep -q 'windsurf/' framework/docs/proposals/rfc-draftsman-skill-pack.md && grep -q 'integration branch' framework/docs/proposals/rfc-draftsman-skill-pack.md && ! grep -q 'framework/tools/mcp/' framework/docs/proposals/rfc-draftsman-skill-pack.md"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 260,
+   "priority": "P0",
+   "issue": 203
+  },
+  {
+   "id": "E1-S2",
+   "epic": "E1",
+   "title": "draftsman-core SKILL.md with Evidence Discipline R1-R6",
+   "outcome": "draftsman-core exists under 150 lines with the Recorded/Inferred/Unknown table, rules R1-R6, and exactly two profiles, guarded by a unit test.",
+   "in_scope": [
+    "Create framework/skills/draftsman-core/SKILL.md (frontmatter name + 'use when' description)",
+    "Evidence Discipline table and R1-R5 sourced from the section in agent/SOUL.md (copied, agent/ untouched)",
+    "New Author-profile rule R6 (guessed field labeled inferred; unwritten relationship not asserted), worded for agents reading catalog files directly",
+    "Define profiles Query and Author only",
+    "tests/test_draftsman_core.py asserting key phrases, line count, frontmatter, two profiles, no channel/runtime/credential/company-agent terms (inline regex)"
+   ],
+   "out_of_scope": [
+    "references/ files (E1-S3)",
+    "validate_skills.py (E2)",
+    "Any change under agent/"
+   ],
+   "acceptance": [
+    {
+     "given": "the skill file",
+     "when": "I run wc -l framework/skills/draftsman-core/SKILL.md",
+     "then": "the count is under 150 and frontmatter has name and a description starting with when to use it"
+    },
+    {
+     "given": "SKILL.md",
+     "when": "the unit test greps it",
+     "then": "labels R1..R6 exist and phrases [relationship the index does not characterise], [parse prose into structure], [the catalog does not record], [A count is a claim], [Refusing is a valid answer] are present, plus the Recorded / Inferred / Unknown table"
+    },
+    {
+     "given": "SKILL.md",
+     "when": "the test counts profile definitions",
+     "then": "exactly Query and Author are defined"
+    },
+    {
+     "given": "SKILL.md",
+     "when": "the test scans for slack, discord, hermes, fargate, archie, central chat, switch-game-architect, ANTHROPIC_API_KEY",
+     "then": "none match"
+    },
+    {
+     "given": "the PR description",
+     "when": "a reviewer reads it",
+     "then": "R6 is flagged as new text (not a move) and untested on a live model"
+    },
+    {
+     "given": "the PR branch",
+     "when": "I run git diff --exit-code feat/draftsman-skill-pack -- agent/",
+     "then": "no diff"
+    }
+   ],
+   "files": [
+    "framework/skills/draftsman-core/SKILL.md",
+    "tests/test_draftsman_core.py",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E1-S1"
+   ],
+   "order": 2,
+   "test_plan": [
+    "python -m unittest tests.test_draftsman_core",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "git diff --exit-code feat/draftsman-skill-pack -- agent/"
+   ],
+   "security": "Prompt-injection posture: the skill must not weaken Evidence Discipline; no credentials or channels named. Otherwise none.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 230,
+   "priority": "P0",
+   "issue": 204
+  },
+  {
+   "id": "E1-S3",
+   "epic": "E1",
+   "title": "draftsman-core references: character.md and onboarding.md",
+   "outcome": "Long character and onboarding material lives in draftsman-core/references/ and SKILL.md points to it.",
+   "in_scope": [
+    "references/character.md from framework/docs/soul.md (character, voice, session-feel, cognitive-design, never-does), copied; soul.md stays until E5",
+    "references/onboarding.md from agent/SOUL.md 'How do I get my product into DRAFT?' with all Slack, Discord and Web UI wording removed",
+    "Add relative links from SKILL.md (keep under 150 lines)",
+    "Extend test_draftsman_core.py: both files exist, no banned terms, links resolve"
+   ],
+   "out_of_scope": [
+    "Deleting soul.md (E5)",
+    "Fixing links to soul.md (E5)"
+   ],
+   "acceptance": [
+    {
+     "given": "the PR branch",
+     "when": "I list framework/skills/draftsman-core/references/",
+     "then": "character.md and onboarding.md exist"
+    },
+    {
+     "given": "onboarding.md",
+     "when": "I grep -i -E '\\b(slack|discord|web ui)\\b'",
+     "then": "no match"
+    },
+    {
+     "given": "SKILL.md",
+     "when": "wc -l and link check run",
+     "then": "under 150 lines and both reference links resolve"
+    },
+    {
+     "given": "the PR branch",
+     "when": "I run git diff --exit-code feat/draftsman-skill-pack -- agent/",
+     "then": "no diff"
+    }
+   ],
+   "files": [
+    "framework/skills/draftsman-core/references/character.md",
+    "framework/skills/draftsman-core/references/onboarding.md",
+    "framework/skills/draftsman-core/SKILL.md",
+    "tests/test_draftsman_core.py",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E1-S2"
+   ],
+   "order": 3,
+   "test_plan": [
+    "python -m unittest tests.test_draftsman_core",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "git diff --exit-code feat/draftsman-skill-pack -- agent/"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 200,
+   "priority": "P0",
+   "notes": [
+    "agent/SOUL.md line ~62 mentions \"Pattern 2\". Do not copy that wording into references/onboarding.md; use neutral wording."
+   ],
+   "issue": 205
+  },
+  {
+   "id": "E2-S1",
+   "epic": "E2",
+   "title": "validate_skills.py: frontmatter, line budgets, links",
+   "outcome": "A pyyaml-only validator enforces frontmatter, line budgets and link/script integrity and passes on draftsman-core alone.",
+   "in_scope": [
+    "framework/tools/validate_skills.py with exit codes",
+    "Checks: frontmatter present/valid (name, description), 150-line budget for draftsman-core, 200 for other SKILL.md, references/ not budgeted, broken relative link, missing script path",
+    "tests/test_validate_skills.py with passing case and one bad temp-dir skill per failure mode above"
+   ],
+   "out_of_scope": [
+    "Portability lint (E2-S2)",
+    "--workspace freshness (E4-S3)",
+    "CI wiring (E2-S4)"
+   ],
+   "acceptance": [
+    {
+     "given": "framework/skills containing only draftsman-core",
+     "when": "I run python3 framework/tools/validate_skills.py",
+     "then": "exit 0"
+    },
+    {
+     "given": "temp skill with missing/invalid frontmatter",
+     "when": "the validator runs",
+     "then": "exit non-zero"
+    },
+    {
+     "given": "temp SKILL.md of 151 lines named draftsman-core, or 201 lines for another skill",
+     "when": "the validator runs",
+     "then": "exit non-zero; a 500-line references/ file does not fail"
+    },
+    {
+     "given": "temp skill with a broken relative link or a missing script path",
+     "when": "the validator runs",
+     "then": "exit non-zero"
+    }
+   ],
+   "files": [
+    "framework/tools/validate_skills.py",
+    "tests/test_validate_skills.py",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E1-S3"
+   ],
+   "order": 4,
+   "test_plan": [
+    "python -m unittest tests.test_validate_skills",
+    "python3 framework/tools/validate_skills.py",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py"
+   ],
+   "security": "Validator reads files only; must not execute skill scripts.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 330,
+   "priority": "P0",
+   "issue": 206
+  },
+  {
+   "id": "E2-S2",
+   "epic": "E2",
+   "title": "Portability lint (banned terms) in validate_skills.py",
+   "outcome": "The validator fails on harness, channel or company terms anywhere in framework/skills/.",
+   "in_scope": [
+    "Case-insensitive word-boundary patterns: \\bslack\\b \\bdiscord\\b \\bhermes\\b \\bfargate\\b \\barchie\\b \\bcentral chat\\b, literal switch-game-architect, literal ANTHROPIC_API_KEY",
+    "Scope framework/skills/ only",
+    "Bad-skill cases in tests/test_validate_skills.py incl. negatives (bare 'switch', 'hierarchy' pass)"
+   ],
+   "out_of_scope": [
+    "Scanning outside framework/skills/ (E5 removal test)"
+   ],
+   "acceptance": [
+    {
+     "given": "a temp skill containing each banned term in turn",
+     "when": "the validator runs",
+     "then": "exit non-zero for each"
+    },
+    {
+     "given": "a temp skill with the words 'switch' and 'hierarchy'",
+     "when": "the validator runs",
+     "then": "exit 0"
+    },
+    {
+     "given": "framework/skills/",
+     "when": "I run python3 framework/tools/validate_skills.py",
+     "then": "exit 0"
+    }
+   ],
+   "files": [
+    "framework/tools/validate_skills.py",
+    "tests/test_validate_skills.py",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E2-S1"
+   ],
+   "order": 5,
+   "test_plan": [
+    "python -m unittest tests.test_validate_skills",
+    "python3 framework/tools/validate_skills.py",
+    "python -m unittest discover -s tests"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 200,
+   "priority": "P0",
+   "notes": [
+    "Also ban the literal \"Pattern 2\" (case-insensitive, word boundary) in framework/skills/, per the plan prerequisite that skills must not name it; add a failing-case unit test."
+   ],
+   "issue": 207
+  },
+  {
+   "id": "E2-S3",
+   "epic": "E2",
+   "title": "Evidence Discipline fixtures R1-R6 and deterministic test",
+   "outcome": "One JSON fixture per rule R1-R6 gates CI on key-phrase presence without a live model.",
+   "in_scope": [
+    "tests/fixtures/evidence_discipline/R1.json..R6.json with {id, rule, question, index_excerpt, forbidden_phrases, required_phrases}",
+    "tests/test_evidence_discipline_fixtures.py: key phrase of each rule in draftsman-core, both phrase lists non-empty, six fixtures exactly",
+    "PR description states fixtures are not run against a live model"
+   ],
+   "out_of_scope": [
+    "Live-model evaluation"
+   ],
+   "acceptance": [
+    {
+     "given": "the fixtures dir",
+     "when": "I count files",
+     "then": "six, one per R1..R6, each with all six keys"
+    },
+    {
+     "given": "each fixture",
+     "when": "the test runs",
+     "then": "draftsman-core contains the rule's key phrase and forbidden_phrases and required_phrases are non-empty"
+    },
+    {
+     "given": "the PR description",
+     "when": "read",
+     "then": "it states fixtures are not run against a live model"
+    }
+   ],
+   "files": [
+    "tests/fixtures/evidence_discipline/R1.json",
+    "tests/fixtures/evidence_discipline/R2.json",
+    "tests/fixtures/evidence_discipline/R3.json",
+    "tests/fixtures/evidence_discipline/R4.json",
+    "tests/fixtures/evidence_discipline/R5.json",
+    "tests/fixtures/evidence_discipline/R6.json",
+    "tests/test_evidence_discipline_fixtures.py",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E1-S2"
+   ],
+   "order": 6,
+   "test_plan": [
+    "python -m unittest tests.test_evidence_discipline_fixtures",
+    "python -m unittest discover -s tests"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 190,
+   "priority": "P0",
+   "issue": 208
+  },
+  {
+   "id": "E2-S4",
+   "epic": "E2",
+   "title": "Run validate_skills.py in CI",
+   "outcome": "validate-catalog.yml runs validate_skills.py on every PR and the change is recorded in Unreleased.",
+   "in_scope": [
+    "Add step 'python framework/tools/validate_skills.py' to .github/workflows/validate-catalog.yml, keeping validate_agent_package hook as is",
+    "CHANGELOG Unreleased records workflow change"
+   ],
+   "out_of_scope": [
+    "Removing the validate_agent_package hook (E5)"
+   ],
+   "acceptance": [
+    {
+     "given": "the workflow file",
+     "when": "I grep 'framework/tools/validate_skills.py'",
+     "then": "one step is present"
+    },
+    {
+     "given": "the PR branch",
+     "when": "I run python framework/tools/check_release_notes.py",
+     "then": "exit 0 and Changed/Added mentions the workflow change"
+    }
+   ],
+   "files": [
+    ".github/workflows/validate-catalog.yml",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E2-S2",
+    "E2-S3"
+   ],
+   "order": 7,
+   "test_plan": [
+    "python3 framework/tools/validate_skills.py",
+    "python framework/tools/check_release_notes.py",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "python -c \"import yaml;yaml.safe_load(open('.github/workflows/validate-catalog.yml'))\""
+   ],
+   "security": "CI workflow change: adds a read-only step, no new permissions, secrets or triggers.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 30,
+   "priority": "P0",
+   "issue": 209
+  },
+  {
+   "id": "E3-S1",
+   "epic": "E3",
+   "title": "Residual role content into draftsman-core/references",
+   "outcome": "Any content of agent/skills/draftsman not covered by E1 is preserved as a core reference.",
+   "in_scope": [
+    "Diff agent/skills/draftsman and agent/SOUL.md sections 1-2 against core; copy uncovered content (dual-mode text rewritten as profiles) to references/role.md",
+    "Link from SKILL.md within 150 lines; if nothing is uncovered, record that in the PR and CHANGELOG and make no file change besides CHANGELOG"
+   ],
+   "out_of_scope": [
+    "Changing R1-R6",
+    "Changes under agent/"
+   ],
+   "acceptance": [
+    {
+     "given": "core",
+     "when": "I run python3 framework/tools/validate_skills.py",
+     "then": "exit 0"
+    },
+    {
+     "given": "references/role.md or the PR note",
+     "when": "I read it",
+     "then": "every non-covered section of agent/skills/draftsman is accounted for"
+    },
+    {
+     "given": "PR",
+     "when": "I run git diff --exit-code feat/draftsman-skill-pack -- agent/",
+     "then": "no diff"
+    }
+   ],
+   "files": [
+    "framework/skills/draftsman-core/references/role.md",
+    "framework/skills/draftsman-core/SKILL.md",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E2-S4"
+   ],
+   "order": 8,
+   "test_plan": [
+    "python3 framework/tools/validate_skills.py",
+    "python -m unittest tests.test_draftsman_core",
+    "python -m unittest discover -s tests",
+    "git diff --exit-code feat/draftsman-skill-pack -- agent/"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 80,
+   "priority": "P1",
+   "issue": 210
+  },
+  {
+   "id": "E3-S2",
+   "epic": "E3",
+   "title": "draftsman-author skill",
+   "outcome": "A harness-neutral Author skill merges author, autodiscover and the guide action.",
+   "in_scope": [
+    "framework/skills/draftsman-author/SKILL.md (<=200) from agent/skills/draftsman-author, draftsman-autodiscover, framework/draft-actions/guide.md",
+    "Long parts in references/",
+    "Strip harness/channel wording",
+    "Create guide step list is NOT needed"
+   ],
+   "out_of_scope": [
+    "Deleting originals (E5)",
+    "Turning guide.md into a router (E4)"
+   ],
+   "acceptance": [
+    {
+     "given": "framework/skills/draftsman-author",
+     "when": "I run python3 framework/tools/validate_skills.py",
+     "then": "exit 0 (frontmatter, <=200 lines, links, portability lint)"
+    },
+    {
+     "given": "SKILL.md",
+     "when": "I read it",
+     "then": "it states which profile (Query or Author) it needs"
+    },
+    {
+     "given": "the PR branch",
+     "when": "I run git diff --exit-code feat/draftsman-skill-pack -- agent/",
+     "then": "no diff"
+    },
+    {
+     "given": "the skill",
+     "when": "I check every referenced script path",
+     "then": "each exists under framework/tools/"
+    }
+   ],
+   "files": [
+    "framework/skills/draftsman-author/SKILL.md",
+    "framework/skills/draftsman-author/references/guide.md",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E3-S1"
+   ],
+   "order": 9,
+   "test_plan": [
+    "python3 framework/tools/validate_skills.py",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "git diff --exit-code feat/draftsman-skill-pack -- agent/"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 260,
+   "priority": "P1",
+   "issue": 211
+  },
+  {
+   "id": "E3-S3",
+   "epic": "E3",
+   "title": "draftsman-query skill",
+   "outcome": "A harness-neutral Query skill merges query and standards.",
+   "in_scope": [
+    "framework/skills/draftsman-query/SKILL.md from agent/skills/draftsman-query and draftsman-standards",
+    "references/standards.md for overflow"
+   ],
+   "out_of_scope": [
+    "Deleting originals (E5)"
+   ],
+   "acceptance": [
+    {
+     "given": "framework/skills/draftsman-query",
+     "when": "I run python3 framework/tools/validate_skills.py",
+     "then": "exit 0 (frontmatter, <=200 lines, links, portability lint)"
+    },
+    {
+     "given": "SKILL.md",
+     "when": "I read it",
+     "then": "it states which profile (Query or Author) it needs"
+    },
+    {
+     "given": "the PR branch",
+     "when": "I run git diff --exit-code feat/draftsman-skill-pack -- agent/",
+     "then": "no diff"
+    },
+    {
+     "given": "the skill",
+     "when": "I check every referenced script path",
+     "then": "each exists under framework/tools/"
+    }
+   ],
+   "files": [
+    "framework/skills/draftsman-query/SKILL.md",
+    "framework/skills/draftsman-query/references/standards.md",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E3-S1"
+   ],
+   "order": 10,
+   "test_plan": [
+    "python3 framework/tools/validate_skills.py",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "git diff --exit-code feat/draftsman-skill-pack -- agent/"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 170,
+   "priority": "P1",
+   "notes": [
+    "agent/skills/draftsman-query/SKILL.md line ~31 mentions \"Pattern 2\". Do not carry it into draftsman-query; use neutral wording."
+   ],
+   "issue": 212
+  },
+  {
+   "id": "E3-S4",
+   "epic": "E3",
+   "title": "draftsman-review skill",
+   "outcome": "A review skill from review.md with a one-line-per-step SKILL.md and verbatim steps in references/steps.md.",
+   "in_scope": [
+    "framework/skills/draftsman-review/SKILL.md (<=200) with one-line summary per step",
+    "references/steps.md holds verbatim step bodies of framework/draft-actions/review.md (copy; action file untouched)"
+   ],
+   "out_of_scope": [
+    "Step-list fixtures and test (E3-S6)",
+    "Turning review.md into a router (E4)"
+   ],
+   "acceptance": [
+    {
+     "given": "framework/skills/draftsman-review",
+     "when": "I run python3 framework/tools/validate_skills.py",
+     "then": "exit 0 (frontmatter, <=200 lines, links, portability lint)"
+    },
+    {
+     "given": "SKILL.md",
+     "when": "I read it",
+     "then": "it states which profile (Query or Author) it needs"
+    },
+    {
+     "given": "the PR branch",
+     "when": "I run git diff --exit-code feat/draftsman-skill-pack -- agent/",
+     "then": "no diff"
+    },
+    {
+     "given": "the skill",
+     "when": "I check every referenced script path",
+     "then": "each exists under framework/tools/"
+    }
+   ],
+   "files": [
+    "framework/skills/draftsman-review/SKILL.md",
+    "framework/skills/draftsman-review/references/steps.md",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E3-S1"
+   ],
+   "order": 11,
+   "test_plan": [
+    "python3 framework/tools/validate_skills.py",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "git diff --exit-code feat/draftsman-skill-pack -- agent/"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 360,
+   "priority": "P1",
+   "issue": 213
+  },
+  {
+   "id": "E3-S5",
+   "epic": "E3",
+   "title": "draftsman-update skill",
+   "outcome": "An update skill from update.md with summaries in SKILL.md and verbatim steps in references/steps.md.",
+   "in_scope": [
+    "framework/skills/draftsman-update/SKILL.md (<=200)",
+    "references/steps.md copy of framework/draft-actions/update.md bodies"
+   ],
+   "out_of_scope": [
+    "Step-list fixtures and test (E3-S6)",
+    "Router conversion (E4)"
+   ],
+   "acceptance": [
+    {
+     "given": "framework/skills/draftsman-update",
+     "when": "I run python3 framework/tools/validate_skills.py",
+     "then": "exit 0 (frontmatter, <=200 lines, links, portability lint)"
+    },
+    {
+     "given": "SKILL.md",
+     "when": "I read it",
+     "then": "it states which profile (Query or Author) it needs"
+    },
+    {
+     "given": "the PR branch",
+     "when": "I run git diff --exit-code feat/draftsman-skill-pack -- agent/",
+     "then": "no diff"
+    },
+    {
+     "given": "the skill",
+     "when": "I check every referenced script path",
+     "then": "each exists under framework/tools/"
+    }
+   ],
+   "files": [
+    "framework/skills/draftsman-update/SKILL.md",
+    "framework/skills/draftsman-update/references/steps.md",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E3-S1"
+   ],
+   "order": 12,
+   "test_plan": [
+    "python3 framework/tools/validate_skills.py",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "git diff --exit-code feat/draftsman-skill-pack -- agent/"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 290,
+   "priority": "P1",
+   "issue": 214
+  },
+  {
+   "id": "E3-S6",
+   "epic": "E3",
+   "title": "Step-list fixtures and heading test for review and update",
+   "outcome": "Recorded step lists let E4 turn action files into routers without breaking tests.",
+   "in_scope": [
+    "tests/fixtures/skills/step_lists/review.txt and update.txt: every ## and ### heading of the source action files at this time",
+    "tests/test_skill_step_lists.py: each heading appears as a heading in the matching skill folder (SKILL.md or references/); reads only fixtures and skill, never framework/draft-actions/"
+   ],
+   "out_of_scope": [
+    "Editing action files"
+   ],
+   "acceptance": [
+    {
+     "given": "the fixtures",
+     "when": "I diff against grep -E '^#{2,3} ' of the action files",
+     "then": "they match exactly"
+    },
+    {
+     "given": "the test",
+     "when": "it runs",
+     "then": "every recorded heading is found in draftsman-review / draftsman-update"
+    },
+    {
+     "given": "the test source",
+     "when": "I grep for draft-actions",
+     "then": "no reference"
+    }
+   ],
+   "files": [
+    "tests/fixtures/skills/step_lists/review.txt",
+    "tests/fixtures/skills/step_lists/update.txt",
+    "tests/test_skill_step_lists.py",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E3-S4",
+    "E3-S5"
+   ],
+   "order": 13,
+   "test_plan": [
+    "python -m unittest tests.test_skill_step_lists",
+    "python -m unittest discover -s tests"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 120,
+   "priority": "P0",
+   "issue": 215
+  },
+  {
+   "id": "E3-S7",
+   "epic": "E3",
+   "title": "draftsman-diagram skill (needs PR #196)",
+   "outcome": "The diagram skill, including the rendered-page section, is copied and documents generate_diagram.py.",
+   "in_scope": [
+    "Gate: PR #196 merged to main and main merged into the integration branch; framework/tools/generate_diagram.py exists",
+    "framework/skills/draftsman-diagram/SKILL.md from agent/skills/draftsman-diagram incl. #196 section"
+   ],
+   "out_of_scope": [
+    "Deleting original (E5)"
+   ],
+   "acceptance": [
+    {
+     "given": "integration branch",
+     "when": "I ls framework/tools/generate_diagram.py",
+     "then": "it exists before work starts"
+    },
+    {
+     "given": "SKILL.md",
+     "when": "grep generate_diagram.py",
+     "then": "it is documented and path resolves"
+    },
+    {
+     "given": "framework/skills/draftsman-diagram",
+     "when": "I run python3 framework/tools/validate_skills.py",
+     "then": "exit 0 (frontmatter, <=200 lines, links, portability lint)"
+    },
+    {
+     "given": "the PR branch",
+     "when": "I run git diff --exit-code feat/draftsman-skill-pack -- agent/",
+     "then": "no diff"
+    },
+    {
+     "given": "the skill",
+     "when": "I check every referenced script path",
+     "then": "each exists under framework/tools/"
+    }
+   ],
+   "files": [
+    "framework/skills/draftsman-diagram/SKILL.md",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E3-S1"
+   ],
+   "order": 14,
+   "test_plan": [
+    "python3 framework/tools/validate_skills.py",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "git diff --exit-code feat/draftsman-skill-pack -- agent/",
+    "test -f framework/tools/generate_diagram.py"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 90,
+   "priority": "P1",
+   "blocked_by": "PR #196 merged to main and main merged into feat/draftsman-skill-pack",
+   "notes": [
+    "Gate enforced by the conductor: PR #196 is merged to main AND main is merged into feat/draftsman-skill-pack (resolving the CHANGELOG ## Unreleased conflict to a single section) before this story starts. framework/tools/generate_diagram.py does not exist on main today."
+   ],
+   "issue": 216
+  },
+  {
+   "id": "E3-S8",
+   "epic": "E3",
+   "title": "draftsman-maturity skill",
+   "outcome": "The engineering-maturity skill is copied under the new name with company names stripped.",
+   "in_scope": [
+    "framework/skills/draftsman-maturity/SKILL.md from agent/skills/draftsman-engineering-maturity",
+    "Strip company names"
+   ],
+   "out_of_scope": [
+    "Deleting original (E5)"
+   ],
+   "acceptance": [
+    {
+     "given": "framework/skills/draftsman-maturity",
+     "when": "I run python3 framework/tools/validate_skills.py",
+     "then": "exit 0 (frontmatter, <=200 lines, links, portability lint)"
+    },
+    {
+     "given": "SKILL.md",
+     "when": "I read it",
+     "then": "it states which profile (Query or Author) it needs"
+    },
+    {
+     "given": "the PR branch",
+     "when": "I run git diff --exit-code feat/draftsman-skill-pack -- agent/",
+     "then": "no diff"
+    },
+    {
+     "given": "the skill",
+     "when": "I check every referenced script path",
+     "then": "each exists under framework/tools/"
+    }
+   ],
+   "files": [
+    "framework/skills/draftsman-maturity/SKILL.md",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E3-S1"
+   ],
+   "order": 15,
+   "test_plan": [
+    "python3 framework/tools/validate_skills.py",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "git diff --exit-code feat/draftsman-skill-pack -- agent/"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 70,
+   "priority": "P1",
+   "issue": 217
+  },
+  {
+   "id": "E3-S9",
+   "epic": "E3",
+   "title": "Skill-set completeness test",
+   "outcome": "A test pins the exact skill set and proves switch-game-architect is absent.",
+   "in_scope": [
+    "tests/test_skill_set.py: framework/skills dirs are exactly draftsman-core, -author, -query, -review, -diagram, -maturity, -update; no switch-game-architect; every script path in skills exists under framework/tools/"
+   ],
+   "out_of_scope": [
+    "Deleting agent/skills/switch-game-architect (E5)"
+   ],
+   "acceptance": [
+    {
+     "given": "framework/skills",
+     "when": "the test lists dirs",
+     "then": "exactly the seven expected"
+    },
+    {
+     "given": "framework/skills",
+     "when": "ls switch-game-architect",
+     "then": "absent"
+    },
+    {
+     "given": "the PR",
+     "when": "I run git diff --exit-code feat/draftsman-skill-pack -- agent/",
+     "then": "no diff; validate.py passes"
+    }
+   ],
+   "files": [
+    "tests/test_skill_set.py",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E3-S2",
+    "E3-S3",
+    "E3-S6",
+    "E3-S7",
+    "E3-S8"
+   ],
+   "order": 16,
+   "test_plan": [
+    "python -m unittest tests.test_skill_set",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "python3 framework/tools/validate_skills.py",
+    "git diff --exit-code feat/draftsman-skill-pack -- agent/"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 60,
+   "priority": "P0",
+   "issue": 218
+  },
+  {
+   "id": "E4-S1",
+   "epic": "E4",
+   "title": "Vendor framework/skills through draft_table/repo.py",
+   "outcome": "A refresh puts skills in .draft/framework/skills/.",
+   "in_scope": [
+    "Add skills to FRAMEWORK_VENDOR_DIRS",
+    "Add framework/skills/ and framework/skills path-rewrite entries in vendored_framework_text matching integrations",
+    "Unit test in tests/test_repo.py asserting 'skills' is in FRAMEWORK_VENDOR_DIRS, vendored_framework_text rewrites 'framework/skills/' to 'skills/' and 'framework/skills' to 'skills', and a fresh refresh in a temp dir yields .draft/framework/skills/draftsman-core/SKILL.md",
+    "CHANGELOG records draft_table/ governed-path change"
+   ],
+   "out_of_scope": [
+    "Framework-lock logic or .draft/framework.lock handling"
+   ],
+   "acceptance": [
+    {
+     "given": "a temp workspace",
+     "when": "a refresh runs in the new test",
+     "then": "the file .draft/framework/skills/draftsman-core/SKILL.md exists"
+    },
+    {
+     "given": "the unit test",
+     "when": "it runs",
+     "then": "'skills' is in FRAMEWORK_VENDOR_DIRS and vendored_framework_text maps 'framework/skills/' to 'skills/' and 'framework/skills' to 'skills'"
+    },
+    {
+     "given": "CHANGELOG",
+     "when": "read",
+     "then": "draft_table/ change recorded"
+    }
+   ],
+   "files": [
+    "draft_table/repo.py",
+    "tests/test_repo.py",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E3-S9"
+   ],
+   "order": 17,
+   "test_plan": [
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "python framework/tools/check_release_notes.py"
+   ],
+   "security": "Governed path (draft_table/) change; limited to copying a new framework dir into the workspace vendor tree. No credential effect.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 80,
+   "priority": "P0",
+   "issue": 219
+  },
+  {
+   "id": "E4-S2",
+   "epic": "E4",
+   "title": "setup_ide.py projects skills with generated markers",
+   "outcome": "setup_ide.py writes .claude/skills copies and an AGENTS.md skill index, each with a source hash marker.",
+   "in_scope": [
+    "Copy each skill dir to .claude/skills/<name>/ (never symlinks)",
+    "Frontmatter adds generated: true and source_sha256 (sha256 over sorted relative paths and bytes of the source dir)",
+    "Generic AGENTS.md skill index with leading HTML comment marker",
+    "Existing Cursor, Windsurf, Copilot and Claude command output unchanged",
+    "Tests in tests/test_setup_ide.py incl. independent hash computation"
+   ],
+   "out_of_scope": [
+    "Freshness check (E4-S3)",
+    "Committing projections in this repo"
+   ],
+   "acceptance": [
+    {
+     "given": "a temp workspace",
+     "when": "setup_ide.py runs",
+     "then": "each .claude/skills/<name>/SKILL.md has frontmatter first, generated: true and source_sha256 equal to an independently computed hash, and no symlinks exist"
+    },
+    {
+     "given": "the same run",
+     "when": "AGENTS.md is read",
+     "then": "it begins with the generated HTML comment and lists skills"
+    },
+    {
+     "given": "the existing setup_ide tests",
+     "when": "run",
+     "then": "they pass unchanged"
+    }
+   ],
+   "files": [
+    "framework/tools/setup_ide.py",
+    "tests/test_setup_ide.py",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E4-S1"
+   ],
+   "order": 18,
+   "test_plan": [
+    "python -m unittest tests.test_setup_ide",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py"
+   ],
+   "security": "Writes only inside the target workspace; copies not symlinks to avoid path escape.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 260,
+   "priority": "P0",
+   "issue": 220
+  },
+  {
+   "id": "E4-S3",
+   "epic": "E4",
+   "title": "Workspace freshness check in validate_skills.py",
+   "outcome": "validate_skills.py --workspace detects stale or missing projections with no lock file.",
+   "in_scope": [
+    "--workspace <path>: compare each .claude/skills/*/SKILL.md source_sha256 to the hash of .draft/framework/skills/<name>",
+    "Fail on mismatch or missing projection",
+    "Tests: project via setup_ide.py then pass; edit source then fail"
+   ],
+   "out_of_scope": [
+    "Workflow changes"
+   ],
+   "acceptance": [
+    {
+     "given": "a freshly projected temp workspace",
+     "when": "validate_skills.py --workspace runs",
+     "then": "exit 0"
+    },
+    {
+     "given": "the source skill edited afterward",
+     "when": "it runs again",
+     "then": "exit non-zero"
+    },
+    {
+     "given": "a skill with no projection",
+     "when": "it runs",
+     "then": "exit non-zero"
+    }
+   ],
+   "files": [
+    "framework/tools/validate_skills.py",
+    "tests/test_validate_skills.py",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E4-S2"
+   ],
+   "order": 19,
+   "test_plan": [
+    "python -m unittest tests.test_validate_skills",
+    "python3 framework/tools/validate_skills.py",
+    "python -m unittest discover -s tests"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 200,
+   "priority": "P0",
+   "issue": 221
+  },
+  {
+   "id": "E4-S4",
+   "epic": "E4",
+   "title": "Route /draft guide and the command index to draftsman-author",
+   "outcome": "draft.md and guide.md route to the author skill; validate stays direct.",
+   "in_scope": [
+    "framework/draft-actions/guide.md becomes a router to draftsman-author",
+    "framework/commands/draft.md routes guide/review/update to skills and says validate stays a direct action",
+    "Document that draft update reruns setup_ide.py"
+   ],
+   "out_of_scope": [
+    "review.md and update.md routers (E4-S5, E4-S6)"
+   ],
+   "acceptance": [
+    {
+     "given": "draft.md",
+     "when": "I read it",
+     "then": "guide resolves to draftsman-author and validate is stated as a direct action with no skill"
+    },
+    {
+     "given": "validate.md",
+     "when": "git diff",
+     "then": "unchanged"
+    },
+    {
+     "given": "repo",
+     "when": "I run python framework/tools/validate.py and tests",
+     "then": "pass"
+    }
+   ],
+   "files": [
+    "framework/commands/draft.md",
+    "framework/draft-actions/guide.md",
+    "CHANGELOG.md",
+    "docs/assets/draft-indexes.json",
+    "AI_INDEX.md"
+   ],
+   "depends_on": [
+    "E4-S1"
+   ],
+   "order": 20,
+   "test_plan": [
+    "python framework/tools/generate_indexes.py && python framework/tools/generate_ai_index.py && git diff --exit-code docs/assets/draft-indexes.json AI_INDEX.md",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 130,
+   "priority": "P1",
+   "notes": [
+    ".claude/commands/draft.md is a tracked identical copy of framework/commands/draft.md. Update it identically so the two stay in sync."
+   ],
+   "issue": 222
+  },
+  {
+   "id": "E4-S5",
+   "epic": "E4",
+   "title": "Route /draft review to draftsman-review",
+   "outcome": "review.md becomes a router; the step list test still passes.",
+   "in_scope": [
+    "Replace framework/draft-actions/review.md body with a router to draftsman-review"
+   ],
+   "out_of_scope": [
+    "update.md"
+   ],
+   "acceptance": [
+    {
+     "given": "review.md",
+     "when": "I read it",
+     "then": "it only routes to draftsman-review"
+    },
+    {
+     "given": "tests",
+     "when": "run",
+     "then": "test_skill_step_lists passes (reads fixtures only)"
+    },
+    {
+     "given": "draft.md",
+     "when": "review verb",
+     "then": "still resolves"
+    }
+   ],
+   "files": [
+    "framework/draft-actions/review.md",
+    "CHANGELOG.md",
+    "docs/assets/draft-indexes.json",
+    "AI_INDEX.md"
+   ],
+   "depends_on": [
+    "E4-S4",
+    "E3-S6"
+   ],
+   "order": 21,
+   "test_plan": [
+    "python framework/tools/generate_indexes.py && python framework/tools/generate_ai_index.py && git diff --exit-code docs/assets/draft-indexes.json AI_INDEX.md",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 300,
+   "priority": "P1",
+   "issue": 223
+  },
+  {
+   "id": "E4-S6",
+   "epic": "E4",
+   "title": "Route /draft update to draftsman-update",
+   "outcome": "update.md becomes a router; draft update documented to rerun setup_ide.py.",
+   "in_scope": [
+    "Replace framework/draft-actions/update.md body with a router to draftsman-update, noting setup_ide.py rerun"
+   ],
+   "out_of_scope": [
+    "review.md"
+   ],
+   "acceptance": [
+    {
+     "given": "update.md",
+     "when": "I read it",
+     "then": "it routes to draftsman-update and mentions rerunning setup_ide.py"
+    },
+    {
+     "given": "tests",
+     "when": "run",
+     "then": "pass"
+    },
+    {
+     "given": "draft.md",
+     "when": "update verb",
+     "then": "resolves"
+    }
+   ],
+   "files": [
+    "framework/draft-actions/update.md",
+    "CHANGELOG.md",
+    "docs/assets/draft-indexes.json",
+    "AI_INDEX.md"
+   ],
+   "depends_on": [
+    "E4-S4",
+    "E3-S6"
+   ],
+   "order": 22,
+   "test_plan": [
+    "python framework/tools/generate_indexes.py && python framework/tools/generate_ai_index.py && git diff --exit-code docs/assets/draft-indexes.json AI_INDEX.md",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 260,
+   "priority": "P1",
+   "issue": 224
+  },
+  {
+   "id": "E4-S7",
+   "epic": "E4",
+   "title": "Retarget MCP tests to framework/tools/mcp_server.py",
+   "outcome": "The existing MCP adapter is tested and KPF-DFT-004 is repointed.",
+   "in_scope": [
+    "git mv tests/test_agent_mcp_tools.py tests/test_mcp_server.py and retarget imports to framework/tools/mcp_server.py",
+    "Fix either test expectations (intended differences) or mcp_server.py (real bugs); PR lists each change",
+    "Remove validate_agent_package.py mention from docstring",
+    "Repoint and rename KPF-DFT-004 in KPF.md, no Hermes mention"
+   ],
+   "out_of_scope": [
+    "Deleting agent/mcp (E5)"
+   ],
+   "acceptance": [
+    {
+     "given": "tests/test_mcp_server.py",
+     "when": "run",
+     "then": "passes against mcp_server.py"
+    },
+    {
+     "given": "repo",
+     "when": "grep validate_agent_package tests/test_mcp_server.py",
+     "then": "no match"
+    },
+    {
+     "given": "KPF.md",
+     "when": "grep KPF-DFT-004",
+     "then": "points at mcp_server.py and has no Hermes mention"
+    },
+    {
+     "given": "PR",
+     "when": "I run git diff --exit-code feat/draftsman-skill-pack -- agent/",
+     "then": "no diff"
+    }
+   ],
+   "files": [
+    "tests/test_mcp_server.py",
+    "tests/test_agent_mcp_tools.py",
+    "framework/tools/mcp_server.py",
+    "KPF.md",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E4-S1"
+   ],
+   "order": 23,
+   "test_plan": [
+    "python -m unittest tests.test_mcp_server",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "git diff --exit-code feat/draftsman-skill-pack -- agent/"
+   ],
+   "security": "MCP adapter exposes catalog reads/writes; any mcp_server.py fix must not widen file access beyond the workspace; call this out in the PR.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 220,
+   "priority": "P1",
+   "issue": 225
+  },
+  {
+   "id": "E5-S1",
+   "epic": "E5",
+   "title": "Remove validate_agent_package hook",
+   "outcome": "validate.py and tests no longer depend on agent/agent-spec.yaml.",
+   "in_scope": [
+    "Remove the import and call of validate_agent_package in framework/tools/validate.py",
+    "git rm framework/tools/validate_agent_package.py",
+    "Fix tests/test_validation.py references",
+    "CHANGELOG Compatibility Impact states validate.py contract-path change (minor bump)"
+   ],
+   "out_of_scope": [
+    "Deleting agent/"
+   ],
+   "acceptance": [
+    {
+     "given": "validate.py",
+     "when": "grep -n 'validate_agent_package\\|agent-spec'",
+     "then": "no match"
+    },
+    {
+     "given": "repo",
+     "when": "run python framework/tools/validate.py with agent/ still present",
+     "then": "passes"
+    },
+    {
+     "given": "CHANGELOG",
+     "when": "read",
+     "then": "contract-path change stated"
+    }
+   ],
+   "files": [
+    "framework/tools/validate.py",
+    "framework/tools/validate_agent_package.py",
+    "tests/test_validation.py",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E4-S7",
+    "E4-S6",
+    "E4-S5",
+    "E4-S3"
+   ],
+   "order": 24,
+   "test_plan": [
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "python3 framework/tools/validate_skills.py",
+    "python framework/tools/check_release_notes.py"
+   ],
+   "security": "Removes a CI check that guarded agent/ package integrity; contract-path change to validate.py.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 270,
+   "priority": "P0",
+   "notes": [
+    "If nothing in tests/test_validation.py references the removed validator, make no change there and say so in the PR."
+   ],
+   "issue": 226
+  },
+  {
+   "id": "E5-S2",
+   "epic": "E5",
+   "title": "Delete agent/skills (role, author, autodiscover, query, standards)",
+   "outcome": "Five superseded agent skills are gone.",
+   "in_scope": [
+    "git rm agent/skills/draftsman, draftsman-author, draftsman-autodiscover, draftsman-query, draftsman-standards"
+   ],
+   "out_of_scope": [
+    "Remaining agent/ content"
+   ],
+   "acceptance": [
+    {
+     "given": "repo",
+     "when": "ls agent/skills",
+     "then": "none of the five exist"
+    },
+    {
+     "given": "repo",
+     "when": "tests and validators",
+     "then": "pass"
+    }
+   ],
+   "files": [
+    "agent/skills/draftsman",
+    "agent/skills/draftsman-author",
+    "agent/skills/draftsman-autodiscover",
+    "agent/skills/draftsman-query",
+    "agent/skills/draftsman-standards",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E5-S1"
+   ],
+   "order": 25,
+   "test_plan": [
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "python3 framework/tools/validate_skills.py"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 290,
+   "priority": "P1",
+   "issue": 227
+  },
+  {
+   "id": "E5-S3",
+   "epic": "E5",
+   "title": "Delete agent/skills (diagram, maturity, switch-game), SOUL.md, agent-spec.yaml",
+   "outcome": "Remaining agent skills and identity/spec files are gone.",
+   "in_scope": [
+    "git rm agent/skills/draftsman-diagram, draftsman-engineering-maturity, switch-game-architect, agent/SOUL.md, agent/agent-spec.yaml"
+   ],
+   "out_of_scope": [
+    "agent/mcp, bindings, docs"
+   ],
+   "acceptance": [
+    {
+     "given": "repo",
+     "when": "ls agent",
+     "then": "skills/, SOUL.md and agent-spec.yaml absent"
+    },
+    {
+     "given": "tests/test_draftsman_core.py and fixtures",
+     "when": "run",
+     "then": "pass (core is the single source)"
+    }
+   ],
+   "files": [
+    "agent/skills",
+    "agent/SOUL.md",
+    "agent/agent-spec.yaml",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E5-S2"
+   ],
+   "order": 26,
+   "test_plan": [
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "python3 framework/tools/validate_skills.py"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 310,
+   "priority": "P1",
+   "issue": 228
+  },
+  {
+   "id": "E5-S4",
+   "epic": "E5",
+   "title": "Delete agent/mcp/server.py",
+   "outcome": "The duplicate MCP server is gone.",
+   "in_scope": [
+    "git rm agent/mcp/server.py"
+   ],
+   "out_of_scope": [
+    "indexes.py and json (E5-S5)"
+   ],
+   "acceptance": [
+    {
+     "given": "repo",
+     "when": "ls agent/mcp",
+     "then": "server.py absent"
+    },
+    {
+     "given": "tests/test_mcp_server.py",
+     "when": "run",
+     "then": "passes"
+    }
+   ],
+   "files": [
+    "agent/mcp/server.py",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E5-S3"
+   ],
+   "order": 27,
+   "test_plan": [
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 375,
+   "priority": "P1",
+   "issue": 229
+  },
+  {
+   "id": "E5-S5",
+   "epic": "E5",
+   "title": "Delete rest of agent/ (mcp remainder, bindings, docs)",
+   "outcome": "agent/ no longer exists.",
+   "in_scope": [
+    "git rm agent/mcp/indexes.py, draftsman-mcp.json, agent/bindings/, agent/docs/DEPLOYMENT.md",
+    "Remove gatekeeper workflow reference if present"
+   ],
+   "out_of_scope": [],
+   "acceptance": [
+    {
+     "given": "repo",
+     "when": "test -e agent",
+     "then": "absent"
+    },
+    {
+     "given": "repo",
+     "when": "git ls-files agent | wc -l",
+     "then": "0"
+    },
+    {
+     "given": "repo",
+     "when": "ls .github/workflows",
+     "then": "no gatekeeper workflow referencing agent/"
+    }
+   ],
+   "files": [
+    "agent/mcp",
+    "agent/bindings",
+    "agent/docs",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E5-S4"
+   ],
+   "order": 28,
+   "test_plan": [
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "python3 framework/tools/validate_skills.py",
+    "git ls-files agent | wc -l"
+   ],
+   "security": "Removes the Hermes/Fargate-oriented deployment and GitHub gatekeeper binding; no live consumers (approved).",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 290,
+   "priority": "P1",
+   "notes": [
+    "The gatekeeper workflow lives only under agent/bindings/github-actions/; there is no copy in .github/workflows. Criterion is satisfied by the agent/ deletion; confirm with git ls-files."
+   ],
+   "issue": 230
+  },
+  {
+   "id": "E5-S6",
+   "epic": "E5",
+   "title": "Delete Slack/Discord integrations and fix integrations README",
+   "outcome": "Only cursor/ and windsurf/ remain under framework/integrations.",
+   "in_scope": [
+    "git rm framework/integrations/slack, discord",
+    "Rewrite framework/integrations/README.md for cursor/ and windsurf/ only",
+    "Fix any framework/tools/generate_browser.py reference to removed terms"
+   ],
+   "out_of_scope": [
+    "cursor/ and windsurf/ content"
+   ],
+   "acceptance": [
+    {
+     "given": "repo",
+     "when": "ls framework/integrations",
+     "then": "only cursor, windsurf and README.md"
+    },
+    {
+     "given": "README.md",
+     "when": "grep -i -E 'slack|discord'",
+     "then": "no match"
+    },
+    {
+     "given": "setup_ide tests",
+     "when": "run",
+     "then": "pass"
+    }
+   ],
+   "files": [
+    "framework/integrations/slack",
+    "framework/integrations/discord",
+    "framework/integrations/README.md",
+    "framework/tools/generate_browser.py",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E5-S5"
+   ],
+   "order": 29,
+   "test_plan": [
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "python3 framework/tools/validate_skills.py"
+   ],
+   "security": "Removes Slack/Discord app manifests; no secrets present.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 150,
+   "priority": "P1",
+   "issue": 231
+  },
+  {
+   "id": "E5-S7",
+   "epic": "E5",
+   "title": "Delete soul.md and repoint links",
+   "outcome": "soul.md is gone and its links point to references/character.md.",
+   "in_scope": [
+    "git rm framework/docs/soul.md",
+    "draftsman.md (~line 21) and workspaces.md (~line 325) link to framework/skills/draftsman-core/references/character.md",
+    "workspaces.md 'cast member fields' sentence removed or repointed to framework/personalities/README.md only if it exists",
+    "Regenerate indexes"
+   ],
+   "out_of_scope": [
+    "Slack/Discord prose (E5-S8)"
+   ],
+   "acceptance": [
+    {
+     "given": "repo",
+     "when": "grep -rn 'soul.md' framework README.md docs",
+     "then": "no link to soul.md"
+    },
+    {
+     "given": "repo",
+     "when": "run the index command",
+     "then": "git diff --exit-code is clean"
+    }
+   ],
+   "files": [
+    "framework/docs/soul.md",
+    "framework/docs/draftsman.md",
+    "framework/docs/workspaces.md",
+    "CHANGELOG.md",
+    "docs/assets/draft-indexes.json",
+    "AI_INDEX.md"
+   ],
+   "depends_on": [
+    "E5-S5"
+   ],
+   "order": 30,
+   "test_plan": [
+    "python framework/tools/generate_indexes.py && python framework/tools/generate_ai_index.py && git diff --exit-code docs/assets/draft-indexes.json AI_INDEX.md",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 230,
+   "priority": "P1",
+   "issue": 232
+  },
+  {
+   "id": "E5-S8",
+   "epic": "E5",
+   "title": "Remove Slack/Discord/Web UI text from docs and README agent section",
+   "outcome": "Docs describe only the vendored-skills model.",
+   "in_scope": [
+    "Rewrite mode text in framework/docs/draftsman.md and framework/docs/decentralized-sdp-setup.md",
+    "README.md: remove whole agent/ section (~lines 114-118 incl. SOUL.md, bindings, DEPLOYMENT.md) and the factory-agent sentence (~line 26)",
+    "Regenerate indexes"
+   ],
+   "out_of_scope": [
+    "New guide (E6)"
+   ],
+   "acceptance": [
+    {
+     "given": "those docs",
+     "when": "grep -i -P '\\b(slack|discord|hermes|gatekeeper|archie|fargate)\\b'",
+     "then": "no match"
+    },
+    {
+     "given": "README.md",
+     "when": "grep -n 'agent/'",
+     "then": "no agent/ section"
+    },
+    {
+     "given": "repo",
+     "when": "index diff",
+     "then": "clean"
+    }
+   ],
+   "files": [
+    "framework/docs/draftsman.md",
+    "framework/docs/decentralized-sdp-setup.md",
+    "README.md",
+    "CHANGELOG.md",
+    "docs/assets/draft-indexes.json",
+    "AI_INDEX.md"
+   ],
+   "depends_on": [
+    "E5-S7",
+    "E5-S6"
+   ],
+   "order": 31,
+   "test_plan": [
+    "python framework/tools/generate_indexes.py && python framework/tools/generate_ai_index.py && git diff --exit-code docs/assets/draft-indexes.json AI_INDEX.md",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 300,
+   "priority": "P1",
+   "notes": [
+    "Also remove or rewrite the README.md tree entry for agent/ (around line 78) so it is not stale after E5."
+   ],
+   "issue": 233
+  },
+  {
+   "id": "E5-S9",
+   "epic": "E5",
+   "title": "Removal and dangling-link tests",
+   "outcome": "Tests prevent removed delivery content and dead links from returning.",
+   "in_scope": [
+    "tests/test_no_agent_delivery_content.py: scan git ls-files with re (case-insensitive) for \\b(slack|discord|hermes|gatekeeper|archie|fargate)\\b|switch-game; fail on any match outside exactly this allowlist: CHANGELOG.md, framework/docs/proposals/, framework/docs/ticketing.md, framework/docs/operations-guide.md, tests/test_no_agent_delivery_content.py, framework/tools/validate_skills.py, tests/test_validate_skills.py, tests/test_draftsman_core.py, tests/test_skill_set.py, tests/fixtures/skills/",
+    "Link test: no markdown link under framework/, README.md or docs/ points to soul.md or agent/",
+    "Clean any residual matches"
+   ],
+   "out_of_scope": [
+    "Changing the allowlist"
+   ],
+   "acceptance": [
+    {
+     "given": "repo",
+     "when": "the removal test runs",
+     "then": "it passes, and its allowlist is exactly: CHANGELOG.md, framework/docs/proposals/, framework/docs/ticketing.md, framework/docs/operations-guide.md, tests/test_no_agent_delivery_content.py, framework/tools/validate_skills.py, tests/test_validate_skills.py, tests/test_draftsman_core.py, tests/test_skill_set.py, tests/fixtures/skills/"
+    },
+    {
+     "given": "repo",
+     "when": "I run (with -P): git grep -n -P -i \"\\b(slack|discord|hermes|gatekeeper|archie|fargate)\\b|switch-game\" -- . ':!CHANGELOG.md' ':!framework/docs/proposals' ':!framework/docs/ticketing.md' ':!framework/docs/operations-guide.md' ':!tests/test_no_agent_delivery_content.py' ':!framework/tools/validate_skills.py' ':!tests/test_validate_skills.py' ':!tests/test_draftsman_core.py' ':!tests/test_skill_set.py' ':!tests/fixtures/skills'",
+     "then": "it returns no lines (both tests/test_draftsman_core.py and tests/test_skill_set.py exclusions present)"
+    },
+    {
+     "given": "repo",
+     "when": "the link test runs",
+     "then": "no markdown link under framework/, README.md or docs/ points to soul.md or agent/"
+    },
+    {
+     "given": "repo",
+     "when": "I run python -m unittest discover -s tests, python framework/tools/validate.py, python framework/tools/validate_skills.py",
+     "then": "all pass"
+    }
+   ],
+   "files": [
+    "tests/test_no_agent_delivery_content.py",
+    "tests/test_doc_links.py",
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E5-S8"
+   ],
+   "order": 32,
+   "test_plan": [
+    "python -m unittest tests.test_no_agent_delivery_content tests.test_doc_links",
+    "git grep -n -P -i \"\\b(slack|discord|hermes|gatekeeper|archie|fargate)\\b|switch-game\" -- . ':!CHANGELOG.md' ':!framework/docs/proposals' ':!framework/docs/ticketing.md' ':!framework/docs/operations-guide.md' ':!tests/test_no_agent_delivery_content.py' ':!framework/tools/validate_skills.py' ':!tests/test_validate_skills.py' ':!tests/test_draftsman_core.py' ':!tests/test_skill_set.py' ':!tests/fixtures/skills'",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "python framework/tools/validate_skills.py",
+    "python framework/tools/generate_indexes.py && python framework/tools/generate_ai_index.py && git diff --exit-code docs/assets/draft-indexes.json AI_INDEX.md"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 150,
+   "priority": "P0",
+   "issue": 234
+  },
+  {
+   "id": "E6-S1",
+   "epic": "E6",
+   "title": "bring-your-own-agent guide",
+   "outcome": "A guide states the four-point contract for any company agent.",
+   "in_scope": [
+    "framework/docs/bring-your-own-agent.md: load the skills, provide the profile's capabilities, publish the index from CI if needed, keep credentials in the harness",
+    "Regenerate indexes",
+    "Must pass removal test (no banned terms)"
+   ],
+   "out_of_scope": [
+    "Release notes completion"
+   ],
+   "acceptance": [
+    {
+     "given": "guide",
+     "when": "I read it",
+     "then": "all four contract points present"
+    },
+    {
+     "given": "repo",
+     "when": "index diff",
+     "then": "clean"
+    },
+    {
+     "given": "repo",
+     "when": "removal test",
+     "then": "passes"
+    }
+   ],
+   "files": [
+    "framework/docs/bring-your-own-agent.md",
+    "CHANGELOG.md",
+    "docs/assets/draft-indexes.json",
+    "AI_INDEX.md"
+   ],
+   "depends_on": [
+    "E5-S9"
+   ],
+   "order": 33,
+   "test_plan": [
+    "python framework/tools/generate_indexes.py && python framework/tools/generate_ai_index.py && git diff --exit-code docs/assets/draft-indexes.json AI_INDEX.md",
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 130,
+   "priority": "P1",
+   "issue": 235
+  },
+  {
+   "id": "E6-S2",
+   "epic": "E6",
+   "title": "Complete the Unreleased release notes",
+   "outcome": "CHANGELOG Unreleased is complete and accurate.",
+   "in_scope": [
+    "Fill all five subsections, list removals, contract-path/governed-path changes, migration note to load framework/skills/",
+    "draft-framework.yaml untouched"
+   ],
+   "out_of_scope": [
+    "Version bump"
+   ],
+   "acceptance": [
+    {
+     "given": "CHANGELOG",
+     "when": "read",
+     "then": "five subsections filled, removals listed, migration note says load framework/skills/"
+    },
+    {
+     "given": "repo",
+     "when": "git diff main -- draft-framework.yaml",
+     "then": "empty"
+    },
+    {
+     "given": "repo",
+     "when": "run python framework/tools/check_release_notes.py",
+     "then": "exit 0"
+    }
+   ],
+   "files": [
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E6-S1"
+   ],
+   "order": 34,
+   "test_plan": [
+    "python framework/tools/check_release_notes.py",
+    "python -m unittest discover -s tests"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 80,
+   "priority": "P1",
+   "issue": 236
+  },
+  {
+   "id": "E6-S3",
+   "epic": "E6",
+   "title": "Merge main into integration branch and verify CI",
+   "outcome": "The integration branch is current with main and green.",
+   "in_scope": [
+    "Merge main into feat/draftsman-skill-pack; resolve ## Unreleased to one section with all bullets",
+    "Run all checks"
+   ],
+   "out_of_scope": [
+    "Any new content"
+   ],
+   "acceptance": [
+    {
+     "given": "CHANGELOG",
+     "when": "grep -c '^## Unreleased$'",
+     "then": "1"
+    },
+    {
+     "given": "branch",
+     "when": "git merge-base --is-ancestor main HEAD",
+     "then": "succeeds"
+    },
+    {
+     "given": "branch",
+     "when": "run python -m unittest discover -s tests, python framework/tools/validate.py, python3 framework/tools/validate_skills.py, python framework/tools/check_release_notes.py",
+     "then": "pass, and CI is green"
+    }
+   ],
+   "files": [
+    "CHANGELOG.md"
+   ],
+   "depends_on": [
+    "E6-S2"
+   ],
+   "order": 35,
+   "test_plan": [
+    "python -m unittest discover -s tests",
+    "python framework/tools/validate.py",
+    "python3 framework/tools/validate_skills.py",
+    "python framework/tools/check_release_notes.py",
+    "python framework/tools/generate_indexes.py && python framework/tools/generate_ai_index.py && git diff --exit-code docs/assets/draft-indexes.json AI_INDEX.md",
+    "git diff main -- draft-framework.yaml"
+   ],
+   "security": "none: documentation/tests only, no runtime, credential or authorization change.",
+   "deploy_point": false,
+   "rollback": "Revert the story PR on feat/draftsman-skill-pack.",
+   "size_estimate_lines": 20,
+   "priority": "P0",
+   "issue": 237
+  },
+  {
+   "id": "E6-S4",
+   "epic": "E6",
+   "title": "Open release PR into main (user merges)",
+   "outcome": "One PR from feat/draftsman-skill-pack into main is opened and left unmerged; the single release point is the user's later merge, which triggers promote-release once.",
+   "in_scope": [
+    "Open the PR with summary, removal list, R6 flag, and note that merging triggers promote-release once",
+    "Do not merge"
+   ],
+   "out_of_scope": [
+    "Merging, deploying, bumping versions"
+   ],
+   "acceptance": [
+    {
+     "given": "integration branch",
+     "when": "gh pr list --base main --head feat/draftsman-skill-pack",
+     "then": "exactly one open PR"
+    },
+    {
+     "given": "that PR",
+     "when": "gh pr view --json state,mergedAt",
+     "then": "OPEN and not merged"
+    },
+    {
+     "given": "CI",
+     "when": "gh pr checks",
+     "then": "all pass"
+    }
+   ],
+   "files": [],
+   "depends_on": [
+    "E6-S3"
+   ],
+   "order": 36,
+   "test_plan": [
+    "gh pr checks",
+    "gh pr view --json state,mergedAt"
+   ],
+   "security": "Merge to main triggers promote-release (a release). The user alone merges; the loop must not.",
+   "deploy_point": false,
+   "rollback": "Close the release PR; nothing has merged to main.",
+   "size_estimate_lines": 0,
+   "priority": "P0",
+   "merge_by_user": true,
+   "issue": 238
+  }
+ ]
+}

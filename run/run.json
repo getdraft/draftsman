@@ -1,0 +1,20 @@
+{
+  "slug": "draftsman-skill-pack",
+  "repo": "getDraft/draftsman",
+  "baseBranch": "feat/draftsman-skill-pack",
+  "gitIdentity": "me",
+  "gitCommandPrefix": "",
+  "stopPoint": "merge-then-stop",
+  "planSource": "existing-file",
+  "models": {
+    "planReviewer": "sonnet",
+    "jurors": "haiku",
+    "storyBreaker": "sonnet",
+    "dorChecker": "sonnet",
+    "conductor": "haiku",
+    "coder": "haiku",
+    "prReviewer": "sonnet"
+  },
+  "mainBranch": "main",
+  "notes": "Integration branch feat/draftsman-skill-pack must be created from main and pushed after estimate approval. E6-S4 release PR into main is opened, never merged by the loop."
+}
