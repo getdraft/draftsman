@@ -8,6 +8,7 @@
 
 - Added `framework/skills/draftsman-core/SKILL.md`: the always-loaded core skill with the Recorded / Inferred / Unknown table, Evidence Discipline rules R1-R6 and the Query and Author capability profiles. R6 is new text for agents reading catalog files directly.
 - Added the RFC `framework/docs/proposals/rfc-draftsman-skill-pack.md` describing the skill-pack replacement for the deployed agent.
+- Added `framework/skills/draftsman-core/references/character.md` (copied from `framework/docs/soul.md`) and `references/onboarding.md` (the onboarding playbook with channel wording removed); `soul.md` stays until E5.
 
 ### Changed
 
