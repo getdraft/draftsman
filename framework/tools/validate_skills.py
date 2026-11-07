@@ -13,6 +13,13 @@ Exit codes:
        paths, and a skills directory with no skill subdirectories)
     2  the skills directory does not exist or is not a directory
 
+Portability lint:
+    Every file under a skill directory (including fenced code, file names and
+    directory names) is scanned for banned harness, channel and company terms.
+    Matching is case-insensitive. Word-boundary patterns stop bare words such
+    as "switch" or "hierarchy" from matching. Only the skills directory is
+    scanned; nothing outside it is read by this check.
+
 Markdown handling:
     Each file is scanned line by line first. Fenced code blocks (``` or ~~~,
     closed by a fence of the same character and at least the same length) are
@@ -27,6 +34,7 @@ Markdown handling:
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import sys
 from typing import NamedTuple
@@ -53,6 +61,25 @@ URI_SCHEME_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]+:")
 # "../scripts/x" and "foo/scripts/x" are still not matched: the lookbehind
 # rejects a "." or "/" directly before the "scripts/" segment.
 SCRIPT_PATH_RE = re.compile(r"(?<![\w./-])((?:\./)?scripts/[\w./-]*[\w-])")
+
+
+# Portability lint: terms that must not appear in any file under framework/skills/.
+# Matching is case-insensitive. Patterns with \b are word-bounded; the literal
+# identifiers are matched as written, so they also match inside longer names.
+BANNED_TERM_PATTERNS: tuple[tuple[str, str], ...] = (
+    ("slack", r"\bslack\b"),
+    ("discord", r"\bdiscord\b"),
+    ("hermes", r"\bhermes\b"),
+    ("fargate", r"\bfargate\b"),
+    ("archie", r"\barchie\b"),
+    ("central chat", r"\bcentral\s+chat\b"),
+    ("switch-game-architect", r"switch-game-architect"),
+    ("ANTHROPIC_API_KEY", r"ANTHROPIC_API_KEY"),
+    ("Pattern 2", r"\bPattern\s+2\b"),
+)
+BANNED_TERM_RES = tuple(
+    (label, re.compile(pattern, re.IGNORECASE)) for label, pattern in BANNED_TERM_PATTERNS
+)
 
 
 class SourceLine(NamedTuple):
@@ -308,6 +335,38 @@ def check_markdown(skill_root: Path, md_file: Path, text: str) -> list[str]:
     return list(dict.fromkeys(failures))
 
 
+def check_banned_terms(skill_root: Path) -> list[str]:
+    """Portability lint over every file under one skill directory. Never raises.
+
+    Each (file, line, term) is reported once. Paths are checked as well, so a
+    file or folder named after a banned term also fails.
+    """
+    failures: list[str] = []
+    for dirpath, dirnames, filenames in os.walk(skill_root, followlinks=False):
+        dirnames.sort()
+        for filename in sorted(filenames):
+            path = Path(dirpath) / filename
+            try:
+                if not path.is_file():
+                    continue
+            except (OSError, ValueError):
+                continue
+            rel = path.relative_to(skill_root).as_posix()
+            for label, rx in BANNED_TERM_RES:
+                if rx.search(rel):
+                    failures.append(f"banned term '{label}' in path {rel}")
+            try:
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError as exc:
+                failures.append(f"unreadable file {rel}: {type(exc).__name__}: {exc}")
+                continue
+            for number, line in enumerate(text.splitlines(), start=1):
+                for label, rx in BANNED_TERM_RES:
+                    if rx.search(line):
+                        failures.append(f"banned term '{label}' in {rel} line {number}")
+    return list(dict.fromkeys(failures))
+
+
 def markdown_files(skill_dir: Path) -> list[Path]:
     return sorted(skill_dir.rglob("*.md"))
 
@@ -340,6 +399,7 @@ def validate_skill(skill_dir: Path) -> list[str]:
                 failures.append(f"unreadable file {rel}: {type(exc).__name__}: {exc}")
                 continue
             failures.extend(check_markdown(root, md_file, md_text))
+        failures.extend(check_banned_terms(root))
         return failures
     except Exception as exc:  # last-resort guard: report, never traceback
         return [f"internal error while checking skill: {type(exc).__name__}: {exc}"]
