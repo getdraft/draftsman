@@ -3,6 +3,6 @@
   "rule": "R4",
   "question": "How many services are in the catalog?",
   "index_excerpt": {"query": "name contains 'svc'", "matches": 14},
-  "forbidden_phrases": ["complete", "nothing was omitted", "the full picture"],
+  "forbidden_phrases": ["the complete list", "is complete", "nothing was omitted", "the full picture"],
   "required_phrases": ["14", "substring"]
 }
