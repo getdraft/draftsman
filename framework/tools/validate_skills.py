@@ -304,7 +304,8 @@ def check_markdown(skill_root: Path, md_file: Path, text: str) -> list[str]:
                 failures.append(f"missing script path in {rel} line {line.number}: '{script}'")
             elif reason:
                 failures.append(f"{reason} in {rel} line {line.number}: '{script}'")
-    return failures
+    # The same target repeated on one line gives identical messages; report each once.
+    return list(dict.fromkeys(failures))
 
 
 def markdown_files(skill_dir: Path) -> list[Path]:

@@ -631,6 +631,30 @@ class ValidateSkillsTests(unittest.TestCase):
             self.assertFalse(any("../scripts" in f or "foo/scripts" in f for f in failures), failures)
             self.assertEqual(sum("missing script path" in f for f in failures), 1, failures)
 
+    # --- review round 3: repeated targets on one line are reported once (F1) ---
+
+    def test_repeated_missing_script_path_on_one_line_is_reported_once(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body = "Run scripts/run.py. Also scripts/run.py, and (scripts/run.py)\n"
+            make_skill(root, "draftsman-core", skill_text("draftsman-core", body=body))
+            failures = self.failures_for(root)
+            matching = [f for f in failures if "scripts/run.py" in f]
+            self.assertEqual(len(matching), 1, failures)
+            self.assertIn("missing script path", matching[0])
+            code, _ = self.run_main(root)
+            self.assertEqual(code, 1)
+
+    def test_repeated_broken_link_on_one_line_is_reported_once(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body = "See [a](nope.md) and [b](nope.md) and [c](nope.md).\n"
+            make_skill(root, "draftsman-core", skill_text("draftsman-core", body=body))
+            failures = self.failures_for(root)
+            matching = [f for f in failures if "nope.md" in f]
+            self.assertEqual(len(matching), 1, failures)
+            self.assertIn("broken relative link", matching[0])
+
 
 if __name__ == "__main__":
     unittest.main()
