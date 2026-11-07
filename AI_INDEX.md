@@ -72,6 +72,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 |---|---|---|
 | framework/docs/COMPOSITION_ROADMAP.md | DRAFT Framework Architecture Composition Roadmap | This roadmap defines the implementation specifications for follow-on DRAFT framework capabilities. These items build... |
 | framework/docs/SHARED_SERVICE_COMPOSITION_SPEC.md | Deployable Shared Services Composition Specification | DRAFT enables **Enterprise-Grade Vibe Coding** by turning static architecture specifications into composable, standar... |
+| framework/docs/bring-your-own-agent.md | Bring Your Own Agent | How a company gives its own AI agent the Draftsman capability by loading the DRAFT skills, with no DRAFT-operated agent |
 | framework/docs/capabilities.md | Capabilities | A Capability is a first-class framework object that names an architecture |
 | framework/docs/company-vocabulary.md | Company Vocabulary | Company vocabulary lists are optional governed lists in `.draft/workspace.yaml`. |
 | framework/docs/decentralized-sdp-setup.md | Decentralized SoftwareDeploymentPatterns & Product Registration | How product engineering teams house SoftwareDeploymentPatterns in their own repos and register with drafting-table. |

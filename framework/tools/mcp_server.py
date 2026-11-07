@@ -3,7 +3,7 @@
 Draftsman Stdio MCP Server: Model Context Protocol Server for DRAFT Architecture Catalog Queries.
 
 Exposes standard JSON-RPC 2.0 stdio tools (`query_architecture`, `get_c4_diagram`, `check_compliance`, `validate_yaml_object`)
-to LLM agents deployed in enterprise agent factories or developer IDEs.
+to any agent or developer IDE that can launch an MCP server.
 """
 
 from __future__ import annotations

@@ -13,13 +13,18 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-PATTERN = re.compile(r"\b(slack|discord|hermes|gatekeeper|archie|fargate)\b|switch-game", re.IGNORECASE)
+PATTERN = re.compile(
+    r"\b(slack|discord|hermes|gatekeeper|archie|fargate)\b|switch-game"
+    r"|validate_agent_package|agent-spec\.yaml|\bsoul\.md\b|\bagent/(SOUL|skills|mcp|bindings|docs)\b",
+    re.IGNORECASE,
+)
 
 ALLOW_FILES = {
     "CHANGELOG.md",
     "framework/docs/ticketing.md",
     "framework/docs/operations-guide.md",
     "tests/test_no_agent_delivery_content.py",
+    "tests/test_doc_links.py",
     "framework/tools/validate_skills.py",
     "tests/test_validate_skills.py",
     "tests/test_draftsman_core.py",
@@ -64,7 +69,10 @@ class NoAgentDeliveryContentTests(unittest.TestCase):
         self.assertEqual(hits, [], "banned terms found:\n" + "\n".join(hits))
 
     def test_pattern_matches_what_it_should(self):
-        for text in ("Slack bot", "discord", "Hermes agent", "AWS Fargate", "gatekeeper", "Archie", "switch-game-architect"):
+        for text in (
+            "Slack bot", "discord", "Hermes agent", "AWS Fargate", "gatekeeper", "Archie", "switch-game-architect",
+            "see framework/docs/soul.md", "validate_agent_package.py", "agent/SOUL.md", "agent-spec.yaml",
+        ):
             self.assertTrue(PATTERN.search(text), text)
         for text in ("switch statement", "hierarchy", "archive"):
             self.assertIsNone(PATTERN.search(text), text)

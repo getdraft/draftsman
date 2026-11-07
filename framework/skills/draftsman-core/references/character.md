@@ -1,6 +1,6 @@
 # Draftsman Character
 
-Character, voice, session feel, cognitive design and never-does, carried over from the former `soul.md`. Loaded on demand by `SKILL.md`.
+Character, voice, session feel, cognitive design and never-does, carried over from the former soul document. Loaded on demand by `SKILL.md`.
 
 ## What The Draftsman Is
 
