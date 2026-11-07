@@ -49,7 +49,10 @@ REFERENCE_DEF_RE = re.compile(r"^ {0,3}\[[^\]]+\]:\s*(<[^>]*>|\S+)")
 TAIL_RE = re.compile(r"""^\s*(?:"[^"]*"|'[^']*'|\([^)]*\))?\s*\)""")
 ESCAPE_RE = re.compile(r"\\([!-/:-@\[-`{-~])")
 URI_SCHEME_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]+:")
-SCRIPT_PATH_RE = re.compile(r"(?<![\w./-])(scripts/[\w./-]*[\w-])")
+# An optional leading "./" is part of the reference, so "./scripts/x" is checked.
+# "../scripts/x" and "foo/scripts/x" are still not matched: the lookbehind
+# rejects a "." or "/" directly before the "scripts/" segment.
+SCRIPT_PATH_RE = re.compile(r"(?<![\w./-])((?:\./)?scripts/[\w./-]*[\w-])")
 
 
 class SourceLine(NamedTuple):

@@ -604,6 +604,33 @@ class ValidateSkillsTests(unittest.TestCase):
             write(skill / "references" / "page.md", "# Page\n")
             self.assert_fails(root, "missing script path")
 
+    # --- review round 2: a leading "./" is part of a script path (F1) -------
+
+    def test_missing_dot_slash_script_path_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            make_skill(root, "draftsman-core", skill_text("draftsman-core", body="Run `./scripts/y.py`.\n"))
+            self.assert_fails(root, "missing script path")
+            failures = self.failures_for(root)
+            self.assertTrue(any("'./scripts/y.py'" in f for f in failures), failures)
+
+    def test_existing_dot_slash_script_path_passes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skill = make_skill(root, "draftsman-core", skill_text("draftsman-core", body="Run `./scripts/y.py`.\n"))
+            write(skill / "scripts" / "y.py", "x = 1\n")
+            code, output = self.run_main(root)
+            self.assertEqual(code, 0, output)
+
+    def test_dot_dot_and_nested_script_references_keep_current_behavior(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body = "Compare `../scripts/x.py` and `foo/scripts/x.py` with `./scripts/y.py`.\n"
+            make_skill(root, "draftsman-core", skill_text("draftsman-core", body=body))
+            failures = self.failures_for(root)
+            self.assertFalse(any("../scripts" in f or "foo/scripts" in f for f in failures), failures)
+            self.assertEqual(sum("missing script path" in f for f in failures), 1, failures)
+
 
 if __name__ == "__main__":
     unittest.main()
