@@ -17,6 +17,7 @@
 - CI now runs `python framework/tools/validate_skills.py` in `.github/workflows/validate-catalog.yml`.
 - Added `framework/tools/skill_hash.py` (shared sha256 and marker helpers). `framework/tools/setup_ide.py` now also projects each skill into `.claude/skills/<name>/` as a copy (never a symlink), with `generated: true` and `source_sha256` added to the SKILL.md frontmatter (frontmatter stays first), and writes a managed skill index block into `AGENTS.md` that starts with a marker comment. An existing `AGENTS.md` keeps all its text; only the managed block is added or replaced. The framework repo itself gets projections only locally (`.claude/skills/` is git-ignored) and its tracked `AGENTS.md` is left alone.
 - Added `python3 framework/tools/validate_skills.py --workspace <path>`: fails when a projection under `.claude/skills/` is missing, unmarked or stale against `.draft/framework/skills/`, or when the `AGENTS.md` skill index is missing or stale. No lock file is involved. Tests are in `tests/test_skill_distribution.py`, including a vendoring refresh test and an independently computed sha256.
+- Added the portability lint to `framework/tools/validate_skills.py`: it fails on case-insensitive banned terms (`slack`, `discord`, `hermes`, `fargate`, `archie`, `central chat`, `switch-game-architect`, `ANTHROPIC_API_KEY`, `Pattern 2`) anywhere under `framework/skills/`, with word boundaries so bare words such as "switch" and "hierarchy" pass. Tests are in `tests/test_validate_skills.py`.
 
 ### Changed
 
