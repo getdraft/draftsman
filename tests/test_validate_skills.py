@@ -192,11 +192,27 @@ class ValidateSkillsTests(unittest.TestCase):
             root = Path(tmp)
             text = (
                 valid_skill_text("draftsman-core")
-                + "\nInline `[x](nope/missing.md)` and `scripts/absent.py` are examples.\n"
+                + "\nInline code `[x](nope/missing.md)` is an example.\n"
                 + "\n```markdown\n[example](nope/also-missing.md)\nRun scripts/ghost.py\n```\n"
                 + "\n~~~\n[tilde](nope/tilde.md)\n~~~\n"
             )
             write_skill(root, "draftsman-core", text)
+            self.assertEqual(self.run_validator(root), 0)
+
+    def test_missing_backticked_script_path_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            text = valid_skill_text("draftsman-core") + "\nRun `scripts/absent.py` first.\n"
+            write_skill(root, "draftsman-core", text)
+            self.assert_fails(root, "missing script path")
+
+    def test_present_backticked_script_path_passes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            text = valid_skill_text("draftsman-core") + "\nRun `scripts/check.py` first.\n"
+            skill = write_skill(root, "draftsman-core", text)
+            (skill / "scripts").mkdir()
+            (skill / "scripts" / "check.py").write_text("x = 1\n", encoding="utf-8")
             self.assertEqual(self.run_validator(root), 0)
 
     def test_link_outside_code_still_checked_after_code_block(self) -> None:

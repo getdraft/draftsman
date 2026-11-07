@@ -71,8 +71,8 @@ def check_line_budget(skill_name: str, text: str) -> list[str]:
     return []
 
 
-def strip_code(text: str) -> str:
-    """Blank out fenced code blocks and inline code spans so examples inside them are not checked."""
+def strip_fences(text: str) -> str:
+    """Blank out fenced code blocks so examples inside them are not checked."""
     kept: list[str] = []
     in_fence = False
     fence_marker = ""
@@ -88,8 +88,13 @@ def strip_code(text: str) -> str:
                 in_fence = False
             kept.append("")
             continue
-        kept.append(INLINE_CODE_RE.sub("", line))
+        kept.append(line)
     return "\n".join(kept)
+
+
+def strip_code(text: str) -> str:
+    """Blank out fenced code blocks and inline code spans, for the link check."""
+    return "\n".join(INLINE_CODE_RE.sub("", line) for line in strip_fences(text).splitlines())
 
 
 def markdown_files(skill_dir: Path) -> list[Path]:
@@ -121,7 +126,7 @@ def check_links(skill_dir: Path, md_file: Path, text: str) -> list[str]:
 def check_script_paths(skill_dir: Path, md_file: Path, text: str) -> list[str]:
     failures = []
     rel = md_file.relative_to(skill_dir).as_posix()
-    for match in SCRIPT_PATH_RE.finditer(strip_code(text)):
+    for match in SCRIPT_PATH_RE.finditer(strip_fences(text)):
         script = match.group(1)
         if not (skill_dir / script).exists():
             failures.append(f"missing script path in {rel}: '{script}'")
