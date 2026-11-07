@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- Additive only. No schema, object model, validation, or workspace content changes. Existing workspaces are unaffected.
+
+### Added
+
+- Added `framework/tools/generate_diagram.py`, a deterministic generator that renders a Software Deployment Pattern as a self-contained HTML page with an inline SVG topology diagram (zones from service groups, boxes from placed objects, arrows only from recorded relationships), a relationships table, the pattern's recorded characteristics, open Drafting Session questions, and a filterable component inventory. Supports `--list`, `--sdp`, `--output`, and `--placed-only`.
+- Added `tests/test_generate_diagram.py` covering rendering, determinism, the no-inference rule (no relationship, no arrow), unplaced components, unknown references, HTML escaping, and the CLI.
+
+### Changed
+
+- Extended the `draftsman-diagram` agent skill with a "Rendered Diagram Pages" mode: when to use the generator instead of hand-written Mermaid, the document-do-not-infer rules, how to report conflicting catalog fields, and how to deliver the page.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No migration required. Companies that vendor the framework get `generate_diagram.py` and the updated skill on their next framework refresh.
+
 ## 1.2.0 - 2026-08-28
 
 ### Compatibility Impact
