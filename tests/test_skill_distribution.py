@@ -145,7 +145,7 @@ class ProjectionTests(unittest.TestCase):
             ws.run_setup()
             stale = ws.projected / "draftsman-gone"
             stale.mkdir()
-            (stale / "SKILL.md").write_text("---\nname: draftsman-gone\ndescription: x\ngenerated: true\nsource_sha256: 0000000000000000000000000000000000000000000000000000000000000000\n---\n", encoding="utf-8")
+            (stale / "SKILL.md").write_text("---\nname: draftsman-gone\ndescription: x\ngenerated: true\nsource_sha256: \"0000000000000000000000000000000000000000000000000000000000000000\"\n---\n", encoding="utf-8")
             manual = ws.projected / "my-own"
             manual.mkdir()
             (manual / "SKILL.md").write_text("---\nname: my-own\ndescription: mine\n---\n", encoding="utf-8")
@@ -355,6 +355,7 @@ class GeneratedMarkerTests(unittest.TestCase):
             "generated: true\nsource_sha256: short\n": False,
             "generated: 'true'\nsource_sha256: " + sha + "\n": False,
             "generated: true\nsource_sha256: " + sha + "\n": True,
+            'generated: true\nsource_sha256: "' + "1" * 64 + '"\n': True,
         }
         for front, expected in cases.items():
             with tempfile.TemporaryDirectory() as d:

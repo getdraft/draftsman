@@ -140,5 +140,6 @@ def add_generated_marker(skill_md: str, source_sha256: str) -> str:
     if end is None:
         raise ValueError("SKILL.md frontmatter is not closed")
     front = [l for l in lines[1:end] if not l.startswith(("generated:", "source_sha256:"))]
-    front += ["generated: true", f"source_sha256: {source_sha256}"]
+    # Quoted so YAML always reads the hash as a string (an all-digit hash would parse as a number).
+    front += ["generated: true", f'source_sha256: "{source_sha256}"']
     return "\n".join([lines[0], *front, *lines[end:]]) + "\n"
