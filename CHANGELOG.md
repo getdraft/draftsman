@@ -9,6 +9,7 @@
 - Added `framework/skills/draftsman-core/SKILL.md`: the always-loaded core skill with the Recorded / Inferred / Unknown table, Evidence Discipline rules R1-R6 and the Query and Author capability profiles. R6 is new text for agents reading catalog files directly.
 - Added the RFC `framework/docs/proposals/rfc-draftsman-skill-pack.md` describing the skill-pack replacement for the deployed agent.
 - Added `framework/skills/draftsman-core/references/character.md` (copied from `framework/docs/soul.md`) and `references/onboarding.md` (the onboarding playbook with channel wording removed); `soul.md` stays until E5.
+- Added `framework/tools/validate_skills.py`, a pyyaml-only skill validator (exit 0 pass, 1 fail, 2 missing directory). It checks SKILL.md frontmatter (`name` and `description`), the line budget (150 for `draftsman-core`, 200 for other skills; `references/` is not budgeted), broken relative links and missing `scripts/` paths. It reads files only and never runs skill scripts. Tests are in `tests/test_validate_skills.py`. It is not yet wired into CI (E2-S4) and the portability lint is E2-S2.
 
 ### Changed
 
