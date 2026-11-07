@@ -116,7 +116,7 @@ The skills directory is the single source. `framework/tools/setup_ide.py` alread
 | :--- | :--- |
 | Claude Code | `.claude/skills/<name>/` (native `SKILL.md`) |
 | Cursor | `.cursor/rules/<name>.mdc` generated from each skill |
-| Windsurf | `.windsurf/rules/<name>.md` generated from each skill |
+| Windsurf | Section per skill in `.windsurfrules` (the file `setup_ide.py` already writes) |
 | GitHub Copilot | Section per skill in `.github/copilot-instructions.md` |
 | Gemini CLI | Import list in `GEMINI.md` |
 | Anything else | `AGENTS.md` index pointing at `.draft/framework/skills/*/SKILL.md` |
