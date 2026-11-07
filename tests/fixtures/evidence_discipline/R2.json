@@ -1,0 +1,8 @@
+{
+  "id": "EDF-R2",
+  "rule": "R2",
+  "question": "What does the entry 'orders -> billing' tell you about the orders service?",
+  "index_excerpt": {"relationship_names": ["orders -> billing"], "recorded_endpoints": []},
+  "forbidden_phrases": ["is recorded as", "recorded edge"],
+  "required_phrases": ["relationship names", "inferred"]
+}
