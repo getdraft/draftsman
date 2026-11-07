@@ -15,6 +15,7 @@
 - Added `framework/skills/draftsman-core/references/role.md` (product registration, repository initialisation and architecture-question protocols) and a workflow-skill index in `draftsman-core`.
 - Added `tests/test_skill_set.py` (exact skill set, `switch-game-architect` absent, frontmatter checks, each workflow skill names its profile, script paths exist) and `tests/test_skill_step_lists.py` with heading fixtures in `tests/fixtures/skills/step_lists/` (every `##` and `###` heading of the review and update action files must appear in the matching skill).
 - CI now runs `python framework/tools/validate_skills.py` in `.github/workflows/validate-catalog.yml`.
+- Added the portability lint to `framework/tools/validate_skills.py`: it fails on case-insensitive banned terms (`slack`, `discord`, `hermes`, `fargate`, `archie`, `central chat`, `switch-game-architect`, `ANTHROPIC_API_KEY`, `Pattern 2`) anywhere under `framework/skills/`, with word boundaries so bare words such as "switch" and "hierarchy" pass. Tests are in `tests/test_validate_skills.py`.
 
 ### Changed
 
