@@ -277,5 +277,72 @@ class SafetyTests(unittest.TestCase):
             self.assertIn("Do not use `.claude/skills/`", text)
 
 
+class EdgeCaseTests(unittest.TestCase):
+    def test_a_user_skill_mentioning_the_marker_in_its_body_is_not_removed(self):
+        with Workspace() as ws:
+            ws.run_setup()
+            mine = ws.projected / "mine"
+            mine.mkdir()
+            (mine / "SKILL.md").write_text("---\nname: mine\ndescription: mine\n---\ngenerated: true\nBody.\n", encoding="utf-8")
+            ws.run_setup()
+            self.assertTrue(mine.exists())
+
+    def test_a_non_utf8_user_skill_does_not_crash_setup(self):
+        with Workspace() as ws:
+            ws.run_setup()
+            odd = ws.projected / "odd"
+            odd.mkdir()
+            (odd / "SKILL.md").write_bytes(b"---\nname: odd\n---\n\xff\xfe\n")
+            ws.run_setup()
+            self.assertTrue(odd.exists())
+
+    def test_ds_store_files_do_not_cause_failures(self):
+        with Workspace() as ws:
+            ws.run_setup()
+            (ws.projected / "draftsman-core" / ".DS_Store").write_bytes(b"")
+            (ws.source / "draftsman-core" / ".DS_Store").write_bytes(b"")
+            self.assertEqual(ws.check()[0], 0)
+
+    def test_projected_skill_md_has_lf_endings_only(self):
+        with Workspace() as ws:
+            ws.run_setup()
+            data = (ws.projected / "draftsman-core" / "SKILL.md").read_bytes()
+            self.assertNotIn(b"\r\n", data)
+
+    def test_a_non_utf8_agents_file_is_left_alone_and_reported(self):
+        with Workspace() as ws:
+            agents = ws.path / "AGENTS.md"
+            agents.write_bytes(b"# Mine \xff\xfe\n")
+            ws.run_setup()
+            self.assertEqual(agents.read_bytes(), b"# Mine \xff\xfe\n")
+            code, out = ws.check()
+            self.assertEqual(code, 1)
+            self.assertIn("FAIL", out)
+
+    def test_prose_quoting_the_markers_is_not_a_block(self):
+        with Workspace() as ws:
+            agents = ws.path / "AGENTS.md"
+            agents.write_text("# Mine\n\nThe markers are `<!-- DRAFT-SKILLS:BEGIN` and `<!-- DRAFT-SKILLS:END -->`.\n", encoding="utf-8")
+            ws.run_setup()
+            text = agents.read_text(encoding="utf-8")
+            self.assertIn("The markers are", text)
+            self.assertEqual(ws.check()[0], 0)
+
+    def test_an_unreadable_projection_file_is_a_fail_line_not_a_traceback(self):
+        import os, stat
+        with Workspace() as ws:
+            ws.run_setup()
+            ref = ws.projected / "draftsman-core" / "references" / "role.md"
+            os.chmod(ref, 0)
+            try:
+                if os.access(ref, os.R_OK):
+                    self.skipTest("running as a user who ignores file modes")
+                code, out = ws.check()
+            finally:
+                os.chmod(ref, stat.S_IRUSR | stat.S_IWUSR)
+            self.assertEqual(code, 1)
+            self.assertIn("FAIL", out)
+
+
 if __name__ == "__main__":
     unittest.main()

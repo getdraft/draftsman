@@ -562,7 +562,10 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.workspace is not None:
-        failures = check_workspace(args.workspace)
+        try:
+            failures = check_workspace(args.workspace)
+        except (OSError, UnicodeError, ValueError) as exc:
+            failures = [f"cannot check workspace projections: {type(exc).__name__}: {exc}"]
         for failure in failures:
             print(f"FAIL {failure}")
         if failures:

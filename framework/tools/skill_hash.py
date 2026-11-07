@@ -12,14 +12,18 @@ import re
 from pathlib import Path
 
 IGNORED_PARTS = {"__pycache__"}
+IGNORED_NAMES = {".DS_Store", "Thumbs.db", "desktop.ini"}
 IGNORED_SUFFIXES = {".pyc", ".pyo"}
 
 BLOCK_BEGIN = "<!-- DRAFT-SKILLS:BEGIN"
 BLOCK_END = "<!-- DRAFT-SKILLS:END -->"
+# Markers count only at the start of a line, so prose that quotes them in a code span is ignored.
 BLOCK_RE = re.compile(
-    r"<!-- DRAFT-SKILLS:BEGIN generated: true source_sha256: ([0-9a-f]{64}) -->.*?<!-- DRAFT-SKILLS:END -->",
-    re.DOTALL,
+    r"^<!-- DRAFT-SKILLS:BEGIN generated: true source_sha256: ([0-9a-f]{64}) -->.*?^<!-- DRAFT-SKILLS:END -->",
+    re.DOTALL | re.MULTILINE,
 )
+BEGIN_LINE_RE = re.compile(r"^<!-- DRAFT-SKILLS:BEGIN", re.MULTILINE)
+END_LINE_RE = re.compile(r"^<!-- DRAFT-SKILLS:END -->", re.MULTILINE)
 
 
 def find_block(text: str):
@@ -28,8 +32,8 @@ def find_block(text: str):
     Returns (status, match). status is "none" (no markers), "ok" (exactly one
     BEGIN and one END, in order; match is the block) or "malformed" (anything else).
     """
-    begins = text.count(BLOCK_BEGIN)
-    ends = text.count(BLOCK_END)
+    begins = len(BEGIN_LINE_RE.findall(text))
+    ends = len(END_LINE_RE.findall(text))
     if begins == 0 and ends == 0:
         return "none", None
     if begins == 1 and ends == 1:
@@ -89,7 +93,7 @@ def skill_files(skill_dir: Path) -> list[Path]:
         if not path.is_file():
             continue
         rel = path.relative_to(skill_dir)
-        if IGNORED_PARTS.intersection(rel.parts) or path.suffix in IGNORED_SUFFIXES:
+        if IGNORED_PARTS.intersection(rel.parts) or path.name in IGNORED_NAMES or path.suffix in IGNORED_SUFFIXES:
             continue
         files.append(path)
     return sorted(files, key=lambda p: p.relative_to(skill_dir).as_posix())

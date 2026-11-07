@@ -83,16 +83,16 @@ def project_skills(framework_dir: Path, cwd: Path, replace_path: bool) -> list[s
         shutil.copytree(skill, dst, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
         if replace_path:
             for md in dst.rglob("*.md"):
-                md.write_text(md.read_text(encoding="utf-8").replace(".draft/framework/", "framework/"), encoding="utf-8")
+                md.write_bytes(md.read_bytes().decode("utf-8").replace(".draft/framework/", "framework/").encode("utf-8"))
         skill_md = dst / "SKILL.md"
-        skill_md.write_text(skill_hash.add_generated_marker(skill_md.read_text(encoding="utf-8"), digest), encoding="utf-8")
+        marked = skill_hash.add_generated_marker(skill_md.read_bytes().decode("utf-8"), digest)
+        skill_md.write_bytes(marked.encode("utf-8"))  # bytes: no platform newline translation
         names.append(skill.name)
         print(f"  Projected skill: {dst}")
     # Remove projections of skills the framework no longer ships (generated ones only).
     if dst_root.is_dir():
-        for stale in sorted(p for p in dst_root.iterdir() if p.is_dir() and p.name not in names):
-            marker = stale / "SKILL.md"
-            if marker.is_file() and "\ngenerated: true\n" in marker.read_text(encoding="utf-8"):
+        for stale in sorted(p for p in dst_root.iterdir() if p.is_dir() and not p.is_symlink() and p.name not in names):
+            if skill_hash.is_generated_skill(stale / "SKILL.md"):
                 shutil.rmtree(stale)
                 print(f"  Removed stale projected skill: {stale}")
     return names
@@ -132,7 +132,11 @@ def write_agents_index(framework_dir: Path, cwd: Path, skills_prefix: str) -> No
         target.write_text(block + "\n", encoding="utf-8")
         print(f"  Created skill index: {target}")
         return
-    text = target.read_bytes().decode("utf-8")
+    try:
+        text = target.read_bytes().decode("utf-8")
+    except UnicodeDecodeError:
+        print(f"  Warning: {target} is not UTF-8 text; leaving it untouched")
+        return
     newline = "\r\n" if "\r\n" in text else "\n"
     block_nl = block.replace("\n", newline)
     status, _match = skill_hash.find_block(text)
