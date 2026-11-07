@@ -173,19 +173,55 @@ class ValidateSkillsTests(unittest.TestCase):
     def test_missing_script_path_fails(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            text = valid_skill_text("draftsman-core") + "\nRun `scripts/check.py` first.\n"
+            text = valid_skill_text("draftsman-core") + "\nRun scripts/check.py first.\n"
             write_skill(root, "draftsman-core", text)
             self.assert_fails(root, "missing script path")
 
     def test_present_script_path_passes(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            text = valid_skill_text("draftsman-core") + "\nRun `scripts/check.py` first.\n"
+            text = valid_skill_text("draftsman-core") + "\nRun scripts/check.py first.\n"
             skill = write_skill(root, "draftsman-core", text)
             scripts = skill / "scripts"
             scripts.mkdir()
             (scripts / "check.py").write_text("print('never executed')\n", encoding="utf-8")
             self.assertEqual(self.run_validator(root), 0)
+
+    def test_links_and_script_paths_inside_code_are_ignored(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            text = (
+                valid_skill_text("draftsman-core")
+                + "\nInline `[x](nope/missing.md)` and `scripts/absent.py` are examples.\n"
+                + "\n```markdown\n[example](nope/also-missing.md)\nRun scripts/ghost.py\n```\n"
+                + "\n~~~\n[tilde](nope/tilde.md)\n~~~\n"
+            )
+            write_skill(root, "draftsman-core", text)
+            self.assertEqual(self.run_validator(root), 0)
+
+    def test_link_outside_code_still_checked_after_code_block(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            text = (
+                valid_skill_text("draftsman-core")
+                + "\n```\n[example](nope.md)\n```\n"
+                + "\nReal [broken](nope/real.md) link.\n"
+            )
+            write_skill(root, "draftsman-core", text)
+            self.assert_fails(root, "broken relative link")
+
+    def test_link_escaping_skill_directory_fails_even_if_target_exists(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            skills = repo / "skills"
+            (repo / "docs").mkdir()
+            (repo / "docs" / "x.md").write_text("# Shared doc\n", encoding="utf-8")
+            write_skill(
+                skills,
+                "draftsman-core",
+                valid_skill_text("draftsman-core") + "\nSee [docs](../../docs/x.md).\n",
+            )
+            self.assert_fails(skills, "link escapes skill directory")
 
     def test_validator_does_not_execute_scripts(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

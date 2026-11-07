@@ -34,6 +34,7 @@ OTHER_LINE_BUDGET = 200
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
 SCRIPT_PATH_RE = re.compile(r"(?<![\w./-])(scripts/[\w./-]*[\w-])")
 URI_SCHEME_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
+INLINE_CODE_RE = re.compile(r"`[^`]*`")
 
 
 def line_budget(skill_name: str) -> int:
@@ -70,6 +71,27 @@ def check_line_budget(skill_name: str, text: str) -> list[str]:
     return []
 
 
+def strip_code(text: str) -> str:
+    """Blank out fenced code blocks and inline code spans so examples inside them are not checked."""
+    kept: list[str] = []
+    in_fence = False
+    fence_marker = ""
+    for line in text.splitlines():
+        stripped = line.lstrip()
+        if not in_fence and (stripped.startswith("```") or stripped.startswith("~~~")):
+            in_fence = True
+            fence_marker = stripped[:3]
+            kept.append("")
+            continue
+        if in_fence:
+            if stripped.startswith(fence_marker):
+                in_fence = False
+            kept.append("")
+            continue
+        kept.append(INLINE_CODE_RE.sub("", line))
+    return "\n".join(kept)
+
+
 def markdown_files(skill_dir: Path) -> list[Path]:
     return sorted(skill_dir.rglob("*.md"))
 
@@ -77,7 +99,8 @@ def markdown_files(skill_dir: Path) -> list[Path]:
 def check_links(skill_dir: Path, md_file: Path, text: str) -> list[str]:
     failures = []
     rel = md_file.relative_to(skill_dir).as_posix()
-    for match in LINK_RE.finditer(text):
+    skill_root = skill_dir.resolve()
+    for match in LINK_RE.finditer(strip_code(text)):
         target = match.group(1).strip("<>")
         if not target or target.startswith("#") or URI_SCHEME_RE.match(target):
             continue
@@ -85,6 +108,11 @@ def check_links(skill_dir: Path, md_file: Path, text: str) -> list[str]:
         if not path_part:
             continue
         resolved = (md_file.parent / path_part).resolve()
+        try:
+            resolved.relative_to(skill_root)
+        except ValueError:
+            failures.append(f"link escapes skill directory in {rel}: '{target}'")
+            continue
         if not resolved.exists():
             failures.append(f"broken relative link in {rel}: '{target}'")
     return failures
@@ -93,7 +121,7 @@ def check_links(skill_dir: Path, md_file: Path, text: str) -> list[str]:
 def check_script_paths(skill_dir: Path, md_file: Path, text: str) -> list[str]:
     failures = []
     rel = md_file.relative_to(skill_dir).as_posix()
-    for match in SCRIPT_PATH_RE.finditer(text):
+    for match in SCRIPT_PATH_RE.finditer(strip_code(text)):
         script = match.group(1)
         if not (skill_dir / script).exists():
             failures.append(f"missing script path in {rel}: '{script}'")
