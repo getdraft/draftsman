@@ -116,6 +116,15 @@ TOOLS_MANIFEST = [
 ]
 
 
+def _q(value: Any) -> str:
+    """Make a value safe inside a double-quoted Mermaid label."""
+    return str(value).replace('"', "'")
+
+
+def _edge_label(label: Any, tech: str) -> str:
+    return (_q(label) + tech).replace("|", "/").replace('"', "'")
+
+
 def _text(payload: dict[str, Any]) -> dict[str, Any]:
     return {"content": [{"type": "text", "text": json.dumps(payload, indent=2)}]}
 
@@ -136,10 +145,9 @@ def _find_object(index_data: dict[str, Any], needle: str) -> dict[str, Any] | No
     for obj in candidates:
         if wanted in (str(obj.get("name", "")).lower(), str(obj.get("uid", "")).lower()):
             return obj
-    for obj in candidates:
-        if wanted in str(obj.get("name", "")).lower():
-            return obj
-    return None
+    matches = [obj for obj in candidates if wanted in str(obj.get("name", "")).lower()]
+    # A fragment that matches several objects names none of them: say unknown rather than guess.
+    return matches[0] if len(matches) == 1 else None
 
 
 def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
@@ -180,7 +188,7 @@ def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         if target is None:
             return _text({
                 "product": product_name,
-                "error": "No object with that name or uid is in the catalog index.",
+                "error": "No single object with that name or uid is in the catalog index (it is absent or the name is ambiguous).",
             })
 
         target_uid = str(target.get("uid", ""))
@@ -248,7 +256,7 @@ def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         text_repr = "\n".join(lines)
 
         # 2. Build Mermaid Diagram Block
-        mermaid_lines = ["graph LR", f'  node_target["{target_name}"]']
+        mermaid_lines = ["graph LR", f'  node_target["{_q(target_name)}"]']
         node_idx = 0
         for edge in displayed_out:
             node_idx += 1
@@ -256,8 +264,8 @@ def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
             lbl = edge["label"]
             tech_str = f" ({edge['technology']})" if edge["technology"] else ""
             nid = f"n_out_{node_idx}"
-            mermaid_lines.append(f'  {nid}["{other_name}"]')
-            mermaid_lines.append(f'  node_target -->|{lbl}{tech_str}| {nid}')
+            mermaid_lines.append(f'  {nid}["{_q(other_name)}"]')
+            mermaid_lines.append(f'  node_target -->|{_edge_label(lbl, tech_str)}| {nid}')
 
         for edge in displayed_in:
             node_idx += 1
@@ -265,8 +273,8 @@ def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
             lbl = edge["label"]
             tech_str = f" ({edge['technology']})" if edge["technology"] else ""
             nid = f"n_in_{node_idx}"
-            mermaid_lines.append(f'  {nid}["{other_name}"]')
-            mermaid_lines.append(f'  {nid} -->|{lbl}{tech_str}| node_target')
+            mermaid_lines.append(f'  {nid}["{_q(other_name)}"]')
+            mermaid_lines.append(f'  {nid} -->|{_edge_label(lbl, tech_str)}| node_target')
 
         mermaid_lines.append("  style node_target stroke-width:3px")
         mermaid_code = "\n".join(mermaid_lines)
@@ -289,7 +297,7 @@ def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
             return _text({
                 "product": product_name,
                 "complianceStatus": "unknown",
-                "reason": "No object with that name or uid is in the catalog index.",
+                "reason": "No single object with that name or uid is in the catalog index (it is absent or the name is ambiguous).",
             })
 
         rows = (index_data.get("requirementImplementations") or {}).get("rows") or []

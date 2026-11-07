@@ -22,6 +22,67 @@ BLOCK_RE = re.compile(
 )
 
 
+def find_block(text: str):
+    """Locate the managed block in AGENTS.md text.
+
+    Returns (status, match). status is "none" (no markers), "ok" (exactly one
+    BEGIN and one END, in order; match is the block) or "malformed" (anything else).
+    """
+    begins = text.count(BLOCK_BEGIN)
+    ends = text.count(BLOCK_END)
+    if begins == 0 and ends == 0:
+        return "none", None
+    if begins == 1 and ends == 1:
+        match = BLOCK_RE.search(text)
+        if match:
+            return "ok", match
+    return "malformed", None
+
+
+def is_generated_skill(skill_md: Path) -> bool:
+    """True when SKILL.md exists and its frontmatter says generated: true."""
+    try:
+        lines = skill_md.read_text(encoding="utf-8-sig").splitlines()
+    except (OSError, UnicodeError):
+        return False
+    if not lines or lines[0].rstrip() != "---":
+        return False
+    for line in lines[1:]:
+        if line.rstrip() == "---":
+            return False
+        if line.strip() == "generated: true":
+            return True
+    return False
+
+
+def expected_projection(skill_dir: Path) -> dict[str, bytes]:
+    """The exact files a workspace projection of this skill must contain."""
+    digest = skill_source_sha256(skill_dir)
+    files: dict[str, bytes] = {}
+    for path in skill_files(skill_dir):
+        rel = path.relative_to(skill_dir).as_posix()
+        data = path.read_bytes()
+        if rel == "SKILL.md":
+            data = add_generated_marker(data.decode("utf-8"), digest).encode("utf-8")
+        files[rel] = data
+    return files
+
+
+def projection_problems(skill_dir: Path, projection_dir: Path) -> list[str]:
+    """Compare a projection on disk with the expected projection, file by file."""
+    problems = []
+    expected = expected_projection(skill_dir)
+    actual = {p.relative_to(projection_dir).as_posix(): p for p in skill_files(projection_dir)}
+    for rel in sorted(set(expected) - set(actual)):
+        problems.append(f"missing file {rel}")
+    for rel in sorted(set(actual) - set(expected)):
+        problems.append(f"unexpected file {rel}")
+    for rel in sorted(set(expected) & set(actual)):
+        if actual[rel].read_bytes() != expected[rel]:
+            problems.append(f"{rel} differs from source")
+    return problems
+
+
 def skill_files(skill_dir: Path) -> list[Path]:
     files = []
     for path in skill_dir.rglob("*"):

@@ -76,7 +76,10 @@ def project_skills(framework_dir: Path, cwd: Path, replace_path: bool) -> list[s
         digest = skill_hash.skill_source_sha256(skill)
         dst = dst_root / skill.name
         if dst.exists() or dst.is_symlink():
-            shutil.rmtree(dst) if dst.is_dir() and not dst.is_symlink() else dst.unlink()
+            if dst.is_symlink() or not skill_hash.is_generated_skill(dst / "SKILL.md"):
+                print(f"  Warning: {dst} exists and is not a generated projection; leaving it untouched")
+                continue
+            shutil.rmtree(dst)
         shutil.copytree(skill, dst, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
         if replace_path:
             for md in dst.rglob("*.md"):
@@ -129,13 +132,20 @@ def write_agents_index(framework_dir: Path, cwd: Path, skills_prefix: str) -> No
         target.write_text(block + "\n", encoding="utf-8")
         print(f"  Created skill index: {target}")
         return
-    text = target.read_text(encoding="utf-8")
-    if skill_hash.BLOCK_RE.search(text):
-        updated = skill_hash.BLOCK_RE.sub(lambda _m: block, text, count=1)
+    text = target.read_bytes().decode("utf-8")
+    newline = "\r\n" if "\r\n" in text else "\n"
+    block_nl = block.replace("\n", newline)
+    status, _match = skill_hash.find_block(text)
+    if status == "malformed":
+        print(f"  Warning: {target} has an unmatched or repeated skill index marker; leaving it untouched")
+        return
+    if status == "ok":
+        updated = skill_hash.BLOCK_RE.sub(lambda _m: block_nl, text, count=1)
     else:
-        updated = text.rstrip("\n") + "\n\n" + block + "\n"
+        updated = text.rstrip("\r\n") + newline + newline + block_nl + newline
     if updated != text:
-        target.write_text(updated, encoding="utf-8")
+        with open(target, "w", encoding="utf-8", newline="") as handle:
+            handle.write(updated)
         print(f"  Updated skill index in {target}")
     else:
         print(f"  Skill index already current in {target}")

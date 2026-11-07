@@ -211,5 +211,71 @@ class FreshnessTests(unittest.TestCase):
             self.assertEqual(code, 1)
 
 
+class SafetyTests(unittest.TestCase):
+    def test_editing_a_projected_file_fails_the_check(self):
+        with Workspace() as ws:
+            ws.run_setup()
+            ref = ws.projected / "draftsman-core" / "references" / "role.md"
+            ref.write_text("tampered", encoding="utf-8")
+            code, out = ws.check()
+            self.assertEqual(code, 1)
+            self.assertIn("edited or is incomplete", out)
+
+    def test_appending_to_a_projected_skill_md_fails_the_check(self):
+        with Workspace() as ws:
+            ws.run_setup()
+            skill = ws.projected / "draftsman-core" / "SKILL.md"
+            skill.write_text(skill.read_text(encoding="utf-8") + "\nextra\n", encoding="utf-8")
+            self.assertEqual(ws.check()[0], 1)
+
+    def test_an_extra_file_in_a_projection_fails_the_check(self):
+        with Workspace() as ws:
+            ws.run_setup()
+            (ws.projected / "draftsman-core" / "stray.md").write_text("x", encoding="utf-8")
+            self.assertEqual(ws.check()[0], 1)
+
+    def test_a_user_skill_with_a_framework_name_is_not_overwritten(self):
+        with Workspace() as ws:
+            own = ws.projected / "draftsman-core"
+            own.mkdir(parents=True)
+            (own / "SKILL.md").write_text("---\nname: draftsman-core\ndescription: mine\n---\nMy own.\n", encoding="utf-8")
+            (own / "notes.txt").write_text("keep", encoding="utf-8")
+            ws.run_setup()
+            self.assertIn("My own.", (own / "SKILL.md").read_text(encoding="utf-8"))
+            self.assertTrue((own / "notes.txt").exists())
+            self.assertEqual(ws.check()[0], 1, "the check must still flag the unprojected skill")
+
+    def test_a_malformed_agents_block_is_left_untouched(self):
+        with Workspace() as ws:
+            agents = ws.path / "AGENTS.md"
+            damaged = "# Mine\n\n<!-- DRAFT-SKILLS:BEGIN generated: true source_sha256: " + "a" * 64 + " -->\nUSER TEXT\n"
+            agents.write_text(damaged, encoding="utf-8")
+            ws.run_setup()
+            ws.run_setup()
+            self.assertEqual(agents.read_text(encoding="utf-8"), damaged)
+            code, out = ws.check()
+            self.assertEqual(code, 1)
+            self.assertIn("malformed", out)
+
+    def test_crlf_agents_file_keeps_its_line_endings(self):
+        with Workspace() as ws:
+            agents = ws.path / "AGENTS.md"
+            agents.write_bytes(b"# Mine\r\n\r\nKeep.\r\n")
+            ws.run_setup()
+            data = agents.read_bytes()
+            self.assertNotIn(b"\n", data.replace(b"\r\n", b""))
+            self.assertIn(b"Keep.", data)
+            ws.run_setup()
+            self.assertEqual(agents.read_bytes(), data)
+
+    def test_routers_name_explicit_skill_paths_not_a_glob(self):
+        for name in ("guide", "review", "update"):
+            text = (ROOT / "framework" / "draft-actions" / f"{name}.md").read_text(encoding="utf-8").split("---", 2)[2]
+            self.assertNotIn("Glob", text)
+            self.assertIn(".draft/framework/skills/", text)
+            self.assertIn("framework/skills/", text)
+            self.assertIn("Do not use `.claude/skills/`", text)
+
+
 if __name__ == "__main__":
     unittest.main()
