@@ -215,6 +215,19 @@ class ValidateSkillsTests(unittest.TestCase):
             (skill / "scripts" / "check.py").write_text("x = 1\n", encoding="utf-8")
             self.assertEqual(self.run_validator(root), 0)
 
+    def test_url_encoded_relative_link_resolves(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skill = write_skill(
+                root,
+                "draftsman-core",
+                valid_skill_text("draftsman-core") + "\nSee [x](references/my%20file.md).\n",
+            )
+            refs = skill / "references"
+            refs.mkdir()
+            (refs / "my file.md").write_text("# Page\n", encoding="utf-8")
+            self.assertEqual(self.run_validator(root), 0)
+
     def test_link_outside_code_still_checked_after_code_block(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

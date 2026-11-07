@@ -19,6 +19,7 @@ import argparse
 import re
 import sys
 from pathlib import Path
+from urllib.parse import unquote
 
 import yaml
 
@@ -109,7 +110,7 @@ def check_links(skill_dir: Path, md_file: Path, text: str) -> list[str]:
         target = match.group(1).strip("<>")
         if not target or target.startswith("#") or URI_SCHEME_RE.match(target):
             continue
-        path_part = target.split("#", 1)[0].split("?", 1)[0]
+        path_part = unquote(target.split("#", 1)[0].split("?", 1)[0])
         if not path_part:
             continue
         resolved = (md_file.parent / path_part).resolve()
