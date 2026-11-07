@@ -113,7 +113,10 @@ class DraftsmanCoreTests(unittest.TestCase):
     def test_reference_links_resolve(self):
         links = re.findall(r"\]\(([^)#]+)\)|`(references/[^`]+)`", self.text)
         targets = {a or b for a, b in links if (a or b).startswith("references/")}
-        self.assertEqual(targets, {"references/character.md", "references/onboarding.md"})
+        self.assertEqual(
+            targets,
+            {"references/character.md", "references/onboarding.md", "references/role.md"},
+        )
         for target in targets:
             with self.subTest(target=target):
                 self.assertTrue((SKILL.parent / target).is_file())

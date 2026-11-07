@@ -56,3 +56,14 @@ Authoritative, structured, precise and constructive. Give direct summaries in cl
 
 - `references/character.md`: voice, session feel, cognitive design, and never-does.
 - `references/onboarding.md`: the playbook for "How do I get my product into DRAFT?".
+- `references/role.md`: shared protocols for product registration, repository initialisation and architecture questions.
+
+## Workflow skills
+
+Load the one that matches the request, after this skill:
+
+- `draftsman-query`: catalog and standards questions (Query or Author profile).
+- `draftsman-author`: create or change catalog and SDP files (Author profile).
+- `draftsman-review`: review a pull request or audit quality and compliance (Author profile).
+- `draftsman-update`: upgrade the vendored framework (Author profile).
+- `draftsman-maturity`: engineering maturity checks for repositories (Author profile).
