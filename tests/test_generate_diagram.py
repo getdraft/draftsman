@@ -282,5 +282,29 @@ class GenerateDiagramTests(unittest.TestCase):
             self.assertIn("cannot write", err.getvalue())
 
 
+    def test_empty_group_and_empty_pattern_are_stated(self) -> None:
+        sdp = pattern({"Full": ["A-1"], "Empty": []})
+        page, _ = self._build([component("A-1", "Alpha"), sdp])
+        self.assertIn("recorded with no objects to draw: Empty (azure)", page)
+        page, _ = self._build([pattern({})])
+        self.assertIn("nothing to draw", page)
+        self.assertNotIn("<svg", page.split("</header>")[1].split("Recorded relationships")[0])
+
+    def test_non_string_notes_key_does_not_crash(self) -> None:
+        sdp = pattern({"G": ["A-1"]})
+        sdp["architectureNotes"] = {1: "one"}
+        page, _ = self._build([component("A-1", "Alpha"), sdp])
+        self.assertIn("one", page)
+
+    def test_ambiguous_selector_errors_and_uid_wins(self) -> None:
+        a, b = pattern({"G": []}), pattern({"G": []})
+        b["uid"], b["name"] = "SDP-2", "Demo Pattern"
+        with tempfile.TemporaryDirectory() as tmp:
+            ws = write_workspace(Path(tmp), [a, b])
+            with self.assertRaises(SystemExit):
+                generate_diagram.build(ws, "Demo Pattern")
+            _, model = generate_diagram.build(ws, "SDP-2")
+            self.assertEqual(model.sdp["uid"], "SDP-2")
+
 if __name__ == "__main__":
     unittest.main()

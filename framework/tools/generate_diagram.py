@@ -75,10 +75,19 @@ def pick_sdp(catalog: dict[str, dict[str, Any]], selector: str | None) -> dict[s
         names = ", ".join(f"{p.get('name')} ({p.get('uid')})" for p in patterns)
         raise SystemExit(f"Several deployment patterns found; pass --sdp. Available: {names}")
     wanted = selector.strip().lower()
-    for pattern in patterns:
-        aliases = [str(a).lower() for a in (pattern.get("aliases") or [])]
-        if wanted in {str(pattern.get("uid", "")).lower(), str(pattern.get("name", "")).lower(), *aliases}:
-            return pattern
+    by_uid = [p for p in patterns if str(p.get("uid", "")).lower() == wanted]
+    if len(by_uid) == 1:
+        return by_uid[0]
+    matches = [
+        p
+        for p in patterns
+        if wanted in {str(p.get("uid", "")).lower(), str(p.get("name", "")).lower(), *(str(a).lower() for a in (p.get("aliases") or []))}
+    ]
+    if len(matches) > 1:
+        names = ", ".join(f"{p.get('name')} ({p.get('uid')})" for p in matches)
+        raise SystemExit(f"'{selector}' matches several deployment patterns; pass a uid. Matches: {names}")
+    if matches:
+        return matches[0]
     raise SystemExit(f"No deployment pattern matches '{selector}'. Use --list to see the choices.")
 
 
@@ -416,9 +425,19 @@ def facts_html(model: Model) -> str:
         if key in seen:
             continue
         seen.add(key)
-        label = "".join(f" {c.lower()}" if c.isupper() else c for c in key).strip().capitalize()
+        label = "".join(f" {c.lower()}" if c.isupper() else c for c in str(key)).strip().capitalize()
         cards.append(f'<div class="fact"><dt>{E(label)}</dt><dd>{E(value)}</dd></div>')
     return "".join(cards)
+
+
+def empty_groups_html(model: Model) -> str:
+    empty = [g for g in model.groups if not g["uids"]]
+    if not empty:
+        return ""
+    names = "; ".join(
+        f"{clean(g.get('name')) or 'unnamed group'} ({clean(g.get('target')) or 'deployment target not recorded'})" for g in empty
+    )
+    return f'<p class="cap">Service groups recorded with no objects to draw: {E(names)}.</p>'
 
 
 def questions_html(model: Model) -> str:
@@ -527,7 +546,13 @@ def render_page(model: Model, layout: Layout) -> str:
         '<div class="legend"><span><i></i>Recorded relationship</span><span><b></b>Placed in a service group</span>'
         '<span><b class="u"></b>Has a relationship but is not placed</span><span><b class="r"></b>Retired</span>'
         '<span><b class="d"></b>Deprecated</span></div>',
-        f'<div class="scroll">{render_svg(model, layout)}</div></section>',
+        (
+            f'<div class="scroll">{render_svg(model, layout)}</div>'
+            if layout.pos
+            else "<p>No objects are placed in a service group and no recorded relationship connects an object, so there is nothing to draw.</p>"
+        )
+        + empty_groups_html(model)
+        + "</section>",
     ]
     if model.relationships:
         parts.append(
