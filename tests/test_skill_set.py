@@ -19,6 +19,7 @@ EXPECTED = {
     "draftsman-review": "Author",
     "draftsman-update": "Author",
     "draftsman-maturity": "Author",
+    "draftsman-diagram": "Author",
 }
 
 

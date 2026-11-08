@@ -13,7 +13,7 @@
 - Added `framework/skills/draftsman-core/references/character.md` (carried over from `framework/docs/soul.md`, which this release removes) and `references/onboarding.md` (the onboarding playbook with channel wording removed); `soul.md` is removed in this release.
 - Added Evidence Discipline fixtures `tests/fixtures/evidence_discipline/R1.json` to `R6.json` (one per rule, each with `id`, `rule`, `question`, `index_excerpt`, `forbidden_phrases`, `required_phrases`) and `tests/test_evidence_discipline_fixtures.py`, which checks the fixture set and that `draftsman-core` contains each rule's key phrase. The fixtures are not run against a live model.
 - Added `framework/tools/validate_skills.py` (pyyaml only, read-only): checks SKILL.md frontmatter, line budgets (150 for `draftsman-core`, 200 for other skills), relative link and `scripts/` path integrity, and rejects links that escape the skill directory. Fenced code is excluded, and unreadable files and NUL-byte paths are reported as FAIL lines, not tracebacks. It exits 1 when a skills directory has no skill subdirectories and 2 when the directory is missing. Tests are in `tests/test_validate_skills.py`.
-- Added workflow skills under `framework/skills/`: `draftsman-author` (with `references/guide.md`, the conversational flow and repository-scan mapping, merged from the guide action and the authoring and autodiscovery skills), `draftsman-query` (with `references/standards.md`, merged from the query and standards skills), `draftsman-review` and `draftsman-update` (a one-line summary per step in `SKILL.md`, the verbatim action-file steps in `references/steps.md`), and `draftsman-maturity` (the engineering maturity skill without company-specific agent names). Each states the capability profile it needs. The skills add guardrails that the old skills did not state: never ask the user for credentials or tokens, never copy a secret value into the catalog, mark scanned values as inferred (R6), and say so when a needed capability is missing. `draftsman-autodiscover` is merged into `draftsman-author` and `draftsman-standards` into `draftsman-query`; `switch-game-architect` is not ported. The diagram skill follows once the diagram tool is on `main`.
+- Added workflow skills under `framework/skills/`: `draftsman-author` (with `references/guide.md`, the conversational flow and repository-scan mapping, merged from the guide action and the authoring and autodiscovery skills), `draftsman-query` (with `references/standards.md`, merged from the query and standards skills), `draftsman-review` and `draftsman-update` (a one-line summary per step in `SKILL.md`, the verbatim action-file steps in `references/steps.md`), and `draftsman-maturity` (the engineering maturity skill without company-specific agent names). Each states the capability profile it needs. The skills add guardrails that the old skills did not state: never ask the user for credentials or tokens, never copy a secret value into the catalog, mark scanned values as inferred (R6), and say so when a needed capability is missing. `draftsman-autodiscover` is merged into `draftsman-author` and `draftsman-standards` into `draftsman-query`; `switch-game-architect` is not ported. `draftsman-diagram` (Author profile) documents the rendered-page generator `framework/tools/generate_diagram.py` and the Mermaid and C4 output, with the generator's no-inference rules.
 - Added `framework/skills/draftsman-core/references/role.md` (product registration, repository initialisation and architecture-question protocols) and a workflow-skill index in `draftsman-core`.
 - Added `tests/test_skill_set.py` (exact skill set, `switch-game-architect` absent, frontmatter checks, each workflow skill names its profile, script paths exist) and `tests/test_skill_step_lists.py` with heading fixtures in `tests/fixtures/skills/step_lists/` (every `##` and `###` heading of the review and update action files must appear in the matching skill).
 - CI now runs `python framework/tools/validate_skills.py` in `.github/workflows/validate-catalog.yml`.
@@ -40,6 +40,29 @@
 ### Migration Notes
 
 - If you used the DRAFT agent package, its Slack or Discord manifests, or `soul.md`, load the skills in `framework/skills/` into your own agent instead. A workspace gets them as `.draft/framework/skills/` on the next framework refresh; run `python3 .draft/framework/tools/setup_ide.py` to project them. There is no deprecation window.
+
+## 1.2.1 - 2026-11-08
+
+### Compatibility Impact
+
+- Additive only. No schema, object model, validation, or workspace content changes. Existing workspaces are unaffected.
+
+### Added
+
+- Added `framework/tools/generate_diagram.py`, a deterministic generator that renders a Software Deployment Pattern as a self-contained HTML page with an inline SVG topology diagram (zones from service groups, boxes from placed objects, arrows only from recorded relationships), a relationships table, the pattern's recorded characteristics, open Drafting Session questions, and a filterable object inventory. Supports `--list`, `--sdp`, `--output`, and `--placed-only`.
+- Added `tests/test_generate_diagram.py` covering rendering, determinism, the no-inference rule (no relationship, no arrow), unplaced objects, unknown references, self-relationships, duplicate placement, malformed service groups, missing targets and labels, HTML escaping, and CLI error handling.
+
+### Changed
+
+- Extended the `draftsman-diagram` agent skill with a "Rendered Diagram Pages" mode: when to use the generator instead of hand-written Mermaid, the document-do-not-infer rules, how to report conflicting catalog fields, and how to deliver the page.
+
+### Fixed
+
+- Regenerated `docs/assets/draft-indexes.json`, which was stale on `main` and failed the generated-index check.
+
+### Migration Notes
+
+- No migration required. Companies that vendor the framework get `generate_diagram.py` and the updated skill on their next framework refresh.
 
 ## 1.2.0 - 2026-08-28
 
