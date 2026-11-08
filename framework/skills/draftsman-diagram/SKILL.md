@@ -23,11 +23,13 @@ python3 framework/tools/generate_diagram.py --sdp "<name, alias or uid>" [--work
 
 When the framework is vendored into a workspace, run `.draft/framework/tools/generate_diagram.py` with the workspace root as `--workspace`.
 
+Scope: by default the page covers every object owned by the same team as the pattern, plus anything the pattern places. `--placed-only` limits it to objects placed in a service group. Without `--output` the file is `<pattern-name>-architecture.html` in the current directory, and an existing file is overwritten (the command says so). `--sdp` is optional when the workspace has one pattern. Exit code 2 means there is no `catalog/` under the workspace; 1 means no pattern matched or the file could not be written.
+
 The page is one self-contained HTML file with an inline SVG, light and dark themes and no external requests. It has: deployment topology, recorded relationships, recorded characteristics, open Drafting Session questions that target the pattern, and a filterable object inventory.
 
 ## Rules
 
-1. **Document, do not infer (R1, R3).** Zones are `serviceGroups`, labelled with their recorded `deploymentTarget`. Boxes are placed deployable objects. Arrows are `relationship` objects (including inline ones such as `runsOn`) and nothing else. An object with no recorded relationship has no arrow. Never add a box or arrow because it seems likely.
+1. **Document, do not infer (R1, R3).** Zones are `serviceGroups`, labelled with their recorded `deploymentTarget`. Boxes are the objects in scope (placed ones inside their zone). Arrows are `relationship` objects (including inline ones such as `runsOn`) and nothing else. An object with no recorded relationship has no arrow. Never add a box or arrow because it seems likely.
 2. **Show gaps instead of hiding them.** Objects with a relationship but no service group are drawn in a "Not placed in a service group" zone. Retired and deprecated objects stay on the page, styled as such. A missing target or label is shown as not recorded.
 3. **Report conflicts, do not resolve them.** If two recorded fields disagree (a description names one host, `runsOn` another), say so in your reply, quote both values and do not pick one.
 4. **Use the user's scope.** If several deployment patterns exist, run `--list` and ask which one. An ambiguous `--sdp` selector is an error; pass the uid.

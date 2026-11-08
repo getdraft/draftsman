@@ -14,7 +14,7 @@ Source objects: `software_deployment_pattern`, `product_component`, `runtime_ser
 
 1. Wrap output in a fenced block with the language `mermaid`. Quote labels that contain special characters: `id["API Gateway (Port 443)"]`.
 2. Use `subgraph` blocks for zones, for example `subgraph Edge ["Edge / Boundary Zone"]`.
-3. Label arrows with the recorded protocol or port, for example `ALB -->|HTTPS :443| ServiceA`, and show data direction. If the catalog does not record a protocol or port, leave the label off; do not guess one.
+3. Label arrows with the recorded protocol or port, for example `ALB -->|HTTPS :443| ServiceA`, and show data direction. If you did not read a protocol or port in the catalog fields available to you, leave the label off and say your index does not carry it (R2, R3); do not guess one.
 
 ## Example
 
