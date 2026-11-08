@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- Additive only. No schema, object model, validation, or workspace content changes. Existing workspaces are unaffected.
+
+### Added
+
+- None.
+
+### Changed
+
+- `framework/tools/check_release_notes.py` no longer judges the promote-release bot's own commit as a standalone change. A commit that changes `CHANGELOG.md` and `draft-framework.yaml` (and optionally the regenerated `AI_INDEX.md`), leaves no `## Unreleased` section, and moves the version to the next patch, minor or major is a promotion of an entry that was already checked on its pull request, so the bump type is not checked again; skipped or lowered versions still fail. Any other file in the diff, or a remaining `## Unreleased` section, keeps the exact-bump rule. Tests are in `tests/test_release_notes.py`.
+
+### Fixed
+
+- Promoting a minor release (for example 1.2.1 to 1.3.0) failed the Validate Catalog check on the promotion commit, which demanded the next patch version, and the tag job was skipped, so no release tag was created. Minor releases now validate and tag normally.
+
+### Migration Notes
+
+- No migration required.
+
 ## 1.3.0 - 2026-11-08
 
 ### Compatibility Impact

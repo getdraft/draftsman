@@ -322,10 +322,32 @@ def validate_changed_files(
     if governed and "CHANGELOG.md" not in files:
         errors.append("Framework-governed files changed, but CHANGELOG.md was not updated.")
 
+    # The promote-release workflow's own commit changes only CHANGELOG.md and the manifest.
+    # The contract changes it releases were in the earlier merge, so judging this diff alone
+    # would demand a patch bump for a minor release. The bump type was already checked on the
+    # PR that staged the Unreleased entry; here the version must still increase.
+    promotion_commit = (
+        {"CHANGELOG.md", "draft-framework.yaml"} <= set(files) <= {"CHANGELOG.md", "draft-framework.yaml", "AI_INDEX.md"}
+        and version_changed
+        and not has_unreleased
+    )
+
     if governed and old_version is not None:
         # Skip version-bump enforcement when changes are staged under Unreleased —
         # the promote-release workflow converts Unreleased → numbered version on merge.
-        if not (has_unreleased and not version_changed):
+        if promotion_commit:
+            # The workflow only ever produces the next patch, minor or major from the previous version.
+            allowed = {
+                (old_version.major, old_version.minor, old_version.patch + 1),
+                (old_version.major, old_version.minor + 1, 0),
+                (old_version.major + 1, 0, 0),
+            }
+            if (current_version.major, current_version.minor, current_version.patch) not in allowed:
+                errors.append(
+                    f"A promotion commit must move {old_version} to the next patch, minor or major version; "
+                    f"found {current_version}."
+                )
+        elif not (has_unreleased and not version_changed):
             errors.extend(validate_version_bump(old_version, current_version, bool(contract)))
 
     if governed and "CHANGELOG.md" in files:
