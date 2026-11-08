@@ -234,6 +234,64 @@ class ReleaseNotesTests(unittest.TestCase):
         self.assertIn("Unreleased needs a meaningful Compatibility Impact", "\n".join(errors))
 
 
+    def _promotion_entries(self) -> dict:
+        return check_release_notes.parse_changelog(
+            textwrap.dedent(
+                """
+            ## 1.3.0 - 2026-11-08
+            ### Compatibility Impact
+            Contract change.
+            ### Added
+            Skills.
+            ### Changed
+            None.
+            ### Fixed
+            None.
+            ### Migration Notes
+            Load the skills.
+            """
+            )
+        )
+
+    def test_promotion_commit_may_apply_a_minor_bump_staged_earlier(self) -> None:
+        errors = check_release_notes.validate_changed_files(
+            ["CHANGELOG.md", "draft-framework.yaml"],
+            check_release_notes.Version(1, 3, 0),
+            self._promotion_entries(),
+            check_release_notes.Version(1, 2, 1),
+        )
+        self.assertEqual(errors, [])
+
+    def test_promotion_commit_must_still_increase_the_version(self) -> None:
+        errors = check_release_notes.validate_changed_files(
+            ["CHANGELOG.md", "draft-framework.yaml"],
+            check_release_notes.Version(1, 2, 0),
+            self._promotion_entries(),
+            check_release_notes.Version(1, 2, 1),
+        )
+        self.assertIn("must increase", "\n".join(errors))
+
+    def test_other_files_with_the_manifest_still_need_the_exact_bump(self) -> None:
+        errors = check_release_notes.validate_changed_files(
+            ["CHANGELOG.md", "draft-framework.yaml", "framework/tools/generate_browser.py"],
+            check_release_notes.Version(1, 3, 0),
+            self._promotion_entries(),
+            check_release_notes.Version(1, 2, 1),
+        )
+        self.assertIn("expected 1.2.2", "\n".join(errors))
+
+    def test_promotion_shape_with_an_unreleased_entry_is_not_exempt(self) -> None:
+        entries = self._promotion_entries()
+        entries["Unreleased"] = entries["1.3.0"]
+        errors = check_release_notes.validate_changed_files(
+            ["CHANGELOG.md", "draft-framework.yaml"],
+            check_release_notes.Version(1, 3, 0),
+            entries,
+            check_release_notes.Version(1, 2, 1),
+        )
+        self.assertIn("expected 1.2.2", "\n".join(errors))
+
+
 class DetectBumpTypeTests(unittest.TestCase):
     def test_patch_for_docs_only(self) -> None:
         bump = check_release_notes.detect_bump_type(files=["framework/docs/overview.md", "CHANGELOG.md"])
