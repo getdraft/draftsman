@@ -1,4 +1,2394 @@
 {
+  "objects": [
+    {
+      "uid": "01KTWS3D6T-5TAZ",
+      "name": "AI Gateway",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Outbound LLM/AI request traffic is routed, authenticated, rate-limited, and audited at a managed proxy layer that enforces safety, prompt templating, and budget/cost metrics.",
+      "domain": "01KTWS3D6T-ABD1"
+    },
+    {
+      "uid": "01KT0V5MCV-3A6F",
+      "name": "API Gateway",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Inbound API traffic is routed, authenticated, rate-limited, and transformed at a managed entry point in front of backend services.",
+      "domain": "01KSWVZSZ5-4WKE"
+    },
+    {
+      "uid": "01KQQ4Q026-4JR6",
+      "name": "Access Control Model",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Authorization model that controls access to a service or data platform.",
+      "domain": "01KSWVZSZ5-71PY"
+    },
+    {
+      "uid": "01KT0XNZEY-A7GK",
+      "name": "Analytics",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Operational and business data is processed and analyzed to produce insight through a managed analytics platform.",
+      "domain": "01KT0XNZEY-HGZZ"
+    },
+    {
+      "uid": "01KQQ4Q026-NB1W",
+      "name": "Application Performance Monitoring",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Tracing and performance analysis of application runtimes.",
+      "domain": "01KQQ4Q027-C213"
+    },
+    {
+      "uid": "01KT0V5MCV-RZV0",
+      "name": "Application Runtime",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "First-party application code executes on a managed runtime that provides the process, web, or worker execution environment.",
+      "domain": "01KQQ4Q027-ZTHF"
+    },
+    {
+      "uid": "01KT0XNZEY-7HWQ",
+      "name": "Artifact Management",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Build outputs, packages, images, and dependencies are stored, versioned, and served from a managed artifact repository.",
+      "domain": "01KT0XNZEY-GXYR"
+    },
+    {
+      "uid": "01KQQ4Q026-MHJM",
+      "name": "Authentication",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Identity and access authentication capability for users, services, administrators, or workloads.",
+      "domain": "01KSWVZSZ5-71PY"
+    },
+    {
+      "uid": "01KT0V5MCV-HZ37",
+      "name": "CDN",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Static and cacheable content is distributed and served from edge locations close to consumers to reduce latency and origin load.",
+      "domain": "01KSWVZSZ5-4WKE"
+    },
+    {
+      "uid": "01KT0XNZEY-Q2TF",
+      "name": "CI/CD Pipeline",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Source code is automatically built, tested, and promoted through environments by an automated continuous integration and delivery pipeline.",
+      "domain": "01KT0XNZEY-GXYR"
+    },
+    {
+      "uid": "01KT0V5MCV-ECR4",
+      "name": "Caching",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Frequently accessed data is stored in a fast, ephemeral tier to reduce latency and load on the system of record.",
+      "domain": "01KQQ4Q027-ZTHF"
+    },
+    {
+      "uid": "01KT0XNZEY-RVTG",
+      "name": "Certificate Management",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Digital certificates are issued, distributed, renewed, and revoked through a managed certificate or PKI service.",
+      "domain": "01KSWVZSZ5-GY67"
+    },
+    {
+      "uid": "01KQQ4Q026-1HZP",
+      "name": "Compute Platform",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Compute substrate or virtualized platform used to run Hosts.",
+      "domain": "01KQQ4Q027-ZTHF"
+    },
+    {
+      "uid": "01KT0XNZEY-35Y2",
+      "name": "Configuration Management",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "System and application configuration is declared, applied, and reconciled across environments through a managed configuration platform.",
+      "domain": "01KT0XNZEY-GXYR"
+    },
+    {
+      "uid": "01KQQ4Q026-GW5D",
+      "name": "Container Orchestration",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Management of containerized workload lifecycles.",
+      "domain": "01KQQ4Q027-ZTHF"
+    },
+    {
+      "uid": "01KT0V5MCV-GJBH",
+      "name": "DNS",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Names are resolved to network addresses through authoritative and recursive domain name resolution.",
+      "domain": "01KSWVZSZ5-4WKE"
+    },
+    {
+      "uid": "01KT0XNZEY-DENJ",
+      "name": "Data Integration",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Data is moved, transformed, and synchronized between systems through a managed integration or ETL platform.",
+      "domain": "01KT0XNZEY-QY0Y"
+    },
+    {
+      "uid": "01KT0V5MCV-VD0Y",
+      "name": "Data Persistence",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Structured application data is durably stored, queried, and managed in a database or persistence platform.",
+      "domain": "01KSWVZSZ5-QHKZ"
+    },
+    {
+      "uid": "01KQQ4Q026-7T2H",
+      "name": "Data Resilience",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Resilience of data against loss or corruption through backup, restore, replication, and recovery capabilities.",
+      "domain": "01KSWVZSZ5-QHKZ"
+    },
+    {
+      "uid": "01KT0XNZEY-KPTW",
+      "name": "Email Delivery",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Outbound and transactional email is accepted, routed, and delivered to recipients through a managed mail delivery service.",
+      "domain": "01KT0XNZEY-QY0Y"
+    },
+    {
+      "uid": "01KQQ4Q026-H3B5",
+      "name": "Encryption At Rest",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Protection of persisted data through encryption or equivalent storage safeguards.",
+      "domain": "01KSWVZSZ5-QHKZ"
+    },
+    {
+      "uid": "01KT0V5MCV-924J",
+      "name": "File Storage",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Files are durably stored and accessed through a shared file system or file storage interface.",
+      "domain": "01KSWVZSZ5-QHKZ"
+    },
+    {
+      "uid": "01KT0XNZEY-K1J3",
+      "name": "File Transfer",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Files are exchanged between systems or partners reliably and securely through a managed file transfer service.",
+      "domain": "01KT0XNZEY-QY0Y"
+    },
+    {
+      "uid": "01KQQ4Q026-98VD",
+      "name": "Health and Welfare Monitoring",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Runtime health, uptime, metrics, and operational welfare visibility.",
+      "domain": "01KQQ4Q027-C213"
+    },
+    {
+      "uid": "01KQQ4Q026-D04B",
+      "name": "Log Management",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Aggregation, retention, searchability, and forwarding of system or application logs.",
+      "domain": "01KQQ4Q027-C213"
+    },
+    {
+      "uid": "01KT0V5MCV-KT72",
+      "name": "Messaging",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Asynchronous messages and events are accepted, queued, and delivered between producers and consumers.",
+      "domain": "01KQQ4Q027-ZTHF"
+    },
+    {
+      "uid": "01KTWS3D6T-T6F6",
+      "name": "Model Inference & Serving",
+      "type": "capability",
+      "catalogStatus": "incomplete",
+      "description": "Runtimes and infrastructure for deploying, hosting, and serving machine learning and large language model weights via standard query APIs.",
+      "domain": "01KTWS3D6T-ABD1"
+    },
+    {
+      "uid": "01KSWVZSZ5-Q6HW",
+      "name": "Network Connectivity",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Hosts and services can reach each other across the network fabric through approved switching and routing infrastructure.",
+      "domain": "01KSWVZSZ5-4WKE"
+    },
+    {
+      "uid": "01KSWVZSZ5-1RTH",
+      "name": "Network Segmentation",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Traffic between network zones is isolated and controlled by policy through VLANs, micro-segmentation, or software-defined networking.",
+      "domain": "01KSWVZSZ5-4WKE"
+    },
+    {
+      "uid": "01KT0V5MCV-E9TN",
+      "name": "Object Storage",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Unstructured objects and blobs are durably stored and retrieved through an object storage interface.",
+      "domain": "01KSWVZSZ5-QHKZ"
+    },
+    {
+      "uid": "01KQQ4Q026-QM2X",
+      "name": "Operating System",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Supported operating system product used to define managed Hosts.",
+      "domain": "01KQQ4Q027-ZTHF"
+    },
+    {
+      "uid": "01KQQ4Q026-BH6E",
+      "name": "Patch Management",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Patch orchestration and update application capability for managed runtime components.",
+      "domain": "01KQQ4Q027-ZTHF"
+    },
+    {
+      "uid": "01KQQ4Q026-S5J6",
+      "name": "Performance and Load Testing",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Capabilities to simulate load and measure system behavior under stress.",
+      "domain": "01KQQ4Q027-SGHR"
+    },
+    {
+      "uid": "01KQQ4Q026-RTWC",
+      "name": "Quality Gates",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Promotion criteria and automated checks required for lifecycle transitions.",
+      "domain": "01KQQ4Q027-SGHR"
+    },
+    {
+      "uid": "01KT0XNZEY-70Y6",
+      "name": "Reporting",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Curated metrics and datasets are presented to consumers through managed reports and dashboards.",
+      "domain": "01KT0XNZEY-HGZZ"
+    },
+    {
+      "uid": "01KQQ4Q026-DTJJ",
+      "name": "Secrets Management",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Secure storage, rotation, and access mediation for secrets and authenticators.",
+      "domain": "01KSWVZSZ5-GY67"
+    },
+    {
+      "uid": "01KQQ4Q026-JW52",
+      "name": "Security Monitoring",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Threat detection, intrusion detection, security event monitoring, and audit telemetry.",
+      "domain": "01KSWVZSZ5-GY67"
+    },
+    {
+      "uid": "01KQQ4Q026-3ZWJ",
+      "name": "Serverless Function Runtime",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Event-driven, scale-to-zero compute runtime capability.",
+      "domain": "01KQQ4Q027-ZTHF"
+    },
+    {
+      "uid": "01KT0V5MCV-RM8M",
+      "name": "Service Mesh",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Service-to-service traffic is routed, secured, and observed through a dedicated connectivity and policy layer.",
+      "domain": "01KQQ4Q027-ZTHF"
+    },
+    {
+      "uid": "01KQQ4Q026-QC9S",
+      "name": "Test Authoring",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Tools and frameworks used to author automated tests.",
+      "domain": "01KQQ4Q027-SGHR"
+    },
+    {
+      "uid": "01KQQ4Q026-58Q3",
+      "name": "Test Execution and Automation",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Runtimes and orchestration services used to execute automated tests.",
+      "domain": "01KQQ4Q027-SGHR"
+    },
+    {
+      "uid": "01KSWVZSZ5-M0FR",
+      "name": "Traffic Management",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Application and network traffic is distributed, shaped, and controlled across services and infrastructure through approved load balancing and traffic management technology.",
+      "domain": "01KSWVZSZ5-4WKE"
+    },
+    {
+      "uid": "01KT0V5MCV-Z079",
+      "name": "WAF",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Inbound web traffic is inspected and filtered against application-layer threats through managed rule sets before reaching protected applications.",
+      "domain": "01KSWVZSZ5-4WKE"
+    },
+    {
+      "uid": "01KSWVZSZ5-26F1",
+      "name": "WAN Connectivity",
+      "type": "capability",
+      "catalogStatus": "complete",
+      "description": "Sites, data centers, and cloud environments are interconnected reliably through approved wide area network technology.",
+      "domain": "01KSWVZSZ5-4WKE"
+    },
+    {
+      "uid": "01KSE5V73Z-RTKZ",
+      "name": "Platform Audit Schema",
+      "type": "data_component",
+      "catalogStatus": "complete",
+      "description": "Relational schema tracking platform-level audit events \u2014 control plane API calls, administrative actions, quota changes, and security-relevant state transitions across the OpenStack deployment. Used by the operations console and compliance reporting pipelines."
+    },
+    {
+      "uid": "STCK000005-DAR5",
+      "name": "Cinder Database",
+      "type": "data_store_service",
+      "catalogStatus": "incomplete",
+      "description": "MariaDB database schema dedicated to OpenStack Cinder for persisting all block storage service state. Stores volume records, snapshot records, attachment records, volume type definitions, backend service state, quota allocations, and encryption key references. The actual block data resides on the storage backend (iSCSI targets, SAN/NAS). Loss of this database orphans volumes on the storage backend but does not destroy block data.\n"
+    },
+    {
+      "uid": "STCK000003-DAR3",
+      "name": "Glance Database",
+      "type": "data_store_service",
+      "catalogStatus": "incomplete",
+      "description": "MariaDB database schema dedicated to OpenStack Glance for persisting virtual machine image metadata. Stores image records including name, format, size, checksum, visibility (public/private/shared), and storage location references. Image binary data is stored separately in the Swift storage cluster. Loss of this database orphans image binaries in Swift but does not destroy binary data.\n"
+    },
+    {
+      "uid": "STCK000002-DAR2",
+      "name": "Keystone Database",
+      "type": "data_store_service",
+      "catalogStatus": "incomplete",
+      "description": "MariaDB database schema dedicated to OpenStack Keystone for persisting all identity service data. Stores users, groups, projects, domains, roles, role assignments, service endpoints, credentials, and Fernet key metadata. This is the highest-criticality database schema in the OpenStack platform; its loss renders all services inaccessible.\n"
+    },
+    {
+      "uid": "STCK000004-DAR4",
+      "name": "Neutron Database",
+      "type": "data_store_service",
+      "catalogStatus": "incomplete",
+      "description": "MariaDB database schema dedicated to OpenStack Neutron for persisting all network service state. Stores virtual networks, subnets, ports, routers, floating IPs, security groups, security group rules, load balancers, and ML2 plugin state. This is one of the higher-volume schemas due to the number of ports created per instance during compute operations.\n"
+    },
+    {
+      "uid": "STCK000001-DAR1",
+      "name": "Nova Database",
+      "type": "data_store_service",
+      "catalogStatus": "incomplete",
+      "description": "MariaDB database schema dedicated to OpenStack Nova for persisting all compute service state. Stores instance records, flavor definitions, host aggregates, cell mappings, scheduler hints, migration records, and quota allocations. Hosted within the shared MariaDB Galera cluster on the OpenStack controller nodes.\n"
+    },
+    {
+      "uid": "STCK000007-DAR7",
+      "name": "OpenStack Shared Database",
+      "type": "data_store_service",
+      "catalogStatus": "incomplete",
+      "description": "Shared MariaDB database cluster hosting the schemas for OpenStack services that do not warrant dedicated database objects at this modeling granularity: Heat, Ironic, Trove, Sahara, and Ceilometer. Each service maintains its own isolated schema (database) within the shared cluster. This consolidation is appropriate for medium-scale deployments; large-scale deployments may separate schemas to dedicated clusters.\n"
+    },
+    {
+      "uid": "STCK000006-DAR6",
+      "name": "Swift Storage Cluster",
+      "type": "data_store_service",
+      "catalogStatus": "incomplete",
+      "description": "OpenStack Swift object storage cluster providing durable, distributed storage for unstructured data. Consists of multiple storage nodes running swift-account, swift-container, and swift-object daemons. Uses consistent hashing and configurable replication (default 3 replicas) for durability without a single point of failure. Primary consumers are Glance (image binaries) and tenants using the S3-compatible object storage API directly.\n"
+    },
+    {
+      "uid": "01KT11AQX1-55F1",
+      "name": "AWS Lambda Runtime \u2014 Deployment Topology and Qualities",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQX2-STQ4",
+      "name": "AWS Lambda Runtime \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340HF-1HG3",
+      "name": "AWS Lambda Runtime \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340H6-X3T5",
+      "name": "AWS Lambda Serverless Host \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQX6-62RD",
+      "name": "Ceilometer Telemetry Service \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQX7-VE65",
+      "name": "Ceilometer Telemetry Service \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQX7-D8DJ",
+      "name": "Ceilometer Telemetry Service \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340HM-7YN8",
+      "name": "Ceilometer Telemetry Service \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQXC-6R7S",
+      "name": "Cinder Block Storage Service \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQXD-B9P8",
+      "name": "Cinder Block Storage Service \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQXD-TNJD",
+      "name": "Cinder Block Storage Service \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340HS-J28V",
+      "name": "Cinder Block Storage Service \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQV3-ZZFE",
+      "name": "Cinder Database \u2014 Data Protection and Recovery",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQV3-N9NA",
+      "name": "Cinder Database \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQV4-8S2X",
+      "name": "Cinder Database \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQV5-MX8S",
+      "name": "Cinder Database \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340FJ-DCHY",
+      "name": "Cinder Database \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQVB-JJ2A",
+      "name": "Glance Database \u2014 Data Protection and Recovery",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQVB-P0P0",
+      "name": "Glance Database \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQVC-0TX0",
+      "name": "Glance Database \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQVC-DJ9N",
+      "name": "Glance Database \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340FS-YFWW",
+      "name": "Glance Database \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQXJ-3EGS",
+      "name": "Glance Image Service \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQXJ-ZCQY",
+      "name": "Glance Image Service \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQXK-D7DK",
+      "name": "Glance Image Service \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340HY-JXVV",
+      "name": "Glance Image Service \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KSF29JTP-DRHA",
+      "name": "HAProxy Load Balancer Operational Architecture",
+      "type": "decision_record",
+      "catalogStatus": "complete",
+      "description": "Documents the operational architecture decisions for the OpenStack API Load Balancer (HAProxy) \u2014 covering authentication delegation, secrets management, logging, health checking, availability, scalability, recoverability, and failure domain."
+    },
+    {
+      "uid": "01KT11AQXR-G520",
+      "name": "Heat Orchestration Service \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQXR-81H4",
+      "name": "Heat Orchestration Service \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQXS-VYQS",
+      "name": "Heat Orchestration Service \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340J3-DG67",
+      "name": "Heat Orchestration Service \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQXY-M0EQ",
+      "name": "Horizon Dashboard \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQXZ-366K",
+      "name": "Horizon Dashboard \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQXZ-JXXF",
+      "name": "Horizon Dashboard \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340J8-PZ32",
+      "name": "Horizon Dashboard \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQY5-C04Q",
+      "name": "Ironic Bare Metal Service \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQY5-32MF",
+      "name": "Ironic Bare Metal Service \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQY6-1YA5",
+      "name": "Ironic Bare Metal Service \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340JE-4KAZ",
+      "name": "Ironic Bare Metal Service \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQVK-CPM7",
+      "name": "Keystone Database \u2014 Data Protection and Recovery",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQVK-J9EM",
+      "name": "Keystone Database \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQVM-2QCT",
+      "name": "Keystone Database \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQVM-ZT9D",
+      "name": "Keystone Database \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340G0-WH5D",
+      "name": "Keystone Database \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQYB-GWXS",
+      "name": "Keystone Identity Service \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQYC-JKP6",
+      "name": "Keystone Identity Service \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQYC-6CFA",
+      "name": "Keystone Identity Service \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340JK-8CW9",
+      "name": "Keystone Identity Service \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQVV-Z2T4",
+      "name": "Neutron Database \u2014 Data Protection and Recovery",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQVV-6KZ4",
+      "name": "Neutron Database \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQVW-T2VG",
+      "name": "Neutron Database \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQVW-1SKV",
+      "name": "Neutron Database \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340G7-96A6",
+      "name": "Neutron Database \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQYH-025V",
+      "name": "Neutron Networking Service \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQYJ-M3WD",
+      "name": "Neutron Networking Service \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQYJ-T3PZ",
+      "name": "Neutron Networking Service \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340JR-74JD",
+      "name": "Neutron Networking Service \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KSE5V73Z-CRZV",
+      "name": "No WAF Required \u2014 OpenStack Is Internal-Only",
+      "type": "decision_record",
+      "catalogStatus": "complete",
+      "description": "Documents the accepted decision that a Web Application Firewall (WAF) is not required for the OpenStack IaaS platform because the deployment is not directly internet-facing in the sense that warrants WAF placement."
+    },
+    {
+      "uid": "01KT11AQYR-V7XY",
+      "name": "Nova Compute Service \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQYS-VDGH",
+      "name": "Nova Compute Service \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQYS-V8M7",
+      "name": "Nova Compute Service \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340JX-5M7H",
+      "name": "Nova Compute Service \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQW3-DJNQ",
+      "name": "Nova Database \u2014 Data Protection and Recovery",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQW3-WP1H",
+      "name": "Nova Database \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQW4-VW0R",
+      "name": "Nova Database \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQW5-K8YK",
+      "name": "Nova Database \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340GE-P0S5",
+      "name": "Nova Database \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQWW-N860",
+      "name": "OpenStack API Load Balancer \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQWX-AYHX",
+      "name": "OpenStack API Load Balancer \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQWX-A5ZZ",
+      "name": "OpenStack API Load Balancer \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340HB-QMCP",
+      "name": "OpenStack API Load Balancer \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQTR-KH1S",
+      "name": "OpenStack IaaS Platform \u2014 Data Protection and Recovery",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQTR-VD4S",
+      "name": "OpenStack IaaS Platform \u2014 Deployment Topology and Qualities",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQTS-24FW",
+      "name": "OpenStack IaaS Platform \u2014 External and Inter-Service Connections",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQTT-P9SW",
+      "name": "OpenStack IaaS Platform \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340F7-WNNX",
+      "name": "OpenStack IaaS Platform \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340H3-0YCF",
+      "name": "OpenStack Linux Service Host \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KSE5V73Z-DRSC",
+      "name": "OpenStack Ops Console \u2014 Secrets Injection via Platform Secret Store",
+      "type": "decision_record",
+      "catalogStatus": "complete",
+      "description": "Documents the decision to inject application secrets into the OpenStack Ops Console at deploy time via the platform secret store, with no secrets present in source code or container images."
+    },
+    {
+      "uid": "01KT1340EW-5H7Z",
+      "name": "OpenStack Ops Console \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQWB-FHD0",
+      "name": "OpenStack Shared Database \u2014 Data Protection and Recovery",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQWC-H4MK",
+      "name": "OpenStack Shared Database \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQWD-ZVQ5",
+      "name": "OpenStack Shared Database \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQWD-PTMK",
+      "name": "OpenStack Shared Database \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340GP-RX87",
+      "name": "OpenStack Shared Database \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQYZ-W72G",
+      "name": "RabbitMQ Message Broker Service \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQYZ-CFP1",
+      "name": "RabbitMQ Message Broker Service \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQZ0-V8KX",
+      "name": "RabbitMQ Message Broker Service \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340K3-G22W",
+      "name": "RabbitMQ Message Broker Service \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQZ5-FA35",
+      "name": "Sahara Data Processing Service \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQZ5-W13D",
+      "name": "Sahara Data Processing Service \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQZ6-JNHZ",
+      "name": "Sahara Data Processing Service \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340K8-SMX8",
+      "name": "Sahara Data Processing Service \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQZB-3D1W",
+      "name": "Swift Proxy Service \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQZC-5TA3",
+      "name": "Swift Proxy Service \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQZC-0QJN",
+      "name": "Swift Proxy Service \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340KD-WQET",
+      "name": "Swift Proxy Service \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQWN-F03H",
+      "name": "Swift Storage Cluster \u2014 Data Protection and Recovery",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQWN-14QQ",
+      "name": "Swift Storage Cluster \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQWP-3JMV",
+      "name": "Swift Storage Cluster \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQWP-H4E9",
+      "name": "Swift Storage Cluster \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340GX-CTWE",
+      "name": "Swift Storage Cluster \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQZJ-QYX8",
+      "name": "Trove Database Service \u2014 Identity, Access, and Secrets",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQZK-6FXW",
+      "name": "Trove Database Service \u2014 Observability and Logging",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT11AQZK-PETM",
+      "name": "Trove Database Service \u2014 Resilience and Availability",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KT1340KJ-VHKK",
+      "name": "Trove Database Service \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KTWS3D6T-ABD1",
+      "name": "AI & Machine Learning",
+      "type": "domain",
+      "description": "Strategic domain covering model training, inference serving, vector storage, and AI gateway routing. Capabilities in this domain are governed by the AI Platform / MLOps team, who owns the HOW decisions for model endpoints,  prompt safety firewalls, and vector query tools.\n"
+    },
+    {
+      "uid": "01KT0XNZEY-HGZZ",
+      "name": "Analytics",
+      "type": "domain",
+      "description": "Strategic domain covering analytical processing and reporting over operational and business data. Capabilities in this domain are governed by the data team, who owns the HOW decisions for analytics and reporting technology.\n"
+    },
+    {
+      "uid": "01KQQ4Q027-ZTHF",
+      "name": "Compute & Runtime",
+      "type": "domain",
+      "description": "Strategic domain covering application runtimes, serverless functions, and physical or virtual compute resources.\n"
+    },
+    {
+      "uid": "01KSWVZSZ5-QHKZ",
+      "name": "Data",
+      "type": "domain",
+      "description": "Strategic domain covering data protection and resilience. Capabilities in this domain are governed by the data and storage team, who owns the HOW decisions for encryption implementation and backup and recovery platforms.\n"
+    },
+    {
+      "uid": "01KSWVZSZ5-71PY",
+      "name": "Identity & Access Management",
+      "type": "domain",
+      "description": "Strategic domain covering authentication and authorization. Capabilities in this domain are governed by the IAM team, who owns the HOW decisions for identity provider selection and access control model.\n"
+    },
+    {
+      "uid": "01KT0XNZEY-QY0Y",
+      "name": "Integration",
+      "type": "domain",
+      "description": "Strategic domain covering the movement of messages, files, and data between systems. Capabilities in this domain are governed by the platform engineering team, who owns the HOW decisions for email delivery, managed file transfer, and data integration technology.\n"
+    },
+    {
+      "uid": "01KSWVZSZ5-4WKE",
+      "name": "Network",
+      "type": "domain",
+      "description": "Strategic domain covering network fabric infrastructure, connectivity, and segmentation. Capabilities in this domain are governed by the network team, who owns the HOW decisions for switching, routing, WAN, and traffic management technology.\n"
+    },
+    {
+      "uid": "01KQQ4Q027-C213",
+      "name": "Observability & Monitoring",
+      "type": "domain",
+      "description": "Strategic domain covering logging, metrics, tracing, and health monitoring across infrastructure and application stacks.\n"
+    },
+    {
+      "uid": "01KSWVZSZ5-GY67",
+      "name": "Security",
+      "type": "domain",
+      "description": "Strategic domain covering threat detection, security event monitoring, and secure credential management. Capabilities in this domain are governed by the security team, who owns the HOW decisions for threat response and secrets governance.\n"
+    },
+    {
+      "uid": "01KT0XNZEY-GXYR",
+      "name": "Software Delivery",
+      "type": "domain",
+      "description": "Strategic domain covering the build, integration, packaging, and configuration pipeline that delivers software into running environments. Capabilities in this domain are governed by the platform engineering team, who owns the HOW decisions for continuous integration and delivery, artifact custody, and configuration management technology.\n"
+    },
+    {
+      "uid": "01KQQ4Q027-SGHR",
+      "name": "Testing & Quality",
+      "type": "domain",
+      "description": "Strategic domain covering all aspects of software testing, quality assurance, and release gates.\n"
+    },
+    {
+      "uid": "01KSF29JTP-SESS",
+      "name": "Nova Compute Service \u2014 Availability and Scaling Architecture",
+      "type": "drafting_session",
+      "catalogStatus": "incomplete",
+      "description": "Open authoring session to resolve architecture questions about Nova compute service availability posture and horizontal scaling approach. The Nova runtime service object exists but lacks deployment configuration detail for availability and scalability qualities. This session captures open questions before those decisions are promoted to decision records."
+    },
+    {
+      "uid": "01KSE5V73Z-VATZ",
+      "name": "OpenStack HAProxy NetworkService",
+      "type": "drafting_session",
+      "catalogStatus": "incomplete",
+      "description": "Incomplete authoring session for the HAProxy load balancer NetworkService. HAProxy fronts the OpenStack public network zone, distributing API and Horizon traffic across controller nodes. The completed migration records HAProxy as a NetworkService because its intrinsic behavior is traffic distribution and TLS termination; the public-zone obligations come from SDP placement and the followed ReferenceArchitecture."
+    },
+    {
+      "uid": "01KQQ4Q025-1XDE",
+      "name": "AWS Lambda Serverless Host",
+      "type": "host",
+      "catalogStatus": "incomplete",
+      "description": "Serverless execution environment provided by AWS Lambda. The host is entirely AWS-managed and blackbox to the organization. Function code is deployed as a ProductComponent. No OS management, no agent installation, and no patching responsibility exist at this layer.\n"
+    },
+    {
+      "uid": "STCK00000F-HS0F",
+      "name": "OpenStack Linux Service Host",
+      "type": "host",
+      "catalogStatus": "incomplete",
+      "description": "General-purpose self-managed Linux host standard for the OpenStack example control-plane, data, and utility services. This models the reusable substrate pattern, not a single node role.\n"
+    },
+    {
+      "uid": "01KSF29JTP-9HYA",
+      "name": "OpenStack API Load Balancer",
+      "type": "network_service",
+      "catalogStatus": "complete",
+      "description": "HAProxy load balancer co-located on OpenStack controller nodes. Distributes inbound API and dashboard traffic across all active controller nodes in the active-active control plane cluster. Provides health checking, connection queuing, and SSL termination for the OpenStack public network zone."
+    },
+    {
+      "uid": "01KQQ4Q025-X682",
+      "name": "Example capability.compute-platform implementations",
+      "type": "object_patch",
+      "catalogStatus": "incomplete",
+      "description": "Example workspace-owned capability implementation mapping.",
+      "target": "01KQQ4Q026-1HZP"
+    },
+    {
+      "uid": "01KQQ4Q025-5VTH",
+      "name": "Example capability.log-management implementations",
+      "type": "object_patch",
+      "catalogStatus": "incomplete",
+      "description": "Example workspace-owned capability implementation mapping.",
+      "target": "01KQQ4Q026-D04B"
+    },
+    {
+      "uid": "01KQQ4Q026-4AYD",
+      "name": "Example capability.operating-system implementations",
+      "type": "object_patch",
+      "catalogStatus": "incomplete",
+      "description": "Example workspace-owned capability implementation mapping.",
+      "target": "01KQQ4Q026-QM2X"
+    },
+    {
+      "uid": "01KQQ4Q026-BQ87",
+      "name": "Example capability.security-monitoring implementations",
+      "type": "object_patch",
+      "catalogStatus": "incomplete",
+      "description": "Example workspace-owned capability implementation mapping.",
+      "target": "01KQQ4Q026-JW52"
+    },
+    {
+      "uid": "01KSE5V73Z-Q0A0",
+      "name": "OpenStack Ops Console",
+      "type": "product_component",
+      "catalogStatus": "complete",
+      "description": "Internal web-based operations console for platform engineering teams. Surfaces real-time service health, quota utilization, and incident triage workflows across the OpenStack control plane. Deployed alongside Horizon on the same runtime service."
+    },
+    {
+      "uid": "01KTWYEE98-D3QV",
+      "name": "AI-Enabled Application Pattern",
+      "type": "reference_architecture",
+      "catalogStatus": "complete",
+      "description": "Standard pattern for applications utilizing Artificial Intelligence and Large Language Models (LLMs). Integrates an application runtime tier, a vector database data tier for contextual retrieval (RAG), and a mandatory AI Gateway tier for  egress routing, prompt safety, and cost controls.\n"
+    },
+    {
+      "uid": "01KV0REFAR-CMSV",
+      "name": "Containerized Microservices",
+      "type": "reference_architecture",
+      "catalogStatus": "complete",
+      "description": "Starter pattern for independently deployable services running on a container orchestration platform with service-to-service connectivity, observability, and release isolation."
+    },
+    {
+      "uid": "01KV0REFAR-EVNT",
+      "name": "Event-Driven Architecture",
+      "type": "reference_architecture",
+      "catalogStatus": "complete",
+      "description": "Starter pattern for asynchronous systems coordinated by messaging, event routing, producers, consumers, and eventually consistent state."
+    },
+    {
+      "uid": "GM7YJ3ZSA0-WHSN",
+      "name": "Event-Driven Integration",
+      "type": "reference_architecture",
+      "catalogStatus": "complete",
+      "description": "Deployment pattern for systems coordinated through asynchronous events, queues, streams, or pub/sub topics. Use this when producers and consumers evolve independently and eventual consistency is an accepted architectural property."
+    },
+    {
+      "uid": "01KS8N4KR3-MTSA",
+      "name": "Multi-Tenant SaaS",
+      "type": "reference_architecture",
+      "catalogStatus": "complete",
+      "description": "Deployment pattern for software-as-a-service products that serve multiple customer tenants from shared infrastructure. Defines tenant, platform, data, and management zones with explicit isolation requirements."
+    },
+    {
+      "uid": "01KS8N4KR4-SVED",
+      "name": "Serverless Event-Driven",
+      "type": "reference_architecture",
+      "catalogStatus": "complete",
+      "description": "Deployment pattern for event-driven applications using serverless compute runtimes. No persistent application-tier compute is present. Logic executes in response to events, API calls, or scheduled triggers. All durable state is external to the function execution environment."
+    },
+    {
+      "uid": "01KV0REFAR-STRG",
+      "name": "Strangler Migration Pattern",
+      "type": "reference_architecture",
+      "catalogStatus": "complete",
+      "description": "Starter pattern for incremental legacy modernization where new services coexist with a legacy system and traffic or capabilities move behind a controlled migration facade."
+    },
+    {
+      "uid": "01KS8N4KR2-3TWA",
+      "name": "Three-Tier Web Application",
+      "type": "reference_architecture",
+      "catalogStatus": "complete",
+      "description": "Standard pattern for web-facing applications with a presentation tier (network services), an application tier (runtime services), and a data tier (data store services). Use this pattern when the deployment serves web or API traffic to external users or partners."
+    },
+    {
+      "uid": "01KV0REFAR-2TR0",
+      "name": "Two-Tier Client Data Application",
+      "type": "reference_architecture",
+      "catalogStatus": "complete",
+      "description": "Starter pattern for applications where a client or presentation layer talks directly to a managed data tier without a separate application server tier. Use this for simple internal tools, static clients, reporting front ends, or legacy client/server designs that intentionally have no middle tier."
+    },
+    {
+      "uid": "8Q79XMD460-MQ5A",
+      "name": "Two-Tier Client/Data",
+      "type": "reference_architecture",
+      "catalogStatus": "complete",
+      "description": "Deployment pattern for simple applications where a client or static presentation layer talks directly to a managed data service without a separately operated application runtime tier. Use this for static sites, thick clients, reporting front ends, or low-code applications whose business logic is primarily in the client and managed data platform."
+    },
+    {
+      "uid": "01KSKQNTCH-RVA5",
+      "name": "API Load Balancer \u2192 Keystone Identity",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "HAProxy distributes inbound HTTPS identity and authentication requests across keystone-api instances running on controller nodes. TLS is terminated at the load balancer; backend traffic uses HTTP on the control plane network.",
+      "source": "01KSF29JTP-9HYA",
+      "target": "STCK000002-RS02",
+      "label": "proxies authentication requests",
+      "technology": "HTTPS / HTTP",
+      "direction": "synchronous"
+    },
+    {
+      "uid": "01KSKQNTCH-M6JX",
+      "name": "API Load Balancer \u2192 Neutron Networking",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "HAProxy distributes inbound HTTPS networking API requests across neutron-server instances running on controller nodes. TLS is terminated at the load balancer; backend traffic uses HTTP on the control plane network.",
+      "source": "01KSF29JTP-9HYA",
+      "target": "STCK000004-RS04",
+      "label": "proxies networking API requests",
+      "technology": "HTTPS / HTTP",
+      "direction": "synchronous"
+    },
+    {
+      "uid": "01KSKQNTCH-QHJC",
+      "name": "API Load Balancer \u2192 Nova Compute",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "HAProxy distributes inbound HTTPS compute API requests across nova-api instances running on controller nodes. TLS is terminated at the load balancer; backend traffic uses HTTP on the control plane network.",
+      "source": "01KSF29JTP-9HYA",
+      "target": "STCK000001-RS01",
+      "label": "proxies compute API requests",
+      "technology": "HTTPS / HTTP",
+      "direction": "synchronous"
+    },
+    {
+      "uid": "01KSKWFZZX-34KP",
+      "name": "AWS Lambda Runtime \u2192 AWS IAM",
+      "type": "relationship",
+      "catalogStatus": "stub",
+      "source": "01KQQ4Q025-T7B7",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWFZZX-JWP6",
+      "name": "AWS Lambda Runtime \u2192 Amazon CloudWatch Logs",
+      "type": "relationship",
+      "catalogStatus": "stub",
+      "source": "01KQQ4Q025-T7B7",
+      "label": "sends events to"
+    },
+    {
+      "uid": "01KSKWFZZX-NE4F",
+      "name": "AWS Lambda Runtime \u2192 Amazon CloudWatch Metrics",
+      "type": "relationship",
+      "catalogStatus": "stub",
+      "source": "01KQQ4Q025-T7B7",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWFZZW-ZEKF",
+      "name": "AWS Lambda Serverless Host \u2192 AWS Lambda Service",
+      "type": "relationship",
+      "catalogStatus": "stub",
+      "source": "01KQQ4Q025-1XDE",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWFZZY-FS6X",
+      "name": "Ceilometer Telemetry Service \u2192 Keystone Identity",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000008-RS08",
+      "target": "STCK000002-RS02",
+      "label": "calls"
+    },
+    {
+      "uid": "P229JCRERR-86CX",
+      "name": "Ceilometer Telemetry Service \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000008-RS08",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWFZZY-501S",
+      "name": "Ceilometer Telemetry Service \u2192 RabbitMQ Message Broker",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000008-RS08",
+      "target": "STCK00000D-RS0D",
+      "label": "sends events to"
+    },
+    {
+      "uid": "7Y3DD8Y39N-BPKJ",
+      "name": "Cinder Block Storage Service \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000005-RS05",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKCDR01-DAR5",
+      "name": "Cinder Block Storage \u2192 Cinder Database",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Cinder persists all volume state to the Cinder MariaDB schema including volume records, snapshots, volume type definitions, and backend driver assignments.",
+      "source": "STCK000005-RS05",
+      "target": "STCK000005-DAR5",
+      "label": "persists volume state",
+      "technology": "MySQL wire protocol",
+      "direction": "synchronous"
+    },
+    {
+      "uid": "01KSKCDR01-KST1",
+      "name": "Cinder Block Storage \u2192 Keystone Identity",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Cinder validates every incoming API request by verifying the caller's Keystone token. Cinder's service account is registered in the Keystone service catalog.",
+      "source": "STCK000005-RS05",
+      "target": "STCK000002-RS02",
+      "label": "validates tokens",
+      "technology": "HTTP (Keystone API)",
+      "direction": "synchronous"
+    },
+    {
+      "uid": "01KSKCDR01-RMQ1",
+      "name": "Cinder Block Storage \u2192 RabbitMQ Message Broker",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Cinder uses RabbitMQ AMQP messaging for communication between cinder-api, cinder-scheduler, and cinder-volume subcomponents. Volume provisioning requests flow from cinder-scheduler to the appropriate cinder-volume backend via the message bus.",
+      "source": "STCK000005-RS05",
+      "target": "STCK00000D-RS0D",
+      "label": "publishes and consumes RPC messages",
+      "technology": "AMQP",
+      "direction": "asynchronous"
+    },
+    {
+      "uid": "01KSKWFZZS-1SZX",
+      "name": "Cinder Database \u2192 Backup Service",
+      "type": "relationship",
+      "catalogStatus": "stub",
+      "source": "STCK000005-DAR5",
+      "label": "calls"
+    },
+    {
+      "uid": "6VK3ZARWWY-D4YF",
+      "name": "Cinder Database \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000005-DAR5",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWFZZS-73X6",
+      "name": "Glance Database \u2192 Backup Service",
+      "type": "relationship",
+      "catalogStatus": "stub",
+      "source": "STCK000003-DAR3",
+      "label": "calls"
+    },
+    {
+      "uid": "M5RSAD9R82-5FBT",
+      "name": "Glance Database \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000003-DAR3",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWG000-9Q1R",
+      "name": "Glance Image Service \u2192 Glance Database",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000003-RS03",
+      "target": "STCK000003-DAR3",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWG000-G0N1",
+      "name": "Glance Image Service \u2192 Keystone Identity",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000003-RS03",
+      "target": "STCK000002-RS02",
+      "label": "calls"
+    },
+    {
+      "uid": "PTMR3XX723-1M92",
+      "name": "Glance Image Service \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000003-RS03",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWG001-4ENK",
+      "name": "Glance Image Service \u2192 Swift Object Storage",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000003-RS03",
+      "target": "STCK000006-DAR6",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWG002-BKKF",
+      "name": "Heat Orchestration Service \u2192 Heat Database",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000007-RS07",
+      "target": "STCK000007-DAR7",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWG001-WJHM",
+      "name": "Heat Orchestration Service \u2192 Keystone Identity",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000007-RS07",
+      "target": "STCK000002-RS02",
+      "label": "calls"
+    },
+    {
+      "uid": "TBHPSRGY35-D8EG",
+      "name": "Heat Orchestration Service \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000007-RS07",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWG002-5JSY",
+      "name": "Heat Orchestration Service \u2192 RabbitMQ Message Broker",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000007-RS07",
+      "target": "STCK00000D-RS0D",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWG005-5P08",
+      "name": "Horizon Dashboard \u2192 Cinder Block Storage",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000006-RS06",
+      "target": "STCK000005-RS05",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWG004-C8QW",
+      "name": "Horizon Dashboard \u2192 Glance Image Service",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000006-RS06",
+      "target": "STCK000003-RS03",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWG005-P4TK",
+      "name": "Horizon Dashboard \u2192 Heat Orchestration",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000006-RS06",
+      "target": "STCK000007-RS07",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWG003-9EKX",
+      "name": "Horizon Dashboard \u2192 Keystone Identity",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000006-RS06",
+      "target": "STCK000002-RS02",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWG004-0E34",
+      "name": "Horizon Dashboard \u2192 Neutron Networking",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000006-RS06",
+      "target": "STCK000004-RS04",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWG003-G3Q2",
+      "name": "Horizon Dashboard \u2192 Nova Compute Service",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000006-RS06",
+      "target": "STCK000001-RS01",
+      "label": "calls"
+    },
+    {
+      "uid": "B94JQQASNF-0TMY",
+      "name": "Horizon Dashboard \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000006-RS06",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWG006-9TPR",
+      "name": "Ironic Bare Metal Service \u2192 Ironic Database",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000009-RS09",
+      "target": "STCK000007-DAR7",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWG005-PQGD",
+      "name": "Ironic Bare Metal Service \u2192 Keystone Identity",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000009-RS09",
+      "target": "STCK000002-RS02",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWG007-6VBX",
+      "name": "Ironic Bare Metal Service \u2192 Nova Compute Service",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000009-RS09",
+      "target": "STCK000001-RS01",
+      "label": "calls"
+    },
+    {
+      "uid": "STDDEDDJ87-YASV",
+      "name": "Ironic Bare Metal Service \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000009-RS09",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWG006-8HH7",
+      "name": "Ironic Bare Metal Service \u2192 RabbitMQ Message Broker",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000009-RS09",
+      "target": "STCK00000D-RS0D",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWFZZT-1511",
+      "name": "Keystone Database \u2192 Backup Service",
+      "type": "relationship",
+      "catalogStatus": "stub",
+      "source": "STCK000002-DAR2",
+      "label": "calls"
+    },
+    {
+      "uid": "PXB3127W5T-74JM",
+      "name": "Keystone Database \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000002-DAR2",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWG008-3RQB",
+      "name": "Keystone Identity Service \u2192 LDAP Directory",
+      "type": "relationship",
+      "catalogStatus": "stub",
+      "source": "STCK000002-RS02",
+      "label": "calls"
+    },
+    {
+      "uid": "NPQG1XZQE8-299H",
+      "name": "Keystone Identity Service \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000002-RS02",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKKS001-DAR2",
+      "name": "Keystone Identity \u2192 Keystone Database",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Keystone persists all identity data to the Keystone MariaDB schema including users, projects, roles, role assignments, service endpoints, and application credentials.",
+      "source": "STCK000002-RS02",
+      "target": "STCK000002-DAR2",
+      "label": "persists identity data",
+      "technology": "MySQL wire protocol",
+      "direction": "synchronous"
+    },
+    {
+      "uid": "01KSKWFZZT-R5CF",
+      "name": "Neutron Database \u2192 Backup Service",
+      "type": "relationship",
+      "catalogStatus": "stub",
+      "source": "STCK000004-DAR4",
+      "label": "calls"
+    },
+    {
+      "uid": "TB66JJ4D80-J410",
+      "name": "Neutron Database \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000004-DAR4",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "V47P8M40FY-G8H0",
+      "name": "Neutron Networking Service \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000004-RS04",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKNTN01-KST1",
+      "name": "Neutron Networking \u2192 Keystone Identity",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Neutron validates every incoming API request by verifying the caller's Keystone token. Neutron's service account is registered in the Keystone service catalog.",
+      "source": "STCK000004-RS04",
+      "target": "STCK000002-RS02",
+      "label": "validates tokens",
+      "technology": "HTTP (Keystone API)",
+      "direction": "synchronous"
+    },
+    {
+      "uid": "01KSKNTN01-DAR4",
+      "name": "Neutron Networking \u2192 Neutron Database",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Neutron persists all network state to the Neutron MariaDB schema including networks, subnets, ports, routers, security groups, and floating IPs.",
+      "source": "STCK000004-RS04",
+      "target": "STCK000004-DAR4",
+      "label": "persists network state",
+      "technology": "MySQL wire protocol",
+      "direction": "synchronous"
+    },
+    {
+      "uid": "01KSKNTN01-RMQ1",
+      "name": "Neutron Networking \u2192 RabbitMQ Message Broker",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Neutron uses RabbitMQ AMQP messaging for communication between neutron-server and neutron-agent subcomponents including the L2 agent, L3 agent, and DHCP agent running on compute and network nodes.",
+      "source": "STCK000004-RS04",
+      "target": "STCK00000D-RS0D",
+      "label": "publishes and consumes agent RPC messages",
+      "technology": "AMQP",
+      "direction": "asynchronous"
+    },
+    {
+      "uid": "01KSKWG00B-1Z27",
+      "name": "Nova Compute Service \u2192 Glance Image Service",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK000001-RS01",
+      "target": "STCK000003-RS03",
+      "label": "calls"
+    },
+    {
+      "uid": "ZA9TBBEWFM-ANM6",
+      "name": "Nova Compute Service \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000001-RS01",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKN0V01-CDR1",
+      "name": "Nova Compute \u2192 Cinder Block Storage",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Nova calls Cinder APIs to attach and detach persistent block volumes to running instances. Volume attachment is initiated by nova-compute on the hypervisor host.",
+      "source": "STCK000001-RS01",
+      "target": "STCK000005-RS05",
+      "label": "attaches block volumes",
+      "technology": "HTTP (Cinder API)",
+      "direction": "synchronous"
+    },
+    {
+      "uid": "01KSKN0V01-KST1",
+      "name": "Nova Compute \u2192 Keystone Identity",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Nova validates every incoming API request by verifying the caller's Keystone token. Nova service-to-service calls use scoped service account tokens issued by Keystone.",
+      "source": "STCK000001-RS01",
+      "target": "STCK000002-RS02",
+      "label": "validates tokens",
+      "technology": "HTTP (Keystone API)",
+      "direction": "synchronous"
+    },
+    {
+      "uid": "01KSKN0V01-NTN1",
+      "name": "Nova Compute \u2192 Neutron Networking",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Nova calls Neutron APIs to create, attach, and detach virtual network interfaces during instance provisioning and deletion. Network port lifecycle is tightly coupled to instance lifecycle.",
+      "source": "STCK000001-RS01",
+      "target": "STCK000004-RS04",
+      "label": "provisions network ports",
+      "technology": "HTTP (Neutron API)",
+      "direction": "synchronous"
+    },
+    {
+      "uid": "01KSK0C6DP-5GFZ",
+      "name": "Nova Compute \u2192 Nova Database",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Nova Compute reads and writes scheduling, instance, and host state to the Nova Database.",
+      "source": "STCK000001-RS01",
+      "target": "STCK000001-DAR1",
+      "label": "reads from / writes to",
+      "technology": "MySQL wire protocol",
+      "direction": "synchronous"
+    },
+    {
+      "uid": "01KSKN0V01-RMQ1",
+      "name": "Nova Compute \u2192 RabbitMQ Message Broker",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Nova uses RabbitMQ AMQP messaging for all inter-subcomponent communication including scheduling requests from nova-api to nova-scheduler, conductor coordination, and compute agent RPC calls from nova-conductor to nova-compute.",
+      "source": "STCK000001-RS01",
+      "target": "STCK00000D-RS0D",
+      "label": "publishes and consumes RPC messages",
+      "technology": "AMQP",
+      "direction": "asynchronous"
+    },
+    {
+      "uid": "01KSKWFZZT-JW98",
+      "name": "Nova Database \u2192 Backup Service",
+      "type": "relationship",
+      "catalogStatus": "stub",
+      "source": "STCK000001-DAR1",
+      "label": "calls"
+    },
+    {
+      "uid": "9YH5MC32YE-YWPJ",
+      "name": "Nova Database \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000001-DAR1",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "NJW68PCE7P-384H",
+      "name": "OpenStack API Load Balancer \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "01KSF29JTP-9HYA",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "95BR2EYAF9-AJ9Y",
+      "name": "OpenStack Ops Console \u2192 Horizon Dashboard",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "01KSE5V73Z-Q0A0",
+      "target": "STCK000006-RS06",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWFZZV-A346",
+      "name": "OpenStack Shared Database \u2192 Backup Service",
+      "type": "relationship",
+      "catalogStatus": "stub",
+      "source": "STCK000007-DAR7",
+      "label": "calls"
+    },
+    {
+      "uid": "GSFETQG3HA-Z3VG",
+      "name": "OpenStack Shared Database \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000007-DAR7",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "Z0C8YHRRYJ-9A1E",
+      "name": "Platform Audit Schema \u2192 OpenStack Shared Database",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "01KSE5V73Z-RTKZ",
+      "target": "STCK000007-DAR7",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWG00D-2AYJ",
+      "name": "RabbitMQ Message Broker Service \u2192 Keystone Identity",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK00000D-RS0D",
+      "target": "STCK000002-RS02",
+      "label": "calls"
+    },
+    {
+      "uid": "BJYH1BN0NA-0J5R",
+      "name": "RabbitMQ Message Broker Service \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK00000D-RS0D",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWG00D-V0KN",
+      "name": "Sahara Data Processing Service \u2192 Keystone Identity",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK00000B-RS0B",
+      "target": "STCK000002-RS02",
+      "label": "calls"
+    },
+    {
+      "uid": "6V7KBT8RTQ-AE6T",
+      "name": "Sahara Data Processing Service \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK00000B-RS0B",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWG00E-56JG",
+      "name": "Sahara Data Processing Service \u2192 Sahara Database",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK00000B-RS0B",
+      "target": "STCK000007-DAR7",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWG00E-NC3H",
+      "name": "Swift Proxy Service \u2192 Keystone Identity",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK00000C-RS0C",
+      "target": "STCK000002-RS02",
+      "label": "calls"
+    },
+    {
+      "uid": "5DWN15W4MW-9ATW",
+      "name": "Swift Proxy Service \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK00000C-RS0C",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWG00F-87Z3",
+      "name": "Swift Proxy Service \u2192 Swift Storage Cluster",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK00000C-RS0C",
+      "target": "STCK000006-DAR6",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWFZZW-2BN8",
+      "name": "Swift Storage Cluster \u2192 Backup Service",
+      "type": "relationship",
+      "catalogStatus": "stub",
+      "source": "STCK000006-DAR6",
+      "label": "calls"
+    },
+    {
+      "uid": "VBPFP4WWN0-4V1G",
+      "name": "Swift Storage Cluster \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK000006-DAR6",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWG00F-XS1H",
+      "name": "Trove Database Service \u2192 Keystone Identity",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK00000A-RS0A",
+      "target": "STCK000002-RS02",
+      "label": "calls"
+    },
+    {
+      "uid": "V3YAEBDFBP-VRTQ",
+      "name": "Trove Database Service \u2192 OpenStack Linux Service Host",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "STCK00000A-RS0A",
+      "target": "STCK00000F-HS0F",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KSKWG00F-PV05",
+      "name": "Trove Database Service \u2192 RabbitMQ Message Broker",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK00000A-RS0A",
+      "target": "STCK00000D-RS0D",
+      "label": "calls"
+    },
+    {
+      "uid": "01KSKWG00G-07D0",
+      "name": "Trove Database Service \u2192 Trove Database",
+      "type": "relationship",
+      "catalogStatus": "incomplete",
+      "source": "STCK00000A-RS0A",
+      "target": "STCK000007-DAR7",
+      "label": "calls"
+    },
+    {
+      "uid": "01KTWS3D6T-NB0E",
+      "name": "AI Gateway RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Structured checklist of required questions and answers used to define a complete and correct AI Gateway."
+    },
+    {
+      "uid": "01KQQ4Q027-DSDD",
+      "name": "Appliance Delivery RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Structured requirements used when a Runtime, Data Store, or NetworkService uses appliance delivery and the underlying host is blackbox to the adopter."
+    },
+    {
+      "uid": "01KRWRRNM7-VJ5A",
+      "name": "DataComponent RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Built-in checklist for first-party data artifacts deployed onto DataStoreServices. Establishes what must be known about a DataComponent \u2014 including data classification, PII declaration, and data ownership \u2014 before it is considered architecturally complete. Backup and recovery requirements belong on the DataStoreService, not here."
+    },
+    {
+      "uid": "01KQQ4Q027-VBF0",
+      "name": "DataStoreService RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Additional DataStoreService checklist items extending the service behavior RequirementGroup for durable data, recovery, and access control."
+    },
+    {
+      "uid": "01KQQ4Q027-HHA4",
+      "name": "DraftingSession RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Structured checklist used to capture partial architecture-authoring sessions, generated outputs, and unresolved follow-up questions in a machine-readable way."
+    },
+    {
+      "uid": "01KSF4NHSP-8HPP",
+      "name": "Engineering Quality RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Optional checklist for ProductComponents covering build quality, test coverage, and performance validation practices. Activated per workspace; does not fire automatically."
+    },
+    {
+      "uid": "01KSF4NHSP-HCPX",
+      "name": "Host Compute Profile RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Optional checklist for Hosts covering compute type classification. Activated per workspace; does not fire automatically."
+    },
+    {
+      "uid": "01KQQ4Q027-THYN",
+      "name": "Host RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Structured checklist of required questions and answers used to define a complete and correct Host."
+    },
+    {
+      "uid": "01KQQ4Q027-69VY",
+      "name": "NIST Cybersecurity Framework RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "stub",
+      "description": "Initial NIST Cybersecurity Framework (CSF) 2.0 requirement group scoped to the outcomes that can be meaningfully answered by DRAFT objects.\n"
+    },
+    {
+      "uid": "01KSWVZSZ5-B146",
+      "name": "NetworkService RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Base requirements for NetworkService objects covering network function declaration, topology definition, and protocol governance. Delivery model requirement groups (Appliance Delivery, SaaS Delivery, Service Behavior) apply on top of these base requirements based on how the network service is operated.\n"
+    },
+    {
+      "uid": "01KQQ4Q027-TPWG",
+      "name": "PaaS Delivery RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Structured requirements used when a Runtime, Data Store, or NetworkService is vendor-managed inside the organization's cloud boundary."
+    },
+    {
+      "uid": "01KRWRRNM7-G642",
+      "name": "ProductComponent RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Built-in checklist for first-party code components deployed onto RuntimeServices. Establishes what must be known about a ProductComponent before it is considered architecturally complete."
+    },
+    {
+      "uid": "01KQQ4Q027-SS2K",
+      "name": "ReferenceArchitecture RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Structured checklist of required questions and answers used to define a complete and correct ReferenceArchitecture."
+    },
+    {
+      "uid": "01KQQ4Q027-7JN2",
+      "name": "SOC 2 RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "stub",
+      "description": "Initial SOC 2 requirement group based on the AICPA Trust Services Criteria. These requirements use DRAFT applicability metadata so they can extend the relevant object types without changing always-on RequirementGroups.\n"
+    },
+    {
+      "uid": "01KQQ4Q027-FKRM",
+      "name": "SaaS Delivery RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Structured requirements used when a Runtime, Data Store, or NetworkService is consumed as a vendor-managed external service."
+    },
+    {
+      "uid": "01KQQ4Q027-T3CA",
+      "name": "Security and Security Compliance RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Baseline security and compliance requirement group bundled with DRAFT. Requirements are applied to matching object types based on their target scope.\n"
+    },
+    {
+      "uid": "01KQQ4Q027-K5DR",
+      "name": "Service Behavior RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Structured checklist of required questions and answers used to define complete and correct self-managed Runtime and NetworkServices; DataStoreServices inherit these service behavior requirements."
+    },
+    {
+      "uid": "01KT0VM061-CRN7",
+      "name": "Service Capability RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Self-declared capability requirements for shared service objects. When a RuntimeService, DataStoreService, or NetworkService declares a native DRAFT capability in its capabilities list, the matching requirement here demands that the service document how that capability is delivered and ties it to an approved TechnologyComponent or a committed DecisionRecord. Every requirement is conditional on the service self-declaring the capability, so services that do not provide a capability are never asked about it. This group applies across all delivery models.\n"
+    },
+    {
+      "uid": "01KSF29JTP-SRVE",
+      "name": "Service Engineering Practices RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Optional checklist for self-managed Runtime and NetworkServices covering advanced observability and runtime patterns. Activated per workspace; does not fire automatically."
+    },
+    {
+      "uid": "01KQQ4Q027-VK45",
+      "name": "SoftwareDeploymentPattern RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "complete",
+      "description": "Structured checklist of required questions and answers used to define a complete and correct software deployment pattern."
+    },
+    {
+      "uid": "01KQQ4Q027-1GHC",
+      "name": "TX-RAMP RequirementGroup",
+      "type": "requirement_group",
+      "catalogStatus": "incomplete",
+      "description": "Starter TX-RAMP requirement group for DRAFT. This file is intended to map TX-RAMP control expectations onto the unified DRAFT requirement model.\n"
+    },
+    {
+      "uid": "01KQQ4Q025-T7B7",
+      "name": "AWS Lambda Runtime",
+      "type": "runtime_service",
+      "catalogStatus": "incomplete",
+      "description": "AWS Lambda serverless execution environment. Runs organization-authored function code without requiring host management. Scales automatically. Host infrastructure is entirely blackbox.\n"
+    },
+    {
+      "uid": "STCK000008-RS08",
+      "name": "Ceilometer Telemetry Service",
+      "type": "runtime_service",
+      "catalogStatus": "incomplete",
+      "description": "Self-managed deployment of OpenStack Ceilometer providing metering and telemetry data collection across the OpenStack platform. Runs ceilometer-api, ceilometer-collector, ceilometer-agent-notification, ceilometer-alarm-evaluator, and ceilometer-alarm-notifier subcomponents. Ceilometer consumes notifications from the RabbitMQ bus emitted by Nova, Neutron, Cinder, and other services to build a unified metering database for billing, monitoring, and capacity planning.\n"
+    },
+    {
+      "uid": "STCK000005-RS05",
+      "name": "Cinder Block Storage Service",
+      "type": "runtime_service",
+      "catalogStatus": "incomplete",
+      "description": "Self-managed deployment of OpenStack Cinder providing persistent block storage volumes for compute instances. Runs cinder-api, cinder-scheduler, and cinder-volume subcomponents. Supports iSCSI as the primary storage backend with optional integration to SAN/NAS appliances. Uses RabbitMQ for internal messaging and MariaDB for volume state persistence.\n"
+    },
+    {
+      "uid": "STCK000003-RS03",
+      "name": "Glance Image Service",
+      "type": "runtime_service",
+      "catalogStatus": "incomplete",
+      "description": "Self-managed deployment of OpenStack Glance providing virtual machine image storage and retrieval. Runs glance-api and glance-registry subcomponents. Image metadata is stored in MariaDB and image binaries are stored in the Swift object storage cluster. Nova retrieves images from Glance when provisioning compute instances.\n"
+    },
+    {
+      "uid": "STCK000007-RS07",
+      "name": "Heat Orchestration Service",
+      "type": "runtime_service",
+      "catalogStatus": "incomplete",
+      "description": "Self-managed deployment of OpenStack Heat providing infrastructure orchestration via the Heat Orchestration Template (HOT) format. Runs heat-api (native REST), heat-api-cfn (AWS CloudFormation-compatible), and heat-engine subcomponents. Heat creates and manages stacks of OpenStack resources, coordinating Nova, Neutron, Cinder, Glance, and other services. Uses RabbitMQ for engine-to-worker messaging and MariaDB for stack state persistence.\n"
+    },
+    {
+      "uid": "STCK000006-RS06",
+      "name": "Horizon Dashboard",
+      "type": "runtime_service",
+      "catalogStatus": "incomplete",
+      "description": "Self-managed deployment of OpenStack Horizon providing the web-based management dashboard for the OpenStack platform. Served via nginx as a Django WSGI application. Provides self-service tenant portals and operator administrative interfaces. Horizon consumes Nova, Keystone, Glance, Neutron, Cinder, and Heat APIs to present a unified management experience accessible from the public internet.\n"
+    },
+    {
+      "uid": "STCK000009-RS09",
+      "name": "Ironic Bare Metal Service",
+      "type": "runtime_service",
+      "catalogStatus": "incomplete",
+      "description": "Self-managed deployment of OpenStack Ironic providing bare metal provisioning as a service. Runs ironic-api and ironic-conductor subcomponents. Ironic enrolls physical hardware using IPMI, Redfish, iLO, or DRAC interfaces, integrates with Nova to expose bare metal nodes through the standard compute API, and uses RabbitMQ for conductor messaging. Enables operators to provision operating systems directly onto physical machines using standard OpenStack workflows.\n"
+    },
+    {
+      "uid": "STCK000002-RS02",
+      "name": "Keystone Identity Service",
+      "type": "runtime_service",
+      "catalogStatus": "incomplete",
+      "description": "Self-managed deployment of OpenStack Keystone providing identity, authentication, and authorization services for all OpenStack platform components. Issues scoped tokens used by every other service for request validation. Manages projects, users, roles, groups, and service endpoints. Optionally federates with an external LDAP directory for enterprise identity integration.\n"
+    },
+    {
+      "uid": "STCK000004-RS04",
+      "name": "Neutron Networking Service",
+      "type": "runtime_service",
+      "catalogStatus": "incomplete",
+      "description": "Self-managed deployment of OpenStack Neutron providing software-defined networking for the OpenStack platform. Runs neutron-api, neutron-plugin (ML2), and neutron-agents (L2 agent, L3 agent, DHCP agent, metadata agent) subcomponents. Manages virtual networks, subnets, routers, floating IPs, and security groups. Uses RabbitMQ for agent coordination and MariaDB for network state persistence.\n"
+    },
+    {
+      "uid": "STCK000001-RS01",
+      "name": "Nova Compute Service",
+      "type": "runtime_service",
+      "catalogStatus": "incomplete",
+      "description": "Self-managed deployment of OpenStack Nova providing virtual machine lifecycle management across the platform. Runs nova-api, nova-scheduler, nova-conductor, nova-consoleauth, and nova-compute subcomponents. Coordinates with Neutron for networking, Cinder for volumes, and Glance for images. Uses RabbitMQ for internal messaging and MariaDB for state persistence.\n"
+    },
+    {
+      "uid": "STCK00000D-RS0D",
+      "name": "RabbitMQ Message Broker Service",
+      "type": "runtime_service",
+      "catalogStatus": "incomplete",
+      "description": "Self-managed deployment of RabbitMQ serving as the shared AMQP message broker for the OpenStack control plane. Provides the message transport layer for Nova, Neutron, Cinder, Heat, Ceilometer, Ironic, and Trove. Deployed as a 3-node RabbitMQ cluster with quorum queues for durability. All OpenStack services connect to RabbitMQ using dedicated virtual hosts and credentials.\n"
+    },
+    {
+      "uid": "STCK00000B-RS0B",
+      "name": "Sahara Data Processing Service",
+      "type": "runtime_service",
+      "catalogStatus": "incomplete",
+      "description": "Self-managed deployment of OpenStack Sahara providing data processing cluster orchestration on OpenStack. Runs sahara-api and sahara-all subcomponents. Sahara automates the provisioning and management of Apache Hadoop and Apache Spark clusters on Nova compute instances, enabling tenants to run big data workloads without manually managing cluster lifecycle. Clusters are defined via cluster templates and node group templates.\n"
+    },
+    {
+      "uid": "STCK00000C-RS0C",
+      "name": "Swift Proxy Service",
+      "type": "runtime_service",
+      "catalogStatus": "incomplete",
+      "description": "Self-managed deployment of the OpenStack Swift proxy-server providing the API gateway for all object storage operations. The swift-proxy-server handles client requests, authenticates via Keystone, routes requests to appropriate swift-account, swift-container, and swift-object storage nodes, and applies middleware for features like rate limiting and bulk operations. The proxy layer is stateless and scales horizontally.\n"
+    },
+    {
+      "uid": "STCK00000A-RS0A",
+      "name": "Trove Database Service",
+      "type": "runtime_service",
+      "catalogStatus": "incomplete",
+      "description": "Self-managed deployment of OpenStack Trove providing database-as-a-service on top of the OpenStack compute platform. Runs trove-api, trove-conductor, and trove-taskmanager subcomponents. Trove provisions database instances (MySQL, PostgreSQL, MongoDB, etc.) as Nova virtual machines with pre-configured database software, offering tenants a managed DBaaS experience without exposing the underlying infrastructure.\n"
+    },
+    {
+      "uid": "STCK000001-SDP1",
+      "name": "OpenStack IaaS Platform",
+      "type": "software_deployment_pattern",
+      "catalogStatus": "complete",
+      "description": "Full-stack self-managed OpenStack Infrastructure-as-a-Service deployment pattern covering the complete control plane and data plane. Includes compute (Nova), identity (Keystone), image (Glance), networking (Neutron), block storage (Cinder), object storage (Swift), orchestration (Heat), telemetry (Ceilometer), bare metal (Ironic), database-as-a-service (Trove), data processing (Sahara), and the Horizon web dashboard. All services share a RabbitMQ message broker cluster and MariaDB Galera database cluster running on dedicated controller nodes.\n"
+    },
+    {
+      "uid": "01KSK1FMGV-JMTP",
+      "name": "OpenStack Compute Platform",
+      "type": "system",
+      "catalogStatus": "complete",
+      "description": "Core OpenStack compute, networking, and storage services that together deliver IaaS capabilities to tenant workloads."
+    },
+    {
+      "uid": "01KQQ4Q025-9N4R",
+      "name": "Amazon EC2 Standard Compute Platform",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "Standard Amazon EC2 virtual machine substrate used for general-purpose host patterns.\n"
+    },
+    {
+      "uid": "01KQQ4Q025-MQ3F",
+      "name": "CrowdStrike Falcon Agent",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "Endpoint security agent installed locally on a host that requires communication with the CrowdStrike Falcon platform.\n"
+    },
+    {
+      "uid": "01KSF29JTP-8YRX",
+      "name": "HAProxy 2.9",
+      "type": "technology_component",
+      "catalogStatus": "complete",
+      "description": "Open-source TCP/HTTP load balancer and proxy server. Provides high-availability request distribution, health checking, connection pooling, and SSL termination. Used as the primary load balancer for the OpenStack control plane API endpoints."
+    },
+    {
+      "uid": "STCK00000E-TC0E",
+      "name": "MariaDB 10.11",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "MariaDB 10.11 is the long-term support relational database used as the persistence backend for OpenStack services. Each OpenStack service maintains its own database schema within the shared MariaDB cluster. In production deployments MariaDB is deployed as a Galera cluster for synchronous multi-master replication and high availability.\n"
+    },
+    {
+      "uid": "STCK00000F-TC0F",
+      "name": "OpenStack Bare Metal Standard Compute Platform",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "Generic bare-metal x86_64 compute substrate used by the OpenStack example service-host patterns.\n"
+    },
+    {
+      "uid": "STCK000009-TC09",
+      "name": "OpenStack Ceilometer",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "OpenStack Ceilometer is the telemetry service for OpenStack. It collects metering and monitoring data from across the OpenStack platform including ceilometer-api, ceilometer-collector, ceilometer-agent-notification, ceilometer-alarm-evaluator, and ceilometer-alarm-notifier. Ceilometer consumes the RabbitMQ notification bus to gather metrics from Nova, Neutron, Cinder, and other services.\n"
+    },
+    {
+      "uid": "STCK000005-TC05",
+      "name": "OpenStack Cinder",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "OpenStack Cinder is the block storage service that provides persistent block volumes to Nova compute instances. It includes cinder-api, cinder-scheduler, and cinder-volume subcomponents. Cinder supports multiple storage backends including iSCSI, Fibre Channel, Ceph RBD, and vendor-specific drivers, and uses RabbitMQ for internal messaging.\n"
+    },
+    {
+      "uid": "STCK000003-TC03",
+      "name": "OpenStack Glance",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "OpenStack Glance is the image service that stores and retrieves virtual machine disk images. It provides glance-api and glance-registry subcomponents and supports multiple storage backends including Swift, Ceph, and local filesystem. Nova queries Glance to retrieve bootable images when provisioning new instances.\n"
+    },
+    {
+      "uid": "STCK000008-TC08",
+      "name": "OpenStack Heat",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "OpenStack Heat is the orchestration service for OpenStack. It implements a heat-api, heat-api-cfn (CloudFormation-compatible), and heat-engine. Heat allows operators and tenants to define infrastructure-as-code stacks using the Heat Orchestration Template (HOT) format, automating the provisioning and lifecycle management of OpenStack resources.\n"
+    },
+    {
+      "uid": "STCK000007-TC07",
+      "name": "OpenStack Horizon",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "OpenStack Horizon is the web-based dashboard for OpenStack services. It provides a self-service portal for tenants and an administrative interface for operators. Horizon is a Django-based web application served via nginx, and it consumes the APIs of Nova, Keystone, Glance, Neutron, Cinder, and Heat to present a unified management interface.\n"
+    },
+    {
+      "uid": "STCK00000A-TC0A",
+      "name": "OpenStack Ironic",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "OpenStack Ironic is the bare metal provisioning service. It exposes ironic-api and uses ironic-conductor to manage physical hardware through IPMI, Redfish, iLO, and DRAC driver interfaces. Ironic integrates with Nova to allow bare metal machines to be enrolled in the compute scheduling pool and provisioned using standard OpenStack workflows.\n"
+    },
+    {
+      "uid": "STCK000002-TC02",
+      "name": "OpenStack Keystone",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "OpenStack Keystone is the identity service providing authentication and authorization for all OpenStack services. It issues tokens used by every other service for request validation, manages projects and users, and supports optional federation with external identity providers such as LDAP or SAML.\n"
+    },
+    {
+      "uid": "STCK000004-TC04",
+      "name": "OpenStack Neutron",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "OpenStack Neutron is the networking service providing software-defined networking capabilities to the OpenStack platform. It includes neutron-api, neutron-plugin, and neutron-agents subcomponents. Neutron manages virtual networks, subnets, routers, floating IPs, security groups, and load balancers, communicating with compute nodes via RabbitMQ.\n"
+    },
+    {
+      "uid": "STCK000001-TC01",
+      "name": "OpenStack Nova",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "OpenStack Nova is the compute service responsible for managing and provisioning virtual machine instances. It includes nova-api, nova-scheduler, nova-conductor, nova-compute, and nova-consoleauth subcomponents. Nova interacts with the hypervisor layer (KVM/QEMU) and coordinates with Neutron, Cinder, and Glance to deliver full instance lifecycle management.\n"
+    },
+    {
+      "uid": "STCK00000C-TC0C",
+      "name": "OpenStack Sahara",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "OpenStack Sahara is the data processing service that automates provisioning of Apache Hadoop and Spark clusters on OpenStack. It provides sahara-api and sahara-all subcomponents. Sahara enables tenants to define cluster templates and launch big data processing workloads without manually managing cluster lifecycle.\n"
+    },
+    {
+      "uid": "STCK000006-TC06",
+      "name": "OpenStack Swift",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "OpenStack Swift is the object storage service providing highly durable, distributed storage for unstructured data. It includes swift-proxy-server for request routing and swift-account, swift-container, and swift-object storage nodes. Swift uses consistent hashing and replication for durability. Glance uses Swift as its image binary storage backend.\n"
+    },
+    {
+      "uid": "STCK00000B-TC0B",
+      "name": "OpenStack Trove",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "OpenStack Trove is the database-as-a-service component. It provides trove-api, trove-conductor, and trove-taskmanager subcomponents. Trove automates the provisioning, management, and scaling of relational and non-relational database instances on top of Nova compute, providing a managed DBaaS experience within the OpenStack platform.\n"
+    },
+    {
+      "uid": "STCK00000D-TC0D",
+      "name": "RabbitMQ 3.8",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "RabbitMQ is a widely deployed open-source message broker implementing AMQP. In OpenStack it serves as the shared message transport layer for Nova, Neutron, Cinder, Heat, Ceilometer, Ironic, and Trove. Services publish work items and status notifications to RabbitMQ exchanges, and subcomponents (schedulers, conductors, agents) consume from queues to execute distributed tasks.\n"
+    },
+    {
+      "uid": "01KQQ4Q025-3HXA",
+      "name": "Ubuntu 22.04 LTS",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "Canonical Ubuntu Server 22.04 LTS operating system product definition for Linux host patterns.\n"
+    },
+    {
+      "uid": "01KQQ4Q025-Z042",
+      "name": "nginx 1.26",
+      "type": "technology_component",
+      "catalogStatus": "incomplete",
+      "description": "nginx web server software installed locally on a managed host and used without a required vendor platform interaction.\n"
+    },
+    {
+      "uid": "01KS7ZZ1C5-1PFR",
+      "name": "Connection Protocols",
+      "type": "vocabulary",
+      "description": "Approved inter-service communication protocols for use in relationship.technology. Companies may extend this list via vocabulary proposals. The Draftsman presents these as a multiple-choice list during connection elicitation; if the engineer's answer is not in this list the Draftsman records it as a non-standard value and offers a vocabulary proposal.\n"
+    },
+    {
+      "uid": "01KS7ZZ1C6-6H8D",
+      "name": "Network Zone Patterns",
+      "type": "vocabulary",
+      "description": "Common named network zone patterns the Draftsman presents as multiple-choice options when an engineer confirms that their deployment uses distinct network zones. The engineer selects one pattern; the Draftsman expands it into the SDP's networkZones list with tier classifications already set. Companies that need custom zones can select the custom pattern and name their zones directly, or submit a vocabulary proposal to add a new pattern. This vocabulary is distinct from the per-workspace networkZones declared in workspace.yaml; it is a catalogue of starting-point patterns only.\n"
+    }
+  ],
   "domainCapability": {
     "version": 1,
     "source": "capability.domain",
