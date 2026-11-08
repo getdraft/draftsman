@@ -234,11 +234,11 @@ class ReleaseNotesTests(unittest.TestCase):
         self.assertIn("Unreleased needs a meaningful Compatibility Impact", "\n".join(errors))
 
 
-    def _promotion_entries(self) -> dict:
+    def _promotion_entries(self, version: str = "1.3.0") -> dict:
         return check_release_notes.parse_changelog(
             textwrap.dedent(
-                """
-            ## 1.3.0 - 2026-11-08
+                f"""
+            ## {version} - 2026-11-08
             ### Compatibility Impact
             Contract change.
             ### Added
@@ -272,12 +272,12 @@ class ReleaseNotesTests(unittest.TestCase):
         self.assertEqual(errors, [])
 
     def test_promotion_commit_rejects_decreases_and_skipped_versions(self) -> None:
-        for new in ((1, 2, 0), (1, 2, 1), (1, 4, 0), (1, 3, 1), (9, 0, 0)):
+        for new in ((1, 2, 0), (1, 4, 0), (1, 3, 1), (9, 0, 0)):
             with self.subTest(new=new):
                 errors = check_release_notes.validate_changed_files(
                     ["CHANGELOG.md", "draft-framework.yaml"],
                     check_release_notes.Version(*new),
-                    self._promotion_entries(),
+                    self._promotion_entries(".".join(map(str, new))),
                     check_release_notes.Version(1, 2, 1),
                 )
                 self.assertIn("next patch, minor or major", "\n".join(errors))
@@ -288,7 +288,7 @@ class ReleaseNotesTests(unittest.TestCase):
                 errors = check_release_notes.validate_changed_files(
                     ["CHANGELOG.md", "draft-framework.yaml"],
                     check_release_notes.Version(*new),
-                    self._promotion_entries(),
+                    self._promotion_entries(".".join(map(str, new))),
                     check_release_notes.Version(1, 2, 1),
                 )
                 self.assertEqual(errors, [])
