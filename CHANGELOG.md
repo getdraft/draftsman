@@ -10,7 +10,7 @@
 
 ### Changed
 
-- `framework/tools/check_release_notes.py` no longer judges the promote-release bot's own commit as a standalone change. A commit that changes only `CHANGELOG.md` and `draft-framework.yaml`, bumps the version upward, and leaves no `## Unreleased` section is a promotion of an entry that was already checked on its pull request, so the bump type is not checked again; the version must still increase. Any other file in the diff, or a remaining `## Unreleased` section, keeps the exact-bump rule. Tests are in `tests/test_release_notes.py`.
+- `framework/tools/check_release_notes.py` no longer judges the promote-release bot's own commit as a standalone change. A commit that changes `CHANGELOG.md` and `draft-framework.yaml` (and optionally the regenerated `AI_INDEX.md`), leaves no `## Unreleased` section, and moves the version to the next patch, minor or major is a promotion of an entry that was already checked on its pull request, so the bump type is not checked again; skipped or lowered versions still fail. Any other file in the diff, or a remaining `## Unreleased` section, keeps the exact-bump rule. Tests are in `tests/test_release_notes.py`.
 
 ### Fixed
 

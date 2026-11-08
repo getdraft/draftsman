@@ -262,14 +262,36 @@ class ReleaseNotesTests(unittest.TestCase):
         )
         self.assertEqual(errors, [])
 
-    def test_promotion_commit_must_still_increase_the_version(self) -> None:
+    def test_promotion_commit_with_the_regenerated_ai_index_is_accepted(self) -> None:
         errors = check_release_notes.validate_changed_files(
-            ["CHANGELOG.md", "draft-framework.yaml"],
-            check_release_notes.Version(1, 2, 0),
+            ["CHANGELOG.md", "draft-framework.yaml", "AI_INDEX.md"],
+            check_release_notes.Version(1, 3, 0),
             self._promotion_entries(),
             check_release_notes.Version(1, 2, 1),
         )
-        self.assertIn("must increase", "\n".join(errors))
+        self.assertEqual(errors, [])
+
+    def test_promotion_commit_rejects_decreases_and_skipped_versions(self) -> None:
+        for new in ((1, 2, 0), (1, 2, 1), (1, 4, 0), (1, 3, 1), (9, 0, 0)):
+            with self.subTest(new=new):
+                errors = check_release_notes.validate_changed_files(
+                    ["CHANGELOG.md", "draft-framework.yaml"],
+                    check_release_notes.Version(*new),
+                    self._promotion_entries(),
+                    check_release_notes.Version(1, 2, 1),
+                )
+                self.assertIn("next patch, minor or major", "\n".join(errors))
+
+    def test_promotion_commit_accepts_next_patch_and_next_major(self) -> None:
+        for new in ((1, 2, 2), (2, 0, 0)):
+            with self.subTest(new=new):
+                errors = check_release_notes.validate_changed_files(
+                    ["CHANGELOG.md", "draft-framework.yaml"],
+                    check_release_notes.Version(*new),
+                    self._promotion_entries(),
+                    check_release_notes.Version(1, 2, 1),
+                )
+                self.assertEqual(errors, [])
 
     def test_other_files_with_the_manifest_still_need_the_exact_bump(self) -> None:
         errors = check_release_notes.validate_changed_files(
