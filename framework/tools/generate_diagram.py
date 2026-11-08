@@ -99,16 +99,24 @@ class Model:
         self.warnings: list[str] = []
         self.placement: dict[str, dict[str, str]] = {}
         self.groups: list[dict[str, Any]] = []
-        for group in sdp.get("serviceGroups") or []:
+        for number, group in enumerate(sdp.get("serviceGroups") or [], start=1):
             if not isinstance(group, dict):
+                self.warnings.append(f"serviceGroups entry {number} is not a mapping; skipped")
                 continue
             uids: list[str] = []
             for entry in group.get("deployableObjects") or []:
-                ref = str(entry.get("ref", "")) if isinstance(entry, dict) else ""
+                if not isinstance(entry, dict) or not entry.get("ref"):
+                    self.warnings.append(f"service group '{group.get('name')}' has an entry without a ref; skipped")
+                    continue
+                ref = str(entry["ref"])
                 if ref not in catalog:
                     self.warnings.append(f"service group '{group.get('name')}' references unknown uid '{ref}'")
                     continue
                 if ref in self.placement:
+                    self.warnings.append(
+                        f"uid '{ref}' is listed in service groups '{self.placement[ref]['group']}' and "
+                        f"'{group.get('name')}'; drawn in '{self.placement[ref]['group']}'"
+                    )
                     continue
                 uids.append(ref)
                 self.placement[ref] = {
@@ -188,7 +196,7 @@ class Layout:
         band_list: list[tuple[str, list[dict[str, Any]]]] = list(bands.items())
         if self.model.unplaced_drawn:
             band_list.append(
-                ("", [{"name": "Not placed in a service group", "target": "", "uids": self.model.unplaced_drawn}])
+                ("", [{"name": "Not placed in a service group", "target": "", "uids": self.model.unplaced_drawn, "unplaced": True}])
             )
         def rows_for(groups: list[dict[str, Any]], cols: int) -> int:
             return sum(math.ceil(len(g["uids"]) / cols) for g in groups)
@@ -219,7 +227,7 @@ class Layout:
                     zone_h = ZONE_HEAD + rows * CHIP_H + (rows - 1) * GAP + ZONE_PAD
                     self.zones.append(
                         {"x": x, "y": y, "w": col_w, "h": zone_h, "name": group["name"], "target": group["target"],
-                         "unplaced": group["target"] == "" and group["name"].startswith("Not placed")}
+                         "unplaced": bool(group.get("unplaced"))}
                     )
                     for i, uid in enumerate(group["uids"]):
                         r, c = divmod(i, cols)
@@ -251,6 +259,8 @@ def render_svg(model: Model, layout: Layout) -> str:
         labels.append(f'<text class="zl" x="{z["x"] + 12:.0f}" y="{z["y"] + 16:.0f}">{E(z["name"])}</text>')
         if z["target"]:
             labels.append(f'<text class="zt" x="{z["x"] + 12:.0f}" y="{z["y"] + 29:.0f}">{E(z["target"])}</text>')
+        elif not z["unplaced"]:
+            labels.append(f'<text class="zt" x="{z["x"] + 12:.0f}" y="{z["y"] + 29:.0f}">deployment target not recorded</text>')
     show_labels = len(model.relationships) <= LABEL_LIMIT
     seen: dict[tuple[str, str], int] = {}
     for rel in model.relationships:
@@ -260,6 +270,28 @@ def render_svg(model: Model, layout: Layout) -> str:
         key = tuple(sorted((s, t)))
         index = seen.get(key, 0)
         seen[key] = index + 1
+        if s == t:
+            # A recorded self-relationship: a small loop off the top-right corner of the box.
+            x, y = layout.pos[s]
+            grow = 14.0 * index
+            p1 = (x + CHIP_W * 0.62, y)
+            p2 = (x + CHIP_W, y + CHIP_H * 0.3)
+            c1 = (p1[0], y - 34 - grow)
+            c2 = (x + CHIP_W + 36 + grow, p2[1])
+            path = f"M{p1[0]:.1f} {p1[1]:.1f} C{c1[0]:.1f} {c1[1]:.1f} {c2[0]:.1f} {c2[1]:.1f} {p2[0]:.1f} {p2[1]:.1f}"
+            loop_label = clean(rel.get("label"))
+            tip = f"{model.name(s)} {loop_label or '(no label recorded)'} {model.name(t)} (self-relationship)"
+            edges.append(
+                f'<g class="edge" data-from="{E(s)}" data-to="{E(t)}"><title>{E(tip)}</title>'
+                f'<path class="ln" d="{path}" marker-end="url(#ar)"/></g>'
+            )
+            if loop_label:
+                hide = "" if show_labels else " hov"
+                labels.append(
+                    f'<text class="lb{hide}" data-from="{E(s)}" data-to="{E(t)}" x="{x + CHIP_W * 0.8:.1f}" '
+                    f'y="{y - 28 - grow:.1f}" text-anchor="middle">{E(loop_label)}</text>'
+                )
+            continue
         cs, ct = layout.center(s), layout.center(t)
         bend = 0.0 if index == 0 else 26.0 * index * (1 if s < t else -1)
         mid = ((cs[0] + ct[0]) / 2, (cs[1] + ct[1]) / 2)
@@ -270,7 +302,7 @@ def render_svg(model: Model, layout: Layout) -> str:
         p2 = border_point(ct, ctrl if bend else cs)
         path = f"M{p1[0]:.1f} {p1[1]:.1f} Q{ctrl[0]:.1f} {ctrl[1]:.1f} {p2[0]:.1f} {p2[1]:.1f}" if bend else f"M{p1[0]:.1f} {p1[1]:.1f} L{p2[0]:.1f} {p2[1]:.1f}"
         label = clean(rel.get("label"))
-        tip = f"{model.name(s)} {label} {model.name(t)}"
+        tip = f"{model.name(s)} {label or '(no label recorded)'} {model.name(t)}"
         edges.append(
             f'<g class="edge" data-from="{E(s)}" data-to="{E(t)}"><title>{E(tip)}</title>'
             f'<path class="ln" d="{path}" marker-end="url(#ar)"/></g>'
@@ -309,7 +341,7 @@ def render_svg(model: Model, layout: Layout) -> str:
         'markerUnits="userSpaceOnUse" orient="auto"><polygon class="mk" points="0,0 8,3.5 0,7"/></marker></defs>'
     )
     aria = (
-        f"{model.sdp.get('name', 'Deployment pattern')}: {len(layout.pos)} components in "
+        f"{model.sdp.get('name', 'Deployment pattern')}: {len(layout.pos)} objects in "
         f"{len(layout.zones)} groups with {len(model.relationships)} recorded relationships."
     )
     return (
@@ -328,7 +360,11 @@ def inventory_rows(model: Model) -> str:
     for uid in sorted((u for u in model.scope if u in model.catalog), key=key):
         obj = model.catalog[uid]
         placed = model.placement.get(uid)
-        where = f"{placed['group']} ({placed['target']})" if placed else "Not placed in a service group"
+        where = (
+            f"{placed['group']} ({placed['target'] or 'deployment target not recorded'})"
+            if placed
+            else "Not placed in a service group"
+        )
         runs_on = obj.get("runsOn")
         host = model.name(str(runs_on)) if runs_on and str(runs_on) in model.catalog else str(runs_on or "")
         tech = " · ".join(str(x) for x in (obj.get("language"), obj.get("runtimeRequirement")) if x)
@@ -348,7 +384,7 @@ def relationship_rows(model: Model) -> str:
     for rel in model.relationships:
         text = clean(rel.get("description") or rel.get("notes"))
         out.append(
-            f'<tr><td>{E(model.name(rel["source"]))}</td><td class="lbl">{E(clean(rel.get("label")))}</td>'
+            f'<tr><td>{E(model.name(rel["source"]))}</td><td class="lbl">{E(clean(rel.get("label")) or "no label recorded")}</td>'
             f'<td>{E(model.name(rel["target"]))}</td><td class="ds">{E(text)}</td></tr>'
         )
     return "".join(out)
@@ -356,14 +392,24 @@ def relationship_rows(model: Model) -> str:
 
 def facts_html(model: Model) -> str:
     items: list[tuple[str, str]] = []
+    omitted = "Recorded in the pattern file; not shown on this page."
     for field in ("architectureNotes", "notes"):
         block = model.sdp.get(field)
         if isinstance(block, dict):
             for key, value in block.items():
                 if isinstance(value, dict):
-                    value = value.get("description") or value.get("scope") or ""
-                if isinstance(value, (str, int, float)) and clean(value):
-                    items.append((key, clean(value)))
+                    text = value.get("description") or value.get("scope") or ""
+                    items.append((key, clean(text) or omitted))
+                elif isinstance(value, bool):
+                    items.append((key, "true" if value else "false"))
+                elif isinstance(value, (str, int, float)):
+                    if clean(value):
+                        items.append((key, clean(value)))
+                elif isinstance(value, list):
+                    if value and all(isinstance(v, (str, int, float)) and not isinstance(v, bool) for v in value):
+                        items.append((key, "; ".join(clean(v) for v in value if clean(v))))
+                    elif value:
+                        items.append((key, omitted))
     seen: set[str] = set()
     cards = []
     for key, value in items:
@@ -470,9 +516,9 @@ def render_page(model: Model, layout: Layout) -> str:
         f"<title>{E(str(sdp.get('name', 'Deployment pattern')))} Architecture</title><style>{CSS}</style></head><body><div class=\"wrap\">",
         f"<header><h1>{E(str(sdp.get('name', 'Deployment pattern')))} Architecture</h1>",
         '<p class="lede">Generated from the DRAFT catalog. Each box, arrow and row comes from a catalog object. '
-        "A component with no recorded relationship has no arrow, and nothing is inferred.</p>",
+        "An object with no recorded relationship has no arrow, and nothing is inferred.</p>",
         '<div class="counts">'
-        f"<span><b>{len(layout.pos)}</b> components drawn</span><span><b>{placed}</b> placed in a service group</span>"
+        f"<span><b>{len(layout.pos)}</b> objects drawn</span><span><b>{placed}</b> placed in a service group</span>"
         f"<span><b>{unplaced}</b> in scope but not placed</span><span><b>{retired}</b> retired</span>"
         f"<span><b>{len(model.relationships)}</b> recorded relationships</span></div></header>",
         '<section class="sec"><h2>Deployment topology</h2>'
@@ -490,20 +536,21 @@ def render_page(model: Model, layout: Layout) -> str:
             f"{relationship_rows(model)}</tbody></table></div></section>"
         )
     else:
-        parts.append('<section class="sec"><h2>Recorded relationships</h2><p>No relationship objects connect these components.</p></section>')
+        parts.append('<section class="sec"><h2>Recorded relationships</h2><p>No relationship objects connect these objects.</p></section>')
     if facts:
         parts.append(f'<section class="sec"><h2>Recorded characteristics</h2><p>Quoted from the deployment pattern.</p><dl class="facts">{facts}</dl></section>')
     if questions:
         parts.append(f'<section class="sec"><h2>Open questions on record</h2><ul class="q">{questions}</ul></section>')
     parts.append(
-        '<section class="sec"><h2>Component inventory</h2><p>Every in-scope component with its catalog fields as recorded. '
-        "Placed components are listed first.</p>"
-        '<div class="tools"><input id="q" type="search" placeholder="Filter by name, host, language or description" aria-label="Filter components">'
-        '<select id="lf" aria-label="Lifecycle filter"><option value="">All lifecycles</option><option value="existing-only">Existing</option>'
-        '<option value="retired">Retired</option><option value="deprecated">Deprecated</option></select>'
+        '<section class="sec"><h2>Object inventory</h2><p>Every in-scope object with its catalog fields as recorded. '
+        "Placed objects are listed first.</p>"
+        '<div class="tools"><input id="q" type="search" placeholder="Filter by name, host, language or description" aria-label="Filter objects">'
+        '<select id="lf" aria-label="Lifecycle filter"><option value="">All lifecycles</option><option value="preferred">preferred</option>'
+        '<option value="candidate">candidate</option><option value="existing-only">existing-only</option>'
+        '<option value="retired">retired</option><option value="deprecated">deprecated</option></select>'
         '<select id="pf" aria-label="Placement filter"><option value="">Placed and not placed</option><option value="1">Placed</option><option value="0">Not placed</option></select>'
         '<span id="cnt" style="align-self:center;color:var(--muted);font-size:13px"></span></div>'
-        '<div class="tw"><table id="inv"><thead><tr><th>Component</th><th>Class</th><th>Lifecycle</th><th>Service group (target)</th>'
+        '<div class="tw"><table id="inv"><thead><tr><th>Object</th><th>Class</th><th>Lifecycle</th><th>Service group (target)</th>'
         "<th>Runs on</th><th>Language / runtime</th><th>Description</th><th>UID</th></tr></thead>"
         f"<tbody>{inventory_rows(model)}</tbody></table></div></section>"
     )
@@ -531,16 +578,26 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--placed-only", action="store_true", help="Limit scope to objects placed in a service group.")
     parser.add_argument("--list", action="store_true", help="List deployment patterns and exit.")
     args = parser.parse_args(argv)
+    if not (args.workspace / "catalog").is_dir():
+        print(f"error: no catalog/ directory under workspace {args.workspace}", file=sys.stderr)
+        return 2
     if args.list:
         for pattern in sdps(load_catalog(args.workspace)):
             print(f"{pattern.get('uid')}\t{pattern.get('name')}")
         return 0
     page, model = build(args.workspace, args.sdp, args.placed_only)
-    output = args.output or Path(f"{slug(str(model.sdp.get('name', 'diagram')))}-architecture.html")
-    output.write_text(page, encoding="utf-8")
     for warning in model.warnings:
         print(f"warning: {warning}", file=sys.stderr)
-    print(f"Wrote {output} ({len(model.relationships)} relationships, {len(model.scope)} components in scope)")
+    output = args.output or Path(f"{slug(str(model.sdp.get('name', 'diagram')))}-architecture.html")
+    replaced = output.exists()
+    try:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(page, encoding="utf-8")
+    except OSError as exc:
+        print(f"error: cannot write {output}: {exc.strerror or exc}", file=sys.stderr)
+        return 1
+    note = "; replaced the existing file" if replaced else ""
+    print(f"Wrote {output} ({len(model.relationships)} relationships, {len(model.scope)} objects in scope){note}")
     return 0
 
 

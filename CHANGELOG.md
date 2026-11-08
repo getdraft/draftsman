@@ -6,8 +6,8 @@
 
 ### Added
 
-- Added `framework/tools/generate_diagram.py`, a deterministic generator that renders a Software Deployment Pattern as a self-contained HTML page with an inline SVG topology diagram (zones from service groups, boxes from placed objects, arrows only from recorded relationships), a relationships table, the pattern's recorded characteristics, open Drafting Session questions, and a filterable component inventory. Supports `--list`, `--sdp`, `--output`, and `--placed-only`.
-- Added `tests/test_generate_diagram.py` covering rendering, determinism, the no-inference rule (no relationship, no arrow), unplaced components, unknown references, HTML escaping, and the CLI.
+- Added `framework/tools/generate_diagram.py`, a deterministic generator that renders a Software Deployment Pattern as a self-contained HTML page with an inline SVG topology diagram (zones from service groups, boxes from placed objects, arrows only from recorded relationships), a relationships table, the pattern's recorded characteristics, open Drafting Session questions, and a filterable object inventory. Supports `--list`, `--sdp`, `--output`, and `--placed-only`.
+- Added `tests/test_generate_diagram.py` covering rendering, determinism, the no-inference rule (no relationship, no arrow), unplaced objects, unknown references, self-relationships, duplicate placement, malformed service groups, missing targets and labels, HTML escaping, and CLI error handling.
 
 ### Changed
 
@@ -15,7 +15,7 @@
 
 ### Fixed
 
-- None.
+- Regenerated `docs/assets/draft-indexes.json`, which was stale on `main` and failed the generated-index check.
 
 ### Migration Notes
 

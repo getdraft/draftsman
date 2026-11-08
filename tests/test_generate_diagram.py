@@ -85,7 +85,7 @@ class GenerateDiagramTests(unittest.TestCase):
         self.assertEqual(model.relationships, [])
         self.assertEqual(page.count('class="edge"'), 0)
         self.assertEqual(page.count('class="node"'), 2)
-        self.assertIn("No relationship objects connect these components.", page)
+        self.assertIn("No relationship objects connect these objects.", page)
 
     def test_relationship_draws_exactly_one_arrow(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -177,6 +177,109 @@ class GenerateDiagramTests(unittest.TestCase):
             with contextlib.redirect_stdout(listing):
                 generate_diagram.main(["--workspace", str(EXAMPLES), "--list"])
             self.assertIn("OpenStack IaaS Platform", listing.getvalue())
+
+
+    def _build(self, objects, **kw):
+        with tempfile.TemporaryDirectory() as tmp:
+            return generate_diagram.build(write_workspace(Path(tmp), objects), None, **kw)
+
+    def test_self_relationship_is_drawn_as_a_visible_loop(self) -> None:
+        page, model = self._build(
+            [component("A-1", "Alpha"), pattern({"G": ["A-1"]}), relationship("R-1", "A-1", "A-1", "retries")]
+        )
+        svg = svg_of(page)
+        xml.dom.minidom.parseString(svg)
+        self.assertEqual(page.count('class="edge"'), 1)
+        self.assertIn("M", re.search(r'<path class="ln" d="([^"]+)"', svg).group(1))
+        self.assertIn("retries", svg)
+        self.assertNotIn("nan", svg.lower())
+
+    def test_uid_in_two_groups_warns_and_draws_once(self) -> None:
+        page, model = self._build([component("A-1", "Alpha"), pattern({"G1": ["A-1"], "G2": ["A-1"]})])
+        self.assertEqual(page.count('class="node"'), 1)
+        self.assertTrue(any("G1" in w and "G2" in w for w in model.warnings))
+
+    def test_malformed_service_group_entries_warn(self) -> None:
+        sdp = pattern({"G": ["A-1"]})
+        sdp["serviceGroups"].append("not a mapping")
+        sdp["serviceGroups"][0]["deployableObjects"].append({"name": "no ref"})
+        _, model = self._build([component("A-1", "Alpha"), sdp])
+        joined = " ".join(model.warnings)
+        self.assertIn("not a mapping", joined)
+        self.assertIn("without a ref", joined)
+
+    def test_empty_target_and_missing_label_are_said_plainly(self) -> None:
+        sdp = pattern({"G": ["A-1", "B-1"]})
+        sdp["serviceGroups"][0]["deploymentTarget"] = ""
+        page, _ = self._build(
+            [component("A-1", "Alpha"), component("B-1", "Beta"), sdp, relationship("R-1", "A-1", "B-1", "")]
+        )
+        self.assertIn("deployment target not recorded", page)
+        self.assertIn("no label recorded", page)
+
+    def test_lifecycle_filter_offers_every_schema_value(self) -> None:
+        page, _ = self._build([component("A-1", "Alpha"), pattern({"G": ["A-1"]})])
+        for value in ("candidate", "preferred", "existing-only", "retired", "deprecated"):
+            self.assertIn(f'<option value="{value}">{value}</option>', page)
+
+    def test_facts_render_bools_lists_and_flag_unrenderable_values(self) -> None:
+        sdp = pattern({"G": ["A-1"]})
+        sdp["architectureNotes"] = {"multiRegion": False, "regions": ["east", "west"], "nested": [{"a": 1}]}
+        page, _ = self._build([component("A-1", "Alpha"), sdp])
+        self.assertIn("false", page)
+        self.assertIn("east; west", page)
+        self.assertIn("not shown on this page", page)
+
+    def test_empty_pattern_renders(self) -> None:
+        page, model = self._build([pattern({})])
+        self.assertEqual(page.count('class="node"'), 0)
+        self.assertEqual(len(model.scope), 0)
+
+    def test_attribute_and_label_escaping(self) -> None:
+        page, _ = self._build(
+            [
+                component("A-1", 'Al"><script>x</script>'),
+                component("B-1", "Beta"),
+                pattern({"G": ["A-1", "B-1"]}),
+                relationship("R-1", "A-1", "B-1", '<img src=x onerror=y>'),
+            ]
+        )
+        self.assertNotIn("<script>x", page)
+        self.assertNotIn("<img src=x", page)
+
+    def test_placed_only_with_team_scope_drops_unplaced(self) -> None:
+        page, model = self._build(
+            [
+                component("A-1", "Alpha"),
+                component("B-1", "Beta"),
+                pattern({"G": ["A-1"]}),
+                relationship("R-1", "A-1", "B-1", "calls"),
+            ],
+            placed_only=True,
+        )
+        self.assertEqual(page.count('class="node"'), 1)
+
+    def test_cli_errors_and_output_handling(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err):
+                self.assertEqual(generate_diagram.main(["--workspace", str(Path(tmp) / "nope")]), 2)
+            self.assertIn("catalog/", err.getvalue())
+            workspace = write_workspace(Path(tmp) / "ws", [component("A-1", "Alpha"), pattern({"G": ["A-1"]})])
+            out = Path(tmp) / "deep" / "dir" / "d.html"
+            buffer = io.StringIO()
+            with contextlib.redirect_stdout(buffer):
+                self.assertEqual(generate_diagram.main(["--workspace", str(workspace), "--output", str(out)]), 0)
+                self.assertEqual(generate_diagram.main(["--workspace", str(workspace), "--output", str(out)]), 0)
+            self.assertTrue(out.is_file())
+            self.assertIn("replaced the existing file", buffer.getvalue())
+            blocker = Path(tmp) / "file"
+            blocker.write_text("x")
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+                code = generate_diagram.main(["--workspace", str(workspace), "--output", str(blocker / "d.html")])
+            self.assertEqual(code, 1)
+            self.assertIn("cannot write", err.getvalue())
 
 
 if __name__ == "__main__":
