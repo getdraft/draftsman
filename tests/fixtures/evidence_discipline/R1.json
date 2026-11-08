@@ -1,0 +1,8 @@
+{
+  "id": "EDF-R1",
+  "rule": "R1",
+  "question": "Does the payments service depend on the ledger database?",
+  "index_excerpt": {"entity": "payments", "edges": [{"from": "payments", "to": "ledger-db"}]},
+  "forbidden_phrases": ["service dependency", "UI integration", "datastore connection"],
+  "required_phrases": ["does not characterise", "relationship"]
+}

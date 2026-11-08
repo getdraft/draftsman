@@ -31,3 +31,9 @@ htmlcov/
 
 # Local AI tooling
 .antigravitycli/
+
+# Run artifacts (never committed)
+.sdlc/
+
+# Generated skill projections (setup_ide.py); the framework repo commits none
+.claude/skills/

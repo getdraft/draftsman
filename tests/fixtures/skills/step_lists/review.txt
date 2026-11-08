@@ -1,0 +1,17 @@
+## Step 1: Determine Scope
+## PR Review
+### Step PR-1: Fetch Open PRs
+### Step PR-2: Fetch PR Details
+### Step PR-3: Validate Changed Files
+### Step PR-4: Architecture Review
+### Step PR-5: Present Findings
+### Step PR-6: Offer to Fix
+## Catalog Quality Review
+## Security & Compliance Audit
+### Workspace Boundary
+### Bootstrap
+### Requirements Authoring
+### Satisfaction Design
+### Posture Review
+### Artifact Compliance Audit (`artifact [name]`)
+## Output Rules

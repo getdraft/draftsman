@@ -28,13 +28,15 @@ vendored under `.draft/framework/draft-actions/` (company workspace).
 
 | Verb | Action file | Purpose |
 |---|---|---|
-| `guide` | `draft-actions/guide.md` | Bootstrap, then start or resume a guided DraftingSession or ad hoc authoring. |
-| `review` | `draft-actions/review.md` | Review an open PR for catalog correctness, or audit catalog content for quality and security compliance. |
-| `update` | `draft-actions/update.md` | Check for framework updates and guide a safe upgrade. |
-| `validate` | `draft-actions/validate.md` | Validate the DRAFT catalog and report fixes. *(Internal — called by `guide` and `review`. Works as a standalone verb but is not in the help table.)* |
+| `guide` | `draft-actions/guide.md` (routes to the `draftsman-author` skill) | Bootstrap, then start or resume a guided DraftingSession or ad hoc authoring. |
+| `review` | `draft-actions/review.md` (routes to the `draftsman-review` skill) | Review an open PR for catalog correctness, or audit catalog content for quality and security compliance. |
+| `update` | `draft-actions/update.md` (routes to the `draftsman-update` skill) | Check for framework updates and guide a safe upgrade. |
+| `validate` | `draft-actions/validate.md` (direct action, no skill) | Validate the DRAFT catalog and report fixes. *(Internal — called by `guide` and `review`. Works as a standalone verb but is not in the help table.)* |
 
 Once you have matched the verb, **read that action file and follow it exactly**,
-treating `REST` as the action's `$ARGUMENTS`.
+treating `REST` as the action's `$ARGUMENTS`. The `guide`, `review` and `update` action files are
+routers: each tells you to load `draftsman-core` and one workflow skill, which holds the steps.
+`validate` stays a direct action: it runs `validate.py` and has no skill.
 
 ### Upstream-only verb
 

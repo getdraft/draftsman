@@ -1,0 +1,11 @@
+## Step 1: Confirm Role
+## Step 2: Read Current State
+## Step 3: Check for Updates
+## Step 4: Create an Update Branch
+## Step 5: Replace the Vendored Framework
+## Step 6: Update the Lock File
+## Step 7: Run Validation
+### If validation is clean (no errors):
+### If validation produces new errors:
+### If the user wants to abandon the update:
+## Step 8: Post-Update Notes

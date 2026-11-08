@@ -1,3 +1,46 @@
+## Unreleased
+
+### Compatibility Impact
+
+- The Draftsman is now delivered as portable skills under `framework/skills/`, not as a DRAFT-operated agent. These are **removed**: the whole `agent/` directory (agent spec, `SOUL.md`, skills, MCP server copy, runtime bindings and deployment docs), `framework/integrations/slack/` and `framework/integrations/discord/`, `framework/tools/validate_agent_package.py`, and `framework/docs/soul.md` (its character content now lives in `framework/skills/draftsman-core/references/character.md`). `framework/integrations/cursor/` and `windsurf/` stay.
+- `framework/tools/validate.py` no longer runs the agent-package check. It is a contract path, so the release version bump is a minor bump (the bump tooling never selects major).
+- Any consumer that read `agent/`, the chat integration manifests, or `soul.md` must load `framework/skills/` instead.
+
+### Added
+
+- Added `framework/skills/draftsman-core/SKILL.md`: the always-loaded core skill with the Recorded / Inferred / Unknown table, Evidence Discipline rules R1-R6 and the Query and Author capability profiles. R6 is new text for agents reading catalog files directly.
+- Added the RFC `framework/docs/proposals/rfc-draftsman-skill-pack.md` describing the skill-pack replacement for the deployed agent.
+- Added `framework/skills/draftsman-core/references/character.md` (carried over from `framework/docs/soul.md`, which this release removes) and `references/onboarding.md` (the onboarding playbook with channel wording removed); `soul.md` is removed in this release.
+- Added Evidence Discipline fixtures `tests/fixtures/evidence_discipline/R1.json` to `R6.json` (one per rule, each with `id`, `rule`, `question`, `index_excerpt`, `forbidden_phrases`, `required_phrases`) and `tests/test_evidence_discipline_fixtures.py`, which checks the fixture set and that `draftsman-core` contains each rule's key phrase. The fixtures are not run against a live model.
+- Added `framework/tools/validate_skills.py` (pyyaml only, read-only): checks SKILL.md frontmatter, line budgets (150 for `draftsman-core`, 200 for other skills), relative link and `scripts/` path integrity, and rejects links that escape the skill directory. Fenced code is excluded, and unreadable files and NUL-byte paths are reported as FAIL lines, not tracebacks. It exits 1 when a skills directory has no skill subdirectories and 2 when the directory is missing. Tests are in `tests/test_validate_skills.py`.
+- Added workflow skills under `framework/skills/`: `draftsman-author` (with `references/guide.md`, the conversational flow and repository-scan mapping, merged from the guide action and the authoring and autodiscovery skills), `draftsman-query` (with `references/standards.md`, merged from the query and standards skills), `draftsman-review` and `draftsman-update` (a one-line summary per step in `SKILL.md`, the verbatim action-file steps in `references/steps.md`), and `draftsman-maturity` (the engineering maturity skill without company-specific agent names). Each states the capability profile it needs. The skills add guardrails that the old skills did not state: never ask the user for credentials or tokens, never copy a secret value into the catalog, mark scanned values as inferred (R6), and say so when a needed capability is missing. `draftsman-autodiscover` is merged into `draftsman-author` and `draftsman-standards` into `draftsman-query`; `switch-game-architect` is not ported. `draftsman-diagram` (Author profile, moved from `agent/skills/` to `framework/skills/` with the Mermaid and C4 guidance kept in `references/mermaid.md`) documents the rendered-page generator `framework/tools/generate_diagram.py` and the Mermaid and C4 output, with the generator's no-inference rules.
+- Added `framework/skills/draftsman-core/references/role.md` (product registration, repository initialisation and architecture-question protocols) and a workflow-skill index in `draftsman-core`.
+- Added `tests/test_skill_set.py` (exact skill set, `switch-game-architect` absent, frontmatter checks, each workflow skill names its profile, script paths exist) and `tests/test_skill_step_lists.py` with heading fixtures in `tests/fixtures/skills/step_lists/` (every `##` and `###` heading of the review and update action files must appear in the matching skill).
+- CI now runs `python framework/tools/validate_skills.py` in `.github/workflows/validate-catalog.yml`.
+- Added `framework/tools/skill_hash.py` (shared sha256 and marker helpers). `framework/tools/setup_ide.py` now also projects each skill into `.claude/skills/<name>/` as a copy (never a symlink), with `generated: true` and `source_sha256` added to the SKILL.md frontmatter (frontmatter stays first), and writes a managed skill index block into `AGENTS.md` that starts with a marker comment. An existing `AGENTS.md` keeps all its text and line endings; only the managed block is added or replaced, and a file with an unmatched or repeated marker is left untouched with a warning. `setup_ide.py` never overwrites a `.claude/skills/<name>/` directory that is not a generated projection. The framework repo itself gets projections only locally (`.claude/skills/` is git-ignored) and its tracked `AGENTS.md` is left alone.
+- Added `python3 framework/tools/validate_skills.py --workspace <path>`: fails when a projection under `.claude/skills/` is missing, unmarked, stale against `.draft/framework/skills/`, or edited (every projected file is compared with the expected copy, including extra or missing files), or when the `AGENTS.md` skill index is missing, stale or malformed. No lock file is involved. Tests are in `tests/test_skill_distribution.py`, including a vendoring refresh test and an independently computed sha256.
+- Added the portability lint to `framework/tools/validate_skills.py`: it fails on case-insensitive banned terms (`slack`, `discord`, `hermes`, `fargate`, `archie`, `central chat`, `switch-game-architect`, `ANTHROPIC_API_KEY`, `Pattern 2`) anywhere under `framework/skills/`, with word boundaries so bare words such as "switch" and "hierarchy" pass. Tests are in `tests/test_validate_skills.py`.
+- Added `framework/docs/bring-your-own-agent.md`: the four-point contract for giving your own agent the skills (load them, provide the profile's capabilities, publish the index from CI if needed, keep credentials in the harness), plus the optional MCP adapter's launch configuration and index-loading environment variables, which used to live under `agent/`.
+
+### Changed
+
+- Ignored `.sdlc/` run artifacts in `.gitignore`.
+- `draft_table/repo.py` now vendors `framework/skills/` into `.draft/framework/skills/` on refresh and rewrites `framework/skills` paths like the other vendored directories (a governed `draft_table/` path change).
+- `/draft guide`, `/draft review` and `/draft update` action files are now routers to the `draftsman-author`, `draftsman-review` and `draftsman-update` skills; the full step text lives in the skills. `/draft validate` stays a direct action.
+- `KPF-DFT-004` now describes the optional MCP adapter and points at `tests/test_mcp_server.py` (renamed from `tests/test_agent_mcp_tools.py` and retargeted to `framework/tools/mcp_server.py`).
+- Replaced the "Interaction Modes" and "Dual AI Agent Modes" text in `framework/docs/draftsman.md` and `framework/docs/decentralized-sdp-setup.md` with the Query and Author capability profiles, and rewrote `framework/integrations/README.md` for Cursor and Windsurf only.
+- Rewrote the agent sections of `README.md` to describe the skill pack.
+- Added `tests/test_no_agent_delivery_content.py` (no tracked file outside an explicit allowlist names the removed delivery model) and `tests/test_doc_links.py` (no markdown link points at a deleted path).
+
+### Fixed
+
+- `framework/tools/mcp_server.py` answered `check_compliance` with a fixed "compliant" verdict for any product and drew `get_c4_diagram` from a fixed template. Both now read the catalog index: an unknown product or an object with nothing assessed is reported as `unknown`, gaps are reported as `non_compliant`, and the diagram shows the recorded relationships. A name fragment that matches several objects is reported as unknown instead of picking one, and diagram labels are escaped. This brings it in line with the tool logic that `agent/mcp/server.py` already had.
+- `framework/tools/mcp_server.py` sent the read token to any URL containing the text "github". It now sends it only over https to `github.com` and `githubusercontent.com` hosts, judged by parsed hostname, and drops it on any redirect that leaves those hosts. With no index file found it used to fail with an internal error; it now answers from an empty index and says so on stderr.
+
+### Migration Notes
+
+- If you used the DRAFT agent package, its Slack or Discord manifests, or `soul.md`, load the skills in `framework/skills/` into your own agent instead. A workspace gets them as `.draft/framework/skills/` on the next framework refresh; run `python3 .draft/framework/tools/setup_ide.py` to project them. There is no deprecation window.
+
 ## 1.2.1 - 2026-11-08
 
 ### Compatibility Impact

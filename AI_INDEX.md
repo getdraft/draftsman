@@ -72,6 +72,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 |---|---|---|
 | framework/docs/COMPOSITION_ROADMAP.md | DRAFT Framework Architecture Composition Roadmap | This roadmap defines the implementation specifications for follow-on DRAFT framework capabilities. These items build... |
 | framework/docs/SHARED_SERVICE_COMPOSITION_SPEC.md | Deployable Shared Services Composition Specification | DRAFT enables **Enterprise-Grade Vibe Coding** by turning static architecture specifications into composable, standar... |
+| framework/docs/bring-your-own-agent.md | Bring Your Own Agent | How a company gives its own AI agent the Draftsman capability by loading the DRAFT skills, with no DRAFT-operated agent |
 | framework/docs/capabilities.md | Capabilities | A Capability is a first-class framework object that names an architecture |
 | framework/docs/company-vocabulary.md | Company Vocabulary | Company vocabulary lists are optional governed lists in `.draft/workspace.yaml`. |
 | framework/docs/decentralized-sdp-setup.md | Decentralized SoftwareDeploymentPatterns & Product Registration | How product engineering teams house SoftwareDeploymentPatterns in their own repos and register with drafting-table. |
@@ -97,7 +98,6 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/setup-mode.md | Draftsman Setup Mode | Setup mode is the first-run Draftsman conversation for a company DRAFT |
 | framework/docs/shared-services-onboarding.md | Shared Services Onboarding Guide | As a Shared Services representative, you are accountable for the **shared-services layer** of the architecture catalog. |
 | framework/docs/software-deployment-patterns.md | SoftwareDeploymentPatterns | A SoftwareDeploymentPattern is a declaration that a specific product is intended |
-| framework/docs/soul.md | Draftsman Soul | The character, voice, and interaction design of the Draftsman — who it is, how it feels, and how it speaks to the per... |
 | framework/docs/standards.md | Deployable Objects | DRAFT previously used the word "Standard" for reusable deployable building |
 | framework/docs/technology-components.md | TechnologyComponents | A TechnologyComponent is a discrete vendor product object. |
 | framework/docs/ticketing.md | Ticketing and Issue Creation Workflow | DRAFT is a repo-first, automation-friendly framework. |

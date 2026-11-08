@@ -3,7 +3,7 @@
 Draftsman Stdio MCP Server: Model Context Protocol Server for DRAFT Architecture Catalog Queries.
 
 Exposes standard JSON-RPC 2.0 stdio tools (`query_architecture`, `get_c4_diagram`, `check_compliance`, `validate_yaml_object`)
-to LLM agents deployed in enterprise agent factories or developer IDEs.
+to any agent or developer IDE that can launch an MCP server.
 """
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Any
@@ -23,6 +24,30 @@ if str(TOOLS_ROOT) not in sys.path:
 from indexes import build_catalog_indexes, sorted_objects
 
 
+def token_allowed_for(url: str) -> bool:
+    """Send a read token only over https to GitHub's own hosts, judged by parsed hostname."""
+    parsed = urllib.parse.urlparse(url)
+    host = (parsed.hostname or "").lower()
+    if parsed.scheme != "https" or not host:
+        return False
+    return any(host == base or host.endswith("." + base) for base in ("github.com", "githubusercontent.com"))
+
+
+class _KeepTokenOnGitHubOnly(urllib.request.HTTPRedirectHandler):
+    """Drop the Authorization header when a redirect leads anywhere the token may not go."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        new_req = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if new_req is not None and not token_allowed_for(newurl):
+            for name in list(new_req.headers):
+                if name.lower() == "authorization":
+                    del new_req.headers[name]
+            for name in list(new_req.unredirected_hdrs):
+                if name.lower() == "authorization":
+                    del new_req.unredirected_hdrs[name]
+        return new_req
+
+
 def load_catalog_index() -> dict[str, Any]:
     url = os.getenv("DRAFT_CATALOG_INDEX_URL")
     path_str = os.getenv("DRAFT_CATALOG_INDEX_PATH")
@@ -31,9 +56,9 @@ def load_catalog_index() -> dict[str, Any]:
     if url:
         try:
             req = urllib.request.Request(url)
-            if read_token and ("github" in url.lower() or "githubusercontent" in url.lower()):
+            if read_token and token_allowed_for(url):
                 req.add_header("Authorization", f"Bearer {read_token}")
-            with urllib.request.urlopen(req, timeout=10) as response:
+            with urllib.request.build_opener(_KeepTokenOnGitHubOnly).open(req, timeout=10) as response:
                 if response.status == 200:
                     data = json.loads(response.read().decode("utf-8"))
                     if isinstance(data, dict):
@@ -65,7 +90,11 @@ def load_catalog_index() -> dict[str, Any]:
             except Exception:
                 pass
 
-    return build_catalog_indexes(REPO_ROOT)
+    sys.stderr.write(
+        "Warning: no catalog index found. Set DRAFT_CATALOG_INDEX_PATH or DRAFT_CATALOG_INDEX_URL; "
+        "answering from an empty index.\n"
+    )
+    return {"objects": []}
 
 
 TOOLS_MANIFEST = [
@@ -116,6 +145,40 @@ TOOLS_MANIFEST = [
 ]
 
 
+def _q(value: Any) -> str:
+    """Make a value safe inside a double-quoted Mermaid label."""
+    return str(value).replace('"', "'")
+
+
+def _edge_label(label: Any, tech: str) -> str:
+    return (_q(label) + tech).replace("|", "/").replace('"', "'")
+
+
+def _text(payload: dict[str, Any]) -> dict[str, Any]:
+    return {"content": [{"type": "text", "text": json.dumps(payload, indent=2)}]}
+
+
+def _objects(index_data: dict[str, Any]) -> list[dict[str, Any]]:
+    objects = index_data.get("objects", [])
+    if isinstance(objects, dict):
+        objects = list(objects.values())
+    return [o for o in objects if isinstance(o, dict)]
+
+
+def _find_object(index_data: dict[str, Any], needle: str) -> dict[str, Any] | None:
+    """Resolve a name or uid to a catalog object, or None. Exact match before substring."""
+    wanted = needle.strip().lower()
+    if not wanted:
+        return None
+    candidates = _objects(index_data)
+    for obj in candidates:
+        if wanted in (str(obj.get("name", "")).lower(), str(obj.get("uid", "")).lower()):
+            return obj
+    matches = [obj for obj in candidates if wanted in str(obj.get("name", "")).lower()]
+    # A fragment that matches several objects names none of them: say unknown rather than guess.
+    return matches[0] if len(matches) == 1 else None
+
+
 def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
     index_data = load_catalog_index()
 
@@ -150,26 +213,146 @@ def handle_tool_call(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
 
     if name == "get_c4_diagram":
         product_name = str(arguments.get("product_name", ""))
-        diagram = f"graph TD\n  subgraph {product_name}\n    API[Product API]\n    DB[(Database)]\n    API --> DB\n  end"
+        target = _find_object(index_data, product_name)
+        if target is None:
+            return _text({
+                "product": product_name,
+                "error": "No single object with that name or uid is in the catalog index (it is absent or the name is ambiguous).",
+            })
+
+        target_uid = str(target.get("uid", ""))
+        target_name = str(target.get("name") or product_name)
+        all_objs = _objects(index_data)
+        objs_by_uid = {str(o.get("uid")): o for o in all_objs if o.get("uid")}
+
+        rel_objs = [o for o in all_objs if o.get("type") == "relationship"]
+        outbound = []
+        inbound = []
+
+        for r in rel_objs:
+            src = str(r.get("source", ""))
+            tgt = str(r.get("target", ""))
+            lbl = r.get("label") or "connects to"
+            tech = r.get("technology")
+            edge_info = {"rel": r, "label": lbl, "technology": tech}
+
+            if src == target_uid:
+                other_uid = tgt
+                other_obj = objs_by_uid.get(other_uid)
+                edge_info["other"] = other_obj or {"uid": tgt, "name": tgt, "type": "unknown"}
+                outbound.append(edge_info)
+            elif tgt == target_uid:
+                other_uid = src
+                other_obj = objs_by_uid.get(other_uid)
+                edge_info["other"] = other_obj or {"uid": src, "name": src, "type": "unknown"}
+                inbound.append(edge_info)
+
+        total_edges = len(outbound) + len(inbound)
+        if total_edges == 0:
+            return _text({
+                "product": target_name,
+                "uid": target_uid,
+                "status": "no_relationships_recorded",
+                "message": f"No relationships are recorded in the catalog for {target_name} ({target_uid}).",
+            })
+
+        max_display_edges = 12
+        displayed_out = outbound[:max_display_edges]
+        displayed_in = inbound[:max_display_edges]
+        omitted = total_edges - (len(displayed_out) + len(displayed_in))
+
+        # 1. Build ASCII Text Representation (readable where Mermaid is shown as plain text)
+        lines = [f"{target_name} ({target.get('type', 'object')})", "│"]
+        if displayed_out:
+            lines.append(f"├─ outbound ─────────────────────────────── {len(outbound)} edges")
+            for edge in displayed_out:
+                other_name = edge["other"].get("name", edge["other"].get("uid"))
+                lbl = edge["label"]
+                tech_str = f" via {edge['technology']}" if edge["technology"] else ""
+                lines.append(f"│   ▪ {other_name:<30} {lbl}{tech_str}")
+            lines.append("│")
+        if displayed_in:
+            lines.append(f"└─ inbound ──────────────────────────────── {len(inbound)} edges")
+            for edge in displayed_in:
+                other_name = edge["other"].get("name", edge["other"].get("uid"))
+                lbl = edge["label"]
+                tech_str = f" via {edge['technology']}" if edge["technology"] else ""
+                lines.append(f"    ▪ {other_name:<30} {lbl}{tech_str}")
+
+        if omitted > 0:
+            lines.append(f"\n_Omitted {omitted} additional edges due to diagram degree cap (12 max shown)._")
+
+        text_repr = "\n".join(lines)
+
+        # 2. Build Mermaid Diagram Block
+        mermaid_lines = ["graph LR", f'  node_target["{_q(target_name)}"]']
+        node_idx = 0
+        for edge in displayed_out:
+            node_idx += 1
+            other_name = edge["other"].get("name", edge["other"].get("uid"))
+            lbl = edge["label"]
+            tech_str = f" ({edge['technology']})" if edge["technology"] else ""
+            nid = f"n_out_{node_idx}"
+            mermaid_lines.append(f'  {nid}["{_q(other_name)}"]')
+            mermaid_lines.append(f'  node_target -->|{_edge_label(lbl, tech_str)}| {nid}')
+
+        for edge in displayed_in:
+            node_idx += 1
+            other_name = edge["other"].get("name", edge["other"].get("uid"))
+            lbl = edge["label"]
+            tech_str = f" ({edge['technology']})" if edge["technology"] else ""
+            nid = f"n_in_{node_idx}"
+            mermaid_lines.append(f'  {nid}["{_q(other_name)}"]')
+            mermaid_lines.append(f'  {nid} -->|{_edge_label(lbl, tech_str)}| node_target')
+
+        mermaid_lines.append("  style node_target stroke-width:3px")
+        mermaid_code = "\n".join(mermaid_lines)
+
+        combined_text = f"```\n{text_repr}\n```\n\n```mermaid\n{mermaid_code}\n```"
+
         return {
             "content": [
                 {
                     "type": "text",
-                    "text": f"```mermaid\n{diagram}\n```",
+                    "text": combined_text,
                 }
             ]
         }
 
     if name == "check_compliance":
         product_name = str(arguments.get("product_name", ""))
-        return {
-            "content": [
-                {
-                    "type": "text",
-                    "text": json.dumps({"product": product_name, "complianceStatus": "compliant", "satisfiedRequirements": ["authentication", "logging", "encryption"]}, indent=2),
-                }
-            ]
-        }
+        target = _find_object(index_data, product_name)
+        if target is None:
+            return _text({
+                "product": product_name,
+                "complianceStatus": "unknown",
+                "reason": "No single object with that name or uid is in the catalog index (it is absent or the name is ambiguous).",
+            })
+
+        rows = (index_data.get("requirementImplementations") or {}).get("rows") or []
+        mine = [r for r in rows if str(r.get("object")) == str(target.get("uid"))]
+        if not mine:
+            # Distinct from "compliant". Nothing was assessed, and saying otherwise is the kind of
+            # answer that gets believed precisely because someone asked the question.
+            return _text({
+                "product": target.get("name") or product_name,
+                "uid": target.get("uid"),
+                "complianceStatus": "unknown",
+                "reason": "The object is in the catalog but has no requirement implementations recorded.",
+            })
+
+        satisfied = sorted({str(r.get("requirementId")) for r in mine if r.get("status") == "satisfied"})
+        unsatisfied = sorted({
+            str(r.get("requirementId")) for r in mine if r.get("status") not in (None, "", "satisfied")
+        })
+        return _text({
+            "product": target.get("name") or product_name,
+            "uid": target.get("uid"),
+            "complianceStatus": "compliant" if not unsatisfied else "non_compliant",
+            "satisfiedRequirements": satisfied,
+            "unsatisfiedRequirements": unsatisfied,
+            "assessedCount": len(mine),
+        })
 
     if name == "validate_yaml_object":
         yaml_str = str(arguments.get("yaml_content", ""))
@@ -217,7 +400,7 @@ def main() -> None:
                     },
                     "serverInfo": {
                         "name": "draftsman-mcp-server",
-                        "version": "1.0.2"
+                        "version": "1.0.3"
                     }
                 }
             }

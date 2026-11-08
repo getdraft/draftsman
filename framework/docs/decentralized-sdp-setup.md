@@ -80,7 +80,7 @@ When an engineering team merges a PR updating `.draft/sdp.yaml`:
 
 `drafting-table` holds **zero read credentials for product repositories**, ensuring complete source code isolation.
 
-## Dual AI Agent Modes
+## Capability Profiles
 
-* **Query & Guidance Mode (Slack / Discord / Web UI)**: Strictly read-only. Queries pre-compiled `catalog_indexes.json` to answer questions about architecture, ports, DB engines, and dependencies. Directs engineers to native IDE tools for authoring.
-* **Authoring & Execution Mode (IDE / CLI)**: Interactively scaffolds `.draft/sdp.yaml`, runs validation, and helps engineers edit product architecture directly inside their code repos.
+* **Query profile**: Strictly read-only. Queries pre-compiled `catalog_indexes.json` to answer questions about architecture, ports, DB engines, and dependencies. Directs engineers to the Author profile for authoring.
+* **Author profile**: Interactively scaffolds `.draft/sdp.yaml`, runs validation, and helps engineers edit product architecture directly inside their code repos.
