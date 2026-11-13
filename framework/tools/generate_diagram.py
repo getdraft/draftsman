@@ -21,9 +21,10 @@ What is drawn comes only from the catalog:
 * Components that are not placed in any service group but have a recorded
   relationship are drawn in a separate "not placed" column, never in a zone.
 
-By default the scope is the objects placed in the pattern plus objects owned by
-the same ``owner.team`` (so relationship endpoints that are catalogued but not
-yet placed still appear). ``--placed-only`` restricts the scope to placed objects.
+By default the scope is the objects placed in the pattern plus each direct relationship
+endpoint (one hop) of a placed object whose type is a component, data, data store, runtime,
+network, AI gateway or host object. ``--placed-only`` restricts the drawing to placed objects.
+Derived ``runs on`` relationships never extend the scope.
 
 Below the figure the page lists every relationship, the pattern's recorded
 characteristics, open questions from Drafting Sessions that target the pattern,
@@ -32,6 +33,7 @@ and an inventory of every in-scope object with its catalog fields as recorded.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import html
 import math
 import sys
@@ -63,7 +65,7 @@ LABEL_LIMIT = 8  # show edge labels permanently only up to this many edges; larg
 # --------------------------------------------------------------------------- model
 def sdps(catalog: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
     found = [o for o in catalog.values() if o.get("type") == "software_deployment_pattern"]
-    return sorted(found, key=lambda o: str(o.get("name", "")).lower())
+    return sorted(found, key=lambda o: (str(o.get("name", "")).lower(), str(o.get("uid", ""))))
 
 
 def pick_sdp(catalog: dict[str, dict[str, Any]], selector: str | None) -> dict[str, Any]:
@@ -100,66 +102,133 @@ def clean(text: Any) -> str:
     return " ".join(str(text or "").split())
 
 
+@dataclass
+class DiagramNode:
+    """One node of a view: a placed object, an outside-lane object or an external target."""
+
+    uid: str
+    name: str
+    node_type: str
+    placed: bool = False
+    external: bool = False
+    outside: bool = False  # drawn in the outside lane (D5)
+    band: str = ""  # D4 band; empty for externals, which have no catalog type
+    derived: bool = False  # placed entry without diagramTier (D4)
+    caption: str = ""  # D5 caption for outside-lane nodes
+
+
+@dataclass
+class DiagramEdge:
+    """One drawn relationship. ``derived`` marks a runtimeSpec.dependencies edge (D31)."""
+
+    source: str
+    target: str
+    label: str = ""
+    derived: bool = False
+    uid: str = ""
+    origin: str = "relationship object"  # D31: "inline dependency" for runtimeSpec.dependencies
+    direction: str = ""
+    flow: str = ""
+    technology: str = ""
+
+
+@dataclass
+class DiagramContainer:
+    uid: str
+    caption: str = ""
+    members: list[str] = field(default_factory=list)
+
+
+@dataclass
+class DiagramModel:
+    sdp_uid: str
+    nodes: list[DiagramNode] = field(default_factory=list)
+    edges: list[DiagramEdge] = field(default_factory=list)
+    containers: list[DiagramContainer] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+
+
+# D2: object types that may appear one hop away from a placed object.
+ONE_HOP_TYPES = frozenset(
+    {"product_component", "data_component", "data_store_service", "runtime_service", "network_service", "ai_gateway", "host"}
+)
+
+# D4: band derived from type when the placing entry records no diagramTier.
+TYPE_BANDS = {
+    "product_component": "application",
+    "data_component": "data",
+    "data_store_service": "data",
+    "runtime_service": "application",
+    "network_service": "presentation",
+    "ai_gateway": "application",
+    "host": "utility",
+}
+
+
+def type_band(obj_type: Any) -> str:
+    # D4 (type-derived band): types outside the map fall back to application. Behaviour kept; not listed in D4.
+    return TYPE_BANDS.get(str(obj_type or ""), "application")
+
+
+def _endpoint(rel: dict[str, Any], key: str) -> str:
+    value = rel.get(key)
+    return value.strip() if isinstance(value, str) else ""
+
+
+def is_dependency(rel: dict[str, Any]) -> bool:
+    """Built from runtimeSpec.dependencies (D31): a recorded dependency, drawn as an edge."""
+    return bool(rel.get("_derived")) and "[inline dependency]" in str(rel.get("_source", ""))
+
+
+def is_runs_on(rel: dict[str, Any]) -> bool:
+    """Built from runsOn or host (D31): a placement fact that is never an edge or a row."""
+    return bool(rel.get("_derived")) and not is_dependency(rel)
+
+
+def external_uid(text: str) -> str:
+    """Stable id of an externalTarget string (D3): 'ext:' plus 12 hex characters of its sha256."""
+    return "ext:" + hashlib.sha256(clean(text).encode("utf-8")).hexdigest()[:12]
+
+
+def _other_pattern_names(catalog: dict[str, dict[str, Any]], sdp: dict[str, Any]) -> dict[str, list[str]]:
+    """uid -> names of the other patterns that place it, in pattern order (D5 captions)."""
+    found: dict[str, list[tuple[int, str]]] = {}  # uid -> (pattern position, display name)
+    for position, other in enumerate(sdps(catalog)):
+        if other is sdp:
+            continue
+        groups = other.get("serviceGroups")
+        if not isinstance(groups, list):
+            continue
+        label = str(other.get("name") or other.get("uid") or "")
+        for group in groups:
+            if not isinstance(group, dict):
+                continue
+            for entry in group.get("deployableObjects") or []:
+                if isinstance(entry, dict) and entry.get("ref"):
+                    places = found.setdefault(str(entry["ref"]), [])
+                    if all(seen != position for seen, _name in places):
+                        places.append((position, label))
+    return {uid: [name for _position, name in places] for uid, places in found.items()}
+
+
 class Model:
-    """Everything the page shows, resolved from the catalog."""
+    """Everything the page shows, resolved from the catalog.
+
+    Scope is one hop (D2): every placed object plus each direct relationship endpoint
+    of a placed object whose type is in ONE_HOP_TYPES. Derived ``runs on`` relationships
+    never extend scope and never become edges or relationship rows (D31).
+    """
 
     def __init__(self, catalog: dict[str, dict[str, Any]], sdp: dict[str, Any], placed_only: bool):
         self.catalog = catalog
         self.sdp = sdp
-        self.warnings: list[str] = []
-        self.placement: dict[str, dict[str, str]] = {}
+        self.placed_only = placed_only
+        self.warnings: list[str] = []  # in discovery order; de-duplicated and sorted by the page (S4)
+        self.placement: dict[str, dict[str, str]] = {}  # first placement of each uid, in document order
         self.groups: list[dict[str, Any]] = []
-        for number, group in enumerate(sdp.get("serviceGroups") or [], start=1):
-            if not isinstance(group, dict):
-                self.warnings.append(f"serviceGroups entry {number} is not a mapping; skipped")
-                continue
-            uids: list[str] = []
-            for entry in group.get("deployableObjects") or []:
-                if not isinstance(entry, dict) or not entry.get("ref"):
-                    self.warnings.append(f"service group '{group.get('name')}' has an entry without a ref; skipped")
-                    continue
-                ref = str(entry["ref"])
-                if ref not in catalog:
-                    self.warnings.append(f"service group '{group.get('name')}' references unknown uid '{ref}'")
-                    continue
-                if ref in self.placement:
-                    self.warnings.append(
-                        f"uid '{ref}' is listed in service groups '{self.placement[ref]['group']}' and "
-                        f"'{group.get('name')}'; drawn in '{self.placement[ref]['group']}'"
-                    )
-                    continue
-                uids.append(ref)
-                self.placement[ref] = {
-                    "group": str(group.get("name", "")),
-                    "target": str(group.get("deploymentTarget", "")),
-                }
-            self.groups.append(
-                {"name": str(group.get("name", "")), "target": str(group.get("deploymentTarget", "")), "uids": uids}
-            )
-        team = (sdp.get("owner") or {}).get("team") if isinstance(sdp.get("owner"), dict) else None
-        scope = set(self.placement)
-        if team and not placed_only:
-            for uid, obj in catalog.items():
-                owner = obj.get("owner")
-                if (
-                    obj.get("type") not in {"relationship", "software_deployment_pattern"}
-                    and isinstance(owner, dict)
-                    and owner.get("team") == team
-                ):
-                    scope.add(uid)
-        self.scope = scope
-        self.relationships = sorted(
-            (
-                o
-                for o in catalog.values()
-                if o.get("type") == "relationship" and o.get("source") in scope and o.get("target") in scope
-            ),
-            key=lambda o: (self.name(o["source"]).lower(), str(o.get("label", "")), self.name(o["target"]).lower()),
-        )
-        connected = {r["source"] for r in self.relationships} | {r["target"] for r in self.relationships}
-        self.unplaced_drawn = sorted(
-            (u for u in connected if u not in self.placement), key=lambda u: self.name(u).lower()
-        )
+        self._read_groups()
+        self._other_patterns = _other_pattern_names(catalog, sdp)
+        self._build_nodes_and_edges()
 
     def name(self, uid: str) -> str:
         return str(self.catalog.get(uid, {}).get("name") or uid)
@@ -169,6 +238,169 @@ class Model:
         if lifecycle(obj) in {"retired", "deprecated"}:
             return lifecycle(obj)
         return str(obj.get("classification") or str(obj.get("type", "")).replace("_", " "))
+
+    def nodes_for_view(self, view: str) -> list[DiagramNode]:
+        if view != "logical":
+            raise ValueError(f"unknown view: {view!r}")
+        return list(self._nodes)
+
+    def _read_groups(self) -> None:
+        raw_groups = self.sdp.get("serviceGroups")
+        if raw_groups is None:
+            raw_groups = []
+        if not isinstance(raw_groups, list):
+            raise ValueError("serviceGroups must be a list")  # D32
+        occurrences: dict[str, list[str]] = {}  # uid -> group names of every valid listing, in document order
+        for number, group in enumerate(raw_groups, start=1):
+            if not isinstance(group, dict):
+                self.warnings.append(f"serviceGroups entry {number} is not a mapping; skipped")
+                continue
+            group_name = str(group.get("name", ""))
+            target = str(group.get("deploymentTarget", ""))
+            uids: list[str] = []
+            for entry in group.get("deployableObjects") or []:
+                if not isinstance(entry, dict) or not entry.get("ref"):
+                    self.warnings.append(f"service group '{group.get('name')}' has an entry without a ref; skipped")
+                    continue
+                ref = str(entry["ref"])
+                if ref not in self.catalog:
+                    self.warnings.append(f"service group '{group.get('name')}' references unknown uid '{ref}'")
+                    continue
+                occurrences.setdefault(ref, []).append(group_name)
+                if ref in self.placement:
+                    continue
+                uids.append(ref)
+                self.placement[ref] = {"group": group_name, "target": target, "tier": clean(entry.get("diagramTier"))}
+            self.groups.append({"name": group_name, "target": target, "uids": uids})
+        for uid, listed in occurrences.items():  # D26
+            if len(listed) > 1:
+                later: list[str] = []
+                for group_name in listed[1:]:
+                    if group_name not in later:
+                        later.append(group_name)
+                self.warnings.append(
+                    f"duplicate placement: {self.name(uid)} ({uid}) first placed in {listed[0]}; "
+                    f"also listed in {', '.join(later)}"
+                )
+        for uid, place in self.placement.items():  # D4: placed entries only
+            if not place["tier"]:
+                self.warnings.append(f"derived tier: {self.name(uid)} ({uid}) -> {type_band(self.catalog[uid].get('type'))}")
+
+    def _build_nodes_and_edges(self) -> None:
+        catalog = self.catalog
+        placed = set(self.placement)  # membership tests only; output order comes from lists
+        recorded = sorted(
+            (o for o in catalog.values() if o.get("type") == "relationship" and not is_runs_on(o)),
+            key=lambda o: str(o.get("uid", "")),
+        )
+        outside: set[str] = set()
+        externals: dict[str, str] = {}  # external id -> trimmed, whitespace-collapsed text (D3)
+        if not self.placed_only:
+            for rel in recorded:
+                source, target = _endpoint(rel, "source"), _endpoint(rel, "target")
+                for near, far in ((source, target), (target, source)):
+                    if near in placed and far and far not in placed and catalog.get(far, {}).get("type") in ONE_HOP_TYPES:
+                        outside.add(far)
+                text = clean(rel.get("externalTarget"))
+                if source in placed and not target and text:
+                    externals.setdefault(external_uid(text), text)
+
+        nodes: list[DiagramNode] = []
+        for uid, place in self.placement.items():
+            obj = catalog[uid]
+            tier = place["tier"]
+            nodes.append(
+                DiagramNode(
+                    uid=uid,
+                    name=self.name(uid),
+                    node_type=str(obj.get("type", "")),
+                    placed=True,
+                    band=tier or type_band(obj.get("type")),
+                    derived=not tier,
+                )
+            )
+        outer: list[DiagramNode] = []
+        for uid in outside:
+            obj = catalog[uid]
+            outer.append(
+                DiagramNode(
+                    uid=uid,
+                    name=self.name(uid),
+                    node_type=str(obj.get("type", "")),
+                    outside=True,
+                    band=type_band(obj.get("type")),
+                    caption=self._caption(uid),
+                )
+            )
+        for ext_id, text in externals.items():
+            outer.append(
+                DiagramNode(uid=ext_id, name=text, node_type="external", external=True, outside=True, caption="external")
+            )
+        outer.sort(key=lambda n: n.uid)
+        self._nodes = nodes + outer
+        self._by_uid = {node.uid: node for node in self._nodes}
+        self.scope = {node.uid for node in self._nodes if not node.external}
+        self.unplaced_drawn = sorted(
+            (node.uid for node in outer if not node.external), key=lambda u: self.name(u).lower()
+        )
+
+        self.edges: list[DiagramEdge] = []
+        self.relationships: list[dict[str, Any]] = []  # catalog-to-catalog relationship objects that are drawn
+        self.relationship_rows: list[dict[str, str]] = []
+        drawn: set[int] = set()  # ids of drawn relationship dicts; membership only
+        for rel in recorded:
+            source, target = _endpoint(rel, "source"), _endpoint(rel, "target")
+            if target:
+                end = target
+            else:
+                text = clean(rel.get("externalTarget"))
+                if not text:
+                    continue
+                end = external_uid(text)
+            if source not in self._by_uid or end not in self._by_uid:
+                continue
+            dependency = is_dependency(rel)
+            edge = DiagramEdge(
+                source=source,
+                target=end,
+                label=clean(rel.get("label")),
+                derived=dependency,
+                uid=str(rel.get("uid", "")),
+                origin="inline dependency" if dependency else "relationship object",
+                direction=str(rel.get("direction") or ""),
+                flow=str(rel.get("flow") or ""),
+                technology=clean(rel.get("technology")),
+            )
+            self.edges.append(edge)
+            drawn.add(id(rel))
+            if target:
+                self.relationships.append(rel)
+            self.relationship_rows.append(
+                {
+                    "uid": edge.uid,
+                    "from": self._by_uid[source].name,
+                    "label": edge.label,
+                    "to": self._by_uid[end].name,
+                    "description": clean(rel.get("description") or rel.get("notes")),
+                    "source": edge.origin,
+                }
+            )
+        self.relationship_rows.sort(key=lambda r: (r["from"].lower(), r["label"], r["to"].lower(), r["uid"]))
+        # Recorded relationships that touch the placed set but are not drawn (D2 placed-only, D31).
+        self.undrawn_relationship_count = sum(
+            1
+            for rel in recorded
+            if (_endpoint(rel, "source") in placed or _endpoint(rel, "target") in placed) and id(rel) not in drawn
+        )
+
+    def _caption(self, uid: str) -> str:
+        names = self._other_patterns.get(uid, [])
+        if not names:
+            return "not placed in any pattern"
+        if len(names) == 1:
+            return names[0]
+        return f"placed in {len(names)} other patterns"
+
 
 
 # --------------------------------------------------------------------------- layout
@@ -362,9 +594,9 @@ def render_svg(model: Model, layout: Layout) -> str:
 
 # --------------------------------------------------------------------------- html parts
 def inventory_rows(model: Model) -> str:
-    def key(uid: str) -> tuple[int, str, int, str]:
+    def key(uid: str) -> tuple[int, str, int, str, str]:
         placed = model.placement.get(uid)
-        return (0 if placed else 1, placed["group"] if placed else "", 1 if lifecycle(model.catalog[uid]) == "retired" else 0, model.name(uid).lower())
+        return (0 if placed else 1, placed["group"] if placed else "", 1 if lifecycle(model.catalog[uid]) == "retired" else 0, model.name(uid).lower(), uid)
 
     rows = []
     for uid in sorted((u for u in model.scope if u in model.catalog), key=key):
@@ -391,11 +623,10 @@ def inventory_rows(model: Model) -> str:
 
 def relationship_rows(model: Model) -> str:
     out = []
-    for rel in model.relationships:
-        text = clean(rel.get("description") or rel.get("notes"))
+    for row in model.relationship_rows:
         out.append(
-            f'<tr><td>{E(model.name(rel["source"]))}</td><td class="lbl">{E(clean(rel.get("label")) or "no label recorded")}</td>'
-            f'<td>{E(model.name(rel["target"]))}</td><td class="ds">{E(text)}</td></tr>'
+            f'<tr><td>{E(row["from"])}</td><td class="lbl">{E(row["label"] or "no label recorded")}</td>'
+            f'<td>{E(row["to"])}</td><td class="ds">{E(row["description"])}</td></tr>'
         )
     return "".join(out)
 
@@ -540,7 +771,7 @@ def render_page(model: Model, layout: Layout) -> str:
         '<div class="counts">'
         f"<span><b>{len(layout.pos)}</b> objects drawn</span><span><b>{placed}</b> placed in a service group</span>"
         f"<span><b>{unplaced}</b> in scope but not placed</span><span><b>{retired}</b> retired</span>"
-        f"<span><b>{len(model.relationships)}</b> recorded relationships</span></div></header>",
+        f"<span><b>{len(model.relationship_rows)}</b> recorded relationships</span></div></header>",
         '<section class="sec"><h2>Deployment topology</h2>'
         "<p>Zones are the service groups of the deployment pattern, labelled with their recorded deployment target. "
         "Hover or focus a box to highlight its relationships; click to pin.</p>",
@@ -555,7 +786,7 @@ def render_page(model: Model, layout: Layout) -> str:
         + empty_groups_html(model)
         + "</section>",
     ]
-    if model.relationships:
+    if model.relationship_rows:
         parts.append(
             '<section class="sec"><h2>Recorded relationships</h2><div class="tw"><table><thead><tr>'
             "<th>From</th><th>Relationship</th><th>To</th><th>Description</th></tr></thead><tbody>"
@@ -584,45 +815,16 @@ def render_page(model: Model, layout: Layout) -> str:
     return "".join(parts)
 
 
-# --------------------------------------------------------------------------- skeleton
-# Data classes and stubs for the two-view renderer. Later stories fill them in
-# (S3 model, S4 containers and zones, S5 logical SVG, S6 deployment SVG,
-# S7 edges and styling, S8 page). Every ordering must key on uid or document order (D15).
-@dataclass
-class DiagramNode:
-    uid: str
-    name: str
-    node_type: str
-    placed: bool = False
-    external: bool = False
-
-
-@dataclass
-class DiagramEdge:
-    source: str
-    target: str
-    label: str = ""
-    derived: bool = False
-
-
-@dataclass
-class DiagramContainer:
-    uid: str
-    caption: str = ""
-    members: list[str] = field(default_factory=list)
-
-
-@dataclass
-class DiagramModel:
-    sdp_uid: str
-    nodes: list[DiagramNode] = field(default_factory=list)
-    edges: list[DiagramEdge] = field(default_factory=list)
-    containers: list[DiagramContainer] = field(default_factory=list)
-    warnings: list[str] = field(default_factory=list)
-
-
+# --------------------------------------------------------------------------- stubs
 def build_diagram_model(catalog: dict[str, dict[str, Any]], sdp: dict[str, Any], placed_only: bool) -> DiagramModel:
-    raise NotImplementedError("enabled in S3")
+    """The two-view model for one pattern. Containers stay empty until S4."""
+    model = Model(catalog, sdp, placed_only)
+    return DiagramModel(
+        sdp_uid=str(sdp.get("uid", "")),
+        nodes=model.nodes_for_view("logical"),
+        edges=list(model.edges),
+        warnings=list(model.warnings),
+    )
 
 
 def render_logical_svg(model: DiagramModel) -> str:
@@ -667,7 +869,11 @@ def main(argv: list[str] | None = None) -> int:
         for pattern in sdps(load_catalog(args.workspace)):
             print(f"{pattern.get('uid')}\t{pattern.get('name')}")
         return 0
-    page, model = build(args.workspace, args.sdp, args.placed_only)
+    try:
+        page, model = build(args.workspace, args.sdp, args.placed_only)
+    except ValueError as exc:  # D32: a malformed pattern is reported, not traced
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
     for warning in model.warnings:
         print(f"warning: {warning}", file=sys.stderr)
     output = args.output or Path(f"{slug(str(model.sdp.get('name', 'diagram')))}-architecture.html")
