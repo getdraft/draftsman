@@ -1347,7 +1347,9 @@ class LaterStoryTests(unittest.TestCase):
             outside = re.search(r'<rect class="lane" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg)
             for match in re.finditer(r'<g class="edge" data-from="([^"]*)" data-to="\1"><title>[^<]*</title><path class="ln" d="(M[^"]*)"', svg):
                 numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", match.group(2))]
-                box = node_rects(svg)[match.group(1).replace("&amp;", "&")]
+                box = node_rects(svg).get(match.group(1).replace("&amp;", "&"))
+                if box is None:
+                    continue  # a container's loop sits on the container border, not inside a lane
                 loop = (min(numbers[0::2]), min(numbers[1::2]), max(numbers[0::2]) - min(numbers[0::2]), max(numbers[1::2]) - min(numbers[1::2]))
                 homes = lanes + strays
                 if outside and box[0] >= int(outside.group(1)):
@@ -1470,6 +1472,48 @@ class LaterStoryTests(unittest.TestCase):
             self.assertGreaterEqual(min(b - a for a, b in zip(side, side[1:])), generate_diagram.DEPLOY_MIN_STUB - 0.5)
         self._assert_runs_clean(svg)
         self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+
+    def test_box_centred_on_its_own_container_attaches_to_the_border(self) -> None:
+        # The ray from the container centre toward a box centred exactly on it has no direction (review round 4, R1):
+        # the end must still lie on the container border, never inside it.
+        objects = [plain("RT-1", "runtime_service", "Runtime")] + [component(f"C-{k}", f"Comp {k}") for k in range(7)]
+        sdp = pattern({"G": [f"C-{k}" for k in range(7)]})
+        sdp["networkZones"] = [{"id": "z0", "name": "Zone Zero"}, {"id": "z1", "name": "Zone One"}]
+        sdp["serviceGroups"][0]["substrate"] = "RT-1"
+        for entry, zone in zip(sdp["serviceGroups"][0]["deployableObjects"], ("z1", "z1", "z0", "z1", "z1", None, "z0")):
+            if zone:
+                entry["networkZone"] = zone
+        objects += [sdp, relationship("R-1", "C-1", "RT-1", "a"), relationship("R-2", "C-2", "RT-1", "b"), relationship("R-6", "C-6", "RT-1", "c")]
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        self.assertEqual(len(edge_polylines(svg)), 3)
+        self._assert_runs_clean(svg)
+        self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+        objects2 = [plain("RT-1", "runtime_service", "Runtime"), component("A-1", "Alpha"), pattern({"G": ["A-1"]}), relationship("R-1", "A-1", "RT-1", "x")]
+        objects2[2]["serviceGroups"][0]["substrate"] = "RT-1"  # one box: its centre x is left of the container centre
+        cat2 = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects2))
+        self._assert_runs_clean(deployment_svg(cat2, "SDP-1"))
+
+    def test_self_relationship_on_a_container_is_a_loop_on_its_corner(self) -> None:
+        # D13 with D29: a self-relationship whose endpoint is drawn as a container keeps the loop, off the
+        # container's top-right corner, clear of the container's other edge ends and of the channels.
+        objects = [plain("RT-1", "runtime_service", "Runtime"), component("A-1", "Alpha"), component("O-1", "Outside"), pattern({"G": ["A-1"]})]
+        objects[3]["serviceGroups"][0]["substrate"] = "RT-1"
+        objects += [relationship("R-1", "RT-1", "RT-1", "self"), relationship("R-2", "RT-1", "A-1", "serves"), relationship("R-3", "RT-1", "O-1", "calls")]
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        xml.dom.minidom.parseString(svg)
+        loop = re.search(r'<g class="edge" data-from="RT-1" data-to="RT-1"><title>[^<]*</title><path class="ln" d="(M[^"]*C[^"]*)"', svg)
+        self.assertIsNotNone(loop, "the container's self-relationship is drawn")
+        numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", loop.group(1))]
+        gx, gy, gw, _gh = (int(v) for v in re.search(r'<rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg).groups())
+        self.assertEqual((numbers[0], numbers[1]), (gx + gw - generate_diagram.LOGICAL_BOX_W + generate_diagram.LOGICAL_BOX_W * 0.62, gy))
+        x0, x1, y0, y1 = min(numbers[0::2]), max(numbers[0::2]), min(numbers[1::2]), max(numbers[1::2])
+        for _s, _t, pts in edge_polylines(svg):
+            for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+                self.assertFalse(min(ax, bx) <= x1 and max(ax, bx) >= x0 and min(ay, by) <= y1 and max(ay, by) >= y0, f"segment {(ax, ay, bx, by)} meets the container loop")
+        self._assert_runs_clean(svg)
+        self.assertIn('data-from="RT-1" data-to="RT-1"', logical_svg(cat, "SDP-1"))
 
     def test_deployment_boxes_sit_on_the_grid(self) -> None:
         # D14: positions snapped to a fixed grid, in the deployment view as well.
@@ -1597,6 +1641,15 @@ class LaterStoryTests(unittest.TestCase):
         outside = re.search(r'<rect class="lane" x="(-?\d+)"', svg)
         stack_right = max([x + w for x, _y, w, _h in targets], default=0)
         lane_left = int(outside.group(1)) if outside else math.inf
+        rects = dict(node_rects(svg))
+        for m in re.finditer(r'<g class="group[^"]*" data-id="([^"]*)"[^>]*>.*?<rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg, re.S):
+            rects.setdefault(xml_unescape(m.group(1)), tuple(int(m.group(k)) for k in range(2, 6)))
+        for s_uid, t_uid, pts in edge_polylines(svg):  # every polyline end lies on its endpoint's border (D29)
+            for uid, (px, py) in ((s_uid, pts[0]), (t_uid, pts[-1])):
+                x, y, w, h = rects[uid]
+                on_h = (abs(py - y) < 0.11 or abs(py - (y + h)) < 0.11) and x - 0.11 <= px <= x + w + 0.11
+                on_v = (abs(px - x) < 0.11 or abs(px - (x + w)) < 0.11) and y - 0.11 <= py <= y + h + 0.11
+                self.assertTrue(on_h or on_v, f"end {(px, py)} of {s_uid}->{t_uid} is not on the border of {uid} {rects[uid]}")
         verticals, horizontals = [], []
         for number, (_s, _t, pts) in enumerate(edge_polylines(svg)):
             for (ax, ay), (bx, by) in zip(pts, pts[1:]):

@@ -1412,6 +1412,7 @@ def _route_deployment_edges(
     bands: list,
     loops: dict,
     stack_right: int,
+    chan_pad: int,
 ) -> tuple[dict, int, dict]:
     """Comb routing (D15, deterministic): every edge runs out of the stack to a vertical channel on its right.
 
@@ -1436,7 +1437,10 @@ def _route_deployment_edges(
         for uid, other in ((e.source, e.target), (e.target, e.source)):
             if uid in containers:
                 x, y, w, h = rects[uid]
-                attach[(i, uid)] = border_point(centre[uid], centre[other], w, h)
+                toward = centre[other]
+                if toward == centre[uid]:  # a box centred on its own container: the ray has no direction, so use "up"
+                    toward = (toward[0], toward[1] - 1)
+                attach[(i, uid)] = border_point(centre[uid], toward, w, h)
     # Ends on one border of one container are pushed DEPLOY_SPREAD apart along that border (edge order breaks
     # ties); a lone end keeps its exact border_point, and a cluster slides back as a whole when it meets a corner.
     on_border: dict[tuple[str, str], list[tuple[float, int]]] = {}
@@ -1447,10 +1451,15 @@ def _route_deployment_edges(
         else:
             on_border.setdefault((uid, "left" if abs(px - x) < 1e-6 else "right"), []).append((py, i))
     for (uid, border), items in sorted(on_border.items()):
-        if len(items) < 2:
-            continue
         x, y, w, h = rects[uid]
         low, high = (x + 4, x + w - 4) if border in ("top", "bottom") else (y + 4, y + h - 4)
+        if loops.get(uid):  # D13: the container's own loop sits at its top-right corner; ends keep clear of it
+            if border == "top":
+                high = x + w - LOGICAL_BOX_W + int(LOGICAL_BOX_W * 0.62) - DEPLOY_SPREAD
+            elif border == "right":
+                low = y + int(LOGICAL_BOX_H * 0.3) + DEPLOY_SPREAD
+        if len(items) < 2 and low <= items[0][0] <= high:
+            continue  # a lone end keeps its exact border_point
         items.sort()
         placed = [max(low, items[0][0])]
         for value, _i in items[1:]:
@@ -1538,7 +1547,7 @@ def _route_deployment_edges(
         else:
             channels.append([(lo, hi)])
             chan_of[i] = len(channels) - 1
-    chan_x = {i: stack_right + DEPLOY_CHANNEL_PAD + DEPLOY_CHANNEL_STEP * k for i, k in chan_of.items()}
+    chan_x = {i: stack_right + chan_pad + DEPLOY_CHANNEL_STEP * k for i, k in chan_of.items()}
     # Levels. Right-border runs are fixed by geometry and go first; band levels then avoid them, and the
     # outside lane's bands avoid the stack's, so two runs within DEPLOY_LEVEL in y are always apart in x.
     taken: list[tuple[float, float, float]] = []  # (y, x0, x1) of every horizontal run so far
@@ -1621,9 +1630,13 @@ def render_deployment_svg(model: DiagramModel) -> str:
         incident[e.source] = incident.get(e.source, 0) + 1
         incident[e.target] = incident.get(e.target, 0) + 1
     for e in model.edges:
-        if e.source == e.target and e.source in by_uid:
+        if e.source == e.target and (e.source in by_uid or e.source in containers):
             loops[e.source] = loops.get(e.source, 0) + 1
-    most_loops = max(loops.values(), default=0)
+    most_loops = max([n for uid, n in loops.items() if uid in by_uid], default=0)  # box loops size lanes and columns
+    container_loops = max([n for uid, n in loops.items() if uid in containers], default=0)
+    # A container's loop (D13) sits at its top-right corner and reaches past the target border; the channels start
+    # beyond its reach.
+    chan_pad = max(DEPLOY_CHANNEL_PAD, LOOP_REACH + LOOP_STEP * (container_loops - 1) + DEPLOY_LEVEL) if container_loops else DEPLOY_CHANNEL_PAD
 
     def inc(uids: list) -> int:
         return sum(incident.get(u, 0) for u in uids)
@@ -1677,7 +1690,7 @@ def render_deployment_svg(model: DiagramModel) -> str:
             group_boxes: list[str] = []
             for g_index, g in enumerate(groups):
                 prev_uid = groups[g_index - 1].uid if g_index else ""
-                band = band_at(cursor, inc([prev_uid, g.uid]), 0)
+                band = band_at(cursor, inc([prev_uid, g.uid]), rise([g.uid]) if g.uid not in rects else 0)
                 if prev_uid and prev_uid in pools and "bottom" not in pools[prev_uid]:
                     pools[prev_uid]["bottom"] = band
                 gy = band.hi
@@ -1807,12 +1820,12 @@ def render_deployment_svg(model: DiagramModel) -> str:
     for _attempt in range(DEPLOY_MAX_PASSES):
         laid = build_stack(left_room, extras)
         bands, rects, pools, names, pos, body, stack_bottom, stack_right, lane_rows, lane_top, lane_h, outer = laid
-        last_channel = stack_right + DEPLOY_CHANNEL_PAD + DEPLOY_CHANNEL_STEP * (n_channels - 1) if n_channels else stack_right
+        last_channel = stack_right + chan_pad + DEPLOY_CHANNEL_STEP * (n_channels - 1) if n_channels else stack_right
         lane_x = -(-(last_channel + DEPLOY_LANE_GAP) // GRID) * GRID  # D14
         for node, by in lane_rows:
             rects[node.uid] = (lane_x, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
             pos[node.uid] = (lane_x, by)
-        routes, used, left_counts = _route_deployment_edges(drawn, rects, pools, containers, bands, loops, stack_right)
+        routes, used, left_counts = _route_deployment_edges(drawn, rects, pools, containers, bands, loops, stack_right, chan_pad)
         need = max(left_counts.values(), default=0)
         room = -(-(DEPLOY_LEVEL * (need - 1)) // GRID) * GRID if need > 1 else 0
         grown = [band.extra + band.overflow for band in bands]
@@ -1820,7 +1833,7 @@ def render_deployment_svg(model: DiagramModel) -> str:
             break
         n_channels, left_room, extras = used, room, grown
     else:  # the cap is a safety net; the figure is still drawn, from the last pass
-        last_channel = stack_right + DEPLOY_CHANNEL_PAD + DEPLOY_CHANNEL_STEP * (max(used, 1) - 1)
+        last_channel = stack_right + chan_pad + DEPLOY_CHANNEL_STEP * (max(used, 1) - 1)
         lane_x = max(lane_x, -(-(last_channel + DEPLOY_LANE_GAP) // GRID) * GRID)
     lane_box = ""
     right = max(stack_right, last_channel + DEPLOY_CHANNEL_PAD) if n_channels else stack_right
@@ -1841,12 +1854,11 @@ def render_deployment_svg(model: DiagramModel) -> str:
             continue
         tip = xml_text(f"{names.get(s, s)} {edge.label or '(no label recorded)'} {names.get(t, t)}")
         head = f'<g class="edge" data-from="{xml_text(s)}" data-to="{xml_text(t)}"><title>{tip}</title>'
-        if s == t:
-            if s not in pos:
-                continue  # a container has no loop
+        if s == t:  # D13: the existing loop, off the top-right corner of the box or of the container
             grow = LOOP_STEP * loop_count.get(s, 0)
             loop_count[s] = loop_count.get(s, 0) + 1
-            path = _loop_path(pos[s][0], pos[s][1], grow)
+            rx, ry, rw, _rh = rects[s]
+            path = _loop_path(rx + rw - LOGICAL_BOX_W, ry, grow)
         else:
             path = "M" + " L".join(f"{_fmt(px)} {_fmt(py)}" for px, py in routes[number])
         edges.append(f'{head}<path class="ln" d="{path}"/></g>')
