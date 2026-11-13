@@ -1365,7 +1365,7 @@ def _deployment_outline(model: DiagramModel) -> list[tuple[str, list[DiagramCont
 
 def _wrap_to(text: str, width_px: int) -> list[str]:
     """Wrap catalog text to a pixel width without dropping anything; over-long words are split."""
-    chars = max(8, (width_px - 20) // DEPLOY_CHAR_W)
+    chars = max(8, (width_px - 20) // DEPLOY_CHAR_W - 2)  # two characters of margin: bold upper case runs wider than the estimate
     lines: list[str] = []
     for line in wrap(clean(text), chars):
         while len(line) > chars:
