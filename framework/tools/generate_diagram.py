@@ -900,9 +900,11 @@ JS = """
  var figs=['fig-logical','fig-deployment'].map(function(id){return document.getElementById(id)}).filter(Boolean);
  var pinned=null,hover=null;
  function uidOf(t){var el=t&&t.closest?t.closest('[data-id]'):null;return el?el.getAttribute('data-id'):null}
+ var order=figs.map(function(svg){return [].slice.call(svg.querySelectorAll('[data-from]'))});
  function paint(){
   var id=pinned||hover;
-  figs.forEach(function(svg){
+  figs.forEach(function(svg,k){
+   order[k].forEach(function(el){el.parentNode.appendChild(el)});
    var els=[].slice.call(svg.querySelectorAll('[data-id],[data-from]')),near={};
    if(id){near[id]=1;els.forEach(function(el){var a=el.getAttribute('data-from');if(a!==null&&(a===id||el.getAttribute('data-to')===id)){near[a]=1;near[el.getAttribute('data-to')]=1}})}
    svg.classList.toggle('focus',!!id);
