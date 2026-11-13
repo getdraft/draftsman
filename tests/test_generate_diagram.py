@@ -145,6 +145,21 @@ def svg_of(page: str) -> str:
     return match.group(0)
 
 
+def figure_of(page: str, fig_id: str) -> str:
+    """The inline SVG of one figure of the page, by its element id (D19)."""
+    match = re.search(r'<svg id="' + fig_id + r'".*?</svg>', page, re.S)
+    assert match, f"page has no figure {fig_id}"
+    return match.group(0)
+
+
+def logical_of(page: str) -> str:
+    return figure_of(page, "fig-logical")
+
+
+def node_count(svg: str) -> int:
+    return len(re.findall(r'<g class="node[ "]', svg))
+
+
 def svg_for(objects: list, view: str = "logical", uid: str = "SDP-1") -> str:
     with tempfile.TemporaryDirectory() as tmp:
         catalog = load_catalog(write_workspace(Path(tmp), objects))
@@ -214,8 +229,7 @@ class GenerateDiagramTests(unittest.TestCase):
         page, model = generate_diagram.build(EXAMPLES, "OpenStack IaaS Platform")
         xml.dom.minidom.parseString(svg_of(page))
         self.assertIn("OpenStack IaaS Platform Architecture", page)
-        # Edges are counted per figure: the page figure (until S8 assembles the two views) and the logical SVG.
-        self.assertEqual(svg_of(page).count('class="edge"'), len(model.relationships))
+        self.assertEqual(logical_of(page).count('<g class="edge"'), len(model.edges))
         catalog = load_catalog(EXAMPLES)
         logical = logical_svg(catalog, model.sdp["uid"])
         xml.dom.minidom.parseString(logical)
@@ -238,7 +252,7 @@ class GenerateDiagramTests(unittest.TestCase):
             page, model = generate_diagram.build(workspace, None)
         self.assertEqual(model.relationships, [])
         self.assertEqual(page.count('class="edge"'), 0)
-        self.assertEqual(page.count('class="node"'), 2)
+        self.assertEqual(node_count(logical_of(page)), 2)
         self.assertIn("No relationship objects connect these objects.", page)
 
     def test_relationship_draws_exactly_one_arrow(self) -> None:
@@ -253,7 +267,7 @@ class GenerateDiagramTests(unittest.TestCase):
                 ],
             )
             page, _ = generate_diagram.build(workspace, "Demo Pattern")
-        self.assertEqual(page.count('class="edge"'), 1)
+        self.assertEqual(logical_of(page).count('<g class="edge"'), 1)
         self.assertIn('data-from="A-1" data-to="B-1"', page)
 
     def test_unplaced_component_is_drawn_only_when_it_has_a_relationship(self) -> None:
@@ -272,7 +286,7 @@ class GenerateDiagramTests(unittest.TestCase):
         svg = svg_of(page)
         self.assertIn("Linked Unplaced", svg)
         self.assertNotIn("Lonely Unplaced", svg)
-        self.assertIn("Not placed in a service group", svg)
+        self.assertIn("not placed in any pattern", svg)  # D5 caption of the outside lane
         # One-hop scope (D2): an object with no relationship to a placed object is out of scope.
         self.assertNotIn("Lonely Unplaced", page)
         self.assertIn("Linked Unplaced", page)
@@ -347,14 +361,14 @@ class GenerateDiagramTests(unittest.TestCase):
         )
         svg = svg_of(page)
         xml.dom.minidom.parseString(svg)
-        self.assertEqual(page.count('class="edge"'), 1)
+        self.assertEqual(logical_of(page).count('<g class="edge"'), 1)
         self.assertIn("M", re.search(r'<path class="ln" d="([^"]+)"', svg).group(1))
         self.assertIn("retries", svg)
         self.assertNotIn("nan", svg.lower())
 
     def test_uid_in_two_groups_warns_and_draws_once(self) -> None:
         page, model = self._build([component("A-1", "Alpha"), pattern({"G1": ["A-1"], "G2": ["A-1"]})])
-        self.assertEqual(page.count('class="node"'), 1)
+        self.assertEqual(node_count(logical_of(page)), 1)
         self.assertTrue(any("G1" in w and "G2" in w for w in model.warnings))
 
     def test_malformed_service_group_entries_warn(self) -> None:
@@ -390,7 +404,7 @@ class GenerateDiagramTests(unittest.TestCase):
 
     def test_empty_pattern_renders(self) -> None:
         page, model = self._build([pattern({})])
-        self.assertEqual(page.count('class="node"'), 0)
+        self.assertEqual(node_count(page), 0)
         self.assertEqual(len(model.scope), 0)
 
     def test_attribute_and_label_escaping(self) -> None:
@@ -415,7 +429,7 @@ class GenerateDiagramTests(unittest.TestCase):
             ],
             placed_only=True,
         )
-        self.assertEqual(page.count('class="node"'), 1)
+        self.assertEqual(node_count(logical_of(page)), 1)
         self.assertEqual(model.edges, [])
         self.assertEqual(model.undrawn_relationship_count, 1)
 
@@ -448,7 +462,8 @@ class GenerateDiagramTests(unittest.TestCase):
         self.assertIn("recorded with no objects to draw: Empty (azure)", page)
         page, _ = self._build([pattern({})])
         self.assertIn("nothing to draw", page)
-        self.assertNotIn("<svg", page.split("</header>")[1].split("Recorded relationships")[0])
+        logical_section = page.split('<section class="sec" id="logical">')[1].split('<section class="sec" id="deployment">')[0]
+        self.assertNotIn("<svg", logical_section)
 
     def test_non_string_notes_key_does_not_crash(self) -> None:
         sdp = pattern({"G": ["A-1"]})
@@ -2036,37 +2051,162 @@ class LaterStoryTests(unittest.TestCase):
             self.assertNotIn(f'data-from="{xml_escape(pair[0])}" data-to="{xml_escape(pair[1])}"', svg, pair)
         self.assertGreater(checked, 0)
 
-    @unittest.skip("enabled in S8")
     def test_page_section_order(self) -> None:
-        self.fail("not implemented until S8")
+        for uid in [sdp["uid"] for sdp in generate_diagram.sdps(load_catalog(FIXTURE))]:
+            page, model = generate_diagram.build(FIXTURE, uid)
+            markers = [
+                ("<header>", "header"),
+                ('<div class="counts">', "counts"),
+                ('id="logical"', "logical"),
+                ('id="deployment"', "deployment"),
+                ("<h2>Recorded relationships</h2>", "relationships"),
+                ("<h2>Recorded characteristics</h2>", "characteristics"),
+                ("<h2>Open questions on record</h2>", "questions"),
+                ("<h2>Object inventory</h2>", "inventory"),
+                ("<footer", "footer"),
+            ]
+            self.assertEqual(bool(model.conflicts), "<h2>Recorded conflicts</h2>" in page, uid)
+            if model.conflicts:
+                markers.insert(5, ("<h2>Recorded conflicts</h2>", "conflicts"))
+            positions = [page.index(marker) for marker, _ in markers]
+            self.assertEqual(positions, sorted(positions), f"sections out of D19 order for {uid}")
 
-    @unittest.skip("enabled in S8")
     def test_page_header_and_counts(self) -> None:
-        self.fail("not implemented until S8")
+        sdp = pattern({"Web": ["A-1"]})
+        sdp["lifecycleStatus"] = "candidate"
+        sdp["followsReferenceArchitecture"] = "RA-1"
+        objects = [component("A-1", "Alpha"), component("RA-1", "FX Reference Platform"), sdp]
+        with tempfile.TemporaryDirectory() as tmp:
+            page, _ = generate_diagram.build(write_workspace(Path(tmp), objects), None)
+            self.assertIn("Demo Pattern Architecture", page)
+            self.assertIn("Lifecycle: <b>candidate</b>", page)
+            self.assertIn("Owner team: <b>team-a</b>", page)
+            self.assertIn("Reference architecture: <b>FX Reference Platform</b>", page)
+            sdp["followsReferenceArchitecture"] = "RA-MISSING"
+            page, _ = generate_diagram.build(write_workspace(Path(tmp) / "unresolved", objects[:1] + [sdp]), None)
+            self.assertNotIn("Reference architecture", page)
+        catalog = load_catalog(FIXTURE)
+        placed_only_page, model = generate_diagram.build(FIXTURE, FIXTURE_SDP, placed_only=True)
+        self.assertGreater(model.undrawn_relationship_count, 0)
+        self.assertIn(
+            f"{model.undrawn_relationship_count} recorded relationships lead outside the placed set and are not drawn",
+            placed_only_page,
+        )
+        full_page, _ = generate_diagram.build(FIXTURE, FIXTURE_SDP)
+        self.assertNotIn("lead outside the placed set", full_page)
+        self.assertIsNotNone(catalog)
 
-    @unittest.skip("enabled in S8")
     def test_footer_version_only_in_html(self) -> None:
-        self.fail("not implemented until S8")
+        version = generate_diagram.framework_version()
+        self.assertNotEqual(version, "version not recorded")
+        catalog = load_catalog(FIXTURE)
+        for uid in [sdp["uid"] for sdp in generate_diagram.sdps(catalog)]:
+            page, _ = generate_diagram.build(FIXTURE, uid)
+            footer = page.split('<footer class="foot">')[1].split("</footer>")[0]
+            self.assertIn(version, footer)
+            self.assertNotIn(version, logical_of(page))
+            self.assertNotIn(version, figure_of(page, "fig-deployment"))
+            self.assertNotIn(version, logical_svg(catalog, uid))
+            self.assertNotIn(version, deployment_svg(catalog, uid))
 
-    @unittest.skip("enabled in S8")
     def test_relationship_source_column(self) -> None:
-        self.fail("not implemented until S8")
+        page, model = generate_diagram.build(FIXTURE, FIXTURE_SDP)
+        sources = {row["source"] for row in model.relationship_rows}
+        self.assertIn("inline dependency", sources)
+        self.assertIn("relationship object", sources)
+        self.assertIn("<th>Source</th>", page)
+        self.assertNotIn("runs on", [row["label"] for row in model.relationship_rows])
+        for row in model.relationship_rows:
+            self.assertIn(f"<td>{row['source']}</td>", page)
 
-    @unittest.skip("enabled in S8")
     def test_conflicts_section(self) -> None:
-        self.fail("not implemented until S8")
+        page, model = generate_diagram.build(FIXTURE, FIXTURE_SDP)
+        self.assertTrue(model.conflicts)
+        self.assertIn("<h2>Recorded conflicts</h2>", page)
+        self.assertIn(f"<td>{model.name(model.conflicts[0].component)}</td>", page)
+        sdp = pattern({"Web": ["A-1"]})
+        sdp["serviceGroups"][0]["substrate"] = "RT-1"
+        objects = [component("A-1", "Alpha", runsOn="RT-1"), component("RT-1", "Runtime", type="runtime_service"), sdp]
+        with tempfile.TemporaryDirectory() as tmp:
+            agreed, _ = generate_diagram.build(write_workspace(Path(tmp), objects), None)
+        self.assertNotIn("Recorded conflicts", agreed)
+        sdp["serviceGroups"][0]["substrate"] = "RT-2"
+        objects = [component("A-1", "Alpha", runsOn="RT-1"), component("RT-1", "Runtime", type="runtime_service"), component("RT-2", "Other Runtime", type="runtime_service"), sdp]
+        with tempfile.TemporaryDirectory() as tmp:
+            disagreed, _ = generate_diagram.build(write_workspace(Path(tmp), objects), None)
+        self.assertIn("<h2>Recorded conflicts</h2>", disagreed)
 
-    @unittest.skip("enabled in S8")
     def test_characteristics_and_inventory(self) -> None:
-        self.fail("not implemented until S8")
+        sdp = pattern({"Web": ["A-1"]})
+        sdp["scalingUnits"] = [{"name": "Web pool", "type": "instance", "instanceCount": 3}]
+        sdp["tierVariants"] = [{"tier": "production", "deploymentTarget": "fx-east"}]
+        objects = [component("A-1", "Alpha", language="Rust"), sdp]
+        with tempfile.TemporaryDirectory() as tmp:
+            page, _ = generate_diagram.build(write_workspace(Path(tmp), objects), None)
+        characteristics = page.split("<h2>Recorded characteristics</h2>")[1].split("<h2>Open questions on record</h2>")[0]
+        self.assertIn("Web pool", characteristics)
+        self.assertIn("production", characteristics)
+        self.assertNotIn("Web pool", logical_of(page))
+        self.assertNotIn("Web pool", figure_of(page, "fig-deployment"))
+        self.assertIn("<h2>Open questions on record</h2>", page)
+        catalog = load_catalog(FIXTURE)
+        page, model = generate_diagram.build(FIXTURE, FIXTURE_SDP)
+        rows = generate_diagram.inventory_rows(model)
+        self.assertIn("<th>Language / runtime</th>", page)
+        checked = 0
+        for uid in model.scope:
+            if uid not in catalog:
+                continue
+            tech = generate_diagram.technology_line(catalog, catalog[uid])
+            if tech:
+                checked += 1
+                self.assertIn(f"<td>{xml_escape(tech)}</td>", rows)
+        self.assertGreater(checked, 0)
 
-    @unittest.skip("enabled in S8")
     def test_warnings_stderr_single_mode(self) -> None:
-        self.fail("not implemented until S8")
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "page.html"
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+                code = generate_diagram.main(["--workspace", str(FIXTURE), "--sdp", FIXTURE_SDP, "--output", str(out)])
+            _, model = generate_diagram.build(FIXTURE, FIXTURE_SDP)
+        self.assertEqual(code, 0)
+        lines = err.getvalue().splitlines()
+        self.assertTrue(model.warnings)
+        self.assertEqual(lines[0], f"{len(model.warnings)} warnings")
+        self.assertEqual(lines[1:], sorted(set(model.warnings)))
+        with tempfile.TemporaryDirectory() as tmp:
+            placed = pattern({"Group": ["A-1"]})
+            placed["serviceGroups"][0]["deployableObjects"][0]["diagramTier"] = "application"
+            workspace = write_workspace(Path(tmp), [component("A-1", "Alpha"), placed])
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+                generate_diagram.main(["--workspace", str(workspace), "--output", str(Path(tmp) / "p.html")])
+        self.assertEqual(err.getvalue(), "0 warnings\n")
 
-    @unittest.skip("enabled in S8")
     def test_pin_script_cross_figure(self) -> None:
-        self.fail("not implemented until S8")
+        page, _ = generate_diagram.build(FIXTURE, FIXTURE_SDP)
+        self.assertEqual(page.count("<script>"), 1)
+        self.assertIn('<svg id="fig-logical"', page)
+        self.assertIn('<svg id="fig-deployment"', page)
+        script = page.split("<script>")[1].split("</script>")[0]
+        self.assertIn("'fig-logical'", script)
+        self.assertIn("'fig-deployment'", script)
+
+    def test_property_render_twice(self) -> None:
+        for uid in [sdp["uid"] for sdp in generate_diagram.sdps(load_catalog(FIXTURE))]:
+            harness.assert_render_twice(self, lambda: generate_diagram.build(FIXTURE, uid)[0].encode("utf-8"))
+
+    def test_property_reversed_discovery(self) -> None:
+        for uid in [sdp["uid"] for sdp in generate_diagram.sdps(load_catalog(FIXTURE))]:
+            harness.assert_reversed_discovery(self, lambda: generate_diagram.build(FIXTURE, uid)[0].encode("utf-8"))
+
+    def test_property_shuffled_catalog(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        for uid in [sdp["uid"] for sdp in generate_diagram.sdps(catalog)]:
+            harness.assert_shuffled_catalog(
+                self, lambda c: generate_diagram.build_from_catalog(c, uid)[0].encode("utf-8"), catalog
+            )
 
     @unittest.skip("enabled in S9")
     def test_cli_argument_matrix(self) -> None:
