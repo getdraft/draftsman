@@ -14,10 +14,74 @@ import yaml
 
 from framework.tools import generate_diagram
 from generate_c4 import load_catalog
+from tests import diagram_harness as harness
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES = REPO_ROOT / "examples"
 FIXTURE = REPO_ROOT / "tests" / "fixtures" / "diagram_workspace"
+# Edge crossings allowed in the large logical figure (AC14). Set from the first committed golden; lower only on purpose.
+LARGE_MAX_CROSSINGS = 869
+
+
+def edge_polylines(svg: str) -> list:
+    """(from uid, to uid, [(x, y), ...]) for every routed edge; self-loop curves are skipped."""
+    found = []
+    for match in re.finditer(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)"><title>[^<]*</title><path class="ln" d="(M[-\d. L]+)"/>', svg):
+        numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", match.group(3))]
+        found.append((match.group(1).replace("&amp;", "&"), match.group(2).replace("&amp;", "&"), list(zip(numbers[0::2], numbers[1::2]))))
+    return found
+
+
+def count_crossings(svg: str) -> int:
+    """Proper crossings between segments of edges that do not share a node."""
+    segments = []
+    for source, target, pts in edge_polylines(svg):
+        for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+            segments.append(({source, target}, (ax, ay, bx, by)))
+
+    def side(ax: float, ay: float, bx: float, by: float, cx: float, cy: float) -> float:
+        return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax)
+
+    total = 0
+    for i, (ends_a, (ax, ay, bx, by)) in enumerate(segments):
+        for ends_b, (cx, cy, dx, dy) in segments[i + 1 :]:
+            if ends_a & ends_b:
+                continue
+            d1, d2 = side(ax, ay, bx, by, cx, cy), side(ax, ay, bx, by, dx, dy)
+            d3, d4 = side(cx, cy, dx, dy, ax, ay), side(cx, cy, dx, dy, bx, by)
+            if d1 * d2 < 0 and d3 * d4 < 0:
+                total += 1
+    return total
+
+
+def edges_hitting_foreign_boxes(svg: str) -> list:
+    """Edges with a segment that passes through the interior of a box that is not one of its endpoints."""
+    rects = node_rects(svg)
+    hits = []
+    for source, target, pts in edge_polylines(svg):
+        for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+            lo_x, hi_x, lo_y, hi_y = min(ax, bx), max(ax, bx), min(ay, by), max(ay, by)
+            for uid, (x, y, w, h) in rects.items():
+                if uid in (source, target):
+                    continue
+                if lo_x < x + w and x < hi_x and lo_y < y + h and y < hi_y or (
+                    lo_x == hi_x and x < lo_x < x + w and lo_y < y + h and y < hi_y
+                ) or (lo_y == hi_y and y < lo_y < y + h and lo_x < x + w and x < hi_x):
+                    hits.append((source, target, uid))
+    return hits
+
+
+def logical_svg(catalog: dict, uid: str, placed_only: bool = False) -> str:
+    model = generate_diagram.build_diagram_model(catalog, catalog[uid], placed_only)
+    return generate_diagram.render_logical_svg(model)
+
+
+def node_rects(svg: str) -> dict:
+    """uid -> (x, y, w, h) of each node box in a logical SVG."""
+    found = {}
+    for match in re.finditer(r'<g class="node[^"]*" data-id="([^"]*)">.*?<rect class="box" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg):
+        found[match.group(1).replace("&amp;", "&")] = tuple(int(match.group(i)) for i in range(2, 6))
+    return found
 
 
 def write_workspace(root: Path, objects: list[dict]) -> Path:
@@ -97,7 +161,13 @@ class GenerateDiagramTests(unittest.TestCase):
         page, model = generate_diagram.build(EXAMPLES, "OpenStack IaaS Platform")
         xml.dom.minidom.parseString(svg_of(page))
         self.assertIn("OpenStack IaaS Platform Architecture", page)
-        self.assertEqual(page.count('class="edge"'), len(model.relationships))
+        # Edges are counted per figure: the page figure (until S8 assembles the two views) and the logical SVG.
+        self.assertEqual(svg_of(page).count('class="edge"'), len(model.relationships))
+        catalog = load_catalog(EXAMPLES)
+        logical = logical_svg(catalog, model.sdp["uid"])
+        xml.dom.minidom.parseString(logical)
+        self.assertEqual(logical.count('<g class="edge"'), len(generate_diagram.build_diagram_model(catalog, model.sdp, False).edges))
+        self.assertGreater(logical.count('<g class="edge"'), 0)
         self.assertGreater(len(model.relationships), 0)
         self.assertNotRegex(page, r'(?:src|href)="https?://')
 
@@ -753,41 +823,168 @@ class LaterStoryTests(unittest.TestCase):
             self.assertIn(uid, deployment)
         self.assertIn("RTC-1", {node.uid for node in model.nodes_for_view("logical")})
 
-    @unittest.skip("enabled in S5")
     def test_logical_golden(self) -> None:
-        self.fail("not implemented until S5")
+        catalog = load_catalog(FIXTURE)
+        patterns = generate_diagram.sdps(catalog)
+        self.assertEqual(len(patterns), 3)
+        for sdp in patterns:
+            with self.subTest(sdp=sdp["uid"]):
+                path = harness.golden_path(generate_diagram.slug(sdp["name"]), "logical")
+                harness.check_golden(self, path, lambda: logical_svg(catalog, sdp["uid"]).encode("utf-8"))
 
-    @unittest.skip("enabled in S5")
     def test_logical_bands_and_dashed_derived(self) -> None:
-        self.fail("not implemented until S5")
+        objects = [
+            plain("N-1", "network_service", "Gateway"),
+            plain("P-1", "product_component", "Alpha"),
+            plain("D-1", "data_store_service", "Store"),
+            plain("H-1", "host", "Machine"),
+            plain("P-2", "product_component", "Tiered"),
+            plain("X-1", "product_component", "Elsewhere"),
+            pattern({"G": ["N-1", "P-1", "D-1", "H-1", "P-2"]}),
+            relationship("R-1", "P-1", "X-1", "calls"),
+        ]
+        next(o for o in objects if o["uid"] == "SDP-1")["serviceGroups"][0]["deployableObjects"][4]["diagramTier"] = "utility"
+        catalog = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = logical_svg(catalog, "SDP-1")
+        xml.dom.minidom.parseString(svg)
+        rects = node_rects(svg)
+        ys = {uid: rects[uid][1] for uid in rects}
+        self.assertLess(ys["N-1"], ys["P-1"])
+        self.assertLess(ys["P-1"], ys["D-1"])
+        self.assertLess(ys["D-1"], ys["H-1"])
+        self.assertEqual(ys["H-1"], ys["P-2"])  # recorded diagramTier utility puts P-2 beside the host
+        self.assertIn('<g class="node dashed" data-id="P-1">', svg)
+        self.assertNotIn('<g class="node dashed" data-id="P-2">', svg)
+        # A one-hop endpoint placed nowhere is in the outside lane and drawn solid (D4).
+        self.assertIn('<g class="node outside" data-id="X-1">', svg)
+        self.assertNotRegex(svg, r'class="node[^"]*dashed[^"]*" data-id="X-1"')
 
-    @unittest.skip("enabled in S5")
     def test_barycentre_tie_break_by_uid(self) -> None:
-        self.fail("not implemented until S5")
+        layers = [["T-1"], ["B-9", "A-1", "C-5"]]
+        pairs = [("T-1", "B-9"), ("T-1", "A-1"), ("T-1", "C-5")]
+        self.assertEqual(generate_diagram.barycentre_order(layers, pairs), [["T-1"], ["A-1", "B-9", "C-5"]])
+        # Ties compare code points, not locale: "Z" sorts before "a".
+        self.assertEqual(generate_diagram.barycentre_order([["a-1", "Z-1"]], []), [["Z-1", "a-1"]])
 
-    @unittest.skip("enabled in S5")
+    def test_barycentre_orders_by_neighbour_position(self) -> None:
+        layers = [["T-1", "T-2"], ["L-1", "L-2"]]
+        pairs = [("T-1", "L-2"), ("T-2", "L-1")]
+        self.assertEqual(generate_diagram.barycentre_order(layers, pairs), [["T-1", "T-2"], ["L-2", "L-1"]])
+
     def test_grid_snapping(self) -> None:
-        self.fail("not implemented until S5")
+        catalog = load_catalog(FIXTURE)
+        for sdp in generate_diagram.sdps(catalog):
+            model = generate_diagram.build_diagram_model(catalog, sdp, False)
+            layout = generate_diagram.layout_logical(model)
+            self.assertEqual(set(layout.pos), {n.uid for n in model.nodes})
+            for uid, (x, y) in layout.pos.items():
+                self.assertEqual((x % generate_diagram.GRID, y % generate_diagram.GRID), (0, 0), uid)
 
-    @unittest.skip("enabled in S5")
     def test_external_node_in_outside_lane(self) -> None:
-        self.fail("not implemented until S5")
+        catalog = load_catalog(FIXTURE)
+        svg = logical_svg(catalog, FIXTURE_SDP)
+        model = generate_diagram.build_diagram_model(catalog, catalog[FIXTURE_SDP], False)
+        externals = [n for n in model.nodes if n.external]
+        self.assertEqual(len(externals), 1)
+        rects = node_rects(svg)
+        inner = [rects[n.uid][0] for n in model.nodes if not n.outside]
+        lane = [rects[n.uid][0] for n in model.nodes if n.outside]
+        self.assertGreater(min(lane), max(inner))
+        self.assertEqual(len(set(lane)), 1)
+        self.assertEqual(max(rects[u][0] + rects[u][2] for u in rects), rects[externals[0].uid][0] + rects[externals[0].uid][2])
+        self.assertEqual(svg.count(f'data-to="{externals[0].uid}"'), 1)
+        # Lane captions (D5): other pattern's name, "not placed in any pattern", "external".
+        for caption in ("external", "not placed in any pattern", "FX Registry Pattern"):
+            self.assertIn(f">{caption}</text>", svg)
+        self.assertNotIn("<desc>external", svg)
 
-    @unittest.skip("enabled in S5")
+    def test_outside_lane_order_band_first(self) -> None:
+        objects = [
+            plain("A-1", "product_component", "Alpha"),
+            plain("Z-N", "network_service", "Zed Net"),
+            plain("B-D", "data_store_service", "Bee Store"),
+            plain("C-A", "product_component", "Cee App"),
+            pattern({"G": ["A-1"]}),
+            relationship("R-1", "A-1", "B-D", "reads"),
+            relationship("R-2", "A-1", "C-A", "calls"),
+            relationship("R-3", "A-1", "Z-N", "uses"),
+            {**relationship("R-4", "A-1", "", "talks"), "externalTarget": "Partner"},
+        ]
+        catalog = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        model = generate_diagram.build_diagram_model(catalog, catalog["SDP-1"], False)
+        layout = generate_diagram.layout_logical(model)
+        names = [next(n.name for n in model.nodes if n.uid == uid) for uid in layout.lane_order]
+        self.assertEqual(names, ["Zed Net", "Cee App", "Bee Store", "Partner"])
+        svg = generate_diagram.render_logical_svg(model)
+        self.assertEqual(svg.count(">not placed in any pattern</text>"), 3)
+        self.assertIn(">external</text>", svg)
+
     def test_svg_escaping(self) -> None:
-        self.fail("not implemented until S5")
+        name = 'A<b> & "C"'
+        catalog = load_catalog(
+            write_workspace(Path(tempfile.mkdtemp()), [component("A-1", name), component("B-1", "Beta"), pattern({"G": ["A-1", "B-1"]}), relationship("R-1", "A-1", "B-1", "x <y> & z")])
+        )
+        svg = logical_svg(catalog, "SDP-1")
+        xml.dom.minidom.parseString(svg)
+        self.assertIn("A&lt;b&gt; &amp; &quot;C&quot;", svg)
+        self.assertNotIn("<b>", svg)
+        self.assertIn("x &lt;y&gt; &amp; z", svg)
 
-    @unittest.skip("enabled in S5")
     def test_large_logical_svg_valid_fast_low_crossings(self) -> None:
-        self.fail("not implemented until S5")
+        import time
 
-    @unittest.skip("enabled in S5")
+        catalog = load_catalog(FIXTURE)
+        uid = "FXSDP00003-0001"
+        started = time.monotonic()
+        svg = logical_svg(catalog, uid)
+        self.assertLess(time.monotonic() - started, 30)
+        xml.dom.minidom.parseString(svg)
+        crossings = count_crossings(svg)
+        self.assertLessEqual(crossings, LARGE_MAX_CROSSINGS, f"{crossings} crossings")
+
+    def test_edges_avoid_foreign_boxes(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        for sdp in generate_diagram.sdps(catalog):
+            svg = logical_svg(catalog, sdp["uid"])
+            self.assertGreater(len(edge_polylines(svg)), 0)
+            self.assertEqual(edges_hitting_foreign_boxes(svg), [], sdp["uid"])
+
+    def test_wrapped_band_has_no_overlapping_boxes(self) -> None:
+        uids = [f"P-{i:02d}" for i in range(9)]
+        objects = [component(u, u) for u in uids] + [pattern({"G": uids})]
+        for entry in objects[-1]["serviceGroups"][0]["deployableObjects"]:
+            entry["diagramTier"] = "application"
+        catalog = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        rects = list(node_rects(logical_svg(catalog, "SDP-1")).values())
+        self.assertEqual(len(rects), 9)
+        self.assertGreater(len({r[1] for r in rects}), 1)
+        self.assertLessEqual(len({r[0] for r in rects}), generate_diagram.LOGICAL_COLUMNS)
+        for i, (ax, ay, aw, ah) in enumerate(rects):
+            for bx, by, bw, bh in rects[i + 1 :]:
+                apart = ax + aw <= bx or bx + bw <= ax or ay + ah <= by or by + bh <= ay
+                self.assertTrue(apart, ((ax, ay), (bx, by)))
+
     def test_logical_substrate_is_box(self) -> None:
-        self.fail("not implemented until S5")
+        catalog = load_catalog(FIXTURE)
+        svg = logical_svg(catalog, FIXTURE_SDP)
+        self.assertIn('data-id="FXRTC00001-0001"', svg)
+        self.assertRegex(svg, r'<g class="node[^"]*" data-id="FXRTC00001-0001">')
 
-    @unittest.skip("enabled in S5")
+    def test_logical_order_independent_of_insertion_order(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        for uid in ("FXSDP00001-0001", "FXSDP00003-0001"):
+            reversed_catalog = dict(reversed(list(catalog.items())))
+            self.assertEqual(logical_svg(catalog, uid), logical_svg(reversed_catalog, uid))
+
     def test_svg_desc_has_no_version(self) -> None:
-        self.fail("not implemented until S5")
+        catalog = load_catalog(FIXTURE)
+        for sdp in generate_diagram.sdps(catalog):
+            svg = logical_svg(catalog, sdp["uid"])
+            desc = re.search(r"<desc>(.*?)</desc>", svg).group(1)
+            self.assertEqual(desc, f"generate_diagram {sdp['uid']}")
+            self.assertNotRegex(svg, r"\d+\.\d+\.\d+")
+            self.assertNotRegex(svg, r"\d{4}-\d{2}-\d{2}T|/Users/|/home/|[A-Za-z]:\\")
+            self.assertNotIn(str(REPO_ROOT), svg)
 
     @unittest.skip("enabled in S6")
     def test_deployment_golden(self) -> None:

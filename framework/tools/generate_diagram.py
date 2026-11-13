@@ -36,8 +36,10 @@ import argparse
 import hashlib
 import html
 import math
+import re
 import sys
 from dataclasses import dataclass, field
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
@@ -987,8 +989,284 @@ def build_diagram_model(catalog: dict[str, dict[str, Any]], sdp: dict[str, Any],
     )
 
 
+# --------------------------------------------------------------------------- logical view
+GRID = 10  # every node x and y is a multiple of this (D14)
+LOGICAL_COLUMNS = 4  # a band wraps to a new row after this many boxes (D4)
+LOGICAL_SWEEPS = 4  # barycentre sweeps downward, then the same number upward (D14)
+LOGICAL_BOX_W = 200
+LOGICAL_BOX_H = 60
+LOGICAL_COL_GAP = 30
+LOGICAL_ROW_GAP = 30
+LOGICAL_BAND_GAP = 40
+LOGICAL_BAND_PAD = 10
+LOGICAL_LABEL_W = 110
+LOGICAL_LANE_GAP = 90
+LOGICAL_LANE_HEAD = 40
+LOGICAL_MARGIN = 20
+LOGICAL_TITLE = "Logical application diagram"
+BAND_ORDER = ("presentation", "application", "data", "utility")  # D4, top to bottom
+GENERATOR_NAME = "generate_diagram"
+
+_XML_INVALID = re.compile("[\x00-\x08\x0b\x0c\x0e-\x1f\ufffe\uffff]")
+
+
+def xml_text(value: Any) -> str:
+    """Escape a catalog string for SVG text or an attribute value (markup and quotes)."""
+    return html.escape(_XML_INVALID.sub("", str(value)), quote=True)
+
+
+def _band_rank(node: DiagramNode) -> int:
+    """Index in BAND_ORDER; externals have no band and sort after every band (D5)."""
+    if node.external:
+        return len(BAND_ORDER)
+    return BAND_ORDER.index(node.band) if node.band in BAND_ORDER else BAND_ORDER.index("application")
+
+
+def barycentre_order(layers: list[list[str]], pairs: list[tuple[str, str]], columns: int = LOGICAL_COLUMNS) -> list[list[str]]:
+    """D14: order each layer by the mean column of its neighbours in other layers.
+
+    Layers start sorted by uid; LOGICAL_SWEEPS downward then LOGICAL_SWEEPS upward sweeps reorder one
+    layer at a time. A node with no neighbour on the swept side keeps its current column. Ties break
+    by uid, plain code-point comparison. Nothing depends on dict or set iteration order.
+    """
+    order = [sorted(layer) for layer in layers]
+    layer_of = {uid: i for i, layer in enumerate(order) for uid in layer}
+    neighbours: dict[str, list[str]] = {uid: [] for uid in layer_of}
+    for a, b in pairs:
+        if a in layer_of and b in layer_of and a != b and layer_of[a] != layer_of[b]:
+            neighbours[a].append(b)
+            neighbours[b].append(a)
+    column = {uid: i % columns for layer in order for i, uid in enumerate(layer)}
+
+    def reorder(index: int, side: range) -> None:
+        def key(uid: str) -> tuple[Fraction, str]:
+            cols = [column[v] for v in neighbours[uid] if layer_of[v] in side]
+            return (Fraction(sum(cols), len(cols)) if cols else Fraction(column[uid]), uid)
+
+        order[index] = sorted(order[index], key=key)
+        for i, uid in enumerate(order[index]):
+            column[uid] = i % columns
+
+    count = len(order)
+    for _ in range(LOGICAL_SWEEPS):
+        for index in range(1, count):
+            reorder(index, range(0, index))
+    for _ in range(LOGICAL_SWEEPS):
+        for index in range(count - 2, -1, -1):
+            reorder(index, range(index + 1, count))
+    return order
+
+
+@dataclass
+class LogicalLayout:
+    pos: dict[str, tuple[int, int]] = field(default_factory=dict)  # uid -> top-left, multiples of GRID
+    bands: list[tuple[str, int, int, int]] = field(default_factory=list)  # band, y, height, width
+    lane: tuple[int, int, int, int] | None = None  # x, y, width, height of the outside lane
+    order: list[list[str]] = field(default_factory=list)  # uid order of each drawn band
+    band_names: list[str] = field(default_factory=list)  # band of each entry in order
+    lane_order: list[str] = field(default_factory=list)
+    gutters: list[int] = field(default_factory=list)  # x of each vertical channel between box columns
+    lane_gutter: int | None = None  # x of the vertical channel left of the outside lane
+    width: int = 0
+    height: int = 0
+
+
+def layout_logical(model: DiagramModel) -> LogicalLayout:
+    """Band rows top to bottom (D4), barycentre order (D14), outside lane at the right edge (D5)."""
+    main = [n for n in model.nodes if not n.outside]
+    outer = [n for n in model.nodes if n.outside]
+    known = {n.uid for n in model.nodes}
+    pairs = [(e.source, e.target) for e in model.edges if e.source in known and e.target in known and e.source != e.target]
+    layers: list[list[str]] = []
+    names: list[str] = []
+    for band in BAND_ORDER:
+        uids = [n.uid for n in main if (n.band if n.band in BAND_ORDER else "application") == band]
+        if uids:
+            layers.append(uids)
+            names.append(band)
+    layout = LogicalLayout()
+    layout.order = barycentre_order(layers, pairs)
+    layout.band_names = names
+    step_x = LOGICAL_BOX_W + LOGICAL_COL_GAP
+    step_y = LOGICAL_BOX_H + LOGICAL_ROW_GAP
+    used = min(LOGICAL_COLUMNS, max((len(layer) for layer in layout.order), default=1))
+    main_w = used * LOGICAL_BOX_W + (used - 1) * LOGICAL_COL_GAP
+    x0 = LOGICAL_MARGIN + LOGICAL_LABEL_W
+    layout.gutters = [x0 - 15 + k * step_x for k in range(used + 1)]
+    y = LOGICAL_MARGIN
+    for band, layer in zip(names, layout.order):
+        rows = -(-len(layer) // LOGICAL_COLUMNS)
+        height = rows * LOGICAL_BOX_H + (rows - 1) * LOGICAL_ROW_GAP + 2 * LOGICAL_BAND_PAD
+        layout.bands.append((band, y, height, LOGICAL_LABEL_W + main_w + LOGICAL_BAND_PAD))
+        for i, uid in enumerate(layer):
+            row, col = divmod(i, LOGICAL_COLUMNS)
+            layout.pos[uid] = (x0 + col * step_x, y + LOGICAL_BAND_PAD + row * step_y)
+        y += height + LOGICAL_BAND_GAP
+    main_bottom = y - LOGICAL_BAND_GAP if layout.bands else LOGICAL_MARGIN
+    right = x0 + main_w + LOGICAL_BAND_PAD if layout.bands else LOGICAL_MARGIN + LOGICAL_LABEL_W
+    bottom = main_bottom
+    if outer:
+        centre_y = {uid: pos[1] + LOGICAL_BOX_H // 2 for uid, pos in layout.pos.items()}
+        near: dict[str, list[int]] = {n.uid: [] for n in outer}
+        for a, b in pairs:
+            for lane_uid, other in ((a, b), (b, a)):
+                if lane_uid in near and other in centre_y:
+                    near[lane_uid].append(centre_y[other])
+
+        def lane_key(node: DiagramNode) -> tuple[int, Fraction, str]:
+            ys = near[node.uid]
+            return (_band_rank(node), Fraction(sum(ys), len(ys)) if ys else Fraction(0), node.uid)
+
+        layout.lane_order = [n.uid for n in sorted(outer, key=lane_key)]
+        lane_x = x0 + main_w + LOGICAL_LANE_GAP
+        layout.lane_gutter = lane_x - 20
+        top = LOGICAL_MARGIN
+        for i, uid in enumerate(layout.lane_order):
+            layout.pos[uid] = (lane_x, top + LOGICAL_LANE_HEAD + i * step_y)
+        lane_h = LOGICAL_LANE_HEAD + len(outer) * LOGICAL_BOX_H + (len(outer) - 1) * LOGICAL_ROW_GAP + LOGICAL_BAND_PAD
+        layout.lane = (lane_x - LOGICAL_BAND_PAD, top, LOGICAL_BOX_W + 2 * LOGICAL_BAND_PAD, lane_h)
+        right = lane_x + LOGICAL_BOX_W + LOGICAL_BAND_PAD
+        bottom = max(bottom, top + lane_h)
+    layout.width = right + LOGICAL_MARGIN
+    layout.height = bottom + LOGICAL_MARGIN
+    return layout
+
+
+def _fit_lines(text: str, width: int, limit: int) -> list[str]:
+    lines = wrap(clean(text), width)
+    if len(lines) > limit:
+        lines = lines[:limit]
+        lines[-1] += "..."
+    return [line if len(line) <= width + 3 else line[: width - 1] + "..." for line in lines]
+
+
+def _route_edges(model: DiagramModel, layout: LogicalLayout) -> dict[int, list[tuple[int, int]]]:
+    """Orthogonal route per edge (index in model.edges), travelling only in the channels between boxes.
+
+    An edge leaves its source through the top or bottom side, runs along the gap between box rows to a
+    vertical channel between columns, follows it, and enters its target the same way, so it never
+    crosses a box that is not one of its endpoints. Attachment points, gap lanes and channel lanes are
+    spread by edge order so edges do not overlap. Everything is integer arithmetic keyed on uid and
+    edge order.
+    """
+    pos = layout.pos
+    lane_uids = set(layout.lane_order)
+    drawn = [
+        (i, e) for i, e in enumerate(model.edges) if e.source != e.target and e.source in pos and e.target in pos
+    ]
+    sides: dict[int, tuple[str, str]] = {}
+    slots: dict[tuple[str, str], list[tuple[int, str, int]]] = {}
+    for i, e in drawn:
+        a, b = pos[e.source], pos[e.target]
+        sa = "bottom" if b[1] > a[1] else "top"
+        sb = "top" if b[1] > a[1] else ("bottom" if b[1] < a[1] else "top")
+        sides[i] = (sa, sb)
+        slots.setdefault((e.source, sa), []).append((pos[e.target][0], e.target, i))
+        slots.setdefault((e.target, sb), []).append((pos[e.source][0], e.source, i))
+    half = LOGICAL_BOX_W // 2
+    offset: dict[tuple[int, str], int] = {}  # (edge index, uid) -> x offset from the box centre
+    for (uid, _side), items in slots.items():
+        items.sort()
+        for rank, (_x, _other, i) in enumerate(items):
+            shift = (160 * (rank + 1)) // (len(items) + 1) // GRID * GRID - 80
+            offset[(i, uid)] = shift
+    routes: dict[int, list[tuple[int, int]]] = {}
+    for i, e in drawn:
+        a, b = pos[e.source], pos[e.target]
+        sa, sb = sides[i]
+        ax, bx = a[0] + half + offset[(i, e.source)], b[0] + half + offset[(i, e.target)]
+        track = i % 2
+        ga = a[1] + LOGICAL_BOX_H + 5 + 5 * track if sa == "bottom" else a[1] - 5 - 5 * track
+        gb = b[1] + LOGICAL_BOX_H + 5 + 5 * track if sb == "bottom" else b[1] - 5 - 5 * track
+        if e.source in lane_uids or e.target in lane_uids:
+            options = ([layout.gutters[-1]] if layout.gutters else []) + [layout.lane_gutter]
+            if e.source in lane_uids and e.target in lane_uids:
+                options = [layout.lane_gutter]
+        else:
+            options = layout.gutters
+        gx = min(options, key=lambda g: (abs(ax - g) + abs(bx - g), g)) + (i % 3 - 1) * 10
+        raw = [
+            (ax, a[1] + LOGICAL_BOX_H if sa == "bottom" else a[1]),
+            (ax, ga),
+            (gx, ga),
+            (gx, gb),
+            (bx, gb),
+            (bx, b[1] + LOGICAL_BOX_H if sb == "bottom" else b[1]),
+        ]
+        pts: list[tuple[int, int]] = []
+        for point in raw:
+            if not pts or pts[-1] != point:
+                pts.append(point)
+        routes[i] = pts
+    return routes
+
+
 def render_logical_svg(model: DiagramModel) -> str:
-    raise NotImplementedError("enabled in S5")
+    """The logical application figure as a standalone SVG: plain solid edges only (S7 styles them).
+
+    Deterministic (D15): no version, timestamp or path; ``<desc>`` holds the generator name and SDP uid only.
+    """
+    layout = layout_logical(model)
+    by_uid = {n.uid: n for n in model.nodes}
+    out: list[str] = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {layout.width} {layout.height}" '
+        f'width="{layout.width}" height="{layout.height}" role="img" aria-label="{LOGICAL_TITLE}">',
+        f"<title>{LOGICAL_TITLE}</title>",
+        f"<desc>{xml_text(GENERATOR_NAME)} {xml_text(model.sdp_uid)}</desc>",
+        "<style>.band{fill:#f3f5f8;stroke:#c3cad4}.lane{fill:#fbf6ec;stroke:#d8c9a8;stroke-dasharray:6 4}"
+        ".bl,.ll{font:600 11px sans-serif;fill:#586374}.box{fill:#ffffff;stroke:#555555;stroke-width:1.4}"
+        ".dashed .box{stroke-dasharray:5 3}.ttl{font:600 12px sans-serif;fill:#1a2230}.cap{font:10px sans-serif;fill:#586374}"
+        ".ln{fill:none;stroke:#7a8696;stroke-width:1.4}</style>",
+    ]
+    for band, y, height, width in layout.bands:
+        out.append(f'<rect class="band" x="{LOGICAL_MARGIN}" y="{y}" width="{width}" height="{height}" rx="6"/>')
+        out.append(f'<text class="bl" x="{LOGICAL_MARGIN + 10}" y="{y + 20}">{xml_text(band)}</text>')
+    if layout.lane:
+        lx, ly, lw, lh = layout.lane
+        out.append(f'<rect class="lane" x="{lx}" y="{ly}" width="{lw}" height="{lh}" rx="6"/>')
+        out.append(f'<text class="ll" x="{lx + 10}" y="{ly + 24}">Outside this pattern</text>')
+    routes = _route_edges(model, layout)
+    loops: dict[str, int] = {}
+    for number, edge in enumerate(model.edges):
+        s, t = edge.source, edge.target
+        if s not in layout.pos or t not in layout.pos:
+            continue
+        tip = xml_text(f"{by_uid[s].name} {edge.label or '(no label recorded)'} {by_uid[t].name}")
+        head = f'<g class="edge" data-from="{xml_text(s)}" data-to="{xml_text(t)}"><title>{tip}</title>'
+        if s == t:  # a self-relationship: a small loop off the top-right corner
+            x, y = layout.pos[s]
+            grow = 14 * loops.get(s, 0)
+            loops[s] = loops.get(s, 0) + 1
+            p1 = (x + LOGICAL_BOX_W * 0.62, y)
+            p2 = (x + LOGICAL_BOX_W, y + LOGICAL_BOX_H * 0.3)
+            path = (
+                f"M{p1[0]:.1f} {p1[1]:.1f} C{p1[0]:.1f} {y - 24 - grow:.1f} "
+                f"{x + LOGICAL_BOX_W + 30 + grow:.1f} {p2[1]:.1f} {p2[0]:.1f} {p2[1]:.1f}"
+            )
+        else:
+            pts = routes[number]
+            path = "M" + " L".join(f"{px} {py}" for px, py in pts)
+        out.append(f'{head}<path class="ln" d="{path}"/></g>')
+    for uid in [u for names in layout.order for u in names] + layout.lane_order:
+        node = by_uid[uid]
+        x, y = layout.pos[uid]
+        cls = "node" + (" dashed" if node.derived else "") + (" outside" if node.outside else "") + (" external" if node.external else "")
+        lines = _fit_lines(node.name, 26, 2)
+        mid = x + LOGICAL_BOX_W // 2
+        first = y + (20 if node.outside else 22 if len(lines) == 2 else 34)
+        text = "".join(
+            f'<text class="ttl" x="{mid}" y="{first + 14 * i}" text-anchor="middle">{xml_text(line)}</text>'
+            for i, line in enumerate(lines)
+        )
+        if node.outside and node.caption:
+            cap = _fit_lines(node.caption, 34, 1)[0]
+            text += f'<text class="cap" x="{mid}" y="{first + 14 * (len(lines) - 1) + 16}" text-anchor="middle">{xml_text(cap)}</text>'
+        out.append(
+            f'<g class="{cls}" data-id="{xml_text(uid)}"><title>{xml_text(node.name)}</title>'
+            f'<rect class="box" x="{x}" y="{y}" width="{LOGICAL_BOX_W}" height="{LOGICAL_BOX_H}" rx="6"/>{text}</g>'
+        )
+    out.append("</svg>")
+    return "\n".join(out) + "\n"
 
 
 def render_deployment_svg(model: DiagramModel) -> str:
