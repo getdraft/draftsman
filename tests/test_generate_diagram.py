@@ -1267,12 +1267,19 @@ class LaterStoryTests(unittest.TestCase):
         objects = [component("A-1", "Alpha"), pattern({"G": ["A-1"]}), relationship("R-1", "A-1", "A-1", "loop")]
         small = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
         svgs = [deployment_svg(catalog, sdp["uid"]) for sdp in generate_diagram.sdps(catalog)] + [deployment_svg(small, "SDP-1")]
+        own = [plain("RT-1", "runtime_service", "Runtime"), pattern({"Own": ["RT-1"]})] + [relationship(f"R-{k}", "RT-1", "RT-1", f"loop {k}") for k in range(7)]
+        own[1]["serviceGroups"][0]["substrate"] = "RT-1"
+        svgs.append(deployment_svg(load_catalog(write_workspace(Path(tempfile.mkdtemp()), own)), "SDP-1"))
         for svg in svgs:
             width, height = (int(v) for v in re.search(r'viewBox="0 0 (\d+) (\d+)"', svg).groups())
             for x, y, w, h in re.findall(r'<rect class="[^"]*" x="(-?\d+)" y="(-?\d+)" width="(\d+)" height="(\d+)"', svg):
                 self.assertGreaterEqual(int(x), 0)
                 self.assertLessEqual(int(x) + int(w), width, (x, w, width))
                 self.assertLessEqual(int(y) + int(h), height)
+            for d in re.findall(r'<path class="ln" d="([^"]*)"', svg):  # loops and routes too, control points included
+                numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", d)]
+                self.assertLessEqual(max(numbers[0::2]), width, d)
+                self.assertGreaterEqual(min(numbers[1::2]), 0, d)
 
     def test_vertical_runs_keep_clear_of_container_borders(self) -> None:
         catalog = load_catalog(FIXTURE)
@@ -1514,6 +1521,21 @@ class LaterStoryTests(unittest.TestCase):
                 self.assertFalse(min(ax, bx) <= x1 and max(ax, bx) >= x0 and min(ay, by) <= y1 and max(ay, by) >= y0, f"segment {(ax, ay, bx, by)} meets the container loop")
         self._assert_runs_clean(svg)
         self.assertIn('data-from="RT-1" data-to="RT-1"', logical_svg(cat, "SDP-1"))
+
+    def test_container_border_over_capacity_spills_to_another_border(self) -> None:
+        # A group listing only its own substrate is a 60 px container; twelve edges to two outside nodes do not fit
+        # on its right border 8 px apart, so the surplus takes the top and bottom borders (review round 5, R1).
+        objects = [plain("RT-1", "runtime_service", "Runtime"), component("O-1", "Outside One"), component("O-2", "Outside Two"), pattern({"Own": ["RT-1"]})]
+        objects[3]["serviceGroups"][0]["substrate"] = "RT-1"
+        objects += [relationship(f"R-{k:02d}", "RT-1", "O-1" if k % 2 else "O-2", f"rel {k}") for k in range(12)]
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        polys = edge_polylines(svg)
+        self.assertEqual(len(polys), 12)
+        starts = [pts[0] for _s, _t, pts in polys]
+        self.assertEqual(len(set(starts)), 12, "every container end has its own border point")
+        self._assert_runs_clean(svg)
+        self.assertEqual(edges_hitting_foreign_boxes(svg), [])
 
     def test_deployment_boxes_sit_on_the_grid(self) -> None:
         # D14: positions snapped to a fixed grid, in the deployment view as well.

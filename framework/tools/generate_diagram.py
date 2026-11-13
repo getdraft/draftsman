@@ -1443,6 +1443,11 @@ def _route_deployment_edges(
                 attach[(i, uid)] = border_point(centre[uid], toward, w, h)
     # Ends on one border of one container are pushed DEPLOY_SPREAD apart along that border (edge order breaks
     # ties); a lone end keeps its exact border_point, and a cluster slides back as a whole when it meets a corner.
+    # A border that cannot hold its ends that far apart hands the surplus to another border of the container.
+    partner = {}
+    for i, e in drawn:
+        partner[(i, e.source)] = e.target
+        partner[(i, e.target)] = e.source
     on_border: dict[tuple[str, str], list[tuple[float, int]]] = {}
     for (i, uid), (px, py) in sorted(attach.items()):
         x, y, w, h = rects[uid]
@@ -1450,7 +1455,8 @@ def _route_deployment_edges(
             on_border.setdefault((uid, "top" if abs(py - y) < 1e-6 else "bottom"), []).append((px, i))
         else:
             on_border.setdefault((uid, "left" if abs(px - x) < 1e-6 else "right"), []).append((py, i))
-    for (uid, border), items in sorted(on_border.items()):
+
+    def extent(uid: str, border: str) -> tuple[float, float]:
         x, y, w, h = rects[uid]
         low, high = (x + 4, x + w - 4) if border in ("top", "bottom") else (y + 4, y + h - 4)
         if loops.get(uid):  # D13: the container's own loop sits at its top-right corner; ends keep clear of it
@@ -1458,6 +1464,42 @@ def _route_deployment_edges(
                 high = x + w - LOGICAL_BOX_W + int(LOGICAL_BOX_W * 0.62) - DEPLOY_SPREAD
             elif border == "right":
                 low = y + int(LOGICAL_BOX_H * 0.3) + DEPLOY_SPREAD
+        return low, high
+
+    def capacity(uid: str, border: str) -> int:
+        low, high = extent(uid, border)
+        return max(1, int((high - low) // DEPLOY_SPREAD) + 1)
+
+    for _pass in range(4):  # a receiving border may fill up too; the surplus moves on in a fixed order
+        moved = False
+        for (uid, border) in sorted(on_border):
+            items = on_border[(uid, border)]
+            room = capacity(uid, border)
+            if len(items) <= room:
+                continue
+            items.sort()
+            surplus = items[room:]
+            del items[room:]
+            x, y, w, h = rects[uid]
+            for value, i in surplus:
+                ocx, ocy = centre[partner[(i, uid)]]
+                prefer = ("bottom", "top") if ocy > y + h / 2 else ("top", "bottom")
+                for target in prefer + ("right", "left"):
+                    if target != border and len(on_border.get((uid, target), [])) < capacity(uid, target):
+                        low, high = extent(uid, target)
+                        along = min(max(ocx if target in ("top", "bottom") else ocy, low), high)
+                        on_border.setdefault((uid, target), []).append((along, i))
+                        attach[(i, uid)] = {
+                            "top": (along, y), "bottom": (along, y + h), "left": (x, along), "right": (x + w, along)
+                        }[target]
+                        moved = True
+                        break
+                else:
+                    items.append((value, i))  # every border is full: this end stays where it was
+        if not moved:
+            break
+    for (uid, border), items in sorted(on_border.items()):
+        low, high = extent(uid, border)
         if len(items) < 2 and low <= items[0][0] <= high:
             continue  # a lone end keeps its exact border_point
         items.sort()
@@ -1836,7 +1878,8 @@ def render_deployment_svg(model: DiagramModel) -> str:
         last_channel = stack_right + chan_pad + DEPLOY_CHANNEL_STEP * (max(used, 1) - 1)
         lane_x = max(lane_x, -(-(last_channel + DEPLOY_LANE_GAP) // GRID) * GRID)
     lane_box = ""
-    right = max(stack_right, last_channel + DEPLOY_CHANNEL_PAD) if n_channels else stack_right
+    loop_reach = LOOP_REACH + LOOP_STEP * (container_loops - 1) + DEPLOY_LEVEL if container_loops else 0
+    right = max(stack_right + loop_reach, (last_channel + DEPLOY_CHANNEL_PAD) if n_channels else 0)  # container loops pass the target border
     bottom = stack_bottom
     if outer:
         lane_box = (
