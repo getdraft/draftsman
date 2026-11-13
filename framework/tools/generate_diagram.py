@@ -479,11 +479,14 @@ class Model:
         # First pass (D29): every container uid is known before any group's boxes are filtered, so a
         # substrate placed in another group is never drawn as a box or lane member anywhere.
         planned = [group["substrate"] or self._derive_substrate(group["uids"]) for group in self.groups]
-        self.container_uids = {uid for uid in planned if uid and uid in catalog}
-        drawn_elsewhere = {
-            planned[k] for k, other in enumerate(self.groups) if planned[k] and any(u not in self.container_uids for u in other["uids"])
-        }
-        for group in self.groups:
+        planned_all = {uid for uid in planned if uid and uid in catalog}
+        # A group is drawn only when it lists something that is not some group's container; only a drawn
+        # group's substrate is a container, so a placed object that is the substrate of an empty group stays
+        # a box in the group that lists it (D6, D29).
+        drawable = [any(uid not in planned_all for uid in group["uids"]) for group in self.groups]
+        self.container_uids = {uid for uid, ok in zip(planned, drawable) if ok and uid and uid in catalog}
+        drawn_elsewhere = self.container_uids
+        for group_index, group in enumerate(self.groups):
             group_name = group["name"]
             recorded = group["substrate"]
             sub_uid = recorded or self._derive_substrate(group["uids"])
@@ -521,7 +524,7 @@ class Model:
                         self.warnings.append(
                             f"conflict: {self.name(uid)} runsOn {self.name(runs_on)}; group substrate is {self.name(recorded)}"
                         )
-            members = [uid for uid in group["uids"] if uid not in self.container_uids]
+            members = [uid for uid in group["uids"] if uid not in self.container_uids] if drawable[group_index] else []
             if container_uid:
                 if members:
                     self.drawn_container_uids.add(container_uid)
@@ -1309,6 +1312,7 @@ LOOP_REACH = 36  # how far a _loop_path loop reaches right of its box, before th
 DEPLOY_ZONE = 90  # free band around every row of boxes and every group; edge runs live here
 DEPLOY_LEVEL = 6  # distance between edge levels in a free band and from the band edges
 DEPLOY_STUB_STEPS = (5, 10, 15, 20, 25, 30)
+DEPLOY_SPREAD = 8  # distance between container ends that would otherwise share a border point
 DEPLOY_BORDER_CLEAR = 4  # vertical edge runs keep this far from every container border
 DEPLOY_TRACKS = (0,) + tuple(v for k in range(1, 13) for v in (-5 * k, 5 * k))  # 25 tracks, 5px apart
 DEPLOY_LANE_HEAD = 30
@@ -1381,6 +1385,22 @@ def _route_deployment_edges(
                 x, y, w, h = rects[uid]
                 ox, oy, ow, oh = rects[other]
                 attach[(i, uid)] = border_point((x + w / 2, y + h / 2), (ox + ow / 2, oy + oh / 2), w, h)
+    # Container ends whose border_point coincides would leave on one line: spread them along the border
+    # (edge order, DEPLOY_SPREAD apart). A lone end keeps its exact border_point.
+    shared: dict[tuple[str, float, float], list[int]] = {}
+    for (i, uid), (px, py) in attach.items():
+        shared.setdefault((uid, round(px, 3), round(py, 3)), []).append(i)
+    for (uid, px, py), edge_ids in sorted(shared.items(), key=lambda kv: (kv[0][0], kv[1])):
+        if len(edge_ids) < 2:
+            continue
+        x, y, w, h = rects[uid]
+        horizontal = abs(py - y) < 1e-6 or abs(py - (y + h)) < 1e-6
+        for rank, i in enumerate(sorted(edge_ids)):
+            shift = (rank - (len(edge_ids) - 1) / 2) * DEPLOY_SPREAD
+            if horizontal:
+                attach[(i, uid)] = (min(max(px + shift, x + 4), x + w - 4), py)
+            else:
+                attach[(i, uid)] = (px, min(max(py + shift, y + 4), y + h - 4))
     sides: dict[int, tuple[str, str]] = {}
     slots: dict[tuple[str, str], list[tuple[int, str, int]]] = {}
     for i, e in drawn:
@@ -1438,8 +1458,19 @@ def _route_deployment_edges(
         """Points from the endpoint to the foot of its stub, the pool the horizontal run uses, and the stub x."""
         x, y, w, h = rects[uid]
         if uid not in containers:
-            cx = x + w // 2 + offset[(i, uid)]
-            return [(cx, y + h if side == "bottom" else y)], pools[uid][side], cx
+            pool = pools[uid][side]
+            base = x + w // 2 + offset[(i, uid)]
+            top_limit = x + int(w * 0.6) - 8 if uid in looped and side == "top" else x + w - 4  # left of a self-loop
+            cx = base
+            for step in range(0, w):  # nearest free x on this side: no two stubs share a line
+                found = False
+                for cand in (base + step, base - step):
+                    if x + 4 <= cand <= top_limit and vertical_free(cand, pool[1], pool[2]):
+                        cx, found = cand, True
+                        break
+                if found:
+                    break
+            return [(cx, y + h if side == "bottom" else y)], pool, cx
         px, py = attach[(i, uid)]
         eps = 1e-6
         if abs(py - y) < eps or abs(py - (y + h)) < eps:
@@ -1516,6 +1547,30 @@ def render_deployment_svg(model: DiagramModel) -> str:
     # Self-relationship loops keep the logical loop shape (_loop_path). The layout makes room for the tallest
     # stack: a taller free band above each row and more padding right of the last column.
     zone = DEPLOY_ZONE + 14 * max(0, most_loops - 1)
+    # Every edge end needs its own level in the free band beside its box, and a loop blocks a few; size the
+    # bands for the busiest pair of neighbouring rows (or groups) so a free level always exists.
+    incident: dict[str, int] = {}
+    for edge in model.edges:
+        if edge.source != edge.target:
+            incident[edge.source] = incident.get(edge.source, 0) + 1
+            incident[edge.target] = incident.get(edge.target, 0) + 1
+    demand = 0
+    row_loads: list[list[int]] = []  # per lane / stray / outside lane: load of each row of boxes
+    for _t, groups in _deployment_outline(model):
+        for g in groups:
+            for lane in g.lanes:
+                members = lane.members
+                row_loads.append([sum(incident.get(u, 0) for u in members[r : r + DEPLOY_COLUMNS]) for r in range(0, len(members), DEPLOY_COLUMNS)])
+        for first, second in zip(groups, groups[1:] + [None]):
+            demand = max(demand, incident.get(first.uid, 0) + (incident.get(second.uid, 0) if second else 0))
+    laned = {u for _t, groups in _deployment_outline(model) for g in groups for lane in g.lanes for u in lane.members}
+    loose = [n.uid for n in model.deployment_nodes if n.uid not in laned]
+    row_loads.append([incident.get(u, 0) for u in loose])  # the outside lane: one box per row
+    row_loads.append([sum(incident.get(u, 0) for u in loose[r : r + DEPLOY_COLUMNS]) for r in range(0, len(loose), DEPLOY_COLUMNS)])  # stray lane
+    for loads in row_loads:
+        demand = max([demand] + [a + b for a, b in zip([0] + loads, loads + [0])])
+    loop_levels = -(-(LOOP_REACH + 14 * max(0, most_loops - 1) + 12) // DEPLOY_LEVEL) if most_loops else 0
+    zone = max(zone, 2 * DEPLOY_LEVEL + DEPLOY_LEVEL * (demand + loop_levels))
     loop_room = (LOOP_REACH + 14 * (most_loops - 1) + 3 - DEPLOY_PAD) if most_loops else 0
     step_x = LOGICAL_BOX_W + DEPLOY_COL_GAP
     step_y = LOGICAL_BOX_H + zone

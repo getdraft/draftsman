@@ -1,48 +1,48 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1139 2304" width="1139" height="2304" role="img" aria-label="Deployment pattern diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1139 2784" width="1139" height="2784" role="img" aria-label="Deployment pattern diagram">
 <title>Deployment pattern diagram</title>
 <desc>generate_diagram FXSDP00001-0001</desc>
 <style>.tgt{fill:#eef1f6;stroke:#9aa6b6;stroke-width:1.4}.grp{fill:#f8f9fb;stroke:#7a8696}.group.dashed .grp{stroke-dasharray:5 3}.zl{fill:#ffffff;stroke:#c3cad4;stroke-dasharray:3 3}.lane{fill:#fbf6ec;stroke:#d8c9a8;stroke-dasharray:6 4}.tl{font:700 12px sans-serif;fill:#1a2230}.gl{font:600 11px sans-serif;fill:#586374}.gc{font:600 12px sans-serif;fill:#1a2230}.zc,.ll{font:600 11px sans-serif;fill:#586374}.box{fill:#ffffff;stroke:#555555;stroke-width:1.4}.dashed .box{stroke-dasharray:5 3}.ttl{font:600 12px sans-serif;fill:#1a2230}.cap{font:10px sans-serif;fill:#586374}.ln{fill:none;stroke:#7a8696;stroke-width:1.4}</style>
-<g class="target" data-target="fx-cloud-east"><rect class="tgt" x="20" y="20" width="629" height="1660" rx="8"/><text class="tl" x="30" y="40">fx-cloud-east</text>
-<g class="group" data-group="Edge"><title>Edge</title><rect class="grp" x="30" y="140" width="609" height="330" rx="6"/><text class="gl" x="40" y="158">Edge</text><text class="gc" x="40" y="178">substrate not recorded</text>
-<g class="zlane" data-zone=""><rect class="zl" x="40" y="190" width="589" height="270" rx="5"/><text class="zc" x="50" y="209">zone not recorded</text>
-<g class="node" data-id="FXNET00001-0001"><title>FX Edge Gateway</title><rect class="box" x="50" y="310" width="200" height="60" rx="6"/><text class="ttl" x="150" y="344" text-anchor="middle">FX Edge Gateway</text></g>
+<g class="target" data-target="fx-cloud-east"><rect class="tgt" x="20" y="20" width="629" height="2020" rx="8"/><text class="tl" x="30" y="40">fx-cloud-east</text>
+<g class="group" data-group="Edge"><title>Edge</title><rect class="grp" x="30" y="170" width="609" height="390" rx="6"/><text class="gl" x="40" y="188">Edge</text><text class="gc" x="40" y="208">substrate not recorded</text>
+<g class="zlane" data-zone=""><rect class="zl" x="40" y="220" width="589" height="330" rx="5"/><text class="zc" x="50" y="239">zone not recorded</text>
+<g class="node" data-id="FXNET00001-0001"><title>FX Edge Gateway</title><rect class="box" x="50" y="370" width="200" height="60" rx="6"/><text class="ttl" x="150" y="404" text-anchor="middle">FX Edge Gateway</text></g>
 </g>
 </g>
-<g class="group" data-id="FXRTC00001-0001" data-group="Web"><title>Web</title><rect class="grp" x="30" y="560" width="609" height="330" rx="6"/><text class="gl" x="40" y="578">Web</text><text class="gc" x="40" y="598">FX Cluster Alpha</text>
-<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="610" width="589" height="270" rx="5"/><text class="zc" x="50" y="629">FX App Zone (application)</text>
-<g class="node" data-id="FXPRD00001-0001"><title>FX Web Shop</title><rect class="box" x="50" y="730" width="200" height="60" rx="6"/><text class="ttl" x="150" y="764" text-anchor="middle">FX Web Shop</text></g>
+<g class="group" data-id="FXRTC00001-0001" data-group="Web"><title>Web</title><rect class="grp" x="30" y="680" width="609" height="390" rx="6"/><text class="gl" x="40" y="698">Web</text><text class="gc" x="40" y="718">FX Cluster Alpha</text>
+<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="730" width="589" height="330" rx="5"/><text class="zc" x="50" y="749">FX App Zone (application)</text>
+<g class="node" data-id="FXPRD00001-0001"><title>FX Web Shop</title><rect class="box" x="50" y="880" width="200" height="60" rx="6"/><text class="ttl" x="150" y="914" text-anchor="middle">FX Web Shop</text></g>
 </g>
 </g>
-<g class="group" data-id="FXRTC00002-0001" data-group="Application"><title>Application</title><rect class="grp" x="30" y="980" width="609" height="610" rx="6"/><text class="gl" x="40" y="998">Application</text><text class="gc" x="40" y="1018">FX Cluster Beta</text>
-<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="1030" width="589" height="270" rx="5"/><text class="zc" x="50" y="1049">FX App Zone (application)</text>
-<g class="node" data-id="FXPRD00002-0001"><title>FX Order API</title><rect class="box" x="50" y="1150" width="200" height="60" rx="6"/><text class="ttl" x="150" y="1184" text-anchor="middle">FX Order API</text></g>
-<g class="node dashed" data-id="FXPRD00003-0001"><title>FX Order Worker</title><rect class="box" x="390" y="1150" width="200" height="60" rx="6"/><text class="ttl" x="490" y="1184" text-anchor="middle">FX Order Worker</text></g>
+<g class="group" data-id="FXRTC00002-0001" data-group="Application"><title>Application</title><rect class="grp" x="30" y="1190" width="609" height="730" rx="6"/><text class="gl" x="40" y="1208">Application</text><text class="gc" x="40" y="1228">FX Cluster Beta</text>
+<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="1240" width="589" height="330" rx="5"/><text class="zc" x="50" y="1259">FX App Zone (application)</text>
+<g class="node" data-id="FXPRD00002-0001"><title>FX Order API</title><rect class="box" x="50" y="1390" width="200" height="60" rx="6"/><text class="ttl" x="150" y="1424" text-anchor="middle">FX Order API</text></g>
+<g class="node dashed" data-id="FXPRD00003-0001"><title>FX Order Worker</title><rect class="box" x="390" y="1390" width="200" height="60" rx="6"/><text class="ttl" x="490" y="1424" text-anchor="middle">FX Order Worker</text></g>
 </g>
-<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="1310" width="589" height="270" rx="5"/><text class="zc" x="50" y="1329">FX Data Zone (data)</text>
-<g class="node" data-id="FXPRD00004-0001"><title>FX Legacy Cart</title><rect class="box" x="50" y="1430" width="200" height="60" rx="6"/><text class="ttl" x="150" y="1464" text-anchor="middle">FX Legacy Cart</text></g>
-</g>
-</g>
-</g>
-<g class="target" data-target="fx-dc-west"><rect class="tgt" x="20" y="1710" width="629" height="540" rx="8"/><text class="tl" x="30" y="1730">fx-dc-west</text>
-<g class="group" data-group="Data"><title>Data</title><rect class="grp" x="30" y="1830" width="609" height="330" rx="6"/><text class="gl" x="40" y="1848">Data</text><text class="gc" x="40" y="1868">substrate not recorded</text>
-<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="1880" width="589" height="270" rx="5"/><text class="zc" x="50" y="1899">FX Data Zone (data)</text>
-<g class="node" data-id="FXDST00001-0001"><title>FX Orders Database</title><rect class="box" x="50" y="2000" width="200" height="60" rx="6"/><text class="ttl" x="150" y="2034" text-anchor="middle">FX Orders Database</text></g>
-<g class="node" data-id="FXDCP00001-0001"><title>FX Session Cache</title><rect class="box" x="390" y="2000" width="200" height="60" rx="6"/><text class="ttl" x="490" y="2034" text-anchor="middle">FX Session Cache</text></g>
+<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="1580" width="589" height="330" rx="5"/><text class="zc" x="50" y="1599">FX Data Zone (data)</text>
+<g class="node" data-id="FXPRD00004-0001"><title>FX Legacy Cart</title><rect class="box" x="50" y="1730" width="200" height="60" rx="6"/><text class="ttl" x="150" y="1764" text-anchor="middle">FX Legacy Cart</text></g>
 </g>
 </g>
 </g>
-<rect class="lane" x="870" y="20" width="249" height="570" rx="6"/><text class="ll" x="880" y="44">Outside this pattern</text><g class="node outside" data-id="FXPRD00005-0001"><title>FX Unplaced Notifier</title><rect class="box" x="880" y="140" width="200" height="60" rx="6"/><text class="ttl" x="980" y="160" text-anchor="middle">FX Unplaced Notifier</text><text class="cap" x="980" y="176" text-anchor="middle">not placed in any pattern</text></g><g class="node outside" data-id="FXPRD00010-0001"><title>FX Shared Ledger</title><rect class="box" x="880" y="290" width="200" height="60" rx="6"/><text class="ttl" x="980" y="310" text-anchor="middle">FX Shared Ledger</text><text class="cap" x="980" y="326" text-anchor="middle">FX Registry Pattern</text></g><g class="node outside external" data-id="ext:f2e513630165"><title>FX Payment Provider</title><rect class="box" x="880" y="440" width="200" height="60" rx="6"/><text class="ttl" x="980" y="460" text-anchor="middle">FX Payment Provider</text><text class="cap" x="980" y="476" text-anchor="middle">external</text></g>
-<g class="edge" data-from="FXPRD00001-0001" data-to="FXPRD00002-0001"><title>FX Web Shop places orders FX Order API</title><path class="ln" d="M120 790 L120 796 L320 796 L320 1066 L70 1066 L70 1150"/></g>
-<g class="edge" data-from="FXPRD00002-0001" data-to="FXDST00001-0001"><title>FX Order API reads and writes orders FX Orders Database</title><path class="ln" d="M120 1210 L120 1216 L320 1216 L320 1916 L120 1916 L120 2000"/></g>
-<g class="edge" data-from="FXPRD00003-0001" data-to="FXPRD00002-0001"><title>FX Order Worker consumes order messages FX Order API</title><path class="ln" d="M460 1150 L460 1072 L320 1072 L320 1078 L80 1078 L80 1150"/></g>
-<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00003-0001"><title>FX Order API publishes order placed FX Order Worker</title><path class="ln" d="M100 1150 L100 1084 L320 1084 L320 1090 L510 1090 L510 1150"/></g>
-<g class="edge" data-from="FXPRD00001-0001" data-to="FXDCP00001-0001"><title>FX Web Shop shares session state FX Session Cache</title><path class="ln" d="M170 790 L170 802 L315 802 L315 1922 L460 1922 L460 2000"/></g>
-<g class="edge" data-from="FXNET00001-0001" data-to="FXPRD00001-0001"><title>FX Edge Gateway routes customer traffic FX Web Shop</title><path class="ln" d="M150 370 L150 376 L320 376 L320 646 L150 646 L150 730"/></g>
-<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00002-0001"><title>FX Order API checks own health FX Order API</title><path class="ln" d="M174.0 1150.0 C174.0 1126.0 280.0 1168.0 250.0 1168.0"/></g>
-<g class="edge" data-from="FXPRD00002-0001" data-to="ext:f2e513630165"><title>FX Order API charges cards FX Payment Provider</title><path class="ln" d="M140 1150 L140 1096 L660 1096 L660 506 L980 506 L980 500"/></g>
-<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00010-0001"><title>FX Order API posts ledger entries FX Shared Ledger</title><path class="ln" d="M130 1150 L130 1102 L655 1102 L655 356 L980 356 L980 350"/></g>
-<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00005-0001"><title>FX Order API sends notifications FX Unplaced Notifier</title><path class="ln" d="M110 1150 L110 1108 L665 1108 L665 206 L980 206 L980 200"/></g>
-<g class="edge" data-from="FXPRD00004-0001" data-to="FXDST00001-0001"><title>FX Legacy Cart reads historic carts FX Orders Database</title><path class="ln" d="M150 1490 L150 1496 L325 1496 L325 1928 L170 1928 L170 2000"/></g>
-<g class="edge" data-from="FXPRD00002-0001" data-to="FXDCP00001-0001"><title>FX Order API reads cached sessions FX Session Cache</title><path class="ln" d="M170 1210 L170 1222 L310 1222 L310 1934 L510 1934 L510 2000"/></g>
-<text class="cap" x="20" y="2280">Service groups recorded with no objects to draw: Batch (fx-dc-west), Reserved (fx-dc-west).</text>
+<g class="target" data-target="fx-dc-west"><rect class="tgt" x="20" y="2070" width="629" height="660" rx="8"/><text class="tl" x="30" y="2090">fx-dc-west</text>
+<g class="group" data-group="Data"><title>Data</title><rect class="grp" x="30" y="2220" width="609" height="390" rx="6"/><text class="gl" x="40" y="2238">Data</text><text class="gc" x="40" y="2258">substrate not recorded</text>
+<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="2270" width="589" height="330" rx="5"/><text class="zc" x="50" y="2289">FX Data Zone (data)</text>
+<g class="node" data-id="FXDST00001-0001"><title>FX Orders Database</title><rect class="box" x="50" y="2420" width="200" height="60" rx="6"/><text class="ttl" x="150" y="2454" text-anchor="middle">FX Orders Database</text></g>
+<g class="node" data-id="FXDCP00001-0001"><title>FX Session Cache</title><rect class="box" x="390" y="2420" width="200" height="60" rx="6"/><text class="ttl" x="490" y="2454" text-anchor="middle">FX Session Cache</text></g>
+</g>
+</g>
+</g>
+<rect class="lane" x="870" y="20" width="249" height="690" rx="6"/><text class="ll" x="880" y="44">Outside this pattern</text><g class="node outside" data-id="FXPRD00005-0001"><title>FX Unplaced Notifier</title><rect class="box" x="880" y="170" width="200" height="60" rx="6"/><text class="ttl" x="980" y="190" text-anchor="middle">FX Unplaced Notifier</text><text class="cap" x="980" y="206" text-anchor="middle">not placed in any pattern</text></g><g class="node outside" data-id="FXPRD00010-0001"><title>FX Shared Ledger</title><rect class="box" x="880" y="350" width="200" height="60" rx="6"/><text class="ttl" x="980" y="370" text-anchor="middle">FX Shared Ledger</text><text class="cap" x="980" y="386" text-anchor="middle">FX Registry Pattern</text></g><g class="node outside external" data-id="ext:f2e513630165"><title>FX Payment Provider</title><rect class="box" x="880" y="530" width="200" height="60" rx="6"/><text class="ttl" x="980" y="550" text-anchor="middle">FX Payment Provider</text><text class="cap" x="980" y="566" text-anchor="middle">external</text></g>
+<g class="edge" data-from="FXPRD00001-0001" data-to="FXPRD00002-0001"><title>FX Web Shop places orders FX Order API</title><path class="ln" d="M120 940 L120 946 L320 946 L320 1276 L70 1276 L70 1390"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXDST00001-0001"><title>FX Order API reads and writes orders FX Orders Database</title><path class="ln" d="M120 1450 L120 1456 L320 1456 L320 2306 L120 2306 L120 2420"/></g>
+<g class="edge" data-from="FXPRD00003-0001" data-to="FXPRD00002-0001"><title>FX Order Worker consumes order messages FX Order API</title><path class="ln" d="M460 1390 L460 1282 L320 1282 L320 1288 L80 1288 L80 1390"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00003-0001"><title>FX Order API publishes order placed FX Order Worker</title><path class="ln" d="M100 1390 L100 1294 L320 1294 L320 1300 L510 1300 L510 1390"/></g>
+<g class="edge" data-from="FXPRD00001-0001" data-to="FXDCP00001-0001"><title>FX Web Shop shares session state FX Session Cache</title><path class="ln" d="M170 940 L170 952 L315 952 L315 2312 L460 2312 L460 2420"/></g>
+<g class="edge" data-from="FXNET00001-0001" data-to="FXPRD00001-0001"><title>FX Edge Gateway routes customer traffic FX Web Shop</title><path class="ln" d="M150 430 L150 436 L320 436 L320 766 L150 766 L150 880"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00002-0001"><title>FX Order API checks own health FX Order API</title><path class="ln" d="M174.0 1390.0 C174.0 1366.0 280.0 1408.0 250.0 1408.0"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="ext:f2e513630165"><title>FX Order API charges cards FX Payment Provider</title><path class="ln" d="M140 1390 L140 1306 L660 1306 L660 596 L980 596 L980 590"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00010-0001"><title>FX Order API posts ledger entries FX Shared Ledger</title><path class="ln" d="M130 1390 L130 1312 L655 1312 L655 416 L980 416 L980 410"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00005-0001"><title>FX Order API sends notifications FX Unplaced Notifier</title><path class="ln" d="M110 1390 L110 1318 L665 1318 L665 236 L980 236 L980 230"/></g>
+<g class="edge" data-from="FXPRD00004-0001" data-to="FXDST00001-0001"><title>FX Legacy Cart reads historic carts FX Orders Database</title><path class="ln" d="M150 1790 L150 1796 L325 1796 L325 2318 L170 2318 L170 2420"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXDCP00001-0001"><title>FX Order API reads cached sessions FX Session Cache</title><path class="ln" d="M170 1450 L170 1462 L310 1462 L310 2324 L510 2324 L510 2420"/></g>
+<text class="cap" x="20" y="2760">Service groups recorded with no objects to draw: Batch (fx-dc-west), Reserved (fx-dc-west).</text>
 </svg>
