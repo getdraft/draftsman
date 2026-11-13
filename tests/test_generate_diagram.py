@@ -76,6 +76,21 @@ def logical_svg(catalog: dict, uid: str, placed_only: bool = False) -> str:
     return generate_diagram.render_logical_svg(model)
 
 
+def deployment_svg(catalog: dict, uid: str, placed_only: bool = False) -> str:
+    model = generate_diagram.build_diagram_model(catalog, catalog[uid], placed_only)
+    return generate_diagram.render_deployment_svg(model)
+
+
+def xml_escape(text: str) -> str:
+    return generate_diagram.xml_text(text)
+
+
+def xml_unescape(text: str) -> str:
+    import html
+
+    return html.unescape(text)
+
+
 def node_rects(svg: str) -> dict:
     """uid -> (x, y, w, h) of each node box in a logical SVG."""
     found = {}
@@ -986,33 +1001,361 @@ class LaterStoryTests(unittest.TestCase):
             self.assertNotRegex(svg, r"\d{4}-\d{2}-\d{2}T|/Users/|/home/|[A-Za-z]:\\")
             self.assertNotIn(str(REPO_ROOT), svg)
 
-    @unittest.skip("enabled in S6")
     def test_deployment_golden(self) -> None:
-        self.fail("not implemented until S6")
+        catalog = load_catalog(FIXTURE)
+        patterns = generate_diagram.sdps(catalog)
+        self.assertEqual(len(patterns), 3)
+        for sdp in patterns:
+            with self.subTest(sdp=sdp["uid"]):
+                path = harness.golden_path(generate_diagram.slug(sdp["name"]), "deployment")
+                harness.check_golden(self, path, lambda: deployment_svg(catalog, sdp["uid"]).encode("utf-8"))
 
-    @unittest.skip("enabled in S6")
     def test_nesting_order(self) -> None:
-        self.fail("not implemented until S6")
+        catalog = load_catalog(FIXTURE)
+        svg = deployment_svg(catalog, FIXTURE_SDP)
+        xml.dom.minidom.parseString(svg)
+        model = generate_diagram.build_diagram_model(catalog, catalog[FIXTURE_SDP], False)
+        expected_targets: list = []
+        for container in model.containers:
+            if container.members and container.target not in expected_targets:
+                expected_targets.append(container.target)
+        self.assertEqual(re.findall(r'<g class="target" data-target="([^"]*)"', svg), expected_targets)
+        drawn = [c for c in model.containers if c.members]
+        self.assertEqual(re.findall(r'<g class="group[^"]*"(?: data-id="[^"]*")? data-group="([^"]*)"', svg), [
+            c.group for t in expected_targets for c in drawn if c.target == t
+        ])
+        dom = xml.dom.minidom.parseString(svg)
+        for target in dom.getElementsByTagName("g"):
+            if target.getAttribute("class") != "target":
+                continue
+            groups = [g for g in target.childNodes if getattr(g, "tagName", "") == "g"]
+            self.assertTrue(groups)
+            for group in groups:
+                self.assertTrue(group.getAttribute("class").startswith("group"))
+                for lane in [x for x in group.childNodes if getattr(x, "tagName", "") == "g"]:
+                    self.assertEqual(lane.getAttribute("class"), "zlane")
+                    for box in [x for x in lane.childNodes if getattr(x, "tagName", "") == "g"]:
+                        self.assertTrue(box.getAttribute("class").startswith("node"))
+        ids = re.findall(r'<g class="node[^"]*" data-id="([^"]*)"', svg)
+        in_lanes = [uid for c in drawn for lane in c.lanes for uid in lane.members]
+        self.assertEqual([i for i in ids if i in in_lanes], [u for t in expected_targets for c in drawn if c.target == t for lane in c.lanes for u in lane.members])
 
-    @unittest.skip("enabled in S6")
     def test_zone_lanes_order_and_fallback(self) -> None:
-        self.fail("not implemented until S6")
+        catalog = load_catalog(FIXTURE)
+        svg = deployment_svg(catalog, FIXTURE_SDP)
+        self.assertEqual(svg.count('data-id="FXRTC00002-0001" data-group'), 1)
+        group = re.search(r'<g class="group[^"]*" data-id="FXRTC00002-0001".*?(?=<g class="group|</g></g></svg>|</g>\n<g class="target")', svg, re.S).group(0)
+        self.assertEqual(re.findall(r'<g class="zlane" data-zone="([^"]*)"', group), ["fx-app", "fx-data"])
+        captions = re.findall(r'class="zc"[^>]*>([^<]*)<', svg)
+        self.assertIn("FX Data Zone (data)", captions)
+        self.assertIn("zone not recorded", captions)
+        self.assertLess(captions.index("FX App Zone (application)"), captions.index("FX Data Zone (data)"))
 
-    @unittest.skip("enabled in S6")
     def test_substrate_container_not_node(self) -> None:
-        self.fail("not implemented until S6")
+        catalog = load_catalog(FIXTURE)
+        uid = "FXRTC00001-0001"
+        deployment = deployment_svg(catalog, FIXTURE_SDP)
+        self.assertRegex(deployment, rf'<g class="group[^"]*" data-id="{uid}"')
+        self.assertNotRegex(deployment, rf'<g class="node[^"]*" data-id="{uid}"')
+        self.assertRegex(logical_svg(catalog, FIXTURE_SDP), rf'<g class="node[^"]*" data-id="{uid}"')
 
-    @unittest.skip("enabled in S6")
+    def test_container_captions_and_conflict(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        model = generate_diagram.build_diagram_model(catalog, catalog[FIXTURE_SDP], False)
+        svg = deployment_svg(catalog, FIXTURE_SDP)
+        captions = re.findall(r'class="gc"[^>]*>([^<]*)<', svg)
+        self.assertEqual(captions, [xml_unescape(c.caption) for c in model.containers if c.members])
+        self.assertIn("substrate not recorded", captions)
+        objects = [
+            plain("RTC-1", "runtime_service", "Cluster"),
+            plain("RTC-2", "runtime_service", "Other"),
+            plain("P-1", "product_component", "Alpha", runsOn="RTC-2"),
+            pattern({"G": ["P-1"]}),
+        ]
+        objects[-1]["serviceGroups"][0]["substrate"] = "RTC-1"
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        self.assertIn('class="gc" x="', svg)
+        self.assertEqual(re.findall(r'class="gc"[^>]*>([^<]*)<', svg), ["Cluster"])
+        self.assertEqual(len(model_of(objects).conflicts), 1)
+
     def test_empty_group_caption(self) -> None:
-        self.fail("not implemented until S6")
+        catalog = load_catalog(FIXTURE)
+        model = generate_diagram.build_diagram_model(catalog, catalog[FIXTURE_SDP], False)
+        empty = [c for c in model.containers if not c.members]
+        self.assertTrue(empty)
+        svg = deployment_svg(catalog, FIXTURE_SDP)
+        self.assertIn("Service groups recorded with no objects to draw", svg)
+        for container in empty:
+            self.assertIn(xml_escape(container.group), svg)
+            self.assertNotIn(f'data-group="{xml_escape(container.group)}"', svg)
 
-    @unittest.skip("enabled in S6")
     def test_container_edge_attachment(self) -> None:
-        self.fail("not implemented until S6")
+        objects = [
+            plain("RTC-1", "runtime_service", "Cluster"),
+            plain("P-1", "product_component", "Alpha"),
+            plain("P-2", "product_component", "Beta"),
+            pattern({"G": ["P-1"], "H": ["P-2"]}),
+            relationship("R-1", "RTC-1", "P-2", "serves"),
+        ]
+        objects[-2]["serviceGroups"][0]["substrate"] = "RTC-1"
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        xml.dom.minidom.parseString(svg)
+        self.assertRegex(svg, r'<g class="group[^"]*" data-id="RTC-1"')
+        (_, _, pts), = edge_polylines(svg)
+        group = re.search(r'<g class="group[^"]*" data-id="RTC-1"[^>]*>.*?<rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg, re.S)
+        gx, gy, gw, gh = (int(group.group(i)) for i in range(1, 5))
+        box = node_rects(svg)["P-2"]
+        c_group = (gx + gw / 2, gy + gh / 2)
+        c_box = (box[0] + box[2] / 2, box[1] + box[3] / 2)
+        start = generate_diagram.border_point(c_group, c_box, gw, gh)
+        end = generate_diagram.border_point(c_box, c_group, box[2], box[3])
+        self.assertEqual(pts[0], (round(start[0], 1), round(start[1], 1)))
+        # The far end lies on the box border; the container end is the border_point checked above.
+        self.assertIn(pts[-1][1], (box[1], box[1] + box[3]))
+        self.assertTrue(box[0] <= pts[-1][0] <= box[0] + box[2])
+        on_border = (
+            abs(pts[0][0] - gx) < 0.1 or abs(pts[0][0] - (gx + gw)) < 0.1 or abs(pts[0][1] - gy) < 0.1 or abs(pts[0][1] - (gy + gh)) < 0.1
+        )
+        self.assertTrue(on_border, "container end lies on the container border")
+        for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+            self.assertTrue(ax == bx or ay == by, "orthogonal route")
+        self.assertTrue(gx <= pts[0][0] <= gx + gw and gy <= pts[0][1] <= gy + gh)
 
-    @unittest.skip("enabled in S6")
+    def test_deployment_edges_avoid_foreign_boxes(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        for sdp in generate_diagram.sdps(catalog):
+            svg = deployment_svg(catalog, sdp["uid"])
+            self.assertGreater(len(edge_polylines(svg)), 0)
+            self.assertEqual(edges_hitting_foreign_boxes(svg), [], sdp["uid"])
+            segments = []
+            for _s, _t, pts in edge_polylines(svg):
+                segments.extend((min(a[0], b[0]), max(a[0], b[0]), min(a[1], b[1]), max(a[1], b[1])) for a, b in zip(pts, pts[1:]))
+            vertical = [(x0, y0, y1) for x0, x1, y0, y1 in segments if x0 == x1 and y0 < y1]
+            for i, (x, y0, y1) in enumerate(vertical):
+                for x2, a0, a1 in vertical[i + 1 :]:
+                    self.assertFalse(x == x2 and y0 < a1 and a0 < y1, f"collinear overlap at x={x}")
+
+    def _small_pair(self, extra: list) -> str:
+        objects = [component("A-1", "Alpha"), component("B-1", "Beta"), pattern({"G": ["A-1", "B-1"]})] + extra
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        return deployment_svg(cat, "SDP-1")
+
+    def test_deployment_repeated_self_loops_are_distinct(self) -> None:
+        svg = self._small_pair([relationship("R-1", "A-1", "A-1", "one"), relationship("R-2", "A-1", "A-1", "two")])
+        loops = re.findall(r'<g class="edge" data-from="A-1" data-to="A-1">.*?<path class="ln" d="([^"]*)"', svg)
+        self.assertEqual(len(loops), 2)
+        self.assertNotEqual(loops[0], loops[1])
+
+    def test_deployment_parallel_edges_bend_apart(self) -> None:
+        svg = self._small_pair([relationship("R-1", "A-1", "B-1", "x"), relationship("R-2", "B-1", "A-1", "y")])
+        paths = re.findall(r'<path class="ln" d="(M[^"]*)"', svg)
+        self.assertEqual(len(paths), 2)
+        self.assertNotEqual(paths[0], paths[1])
+        self.assertNotEqual(sorted(paths[0].split(" L")[1:-1]), [])
+
+    def test_deployment_long_container_text_stays_inside(self) -> None:
+        long_group = "A very long service group name " * 4
+        objects = [component("A-1", "Alpha"), pattern({long_group.strip(): ["A-1"]})]
+        objects[-1]["serviceGroups"][0]["substrate"] = "FX-MISSING-SUBSTRATE-WITH-A-LONG-IDENTIFIER-0001"
+        objects[-1]["deploymentTarget"] = "t"
+        objects[-1]["serviceGroups"][0]["deploymentTarget"] = "a deployment target with a rather long recorded name " * 2
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        xml.dom.minidom.parseString(svg)
+        grp = re.search(r'<rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg)
+        gx, gy, gw, gh = (int(grp.group(i)) for i in range(1, 5))
+        texts = re.findall(r'<text class="(?:gl|gc)" x="(\d+)" y="(\d+)">([^<]*)</text>', svg)
+        self.assertGreater(len(texts), 3)
+        for x, y, text in texts:
+            self.assertLessEqual(int(x) + len(text) * generate_diagram.DEPLOY_CHAR_W, gx + gw)
+            self.assertLess(int(y), gy + gh)
+        joined = " ".join(t for _x, _y, t in texts)
+        self.assertIn("substrate not found:", joined)
+        self.assertIn("LONG-IDENTIFIER-0001", joined.replace(" ", ""))
+        tgt = re.search(r'<rect class="tgt" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg)
+        for x, _y, text in re.findall(r'<text class="tl" x="(\d+)" y="(\d+)">([^<]*)</text>', svg):
+            self.assertLessEqual(int(x) + len(text) * generate_diagram.DEPLOY_CHAR_W, int(tgt.group(1)) + int(tgt.group(3)))
+
+    def test_deployment_edge_tooltip_uses_names(self) -> None:
+        svg = self._small_pair([relationship("R-1", "A-1", "B-1", "calls")])
+        self.assertIn("<title>Alpha calls Beta</title>", svg)
+
+    def test_declared_zone_lane_precedes_zone_not_recorded(self) -> None:
+        objects = [component("A-1", "Alpha"), component("B-1", "Beta"), pattern({"G": ["A-1", "B-1"]})]
+        sdp = objects[-1]
+        sdp["networkZones"] = [{"id": "z1", "name": "Zone One", "tier": "frontend"}]
+        sdp["serviceGroups"][0]["deployableObjects"][1]["networkZone"] = "z1"
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        self.assertEqual(svg.count('<g class="group'), 1)
+        self.assertEqual(re.findall(r'<g class="zlane" data-zone="([^"]*)"', svg), ["z1", ""])
+        self.assertEqual(re.findall(r'class="zc"[^>]*>([^<]*)<', svg), ["Zone One (frontend)", "zone not recorded"])
+
+    def test_deployment_horizontal_runs_do_not_overlap_or_touch_text_and_borders(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        for sdp in generate_diagram.sdps(catalog):
+            svg = deployment_svg(catalog, sdp["uid"])
+            horizontals = []
+            for number, (_s, _t, pts) in enumerate(edge_polylines(svg)):
+                for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+                    if ay == by and ax != bx:
+                        horizontals.append((ay, min(ax, bx), max(ax, bx), number))
+            for i, (y, x0, x1, n1) in enumerate(horizontals):
+                for y2, a0, a1, n2 in horizontals[i + 1 :]:
+                    if y == y2 and n1 != n2:
+                        gap = max(a0 - x1, x0 - a1)
+                        self.assertGreaterEqual(gap, generate_diagram.DEPLOY_LEVEL, f"runs of two edges {gap}px apart on y={y}")
+            horizontals = [(y, x0, x1) for y, x0, x1, _n in horizontals]
+            lanes = [tuple(int(v) for v in m) for m in re.findall(r'<rect class="zl" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg)]
+            captions = [int(y) for y in re.findall(r'<text class="zc" x="\d+" y="(\d+)"', svg)]
+            self.assertGreaterEqual(len(captions), len(lanes))
+            for y, x0, x1 in horizontals:
+                for lx, ly, lw, lh in lanes:
+                    if not (x0 < lx + lw and lx < x1):
+                        continue
+                    self.assertGreaterEqual(abs(y - ly), 3, f"run on lane top border at y={y}")
+                    self.assertGreaterEqual(abs(y - (ly + lh)), 3, f"run on lane bottom border at y={y}")
+                    for cy in captions:
+                        if ly <= cy <= ly + 40:
+                            self.assertFalse(cy - 13 <= y <= cy + 8, f"run inside caption band at y={y}")
+
+    def test_deployment_derived_host_and_mismatch_captions(self) -> None:
+        objects = [
+            plain("RTC-1", "runtime_service", "Cluster"),
+            plain("RTC-2", "runtime_service", "Cluster Two", host="HST-1"),
+            plain("HST-1", "host", "Host One"),
+            plain("DST-1", "data_store_service", "Store"),
+            plain("P-2", "product_component", "Beta", runsOn="RTC-1"),
+            plain("P-5", "product_component", "Epsilon", runsOn="RTC-2"),
+            plain("P-7", "product_component", "Eta"),
+            pattern({"Derived": ["P-2"], "OnHost": ["P-5"], "Mismatch": ["P-7"]}),
+        ]
+        groups = objects[-1]["serviceGroups"]
+        groups[1]["substrate"] = "RTC-2"
+        groups[2]["substrate"] = "DST-1"
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        model = generate_diagram.build_diagram_model(cat, cat["SDP-1"], False)
+        svg = deployment_svg(cat, "SDP-1")
+        xml.dom.minidom.parseString(svg)
+        groups_svg = re.findall(r'<g class="(group[^"]*)"[^>]*>.*?(?=<g class="group|</g>\n</g>\n<g class="group|$)', svg, re.S)
+        self.assertEqual(groups_svg, ["group dashed", "group", "group"])
+        captions = []
+        for block in re.split(r'(?=<g class="group)', svg)[1:]:
+            captions.append(" ".join(xml_unescape(t) for t in re.findall(r'class="gc"[^>]*>([^<]*)<', block.split('<g class="zlane"')[0])))
+        self.assertEqual(captions, [c.caption for c in model.containers])
+        self.assertEqual(captions, ["Cluster derived", "Cluster Two on Host One", "Store (data_store_service)"])
+
+    def test_deployment_self_loops_are_clear_of_other_edges(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        for sdp in generate_diagram.sdps(catalog):
+            svg = deployment_svg(catalog, sdp["uid"])
+            rects = node_rects(svg)
+            for match in re.finditer(r'data-from="([^"]*)" data-to="\1"><title>[^<]*</title><path class="ln" d="M[\d. ]+ C', svg):
+                x, y, w, h = rects[match.group(1).replace("&amp;", "&")]
+                for _s, _t, pts in edge_polylines(svg):
+                    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+                        crosses = min(ax, bx) < x + w + 50 and max(ax, bx) > x + w and min(ay, by) < y + h and max(ay, by) > y
+                        self.assertFalse(crosses, f"edge runs through the self-loop of {match.group(1)}")
+
+    def _borders_of(self, svg: str) -> tuple:
+        rect = r'<rect class="%s" x="(-?\d+)" y="(-?\d+)" width="(\d+)" height="(\d+)"'
+        return tuple([tuple(int(v) for v in m) for m in re.findall(rect % cls, svg)] for cls in ("tgt", "grp", "zl"))
+
+    def test_deployment_geometry_stays_inside_borders(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        objects = [component("A-1", "Alpha"), component("B-1", "Beta"), pattern({"G": ["A-1", "B-1"]})]
+        objects += [relationship(f"R-{k}", "A-1", "A-1", f"loop {k}") for k in range(3)]
+        small = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        cases = [deployment_svg(catalog, sdp["uid"]) for sdp in generate_diagram.sdps(catalog)] + [deployment_svg(small, "SDP-1")]
+        for svg in cases:
+            targets, groups, lanes = self._borders_of(svg)
+
+            def inside(inner: tuple, outer: tuple, margin: int = 3) -> bool:
+                return (
+                    inner[0] >= outer[0] + margin and inner[1] >= outer[1] + margin
+                    and inner[0] + inner[2] <= outer[0] + outer[2] - margin and inner[1] + inner[3] <= outer[1] + outer[3] - margin
+                )
+
+            for group in groups:
+                self.assertTrue(any(inside(group, t) for t in targets), group)
+            for lane in lanes:
+                self.assertTrue(any(inside(lane, g) for g in groups), lane)
+            strays = [tuple(int(v) for v in m) for m in re.findall(r'<rect class="lane stray" x="(-?\d+)" y="(-?\d+)" width="(\d+)" height="(\d+)"', svg)]
+            for box in node_rects(svg).values():
+                if not targets or box[0] < max(t[0] + t[2] for t in targets):
+                    self.assertTrue(any(inside(box, lane) for lane in lanes + strays), box)
+            outside = re.search(r'<rect class="lane" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg)
+            for match in re.finditer(r'<g class="edge" data-from="([^"]*)" data-to="\1"><title>[^<]*</title><path class="ln" d="(M[^"]*)"', svg):
+                numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", match.group(2))]
+                box = node_rects(svg)[match.group(1).replace("&amp;", "&")]
+                loop = (min(numbers[0::2]), min(numbers[1::2]), max(numbers[0::2]) - min(numbers[0::2]), max(numbers[1::2]) - min(numbers[1::2]))
+                homes = lanes + strays
+                if outside and box[0] >= int(outside.group(1)):
+                    homes = [tuple(int(outside.group(i)) for i in range(1, 5))]
+                self.assertTrue(any(inside(loop, lane) for lane in homes), f"loop {loop} leaves its lane")
+        self.assertEqual(len(re.findall(r'd="M[\d.]+ [\d.]+ C', cases[-1])), 3)
+
+    def test_loops_keep_the_logical_shape(self) -> None:
+        objects = [component("A-1", "Alpha"), pattern({"G": ["A-1"]}), relationship("R-1", "A-1", "A-1", "one"), relationship("R-2", "A-1", "A-1", "two")]
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        deploy = deployment_svg(cat, "SDP-1")
+        logical = logical_svg(cat, "SDP-1")
+        shape = lambda svg: [re.sub(r"-?\d+(?:\.\d+)?", "#", d) for d in re.findall(r'd="(M[^"]*C[^"]*)"', svg)]
+        self.assertEqual(shape(deploy), shape(logical))
+        self.assertEqual(len(shape(deploy)), 2)
+
+    def test_empty_group_substrate_keeps_node_and_warns(self) -> None:
+        objects = [
+            plain("RTC-1", "runtime_service", "Cluster"),
+            component("P-1", "Alpha"),
+            pattern({"Full": ["P-1"], "Empty": ["RTC-1"]}),
+            relationship("R-1", "RTC-1", "P-1", "serves"),
+        ]
+        objects[2]["serviceGroups"][1]["substrate"] = "RTC-1"
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        model = generate_diagram.build_diagram_model(cat, cat["SDP-1"], False)
+        svg = deployment_svg(cat, "SDP-1")
+        xml.dom.minidom.parseString(svg)
+        self.assertRegex(svg, r'<g class="node[^"]*" data-id="RTC-1">')
+        self.assertIn('data-from="RTC-1" data-to="P-1"', svg)
+        self.assertNotIn('data-group="Empty"', svg)
+        self.assertIn("Empty", svg.split("Service groups recorded with no objects")[1])
+        self.assertEqual(
+            [w for w in model.warnings if w.startswith("substrate of a group with no drawable")],
+            ["substrate of a group with no drawable objects kept as a box: Cluster (RTC-1) in Empty"],
+        )
+
+    def test_outside_lane_in_deployment(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        model = generate_diagram.build_diagram_model(catalog, catalog[FIXTURE_SDP], False)
+        outer = [n for n in model.deployment_nodes if n.outside]
+        self.assertTrue(outer)
+        deployment = deployment_svg(catalog, FIXTURE_SDP)
+        self.assertIn("Outside this pattern", deployment)
+        target_right = max(int(x) + int(w) for x, w in re.findall(r'<rect class="tgt" x="(\d+)" y="\d+" width="(\d+)"', deployment))
+        rects = node_rects(deployment)
+        logical = logical_svg(catalog, FIXTURE_SDP)
+        for node in outer:
+            self.assertGreater(rects[node.uid][0], target_right)
+            if node.caption:
+                self.assertIn(xml_escape(node.caption), deployment)
+                self.assertIn(xml_escape(node.caption), logical)
+
+    def test_deployment_order_independent_of_insertion_order(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        for uid in (FIXTURE_SDP, "FXSDP00003-0001"):
+            self.assertEqual(deployment_svg(catalog, uid), deployment_svg(dict(reversed(list(catalog.items()))), uid))
+
     def test_large_deployment_svg_valid_fast(self) -> None:
-        self.fail("not implemented until S6")
+        import time
+
+        catalog = load_catalog(FIXTURE)
+        started = time.monotonic()
+        svg = deployment_svg(catalog, "FXSDP00003-0001")
+        self.assertLess(time.monotonic() - started, 30)
+        xml.dom.minidom.parseString(svg)
 
     @unittest.skip("enabled in S7")
     def test_edge_stroke_classes(self) -> None:
