@@ -4,7 +4,9 @@
 Usage:
     python3 framework/tools/generate_diagram.py --list [--workspace PATH]
     python3 framework/tools/generate_diagram.py --sdp NAME_OR_UID [--workspace PATH]
-        [--output FILE] [--placed-only]
+        [--output FILE] [--placed-only] [--svg-dir DIR]
+    python3 framework/tools/generate_diagram.py --all --output-dir DIR [--svg-dir DIR]
+        [--workspace PATH] [--placed-only]
 
 The generator reads the DRAFT catalog and writes one self-contained HTML page
 (inline SVG, no external requests, light and dark themes). It is deterministic:
@@ -2177,7 +2179,133 @@ def build(workspace: Path, selector: str | None, placed_only: bool = False) -> t
 
 
 def slug(text: str) -> str:
-    return "".join(c.lower() if c.isalnum() else "-" for c in text).strip("-") or "diagram"
+    """File-name stem: lower-case ASCII letters and digits, other characters become dashes (no path separators)."""
+    return "".join(c.lower() if (c.isascii() and c.isalnum()) else "-" for c in text).strip("-") or "diagram"
+
+
+def pattern_stems(patterns: list[dict[str, Any]]) -> tuple[list[str], list[str]]:
+    """D33: one file stem per pattern, in the order given, and the collision notes to print.
+
+    A slug shared by two or more patterns is replaced, for all of them, by ``<slug>-<uid lower-cased>``.
+    """
+    bases = [slug(str(p.get("name", ""))) for p in patterns]
+    counts: dict[str, int] = {}
+    for base in bases:
+        counts[base] = counts.get(base, 0) + 1
+    stems = []
+    for pattern, base in zip(patterns, bases):
+        stems.append(f"{base}-{slug(str(pattern.get('uid', '')))}" if counts[base] > 1 else base)
+    notes = [
+        f"slug collision: {base} used by {counts[base]} patterns; uid suffix added"
+        for base in sorted(counts)
+        if counts[base] > 1
+    ]
+    return stems, notes
+
+
+def _print_warnings(model: Model) -> None:
+    # D18: the count line, then each distinct warning once, in sorted order (the model sorts and de-duplicates them)
+    print(f"{len(model.warnings)} warnings", file=sys.stderr)
+    for warning in model.warnings:
+        print(warning, file=sys.stderr)
+
+
+def _svg_pair(dm: DiagramModel, stem: str) -> list[tuple[str, str]]:
+    """The two standalone figures of one pattern, as (file name, text)."""
+    return [(f"{stem}-logical.svg", render_logical_svg(dm)), (f"{stem}-deployment.svg", render_deployment_svg(dm))]
+
+
+def _check_arguments(parser: argparse.ArgumentParser, args: argparse.Namespace) -> None:
+    """D20 argument matrix; each violation is a usage error (exit 2)."""
+    if args.list:
+        for flag, given in (
+            ("--sdp", args.sdp is not None),
+            ("--all", args.all),
+            ("--output", args.output is not None),
+            ("--output-dir", args.output_dir is not None),
+            ("--svg-dir", args.svg_dir is not None),
+        ):
+            if given:
+                parser.error(f"--list cannot be combined with {flag}")
+    if args.all:
+        if args.output_dir is None:
+            parser.error("--all requires --output-dir DIR")
+        if args.sdp is not None:
+            parser.error("--all renders every pattern, so --sdp cannot be combined with it")
+        if args.output is not None:
+            parser.error("--all writes one file per pattern under --output-dir, so --output cannot be combined with it")
+    elif args.output_dir is not None:
+        parser.error("--output-dir is only used with --all")
+
+
+def _render_single(args: argparse.Namespace) -> int:
+    try:
+        page, model = build(args.workspace, args.sdp, args.placed_only)
+    except ValueError as exc:  # D32: a malformed pattern is reported, not traced
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    _print_warnings(model)
+    stem = slug(str(model.sdp.get("name", "diagram")))
+    output = args.output or Path(f"{stem}-architecture.html")
+    svgs = _svg_pair(diagram_of(model), stem) if args.svg_dir is not None else []
+    replaced = output.exists()
+    try:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(page, encoding="utf-8")
+        if args.svg_dir is not None:
+            args.svg_dir.mkdir(parents=True, exist_ok=True)
+            for name, text in svgs:
+                (args.svg_dir / name).write_text(text, encoding="utf-8")
+    except OSError as exc:
+        print(f"error: cannot write {exc.filename or output}: {exc.strerror or exc}", file=sys.stderr)
+        return 1
+    note = "; replaced the existing file" if replaced else ""
+    print(f"Wrote {output} ({len(model.relationships)} relationships, {len(model.scope)} objects in scope){note}")
+    for name, _ in svgs:
+        print(f"Wrote {args.svg_dir / name}")
+    return 0
+
+
+def _render_all(args: argparse.Namespace) -> int:
+    catalog = load_catalog(args.workspace)
+    patterns = sdps(catalog)
+    if not patterns:
+        print(f"error: no software_deployment_pattern objects found under {args.workspace}", file=sys.stderr)
+        return 1
+    stems, notes = pattern_stems(patterns)
+    for note in notes:
+        print(note, file=sys.stderr)
+    try:
+        args.output_dir.mkdir(parents=True, exist_ok=True)
+        if args.svg_dir is not None:
+            args.svg_dir.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        print(f"error: cannot create output directory: {exc.strerror or exc}", file=sys.stderr)
+        return 1
+    failures = 0
+    used: set[str] = set()
+    for pattern, stem in zip(patterns, stems):
+        uid = str(pattern.get("uid", ""))
+        name = clean(pattern.get("name")) or uid
+        try:
+            if stem in used:  # only possible when two uids differ by case alone
+                raise ValueError(f"output name {stem} is already used by another pattern")
+            model = Model(catalog, pattern, args.placed_only)
+            dm = diagram_of(model)
+            page = render_page(model, dm)
+            svgs = _svg_pair(dm, stem) if args.svg_dir is not None else []
+            html_path = args.output_dir / f"{stem}.html"
+            html_path.write_text(page, encoding="utf-8")
+            for svg_name, text in svgs:
+                (args.svg_dir / svg_name).write_text(text, encoding="utf-8")
+        except Exception as exc:  # one failing pattern must not stop the others (D20)
+            print(f"error: {name} ({uid}): {exc}", file=sys.stderr)
+            failures += 1
+            continue
+        used.add(stem)
+        print(f"{uid}\t{name}\t{len(model.warnings)} warnings\t{html_path}")
+        _print_warnings(model)
+    return 0 if failures == 0 else 1
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -2187,7 +2315,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", type=Path, help="Output HTML file. Default: <slug>-architecture.html in the current directory.")
     parser.add_argument("--placed-only", action="store_true", help="Limit scope to objects placed in a service group.")
     parser.add_argument("--list", action="store_true", help="List deployment patterns and exit.")
+    parser.add_argument("--svg-dir", type=Path, help="Also write <slug>-logical.svg and <slug>-deployment.svg into this directory.")
+    parser.add_argument("--all", action="store_true", help="Render every deployment pattern; requires --output-dir.")
+    parser.add_argument("--output-dir", type=Path, help="With --all: directory that receives one <slug>-architecture.html per pattern.")
     args = parser.parse_args(argv)
+    _check_arguments(parser, args)
     if not (args.workspace / "catalog").is_dir():
         print(f"error: no catalog/ directory under workspace {args.workspace}", file=sys.stderr)
         return 2
@@ -2195,26 +2327,9 @@ def main(argv: list[str] | None = None) -> int:
         for pattern in sdps(load_catalog(args.workspace)):
             print(f"{pattern.get('uid')}\t{pattern.get('name')}")
         return 0
-    try:
-        page, model = build(args.workspace, args.sdp, args.placed_only)
-    except ValueError as exc:  # D32: a malformed pattern is reported, not traced
-        print(f"error: {exc}", file=sys.stderr)
-        return 1
-    # D18: the count line, then each distinct warning once, in sorted order (the model sorts and de-duplicates them)
-    print(f"{len(model.warnings)} warnings", file=sys.stderr)
-    for warning in model.warnings:
-        print(warning, file=sys.stderr)
-    output = args.output or Path(f"{slug(str(model.sdp.get('name', 'diagram')))}-architecture.html")
-    replaced = output.exists()
-    try:
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(page, encoding="utf-8")
-    except OSError as exc:
-        print(f"error: cannot write {output}: {exc.strerror or exc}", file=sys.stderr)
-        return 1
-    note = "; replaced the existing file" if replaced else ""
-    print(f"Wrote {output} ({len(model.relationships)} relationships, {len(model.scope)} objects in scope){note}")
-    return 0
+    if args.all:
+        return _render_all(args)
+    return _render_single(args)
 
 
 if __name__ == "__main__":

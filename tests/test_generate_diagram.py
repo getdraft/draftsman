@@ -5,6 +5,7 @@ import hashlib
 import inspect
 import io
 import math
+import os
 import re
 import subprocess
 import sys
@@ -209,6 +210,25 @@ ALLOWED_ONE_HOP = [
     "host",
 ]
 FIXTURE_SDP = "FXSDP00001-0001"
+
+
+def named_pattern(uid: str, name: str, refs: list[str]) -> dict:
+    """A pattern with one service group holding refs, under the given uid and name."""
+    sdp = pattern({"G": refs})
+    sdp["uid"] = uid
+    sdp["name"] = name
+    return sdp
+
+
+def run_cli(argv: list[str]) -> tuple:
+    """Run the CLI in process: (exit code, stdout, stderr). Usage errors (SystemExit) become their code."""
+    out, err = io.StringIO(), io.StringIO()
+    with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+        try:
+            code = generate_diagram.main(argv)
+        except SystemExit as exc:
+            code = exc.code
+    return code, out.getvalue(), err.getvalue()
 
 
 def plain(uid: str, obj_type: str, name: str, **extra: object) -> dict:
@@ -2223,41 +2243,138 @@ class LaterStoryTests(unittest.TestCase):
                 self, lambda c: generate_diagram.build_from_catalog(c, uid)[0].encode("utf-8"), catalog
             )
 
-    @unittest.skip("enabled in S9")
     def test_cli_argument_matrix(self) -> None:
-        self.fail("not implemented until S9")
+        cases = [
+            ["--workspace", str(EXAMPLES), "--all"],
+            ["--workspace", str(EXAMPLES), "--all", "--output-dir", "unused", "--sdp", "FX"],
+            ["--workspace", str(EXAMPLES), "--all", "--output-dir", "unused", "--output", "unused.html"],
+            ["--workspace", str(EXAMPLES), "--list", "--sdp", "FX"],
+            ["--workspace", str(EXAMPLES), "--list", "--all"],
+            ["--workspace", str(EXAMPLES), "--list", "--output", "unused.html"],
+            ["--workspace", str(EXAMPLES), "--list", "--output-dir", "unused"],
+            ["--workspace", str(EXAMPLES), "--list", "--svg-dir", "unused"],
+            ["--workspace", str(EXAMPLES), "--output-dir", "unused"],
+        ]
+        for argv in cases:
+            with self.subTest(argv=argv):
+                code, _, err = run_cli(argv)
+                self.assertEqual(code, 2)
+                self.assertIn("error:", err)
 
-    @unittest.skip("enabled in S9")
     def test_all_no_catalog_exit_2(self) -> None:
-        self.fail("not implemented until S9")
+        with tempfile.TemporaryDirectory() as tmp:
+            out_dir = Path(tmp) / "out"
+            code, _, err = run_cli(["--workspace", str(Path(tmp) / "nope"), "--all", "--output-dir", str(out_dir)])
+            self.assertEqual(code, 2)
+            self.assertIn("catalog/", err)
+            self.assertFalse(out_dir.exists(), "nothing may be rendered or created before the catalog check")
 
-    @unittest.skip("enabled in S9")
     def test_all_no_sdp_exit_1(self) -> None:
-        self.fail("not implemented until S9")
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = write_workspace(Path(tmp) / "ws", [component("A-1", "Alpha")])
+            code, out, err = run_cli(["--workspace", str(workspace), "--all", "--output-dir", str(Path(tmp) / "out")])
+        self.assertEqual(code, 1)
+        self.assertIn("no software_deployment_pattern objects found", err)
+        self.assertEqual(out, "")
 
-    @unittest.skip("enabled in S9")
     def test_all_continues_after_malformed_pattern(self) -> None:
-        self.fail("not implemented until S9")
+        good = named_pattern("SDP-G", "Good Pattern", ["A-1"])
+        bad = named_pattern("SDP-B", "Bad Pattern", [])
+        bad["serviceGroups"] = "not a list"
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = write_workspace(Path(tmp) / "ws", [component("A-1", "Alpha"), good, bad])
+            out_dir = Path(tmp) / "out"
+            code, out, err = run_cli(["--workspace", str(workspace), "--all", "--output-dir", str(out_dir)])
+            self.assertEqual(code, 1)
+            self.assertTrue((out_dir / "good-pattern.html").is_file())
+            self.assertFalse((out_dir / "bad-pattern.html").exists())
+        self.assertIn("error: Bad Pattern (SDP-B): serviceGroups must be a list", err)
+        self.assertEqual(out.count("\n"), 1)
+        self.assertTrue(out.startswith("SDP-G\tGood Pattern\t"))
 
-    @unittest.skip("enabled in S9")
     def test_single_mode_malformed_exit_1(self) -> None:
-        self.fail("not implemented until S9")
+        bad = named_pattern("SDP-B", "Bad Pattern", [])
+        bad["serviceGroups"] = "not a list"
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = write_workspace(Path(tmp) / "ws", [bad])
+            code, _, err = run_cli(["--workspace", str(workspace), "--output", str(Path(tmp) / "p.html")])
+        self.assertEqual(code, 1)
+        self.assertTrue(err.startswith("error:"), err)
 
-    @unittest.skip("enabled in S9")
     def test_slug_collision_suffix(self) -> None:
-        self.fail("not implemented until S9")
+        objects = [
+            component("A-1", "Alpha"),
+            named_pattern("SDP-A", "Demo Pattern", ["A-1"]),
+            named_pattern("SDP-B", "Demo Pattern", ["A-1"]),
+            named_pattern("SDP-C", "Other Pattern", ["A-1"]),
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = write_workspace(Path(tmp) / "ws", objects)
+            out_dir, svg_dir = Path(tmp) / "html", Path(tmp) / "svg"
+            code, _, err = run_cli(["--workspace", str(workspace), "--all", "--output-dir", str(out_dir), "--svg-dir", str(svg_dir)])
+            self.assertEqual(code, 0)
+            for stem in ("demo-pattern-sdp-a", "demo-pattern-sdp-b"):
+                self.assertTrue((out_dir / f"{stem}.html").is_file())
+                self.assertTrue((svg_dir / f"{stem}-logical.svg").is_file())
+                self.assertTrue((svg_dir / f"{stem}-deployment.svg").is_file())
+            self.assertTrue((out_dir / "other-pattern.html").is_file())
+            self.assertFalse((out_dir / "demo-pattern.html").exists())
+        self.assertEqual(err.count("slug collision: demo-pattern used by 2 patterns; uid suffix added"), 1)
 
-    @unittest.skip("enabled in S9")
     def test_svg_dir_matches_goldens(self) -> None:
-        self.fail("not implemented until S9")
+        for sdp in generate_diagram.sdps(load_catalog(FIXTURE)):
+            with self.subTest(sdp=sdp["uid"]), tempfile.TemporaryDirectory() as tmp:
+                svg_dir = Path(tmp) / "svg"
+                code, _, _ = run_cli(
+                    ["--workspace", str(FIXTURE), "--sdp", sdp["uid"], "--output", str(Path(tmp) / "p.html"), "--svg-dir", str(svg_dir)]
+                )
+                self.assertEqual(code, 0)
+                for view in ("logical", "deployment"):
+                    produced = (svg_dir / f"{generate_diagram.slug(sdp['name'])}-{view}.svg").read_bytes()
+                    harness.check_golden(self, harness.golden_path(generate_diagram.slug(sdp["name"]), view), lambda: produced)
 
-    @unittest.skip("enabled in S9")
     def test_subprocess_hashseed_identical(self) -> None:
-        self.fail("not implemented until S9")
+        for sdp in generate_diagram.sdps(load_catalog(FIXTURE)):
+            outputs = {}
+            for seed in ("0", "4242"):
+                with self.subTest(sdp=sdp["uid"], seed=seed), tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    subprocess.run(
+                        [
+                            sys.executable,
+                            "-m",
+                            "framework.tools.generate_diagram",
+                            "--workspace",
+                            str(FIXTURE),
+                            "--sdp",
+                            sdp["uid"],
+                            "--output",
+                            str(root / "page.html"),
+                            "--svg-dir",
+                            str(root / "svg"),
+                        ],
+                        cwd=str(REPO_ROOT),
+                        env=dict(os.environ, PYTHONHASHSEED=seed),
+                        check=True,
+                        capture_output=True,
+                    )
+                    outputs[seed] = {
+                        str(path.relative_to(root)): path.read_bytes() for path in sorted(root.rglob("*")) if path.is_file()
+                    }
+            self.assertEqual(sorted(outputs["0"]), sorted(outputs["4242"]))
+            self.assertIn("page.html", outputs["0"])
+            self.assertEqual(outputs["0"], outputs["4242"], f"hash seed changed the bytes of {sdp['uid']}")
 
-    @unittest.skip("enabled in S9")
     def test_all_on_examples_and_fixture_exit_0(self) -> None:
-        self.fail("not implemented until S9")
+        for workspace in (EXAMPLES, FIXTURE):
+            with self.subTest(workspace=workspace.name), tempfile.TemporaryDirectory() as tmp:
+                html_dir, svg_dir = Path(tmp) / "html", Path(tmp) / "svg"
+                code, out, err = run_cli(["--workspace", str(workspace), "--all", "--output-dir", str(html_dir), "--svg-dir", str(svg_dir)])
+                count = len(generate_diagram.sdps(load_catalog(workspace)))
+                self.assertEqual(code, 0, err)
+                self.assertEqual(len(list(html_dir.glob("*.html"))), count)
+                self.assertEqual(len(list(svg_dir.glob("*.svg"))), 2 * count)
+                self.assertEqual(len([line for line in out.splitlines() if line.count("\t") == 3]), count)
 
     @unittest.skip("enabled in S10")
     def test_no_story_skip_markers(self) -> None:
