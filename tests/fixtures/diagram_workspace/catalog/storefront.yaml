@@ -1,0 +1,273 @@
+# Fictional fixture (invented names). Every uid begins with FX.
+schemaVersion: '1.0'
+uid: FXSDP00001-0001
+type: software_deployment_pattern
+name: FX Storefront Pattern
+description: Invented storefront pattern used by the diagram tests.
+owner:
+  team: fx-team-storefront
+catalogStatus: complete
+lifecycleStatus: candidate
+networkZones:
+- id: fx-public
+  name: FX Public Edge
+  tier: frontend
+- id: fx-app
+  name: FX App Zone
+  tier: application
+- id: fx-data
+  name: FX Data Zone
+  tier: data
+serviceGroups:
+- name: Edge
+  deploymentTarget: fx-cloud-east
+  deployableObjects:
+  - ref: FXNET00001-0001
+    diagramTier: presentation
+- name: Web
+  deploymentTarget: fx-cloud-east
+  substrate: FXRTC00001-0001
+  deployableObjects:
+  - ref: FXRTC00001-0001
+    diagramTier: utility
+  - ref: FXPRD00001-0001
+    networkZone: fx-app
+    diagramTier: presentation
+- name: Application
+  deploymentTarget: fx-cloud-east
+  substrate: FXRTC00002-0001
+  deployableObjects:
+  - ref: FXPRD00002-0001
+    networkZone: fx-app
+    diagramTier: application
+  - ref: FXPRD00004-0001
+    networkZone: fx-data
+    diagramTier: application
+  - ref: FXPRD00003-0001
+    networkZone: fx-app
+- name: Data
+  deploymentTarget: fx-dc-west
+  deployableObjects:
+  - ref: FXDST00001-0001
+    networkZone: fx-data
+    diagramTier: data
+  - ref: FXDCP00001-0001
+    networkZone: fx-data
+    diagramTier: data
+- name: Batch
+  deploymentTarget: fx-dc-west
+  deployableObjects:
+  - ref: FXPRD00003-0001
+    networkZone: fx-app
+    diagramTier: application
+- name: Reserved
+  deploymentTarget: fx-dc-west
+  deployableObjects: []
+---
+schemaVersion: '1.0'
+uid: FXRTC00001-0001
+type: runtime_service
+name: FX Cluster Alpha
+productName: FX Orchestrator
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXRTC00002-0001
+type: runtime_service
+name: FX Cluster Beta
+productName: FX Orchestrator
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXPRD00001-0001
+type: product_component
+name: FX Web Shop
+language: TypeScript
+runsOn: FXRTC00001-0001
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXPRD00002-0001
+type: product_component
+name: FX Order API
+language: Go
+runsOn: FXRTC00001-0001
+runtimeSpec:
+  dependencies:
+  - ref: FXDCP00001-0001
+    purpose: reads cached sessions
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXPRD00003-0001
+type: product_component
+name: FX Order Worker
+language: Python
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXPRD00004-0001
+type: product_component
+name: FX Legacy Cart
+language: Java
+catalogStatus: complete
+lifecycleStatus: retired
+---
+schemaVersion: '1.0'
+uid: FXPRD00005-0001
+type: product_component
+name: FX Unplaced Notifier
+language: Python
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXDST00001-0001
+type: data_store_service
+name: FX Orders Database
+productName: FX SQL Store
+host: FXHST00001-0001
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXDCP00001-0001
+type: data_component
+name: FX Session Cache
+targetEngine: FX KeyValue
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXHST00001-0001
+type: host
+name: FX Host VM 01
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXNET00001-0001
+type: network_service
+name: FX Edge Gateway
+productName: FX Gateway
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXEDG00001-0001
+type: relationship
+name: FX Web Shop to FX Order API
+source: FXPRD00001-0001
+target: FXPRD00002-0001
+label: places orders
+technology: HTTPS JSON
+direction: synchronous
+flow: outbound
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00002-0001
+type: relationship
+name: FX Order API to FX Orders Database
+source: FXPRD00002-0001
+target: FXDST00001-0001
+label: reads and writes orders
+technology: SQL
+direction: synchronous
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00003-0001
+type: relationship
+name: FX Order Worker consumes orders
+source: FXPRD00003-0001
+target: FXPRD00002-0001
+label: consumes order messages
+direction: asynchronous
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00004-0001
+type: relationship
+name: FX Order API publishes order placed
+source: FXPRD00002-0001
+target: FXPRD00003-0001
+label: publishes order placed
+direction: event
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00005-0001
+type: relationship
+name: FX Web Shop shares session state
+source: FXPRD00001-0001
+target: FXDCP00001-0001
+label: shares session state
+direction: synchronous
+flow: bidirectional
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00006-0001
+type: relationship
+name: FX Edge Gateway routes traffic
+source: FXNET00001-0001
+target: FXPRD00001-0001
+label: routes customer traffic
+flow: inbound
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00007-0001
+type: relationship
+name: FX Order API health check
+source: FXPRD00002-0001
+target: FXPRD00002-0001
+label: checks own health
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00008-0001
+type: relationship
+name: FX Order API to payment provider
+source: FXPRD00002-0001
+externalTarget: FX Payment Provider
+label: charges cards
+direction: synchronous
+flow: outbound
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00009-0001
+type: relationship
+name: FX Order API posts ledger entries
+source: FXPRD00002-0001
+target: FXPRD00010-0001
+label: posts ledger entries
+direction: asynchronous
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00010-0001
+type: relationship
+name: FX Order API sends notifications
+source: FXPRD00002-0001
+target: FXPRD00005-0001
+label: sends notifications
+direction: asynchronous
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00011-0001
+type: relationship
+name: FX Legacy Cart reads orders
+source: FXPRD00004-0001
+target: FXDST00001-0001
+label: reads historic carts
+direction: synchronous
+catalogStatus: complete

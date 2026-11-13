@@ -1,0 +1,71 @@
+# Fictional fixture (invented names). Every uid begins with FX.
+schemaVersion: '1.0'
+uid: FXSDP00002-0001
+type: software_deployment_pattern
+name: FX Registry Pattern
+description: Invented second pattern; its shared ledger component is also drawn as an outside endpoint of the storefront pattern.
+owner:
+  team: fx-team-registry
+catalogStatus: complete
+lifecycleStatus: candidate
+networkZones:
+- id: fx-data
+  name: FX Data Zone
+  tier: data
+serviceGroups:
+- name: Ledger Core
+  deploymentTarget: fx-dc-west
+  substrate: FXRTC00003-0001
+  deployableObjects:
+  - ref: FXPRD00010-0001
+    networkZone: fx-data
+    diagramTier: application
+- name: Ledger Store
+  deploymentTarget: fx-dc-west
+  deployableObjects:
+  - ref: FXDST00002-0001
+    networkZone: fx-data
+    diagramTier: data
+---
+schemaVersion: '1.0'
+uid: FXRTC00003-0001
+type: runtime_service
+name: FX Cluster Gamma
+productName: FX Ledger Runtime
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXPRD00010-0001
+type: product_component
+name: FX Shared Ledger
+language: Java
+runsOn: FXRTC00003-0001
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXDST00002-0001
+type: data_store_service
+name: FX Ledger Store
+productName: FX Ledger DB
+host: FXHST00002-0001
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXHST00002-0001
+type: host
+name: FX Host VM 02
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXEDG00012-0001
+type: relationship
+name: FX Shared Ledger persists entries
+source: FXPRD00010-0001
+target: FXDST00002-0001
+label: persists ledger entries
+direction: synchronous
+catalogStatus: complete
