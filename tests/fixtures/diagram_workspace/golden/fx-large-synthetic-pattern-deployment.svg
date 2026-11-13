@@ -1,253 +1,253 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1090 15738" width="1090" height="15738" role="img" aria-label="Deployment pattern diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1288 7928" width="1288" height="7928" role="img" aria-label="Deployment pattern diagram">
 <title>Deployment pattern diagram</title>
 <desc>generate_diagram FXSDP00003-0001</desc>
 <style>.tgt{fill:#eef1f6;stroke:#9aa6b6;stroke-width:1.4}.grp{fill:#f8f9fb;stroke:#7a8696}.group.dashed .grp{stroke-dasharray:5 3}.zl{fill:#ffffff;stroke:#c3cad4;stroke-dasharray:3 3}.lane{fill:#fbf6ec;stroke:#d8c9a8;stroke-dasharray:6 4}.tl{font:700 12px sans-serif;fill:#1a2230}.gl{font:600 11px sans-serif;fill:#586374}.gc{font:600 12px sans-serif;fill:#1a2230}.zc,.ll{font:600 11px sans-serif;fill:#586374}.box{fill:#ffffff;stroke:#555555;stroke-width:1.4}.dashed .box{stroke-dasharray:5 3}.ttl{font:600 12px sans-serif;fill:#1a2230}.cap{font:10px sans-serif;fill:#586374}.ln{fill:none;stroke:#7a8696;stroke-width:1.4}</style>
-<g class="target" data-target="fx-cloud-east"><rect class="tgt" x="20" y="20" width="983" height="5502" rx="8"/><text class="tl" x="30" y="40">fx-cloud-east</text>
-<g class="group" data-id="FXGRT00001-0001" data-group="Large Group 01"><title>Large Group 01</title><rect class="grp" x="30" y="212" width="963" height="898" rx="6"/><text class="gl" x="40" y="230">Large Group 01</text><text class="gc" x="40" y="250">FX Large Runtime 01</text>
-<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="262" width="943" height="414" rx="5"/><text class="zc" x="50" y="281">Fx Public (frontend)</text>
-<g class="node" data-id="FXGPR00003-0001"><title>FX Large Part 003</title><rect class="box" x="50" y="454" width="200" height="60" rx="6"/><text class="ttl" x="150" y="488" text-anchor="middle">FX Large Part 003</text></g>
-<g class="node" data-id="FXGPR00004-0001"><title>FX Large Part 004</title><rect class="box" x="390" y="454" width="200" height="60" rx="6"/><text class="ttl" x="490" y="488" text-anchor="middle">FX Large Part 004</text></g>
-<g class="node" data-id="FXGPR00005-0001"><title>FX Large Part 005</title><rect class="box" x="730" y="454" width="200" height="60" rx="6"/><text class="ttl" x="830" y="488" text-anchor="middle">FX Large Part 005</text></g>
+<g class="target" data-target="fx-cloud-east"><rect class="tgt" x="20" y="20" width="824" height="2906" rx="8"/><text class="tl" x="30" y="40">fx-cloud-east</text>
+<g class="group" data-id="FXGRT00001-0001" data-group="Large Group 01"><title>Large Group 01</title><rect class="grp" x="30" y="74" width="804" height="598" rx="6"/><text class="gl" x="40" y="92">Large Group 01</text><text class="gc" x="40" y="112">FX Large Runtime 01</text>
+<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="124" width="784" height="270" rx="5"/><text class="zc" x="50" y="143">Fx Public (frontend)</text>
+<g class="node" data-id="FXGPR00003-0001"><title>FX Large Part 003</title><rect class="box" x="50" y="244" width="200" height="60" rx="6"/><text class="ttl" x="150" y="278" text-anchor="middle">FX Large Part 003</text></g>
+<g class="node" data-id="FXGPR00004-0001"><title>FX Large Part 004</title><rect class="box" x="310" y="244" width="200" height="60" rx="6"/><text class="ttl" x="410" y="278" text-anchor="middle">FX Large Part 004</text></g>
+<g class="node" data-id="FXGPR00005-0001"><title>FX Large Part 005</title><rect class="box" x="570" y="244" width="200" height="60" rx="6"/><text class="ttl" x="670" y="278" text-anchor="middle">FX Large Part 005</text></g>
 </g>
-<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="686" width="943" height="414" rx="5"/><text class="zc" x="50" y="705">Fx Data (data)</text>
-<g class="node" data-id="FXGPR00001-0001"><title>FX Large Part 001</title><rect class="box" x="50" y="878" width="200" height="60" rx="6"/><text class="ttl" x="150" y="912" text-anchor="middle">FX Large Part 001</text></g>
-<g class="node" data-id="FXGPR00002-0001"><title>FX Large Part 002</title><rect class="box" x="390" y="878" width="200" height="60" rx="6"/><text class="ttl" x="490" y="912" text-anchor="middle">FX Large Part 002</text></g>
-</g>
-</g>
-<g class="group" data-id="FXGRT00004-0001" data-group="Large Group 04"><title>Large Group 04</title><rect class="grp" x="30" y="1272" width="963" height="1322" rx="6"/><text class="gl" x="40" y="1290">Large Group 04</text><text class="gc" x="40" y="1310">FX Large Runtime 04</text>
-<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="1322" width="943" height="414" rx="5"/><text class="zc" x="50" y="1341">Fx Public (frontend)</text>
-<g class="node" data-id="FXGPR00019-0001"><title>FX Large Part 019</title><rect class="box" x="50" y="1514" width="200" height="60" rx="6"/><text class="ttl" x="150" y="1548" text-anchor="middle">FX Large Part 019</text></g>
-</g>
-<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="1746" width="943" height="414" rx="5"/><text class="zc" x="50" y="1765">Fx App (application)</text>
-<g class="node" data-id="FXGPR00016-0001"><title>FX Large Part 016</title><rect class="box" x="50" y="1938" width="200" height="60" rx="6"/><text class="ttl" x="150" y="1972" text-anchor="middle">FX Large Part 016</text></g>
-<g class="node" data-id="FXGPR00017-0001"><title>FX Large Part 017</title><rect class="box" x="390" y="1938" width="200" height="60" rx="6"/><text class="ttl" x="490" y="1972" text-anchor="middle">FX Large Part 017</text></g>
-<g class="node" data-id="FXGPR00018-0001"><title>FX Large Part 018</title><rect class="box" x="730" y="1938" width="200" height="60" rx="6"/><text class="ttl" x="830" y="1972" text-anchor="middle">FX Large Part 018</text></g>
-</g>
-<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="2170" width="943" height="414" rx="5"/><text class="zc" x="50" y="2189">Fx Data (data)</text>
-<g class="node" data-id="FXGPR00020-0001"><title>FX Large Part 020</title><rect class="box" x="50" y="2362" width="200" height="60" rx="6"/><text class="ttl" x="150" y="2396" text-anchor="middle">FX Large Part 020</text></g>
+<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="404" width="784" height="258" rx="5"/><text class="zc" x="50" y="423">Fx Data (data)</text>
+<g class="node" data-id="FXGPR00001-0001"><title>FX Large Part 001</title><rect class="box" x="50" y="518" width="200" height="60" rx="6"/><text class="ttl" x="150" y="552" text-anchor="middle">FX Large Part 001</text></g>
+<g class="node" data-id="FXGPR00002-0001"><title>FX Large Part 002</title><rect class="box" x="310" y="518" width="200" height="60" rx="6"/><text class="ttl" x="410" y="552" text-anchor="middle">FX Large Part 002</text></g>
 </g>
 </g>
-<g class="group" data-id="FXGRT00007-0001" data-group="Large Group 07"><title>Large Group 07</title><rect class="grp" x="30" y="2756" width="963" height="1322" rx="6"/><text class="gl" x="40" y="2774">Large Group 07</text><text class="gc" x="40" y="2794">FX Large Runtime 07</text>
-<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="2806" width="943" height="414" rx="5"/><text class="zc" x="50" y="2825">Fx Public (frontend)</text>
-<g class="node" data-id="FXGPR00032-0001"><title>FX Large Part 032</title><rect class="box" x="50" y="2998" width="200" height="60" rx="6"/><text class="ttl" x="150" y="3032" text-anchor="middle">FX Large Part 032</text></g>
-<g class="node" data-id="FXGPR00033-0001"><title>FX Large Part 033</title><rect class="box" x="390" y="2998" width="200" height="60" rx="6"/><text class="ttl" x="490" y="3032" text-anchor="middle">FX Large Part 033</text></g>
-<g class="node" data-id="FXGPR00035-0001"><title>FX Large Part 035</title><rect class="box" x="730" y="2998" width="200" height="60" rx="6"/><text class="ttl" x="830" y="3032" text-anchor="middle">FX Large Part 035</text></g>
+<g class="group" data-id="FXGRT00004-0001" data-group="Large Group 04"><title>Large Group 04</title><rect class="grp" x="30" y="696" width="804" height="770" rx="6"/><text class="gl" x="40" y="714">Large Group 04</text><text class="gc" x="40" y="734">FX Large Runtime 04</text>
+<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="746" width="784" height="174" rx="5"/><text class="zc" x="50" y="765">Fx Public (frontend)</text>
+<g class="node" data-id="FXGPR00019-0001"><title>FX Large Part 019</title><rect class="box" x="50" y="818" width="200" height="60" rx="6"/><text class="ttl" x="150" y="852" text-anchor="middle">FX Large Part 019</text></g>
 </g>
-<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="3230" width="943" height="414" rx="5"/><text class="zc" x="50" y="3249">Fx App (application)</text>
-<g class="node" data-id="FXGPR00034-0001"><title>FX Large Part 034</title><rect class="box" x="50" y="3422" width="200" height="60" rx="6"/><text class="ttl" x="150" y="3456" text-anchor="middle">FX Large Part 034</text></g>
+<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="930" width="784" height="306" rx="5"/><text class="zc" x="50" y="949">Fx App (application)</text>
+<g class="node" data-id="FXGPR00016-0001"><title>FX Large Part 016</title><rect class="box" x="50" y="1068" width="200" height="60" rx="6"/><text class="ttl" x="150" y="1102" text-anchor="middle">FX Large Part 016</text></g>
+<g class="node" data-id="FXGPR00017-0001"><title>FX Large Part 017</title><rect class="box" x="310" y="1068" width="200" height="60" rx="6"/><text class="ttl" x="410" y="1102" text-anchor="middle">FX Large Part 017</text></g>
+<g class="node" data-id="FXGPR00018-0001"><title>FX Large Part 018</title><rect class="box" x="570" y="1068" width="200" height="60" rx="6"/><text class="ttl" x="670" y="1102" text-anchor="middle">FX Large Part 018</text></g>
 </g>
-<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="3654" width="943" height="414" rx="5"/><text class="zc" x="50" y="3673">Fx Data (data)</text>
-<g class="node" data-id="FXGPR00031-0001"><title>FX Large Part 031</title><rect class="box" x="50" y="3846" width="200" height="60" rx="6"/><text class="ttl" x="150" y="3880" text-anchor="middle">FX Large Part 031</text></g>
-</g>
-</g>
-<g class="group" data-id="FXGRT00010-0001" data-group="Large Group 10"><title>Large Group 10</title><rect class="grp" x="30" y="4240" width="963" height="1120" rx="6"/><text class="gl" x="40" y="4258">Large Group 10</text><text class="gc" x="40" y="4278">FX Large Runtime 10</text>
-<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="4290" width="943" height="414" rx="5"/><text class="zc" x="50" y="4309">Fx Public (frontend)</text>
-<g class="node" data-id="FXGPR00046-0001"><title>FX Large Part 046</title><rect class="box" x="50" y="4482" width="200" height="60" rx="6"/><text class="ttl" x="150" y="4516" text-anchor="middle">FX Large Part 046</text></g>
-</g>
-<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="4714" width="943" height="636" rx="5"/><text class="zc" x="50" y="4733">Fx App (application)</text>
-<g class="node" data-id="FXGPR00047-0001"><title>FX Large Part 047</title><rect class="box" x="50" y="4906" width="200" height="60" rx="6"/><text class="ttl" x="150" y="4940" text-anchor="middle">FX Large Part 047</text></g>
-<g class="node" data-id="FXGPR00048-0001"><title>FX Large Part 048</title><rect class="box" x="390" y="4906" width="200" height="60" rx="6"/><text class="ttl" x="490" y="4940" text-anchor="middle">FX Large Part 048</text></g>
-<g class="node" data-id="FXGPR00049-0001"><title>FX Large Part 049</title><rect class="box" x="730" y="4906" width="200" height="60" rx="6"/><text class="ttl" x="830" y="4940" text-anchor="middle">FX Large Part 049</text></g>
-<g class="node" data-id="FXGPR00050-0001"><title>FX Large Part 050</title><rect class="box" x="50" y="5128" width="200" height="60" rx="6"/><text class="ttl" x="150" y="5162" text-anchor="middle">FX Large Part 050</text></g>
+<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="1246" width="784" height="210" rx="5"/><text class="zc" x="50" y="1265">Fx Data (data)</text>
+<g class="node" data-id="FXGPR00020-0001"><title>FX Large Part 020</title><rect class="box" x="50" y="1336" width="200" height="60" rx="6"/><text class="ttl" x="150" y="1370" text-anchor="middle">FX Large Part 020</text></g>
 </g>
 </g>
+<g class="group" data-id="FXGRT00007-0001" data-group="Large Group 07"><title>Large Group 07</title><rect class="grp" x="30" y="1490" width="804" height="722" rx="6"/><text class="gl" x="40" y="1508">Large Group 07</text><text class="gc" x="40" y="1528">FX Large Runtime 07</text>
+<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="1540" width="784" height="270" rx="5"/><text class="zc" x="50" y="1559">Fx Public (frontend)</text>
+<g class="node" data-id="FXGPR00032-0001"><title>FX Large Part 032</title><rect class="box" x="50" y="1660" width="200" height="60" rx="6"/><text class="ttl" x="150" y="1694" text-anchor="middle">FX Large Part 032</text></g>
+<g class="node" data-id="FXGPR00033-0001"><title>FX Large Part 033</title><rect class="box" x="310" y="1660" width="200" height="60" rx="6"/><text class="ttl" x="410" y="1694" text-anchor="middle">FX Large Part 033</text></g>
+<g class="node" data-id="FXGPR00035-0001"><title>FX Large Part 035</title><rect class="box" x="570" y="1660" width="200" height="60" rx="6"/><text class="ttl" x="670" y="1694" text-anchor="middle">FX Large Part 035</text></g>
 </g>
-<g class="target" data-target="fx-cloud-west"><rect class="tgt" x="20" y="5552" width="983" height="4856" rx="8"/><text class="tl" x="30" y="5572">fx-cloud-west</text>
-<g class="group" data-id="FXGRT00002-0001" data-group="Large Group 02"><title>Large Group 02</title><rect class="grp" x="30" y="5744" width="963" height="898" rx="6"/><text class="gl" x="40" y="5762">Large Group 02</text><text class="gc" x="40" y="5782">FX Large Runtime 02</text>
-<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="5794" width="943" height="414" rx="5"/><text class="zc" x="50" y="5813">Fx Public (frontend)</text>
-<g class="node" data-id="FXGPR00006-0001"><title>FX Large Part 006</title><rect class="box" x="50" y="5986" width="200" height="60" rx="6"/><text class="ttl" x="150" y="6020" text-anchor="middle">FX Large Part 006</text></g>
-<g class="node" data-id="FXGPR00009-0001"><title>FX Large Part 009</title><rect class="box" x="390" y="5986" width="200" height="60" rx="6"/><text class="ttl" x="490" y="6020" text-anchor="middle">FX Large Part 009</text></g>
+<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="1820" width="784" height="186" rx="5"/><text class="zc" x="50" y="1839">Fx App (application)</text>
+<g class="node" data-id="FXGPR00034-0001"><title>FX Large Part 034</title><rect class="box" x="50" y="1898" width="200" height="60" rx="6"/><text class="ttl" x="150" y="1932" text-anchor="middle">FX Large Part 034</text></g>
 </g>
-<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="6218" width="943" height="414" rx="5"/><text class="zc" x="50" y="6237">Fx Data (data)</text>
-<g class="node" data-id="FXGPR00007-0001"><title>FX Large Part 007</title><rect class="box" x="50" y="6410" width="200" height="60" rx="6"/><text class="ttl" x="150" y="6444" text-anchor="middle">FX Large Part 007</text></g>
-<g class="node" data-id="FXGPR00008-0001"><title>FX Large Part 008</title><rect class="box" x="390" y="6410" width="200" height="60" rx="6"/><text class="ttl" x="490" y="6444" text-anchor="middle">FX Large Part 008</text></g>
-<g class="node" data-id="FXGPR00010-0001"><title>FX Large Part 010</title><rect class="box" x="730" y="6410" width="200" height="60" rx="6"/><text class="ttl" x="830" y="6444" text-anchor="middle">FX Large Part 010</text></g>
-</g>
-</g>
-<g class="group" data-id="FXGRT00005-0001" data-group="Large Group 05"><title>Large Group 05</title><rect class="grp" x="30" y="6804" width="963" height="898" rx="6"/><text class="gl" x="40" y="6822">Large Group 05</text><text class="gc" x="40" y="6842">FX Large Runtime 05</text>
-<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="6854" width="943" height="414" rx="5"/><text class="zc" x="50" y="6873">Fx Public (frontend)</text>
-<g class="node" data-id="FXGPR00022-0001"><title>FX Large Part 022</title><rect class="box" x="50" y="7046" width="200" height="60" rx="6"/><text class="ttl" x="150" y="7080" text-anchor="middle">FX Large Part 022</text></g>
-<g class="node" data-id="FXGPR00023-0001"><title>FX Large Part 023</title><rect class="box" x="390" y="7046" width="200" height="60" rx="6"/><text class="ttl" x="490" y="7080" text-anchor="middle">FX Large Part 023</text></g>
-<g class="node" data-id="FXGPR00024-0001"><title>FX Large Part 024</title><rect class="box" x="730" y="7046" width="200" height="60" rx="6"/><text class="ttl" x="830" y="7080" text-anchor="middle">FX Large Part 024</text></g>
-</g>
-<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="7278" width="943" height="414" rx="5"/><text class="zc" x="50" y="7297">Fx Data (data)</text>
-<g class="node" data-id="FXGPR00021-0001"><title>FX Large Part 021</title><rect class="box" x="50" y="7470" width="200" height="60" rx="6"/><text class="ttl" x="150" y="7504" text-anchor="middle">FX Large Part 021</text></g>
-<g class="node" data-id="FXGPR00025-0001"><title>FX Large Part 025</title><rect class="box" x="390" y="7470" width="200" height="60" rx="6"/><text class="ttl" x="490" y="7504" text-anchor="middle">FX Large Part 025</text></g>
+<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="2016" width="784" height="186" rx="5"/><text class="zc" x="50" y="2035">Fx Data (data)</text>
+<g class="node" data-id="FXGPR00031-0001"><title>FX Large Part 031</title><rect class="box" x="50" y="2094" width="200" height="60" rx="6"/><text class="ttl" x="150" y="2128" text-anchor="middle">FX Large Part 031</text></g>
 </g>
 </g>
-<g class="group" data-id="FXGRT00008-0001" data-group="Large Group 08"><title>Large Group 08</title><rect class="grp" x="30" y="7864" width="963" height="898" rx="6"/><text class="gl" x="40" y="7882">Large Group 08</text><text class="gc" x="40" y="7902">FX Large Runtime 08</text>
-<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="7914" width="943" height="414" rx="5"/><text class="zc" x="50" y="7933">Fx Public (frontend)</text>
-<g class="node" data-id="FXGPR00036-0001"><title>FX Large Part 036</title><rect class="box" x="50" y="8106" width="200" height="60" rx="6"/><text class="ttl" x="150" y="8140" text-anchor="middle">FX Large Part 036</text></g>
-<g class="node" data-id="FXGPR00040-0001"><title>FX Large Part 040</title><rect class="box" x="390" y="8106" width="200" height="60" rx="6"/><text class="ttl" x="490" y="8140" text-anchor="middle">FX Large Part 040</text></g>
+<g class="group" data-id="FXGRT00010-0001" data-group="Large Group 10"><title>Large Group 10</title><rect class="grp" x="30" y="2236" width="804" height="666" rx="6"/><text class="gl" x="40" y="2254">Large Group 10</text><text class="gc" x="40" y="2274">FX Large Runtime 10</text>
+<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="2286" width="784" height="186" rx="5"/><text class="zc" x="50" y="2305">Fx Public (frontend)</text>
+<g class="node" data-id="FXGPR00046-0001"><title>FX Large Part 046</title><rect class="box" x="50" y="2364" width="200" height="60" rx="6"/><text class="ttl" x="150" y="2398" text-anchor="middle">FX Large Part 046</text></g>
 </g>
-<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="8338" width="943" height="414" rx="5"/><text class="zc" x="50" y="8357">Fx App (application)</text>
-<g class="node" data-id="FXGPR00037-0001"><title>FX Large Part 037</title><rect class="box" x="50" y="8530" width="200" height="60" rx="6"/><text class="ttl" x="150" y="8564" text-anchor="middle">FX Large Part 037</text></g>
-<g class="node dashed" data-id="FXGPR00038-0001"><title>FX Large Part 038</title><rect class="box" x="390" y="8530" width="200" height="60" rx="6"/><text class="ttl" x="490" y="8564" text-anchor="middle">FX Large Part 038</text></g>
-<g class="node" data-id="FXGPR00039-0001"><title>FX Large Part 039</title><rect class="box" x="730" y="8530" width="200" height="60" rx="6"/><text class="ttl" x="830" y="8564" text-anchor="middle">FX Large Part 039</text></g>
-</g>
-</g>
-<g class="group" data-id="FXGRT00011-0001" data-group="Large Group 11"><title>Large Group 11</title><rect class="grp" x="30" y="8924" width="963" height="1322" rx="6"/><text class="gl" x="40" y="8942">Large Group 11</text><text class="gc" x="40" y="8962">FX Large Runtime 11</text>
-<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="8974" width="943" height="414" rx="5"/><text class="zc" x="50" y="8993">Fx Public (frontend)</text>
-<g class="node" data-id="FXGPR00053-0001"><title>FX Large Part 053</title><rect class="box" x="50" y="9166" width="200" height="60" rx="6"/><text class="ttl" x="150" y="9200" text-anchor="middle">FX Large Part 053</text></g>
-<g class="node" data-id="FXGPR00055-0001"><title>FX Large Part 055</title><rect class="box" x="390" y="9166" width="200" height="60" rx="6"/><text class="ttl" x="490" y="9200" text-anchor="middle">FX Large Part 055</text></g>
-</g>
-<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="9398" width="943" height="414" rx="5"/><text class="zc" x="50" y="9417">Fx App (application)</text>
-<g class="node" data-id="FXGPR00051-0001"><title>FX Large Part 051</title><rect class="box" x="50" y="9590" width="200" height="60" rx="6"/><text class="ttl" x="150" y="9624" text-anchor="middle">FX Large Part 051</text></g>
-<g class="node" data-id="FXGPR00054-0001"><title>FX Large Part 054</title><rect class="box" x="390" y="9590" width="200" height="60" rx="6"/><text class="ttl" x="490" y="9624" text-anchor="middle">FX Large Part 054</text></g>
-</g>
-<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="9822" width="943" height="414" rx="5"/><text class="zc" x="50" y="9841">Fx Data (data)</text>
-<g class="node" data-id="FXGPR00052-0001"><title>FX Large Part 052</title><rect class="box" x="50" y="10014" width="200" height="60" rx="6"/><text class="ttl" x="150" y="10048" text-anchor="middle">FX Large Part 052</text></g>
+<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="2482" width="784" height="410" rx="5"/><text class="zc" x="50" y="2501">Fx App (application)</text>
+<g class="node" data-id="FXGPR00047-0001"><title>FX Large Part 047</title><rect class="box" x="50" y="2646" width="200" height="60" rx="6"/><text class="ttl" x="150" y="2680" text-anchor="middle">FX Large Part 047</text></g>
+<g class="node" data-id="FXGPR00048-0001"><title>FX Large Part 048</title><rect class="box" x="310" y="2646" width="200" height="60" rx="6"/><text class="ttl" x="410" y="2680" text-anchor="middle">FX Large Part 048</text></g>
+<g class="node" data-id="FXGPR00049-0001"><title>FX Large Part 049</title><rect class="box" x="570" y="2646" width="200" height="60" rx="6"/><text class="ttl" x="670" y="2680" text-anchor="middle">FX Large Part 049</text></g>
+<g class="node" data-id="FXGPR00050-0001"><title>FX Large Part 050</title><rect class="box" x="50" y="2802" width="200" height="60" rx="6"/><text class="ttl" x="150" y="2836" text-anchor="middle">FX Large Part 050</text></g>
 </g>
 </g>
 </g>
-<g class="target" data-target="fx-dc-north"><rect class="tgt" x="20" y="10438" width="983" height="5280" rx="8"/><text class="tl" x="30" y="10458">fx-dc-north</text>
-<g class="group" data-id="FXGRT00003-0001" data-group="Large Group 03"><title>Large Group 03</title><rect class="grp" x="30" y="10630" width="963" height="1322" rx="6"/><text class="gl" x="40" y="10648">Large Group 03</text><text class="gc" x="40" y="10668">FX Large Runtime 03</text>
-<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="10680" width="943" height="414" rx="5"/><text class="zc" x="50" y="10699">Fx Public (frontend)</text>
-<g class="node" data-id="FXGPR00012-0001"><title>FX Large Part 012</title><rect class="box" x="50" y="10872" width="200" height="60" rx="6"/><text class="ttl" x="150" y="10906" text-anchor="middle">FX Large Part 012</text></g>
-<g class="node" data-id="FXGPR00015-0001"><title>FX Large Part 015</title><rect class="box" x="390" y="10872" width="200" height="60" rx="6"/><text class="ttl" x="490" y="10906" text-anchor="middle">FX Large Part 015</text></g>
+<g class="target" data-target="fx-cloud-west"><rect class="tgt" x="20" y="2956" width="824" height="2270" rx="8"/><text class="tl" x="30" y="2976">fx-cloud-west</text>
+<g class="group" data-id="FXGRT00002-0001" data-group="Large Group 02"><title>Large Group 02</title><rect class="grp" x="30" y="3010" width="804" height="514" rx="6"/><text class="gl" x="40" y="3028">Large Group 02</text><text class="gc" x="40" y="3048">FX Large Runtime 02</text>
+<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="3060" width="784" height="222" rx="5"/><text class="zc" x="50" y="3079">Fx Public (frontend)</text>
+<g class="node" data-id="FXGPR00006-0001"><title>FX Large Part 006</title><rect class="box" x="50" y="3156" width="200" height="60" rx="6"/><text class="ttl" x="150" y="3190" text-anchor="middle">FX Large Part 006</text></g>
+<g class="node" data-id="FXGPR00009-0001"><title>FX Large Part 009</title><rect class="box" x="310" y="3156" width="200" height="60" rx="6"/><text class="ttl" x="410" y="3190" text-anchor="middle">FX Large Part 009</text></g>
 </g>
-<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="11104" width="943" height="414" rx="5"/><text class="zc" x="50" y="11123">Fx App (application)</text>
-<g class="node" data-id="FXGPR00011-0001"><title>FX Large Part 011</title><rect class="box" x="50" y="11296" width="200" height="60" rx="6"/><text class="ttl" x="150" y="11330" text-anchor="middle">FX Large Part 011</text></g>
-</g>
-<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="11528" width="943" height="414" rx="5"/><text class="zc" x="50" y="11547">Fx Data (data)</text>
-<g class="node" data-id="FXGPR00013-0001"><title>FX Large Part 013</title><rect class="box" x="50" y="11720" width="200" height="60" rx="6"/><text class="ttl" x="150" y="11754" text-anchor="middle">FX Large Part 013</text></g>
-<g class="node" data-id="FXGPR00014-0001"><title>FX Large Part 014</title><rect class="box" x="390" y="11720" width="200" height="60" rx="6"/><text class="ttl" x="490" y="11754" text-anchor="middle">FX Large Part 014</text></g>
+<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="3292" width="784" height="222" rx="5"/><text class="zc" x="50" y="3311">Fx Data (data)</text>
+<g class="node" data-id="FXGPR00007-0001"><title>FX Large Part 007</title><rect class="box" x="50" y="3388" width="200" height="60" rx="6"/><text class="ttl" x="150" y="3422" text-anchor="middle">FX Large Part 007</text></g>
+<g class="node" data-id="FXGPR00008-0001"><title>FX Large Part 008</title><rect class="box" x="310" y="3388" width="200" height="60" rx="6"/><text class="ttl" x="410" y="3422" text-anchor="middle">FX Large Part 008</text></g>
+<g class="node" data-id="FXGPR00010-0001"><title>FX Large Part 010</title><rect class="box" x="570" y="3388" width="200" height="60" rx="6"/><text class="ttl" x="670" y="3422" text-anchor="middle">FX Large Part 010</text></g>
 </g>
 </g>
-<g class="group" data-id="FXGRT00006-0001" data-group="Large Group 06"><title>Large Group 06</title><rect class="grp" x="30" y="12114" width="963" height="898" rx="6"/><text class="gl" x="40" y="12132">Large Group 06</text><text class="gc" x="40" y="12152">FX Large Runtime 06</text>
-<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="12164" width="943" height="414" rx="5"/><text class="zc" x="50" y="12183">Fx Public (frontend)</text>
-<g class="node" data-id="FXGPR00027-0001"><title>FX Large Part 027</title><rect class="box" x="50" y="12356" width="200" height="60" rx="6"/><text class="ttl" x="150" y="12390" text-anchor="middle">FX Large Part 027</text></g>
-<g class="node" data-id="FXGPR00029-0001"><title>FX Large Part 029</title><rect class="box" x="390" y="12356" width="200" height="60" rx="6"/><text class="ttl" x="490" y="12390" text-anchor="middle">FX Large Part 029</text></g>
+<g class="group" data-id="FXGRT00005-0001" data-group="Large Group 05"><title>Large Group 05</title><rect class="grp" x="30" y="3548" width="804" height="562" rx="6"/><text class="gl" x="40" y="3566">Large Group 05</text><text class="gc" x="40" y="3586">FX Large Runtime 05</text>
+<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="3598" width="784" height="282" rx="5"/><text class="zc" x="50" y="3617">Fx Public (frontend)</text>
+<g class="node" data-id="FXGPR00022-0001"><title>FX Large Part 022</title><rect class="box" x="50" y="3724" width="200" height="60" rx="6"/><text class="ttl" x="150" y="3758" text-anchor="middle">FX Large Part 022</text></g>
+<g class="node" data-id="FXGPR00023-0001"><title>FX Large Part 023</title><rect class="box" x="310" y="3724" width="200" height="60" rx="6"/><text class="ttl" x="410" y="3758" text-anchor="middle">FX Large Part 023</text></g>
+<g class="node" data-id="FXGPR00024-0001"><title>FX Large Part 024</title><rect class="box" x="570" y="3724" width="200" height="60" rx="6"/><text class="ttl" x="670" y="3758" text-anchor="middle">FX Large Part 024</text></g>
 </g>
-<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="12588" width="943" height="414" rx="5"/><text class="zc" x="50" y="12607">Fx Data (data)</text>
-<g class="node" data-id="FXGPR00026-0001"><title>FX Large Part 026</title><rect class="box" x="50" y="12780" width="200" height="60" rx="6"/><text class="ttl" x="150" y="12814" text-anchor="middle">FX Large Part 026</text></g>
-<g class="node" data-id="FXGPR00028-0001"><title>FX Large Part 028</title><rect class="box" x="390" y="12780" width="200" height="60" rx="6"/><text class="ttl" x="490" y="12814" text-anchor="middle">FX Large Part 028</text></g>
-<g class="node" data-id="FXGPR00030-0001"><title>FX Large Part 030</title><rect class="box" x="730" y="12780" width="200" height="60" rx="6"/><text class="ttl" x="830" y="12814" text-anchor="middle">FX Large Part 030</text></g>
-</g>
-</g>
-<g class="group" data-id="FXGRT00009-0001" data-group="Large Group 09"><title>Large Group 09</title><rect class="grp" x="30" y="13174" width="963" height="1322" rx="6"/><text class="gl" x="40" y="13192">Large Group 09</text><text class="gc" x="40" y="13212">FX Large Runtime 09</text>
-<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="13224" width="943" height="414" rx="5"/><text class="zc" x="50" y="13243">Fx Public (frontend)</text>
-<g class="node" data-id="FXGPR00044-0001"><title>FX Large Part 044</title><rect class="box" x="50" y="13416" width="200" height="60" rx="6"/><text class="ttl" x="150" y="13450" text-anchor="middle">FX Large Part 044</text></g>
-</g>
-<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="13648" width="943" height="414" rx="5"/><text class="zc" x="50" y="13667">Fx App (application)</text>
-<g class="node" data-id="FXGPR00042-0001"><title>FX Large Part 042</title><rect class="box" x="50" y="13840" width="200" height="60" rx="6"/><text class="ttl" x="150" y="13874" text-anchor="middle">FX Large Part 042</text></g>
-</g>
-<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="14072" width="943" height="414" rx="5"/><text class="zc" x="50" y="14091">Fx Data (data)</text>
-<g class="node" data-id="FXGPR00041-0001"><title>FX Large Part 041</title><rect class="box" x="50" y="14264" width="200" height="60" rx="6"/><text class="ttl" x="150" y="14298" text-anchor="middle">FX Large Part 041</text></g>
-<g class="node" data-id="FXGPR00043-0001"><title>FX Large Part 043</title><rect class="box" x="390" y="14264" width="200" height="60" rx="6"/><text class="ttl" x="490" y="14298" text-anchor="middle">FX Large Part 043</text></g>
-<g class="node" data-id="FXGPR00045-0001"><title>FX Large Part 045</title><rect class="box" x="730" y="14264" width="200" height="60" rx="6"/><text class="ttl" x="830" y="14298" text-anchor="middle">FX Large Part 045</text></g>
+<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="3890" width="784" height="210" rx="5"/><text class="zc" x="50" y="3909">Fx Data (data)</text>
+<g class="node" data-id="FXGPR00021-0001"><title>FX Large Part 021</title><rect class="box" x="50" y="3980" width="200" height="60" rx="6"/><text class="ttl" x="150" y="4014" text-anchor="middle">FX Large Part 021</text></g>
+<g class="node" data-id="FXGPR00025-0001"><title>FX Large Part 025</title><rect class="box" x="310" y="3980" width="200" height="60" rx="6"/><text class="ttl" x="410" y="4014" text-anchor="middle">FX Large Part 025</text></g>
 </g>
 </g>
-<g class="group" data-id="FXGRT00012-0001" data-group="Large Group 12"><title>Large Group 12</title><rect class="grp" x="30" y="14658" width="963" height="898" rx="6"/><text class="gl" x="40" y="14676">Large Group 12</text><text class="gc" x="40" y="14696">FX Large Runtime 12</text>
-<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="14708" width="943" height="414" rx="5"/><text class="zc" x="50" y="14727">Fx Public (frontend)</text>
-<g class="node" data-id="FXGPR00056-0001"><title>FX Large Part 056</title><rect class="box" x="50" y="14900" width="200" height="60" rx="6"/><text class="ttl" x="150" y="14934" text-anchor="middle">FX Large Part 056</text></g>
-<g class="node" data-id="FXGPR00060-0001"><title>FX Large Part 060</title><rect class="box" x="390" y="14900" width="200" height="60" rx="6"/><text class="ttl" x="490" y="14934" text-anchor="middle">FX Large Part 060</text></g>
+<g class="group" data-id="FXGRT00008-0001" data-group="Large Group 08"><title>Large Group 08</title><rect class="grp" x="30" y="4134" width="804" height="478" rx="6"/><text class="gl" x="40" y="4152">Large Group 08</text><text class="gc" x="40" y="4172">FX Large Runtime 08</text>
+<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="4184" width="784" height="210" rx="5"/><text class="zc" x="50" y="4203">Fx Public (frontend)</text>
+<g class="node" data-id="FXGPR00036-0001"><title>FX Large Part 036</title><rect class="box" x="50" y="4274" width="200" height="60" rx="6"/><text class="ttl" x="150" y="4308" text-anchor="middle">FX Large Part 036</text></g>
+<g class="node" data-id="FXGPR00040-0001"><title>FX Large Part 040</title><rect class="box" x="310" y="4274" width="200" height="60" rx="6"/><text class="ttl" x="410" y="4308" text-anchor="middle">FX Large Part 040</text></g>
 </g>
-<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="15132" width="943" height="414" rx="5"/><text class="zc" x="50" y="15151">Fx Data (data)</text>
-<g class="node dashed" data-id="FXGPR00057-0001"><title>FX Large Part 057</title><rect class="box" x="50" y="15324" width="200" height="60" rx="6"/><text class="ttl" x="150" y="15358" text-anchor="middle">FX Large Part 057</text></g>
-<g class="node dashed" data-id="FXGPR00058-0001"><title>FX Large Part 058</title><rect class="box" x="390" y="15324" width="200" height="60" rx="6"/><text class="ttl" x="490" y="15358" text-anchor="middle">FX Large Part 058</text></g>
-<g class="node dashed" data-id="FXGPR00059-0001"><title>FX Large Part 059</title><rect class="box" x="730" y="15324" width="200" height="60" rx="6"/><text class="ttl" x="830" y="15358" text-anchor="middle">FX Large Part 059</text></g>
+<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="4404" width="784" height="198" rx="5"/><text class="zc" x="50" y="4423">Fx App (application)</text>
+<g class="node" data-id="FXGPR00037-0001"><title>FX Large Part 037</title><rect class="box" x="50" y="4488" width="200" height="60" rx="6"/><text class="ttl" x="150" y="4522" text-anchor="middle">FX Large Part 037</text></g>
+<g class="node dashed" data-id="FXGPR00038-0001"><title>FX Large Part 038</title><rect class="box" x="310" y="4488" width="200" height="60" rx="6"/><text class="ttl" x="410" y="4522" text-anchor="middle">FX Large Part 038</text></g>
+<g class="node" data-id="FXGPR00039-0001"><title>FX Large Part 039</title><rect class="box" x="570" y="4488" width="200" height="60" rx="6"/><text class="ttl" x="670" y="4522" text-anchor="middle">FX Large Part 039</text></g>
+</g>
+</g>
+<g class="group" data-id="FXGRT00011-0001" data-group="Large Group 11"><title>Large Group 11</title><rect class="grp" x="30" y="4636" width="804" height="566" rx="6"/><text class="gl" x="40" y="4654">Large Group 11</text><text class="gc" x="40" y="4674">FX Large Runtime 11</text>
+<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="4686" width="784" height="174" rx="5"/><text class="zc" x="50" y="4705">Fx Public (frontend)</text>
+<g class="node" data-id="FXGPR00053-0001"><title>FX Large Part 053</title><rect class="box" x="50" y="4758" width="200" height="60" rx="6"/><text class="ttl" x="150" y="4792" text-anchor="middle">FX Large Part 053</text></g>
+<g class="node" data-id="FXGPR00055-0001"><title>FX Large Part 055</title><rect class="box" x="310" y="4758" width="200" height="60" rx="6"/><text class="ttl" x="410" y="4792" text-anchor="middle">FX Large Part 055</text></g>
+</g>
+<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="4870" width="784" height="162" rx="5"/><text class="zc" x="50" y="4889">Fx App (application)</text>
+<g class="node" data-id="FXGPR00051-0001"><title>FX Large Part 051</title><rect class="box" x="50" y="4936" width="200" height="60" rx="6"/><text class="ttl" x="150" y="4970" text-anchor="middle">FX Large Part 051</text></g>
+<g class="node" data-id="FXGPR00054-0001"><title>FX Large Part 054</title><rect class="box" x="310" y="4936" width="200" height="60" rx="6"/><text class="ttl" x="410" y="4970" text-anchor="middle">FX Large Part 054</text></g>
+</g>
+<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="5042" width="784" height="150" rx="5"/><text class="zc" x="50" y="5061">Fx Data (data)</text>
+<g class="node" data-id="FXGPR00052-0001"><title>FX Large Part 052</title><rect class="box" x="50" y="5102" width="200" height="60" rx="6"/><text class="ttl" x="150" y="5136" text-anchor="middle">FX Large Part 052</text></g>
 </g>
 </g>
 </g>
-<g class="edge" data-from="FXGPR00002-0001" data-to="FXGPR00001-0001"><title>FX Large Part 002 reads FX Large Part 001</title><path class="ln" d="M490 878 L490 722 L320 722 L320 728 L150 728 L150 878"/></g>
-<g class="edge" data-from="FXGPR00056-0001" data-to="FXGPR00013-0001"><title>FX Large Part 056 publishes FX Large Part 013</title><path class="ln" d="M110 14900 L110 14744 L320 14744 L320 11786 L150 11786 L150 11780"/></g>
-<g class="edge" data-from="FXGPR00014-0001" data-to="FXGPR00019-0001"><title>FX Large Part 014 publishes FX Large Part 019</title><path class="ln" d="M490 11720 L490 11564 L320 11564 L320 1580 L110 1580 L110 1574"/></g>
-<g class="edge" data-from="FXGPR00035-0001" data-to="FXGPR00027-0001"><title>FX Large Part 035 writes FX Large Part 027</title><path class="ln" d="M780 3058 L780 3064 L315 3064 L315 12200 L200 12200 L200 12356"/></g>
-<g class="edge" data-from="FXGPR00058-0001" data-to="FXGPR00030-0001"><title>FX Large Part 058 notifies FX Large Part 030</title><path class="ln" d="M510 15324 L510 15168 L660 15168 L660 12846 L830 12846 L830 12840"/></g>
-<g class="edge" data-from="FXGPR00034-0001" data-to="FXGPR00033-0001"><title>FX Large Part 034 calls FX Large Part 033</title><path class="ln" d="M150 3422 L150 3266 L325 3266 L325 3070 L450 3070 L450 3058"/></g>
-<g class="edge" data-from="FXGPR00039-0001" data-to="FXGPR00001-0001"><title>FX Large Part 039 writes FX Large Part 001</title><path class="ln" d="M800 8530 L800 8374 L310 8374 L310 944 L190 944 L190 938"/></g>
-<g class="edge" data-from="FXGPR00031-0001" data-to="FXGPR00040-0001"><title>FX Large Part 031 reads FX Large Part 040</title><path class="ln" d="M150 3906 L150 3912 L325 3912 L325 7950 L490 7950 L490 8106"/></g>
-<g class="edge" data-from="FXGPR00044-0001" data-to="FXGPR00034-0001"><title>FX Large Part 044 syncs with FX Large Part 034</title><path class="ln" d="M120 13416 L120 13260 L330 13260 L330 3488 L110 3488 L110 3482"/></g>
-<g class="edge" data-from="FXGPR00016-0001" data-to="FXGPR00013-0001"><title>FX Large Part 016 subscribes to FX Large Part 013</title><path class="ln" d="M150 1998 L150 2004 L305 2004 L305 11564 L150 11564 L150 11720"/></g>
-<g class="edge" data-from="FXGPR00033-0001" data-to="FXGPR00029-0001"><title>FX Large Part 033 calls FX Large Part 029</title><path class="ln" d="M530 3058 L530 3070 L660 3070 L660 12200 L510 12200 L510 12356"/></g>
-<g class="edge" data-from="FXGPR00021-0001" data-to="FXGPR00040-0001"><title>FX Large Part 021 publishes FX Large Part 040</title><path class="ln" d="M150 7530 L150 7536 L335 7536 L335 7956 L450 7956 L450 8106"/></g>
-<g class="edge" data-from="FXGPR00033-0001" data-to="FXGPR00035-0001"><title>FX Large Part 033 syncs with FX Large Part 035</title><path class="ln" d="M510 2998 L510 2842 L660 2842 L660 2848 L830 2848 L830 2998"/></g>
-<g class="edge" data-from="FXGPR00060-0001" data-to="FXGPR00036-0001"><title>FX Large Part 060 publishes FX Large Part 036</title><path class="ln" d="M460 14900 L460 14750 L325 14750 L325 8172 L190 8172 L190 8166"/></g>
-<g class="edge" data-from="FXGPR00027-0001" data-to="FXGPR00008-0001"><title>FX Large Part 027 notifies FX Large Part 008</title><path class="ln" d="M160 12356 L160 12206 L300 12206 L300 6476 L460 6476 L460 6470"/></g>
-<g class="edge" data-from="FXGPR00005-0001" data-to="FXGPR00043-0001"><title>FX Large Part 005 publishes FX Large Part 043</title><path class="ln" d="M800 514 L800 520 L655 520 L655 14108 L510 14108 L510 14264"/></g>
-<g class="edge" data-from="FXGPR00014-0001" data-to="FXGPR00043-0001"><title>FX Large Part 014 subscribes to FX Large Part 043</title><path class="ln" d="M450 11780 L450 11792 L310 11792 L310 14108 L460 14108 L460 14264"/></g>
-<g class="edge" data-from="FXGPR00046-0001" data-to="FXGPR00042-0001"><title>FX Large Part 046 queries FX Large Part 042</title><path class="ln" d="M150 4542 L150 4548 L340 4548 L340 13684 L130 13684 L130 13840"/></g>
-<g class="edge" data-from="FXGPR00057-0001" data-to="FXGPR00009-0001"><title>FX Large Part 057 syncs with FX Large Part 009</title><path class="ln" d="M160 15324 L160 15168 L295 15168 L295 6052 L460 6052 L460 6046"/></g>
-<g class="edge" data-from="FXGPR00026-0001" data-to="FXGPR00057-0001"><title>FX Large Part 026 syncs with FX Large Part 057</title><path class="ln" d="M150 12840 L150 12846 L315 12846 L315 15174 L130 15174 L130 15324"/></g>
-<g class="edge" data-from="FXGPR00011-0001" data-to="FXGPR00046-0001"><title>FX Large Part 011 notifies FX Large Part 046</title><path class="ln" d="M150 11296 L150 11140 L345 11140 L345 4554 L110 4554 L110 4542"/></g>
-<g class="edge" data-from="FXGPR00027-0001" data-to="FXGPR00013-0001"><title>FX Large Part 027 queries FX Large Part 013</title><path class="ln" d="M90 12356 L90 12212 L305 12212 L305 11798 L110 11798 L110 11780"/></g>
-<g class="edge" data-from="FXGPR00047-0001" data-to="FXGPR00024-0001"><title>FX Large Part 047 calls FX Large Part 024</title><path class="ln" d="M150 4966 L150 4972 L335 4972 L335 6890 L800 6890 L800 7046"/></g>
-<g class="edge" data-from="FXGPR00029-0001" data-to="FXGPR00046-0001"><title>FX Large Part 029 calls FX Large Part 046</title><path class="ln" d="M460 12356 L460 12218 L290 12218 L290 4560 L190 4560 L190 4542"/></g>
-<g class="edge" data-from="FXGPR00034-0001" data-to="FXGPR00040-0001"><title>FX Large Part 034 subscribes to FX Large Part 040</title><path class="ln" d="M190 3482 L190 3494 L350 3494 L350 7962 L530 7962 L530 8106"/></g>
-<g class="edge" data-from="FXGPR00059-0001" data-to="FXGPR00051-0001"><title>FX Large Part 059 publishes FX Large Part 051</title><path class="ln" d="M780 15324 L780 15174 L335 15174 L335 9656 L150 9656 L150 9650"/></g>
-<g class="edge" data-from="FXGPR00017-0001" data-to="FXGPR00018-0001"><title>FX Large Part 017 calls FX Large Part 018</title><path class="ln" d="M510 1938 L510 1782 L660 1782 L660 1788 L870 1788 L870 1938"/></g>
-<g class="edge" data-from="FXGPR00049-0001" data-to="FXGPR00009-0001"><title>FX Large Part 049 notifies FX Large Part 009</title><path class="ln" d="M850 4966 L850 4972 L665 4972 L665 5830 L490 5830 L490 5986"/></g>
-<g class="edge" data-from="FXGPR00010-0001" data-to="FXGPR00035-0001"><title>FX Large Part 010 syncs with FX Large Part 035</title><path class="ln" d="M870 6410 L870 6254 L1010 6254 L1010 3064 L870 3064 L870 3058"/></g>
-<g class="edge" data-from="FXGPR00018-0001" data-to="FXGPR00004-0001"><title>FX Large Part 018 writes FX Large Part 004</title><path class="ln" d="M840 1938 L840 1794 L665 1794 L665 526 L540 526 L540 514"/></g>
-<g class="edge" data-from="FXGPR00018-0001" data-to="FXGPR00002-0001"><title>FX Large Part 018 reads FX Large Part 002</title><path class="ln" d="M810 1938 L810 1800 L650 1800 L650 944 L530 944 L530 938"/></g>
-<g class="edge" data-from="FXGPR00039-0001" data-to="FXGPR00055-0001"><title>FX Large Part 039 publishes FX Large Part 055</title><path class="ln" d="M850 8590 L850 8596 L665 8596 L665 9010 L510 9010 L510 9166"/></g>
-<g class="edge" data-from="FXGPR00056-0001" data-to="FXGPR00008-0001"><title>FX Large Part 056 syncs with FX Large Part 008</title><path class="ln" d="M190 14900 L190 14750 L285 14750 L285 6482 L510 6482 L510 6470"/></g>
-<g class="edge" data-from="FXGPR00036-0001" data-to="FXGPR00027-0001"><title>FX Large Part 036 subscribes to FX Large Part 027</title><path class="ln" d="M110 8166 L110 8178 L350 8178 L350 12224 L130 12224 L130 12356"/></g>
-<g class="edge" data-from="FXGPR00034-0001" data-to="FXGPR00046-0001"><title>FX Large Part 034 publishes FX Large Part 046</title><path class="ln" d="M150 3482 L150 3500 L335 3500 L335 4326 L150 4326 L150 4482"/></g>
-<g class="edge" data-from="FXGPR00017-0001" data-to="FXGPR00004-0001"><title>FX Large Part 017 writes FX Large Part 004</title><path class="ln" d="M460 1938 L460 1782 L315 1782 L315 520 L490 520 L490 514"/></g>
-<g class="edge" data-from="FXGPR00041-0001" data-to="FXGPR00020-0001"><title>FX Large Part 041 publishes FX Large Part 020</title><path class="ln" d="M100 14264 L100 14114 L355 14114 L355 2428 L130 2428 L130 2422"/></g>
-<g class="edge" data-from="FXGPR00033-0001" data-to="FXGPR00044-0001"><title>FX Large Part 033 writes FX Large Part 044</title><path class="ln" d="M490 3058 L490 3076 L280 3076 L280 13266 L170 13266 L170 13416"/></g>
-<g class="edge" data-from="FXGPR00052-0001" data-to="FXGPR00002-0001"><title>FX Large Part 052 subscribes to FX Large Part 002</title><path class="ln" d="M150 10014 L150 9858 L360 9858 L360 944 L500 944 L500 938"/></g>
-<g class="edge" data-from="FXGPR00002-0001" data-to="FXGPR00047-0001"><title>FX Large Part 002 publishes FX Large Part 047</title><path class="ln" d="M470 938 L470 950 L300 950 L300 4750 L170 4750 L170 4906"/></g>
-<g class="edge" data-from="FXGPR00060-0001" data-to="FXGPR00029-0001"><title>FX Large Part 060 reads FX Large Part 029</title><path class="ln" d="M510 14900 L510 14744 L665 14744 L665 12422 L490 12422 L490 12416"/></g>
-<g class="edge" data-from="FXGPR00035-0001" data-to="FXGPR00054-0001"><title>FX Large Part 035 notifies FX Large Part 054</title><path class="ln" d="M840 3058 L840 3076 L650 3076 L650 9434 L490 9434 L490 9590"/></g>
-<g class="edge" data-from="FXGPR00015-0001" data-to="FXGPR00022-0001"><title>FX Large Part 015 publishes FX Large Part 022</title><path class="ln" d="M450 10872 L450 10716 L275 10716 L275 7112 L190 7112 L190 7106"/></g>
-<g class="edge" data-from="FXGPR00023-0001" data-to="FXGPR00004-0001"><title>FX Large Part 023 writes FX Large Part 004</title><path class="ln" d="M490 7046 L490 6896 L670 6896 L670 532 L510 532 L510 514"/></g>
-<g class="edge" data-from="FXGPR00041-0001" data-to="FXGPR00048-0001"><title>FX Large Part 041 subscribes to FX Large Part 048</title><path class="ln" d="M160 14264 L160 14120 L365 14120 L365 4972 L440 4972 L440 4966"/></g>
-<g class="edge" data-from="FXGPR00004-0001" data-to="FXGPR00006-0001"><title>FX Large Part 004 notifies FX Large Part 006</title><path class="ln" d="M430 514 L430 526 L295 526 L295 5830 L160 5830 L160 5986"/></g>
-<g class="edge" data-from="FXGPR00045-0001" data-to="FXGPR00019-0001"><title>FX Large Part 045 calls FX Large Part 019</title><path class="ln" d="M790 14264 L790 14126 L270 14126 L270 1586 L190 1586 L190 1574"/></g>
-<g class="edge" data-from="FXGPR00011-0001" data-to="FXGPR00018-0001"><title>FX Large Part 011 syncs with FX Large Part 018</title><path class="ln" d="M190 11296 L190 11146 L370 11146 L370 2004 L830 2004 L830 1998"/></g>
-<g class="edge" data-from="FXGPR00024-0001" data-to="FXGPR00022-0001"><title>FX Large Part 024 queries FX Large Part 022</title><path class="ln" d="M770 7046 L770 6902 L335 6902 L335 6896 L170 6896 L170 7046"/></g>
-<g class="edge" data-from="FXGPR00057-0001" data-to="FXGPR00020-0001"><title>FX Large Part 057 publishes FX Large Part 020</title><path class="ln" d="M100 15324 L100 15180 L265 15180 L265 2434 L200 2434 L200 2422"/></g>
-<g class="edge" data-from="FXGPR00001-0001" data-to="FXGPR00022-0001"><title>FX Large Part 001 notifies FX Large Part 022</title><path class="ln" d="M130 938 L130 950 L275 950 L275 6890 L120 6890 L120 7046"/></g>
-<g class="edge" data-from="FXGPR00018-0001" data-to="FXGPR00033-0001"><title>FX Large Part 018 publishes FX Large Part 033</title><path class="ln" d="M870 1998 L870 2010 L665 2010 L665 2854 L460 2854 L460 2998"/></g>
-<g class="edge" data-from="FXGPR00006-0001" data-to="FXGPR00017-0001"><title>FX Large Part 006 reads FX Large Part 017</title><path class="ln" d="M190 5986 L190 5836 L285 5836 L285 2010 L450 2010 L450 1998"/></g>
-<g class="edge" data-from="FXGPR00038-0001" data-to="FXGPR00003-0001"><title>FX Large Part 038 notifies FX Large Part 003</title><path class="ln" d="M490 8530 L490 8380 L375 8380 L375 532 L150 532 L150 514"/></g>
-<g class="edge" data-from="FXGPR00020-0001" data-to="FXGPR00041-0001"><title>FX Large Part 020 publishes FX Large Part 041</title><path class="ln" d="M160 2422 L160 2440 L260 2440 L260 14108 L130 14108 L130 14264"/></g>
-<g class="edge" data-from="FXGPR00043-0001" data-to="FXGPR00058-0001"><title>FX Large Part 043 notifies FX Large Part 058</title><path class="ln" d="M490 14324 L490 14330 L310 14330 L310 15168 L460 15168 L460 15324"/></g>
-<g class="edge" data-from="FXGPR00010-0001" data-to="FXGPR00019-0001"><title>FX Large Part 010 writes FX Large Part 019</title><path class="ln" d="M790 6410 L790 6254 L380 6254 L380 1592 L150 1592 L150 1574"/></g>
-<g class="edge" data-from="FXGPR00047-0001" data-to="FXGPR00045-0001"><title>FX Large Part 047 writes FX Large Part 045</title><path class="ln" d="M190 4966 L190 4978 L645 4978 L645 14114 L830 14114 L830 14264"/></g>
-<g class="edge" data-from="FXGPR00006-0001" data-to="FXGPR00002-0001"><title>FX Large Part 006 calls FX Large Part 002</title><path class="ln" d="M130 5986 L130 5842 L675 5842 L675 956 L440 956 L440 938"/></g>
-<g class="edge" data-from="FXGPR00007-0001" data-to="FXGPR00025-0001"><title>FX Large Part 007 syncs with FX Large Part 025</title><path class="ln" d="M150 6470 L150 6488 L380 6488 L380 7314 L460 7314 L460 7470"/></g>
-<g class="edge" data-from="FXGPR00041-0001" data-to="FXGPR00035-0001"><title>FX Large Part 041 publishes FX Large Part 035</title><path class="ln" d="M190 14264 L190 14132 L680 14132 L680 3070 L810 3070 L810 3058"/></g>
-<g class="edge" data-from="FXGPR00001-0001" data-to="FXGPR00030-0001"><title>FX Large Part 001 reads FX Large Part 030</title><path class="ln" d="M160 938 L160 962 L685 962 L685 12624 L770 12624 L770 12780"/></g>
-<g class="edge" data-from="FXGPR00048-0001" data-to="FXGPR00048-0001"><title>FX Large Part 048 syncs with FX Large Part 048</title><path class="ln" d="M514.0 4906.0 C514.0 4882.0 620.0 4924.0 590.0 4924.0"/></g>
-<g class="edge" data-from="FXGPR00055-0001" data-to="FXGPR00017-0001"><title>FX Large Part 055 publishes FX Large Part 017</title><path class="ln" d="M460 9166 L460 9016 L690 9016 L690 2016 L490 2016 L490 1998"/></g>
-<g class="edge" data-from="FXGPR00048-0001" data-to="FXGPR00042-0001"><title>FX Large Part 048 syncs with FX Large Part 042</title><path class="ln" d="M470 4966 L470 4972 L640 4972 L640 13690 L160 13690 L160 13840"/></g>
-<g class="edge" data-from="FXGPR00005-0001" data-to="FXGPR00031-0001"><title>FX Large Part 005 subscribes to FX Large Part 031</title><path class="ln" d="M770 514 L770 538 L340 538 L340 3690 L190 3690 L190 3846"/></g>
-<g class="edge" data-from="FXGPR00005-0001" data-to="FXGPR00039-0001"><title>FX Large Part 005 writes FX Large Part 039</title><path class="ln" d="M880 514 L880 520 L1015 520 L1015 8374 L850 8374 L850 8530"/></g>
-<g class="edge" data-from="FXGPR00042-0001" data-to="FXGPR00048-0001"><title>FX Large Part 042 subscribes to FX Large Part 048</title><path class="ln" d="M190 13840 L190 13696 L635 13696 L635 4984 L500 4984 L500 4966"/></g>
-<g class="edge" data-from="FXGPR00031-0001" data-to="FXGPR00004-0001"><title>FX Large Part 031 syncs with FX Large Part 004</title><path class="ln" d="M150 3846 L150 3696 L345 3696 L345 544 L460 544 L460 514"/></g>
-<g class="edge" data-from="FXGPR00045-0001" data-to="FXGPR00014-0001"><title>FX Large Part 045 syncs with FX Large Part 014</title><path class="ln" d="M870 14264 L870 14120 L650 14120 L650 11786 L490 11786 L490 11780"/></g>
-<g class="edge" data-from="FXGPR00030-0001" data-to="FXGPR00030-0001"><title>FX Large Part 030 syncs with FX Large Part 030</title><path class="ln" d="M854.0 12780.0 C854.0 12756.0 960.0 12798.0 930.0 12798.0"/></g>
-<g class="edge" data-from="FXGPR00020-0001" data-to="FXGPR00006-0001"><title>FX Large Part 020 syncs with FX Large Part 006</title><path class="ln" d="M90 2422 L90 2446 L695 2446 L695 5848 L100 5848 L100 5986"/></g>
-<g class="edge" data-from="FXGPR00030-0001" data-to="FXGPR00005-0001"><title>FX Large Part 030 syncs with FX Large Part 005</title><path class="ln" d="M800 12780 L800 12630 L700 12630 L700 526 L850 526 L850 514"/></g>
-<g class="edge" data-from="FXGPR00014-0001" data-to="FXGPR00059-0001"><title>FX Large Part 014 publishes FX Large Part 059</title><path class="ln" d="M530 11780 L530 11792 L670 11792 L670 15168 L840 15168 L840 15324"/></g>
-<g class="edge" data-from="FXGPR00010-0001" data-to="FXGPR00048-0001"><title>FX Large Part 010 subscribes to FX Large Part 048</title><path class="ln" d="M830 6410 L830 6260 L630 6260 L630 4990 L530 4990 L530 4966"/></g>
-<g class="edge" data-from="FXGPR00039-0001" data-to="FXGPR00053-0001"><title>FX Large Part 039 subscribes to FX Large Part 053</title><path class="ln" d="M800 8590 L800 8602 L310 8602 L310 9010 L150 9010 L150 9166"/></g>
-<g class="edge" data-from="FXGPR00015-0001" data-to="FXGPR00032-0001"><title>FX Large Part 015 syncs with FX Large Part 032</title><path class="ln" d="M490 10872 L490 10716 L705 10716 L705 3082 L150 3082 L150 3058"/></g>
-<g class="edge" data-from="FXGPR00011-0001" data-to="FXGPR00001-0001"><title>FX Large Part 011 syncs with FX Large Part 001</title><path class="ln" d="M110 11296 L110 11152 L710 11152 L710 968 L100 968 L100 938"/></g>
-<g class="edge" data-from="FXGPR00020-0001" data-to="FXGPR00047-0001"><title>FX Large Part 020 writes FX Large Part 047</title><path class="ln" d="M180 2422 L180 2452 L365 2452 L365 4756 L120 4756 L120 4906"/></g>
-<g class="edge" data-from="FXGPR00025-0001" data-to="FXGPR00021-0001"><title>FX Large Part 025 reads FX Large Part 021</title><path class="ln" d="M510 7470 L510 7320 L335 7320 L335 7314 L120 7314 L120 7470"/></g>
-<g class="edge" data-from="FXGPR00021-0001" data-to="FXGPR00049-0001"><title>FX Large Part 021 queries FX Large Part 049</title><path class="ln" d="M170 7470 L170 7326 L625 7326 L625 4996 L800 4996 L800 4966"/></g>
-<g class="edge" data-from="FXGPR00060-0001" data-to="FXGPR00013-0001"><title>FX Large Part 060 calls FX Large Part 013</title><path class="ln" d="M430 14900 L430 14744 L345 14744 L345 11804 L190 11804 L190 11780"/></g>
-<g class="edge" data-from="FXGPR00024-0001" data-to="FXGPR00005-0001"><title>FX Large Part 024 notifies FX Large Part 005</title><path class="ln" d="M880 7046 L880 6890 L1020 6890 L1020 532 L830 532 L830 514"/></g>
-<g class="edge" data-from="FXGPR00024-0001" data-to="FXGPR00060-0001"><title>FX Large Part 024 notifies FX Large Part 060</title><path class="ln" d="M830 7106 L830 7112 L675 7112 L675 14750 L540 14750 L540 14900"/></g>
-<g class="edge" data-from="FXGPR00018-0001" data-to="FXGPR00007-0001"><title>FX Large Part 018 calls FX Large Part 007</title><path class="ln" d="M790 1998 L790 2016 L715 2016 L715 6266 L150 6266 L150 6410"/></g>
-<g class="edge" data-from="FXGPR00016-0001" data-to="FXGPR00018-0001"><title>FX Large Part 016 notifies FX Large Part 018</title><path class="ln" d="M150 1938 L150 1788 L315 1788 L315 1806 L780 1806 L780 1938"/></g>
-<g class="edge" data-from="FXGPR00050-0001" data-to="FXGPR00024-0001"><title>FX Large Part 050 notifies FX Large Part 024</title><path class="ln" d="M150 5188 L150 5194 L620 5194 L620 6908 L830 6908 L830 7046"/></g>
-<g class="edge" data-from="FXGPR00059-0001" data-to="FXGPR00057-0001"><title>FX Large Part 059 publishes FX Large Part 057</title><path class="ln" d="M810 15324 L810 15180 L320 15180 L320 15186 L190 15186 L190 15324"/></g>
-<g class="edge" data-from="FXGPR00060-0001" data-to="FXGPR00047-0001"><title>FX Large Part 060 notifies FX Large Part 047</title><path class="ln" d="M490 14900 L490 14756 L615 14756 L615 4996 L110 4996 L110 4966"/></g>
-<g class="edge" data-from="FXGPR00042-0001" data-to="FXGPR00056-0001"><title>FX Large Part 042 subscribes to FX Large Part 056</title><path class="ln" d="M150 13900 L150 13906 L330 13906 L330 14756 L150 14756 L150 14900"/></g>
-<g class="edge" data-from="FXGPR00059-0001" data-to="FXGPR00060-0001"><title>FX Large Part 059 writes FX Large Part 060</title><path class="ln" d="M870 15324 L870 15186 L655 15186 L655 14966 L490 14966 L490 14960"/></g>
-<g class="edge" data-from="FXGPR00027-0001" data-to="FXGPR00022-0001"><title>FX Large Part 027 subscribes to FX Large Part 022</title><path class="ln" d="M110 12356 L110 12230 L630 12230 L630 7118 L150 7118 L150 7106"/></g>
-<g class="edge" data-from="FXGPR00048-0001" data-to="FXGPR00048-0001"><title>FX Large Part 048 subscribes to FX Large Part 048</title><path class="ln" d="M514.0 4906.0 C514.0 4868.0 634.0 4924.0 590.0 4924.0"/></g>
-<g class="edge" data-from="FXGPR00020-0001" data-to="FXGPR00031-0001"><title>FX Large Part 020 notifies FX Large Part 031</title><path class="ln" d="M110 2422 L110 2458 L290 2458 L290 3702 L110 3702 L110 3846"/></g>
-<g class="edge" data-from="FXGPR00042-0001" data-to="FXGPR00011-0001"><title>FX Large Part 042 reads FX Large Part 011</title><path class="ln" d="M100 13840 L100 13702 L360 13702 L360 11362 L150 11362 L150 11356"/></g>
-<g class="edge" data-from="FXGPR00036-0001" data-to="FXGPR00015-0001"><title>FX Large Part 036 syncs with FX Large Part 015</title><path class="ln" d="M150 8166 L150 8184 L380 8184 L380 10722 L530 10722 L530 10872"/></g>
-<g class="edge" data-from="FXGPR00028-0001" data-to="FXGPR00009-0001"><title>FX Large Part 028 publishes FX Large Part 009</title><path class="ln" d="M490 12780 L490 12636 L695 12636 L695 6052 L510 6052 L510 6046"/></g>
-<g class="edge" data-from="FXGPR00012-0001" data-to="FXGPR00022-0001"><title>FX Large Part 012 reads FX Large Part 022</title><path class="ln" d="M150 10872 L150 10728 L670 10728 L670 7124 L110 7124 L110 7106"/></g>
-<g class="edge" data-from="FXGPR00024-0001" data-to="FXGPR00017-0001"><title>FX Large Part 024 publishes FX Large Part 017</title><path class="ln" d="M850 7046 L850 6896 L720 6896 L720 2022 L530 2022 L530 1998"/></g>
-<g class="edge" data-from="FXGPR00025-0001" data-to="FXGPR00027-0001"><title>FX Large Part 025 publishes FX Large Part 027</title><path class="ln" d="M490 7530 L490 7536 L625 7536 L625 12236 L180 12236 L180 12356"/></g>
+<g class="target" data-target="fx-dc-north"><rect class="tgt" x="20" y="5256" width="824" height="2652" rx="8"/><text class="tl" x="30" y="5276">fx-dc-north</text>
+<g class="group" data-id="FXGRT00003-0001" data-group="Large Group 03"><title>Large Group 03</title><rect class="grp" x="30" y="5310" width="804" height="686" rx="6"/><text class="gl" x="40" y="5328">Large Group 03</text><text class="gc" x="40" y="5348">FX Large Runtime 03</text>
+<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="5360" width="784" height="186" rx="5"/><text class="zc" x="50" y="5379">Fx Public (frontend)</text>
+<g class="node" data-id="FXGPR00012-0001"><title>FX Large Part 012</title><rect class="box" x="50" y="5438" width="200" height="60" rx="6"/><text class="ttl" x="150" y="5472" text-anchor="middle">FX Large Part 012</text></g>
+<g class="node" data-id="FXGPR00015-0001"><title>FX Large Part 015</title><rect class="box" x="310" y="5438" width="200" height="60" rx="6"/><text class="ttl" x="410" y="5472" text-anchor="middle">FX Large Part 015</text></g>
+</g>
+<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="5556" width="784" height="186" rx="5"/><text class="zc" x="50" y="5575">Fx App (application)</text>
+<g class="node" data-id="FXGPR00011-0001"><title>FX Large Part 011</title><rect class="box" x="50" y="5634" width="200" height="60" rx="6"/><text class="ttl" x="150" y="5668" text-anchor="middle">FX Large Part 011</text></g>
+</g>
+<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="5752" width="784" height="234" rx="5"/><text class="zc" x="50" y="5771">Fx Data (data)</text>
+<g class="node" data-id="FXGPR00013-0001"><title>FX Large Part 013</title><rect class="box" x="50" y="5854" width="200" height="60" rx="6"/><text class="ttl" x="150" y="5888" text-anchor="middle">FX Large Part 013</text></g>
+<g class="node" data-id="FXGPR00014-0001"><title>FX Large Part 014</title><rect class="box" x="310" y="5854" width="200" height="60" rx="6"/><text class="ttl" x="410" y="5888" text-anchor="middle">FX Large Part 014</text></g>
+</g>
+</g>
+<g class="group" data-id="FXGRT00006-0001" data-group="Large Group 06"><title>Large Group 06</title><rect class="grp" x="30" y="6020" width="804" height="544" rx="6"/><text class="gl" x="40" y="6038">Large Group 06</text><text class="gc" x="40" y="6058">FX Large Runtime 06</text>
+<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="6070" width="784" height="246" rx="5"/><text class="zc" x="50" y="6089">Fx Public (frontend)</text>
+<g class="node" data-id="FXGPR00027-0001"><title>FX Large Part 027</title><rect class="box" x="50" y="6178" width="200" height="60" rx="6"/><text class="ttl" x="150" y="6212" text-anchor="middle">FX Large Part 027</text></g>
+<g class="node" data-id="FXGPR00029-0001"><title>FX Large Part 029</title><rect class="box" x="310" y="6178" width="200" height="60" rx="6"/><text class="ttl" x="410" y="6212" text-anchor="middle">FX Large Part 029</text></g>
+</g>
+<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="6326" width="784" height="228" rx="5"/><text class="zc" x="50" y="6345">Fx Data (data)</text>
+<g class="node" data-id="FXGPR00026-0001"><title>FX Large Part 026</title><rect class="box" x="50" y="6440" width="200" height="60" rx="6"/><text class="ttl" x="150" y="6474" text-anchor="middle">FX Large Part 026</text></g>
+<g class="node" data-id="FXGPR00028-0001"><title>FX Large Part 028</title><rect class="box" x="310" y="6440" width="200" height="60" rx="6"/><text class="ttl" x="410" y="6474" text-anchor="middle">FX Large Part 028</text></g>
+<g class="node" data-id="FXGPR00030-0001"><title>FX Large Part 030</title><rect class="box" x="570" y="6440" width="200" height="60" rx="6"/><text class="ttl" x="670" y="6474" text-anchor="middle">FX Large Part 030</text></g>
+</g>
+</g>
+<g class="group" data-id="FXGRT00009-0001" data-group="Large Group 09"><title>Large Group 09</title><rect class="grp" x="30" y="6588" width="804" height="698" rx="6"/><text class="gl" x="40" y="6606">Large Group 09</text><text class="gc" x="40" y="6626">FX Large Runtime 09</text>
+<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="6638" width="784" height="162" rx="5"/><text class="zc" x="50" y="6657">Fx Public (frontend)</text>
+<g class="node" data-id="FXGPR00044-0001"><title>FX Large Part 044</title><rect class="box" x="50" y="6704" width="200" height="60" rx="6"/><text class="ttl" x="150" y="6738" text-anchor="middle">FX Large Part 044</text></g>
+</g>
+<g class="zlane" data-zone="fx-app"><rect class="zl" x="40" y="6810" width="784" height="198" rx="5"/><text class="zc" x="50" y="6829">Fx App (application)</text>
+<g class="node" data-id="FXGPR00042-0001"><title>FX Large Part 042</title><rect class="box" x="50" y="6894" width="200" height="60" rx="6"/><text class="ttl" x="150" y="6928" text-anchor="middle">FX Large Part 042</text></g>
+</g>
+<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="7018" width="784" height="258" rx="5"/><text class="zc" x="50" y="7037">Fx Data (data)</text>
+<g class="node" data-id="FXGPR00041-0001"><title>FX Large Part 041</title><rect class="box" x="50" y="7132" width="200" height="60" rx="6"/><text class="ttl" x="150" y="7166" text-anchor="middle">FX Large Part 041</text></g>
+<g class="node" data-id="FXGPR00043-0001"><title>FX Large Part 043</title><rect class="box" x="310" y="7132" width="200" height="60" rx="6"/><text class="ttl" x="410" y="7166" text-anchor="middle">FX Large Part 043</text></g>
+<g class="node" data-id="FXGPR00045-0001"><title>FX Large Part 045</title><rect class="box" x="570" y="7132" width="200" height="60" rx="6"/><text class="ttl" x="670" y="7166" text-anchor="middle">FX Large Part 045</text></g>
+</g>
+</g>
+<g class="group" data-id="FXGRT00012-0001" data-group="Large Group 12"><title>Large Group 12</title><rect class="grp" x="30" y="7310" width="804" height="574" rx="6"/><text class="gl" x="40" y="7328">Large Group 12</text><text class="gc" x="40" y="7348">FX Large Runtime 12</text>
+<g class="zlane" data-zone="fx-public"><rect class="zl" x="40" y="7360" width="784" height="246" rx="5"/><text class="zc" x="50" y="7379">Fx Public (frontend)</text>
+<g class="node" data-id="FXGPR00056-0001"><title>FX Large Part 056</title><rect class="box" x="50" y="7468" width="200" height="60" rx="6"/><text class="ttl" x="150" y="7502" text-anchor="middle">FX Large Part 056</text></g>
+<g class="node" data-id="FXGPR00060-0001"><title>FX Large Part 060</title><rect class="box" x="310" y="7468" width="200" height="60" rx="6"/><text class="ttl" x="410" y="7502" text-anchor="middle">FX Large Part 060</text></g>
+</g>
+<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="7616" width="784" height="258" rx="5"/><text class="zc" x="50" y="7635">Fx Data (data)</text>
+<g class="node dashed" data-id="FXGPR00057-0001"><title>FX Large Part 057</title><rect class="box" x="50" y="7730" width="200" height="60" rx="6"/><text class="ttl" x="150" y="7764" text-anchor="middle">FX Large Part 057</text></g>
+<g class="node dashed" data-id="FXGPR00058-0001"><title>FX Large Part 058</title><rect class="box" x="310" y="7730" width="200" height="60" rx="6"/><text class="ttl" x="410" y="7764" text-anchor="middle">FX Large Part 058</text></g>
+<g class="node dashed" data-id="FXGPR00059-0001"><title>FX Large Part 059</title><rect class="box" x="570" y="7730" width="200" height="60" rx="6"/><text class="ttl" x="670" y="7764" text-anchor="middle">FX Large Part 059</text></g>
+</g>
+</g>
+</g>
+<g class="edge" data-from="FXGPR00002-0001" data-to="FXGPR00001-0001"><title>FX Large Part 002 reads FX Large Part 001</title><path class="ln" d="M410 518 L410 512 L864 512 L864 506 L150 506 L150 518"/></g>
+<g class="edge" data-from="FXGPR00056-0001" data-to="FXGPR00013-0001"><title>FX Large Part 056 publishes FX Large Part 013</title><path class="ln" d="M110 7468 L110 7420 L864 7420 L864 5944 L150 5944 L150 5914"/></g>
+<g class="edge" data-from="FXGPR00014-0001" data-to="FXGPR00019-0001"><title>FX Large Part 014 publishes FX Large Part 019</title><path class="ln" d="M410 5854 L410 5848 L864 5848 L864 896 L110 896 L110 878"/></g>
+<g class="edge" data-from="FXGPR00035-0001" data-to="FXGPR00027-0001"><title>FX Large Part 035 writes FX Large Part 027</title><path class="ln" d="M622 1720 L622 1744 L872 1744 L872 6160 L207.1 6160 L207.1 6178"/></g>
+<g class="edge" data-from="FXGPR00058-0001" data-to="FXGPR00030-0001"><title>FX Large Part 058 notifies FX Large Part 030</title><path class="ln" d="M436.7 7730 L436.7 7700 L872 7700 L872 6506 L670 6506 L670 6500"/></g>
+<g class="edge" data-from="FXGPR00034-0001" data-to="FXGPR00033-0001"><title>FX Large Part 034 calls FX Large Part 033</title><path class="ln" d="M150 1898 L150 1892 L880 1892 L880 1762 L370 1762 L370 1720"/></g>
+<g class="edge" data-from="FXGPR00039-0001" data-to="FXGPR00001-0001"><title>FX Large Part 039 writes FX Large Part 001</title><path class="ln" d="M643.3 4488 L643.3 4476 L888 4476 L888 608 L198 608 L198 578"/></g>
+<g class="edge" data-from="FXGPR00031-0001" data-to="FXGPR00040-0001"><title>FX Large Part 031 reads FX Large Part 040</title><path class="ln" d="M150 2154 L150 2160 L880 2160 L880 4262 L410 4262 L410 4274"/></g>
+<g class="edge" data-from="FXGPR00044-0001" data-to="FXGPR00034-0001"><title>FX Large Part 044 syncs with FX Large Part 034</title><path class="ln" d="M123.3 6704 L123.3 6692 L896 6692 L896 1976 L110 1976 L110 1958"/></g>
+<g class="edge" data-from="FXGPR00016-0001" data-to="FXGPR00013-0001"><title>FX Large Part 016 subscribes to FX Large Part 013</title><path class="ln" d="M150 1128 L150 1170 L904 1170 L904 5842 L150 5842 L150 5854"/></g>
+<g class="edge" data-from="FXGPR00033-0001" data-to="FXGPR00029-0001"><title>FX Large Part 033 calls FX Large Part 029</title><path class="ln" d="M450 1720 L450 1750 L912 1750 L912 6172 L436.7 6172 L436.7 6178"/></g>
+<g class="edge" data-from="FXGPR00021-0001" data-to="FXGPR00040-0001"><title>FX Large Part 021 publishes FX Large Part 040</title><path class="ln" d="M150 4040 L150 4052 L920 4052 L920 4256 L370 4256 L370 4274"/></g>
+<g class="edge" data-from="FXGPR00033-0001" data-to="FXGPR00035-0001"><title>FX Large Part 033 syncs with FX Large Part 035</title><path class="ln" d="M436.7 1660 L436.7 1648 L872 1648 L872 1654 L670 1654 L670 1660"/></g>
+<g class="edge" data-from="FXGPR00060-0001" data-to="FXGPR00036-0001"><title>FX Large Part 060 publishes FX Large Part 036</title><path class="ln" d="M383.3 7468 L383.3 7444 L880 7444 L880 4340 L190 4340 L190 4334"/></g>
+<g class="edge" data-from="FXGPR00027-0001" data-to="FXGPR00008-0001"><title>FX Large Part 027 notifies FX Large Part 008</title><path class="ln" d="M161.4 6178 L161.4 6148 L928 6148 L928 3460 L383.3 3460 L383.3 3448"/></g>
+<g class="edge" data-from="FXGPR00005-0001" data-to="FXGPR00043-0001"><title>FX Large Part 005 publishes FX Large Part 043</title><path class="ln" d="M643.3 304 L643.3 328 L936 328 L936 7108 L436.7 7108 L436.7 7132"/></g>
+<g class="edge" data-from="FXGPR00014-0001" data-to="FXGPR00043-0001"><title>FX Large Part 014 subscribes to FX Large Part 043</title><path class="ln" d="M370 5914 L370 5932 L888 5932 L888 7102 L383.3 7102 L383.3 7132"/></g>
+<g class="edge" data-from="FXGPR00046-0001" data-to="FXGPR00042-0001"><title>FX Large Part 046 queries FX Large Part 042</title><path class="ln" d="M150 2424 L150 2436 L944 2436 L944 6876 L134 6876 L134 6894"/></g>
+<g class="edge" data-from="FXGPR00057-0001" data-to="FXGPR00009-0001"><title>FX Large Part 057 syncs with FX Large Part 009</title><path class="ln" d="M166 7730 L166 7682 L952 7682 L952 3228 L383.3 3228 L383.3 3216"/></g>
+<g class="edge" data-from="FXGPR00026-0001" data-to="FXGPR00057-0001"><title>FX Large Part 026 syncs with FX Large Part 057</title><path class="ln" d="M150 6500 L150 6512 L904 6512 L904 7676 L134 7676 L134 7730"/></g>
+<g class="edge" data-from="FXGPR00011-0001" data-to="FXGPR00046-0001"><title>FX Large Part 011 notifies FX Large Part 046</title><path class="ln" d="M150 5634 L150 5622 L960 5622 L960 2442 L110 2442 L110 2424"/></g>
+<g class="edge" data-from="FXGPR00027-0001" data-to="FXGPR00013-0001"><title>FX Large Part 027 queries FX Large Part 013</title><path class="ln" d="M92.9 6178 L92.9 6130 L904 6130 L904 5950 L110 5950 L110 5914"/></g>
+<g class="edge" data-from="FXGPR00047-0001" data-to="FXGPR00024-0001"><title>FX Large Part 047 calls FX Large Part 024</title><path class="ln" d="M150 2706 L150 2754 L920 2754 L920 3700 L643.3 3700 L643.3 3724"/></g>
+<g class="edge" data-from="FXGPR00029-0001" data-to="FXGPR00046-0001"><title>FX Large Part 029 calls FX Large Part 046</title><path class="ln" d="M383.3 6178 L383.3 6166 L968 6166 L968 2430 L190 2430 L190 2424"/></g>
+<g class="edge" data-from="FXGPR00034-0001" data-to="FXGPR00040-0001"><title>FX Large Part 034 subscribes to FX Large Part 040</title><path class="ln" d="M190 1958 L190 1964 L976 1964 L976 4268 L450 4268 L450 4274"/></g>
+<g class="edge" data-from="FXGPR00059-0001" data-to="FXGPR00051-0001"><title>FX Large Part 059 publishes FX Large Part 051</title><path class="ln" d="M622 7730 L622 7706 L920 7706 L920 5002 L150 5002 L150 4996"/></g>
+<g class="edge" data-from="FXGPR00017-0001" data-to="FXGPR00018-0001"><title>FX Large Part 017 calls FX Large Part 018</title><path class="ln" d="M436.7 1068 L436.7 1038 L872 1038 L872 1062 L718 1062 L718 1068"/></g>
+<g class="edge" data-from="FXGPR00049-0001" data-to="FXGPR00009-0001"><title>FX Large Part 049 notifies FX Large Part 009</title><path class="ln" d="M696.7 2706 L696.7 2712 L928 2712 L928 3150 L410 3150 L410 3156"/></g>
+<g class="edge" data-from="FXGPR00010-0001" data-to="FXGPR00035-0001"><title>FX Large Part 010 syncs with FX Large Part 035</title><path class="ln" d="M710 3388 L710 3382 L984 3382 L984 1726 L718 1726 L718 1720"/></g>
+<g class="edge" data-from="FXGPR00018-0001" data-to="FXGPR00004-0001"><title>FX Large Part 018 writes FX Large Part 004</title><path class="ln" d="M686 1068 L686 1056 L880 1056 L880 340 L463.3 340 L463.3 304"/></g>
+<g class="edge" data-from="FXGPR00018-0001" data-to="FXGPR00002-0001"><title>FX Large Part 018 reads FX Large Part 002</title><path class="ln" d="M654 1068 L654 1050 L896 1050 L896 584 L458 584 L458 578"/></g>
+<g class="edge" data-from="FXGPR00039-0001" data-to="FXGPR00055-0001"><title>FX Large Part 039 publishes FX Large Part 055</title><path class="ln" d="M696.7 4548 L696.7 4554 L888 4554 L888 4752 L436.7 4752 L436.7 4758"/></g>
+<g class="edge" data-from="FXGPR00056-0001" data-to="FXGPR00008-0001"><title>FX Large Part 056 syncs with FX Large Part 008</title><path class="ln" d="M190 7468 L190 7432 L984 7432 L984 3454 L436.7 3454 L436.7 3448"/></g>
+<g class="edge" data-from="FXGPR00036-0001" data-to="FXGPR00027-0001"><title>FX Large Part 036 subscribes to FX Large Part 027</title><path class="ln" d="M110 4334 L110 4352 L976 4352 L976 6142 L138.6 6142 L138.6 6178"/></g>
+<g class="edge" data-from="FXGPR00034-0001" data-to="FXGPR00046-0001"><title>FX Large Part 034 publishes FX Large Part 046</title><path class="ln" d="M150 1958 L150 1970 L920 1970 L920 2358 L150 2358 L150 2364"/></g>
+<g class="edge" data-from="FXGPR00017-0001" data-to="FXGPR00004-0001"><title>FX Large Part 017 writes FX Large Part 004</title><path class="ln" d="M383.3 1068 L383.3 1032 L904 1032 L904 352 L410 352 L410 304"/></g>
+<g class="edge" data-from="FXGPR00041-0001" data-to="FXGPR00020-0001"><title>FX Large Part 041 publishes FX Large Part 020</title><path class="ln" d="M102 7132 L102 7078 L992 7078 L992 1420 L138.6 1420 L138.6 1396"/></g>
+<g class="edge" data-from="FXGPR00033-0001" data-to="FXGPR00044-0001"><title>FX Large Part 033 writes FX Large Part 044</title><path class="ln" d="M410 1720 L410 1756 L1000 1756 L1000 6698 L176.7 6698 L176.7 6704"/></g>
+<g class="edge" data-from="FXGPR00052-0001" data-to="FXGPR00002-0001"><title>FX Large Part 052 subscribes to FX Large Part 002</title><path class="ln" d="M150 5102 L150 5096 L1008 5096 L1008 590 L426 590 L426 578"/></g>
+<g class="edge" data-from="FXGPR00002-0001" data-to="FXGPR00047-0001"><title>FX Large Part 002 publishes FX Large Part 047</title><path class="ln" d="M394 578 L394 596 L928 596 L928 2596 L176.7 2596 L176.7 2646"/></g>
+<g class="edge" data-from="FXGPR00060-0001" data-to="FXGPR00029-0001"><title>FX Large Part 060 reads FX Large Part 029</title><path class="ln" d="M436.7 7468 L436.7 7456 L912 7456 L912 6244 L410 6244 L410 6238"/></g>
+<g class="edge" data-from="FXGPR00035-0001" data-to="FXGPR00054-0001"><title>FX Large Part 035 notifies FX Large Part 054</title><path class="ln" d="M686 1720 L686 1732 L1016 1732 L1016 4930 L410 4930 L410 4936"/></g>
+<g class="edge" data-from="FXGPR00015-0001" data-to="FXGPR00022-0001"><title>FX Large Part 015 publishes FX Large Part 022</title><path class="ln" d="M370 5438 L370 5420 L1024 5420 L1024 3796 L190 3796 L190 3784"/></g>
+<g class="edge" data-from="FXGPR00023-0001" data-to="FXGPR00004-0001"><title>FX Large Part 023 writes FX Large Part 004</title><path class="ln" d="M410 3724 L410 3688 L1024 3688 L1024 346 L436.7 346 L436.7 304"/></g>
+<g class="edge" data-from="FXGPR00041-0001" data-to="FXGPR00048-0001"><title>FX Large Part 041 subscribes to FX Large Part 048</title><path class="ln" d="M166 7132 L166 7090 L1032 7090 L1032 2742 L362 2742 L362 2706"/></g>
+<g class="edge" data-from="FXGPR00004-0001" data-to="FXGPR00006-0001"><title>FX Large Part 004 notifies FX Large Part 006</title><path class="ln" d="M356.7 304 L356.7 364 L952 364 L952 3138 L166 3138 L166 3156"/></g>
+<g class="edge" data-from="FXGPR00045-0001" data-to="FXGPR00019-0001"><title>FX Large Part 045 calls FX Large Part 019</title><path class="ln" d="M630 7132 L630 7114 L1040 7114 L1040 884 L190 884 L190 878"/></g>
+<g class="edge" data-from="FXGPR00011-0001" data-to="FXGPR00018-0001"><title>FX Large Part 011 syncs with FX Large Part 018</title><path class="ln" d="M190 5634 L190 5628 L1048 5628 L1048 1140 L670 1140 L670 1128"/></g>
+<g class="edge" data-from="FXGPR00024-0001" data-to="FXGPR00022-0001"><title>FX Large Part 024 queries FX Large Part 022</title><path class="ln" d="M616.7 3724 L616.7 3694 L1056 3694 L1056 3682 L176.7 3682 L176.7 3724"/></g>
+<g class="edge" data-from="FXGPR00057-0001" data-to="FXGPR00020-0001"><title>FX Large Part 057 publishes FX Large Part 020</title><path class="ln" d="M102 7730 L102 7670 L1064 7670 L1064 1402 L207.1 1402 L207.1 1396"/></g>
+<g class="edge" data-from="FXGPR00001-0001" data-to="FXGPR00022-0001"><title>FX Large Part 001 notifies FX Large Part 022</title><path class="ln" d="M134 578 L134 620 L1072 620 L1072 3676 L123.3 3676 L123.3 3724"/></g>
+<g class="edge" data-from="FXGPR00018-0001" data-to="FXGPR00033-0001"><title>FX Large Part 018 publishes FX Large Part 033</title><path class="ln" d="M710 1128 L710 1134 L880 1134 L880 1642 L383.3 1642 L383.3 1660"/></g>
+<g class="edge" data-from="FXGPR00006-0001" data-to="FXGPR00017-0001"><title>FX Large Part 006 reads FX Large Part 017</title><path class="ln" d="M198 3156 L198 3144 L1056 3144 L1056 1164 L370 1164 L370 1128"/></g>
+<g class="edge" data-from="FXGPR00038-0001" data-to="FXGPR00003-0001"><title>FX Large Part 038 notifies FX Large Part 003</title><path class="ln" d="M410 4488 L410 4470 L1080 4470 L1080 370 L150 370 L150 304"/></g>
+<g class="edge" data-from="FXGPR00020-0001" data-to="FXGPR00041-0001"><title>FX Large Part 020 publishes FX Large Part 041</title><path class="ln" d="M161.4 1396 L161.4 1414 L1088 1414 L1088 7084 L134 7084 L134 7132"/></g>
+<g class="edge" data-from="FXGPR00043-0001" data-to="FXGPR00058-0001"><title>FX Large Part 043 notifies FX Large Part 058</title><path class="ln" d="M410 7192 L410 7198 L888 7198 L888 7694 L383.3 7694 L383.3 7730"/></g>
+<g class="edge" data-from="FXGPR00010-0001" data-to="FXGPR00019-0001"><title>FX Large Part 010 writes FX Large Part 019</title><path class="ln" d="M630 3388 L630 3370 L1096 3370 L1096 890 L150 890 L150 878"/></g>
+<g class="edge" data-from="FXGPR00047-0001" data-to="FXGPR00045-0001"><title>FX Large Part 047 writes FX Large Part 045</title><path class="ln" d="M190 2706 L190 2748 L1104 2748 L1104 7120 L670 7120 L670 7132"/></g>
+<g class="edge" data-from="FXGPR00006-0001" data-to="FXGPR00002-0001"><title>FX Large Part 006 calls FX Large Part 002</title><path class="ln" d="M134 3156 L134 3132 L1112 3132 L1112 602 L362 602 L362 578"/></g>
+<g class="edge" data-from="FXGPR00007-0001" data-to="FXGPR00025-0001"><title>FX Large Part 007 syncs with FX Large Part 025</title><path class="ln" d="M150 3448 L150 3466 L1096 3466 L1096 3968 L383.3 3968 L383.3 3980"/></g>
+<g class="edge" data-from="FXGPR00041-0001" data-to="FXGPR00035-0001"><title>FX Large Part 041 publishes FX Large Part 035</title><path class="ln" d="M198 7132 L198 7096 L1120 7096 L1120 1738 L654 1738 L654 1720"/></g>
+<g class="edge" data-from="FXGPR00001-0001" data-to="FXGPR00030-0001"><title>FX Large Part 001 reads FX Large Part 030</title><path class="ln" d="M166 578 L166 614 L1128 614 L1128 6398 L612.7 6398 L612.7 6440"/></g>
+<g class="edge" data-from="FXGPR00048-0001" data-to="FXGPR00048-0001"><title>FX Large Part 048 syncs with FX Large Part 048</title><path class="ln" d="M434.0 2646.0 C434.0 2622.0 540.0 2664.0 510.0 2664.0"/></g>
+<g class="edge" data-from="FXGPR00055-0001" data-to="FXGPR00017-0001"><title>FX Large Part 055 publishes FX Large Part 017</title><path class="ln" d="M383.3 4758 L383.3 4746 L1136 4746 L1136 1158 L410 1158 L410 1128"/></g>
+<g class="edge" data-from="FXGPR00048-0001" data-to="FXGPR00042-0001"><title>FX Large Part 048 syncs with FX Large Part 042</title><path class="ln" d="M394 2706 L394 2736 L1144 2736 L1144 6882 L166 6882 L166 6894"/></g>
+<g class="edge" data-from="FXGPR00005-0001" data-to="FXGPR00031-0001"><title>FX Large Part 005 subscribes to FX Large Part 031</title><path class="ln" d="M616.7 304 L616.7 334 L944 334 L944 2088 L190 2088 L190 2094"/></g>
+<g class="edge" data-from="FXGPR00005-0001" data-to="FXGPR00039-0001"><title>FX Large Part 005 writes FX Large Part 039</title><path class="ln" d="M723.3 304 L723.3 310 L1152 310 L1152 4482 L696.7 4482 L696.7 4488"/></g>
+<g class="edge" data-from="FXGPR00042-0001" data-to="FXGPR00048-0001"><title>FX Large Part 042 subscribes to FX Large Part 048</title><path class="ln" d="M198 6894 L198 6888 L1160 6888 L1160 2730 L426 2730 L426 2706"/></g>
+<g class="edge" data-from="FXGPR00031-0001" data-to="FXGPR00004-0001"><title>FX Large Part 031 syncs with FX Large Part 004</title><path class="ln" d="M150 2094 L150 2082 L960 2082 L960 358 L383.3 358 L383.3 304"/></g>
+<g class="edge" data-from="FXGPR00045-0001" data-to="FXGPR00014-0001"><title>FX Large Part 045 syncs with FX Large Part 014</title><path class="ln" d="M710 7132 L710 7126 L960 7126 L960 5926 L410 5926 L410 5914"/></g>
+<g class="edge" data-from="FXGPR00030-0001" data-to="FXGPR00030-0001"><title>FX Large Part 030 syncs with FX Large Part 030</title><path class="ln" d="M694.0 6440.0 C694.0 6416.0 800.0 6458.0 770.0 6458.0"/></g>
+<g class="edge" data-from="FXGPR00020-0001" data-to="FXGPR00006-0001"><title>FX Large Part 020 syncs with FX Large Part 006</title><path class="ln" d="M92.9 1396 L92.9 1432 L1168 1432 L1168 3126 L102 3126 L102 3156"/></g>
+<g class="edge" data-from="FXGPR00030-0001" data-to="FXGPR00005-0001"><title>FX Large Part 030 syncs with FX Large Part 005</title><path class="ln" d="M647.3 6440 L647.3 6404 L1176 6404 L1176 316 L696.7 316 L696.7 304"/></g>
+<g class="edge" data-from="FXGPR00014-0001" data-to="FXGPR00059-0001"><title>FX Large Part 014 publishes FX Large Part 059</title><path class="ln" d="M450 5914 L450 5920 L1008 5920 L1008 7718 L686 7718 L686 7730"/></g>
+<g class="edge" data-from="FXGPR00010-0001" data-to="FXGPR00048-0001"><title>FX Large Part 010 subscribes to FX Large Part 048</title><path class="ln" d="M670 3388 L670 3376 L1184 3376 L1184 2724 L458 2724 L458 2706"/></g>
+<g class="edge" data-from="FXGPR00039-0001" data-to="FXGPR00053-0001"><title>FX Large Part 039 subscribes to FX Large Part 053</title><path class="ln" d="M643.3 4548 L643.3 4560 L920 4560 L920 4740 L150 4740 L150 4758"/></g>
+<g class="edge" data-from="FXGPR00015-0001" data-to="FXGPR00032-0001"><title>FX Large Part 015 syncs with FX Large Part 032</title><path class="ln" d="M410 5438 L410 5426 L1192 5426 L1192 1768 L150 1768 L150 1720"/></g>
+<g class="edge" data-from="FXGPR00011-0001" data-to="FXGPR00001-0001"><title>FX Large Part 011 syncs with FX Large Part 001</title><path class="ln" d="M110 5634 L110 5616 L1200 5616 L1200 626 L102 626 L102 578"/></g>
+<g class="edge" data-from="FXGPR00020-0001" data-to="FXGPR00047-0001"><title>FX Large Part 020 writes FX Large Part 047</title><path class="ln" d="M184.3 1396 L184.3 1408 L1032 1408 L1032 2590 L123.3 2590 L123.3 2646"/></g>
+<g class="edge" data-from="FXGPR00025-0001" data-to="FXGPR00021-0001"><title>FX Large Part 025 reads FX Large Part 021</title><path class="ln" d="M436.7 3980 L436.7 3974 L920 3974 L920 3956 L123.3 3956 L123.3 3980"/></g>
+<g class="edge" data-from="FXGPR00021-0001" data-to="FXGPR00049-0001"><title>FX Large Part 021 queries FX Large Part 049</title><path class="ln" d="M176.7 3980 L176.7 3962 L1208 3962 L1208 2718 L643.3 2718 L643.3 2706"/></g>
+<g class="edge" data-from="FXGPR00060-0001" data-to="FXGPR00013-0001"><title>FX Large Part 060 calls FX Large Part 013</title><path class="ln" d="M356.7 7468 L356.7 7438 L1016 7438 L1016 5938 L190 5938 L190 5914"/></g>
+<g class="edge" data-from="FXGPR00024-0001" data-to="FXGPR00005-0001"><title>FX Large Part 024 notifies FX Large Part 005</title><path class="ln" d="M723.3 3724 L723.3 3718 L1216 3718 L1216 322 L670 322 L670 304"/></g>
+<g class="edge" data-from="FXGPR00024-0001" data-to="FXGPR00060-0001"><title>FX Large Part 024 notifies FX Large Part 060</title><path class="ln" d="M670 3784 L670 3790 L1056 3790 L1056 7462 L463.3 7462 L463.3 7468"/></g>
+<g class="edge" data-from="FXGPR00018-0001" data-to="FXGPR00007-0001"><title>FX Large Part 018 calls FX Large Part 007</title><path class="ln" d="M630 1128 L630 1146 L1224 1146 L1224 3364 L150 3364 L150 3388"/></g>
+<g class="edge" data-from="FXGPR00016-0001" data-to="FXGPR00018-0001"><title>FX Large Part 016 notifies FX Large Part 018</title><path class="ln" d="M150 1068 L150 1026 L912 1026 L912 1044 L622 1044 L622 1068"/></g>
+<g class="edge" data-from="FXGPR00050-0001" data-to="FXGPR00024-0001"><title>FX Large Part 050 notifies FX Large Part 024</title><path class="ln" d="M150 2862 L150 2868 L1232 2868 L1232 3706 L670 3706 L670 3724"/></g>
+<g class="edge" data-from="FXGPR00059-0001" data-to="FXGPR00057-0001"><title>FX Large Part 059 publishes FX Large Part 057</title><path class="ln" d="M654 7730 L654 7712 L864 7712 L864 7688 L198 7688 L198 7730"/></g>
+<g class="edge" data-from="FXGPR00060-0001" data-to="FXGPR00047-0001"><title>FX Large Part 060 notifies FX Large Part 047</title><path class="ln" d="M410 7468 L410 7450 L1240 7450 L1240 2760 L110 2760 L110 2706"/></g>
+<g class="edge" data-from="FXGPR00042-0001" data-to="FXGPR00056-0001"><title>FX Large Part 042 subscribes to FX Large Part 056</title><path class="ln" d="M150 6954 L150 6960 L896 6960 L896 7426 L150 7426 L150 7468"/></g>
+<g class="edge" data-from="FXGPR00059-0001" data-to="FXGPR00060-0001"><title>FX Large Part 059 writes FX Large Part 060</title><path class="ln" d="M718 7730 L718 7724 L880 7724 L880 7534 L410 7534 L410 7528"/></g>
+<g class="edge" data-from="FXGPR00027-0001" data-to="FXGPR00022-0001"><title>FX Large Part 027 subscribes to FX Large Part 022</title><path class="ln" d="M115.7 6178 L115.7 6136 L1072 6136 L1072 3802 L150 3802 L150 3784"/></g>
+<g class="edge" data-from="FXGPR00048-0001" data-to="FXGPR00048-0001"><title>FX Large Part 048 subscribes to FX Large Part 048</title><path class="ln" d="M434.0 2646.0 C434.0 2608.0 554.0 2664.0 510.0 2664.0"/></g>
+<g class="edge" data-from="FXGPR00020-0001" data-to="FXGPR00031-0001"><title>FX Large Part 020 notifies FX Large Part 031</title><path class="ln" d="M115.7 1396 L115.7 1426 L968 1426 L968 2076 L110 2076 L110 2094"/></g>
+<g class="edge" data-from="FXGPR00042-0001" data-to="FXGPR00011-0001"><title>FX Large Part 042 reads FX Large Part 011</title><path class="ln" d="M102 6894 L102 6870 L1024 6870 L1024 5700 L150 5700 L150 5694"/></g>
+<g class="edge" data-from="FXGPR00036-0001" data-to="FXGPR00015-0001"><title>FX Large Part 036 syncs with FX Large Part 015</title><path class="ln" d="M150 4334 L150 4346 L1096 4346 L1096 5432 L450 5432 L450 5438"/></g>
+<g class="edge" data-from="FXGPR00028-0001" data-to="FXGPR00009-0001"><title>FX Large Part 028 publishes FX Large Part 009</title><path class="ln" d="M410 6440 L410 6392 L1112 6392 L1112 3222 L436.7 3222 L436.7 3216"/></g>
+<g class="edge" data-from="FXGPR00012-0001" data-to="FXGPR00022-0001"><title>FX Large Part 012 reads FX Large Part 022</title><path class="ln" d="M150 5438 L150 5414 L1168 5414 L1168 3808 L110 3808 L110 3784"/></g>
+<g class="edge" data-from="FXGPR00024-0001" data-to="FXGPR00017-0001"><title>FX Large Part 024 publishes FX Large Part 017</title><path class="ln" d="M696.7 3724 L696.7 3712 L1248 3712 L1248 1152 L450 1152 L450 1128"/></g>
+<g class="edge" data-from="FXGPR00025-0001" data-to="FXGPR00027-0001"><title>FX Large Part 025 publishes FX Large Part 027</title><path class="ln" d="M410 4040 L410 4046 L1184 4046 L1184 6154 L184.3 6154 L184.3 6178"/></g>
 </svg>

@@ -4,6 +4,7 @@ import contextlib
 import hashlib
 import inspect
 import io
+import math
 import re
 import tempfile
 import unittest
@@ -1017,10 +1018,10 @@ class LaterStoryTests(unittest.TestCase):
         model = generate_diagram.build_diagram_model(catalog, catalog[FIXTURE_SDP], False)
         expected_targets: list = []
         for container in model.containers:
-            if container.members and container.target not in expected_targets:
+            if container.drawn and container.target not in expected_targets:
                 expected_targets.append(container.target)
         self.assertEqual(re.findall(r'<g class="target" data-target="([^"]*)"', svg), expected_targets)
-        drawn = [c for c in model.containers if c.members]
+        drawn = [c for c in model.containers if c.drawn]
         self.assertEqual(re.findall(r'<g class="group[^"]*"(?: data-id="[^"]*")? data-group="([^"]*)"', svg), [
             c.group for t in expected_targets for c in drawn if c.target == t
         ])
@@ -1082,7 +1083,7 @@ class LaterStoryTests(unittest.TestCase):
     def test_empty_group_caption(self) -> None:
         catalog = load_catalog(FIXTURE)
         model = generate_diagram.build_diagram_model(catalog, catalog[FIXTURE_SDP], False)
-        empty = [c for c in model.containers if not c.members]
+        empty = [c for c in model.containers if not c.drawn]
         self.assertTrue(empty)
         svg = deployment_svg(catalog, FIXTURE_SDP)
         self.assertIn("Service groups recorded with no objects to draw", svg)
@@ -1103,6 +1104,7 @@ class LaterStoryTests(unittest.TestCase):
         svg = deployment_svg(cat, "SDP-1")
         xml.dom.minidom.parseString(svg)
         self.assertRegex(svg, r'<g class="group[^"]*" data-id="RTC-1"')
+        self.assertIn("<title>Cluster serves Beta</title>", svg)  # the object's name, not the container caption
         (_, _, pts), = edge_polylines(svg)
         group = re.search(r'<g class="group[^"]*" data-id="RTC-1"[^>]*>.*?<rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg, re.S)
         gx, gy, gw, gh = (int(group.group(i)) for i in range(1, 5))
@@ -1362,11 +1364,13 @@ class LaterStoryTests(unittest.TestCase):
         self.assertEqual(shape(deploy), shape(logical))
         self.assertEqual(len(shape(deploy)), 2)
 
-    def test_empty_group_substrate_keeps_node_and_warns(self) -> None:
+    def test_group_listing_only_its_own_substrate_is_drawn_as_its_container(self) -> None:
+        # D7 with D29: the substrate listed among the group's own objects is the container, never a box (R2 of the
+        # third S6 review), and the group is drawn even though it has no box inside.
         objects = [
             plain("RTC-1", "runtime_service", "Cluster"),
             component("P-1", "Alpha"),
-            pattern({"Full": ["P-1"], "Empty": ["RTC-1"]}),
+            pattern({"Full": ["P-1"], "Own": ["RTC-1"]}),
             relationship("R-1", "RTC-1", "P-1", "serves"),
         ]
         objects[2]["serviceGroups"][1]["substrate"] = "RTC-1"
@@ -1374,14 +1378,72 @@ class LaterStoryTests(unittest.TestCase):
         model = generate_diagram.build_diagram_model(cat, cat["SDP-1"], False)
         svg = deployment_svg(cat, "SDP-1")
         xml.dom.minidom.parseString(svg)
-        self.assertRegex(svg, r'<g class="node[^"]*" data-id="RTC-1">')
+        self.assertRegex(svg, r'<g class="group" data-id="RTC-1" data-group="Own">')
+        self.assertNotRegex(svg, r'<g class="node[^"]*" data-id="RTC-1"')
+        self.assertNotIn('class="stray"', svg)
         self.assertIn('data-from="RTC-1" data-to="P-1"', svg)
-        self.assertNotIn('data-group="Empty"', svg)
-        self.assertIn("Empty", svg.split("Service groups recorded with no objects")[1])
-        self.assertEqual(
-            [w for w in model.warnings if w.startswith("substrate of a group with no drawable")],
-            ["substrate of a group with no drawable objects kept as a box: Cluster (RTC-1) in Empty"],
-        )
+        self.assertNotIn("Service groups recorded with no objects", svg)
+        self.assertIn("substrate also listed as deployable object: Cluster (RTC-1) in Own", model.warnings)
+        self.assertEqual([w for w in model.warnings if w.startswith("substrate of a group")], [])
+        self.assertEqual([(c.group, c.drawn, c.members) for c in model.containers], [("Full", True, ["P-1"]), ("Own", True, [])])
+        self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+
+    def test_group_listing_only_an_undrawn_groups_substrate_is_drawn(self) -> None:
+        # D6 with D29: a group with no objects is not drawn, so its substrate is not a container; the group that
+        # lists that object draws it as a box (R1 of the third S6 review).
+        objects = [plain("RTC-1", "runtime_service", "Cluster"), pattern({"Lists": ["RTC-1"], "Empty": []})]
+        objects[1]["serviceGroups"][1]["substrate"] = "RTC-1"
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        model = generate_diagram.build_diagram_model(cat, cat["SDP-1"], False)
+        svg = deployment_svg(cat, "SDP-1")
+        xml.dom.minidom.parseString(svg)
+        self.assertRegex(svg, r'<g class="group" data-group="Lists">')
+        self.assertRegex(svg, r'<g class="node[^"]*" data-id="RTC-1"')
+        self.assertNotIn('data-id="RTC-1" data-group', svg)
+        self.assertIn("Empty (azure)", svg.split("Service groups recorded with no objects")[1])
+        self.assertEqual([(c.group, c.drawn) for c in model.containers], [("Lists", True), ("Empty", False)])
+        self.assertIn("substrate of a group with no drawable objects kept as a box: Cluster (RTC-1) in Empty", model.warnings)
+
+    def test_targets_follow_document_order_of_every_group(self) -> None:
+        # D6: a target named first by a group that is not drawn still comes first.
+        objects = [component("P-1", "Alpha"), component("P-2", "Beta"), pattern({"E": [], "A": ["P-1"], "B": ["P-2"]})]
+        groups = objects[2]["serviceGroups"]
+        groups[0]["deploymentTarget"] = groups[2]["deploymentTarget"] = "later-in-the-alphabet"
+        groups[1]["deploymentTarget"] = "azure"
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        self.assertEqual(re.findall(r'<g class="target" data-target="([^"]*)"', svg), ["later-in-the-alphabet", "azure"])
+
+    def test_edge_runs_stay_in_free_bands_and_channels(self) -> None:
+        """Comb routing: vertical runs are stubs inside a lane or channels right of every target and left of the
+        outside lane; horizontal runs never cross a target, group or lane caption area."""
+        catalog = load_catalog(FIXTURE)
+        for sdp in generate_diagram.sdps(catalog):
+            svg = deployment_svg(catalog, sdp["uid"])
+            rect = r'<rect class="%s" x="(-?\d+)" y="(-?\d+)" width="(\d+)" height="(\d+)"'
+            targets, groups, lanes = ([tuple(int(v) for v in m) for m in re.findall(rect % cls, svg)] for cls in ("tgt", "grp", "zl"))
+            outside = re.search(rect % "lane", svg)
+            lane_left = int(outside.group(1)) if outside else math.inf
+            stack_right = max(x + w for x, _y, w, _h in targets)
+            heads = []  # caption areas: from the top of a target, group or lane to its first child
+            for x, y, w, h in targets:
+                inner = [g for g in groups if x < g[0] < x + w and y < g[1] < y + h]
+                heads.append((x, x + w, y, min(g[1] for g in inner)))
+            for x, y, w, h in groups:
+                inner = [l for l in lanes if x < l[0] < x + w and y < l[1] < y + h]
+                heads.append((x, x + w, y, min(l[1] for l in inner) if inner else y + h))
+            for x, y, w, h in lanes:
+                heads.append((x, x + w, y, y + generate_diagram.DEPLOY_LANE_HEAD))
+            for _s, _t, pts in edge_polylines(svg):
+                for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+                    if ax == bx:
+                        in_lane = any(x < ax < x + w and y < min(ay, by) and max(ay, by) < y + h + generate_diagram.DEPLOY_PAD for x, y, w, h in lanes)
+                        beside = any(x - generate_diagram.DEPLOY_PAD < ax < x for x, _y, _w, _h in groups)  # left-border container end
+                        in_outside = bool(outside) and lane_left < ax < lane_left + int(outside.group(3))
+                        self.assertTrue(in_lane or beside or in_outside or stack_right < ax < lane_left, f"vertical run at x={ax} is neither a stub nor a channel")
+                    elif ay == by:
+                        for x0, x1, y0, y1 in heads:
+                            self.assertFalse(min(ax, bx) < x1 and x0 < max(ax, bx) and y0 <= ay <= y1, f"run at y={ay} crosses a caption area")
 
     def _assert_runs_clean(self, svg: str) -> None:
         """No two vertical runs collinear with overlapping y; same-level horizontal runs at least DEPLOY_LEVEL apart."""
@@ -1411,6 +1473,8 @@ class LaterStoryTests(unittest.TestCase):
         self.assertEqual(len(edge_polylines(svg)), 20)
         self._assert_runs_clean(svg)
         self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+        stubs = sorted(pts[-1][0] for _s, _t, pts in edge_polylines(svg))  # the hub end of every edge
+        self.assertGreaterEqual(min(b - a for a, b in zip(stubs, stubs[1:])), 2, "hub stubs at least 2 px apart")
         for sdp in generate_diagram.sdps(load_catalog(FIXTURE)):
             self._assert_runs_clean(deployment_svg(load_catalog(FIXTURE), sdp["uid"]))
 
