@@ -2,6 +2,8 @@
 
 Use this only when the user wants text rather than a rendered page. Everything drawn must come from catalog fields you read (R1); label what you inferred.
 
+Mermaid and C4 text output is outside the determinism guarantee: two agents can write different text from the same catalog, and nothing tests it. The rendered page from `framework/tools/generate_diagram.py` is the deterministic path for the logical and deployment views; use this text only as an embeddable option.
+
 ## Supported diagrams
 
 1. **Deployment topology flowchart (`flowchart TD` or `LR`).** Network zone boundaries (edge, application, data) and the connections between gateways, compute runtimes, queues and databases.

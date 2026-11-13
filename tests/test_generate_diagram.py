@@ -2376,6 +2376,29 @@ class LaterStoryTests(unittest.TestCase):
                 self.assertEqual(len(list(svg_dir.glob("*.svg"))), 2 * count)
                 self.assertEqual(len([line for line in out.splitlines() if line.count("\t") == 3]), count)
 
-    @unittest.skip("enabled in S10")
-    def test_no_story_skip_markers(self) -> None:
-        self.fail("not implemented until S10")
+
+class DiagramSkillTests(unittest.TestCase):
+    """The draftsman-diagram skill sends both views to the generator (plan D23, AC11, AC12)."""
+
+    SKILL = REPO_ROOT / "framework" / "skills" / "draftsman-diagram" / "SKILL.md"
+    MERMAID = REPO_ROOT / "framework" / "skills" / "draftsman-diagram" / "references" / "mermaid.md"
+
+    def test_skill_is_at_most_200_lines(self) -> None:
+        self.assertLessEqual(len(self.SKILL.read_text(encoding="utf-8").splitlines()), 200)
+
+    def test_skill_names_generator_as_only_path_and_forbids_hand_svg(self) -> None:
+        text = self.SKILL.read_text(encoding="utf-8")
+        self.assertIn("framework/tools/generate_diagram.py", text)
+        self.assertIn("The generator is the only path for the two views", text)
+        self.assertRegex(text, r"[Hh]and-drawn SVG is forbidden")
+
+    def test_skill_explains_derived_tiers_outside_lane_conflicts_and_warnings(self) -> None:
+        text = self.SKILL.read_text(encoding="utf-8")
+        for phrase in ("dashed border", "Outside lane", "Recorded conflicts section", "Warnings to read back"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, text)
+
+    def test_mermaid_reference_is_outside_determinism_guarantee(self) -> None:
+        text = self.MERMAID.read_text(encoding="utf-8")
+        self.assertIn("outside the determinism guarantee", text)
+        self.assertIn("rendered page", text)
