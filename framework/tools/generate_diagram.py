@@ -166,7 +166,7 @@ TYPE_BANDS = {
 
 
 def type_band(obj_type: Any) -> str:
-    # D4 defines no band for other types; they fall back to the application band.
+    # D4 (type-derived band): types outside the map fall back to application. Behaviour kept; not listed in D4.
     return TYPE_BANDS.get(str(obj_type or ""), "application")
 
 
@@ -192,8 +192,8 @@ def external_uid(text: str) -> str:
 
 def _other_pattern_names(catalog: dict[str, dict[str, Any]], sdp: dict[str, Any]) -> dict[str, list[str]]:
     """uid -> names of the other patterns that place it, in pattern order (D5 captions)."""
-    found: dict[str, list[str]] = {}
-    for other in sdps(catalog):
+    found: dict[str, list[tuple[int, str]]] = {}  # uid -> (pattern position, display name)
+    for position, other in enumerate(sdps(catalog)):
         if other is sdp:
             continue
         groups = other.get("serviceGroups")
@@ -205,10 +205,10 @@ def _other_pattern_names(catalog: dict[str, dict[str, Any]], sdp: dict[str, Any]
                 continue
             for entry in group.get("deployableObjects") or []:
                 if isinstance(entry, dict) and entry.get("ref"):
-                    names = found.setdefault(str(entry["ref"]), [])
-                    if label not in names:
-                        names.append(label)
-    return found
+                    places = found.setdefault(str(entry["ref"]), [])
+                    if all(seen != position for seen, _name in places):
+                        places.append((position, label))
+    return {uid: [name for _position, name in places] for uid, places in found.items()}
 
 
 class Model:
@@ -403,7 +403,7 @@ class Model:
 
 
 
-# --------------------------------------------------------------------------- layout# --------------------------------------------------------------------------- layout
+# --------------------------------------------------------------------------- layout
 def wrap(text: str, width: int) -> list[str]:
     lines: list[str] = []
     current = ""

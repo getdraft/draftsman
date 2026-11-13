@@ -372,6 +372,21 @@ class LaterStoryTests(unittest.TestCase):
         # Two hops: reached only through the outside object FXPRD00010-0001, so not nodes.
         self.assertNotIn("FXDST00002-0001", ids)
         self.assertNotIn("FXHST00002-0001", ids)
+        # Exact set: placed objects, allow-listed direct endpoints, and external nodes for placed sources.
+        catalog = load_catalog(FIXTURE)
+        expected = set(placed)
+        for rel in catalog.values():
+            if rel.get("type") != "relationship" or generate_diagram.is_runs_on(rel):
+                continue
+            source, target = rel.get("source") or "", rel.get("target") or ""
+            if source in placed and target:
+                if catalog.get(target, {}).get("type") in ALLOWED_ONE_HOP:
+                    expected.add(target)
+            elif source in placed and rel.get("externalTarget"):
+                expected.add("ext:" + hashlib.sha256(" ".join(str(rel["externalTarget"]).split()).encode("utf-8")).hexdigest()[:12])
+            if target in placed and source and catalog.get(source, {}).get("type") in ALLOWED_ONE_HOP:
+                expected.add(source)
+        self.assertEqual(ids, expected)
         for node in nodes:
             if node.outside and not node.external:
                 self.assertTrue(
@@ -462,6 +477,19 @@ class LaterStoryTests(unittest.TestCase):
         multi = model_of(objects, selector="Demo Pattern")
         shared = {node.uid: node for node in multi.nodes_for_view("logical")}["S-1"]
         self.assertEqual(shared.caption, "placed in 2 other patterns")
+        # Two distinct other patterns that share a display name still count as two.
+        same_name = [
+            plain("P-1", "product_component", "Placed"),
+            plain("S-1", "product_component", "Shared"),
+            relationship("R-1", "P-1", "S-1", "uses"),
+            pattern({"G": ["P-1"]}),
+        ]
+        for uid in ("SDP-2", "SDP-3"):
+            other = pattern({"G": ["S-1"]})
+            other["uid"], other["name"] = uid, "Same Name"
+            same_name.append(other)
+        twins = {n.uid: n for n in model_of(same_name, selector="Demo Pattern").nodes_for_view("logical")}
+        self.assertEqual(twins["S-1"].caption, "placed in 2 other patterns")
 
     def test_derived_tier_warning(self) -> None:
         model = fixture_model()
