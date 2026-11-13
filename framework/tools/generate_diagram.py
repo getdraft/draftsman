@@ -2317,7 +2317,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--list", action="store_true", help="List deployment patterns and exit.")
     parser.add_argument("--svg-dir", type=Path, help="Also write <slug>-logical.svg and <slug>-deployment.svg into this directory.")
     parser.add_argument("--all", action="store_true", help="Render every deployment pattern; requires --output-dir.")
-    parser.add_argument("--output-dir", type=Path, help="With --all: directory that receives one <slug>-architecture.html per pattern.")
+    parser.add_argument("--output-dir", type=Path, help="With --all: directory that receives one <slug>.html per pattern.")
     args = parser.parse_args(argv)
     _check_arguments(parser, args)
     if not (args.workspace / "catalog").is_dir():
