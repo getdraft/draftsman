@@ -1455,24 +1455,32 @@ def _polyline_mid(pts: list) -> tuple:
     return pts[-1]
 
 
-def _label_mid(pts: list, text_len: int, boxes: list) -> tuple:
-    """D13: the label anchor on a route. It sits on the longest segment whose label clears every node box.
+def _label_mid(pts: list, text_len: int, obstacles: list) -> tuple:
+    """D13: the label anchor on a route, chosen so the label keeps clear of every obstacle.
 
-    Candidates are segment midpoints, longest first (ties by index). The label is about 6.2 px per character
-    and 14 px tall, drawn 4 px above its anchor. When no candidate is clear, the midpoint of the route is used.
+    Obstacles are (x, y, w, h) rectangles: node boxes, band labels and the outside lane caption. Candidates are
+    points at 50%, 25% and 75% along each segment, longest segment first, each tried on the line and 18 px
+    either side of it. The first candidate that overlaps nothing wins. If none is clear, the candidate with the
+    least overlap wins. A label is about 6.2 px per character and 14 px tall, drawn 4 px above its anchor.
     """
     width = text_len * 6.2 + 4
     order = sorted(range(len(pts) - 1), key=lambda i: (-(abs(pts[i + 1][0] - pts[i][0]) + abs(pts[i + 1][1] - pts[i][1])), i))
+    best: tuple = ()
     for i in order:
-        cx = (pts[i][0] + pts[i + 1][0]) / 2
-        cy = (pts[i][1] + pts[i + 1][1]) / 2
-        x0, y0 = cx - width / 2, cy - 13
-        clear = all(
-            x0 + width <= bx or bx + bw <= x0 or y0 + 14 <= by or by + bh <= y0 for bx, by, bw, bh in boxes
-        )
-        if clear:
-            return (cx, cy)
-    return _polyline_mid(pts)
+        (ax, ay), (bx, by) = pts[i], pts[i + 1]
+        for fraction in (0.5, 0.25, 0.75):
+            cx = ax + (bx - ax) * fraction
+            for shift in (0, 18, -18):
+                cy = ay + (by - ay) * fraction + shift
+                x0, y0 = cx - width / 2, cy - 13
+                area = 0.0
+                for ox, oy, ow, oh in obstacles:
+                    area += max(0.0, min(x0 + width, ox + ow) - max(x0, ox)) * max(0.0, min(y0 + 14, oy + oh) - max(y0, oy))
+                if area == 0:
+                    return (cx, cy)
+                if not best or area < best[0]:
+                    best = (area, (cx, cy))
+    return best[1] if best else _polyline_mid(pts)
 
 
 def _label_len(edge: DiagramEdge) -> int:
@@ -1554,6 +1562,11 @@ def render_logical_svg(model: DiagramModel) -> str:
         out.append(f'<rect class="lane" x="{lx}" y="{ly}" width="{lw}" height="{lh}" rx="6"/>')
         out.append(f'<text class="ll" x="{lx + 10}" y="{ly + 24}">Outside this pattern</text>')
     routes = _route_edges(model, layout)
+    # D13: edge labels keep clear of node boxes, band labels and the outside lane caption.
+    obstacles = [(x0, y0, LOGICAL_BOX_W, LOGICAL_BOX_H) for x0, y0 in layout.pos.values()]
+    obstacles += [(LOGICAL_MARGIN + 10, y + 11, len(band) * 7 + 4, 12) for band, y, _h, _w in layout.bands]
+    if layout.lane:
+        obstacles.append((layout.lane[0] + 10, layout.lane[1] + 15, len("Outside this pattern") * 7 + 4, 12))
     loops: dict[str, int] = {}
     for number, edge in enumerate(model.edges):
         s, t = edge.source, edge.target
@@ -1571,7 +1584,7 @@ def render_logical_svg(model: DiagramModel) -> str:
         else:
             pts = routes[number]
             path = "M" + " L".join(f"{px} {py}" for px, py in pts)
-            mid = _label_mid(pts, _label_len(edge), [(x0, y0, LOGICAL_BOX_W, LOGICAL_BOX_H) for x0, y0 in layout.pos.values()])
+            mid = _label_mid(pts, _label_len(edge), obstacles)
         out.append(f'{head}<path class="{cls}" d="{path}"{marks}/>{_edge_label(edge, mid, label_cls)}</g>')
     for uid in [u for names in layout.order for u in names] + layout.lane_order:
         x, y = layout.pos[uid]
@@ -2160,6 +2173,9 @@ def render_deployment_svg(model: DiagramModel) -> str:
         bottom = max(bottom, lane_top + lane_h)
     edges: list[str] = []
     loop_count: dict[str, int] = {}
+    deploy_obstacles = [rects[u] for u in by_uid if u in rects]  # D13: boxes, then the outside lane caption
+    if outer:
+        deploy_obstacles.append((lane_x, lane_top + 15, len("Outside this pattern") * 7 + 4, 12))
     shown = [e for e in model.edges if e.source in rects and e.target in rects]
     label_cls = "lb hov" if len(shown) > LABEL_LIMIT else "lb"  # D13: more than 8 edges, labels on hover or pin
     for number, edge in enumerate(model.edges):
@@ -2179,7 +2195,7 @@ def render_deployment_svg(model: DiagramModel) -> str:
         else:
             pts = routes[number]
             path = "M" + " L".join(f"{_fmt(px)} {_fmt(py)}" for px, py in pts)
-            mid = _label_mid(pts, _label_len(edge), [rects[u] for u in by_uid if u in rects])
+            mid = _label_mid(pts, _label_len(edge), deploy_obstacles)
         edges.append(f'{head}<path class="{cls}" d="{path}"{marks}/>{_edge_label(edge, mid, label_cls)}</g>')
     width = right + LOGICAL_MARGIN
     note = ""

@@ -1925,12 +1925,17 @@ class LaterStoryTests(unittest.TestCase):
         svg = logical_svg(load_catalog(FIXTURE), "FXSDP00002-0001")
         boxes = node_rects(svg)
         self.assertTrue(boxes)
+        texts = []  # band labels and the outside lane caption: (left, top, width, height)
+        for x, y, text in re.findall(r'<text class="(?:bl|ll)" x="([\d.]+)" y="([\d.]+)">([^<]*)</text>', svg):
+            texts.append((float(x), float(y) - 11, len(xml_unescape(text)) * 7 + 4, 12))
+        obstacles = [(bx, by, bw, bh) for bx, by, bw, bh in boxes.values()] + texts
+        self.assertTrue(texts)
         for x, y, text in re.findall(r'<text class="lb" x="([\d.]+)" y="([\d.]+)" text-anchor="middle">([^<]*)</text>', svg):
             width = len(xml_unescape(text)) * 6.2 + 4
             left, top = float(x) - width / 2, float(y) - 13
-            for bx, by, bw, bh in boxes.values():
+            for bx, by, bw, bh in obstacles:
                 clear = left + width <= bx or bx + bw <= left or top + 14 <= by or by + bh <= top
-                self.assertTrue(clear, f"label '{text}' overlaps a node box")
+                self.assertTrue(clear, f"label '{text}' overlaps {bx, by}")
 
     def test_node_type_chip_and_tech_line(self) -> None:
         objects = [
