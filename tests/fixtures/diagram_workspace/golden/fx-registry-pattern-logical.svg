@@ -9,8 +9,8 @@
 <rect class="lane" x="410" y="20" width="220" height="110" rx="6"/>
 <text class="ll" x="420" y="44">Outside this pattern</text>
 <g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00002-0001"><title>FX Order API checks own health FX Order API</title><path class="ln" d="M544.0 60.0 C544.0 36.0 650.0 78.0 620.0 78.0"/></g>
-<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00010-0001"><title>FX Order API posts ledger entries FX Shared Ledger</title><path class="ln" d="M420.0 79.7 L330.0 70.3"/></g>
-<g class="edge" data-from="FXPRD00010-0001" data-to="FXDST00002-0001"><title>FX Shared Ledger persists ledger entries FX Ledger Store</title><path class="ln" d="M230.0 90.0 L230.0 150.0"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00010-0001"><title>FX Order API posts ledger entries FX Shared Ledger</title><path class="ln" d="M520 60 L520 50 L345 50 L345 100 L250 100 L250 90"/></g>
+<g class="edge" data-from="FXPRD00010-0001" data-to="FXDST00002-0001"><title>FX Shared Ledger persists ledger entries FX Ledger Store</title><path class="ln" d="M200 90 L200 95 L125 95 L125 145 L230 145 L230 150"/></g>
 <g class="node" data-id="FXPRD00010-0001"><title>FX Shared Ledger</title><rect class="box" x="130" y="30" width="200" height="60" rx="6"/><text class="ttl" x="230" y="64" text-anchor="middle">FX Shared Ledger</text></g>
 <g class="node" data-id="FXDST00002-0001"><title>FX Ledger Store</title><rect class="box" x="130" y="150" width="200" height="60" rx="6"/><text class="ttl" x="230" y="184" text-anchor="middle">FX Ledger Store</text></g>
 <g class="node outside" data-id="FXPRD00002-0001"><title>FX Order API</title><rect class="box" x="420" y="60" width="200" height="60" rx="6"/><text class="ttl" x="520" y="80" text-anchor="middle">FX Order API</text><text class="cap" x="520" y="96" text-anchor="middle">FX Storefront Pattern</text></g>

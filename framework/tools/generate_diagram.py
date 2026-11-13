@@ -1065,6 +1065,8 @@ class LogicalLayout:
     order: list[list[str]] = field(default_factory=list)  # uid order of each drawn band
     band_names: list[str] = field(default_factory=list)  # band of each entry in order
     lane_order: list[str] = field(default_factory=list)
+    gutters: list[int] = field(default_factory=list)  # x of each vertical channel between box columns
+    lane_gutter: int | None = None  # x of the vertical channel left of the outside lane
     width: int = 0
     height: int = 0
 
@@ -1090,6 +1092,7 @@ def layout_logical(model: DiagramModel) -> LogicalLayout:
     used = min(LOGICAL_COLUMNS, max((len(layer) for layer in layout.order), default=1))
     main_w = used * LOGICAL_BOX_W + (used - 1) * LOGICAL_COL_GAP
     x0 = LOGICAL_MARGIN + LOGICAL_LABEL_W
+    layout.gutters = [x0 - 15 + k * step_x for k in range(used + 1)]
     y = LOGICAL_MARGIN
     for band, layer in zip(names, layout.order):
         rows = -(-len(layer) // LOGICAL_COLUMNS)
@@ -1116,6 +1119,7 @@ def layout_logical(model: DiagramModel) -> LogicalLayout:
 
         layout.lane_order = [n.uid for n in sorted(outer, key=lane_key)]
         lane_x = x0 + main_w + LOGICAL_LANE_GAP
+        layout.lane_gutter = lane_x - 20
         top = LOGICAL_MARGIN
         for i, uid in enumerate(layout.lane_order):
             layout.pos[uid] = (lane_x, top + LOGICAL_LANE_HEAD + i * step_y)
@@ -1136,13 +1140,65 @@ def _fit_lines(text: str, width: int, limit: int) -> list[str]:
     return [line if len(line) <= width + 3 else line[: width - 1] + "..." for line in lines]
 
 
-def _box_border(box: tuple[int, int], toward: tuple[float, float]) -> tuple[float, float]:
-    cx, cy = box[0] + LOGICAL_BOX_W / 2, box[1] + LOGICAL_BOX_H / 2
-    dx, dy = toward[0] - cx, toward[1] - cy
-    if dx == 0 and dy == 0:
-        return cx, cy
-    t = min((LOGICAL_BOX_W / 2) / abs(dx) if dx else math.inf, (LOGICAL_BOX_H / 2) / abs(dy) if dy else math.inf)
-    return cx + dx * t, cy + dy * t
+def _route_edges(model: DiagramModel, layout: LogicalLayout) -> dict[int, list[tuple[int, int]]]:
+    """Orthogonal route per edge (index in model.edges), travelling only in the channels between boxes.
+
+    An edge leaves its source through the top or bottom side, runs along the gap between box rows to a
+    vertical channel between columns, follows it, and enters its target the same way, so it never
+    crosses a box that is not one of its endpoints. Attachment points, gap lanes and channel lanes are
+    spread by edge order so edges do not overlap. Everything is integer arithmetic keyed on uid and
+    edge order.
+    """
+    pos = layout.pos
+    lane_uids = set(layout.lane_order)
+    drawn = [
+        (i, e) for i, e in enumerate(model.edges) if e.source != e.target and e.source in pos and e.target in pos
+    ]
+    sides: dict[int, tuple[str, str]] = {}
+    slots: dict[tuple[str, str], list[tuple[int, str, int]]] = {}
+    for i, e in drawn:
+        a, b = pos[e.source], pos[e.target]
+        sa = "bottom" if b[1] > a[1] else "top"
+        sb = "top" if b[1] > a[1] else ("bottom" if b[1] < a[1] else "top")
+        sides[i] = (sa, sb)
+        slots.setdefault((e.source, sa), []).append((pos[e.target][0], e.target, i))
+        slots.setdefault((e.target, sb), []).append((pos[e.source][0], e.source, i))
+    half = LOGICAL_BOX_W // 2
+    offset: dict[tuple[int, str], int] = {}  # (edge index, uid) -> x offset from the box centre
+    for (uid, _side), items in slots.items():
+        items.sort()
+        for rank, (_x, _other, i) in enumerate(items):
+            shift = (160 * (rank + 1)) // (len(items) + 1) // GRID * GRID - 80
+            offset[(i, uid)] = shift
+    routes: dict[int, list[tuple[int, int]]] = {}
+    for i, e in drawn:
+        a, b = pos[e.source], pos[e.target]
+        sa, sb = sides[i]
+        ax, bx = a[0] + half + offset[(i, e.source)], b[0] + half + offset[(i, e.target)]
+        track = i % 2
+        ga = a[1] + LOGICAL_BOX_H + 5 + 5 * track if sa == "bottom" else a[1] - 5 - 5 * track
+        gb = b[1] + LOGICAL_BOX_H + 5 + 5 * track if sb == "bottom" else b[1] - 5 - 5 * track
+        if e.source in lane_uids or e.target in lane_uids:
+            options = ([layout.gutters[-1]] if layout.gutters else []) + [layout.lane_gutter]
+            if e.source in lane_uids and e.target in lane_uids:
+                options = [layout.lane_gutter]
+        else:
+            options = layout.gutters
+        gx = min(options, key=lambda g: (abs(ax - g) + abs(bx - g), g)) + (i % 3 - 1) * 10
+        raw = [
+            (ax, a[1] + LOGICAL_BOX_H if sa == "bottom" else a[1]),
+            (ax, ga),
+            (gx, ga),
+            (gx, gb),
+            (bx, gb),
+            (bx, b[1] + LOGICAL_BOX_H if sb == "bottom" else b[1]),
+        ]
+        pts: list[tuple[int, int]] = []
+        for point in raw:
+            if not pts or pts[-1] != point:
+                pts.append(point)
+        routes[i] = pts
+    return routes
 
 
 def render_logical_svg(model: DiagramModel) -> str:
@@ -1169,19 +1225,18 @@ def render_logical_svg(model: DiagramModel) -> str:
         lx, ly, lw, lh = layout.lane
         out.append(f'<rect class="lane" x="{lx}" y="{ly}" width="{lw}" height="{lh}" rx="6"/>')
         out.append(f'<text class="ll" x="{lx + 10}" y="{ly + 24}">Outside this pattern</text>')
-    seen: dict[tuple[str, str], int] = {}
-    for edge in model.edges:
+    routes = _route_edges(model, layout)
+    loops: dict[str, int] = {}
+    for number, edge in enumerate(model.edges):
         s, t = edge.source, edge.target
         if s not in layout.pos or t not in layout.pos:
             continue
-        key = (s, t) if s < t else (t, s)
-        index = seen.get(key, 0)
-        seen[key] = index + 1
         tip = xml_text(f"{by_uid[s].name} {edge.label or '(no label recorded)'} {by_uid[t].name}")
         head = f'<g class="edge" data-from="{xml_text(s)}" data-to="{xml_text(t)}"><title>{tip}</title>'
         if s == t:  # a self-relationship: a small loop off the top-right corner
             x, y = layout.pos[s]
-            grow = 14 * index
+            grow = 14 * loops.get(s, 0)
+            loops[s] = loops.get(s, 0) + 1
             p1 = (x + LOGICAL_BOX_W * 0.62, y)
             p2 = (x + LOGICAL_BOX_W, y + LOGICAL_BOX_H * 0.3)
             path = (
@@ -1189,19 +1244,8 @@ def render_logical_svg(model: DiagramModel) -> str:
                 f"{x + LOGICAL_BOX_W + 30 + grow:.1f} {p2[1]:.1f} {p2[0]:.1f} {p2[1]:.1f}"
             )
         else:
-            a, b = layout.pos[s], layout.pos[t]
-            ca = (a[0] + LOGICAL_BOX_W / 2, a[1] + LOGICAL_BOX_H / 2)
-            cb = (b[0] + LOGICAL_BOX_W / 2, b[1] + LOGICAL_BOX_H / 2)
-            if index == 0:
-                p1, p2 = _box_border(a, cb), _box_border(b, ca)
-                path = f"M{p1[0]:.1f} {p1[1]:.1f} L{p2[0]:.1f} {p2[1]:.1f}"
-            else:  # parallel edges between one pair bend apart
-                bend = 26.0 * index * (1 if s < t else -1)
-                dx, dy = cb[0] - ca[0], cb[1] - ca[1]
-                length = math.hypot(dx, dy) or 1.0
-                ctrl = ((ca[0] + cb[0]) / 2 - dy / length * bend, (ca[1] + cb[1]) / 2 + dx / length * bend)
-                p1, p2 = _box_border(a, ctrl), _box_border(b, ctrl)
-                path = f"M{p1[0]:.1f} {p1[1]:.1f} Q{ctrl[0]:.1f} {ctrl[1]:.1f} {p2[0]:.1f} {p2[1]:.1f}"
+            pts = routes[number]
+            path = "M" + " L".join(f"{px} {py}" for px, py in pts)
         out.append(f'{head}<path class="ln" d="{path}"/></g>')
     for uid in [u for names in layout.order for u in names] + layout.lane_order:
         node = by_uid[uid]

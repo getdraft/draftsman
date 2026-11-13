@@ -20,18 +20,24 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES = REPO_ROOT / "examples"
 FIXTURE = REPO_ROOT / "tests" / "fixtures" / "diagram_workspace"
 # Edge crossings allowed in the large logical figure (AC14). Set from the first committed golden; lower only on purpose.
-LARGE_MAX_CROSSINGS = 834
+LARGE_MAX_CROSSINGS = 869
+
+
+def edge_polylines(svg: str) -> list:
+    """(from uid, to uid, [(x, y), ...]) for every routed edge; self-loop curves are skipped."""
+    found = []
+    for match in re.finditer(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)"><title>[^<]*</title><path class="ln" d="(M[-\d. L]+)"/>', svg):
+        numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", match.group(3))]
+        found.append((match.group(1).replace("&amp;", "&"), match.group(2).replace("&amp;", "&"), list(zip(numbers[0::2], numbers[1::2]))))
+    return found
 
 
 def count_crossings(svg: str) -> int:
-    """Crossings between straight edges (paths 'M x y L x y') that do not share a node."""
+    """Proper crossings between segments of edges that do not share a node."""
     segments = []
-    for match in re.finditer(
-        r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)"><title>[^<]*</title><path class="ln" d="M([-\d.]+) ([-\d.]+) L([-\d.]+) ([-\d.]+)"/>',
-        svg,
-    ):
-        ends = {match.group(1), match.group(2)}
-        segments.append((ends, tuple(float(match.group(i)) for i in range(3, 7))))
+    for source, target, pts in edge_polylines(svg):
+        for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+            segments.append(({source, target}, (ax, ay, bx, by)))
 
     def side(ax: float, ay: float, bx: float, by: float, cx: float, cy: float) -> float:
         return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax)
@@ -46,6 +52,23 @@ def count_crossings(svg: str) -> int:
             if d1 * d2 < 0 and d3 * d4 < 0:
                 total += 1
     return total
+
+
+def edges_hitting_foreign_boxes(svg: str) -> list:
+    """Edges with a segment that passes through the interior of a box that is not one of its endpoints."""
+    rects = node_rects(svg)
+    hits = []
+    for source, target, pts in edge_polylines(svg):
+        for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+            lo_x, hi_x, lo_y, hi_y = min(ax, bx), max(ax, bx), min(ay, by), max(ay, by)
+            for uid, (x, y, w, h) in rects.items():
+                if uid in (source, target):
+                    continue
+                if lo_x < x + w and x < hi_x and lo_y < y + h and y < hi_y or (
+                    lo_x == hi_x and x < lo_x < x + w and lo_y < y + h and y < hi_y
+                ) or (lo_y == hi_y and y < lo_y < y + h and lo_x < x + w and x < hi_x):
+                    hits.append((source, target, uid))
+    return hits
 
 
 def logical_svg(catalog: dict, uid: str, placed_only: bool = False) -> str:
@@ -816,9 +839,11 @@ class LaterStoryTests(unittest.TestCase):
             plain("D-1", "data_store_service", "Store"),
             plain("H-1", "host", "Machine"),
             plain("P-2", "product_component", "Tiered"),
+            plain("X-1", "product_component", "Elsewhere"),
             pattern({"G": ["N-1", "P-1", "D-1", "H-1", "P-2"]}),
+            relationship("R-1", "P-1", "X-1", "calls"),
         ]
-        objects[-1]["serviceGroups"][0]["deployableObjects"][4]["diagramTier"] = "utility"
+        next(o for o in objects if o["uid"] == "SDP-1")["serviceGroups"][0]["deployableObjects"][4]["diagramTier"] = "utility"
         catalog = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
         svg = logical_svg(catalog, "SDP-1")
         xml.dom.minidom.parseString(svg)
@@ -830,8 +855,9 @@ class LaterStoryTests(unittest.TestCase):
         self.assertEqual(ys["H-1"], ys["P-2"])  # recorded diagramTier utility puts P-2 beside the host
         self.assertIn('<g class="node dashed" data-id="P-1">', svg)
         self.assertNotIn('<g class="node dashed" data-id="P-2">', svg)
-        # One-hop endpoints placed nowhere are drawn solid (D4).
-        self.assertNotIn("dashed outside", svg)
+        # A one-hop endpoint placed nowhere is in the outside lane and drawn solid (D4).
+        self.assertIn('<g class="node outside" data-id="X-1">', svg)
+        self.assertNotRegex(svg, r'class="node[^"]*dashed[^"]*" data-id="X-1"')
 
     def test_barycentre_tie_break_by_uid(self) -> None:
         layers = [["T-1"], ["B-9", "A-1", "C-5"]]
@@ -915,6 +941,13 @@ class LaterStoryTests(unittest.TestCase):
         xml.dom.minidom.parseString(svg)
         crossings = count_crossings(svg)
         self.assertLessEqual(crossings, LARGE_MAX_CROSSINGS, f"{crossings} crossings")
+
+    def test_edges_avoid_foreign_boxes(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        for sdp in generate_diagram.sdps(catalog):
+            svg = logical_svg(catalog, sdp["uid"])
+            self.assertGreater(len(edge_polylines(svg)), 0)
+            self.assertEqual(edges_hitting_foreign_boxes(svg), [], sdp["uid"])
 
     def test_wrapped_band_has_no_overlapping_boxes(self) -> None:
         uids = [f"P-{i:02d}" for i in range(9)]
