@@ -702,17 +702,56 @@ class LaterStoryTests(unittest.TestCase):
             plain("DST-1", "data_store_service", "Store"),
             plain("P-1", "product_component", "Alpha"),
             plain("P-2", "product_component", "Beta"),
-            pattern({"One": ["P-1"], "Two": ["P-2"]}),
         ]
-        objects[-1]["serviceGroups"][0]["substrate"] = "DST-1"
-        objects[-1]["serviceGroups"][1]["substrate"] = "DST-1"
-        model = model_of(objects)
-        type_warning = "substrate Store (DST-1) has type data_store_service; expected runtime_service or host"
-        self.assertEqual(model.warnings.count(type_warning), 1)
-        self.assertEqual(model.warnings, sorted(set(model.warnings)))
-        self.assertEqual(len(model.warnings), len(set(model.warnings)))
-        self.assertEqual(model.warning_count_line, f"{len(model.warnings)} warnings")
-        self.assertTrue(model.warnings)
+        sdp = pattern({})
+        sdp["serviceGroups"] = [
+            {"name": "One", "deploymentTarget": "azure", "substrate": "DST-1",
+             "deployableObjects": [{"ref": "P-1", "diagramTier": "application"}]},
+            {"name": "Two", "deploymentTarget": "azure", "substrate": "DST-1",
+             "deployableObjects": [{"ref": "P-2", "diagramTier": "application"}]},
+            {"name": "Zeta", "deploymentTarget": "azure", "substrate": "FX-MISSING", "deployableObjects": []},
+            {"name": "alpha", "deploymentTarget": "azure", "substrate": "FX-MISSING", "deployableObjects": []},
+        ]
+        model = model_of(objects + [sdp])
+        # Code-point order: "Z" (U+005A) sorts before "a" (U+0061), so "Zeta" precedes "alpha".
+        self.assertEqual(
+            model.warnings,
+            [
+                "substrate Store (DST-1) has type data_store_service; expected runtime_service or host",
+                "unknown substrate uid 'FX-MISSING' in Zeta",
+                "unknown substrate uid 'FX-MISSING' in alpha",
+            ],
+        )
+        self.assertEqual(model.warning_count_line, "3 warnings")
+
+    def test_substrate_placed_in_other_group_is_not_a_lane_member(self) -> None:
+        objects = [
+            plain("RTC-1", "runtime_service", "Cluster"),
+            plain("P-1", "product_component", "Alpha"),
+            plain("P-2", "product_component", "Beta"),
+        ]
+        sdp = pattern({})
+        sdp["networkZones"] = [{"id": "z-app", "name": "App Zone", "tier": "application"}]
+        sdp["serviceGroups"] = [
+            {"name": "A", "deploymentTarget": "azure", "substrate": "RTC-1",
+             "deployableObjects": [{"ref": "P-1", "networkZone": "z-app", "diagramTier": "application"}]},
+            {"name": "B", "deploymentTarget": "azure",
+             "deployableObjects": [
+                 {"ref": "RTC-1", "networkZone": "z-app", "diagramTier": "utility"},
+                 {"ref": "P-2", "networkZone": "z-app", "diagramTier": "application"},
+             ]},
+        ]
+        model = model_of(objects + [sdp])
+        group_b = next(c for c in model.containers if c.group == "B")
+        self.assertNotIn("RTC-1", group_b.members)
+        self.assertEqual(group_b.members, ["P-2"])
+        lane_members = [uid for container in model.containers for lane in container.lanes for uid in lane.members]
+        self.assertNotIn("RTC-1", lane_members)
+        deployment = {node.uid for node in model.nodes_for_view("deployment")}
+        self.assertNotIn("RTC-1", deployment)
+        for uid in lane_members:
+            self.assertIn(uid, deployment)
+        self.assertIn("RTC-1", {node.uid for node in model.nodes_for_view("logical")})
 
     @unittest.skip("enabled in S5")
     def test_logical_golden(self) -> None:

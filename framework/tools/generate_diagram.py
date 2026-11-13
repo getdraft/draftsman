@@ -471,6 +471,10 @@ class Model:
             zone_id = clean(zone.get("id")) if isinstance(zone, dict) else ""
             if zone_id:
                 declared.setdefault(zone_id, zone)
+        # First pass (D29): every container uid is known before any group's boxes are filtered, so a
+        # substrate placed in another group is never drawn as a box or lane member anywhere.
+        planned = [group["substrate"] or self._derive_substrate(group["uids"]) for group in self.groups]
+        self.container_uids = {uid for uid in planned if uid and uid in catalog}
         for group in self.groups:
             group_name = group["name"]
             recorded = group["substrate"]
@@ -509,7 +513,7 @@ class Model:
                         self.warnings.append(
                             f"conflict: {self.name(uid)} runsOn {self.name(runs_on)}; group substrate is {self.name(recorded)}"
                         )
-            members = [uid for uid in group["uids"] if uid != container_uid]
+            members = [uid for uid in group["uids"] if uid not in self.container_uids]
             zone_of = group["zone_of"]
             buckets: dict[str, list[str]] = {}
             unrecorded: list[str] = []
@@ -547,7 +551,6 @@ class Model:
                     lanes=lanes,
                 )
             )
-        self.container_uids = {container.uid for container in self.containers if container.uid}
 
     def _caption(self, uid: str) -> str:
         names = self._other_patterns.get(uid, [])
