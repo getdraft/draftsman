@@ -151,6 +151,12 @@ def svg_for(objects: list, view: str = "logical", uid: str = "SDP-1") -> str:
         return logical_svg(catalog, uid) if view == "logical" else deployment_svg(catalog, uid)
 
 
+def data_ids(svg: str) -> set:
+    """Every data-id attribute of an element in the SVG, parsed as XML."""
+    doc = xml.dom.minidom.parseString(svg)
+    return {el.getAttribute("data-id") for el in doc.getElementsByTagName("g") if el.getAttribute("data-id")}
+
+
 def class_of(svg: str, uid: str) -> str:
     """The class attribute of the node or group element whose data-id is uid."""
     match = re.search(r'<g class="((?:node|group)[^"]*)"[^>]*data-id="' + re.escape(uid) + '"', svg)
@@ -1915,6 +1921,17 @@ class LaterStoryTests(unittest.TestCase):
         self.assertIn('<tspan class="tech"> / HTTPS</tspan>', eight)
         self.assertIn(".lb .tech{font-weight:400}", eight)
 
+    def test_labels_clear_node_boxes(self) -> None:
+        svg = logical_svg(load_catalog(FIXTURE), "FXSDP00002-0001")
+        boxes = node_rects(svg)
+        self.assertTrue(boxes)
+        for x, y, text in re.findall(r'<text class="lb" x="([\d.]+)" y="([\d.]+)" text-anchor="middle">([^<]*)</text>', svg):
+            width = len(xml_unescape(text)) * 6.2 + 4
+            left, top = float(x) - width / 2, float(y) - 13
+            for bx, by, bw, bh in boxes.values():
+                clear = left + width <= bx or bx + bw <= left or top + 14 <= by or by + bh <= top
+                self.assertTrue(clear, f"label '{text}' overlaps a node box")
+
     def test_node_type_chip_and_tech_line(self) -> None:
         objects = [
             component("C-P", "Api", language="Python"),
@@ -1984,9 +2001,9 @@ class LaterStoryTests(unittest.TestCase):
                 deployment_uids |= {c.uid for c in model.containers if c.uid and c.drawn}
                 shared = logical_uids & deployment_uids
                 shared_seen += len(shared)
-                for uid in sorted(shared):
-                    self.assertIn(f'data-id="{xml_escape(uid)}"', logical)
-                    self.assertIn(f'data-id="{xml_escape(uid)}"', deployment)
+                logical_ids, deployment_ids = data_ids(logical), data_ids(deployment)
+                self.assertTrue(shared <= logical_ids, sorted(shared - logical_ids))
+                self.assertTrue(shared <= deployment_ids, sorted(shared - deployment_ids))
         self.assertGreater(shared_seen, 0)
 
     def test_dependency_edges_drawn_like_relationships(self) -> None:
@@ -1999,6 +2016,20 @@ class LaterStoryTests(unittest.TestCase):
         for edge in derived:
             self.assertIn(f'data-from="{xml_escape(edge.source)}" data-to="{xml_escape(edge.target)}"', svg)
         self.assertNotIn("runs on", svg)
+        catalog_rels = [o for o in catalog.values() if generate_diagram.is_runs_on(o)]
+        real = {
+            (o.get("source"), o.get("target"))
+            for o in catalog.values()
+            if o.get("type") == "relationship" and not o.get("_derived")
+        }
+        checked = 0
+        for rel in catalog_rels:
+            pair = (rel["source"], rel["target"])
+            if pair in real:
+                continue
+            checked += 1
+            self.assertNotIn(f'data-from="{xml_escape(pair[0])}" data-to="{xml_escape(pair[1])}"', svg, pair)
+        self.assertGreater(checked, 0)
 
     @unittest.skip("enabled in S8")
     def test_page_section_order(self) -> None:

@@ -1386,6 +1386,8 @@ _FIGURE_CSS = (
     ".lb.hov{display:none}"
     ".edge:hover .lb.hov,.edge.on .lb.hov{display:inline}"
 )
+
+
 def _with_fallbacks(css: str) -> str:
     """Each var(--token) gets its light value as fallback, so viewers without custom properties still draw colour."""
     return re.sub(r"var\(--([a-z0-9-]+)\)", lambda m: f"var(--{m.group(1)},{THEME_TOKENS[m.group(1)][0]})", css)
@@ -1451,6 +1453,31 @@ def _polyline_mid(pts: list) -> tuple:
             return (ax + (bx - ax) * t, ay + (by - ay) * t)
         walked += seg
     return pts[-1]
+
+
+def _label_mid(pts: list, text_len: int, boxes: list) -> tuple:
+    """D13: the label anchor on a route. It sits on the longest segment whose label clears every node box.
+
+    Candidates are segment midpoints, longest first (ties by index). The label is about 6.2 px per character
+    and 14 px tall, drawn 4 px above its anchor. When no candidate is clear, the midpoint of the route is used.
+    """
+    width = text_len * 6.2 + 4
+    order = sorted(range(len(pts) - 1), key=lambda i: (-(abs(pts[i + 1][0] - pts[i][0]) + abs(pts[i + 1][1] - pts[i][1])), i))
+    for i in order:
+        cx = (pts[i][0] + pts[i + 1][0]) / 2
+        cy = (pts[i][1] + pts[i + 1][1]) / 2
+        x0, y0 = cx - width / 2, cy - 13
+        clear = all(
+            x0 + width <= bx or bx + bw <= x0 or y0 + 14 <= by or by + bh <= y0 for bx, by, bw, bh in boxes
+        )
+        if clear:
+            return (cx, cy)
+    return _polyline_mid(pts)
+
+
+def _label_len(edge: DiagramEdge) -> int:
+    """Characters drawn for an edge label: the label, a separator and the technology."""
+    return len(clean(edge.label)) + (len(clean(edge.technology)) + 3 if clean(edge.technology) else 0)
 
 
 def _edge_label(edge: DiagramEdge, mid: tuple, cls: str) -> str:
@@ -1544,7 +1571,7 @@ def render_logical_svg(model: DiagramModel) -> str:
         else:
             pts = routes[number]
             path = "M" + " L".join(f"{px} {py}" for px, py in pts)
-            mid = _polyline_mid(pts)
+            mid = _label_mid(pts, _label_len(edge), [(x0, y0, LOGICAL_BOX_W, LOGICAL_BOX_H) for x0, y0 in layout.pos.values()])
         out.append(f'{head}<path class="{cls}" d="{path}"{marks}/>{_edge_label(edge, mid, label_cls)}</g>')
     for uid in [u for names in layout.order for u in names] + layout.lane_order:
         x, y = layout.pos[uid]
@@ -2152,7 +2179,7 @@ def render_deployment_svg(model: DiagramModel) -> str:
         else:
             pts = routes[number]
             path = "M" + " L".join(f"{_fmt(px)} {_fmt(py)}" for px, py in pts)
-            mid = _polyline_mid(pts)
+            mid = _label_mid(pts, _label_len(edge), [rects[u] for u in by_uid if u in rects])
         edges.append(f'{head}<path class="{cls}" d="{path}"{marks}/>{_edge_label(edge, mid, label_cls)}</g>')
     width = right + LOGICAL_MARGIN
     note = ""
