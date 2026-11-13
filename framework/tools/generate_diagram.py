@@ -35,6 +35,7 @@ import argparse
 import html
 import math
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -583,12 +584,68 @@ def render_page(model: Model, layout: Layout) -> str:
     return "".join(parts)
 
 
+# --------------------------------------------------------------------------- skeleton
+# Data classes and stubs for the two-view renderer. Later stories fill them in
+# (S3 model, S4 containers and zones, S5 logical SVG, S6 deployment SVG,
+# S7 edges and styling, S8 page). Every ordering must key on uid or document order (D15).
+@dataclass
+class DiagramNode:
+    uid: str
+    name: str
+    node_type: str
+    placed: bool = False
+    external: bool = False
+
+
+@dataclass
+class DiagramEdge:
+    source: str
+    target: str
+    label: str = ""
+    derived: bool = False
+
+
+@dataclass
+class DiagramContainer:
+    uid: str
+    caption: str = ""
+    members: list[str] = field(default_factory=list)
+
+
+@dataclass
+class DiagramModel:
+    sdp_uid: str
+    nodes: list[DiagramNode] = field(default_factory=list)
+    edges: list[DiagramEdge] = field(default_factory=list)
+    containers: list[DiagramContainer] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+
+
+def build_diagram_model(catalog: dict[str, dict[str, Any]], sdp: dict[str, Any], placed_only: bool) -> DiagramModel:
+    raise NotImplementedError("enabled in S3")
+
+
+def render_logical_svg(model: DiagramModel) -> str:
+    raise NotImplementedError("enabled in S5")
+
+
+def render_deployment_svg(model: DiagramModel) -> str:
+    raise NotImplementedError("enabled in S6")
+
+
 # --------------------------------------------------------------------------- cli
-def build(workspace: Path, selector: str | None, placed_only: bool = False) -> tuple[str, Model]:
-    catalog = load_catalog(workspace)
+def build_from_catalog(catalog: dict[str, dict[str, Any]], selector: str | None, placed_only: bool = False) -> tuple[str, Model]:
+    """Public seam (D16c): render one pattern from an already loaded catalog dict.
+
+    Until S8 the page is the legacy page.
+    """
     sdp = pick_sdp(catalog, selector)
     model = Model(catalog, sdp, placed_only)
     return render_page(model, Layout(model)), model
+
+
+def build(workspace: Path, selector: str | None, placed_only: bool = False) -> tuple[str, Model]:
+    return build_from_catalog(load_catalog(workspace), selector, placed_only)
 
 
 def slug(text: str) -> str:

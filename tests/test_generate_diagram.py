@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import inspect
 import io
 import re
 import tempfile
@@ -11,9 +12,11 @@ from pathlib import Path
 import yaml
 
 from framework.tools import generate_diagram
+from generate_c4 import load_catalog
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES = REPO_ROOT / "examples"
+FIXTURE = REPO_ROOT / "tests" / "fixtures" / "diagram_workspace"
 
 
 def write_workspace(root: Path, objects: list[dict]) -> Path:
@@ -308,3 +311,249 @@ class GenerateDiagramTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LaterStoryTests(unittest.TestCase):
+    """Tests written ahead of the stories that implement them (D30). Each story removes its own markers."""
+
+    def test_build_from_catalog_signature(self) -> None:
+        params = list(inspect.signature(generate_diagram.build_from_catalog).parameters)
+        self.assertEqual(params, ["catalog", "selector", "placed_only"])
+
+    def test_build_from_catalog_returns_page_and_model(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        page, model = generate_diagram.build_from_catalog(catalog, "FXSDP00001-0001", False)
+        self.assertIsInstance(page, str)
+        self.assertIsInstance(model, generate_diagram.Model)
+
+    @unittest.skip("enabled in S3")
+    def test_one_hop_scope(self) -> None:
+        self.fail("not implemented until S3")
+
+    @unittest.skip("enabled in S3")
+    def test_one_hop_type_allow_list(self) -> None:
+        self.fail("not implemented until S3")
+
+    @unittest.skip("enabled in S3")
+    def test_runs_on_does_not_extend_scope(self) -> None:
+        self.fail("not implemented until S3")
+
+    @unittest.skip("enabled in S3")
+    def test_placed_only_restriction(self) -> None:
+        self.fail("not implemented until S3")
+
+    @unittest.skip("enabled in S3")
+    def test_undrawn_relationship_count(self) -> None:
+        self.fail("not implemented until S3")
+
+    @unittest.skip("enabled in S3")
+    def test_outside_lane_classification(self) -> None:
+        self.fail("not implemented until S3")
+
+    @unittest.skip("enabled in S3")
+    def test_derived_tier_warning(self) -> None:
+        self.fail("not implemented until S3")
+
+    @unittest.skip("enabled in S3")
+    def test_external_nodes(self) -> None:
+        self.fail("not implemented until S3")
+
+    @unittest.skip("enabled in S3")
+    def test_duplicate_placement(self) -> None:
+        self.fail("not implemented until S3")
+
+    @unittest.skip("enabled in S3")
+    def test_derived_relationships(self) -> None:
+        self.fail("not implemented until S3")
+
+    @unittest.skip("enabled in S3")
+    def test_malformed_service_groups_model(self) -> None:
+        self.fail("not implemented until S3")
+
+    @unittest.skip("enabled in S4")
+    def test_container_caption_variants(self) -> None:
+        self.fail("not implemented until S4")
+
+    @unittest.skip("enabled in S4")
+    def test_substrate_type_mismatch_and_unknown_uid_warnings(self) -> None:
+        self.fail("not implemented until S4")
+
+    @unittest.skip("enabled in S4")
+    def test_conflict_warning(self) -> None:
+        self.fail("not implemented until S4")
+
+    @unittest.skip("enabled in S4")
+    def test_zone_assignment_and_warning(self) -> None:
+        self.fail("not implemented until S4")
+
+    @unittest.skip("enabled in S4")
+    def test_node_sets_per_view(self) -> None:
+        self.fail("not implemented until S4")
+
+    @unittest.skip("enabled in S4")
+    def test_warning_dedup_sorted(self) -> None:
+        self.fail("not implemented until S4")
+
+    @unittest.skip("enabled in S5")
+    def test_logical_golden(self) -> None:
+        self.fail("not implemented until S5")
+
+    @unittest.skip("enabled in S5")
+    def test_logical_bands_and_dashed_derived(self) -> None:
+        self.fail("not implemented until S5")
+
+    @unittest.skip("enabled in S5")
+    def test_barycentre_tie_break_by_uid(self) -> None:
+        self.fail("not implemented until S5")
+
+    @unittest.skip("enabled in S5")
+    def test_grid_snapping(self) -> None:
+        self.fail("not implemented until S5")
+
+    @unittest.skip("enabled in S5")
+    def test_external_node_in_outside_lane(self) -> None:
+        self.fail("not implemented until S5")
+
+    @unittest.skip("enabled in S5")
+    def test_svg_escaping(self) -> None:
+        self.fail("not implemented until S5")
+
+    @unittest.skip("enabled in S5")
+    def test_large_logical_svg_valid_fast_low_crossings(self) -> None:
+        self.fail("not implemented until S5")
+
+    @unittest.skip("enabled in S5")
+    def test_logical_substrate_is_box(self) -> None:
+        self.fail("not implemented until S5")
+
+    @unittest.skip("enabled in S5")
+    def test_svg_desc_has_no_version(self) -> None:
+        self.fail("not implemented until S5")
+
+    @unittest.skip("enabled in S6")
+    def test_deployment_golden(self) -> None:
+        self.fail("not implemented until S6")
+
+    @unittest.skip("enabled in S6")
+    def test_nesting_order(self) -> None:
+        self.fail("not implemented until S6")
+
+    @unittest.skip("enabled in S6")
+    def test_zone_lanes_order_and_fallback(self) -> None:
+        self.fail("not implemented until S6")
+
+    @unittest.skip("enabled in S6")
+    def test_substrate_container_not_node(self) -> None:
+        self.fail("not implemented until S6")
+
+    @unittest.skip("enabled in S6")
+    def test_empty_group_caption(self) -> None:
+        self.fail("not implemented until S6")
+
+    @unittest.skip("enabled in S6")
+    def test_container_edge_attachment(self) -> None:
+        self.fail("not implemented until S6")
+
+    @unittest.skip("enabled in S6")
+    def test_large_deployment_svg_valid_fast(self) -> None:
+        self.fail("not implemented until S6")
+
+    @unittest.skip("enabled in S7")
+    def test_edge_stroke_classes(self) -> None:
+        self.fail("not implemented until S7")
+
+    @unittest.skip("enabled in S7")
+    def test_flow_arrowheads(self) -> None:
+        self.fail("not implemented until S7")
+
+    @unittest.skip("enabled in S7")
+    def test_unknown_flow_warning(self) -> None:
+        self.fail("not implemented until S7")
+
+    @unittest.skip("enabled in S7")
+    def test_label_visibility_threshold(self) -> None:
+        self.fail("not implemented until S7")
+
+    @unittest.skip("enabled in S7")
+    def test_node_type_chip_and_tech_line(self) -> None:
+        self.fail("not implemented until S7")
+
+    @unittest.skip("enabled in S7")
+    def test_lifecycle_and_theme_css(self) -> None:
+        self.fail("not implemented until S7")
+
+    @unittest.skip("enabled in S7")
+    def test_svg_data_id_parity(self) -> None:
+        self.fail("not implemented until S7")
+
+    @unittest.skip("enabled in S8")
+    def test_page_section_order(self) -> None:
+        self.fail("not implemented until S8")
+
+    @unittest.skip("enabled in S8")
+    def test_page_header_and_counts(self) -> None:
+        self.fail("not implemented until S8")
+
+    @unittest.skip("enabled in S8")
+    def test_footer_version_only_in_html(self) -> None:
+        self.fail("not implemented until S8")
+
+    @unittest.skip("enabled in S8")
+    def test_relationship_source_column(self) -> None:
+        self.fail("not implemented until S8")
+
+    @unittest.skip("enabled in S8")
+    def test_conflicts_section(self) -> None:
+        self.fail("not implemented until S8")
+
+    @unittest.skip("enabled in S8")
+    def test_characteristics_and_inventory(self) -> None:
+        self.fail("not implemented until S8")
+
+    @unittest.skip("enabled in S8")
+    def test_warnings_stderr_single_mode(self) -> None:
+        self.fail("not implemented until S8")
+
+    @unittest.skip("enabled in S8")
+    def test_pin_script_cross_figure(self) -> None:
+        self.fail("not implemented until S8")
+
+    @unittest.skip("enabled in S9")
+    def test_cli_argument_matrix(self) -> None:
+        self.fail("not implemented until S9")
+
+    @unittest.skip("enabled in S9")
+    def test_all_no_catalog_exit_2(self) -> None:
+        self.fail("not implemented until S9")
+
+    @unittest.skip("enabled in S9")
+    def test_all_no_sdp_exit_1(self) -> None:
+        self.fail("not implemented until S9")
+
+    @unittest.skip("enabled in S9")
+    def test_all_continues_after_malformed_pattern(self) -> None:
+        self.fail("not implemented until S9")
+
+    @unittest.skip("enabled in S9")
+    def test_single_mode_malformed_exit_1(self) -> None:
+        self.fail("not implemented until S9")
+
+    @unittest.skip("enabled in S9")
+    def test_slug_collision_suffix(self) -> None:
+        self.fail("not implemented until S9")
+
+    @unittest.skip("enabled in S9")
+    def test_svg_dir_matches_goldens(self) -> None:
+        self.fail("not implemented until S9")
+
+    @unittest.skip("enabled in S9")
+    def test_subprocess_hashseed_identical(self) -> None:
+        self.fail("not implemented until S9")
+
+    @unittest.skip("enabled in S9")
+    def test_all_on_examples_and_fixture_exit_0(self) -> None:
+        self.fail("not implemented until S9")
+
+    @unittest.skip("enabled in S10")
+    def test_no_story_skip_markers(self) -> None:
+        self.fail("not implemented until S10")
