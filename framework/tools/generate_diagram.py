@@ -174,6 +174,7 @@ class DiagramModel:
     edges: list[DiagramEdge] = field(default_factory=list)
     containers: list[DiagramContainer] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    deployment_nodes: list[DiagramNode] = field(default_factory=list)  # D29: nodes minus drawn containers
 
 
 # D2: object types that may appear one hop away from a placed object.
@@ -645,11 +646,14 @@ class Layout:
         return x + CHIP_W / 2, y + CHIP_H / 2
 
 
-def border_point(c: tuple[float, float], toward: tuple[float, float]) -> tuple[float, float]:
+def border_point(
+    c: tuple[float, float], toward: tuple[float, float], w: float = CHIP_W, h: float = CHIP_H
+) -> tuple[float, float]:
+    """Point where the line from centre c toward another point leaves a w by h rectangle centred on c."""
     dx, dy = toward[0] - c[0], toward[1] - c[1]
     if dx == 0 and dy == 0:
         return c
-    t = min((CHIP_W / 2) / abs(dx) if dx else math.inf, (CHIP_H / 2) / abs(dy) if dy else math.inf)
+    t = min((w / 2) / abs(dx) if dx else math.inf, (h / 2) / abs(dy) if dy else math.inf)
     return c[0] + dx * t, c[1] + dy * t
 
 
@@ -983,6 +987,7 @@ def build_diagram_model(catalog: dict[str, dict[str, Any]], sdp: dict[str, Any],
     return DiagramModel(
         sdp_uid=str(sdp.get("uid", "")),
         nodes=model.nodes_for_view("logical"),
+        deployment_nodes=model.nodes_for_view("deployment"),
         edges=list(model.edges),
         containers=list(model.containers),
         warnings=list(model.warnings),
@@ -1201,6 +1206,35 @@ def _route_edges(model: DiagramModel, layout: LogicalLayout) -> dict[int, list[t
     return routes
 
 
+def _loop_path(x: float, y: float, grow: float) -> str:
+    """Self-relationship loop off the top-right corner of the box at x, y."""
+    p1 = (x + LOGICAL_BOX_W * 0.62, y)
+    p2 = (x + LOGICAL_BOX_W, y + LOGICAL_BOX_H * 0.3)
+    return (
+        f"M{p1[0]:.1f} {p1[1]:.1f} C{p1[0]:.1f} {y - 24 - grow:.1f} "
+        f"{x + LOGICAL_BOX_W + 30 + grow:.1f} {p2[1]:.1f} {p2[0]:.1f} {p2[1]:.1f}"
+    )
+
+
+def _node_svg(node: DiagramNode, x: int, y: int) -> str:
+    """One node box, shared by the logical and deployment figures."""
+    cls = "node" + (" dashed" if node.derived else "") + (" outside" if node.outside else "") + (" external" if node.external else "")
+    lines = _fit_lines(node.name, 26, 2)
+    mid = x + LOGICAL_BOX_W // 2
+    first = y + (20 if node.outside else 22 if len(lines) == 2 else 34)
+    text = "".join(
+        f'<text class="ttl" x="{mid}" y="{first + 14 * i}" text-anchor="middle">{xml_text(line)}</text>'
+        for i, line in enumerate(lines)
+    )
+    if node.outside and node.caption:
+        cap = _fit_lines(node.caption, 34, 1)[0]
+        text += f'<text class="cap" x="{mid}" y="{first + 14 * (len(lines) - 1) + 16}" text-anchor="middle">{xml_text(cap)}</text>'
+    return (
+        f'<g class="{cls}" data-id="{xml_text(node.uid)}"><title>{xml_text(node.name)}</title>'
+        f'<rect class="box" x="{x}" y="{y}" width="{LOGICAL_BOX_W}" height="{LOGICAL_BOX_H}" rx="6"/>{text}</g>'
+    )
+
+
 def render_logical_svg(model: DiagramModel) -> str:
     """The logical application figure as a standalone SVG: plain solid edges only (S7 styles them).
 
@@ -1237,40 +1271,194 @@ def render_logical_svg(model: DiagramModel) -> str:
             x, y = layout.pos[s]
             grow = 14 * loops.get(s, 0)
             loops[s] = loops.get(s, 0) + 1
-            p1 = (x + LOGICAL_BOX_W * 0.62, y)
-            p2 = (x + LOGICAL_BOX_W, y + LOGICAL_BOX_H * 0.3)
-            path = (
-                f"M{p1[0]:.1f} {p1[1]:.1f} C{p1[0]:.1f} {y - 24 - grow:.1f} "
-                f"{x + LOGICAL_BOX_W + 30 + grow:.1f} {p2[1]:.1f} {p2[0]:.1f} {p2[1]:.1f}"
-            )
+            path = _loop_path(x, y, grow)
         else:
             pts = routes[number]
             path = "M" + " L".join(f"{px} {py}" for px, py in pts)
         out.append(f'{head}<path class="ln" d="{path}"/></g>')
     for uid in [u for names in layout.order for u in names] + layout.lane_order:
-        node = by_uid[uid]
         x, y = layout.pos[uid]
-        cls = "node" + (" dashed" if node.derived else "") + (" outside" if node.outside else "") + (" external" if node.external else "")
-        lines = _fit_lines(node.name, 26, 2)
-        mid = x + LOGICAL_BOX_W // 2
-        first = y + (20 if node.outside else 22 if len(lines) == 2 else 34)
-        text = "".join(
-            f'<text class="ttl" x="{mid}" y="{first + 14 * i}" text-anchor="middle">{xml_text(line)}</text>'
-            for i, line in enumerate(lines)
-        )
-        if node.outside and node.caption:
-            cap = _fit_lines(node.caption, 34, 1)[0]
-            text += f'<text class="cap" x="{mid}" y="{first + 14 * (len(lines) - 1) + 16}" text-anchor="middle">{xml_text(cap)}</text>'
-        out.append(
-            f'<g class="{cls}" data-id="{xml_text(uid)}"><title>{xml_text(node.name)}</title>'
-            f'<rect class="box" x="{x}" y="{y}" width="{LOGICAL_BOX_W}" height="{LOGICAL_BOX_H}" rx="6"/>{text}</g>'
-        )
+        out.append(_node_svg(by_uid[uid], x, y))
     out.append("</svg>")
     return "\n".join(out) + "\n"
 
 
+DEPLOY_COLUMNS = 3  # boxes per row inside a zone lane
+DEPLOY_PAD = 10
+DEPLOY_LANE_HEAD = 30
+DEPLOY_GROUP_HEAD = 50
+DEPLOY_TARGET_HEAD = 30
+DEPLOY_TARGET_GAP = 30
+DEPLOYMENT_TITLE = "Deployment pattern diagram"
+
+
+def _deployment_outline(model: DiagramModel) -> list[tuple[str, list[DiagramContainer]]]:
+    """D6: deployment targets in first-appearance order, each with its drawable groups in document order."""
+    targets: list[tuple[str, list[DiagramContainer]]] = []
+    for container in model.containers:
+        if not container.members:
+            continue  # no drawable objects: named in the caption instead
+        for name, groups in targets:
+            if name == container.target:
+                groups.append(container)
+                break
+        else:
+            targets.append((container.target, [container]))
+    return targets
+
+
 def render_deployment_svg(model: DiagramModel) -> str:
-    raise NotImplementedError("enabled in S6")
+    """The deployment pattern figure: target -> group container -> zone lanes -> boxes (D6).
+
+    Edges are plain straight lines between box or container borders; S7 styles them. Deterministic (D15).
+    """
+    step_x = LOGICAL_BOX_W + LOGICAL_COL_GAP
+    step_y = LOGICAL_BOX_H + LOGICAL_ROW_GAP
+    by_uid = {n.uid: n for n in model.deployment_nodes}
+    outline = _deployment_outline(model)
+    lane_sizes = [len(lane.members) for _t, groups in outline for g in groups for lane in g.lanes]
+    used = min(DEPLOY_COLUMNS, max(lane_sizes, default=1))
+    inner_w = used * LOGICAL_BOX_W + (used - 1) * LOGICAL_COL_GAP
+    lane_w = inner_w + 2 * DEPLOY_PAD
+    group_w = lane_w + 2 * DEPLOY_PAD
+    target_w = group_w + 2 * DEPLOY_PAD
+    rects: dict[str, tuple[int, int, int, int]] = {}  # uid -> x, y, w, h of a box or the first container with that uid
+    pos: dict[str, tuple[int, int]] = {}
+    body: list[str] = []
+    y = LOGICAL_MARGIN
+    for target, groups in outline:
+        tx = LOGICAL_MARGIN
+        group_hs = []
+        for g in groups:
+            lane_hs = [
+                DEPLOY_LANE_HEAD + (-(-len(lane.members) // DEPLOY_COLUMNS)) * LOGICAL_BOX_H
+                + (-(-len(lane.members) // DEPLOY_COLUMNS) - 1) * LOGICAL_ROW_GAP + DEPLOY_PAD
+                for lane in g.lanes
+            ]
+            group_hs.append((DEPLOY_GROUP_HEAD + sum(lane_hs) + DEPLOY_PAD * len(lane_hs), lane_hs))
+        target_h = DEPLOY_TARGET_HEAD + sum(h for h, _ in group_hs) + DEPLOY_PAD * len(groups)
+        label = clean(target) or "deployment target not recorded"
+        body.append(
+            f'<g class="target" data-target="{xml_text(clean(target))}">'
+            f'<rect class="tgt" x="{tx}" y="{y}" width="{target_w}" height="{target_h}" rx="8"/>'
+            f'<text class="tl" x="{tx + 10}" y="{y + 20}">{xml_text(label)}</text>'
+        )
+        gy = y + DEPLOY_TARGET_HEAD
+        for g, (group_h, lane_hs) in zip(groups, group_hs):
+            gx = tx + DEPLOY_PAD
+            ident = f' data-id="{xml_text(g.uid)}"' if g.uid else ""
+            cls = "group" + (" dashed" if g.derived else "")
+            if g.uid and g.uid not in rects:
+                rects[g.uid] = (gx, gy, group_w, group_h)
+            body.append(
+                f'<g class="{cls}"{ident} data-group="{xml_text(g.group)}"><title>{xml_text(g.group)}</title>'
+                f'<rect class="grp" x="{gx}" y="{gy}" width="{group_w}" height="{group_h}" rx="6"/>'
+                f'<text class="gl" x="{gx + 10}" y="{gy + 18}">{xml_text(_fit_lines(g.group, 60, 1)[0])}</text>'
+                f'<text class="gc" x="{gx + 10}" y="{gy + 38}">{xml_text(g.caption)}</text>'
+            )
+            ly = gy + DEPLOY_GROUP_HEAD
+            for lane, lane_h in zip(g.lanes, lane_hs):
+                lx = gx + DEPLOY_PAD
+                caption = f"{lane.name} ({lane.tier})" if lane.tier else lane.name
+                body.append(
+                    f'<g class="zlane" data-zone="{xml_text(lane.zone)}">'
+                    f'<rect class="zl" x="{lx}" y="{ly}" width="{lane_w}" height="{lane_h}" rx="5"/>'
+                    f'<text class="zc" x="{lx + 10}" y="{ly + 19}">{xml_text(caption)}</text>'
+                )
+                for i, uid in enumerate(lane.members):
+                    row, col = divmod(i, DEPLOY_COLUMNS)
+                    bx = lx + DEPLOY_PAD + col * step_x
+                    by = ly + DEPLOY_LANE_HEAD + row * step_y
+                    if uid in by_uid and uid not in pos:
+                        pos[uid] = (bx, by)
+                        rects[uid] = (bx, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
+                        body.append(_node_svg(by_uid[uid], bx, by))
+                body.append("</g>")
+                ly += lane_h + DEPLOY_PAD
+            body.append("</g>")
+            gy += group_h + DEPLOY_PAD
+        body.append("</g>")
+        y += target_h + DEPLOY_TARGET_GAP
+    bottom = y - DEPLOY_TARGET_GAP if outline else LOGICAL_MARGIN
+    right = LOGICAL_MARGIN + target_w if outline else LOGICAL_MARGIN + 2 * LOGICAL_BOX_W
+    outer = [n for n in model.deployment_nodes if n.outside]
+    lane_box = ""
+    if outer:
+        centre_y = {uid: r[1] + r[3] // 2 for uid, r in rects.items()}
+        near: dict[str, list[int]] = {n.uid: [] for n in outer}
+        for e in model.edges:
+            for lane_uid, other in ((e.source, e.target), (e.target, e.source)):
+                if lane_uid in near and other in centre_y:
+                    near[lane_uid].append(centre_y[other])
+
+        def lane_key(node: DiagramNode) -> tuple[int, Fraction, str]:
+            ys = near[node.uid]
+            return (_band_rank(node), Fraction(sum(ys), len(ys)) if ys else Fraction(0), node.uid)
+
+        ordered = sorted(outer, key=lane_key)
+        lane_x = right + LOGICAL_LANE_GAP
+        for i, node in enumerate(ordered):
+            bx, by = lane_x, LOGICAL_MARGIN + LOGICAL_LANE_HEAD + i * step_y
+            rects[node.uid] = (bx, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
+            pos[node.uid] = (bx, by)
+        lane_h = LOGICAL_LANE_HEAD + len(ordered) * LOGICAL_BOX_H + (len(ordered) - 1) * LOGICAL_ROW_GAP + LOGICAL_BAND_PAD
+        lane_box = (
+            f'<rect class="lane" x="{lane_x - LOGICAL_BAND_PAD}" y="{LOGICAL_MARGIN}" width="{LOGICAL_BOX_W + 2 * LOGICAL_BAND_PAD}" '
+            f'height="{lane_h}" rx="6"/><text class="ll" x="{lane_x}" y="{LOGICAL_MARGIN + 24}">Outside this pattern</text>'
+            + "".join(_node_svg(node, *pos[node.uid]) for node in ordered)
+        )
+        right = lane_x + LOGICAL_BOX_W + LOGICAL_BAND_PAD
+        bottom = max(bottom, LOGICAL_MARGIN + lane_h)
+    edges: list[str] = []
+    for edge in model.edges:
+        s, t = edge.source, edge.target
+        if s not in rects or t not in rects:
+            continue
+        tip = xml_text(f"{edge.source} {edge.label or '(no label recorded)'} {edge.target}")
+        head = f'<g class="edge" data-from="{xml_text(s)}" data-to="{xml_text(t)}"><title>{tip}</title>'
+        if s == t:
+            if s not in pos:
+                continue  # a container has no loop
+            path = _loop_path(pos[s][0], pos[s][1], 0)
+        else:
+            sx, sy, sw, sh = rects[s]
+            tx_, ty_, tw, th = rects[t]
+            sc = (sx + sw / 2, sy + sh / 2)
+            tc = (tx_ + tw / 2, ty_ + th / 2)
+            a = border_point(sc, tc, sw, sh)
+            b = border_point(tc, sc, tw, th)
+            path = f"M{a[0]:.1f} {a[1]:.1f} L{b[0]:.1f} {b[1]:.1f}"
+        edges.append(f'{head}<path class="ln" d="{path}"/></g>')
+    empty = [c for c in model.containers if not c.members]
+    width = right + LOGICAL_MARGIN
+    note = ""
+    if empty:
+        names = ", ".join(f"{clean(c.group) or 'unnamed group'} ({clean(c.target) or 'deployment target not recorded'})" for c in empty)
+        text = f"Service groups recorded with no objects to draw: {names}."
+        lines = wrap(text, max(40, (width - 2 * LOGICAL_MARGIN) // 6))
+        note = "".join(
+            f'<text class="cap" x="{LOGICAL_MARGIN}" y="{bottom + 30 + 14 * i}">{xml_text(line)}</text>' for i, line in enumerate(lines)
+        )
+        bottom += 20 + 14 * len(lines)
+    height = bottom + LOGICAL_MARGIN
+    out = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" '
+        f'width="{width}" height="{height}" role="img" aria-label="{DEPLOYMENT_TITLE}">',
+        f"<title>{DEPLOYMENT_TITLE}</title>",
+        f"<desc>{xml_text(GENERATOR_NAME)} {xml_text(model.sdp_uid)}</desc>",
+        "<style>.tgt{fill:#eef1f6;stroke:#9aa6b6;stroke-width:1.4}.grp{fill:#f8f9fb;stroke:#7a8696}.group.dashed .grp{stroke-dasharray:5 3}"
+        ".zl{fill:#ffffff;stroke:#c3cad4;stroke-dasharray:3 3}.lane{fill:#fbf6ec;stroke:#d8c9a8;stroke-dasharray:6 4}"
+        ".tl{font:700 12px sans-serif;fill:#1a2230}.gl{font:600 11px sans-serif;fill:#586374}.gc{font:600 12px sans-serif;fill:#1a2230}"
+        ".zc,.ll{font:600 11px sans-serif;fill:#586374}.box{fill:#ffffff;stroke:#555555;stroke-width:1.4}"
+        ".dashed .box{stroke-dasharray:5 3}.ttl{font:600 12px sans-serif;fill:#1a2230}.cap{font:10px sans-serif;fill:#586374}"
+        ".ln{fill:none;stroke:#7a8696;stroke-width:1.4}</style>",
+    ]
+    out.extend(body)
+    out.append(lane_box)
+    out.extend(edges)
+    out.append(note)
+    out.append("</svg>")
+    return "\n".join(p for p in out if p) + "\n"
 
 
 # --------------------------------------------------------------------------- cli
