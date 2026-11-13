@@ -1446,41 +1446,80 @@ class LaterStoryTests(unittest.TestCase):
             for uid, (x, y, _w, _h) in node_rects(deployment_svg(catalog, sdp["uid"])).items():
                 self.assertEqual((x % generate_diagram.GRID, y % generate_diagram.GRID), (0, 0), (sdp["uid"], uid, x, y))
 
-    def _seeded_objects(self, seed: int) -> list:
-        """A random but reproducible pattern: shared substrates, substrates listed in their own group, boxes in every
-        column with edges to their own container, loops, parallel edges, outside and external endpoints."""
+    def _seeded_objects(self, seed: int, zones: bool = False, outside: bool = False) -> list:
+        """A random but reproducible pattern: shared runtime and host substrates over three targets, substrates
+        listed in their own group, boxes in every column with edges to their own container, loops, parallel
+        edges, outside nodes with many edges, external endpoints and, optionally, declared zones."""
         import random
 
         rnd = random.Random(seed)
-        runtimes = [plain(f"RT-{k}", "runtime_service", f"Runtime {k}") for k in range(3)]
-        comps = [component(f"C-{k}", f"Comp {k}") for k in range(rnd.randint(6, 14))]
+        runtimes = [plain(f"RT-{k}", "runtime_service", f"Runtime {k}") for k in range(3)] + [plain("HST-1", "host", "Host One")]
+        comps = [component(f"C-{k}", f"Comp {k}") for k in range(rnd.randint(4, 16))]
         groups: dict = {}
         pool = [c["uid"] for c in comps]
         rnd.shuffle(pool)
-        for g in range(rnd.randint(2, 4)):
-            take = pool[: rnd.randint(0, 4)]
+        for g in range(rnd.randint(2, 5)):
+            take = pool[: rnd.randint(0, 5)]
             pool = pool[len(take) :]
             groups[f"G{g}"] = take
         sdp = pattern(groups)
-        for g, entry in enumerate(sdp["serviceGroups"]):
-            entry["deploymentTarget"] = rnd.choice(["azure", "aws"])
+        if zones:
+            sdp["networkZones"] = [{"id": "z1", "name": "Zone One", "tier": "frontend"}, {"id": "z2", "name": "Zone Two", "tier": "data"}]
+        for entry in sdp["serviceGroups"]:
+            entry["deploymentTarget"] = rnd.choice(["target-a", "target-b", "target-c"])
             if rnd.random() < 0.8:
-                entry["substrate"] = f"RT-{rnd.randrange(3)}"
+                entry["substrate"] = rnd.choice(["RT-0", "RT-1", "RT-2", "HST-1"])
                 if rnd.random() < 0.3:
                     entry["deployableObjects"].append({"ref": entry["substrate"]})
+            if zones:
+                for obj in entry["deployableObjects"]:
+                    r = rnd.random()
+                    if r < 0.7:
+                        obj["networkZone"] = "z1" if r < 0.4 else "z2"
         uids = [c["uid"] for c in comps] + [r["uid"] for r in runtimes]
-        rels = []
-        for k in range(rnd.randint(8, 24)):
-            a, b = rnd.choice(uids), rnd.choice(uids)
-            rels.append(relationship(f"R-{k}", a, b, f"rel {k}"))
+        extra = []
+        if outside:
+            extra = [component(f"O-{k}", f"Outside {k}") for k in range(rnd.randint(1, 4))]
+            uids += [o["uid"] for o in extra]
+        rels = [relationship(f"R-{k:02d}", rnd.choice(uids), rnd.choice(uids), f"rel {k}") for k in range(rnd.randint(6, 30))]
         if rnd.random() < 0.5:
             rels.append({"schemaVersion": "1.0", "uid": "R-X", "type": "relationship", "name": "R-X", "source": uids[0], "externalTarget": "Outside Service", "label": "calls"})
-        return runtimes + comps + [sdp] + rels
+        return runtimes + comps + extra + [sdp] + rels
+
+    def test_outside_node_runs_dodge_dense_stack_runs(self) -> None:
+        # One row of three boxes with six pairwise edges, plus an outside node whose six edges come first in uid
+        # order so its channels lie left of the stack edges' channels: every outside-lane run must dodge a stack
+        # run, which needs more levels than the lane's own edge count (review round 2, R1).
+        objects = [component(u, u) for u in ("A-1", "B-1", "C-1")] + [component("O-1", "Outside")]
+        objects.append(pattern({"G": ["A-1", "B-1", "C-1"]}))
+        objects += [relationship(f"R-0{k}", "O-1", u, "o") for k, u in enumerate(("A-1", "B-1", "C-1", "A-1", "B-1", "C-1"))]
+        pairs = [("A-1", "B-1"), ("B-1", "C-1"), ("A-1", "C-1"), ("B-1", "A-1"), ("C-1", "B-1"), ("C-1", "A-1")]
+        objects += [relationship(f"R-1{k}", a, b, "s") for k, (a, b) in enumerate(pairs)]
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        self.assertEqual(len(edge_polylines(svg)), 12)
+        self._assert_runs_clean(svg)
+        self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+
+    def test_left_border_ends_level_in_vertical_order(self) -> None:
+        # Four rows in one container; two first-column boxes above the centre both get left-border container ends.
+        # The outer vertical must take the farther level so its run never crosses the inner vertical (round 2, R2).
+        parts = [component(f"P-{k:02d}", f"Part {k}") for k in range(12)]
+        objects = [plain("RTC-1", "runtime_service", "Cluster")] + parts + [pattern({"G": [p["uid"] for p in parts]})]
+        objects[-1]["serviceGroups"][0]["substrate"] = "RTC-1"
+        objects += [relationship("R-1", "P-03", "RTC-1", "a"), relationship("R-2", "P-00", "RTC-1", "b")]
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        gx = int(re.search(r'<rect class="grp" x="(\d+)"', svg).group(1))
+        lefts = [pts for _s, _t, pts in edge_polylines(svg) if any(ax == bx and ax < gx for (ax, _ay), (bx, _by) in zip(pts, pts[1:]))]
+        self.assertEqual(len(lefts), 2, "two left-border ends expected")
+        self._assert_runs_clean(svg)
 
     def test_seeded_patterns_route_cleanly(self) -> None:
-        for seed in range(1, 25):
-            with self.subTest(seed=seed):
-                cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), self._seeded_objects(seed)))
+        for seed in range(1, 16):
+          for zones, outside in ((False, False), (True, False), (False, True), (True, True)):
+            with self.subTest(seed=seed, zones=zones, outside=outside):
+                cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), self._seeded_objects(seed, zones, outside)))
                 svg = deployment_svg(cat, "SDP-1")
                 xml.dom.minidom.parseString(svg)
                 self._assert_runs_clean(svg)
@@ -1491,7 +1530,7 @@ class LaterStoryTests(unittest.TestCase):
 
     def test_edge_runs_stay_in_free_bands_and_channels(self) -> None:
         """Comb routing: vertical runs are stubs inside a lane or channels right of every target and left of the
-        outside lane; horizontal runs never cross a target, group or lane caption area."""
+        outside lane; horizontal runs never cross a target label, group header or lane caption area."""
         catalog = load_catalog(FIXTURE)
         for sdp in generate_diagram.sdps(catalog):
             svg = deployment_svg(catalog, sdp["uid"])
@@ -1501,9 +1540,8 @@ class LaterStoryTests(unittest.TestCase):
             lane_left = int(outside.group(1)) if outside else math.inf
             stack_right = max(x + w for x, _y, w, _h in targets)
             heads = []  # caption areas: from the top of a target, group or lane to its first child
-            for x, y, w, h in targets:
-                inner = [g for g in groups if x < g[0] < x + w and y < g[1] < y + h]
-                heads.append((x, x + w, y, min(g[1] for g in inner)))
+            for x, y, w, h in targets:  # the label; the band below it carries the first group's container ends
+                heads.append((x, x + w, y, y + generate_diagram.DEPLOY_TARGET_HEAD))
             for x, y, w, h in groups:
                 inner = [l for l in lanes if x < l[0] < x + w and y < l[1] < y + h]
                 heads.append((x, x + w, y, min(l[1] for l in inner) if inner else y + h))
@@ -1521,7 +1559,12 @@ class LaterStoryTests(unittest.TestCase):
                             self.assertFalse(min(ax, bx) < x1 and x0 < max(ax, bx) and y0 <= ay <= y1, f"run at y={ay} crosses a caption area")
 
     def _assert_runs_clean(self, svg: str) -> None:
-        """No two vertical runs collinear with overlapping y; horizontal runs within DEPLOY_LEVEL in y are DEPLOY_LEVEL apart in x."""
+        """No two vertical runs collinear with overlapping y; horizontal runs within DEPLOY_LEVEL in y are DEPLOY_LEVEL
+        apart in x; no run crosses another edge's stub or left-border vertical (channels are the only verticals a run may cross)."""
+        targets = [tuple(int(v) for v in m) for m in re.findall(r'<rect class="tgt" x="(-?\d+)" y="(-?\d+)" width="(\d+)" height="(\d+)"', svg)]
+        outside = re.search(r'<rect class="lane" x="(-?\d+)"', svg)
+        stack_right = max([x + w for x, _y, w, _h in targets], default=0)
+        lane_left = int(outside.group(1)) if outside else math.inf
         verticals, horizontals = [], []
         for number, (_s, _t, pts) in enumerate(edge_polylines(svg)):
             for (ax, ay), (bx, by) in zip(pts, pts[1:]):
@@ -1537,6 +1580,10 @@ class LaterStoryTests(unittest.TestCase):
             for y2, a0, a1, n2 in horizontals[i + 1 :]:
                 if n1 != n2 and abs(y - y2) < generate_diagram.DEPLOY_LEVEL:
                     self.assertGreaterEqual(max(a0 - x1, x0 - a1), generate_diagram.DEPLOY_LEVEL, f"horizontal runs too close at y={y} and y={y2}")
+        for y, x0, x1, n1 in horizontals:
+            for x, y0, y1, n2 in verticals:
+                if n1 != n2 and not (stack_right < x < lane_left) and x0 < x < x1 and y0 < y < y1:
+                    self.fail(f"run of edge {n1} at y={y} crosses the stub of edge {n2} at x={x}")
 
     def test_hub_with_many_inbound_edges_has_clean_runs(self) -> None:
         names = [f"P-{k:02d}" for k in range(20)]

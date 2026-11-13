@@ -1323,6 +1323,7 @@ DEPLOY_BAND_SPARE = 2  # spare levels per band, for runs that must skip a level 
 DEPLOY_CHANNEL_PAD = 20  # from the stack's right border to the first vertical channel
 DEPLOY_CHANNEL_STEP = 8  # between vertical channels
 DEPLOY_LANE_GAP = 40  # from the last channel to the outside lane
+DEPLOY_MAX_PASSES = 12  # layout and routing passes before the fixed-point loop gives up (it ends in 2 or 3)
 DEPLOY_SPREAD = 8  # between container ends that would otherwise share one border point
 DEPLOY_BORDER_CLEAR = 4  # vertical edge runs keep at least this far from every container border
 DEPLOY_SIDE_STEP = 5  # a container end on a left border steps this far out, between the group and target borders
@@ -1380,10 +1381,12 @@ class _Band:
     rightward: bool
     upper: list = field(default_factory=list)  # (sort x, edge index, uid)
     lower: list = field(default_factory=list)
+    extra: int = 0  # levels added by the layout after a routing pass ran out of room here
+    overflow: int = 0  # ends that found no free level in the last routing pass
 
 
-def _band_height(cap: int, rise: int) -> int:
-    return max(DEPLOY_MIN_BAND, DEPLOY_LEVEL * (cap + 2 + DEPLOY_BAND_SPARE)) + rise
+def _band_height(cap: int, rise: int, extra: int = 0) -> int:
+    return max(DEPLOY_MIN_BAND, DEPLOY_LEVEL * (cap + 2 + DEPLOY_BAND_SPARE + extra)) + rise
 
 
 @dataclass
@@ -1420,7 +1423,8 @@ def _route_deployment_edges(
     end's stub. Everything is keyed on edge document order and geometry; nothing else.
 
     Returns the polyline per edge index, the number of channels used, and the number of left-border ends per
-    container (the layout widens the target's left padding to hold their verticals).
+    container (the layout widens the target's left padding to hold their verticals). A band that ran out of
+    levels has ``overflow`` set; the layout grows it and routes again.
     """
     centre = {uid: (x + w / 2, y + h / 2) for uid, (x, y, w, h) in rects.items()}
     ends: dict[tuple[int, str], _End] = {}
@@ -1446,10 +1450,11 @@ def _route_deployment_edges(
         x, y, w, h = rects[uid]
         low, high = (x + 4, x + w - 4) if border in ("top", "bottom") else (y + 4, y + h - 4)
         items.sort()
-        placed = [items[0][0]]
+        placed = [max(low, items[0][0])]
         for value, _i in items[1:]:
             placed.append(max(value, placed[-1] + DEPLOY_SPREAD))
-        placed = [max(low, v - max(0, placed[-1] - high)) for v in placed]
+        slide = max(0, placed[-1] - high)  # a cluster past the far corner slides back as a whole
+        placed = [max(low, v - slide) for v in placed]
         for (_value, i), v in zip(items, placed):
             px, py = attach[(i, uid)]
             attach[(i, uid)] = (v, py) if border in ("top", "bottom") else (px, v)
@@ -1527,29 +1532,36 @@ def _route_deployment_edges(
             end.level = end.y
             taken.append((end.y, end.x, chan_x[i]))
         else:
+            if end.step_x is not None:  # the short step out of a left border is a horizontal run too
+                taken.append((end.y, end.step_x, end.x))
             pool = end.band.lower if end.side == "top" else end.band.upper
-            pool.append((end.x, i, uid))
+            pool.append((end.x if end.step_x is None else end.step_x, i, uid))
     for band in bands:
+        deepest = band.lo  # the upper pool's lowest level; the lower pool stays below it so stubs never interleave
         for pool, from_top in ((band.upper, True), (band.lower, False)):
             pool.sort(key=lambda item: ((-item[0] if band.rightward else item[0]), item[1]))
             k = 0
             for sort_x, i, uid in pool:
                 end = ends[(i, uid)]
-                x0, x1 = (end.x, chan_x[i]) if band.rightward else (chan_x[i], end.x)
+                run_x = end.x if end.step_x is None else end.step_x
+                x0, x1 = (run_x, chan_x[i]) if band.rightward else (chan_x[i], run_x)
                 first = band.lo + DEPLOY_LEVEL if from_top else band.hi - band.rise - DEPLOY_LEVEL
-                last = band.hi - band.rise - DEPLOY_LEVEL if from_top else band.lo + DEPLOY_LEVEL
+                last = band.hi - band.rise - DEPLOY_LEVEL if from_top else deepest + DEPLOY_LEVEL
                 level = first
                 while True:
                     level = first + (DEPLOY_LEVEL * k if from_top else -DEPLOY_LEVEL * k)
                     k += 1
                     beyond = level > last if from_top else level < last
-                    if beyond:  # capacity plus the spare levels is exhausted: keep the last level inside the band
+                    if beyond:  # out of room: take the last level and tell the layout to grow this band
                         level = last
+                        band.overflow += 1
                         break
                     if clear(level, x0, x1):
                         break
                 end.level = level
                 taken.append((level, x0, x1))
+                if from_top:
+                    deepest = max(deepest, level)
     routes: dict[int, list[tuple[float, float]]] = {}
     for i, e in drawn:
         cx = chan_x[i]
@@ -1609,9 +1621,13 @@ def render_deployment_svg(model: DiagramModel) -> str:
     lane_w = inner_w + 2 * DEPLOY_PAD + loop_room
     group_w = lane_w + 2 * DEPLOY_PAD
 
-    def build_stack(left_room: int) -> tuple:
-        """Lay out the stack and the outside lane's rows. left_room widens the targets' left padding (D14 grid) so
-        every left-border container end has its own vertical (see _route_deployment_edges)."""
+    def build_stack(left_room: int, extras: list) -> tuple:
+        """Lay out the stack and the outside lane's rows.
+
+        left_room widens the targets' left padding (on the D14 grid) so every left-border container end has its
+        own vertical; extras[k] adds levels to the k-th band created, after a routing pass ran out of room there
+        (see _route_deployment_edges). Bands are created in the same order on every call.
+        """
         target_w = group_w + 2 * DEPLOY_PAD + left_room
         bands: list[_Band] = []
         rects: dict[str, tuple[int, int, int, int]] = {}  # uid -> x, y, w, h of a box or the first container with that uid
@@ -1621,8 +1637,9 @@ def render_deployment_svg(model: DiagramModel) -> str:
         body: list[str] = []
 
         def band_at(lo: int, cap: int, rise_px: int, rightward: bool = True) -> _Band:
-            hi = -(-(lo + _band_height(cap, rise_px)) // GRID) * GRID  # D14: the row below starts on the grid
-            band = _Band(lo=lo, hi=hi, rise=rise_px, rightward=rightward)
+            extra = extras[len(bands)] if len(bands) < len(extras) else 0
+            hi = -(-(lo + _band_height(cap, rise_px, extra)) // GRID) * GRID  # D14: the row below starts on the grid
+            band = _Band(lo=lo, hi=hi, rise=rise_px, rightward=rightward, extra=extra)
             bands.append(band)
             return band
 
@@ -1761,31 +1778,29 @@ def render_deployment_svg(model: DiagramModel) -> str:
             lane_h = below.hi - lane_top
         return bands, rects, pools, names, pos, body, stack_bottom, stack_right, lane_rows, lane_top, lane_h, outer
 
-    def provisional(left_room: int) -> tuple:
-        laid = build_stack(left_room)
-        bands, rects, pools, _names, _pos, _body, _sb, stack_right, lane_rows, _lt, _lh, _outer = laid
-        for node, by in lane_rows:  # x is provisional until the channel count is known; y is final
-            rects[node.uid] = (stack_right + DEPLOY_LANE_GAP, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
-        _routes, n_channels, left_counts = _route_deployment_edges(drawn, rects, pools, containers, bands, loops, stack_right)
-        for band in bands:
-            band.upper.clear()
-            band.lower.clear()
-        return laid, n_channels, left_counts
-
-    # Channel count and left-border end counts depend on band spans and directions only, so route once with
-    # a provisional lane x to learn them, widen the left padding if several left ends share a container,
-    # then fix the lane and route for real (container border points toward outside boxes need the final x).
-    laid, n_channels, left_counts = provisional(0)
-    need = max(left_counts.values(), default=0)
-    if need > 1:
-        laid, n_channels, left_counts = provisional(-(-(DEPLOY_LEVEL * (need - 1)) // GRID) * GRID)
-    bands, rects, pools, names, pos, body, stack_bottom, stack_right, lane_rows, lane_top, lane_h, outer = laid
-    last_channel = stack_right + DEPLOY_CHANNEL_PAD + DEPLOY_CHANNEL_STEP * (n_channels - 1) if n_channels else stack_right
-    lane_x = -(-(last_channel + DEPLOY_LANE_GAP) // GRID) * GRID  # D14
-    for node, by in lane_rows:
-        rects[node.uid] = (lane_x, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
-        pos[node.uid] = (lane_x, by)
-    routes, _n, _left = _route_deployment_edges(drawn, rects, pools, containers, bands, loops, stack_right)
+    # Layout and routing depend on each other in three small ways: the outside lane's x follows the channel
+    # count, several left-border ends on one container need a wider left padding, and a band may run out of
+    # levels when it has to dodge runs from the other column. Iterate to a fixed point (every step only grows
+    # something, so it ends); the loop is a pure function of the catalog, so the result is deterministic.
+    left_room, extras, n_channels = 0, [], len(drawn)
+    for _attempt in range(DEPLOY_MAX_PASSES):
+        laid = build_stack(left_room, extras)
+        bands, rects, pools, names, pos, body, stack_bottom, stack_right, lane_rows, lane_top, lane_h, outer = laid
+        last_channel = stack_right + DEPLOY_CHANNEL_PAD + DEPLOY_CHANNEL_STEP * (n_channels - 1) if n_channels else stack_right
+        lane_x = -(-(last_channel + DEPLOY_LANE_GAP) // GRID) * GRID  # D14
+        for node, by in lane_rows:
+            rects[node.uid] = (lane_x, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
+            pos[node.uid] = (lane_x, by)
+        routes, used, left_counts = _route_deployment_edges(drawn, rects, pools, containers, bands, loops, stack_right)
+        need = max(left_counts.values(), default=0)
+        room = -(-(DEPLOY_LEVEL * (need - 1)) // GRID) * GRID if need > 1 else 0
+        grown = [band.extra + band.overflow for band in bands]
+        if used == n_channels and room == left_room and not any(band.overflow for band in bands):
+            break
+        n_channels, left_room, extras = used, room, grown
+    else:  # the cap is a safety net; the figure is still drawn, from the last pass
+        last_channel = stack_right + DEPLOY_CHANNEL_PAD + DEPLOY_CHANNEL_STEP * (max(used, 1) - 1)
+        lane_x = max(lane_x, -(-(last_channel + DEPLOY_LANE_GAP) // GRID) * GRID)
     lane_box = ""
     right = max(stack_right, last_channel + DEPLOY_CHANNEL_PAD) if n_channels else stack_right
     bottom = stack_bottom
