@@ -1537,6 +1537,43 @@ class LaterStoryTests(unittest.TestCase):
         self._assert_runs_clean(svg)
         self.assertEqual(edges_hitting_foreign_boxes(svg), [])
 
+    def test_groups_naming_each_others_substrate_are_both_drawn(self) -> None:
+        # G lists RT-2 and names RT-1 as substrate; H lists RT-1 and names RT-2. Neither object may vanish: both
+        # groups are drawn, each as the container of its own substrate (review round 6, R1).
+        objects = [plain("RT-1", "runtime_service", "Runtime One"), plain("RT-2", "runtime_service", "Runtime Two"), component("P-1", "Alpha"), pattern({"G": ["RT-2"], "H": ["RT-1"]})]
+        objects[3]["serviceGroups"][0]["substrate"] = "RT-1"
+        objects[3]["serviceGroups"][1]["substrate"] = "RT-2"
+        objects += [relationship("R-1", "P-1", "RT-1", "uses"), relationship("R-2", "RT-1", "RT-2", "peers")]
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        model = generate_diagram.build_diagram_model(cat, cat["SDP-1"], False)
+        self.assertEqual([(c.group, c.drawn, c.members) for c in model.containers], [("G", True, []), ("H", True, [])])
+        svg = deployment_svg(cat, "SDP-1")
+        xml.dom.minidom.parseString(svg)
+        self.assertRegex(svg, r'<g class="group" data-id="RT-1" data-group="G">')
+        self.assertRegex(svg, r'<g class="group" data-id="RT-2" data-group="H">')
+        self.assertEqual(len(edge_polylines(svg)), 2)
+        self.assertNotIn("Service groups recorded with no objects", svg)
+        self.assertEqual([w for w in model.warnings if w.startswith("substrate of a group")], [])
+        self._assert_runs_clean(svg)
+
+    def test_container_cluster_sliding_back_from_a_corner_stays_spread(self) -> None:
+        # A container with a self-loop (which reserves the top of its right border), eight edges to an outside node
+        # above and eleven to one below: the right-border cluster slides back from the bottom corner and must not
+        # collapse onto the reserved top (review round 6, R2).
+        objects = [plain("RT-1", "runtime_service", "Runtime"), component("O-1", "Above"), component("O-2", "Below"), component("P-1", "Alpha"), pattern({"Own": ["RT-1"], "Rest": ["P-1"]})]
+        objects[4]["serviceGroups"][0]["substrate"] = "RT-1"
+        objects += [relationship("R-00", "RT-1", "RT-1", "self")]
+        objects += [relationship(f"R-{k:02d}", "RT-1", "O-1", f"up {k}") for k in range(1, 9)]
+        objects += [relationship(f"R-{k:02d}", "RT-1", "O-2", f"down {k}") for k in range(9, 20)]
+        objects += [relationship("R-90", "O-1", "P-1", "x")] + [relationship(f"R-{k}", "P-1", "O-2", "y") for k in range(91, 97)]
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        polys = edge_polylines(svg)
+        starts = [pts[0] for s_uid, _t, pts in polys if s_uid == "RT-1"]
+        self.assertEqual(len(starts), 19)
+        self.assertEqual(len(set(starts)), 19, "every container end has its own border point")
+        self._assert_runs_clean(svg)
+
     def test_deployment_boxes_sit_on_the_grid(self) -> None:
         # D14: positions snapped to a fixed grid, in the deployment view as well.
         catalog = load_catalog(FIXTURE)

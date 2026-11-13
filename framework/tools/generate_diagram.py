@@ -494,6 +494,19 @@ class Model:
             if again == drawable:
                 break
             drawable = again
+        # Groups that name each other's substrate can all drop out above while the objects they list are nobody's
+        # container. Every placed object needs a home, so such a group is drawn after all (its substrate then
+        # becomes a container, and the object it lists stays a box or becomes the other group's container).
+        while True:
+            containers = {uid for uid, ok in zip(planned, drawable) if ok and uid}
+            homeless = [
+                index for index, (group, ok) in enumerate(zip(self.groups, drawable))
+                if not ok and any(uid not in containers for uid in group["uids"])
+            ]
+            if not homeless:
+                break
+            for index in homeless:
+                drawable[index] = True
         self.container_uids = {uid for uid, ok in zip(planned, drawable) if ok and uid}
         self.drawn_container_uids = set(self.container_uids)
         for group_index, group in enumerate(self.groups):
@@ -1506,8 +1519,10 @@ def _route_deployment_edges(
         placed = [max(low, items[0][0])]
         for value, _i in items[1:]:
             placed.append(max(value, placed[-1] + DEPLOY_SPREAD))
-        slide = max(0, placed[-1] - high)  # a cluster past the far corner slides back as a whole
-        placed = [max(low, v - slide) for v in placed]
+        slide = max(0, placed[-1] - high)  # a cluster past the far corner slides back as a whole ...
+        placed = [v - slide for v in placed]
+        for k in range(len(placed)):  # ... and ends that would pass the near corner are spread again from it
+            placed[k] = max(placed[k], low if k == 0 else placed[k - 1] + DEPLOY_SPREAD)
         for (_value, i), v in zip(items, placed):
             px, py = attach[(i, uid)]
             attach[(i, uid)] = (v, py) if border in ("top", "bottom") else (px, v)
