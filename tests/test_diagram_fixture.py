@@ -18,18 +18,18 @@ from typing import Any
 import yaml
 
 from framework.tools import generate_diagram
+from uid_utils import UID_PATTERN_TEXT
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = REPO_ROOT / "tests" / "fixtures" / "diagram_workspace"
 MAKE_LARGE = FIXTURE / "make_large.py"
 COMMITTED_LARGE = FIXTURE / "catalog" / "large-pattern.yaml"
 SMALL_SDPS = ("FXSDP00001-0001", "FXSDP00002-0001")
-UID_PATTERN = re.compile(r"^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$")
+UID_PATTERN = re.compile(UID_PATTERN_TEXT)
 
 
-def _load(uid_prefix: str | None = None) -> dict[str, dict[str, Any]]:
-    catalog = generate_diagram.load_catalog(FIXTURE)
-    return catalog
+def _load() -> dict[str, dict[str, Any]]:
+    return generate_diagram.load_catalog(FIXTURE)
 
 
 def _entries(sdp: dict[str, Any]) -> list[tuple[dict[str, Any], dict[str, Any]]]:
