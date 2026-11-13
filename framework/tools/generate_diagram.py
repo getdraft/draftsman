@@ -12,23 +12,23 @@ the same catalog always produces the same page.
 
 What is drawn comes only from the catalog:
 
-* One zone per service group of the Software Deployment Pattern, labelled with
-  the group's recorded ``deploymentTarget``; zones that share a target are
-  stacked in the same column.
-* One box per deployable object placed in a service group.
-* One arrow per ``relationship`` object whose source and target are both drawn.
-  A component with no recorded relationship gets no arrow. Nothing is inferred.
-* Components that are not placed in any service group but have a recorded
-  relationship are drawn in a separate "not placed" column, never in a zone.
+* In the deployment view, a deployment target holds the service groups recorded
+  for it, each group is a container captioned with its substrate, and network
+  zone lanes hold the placed objects.
+* In the logical view, one box per object in the pattern's scope, in bands by tier.
+* One arrow per ``relationship`` object or recorded ``runtimeSpec.dependencies``
+  entry whose source and target are both drawn. A component with no recorded
+  relationship gets no arrow. Nothing is inferred.
 
 By default the scope is the objects placed in the pattern plus each direct relationship
 endpoint (one hop) of a placed object whose type is a component, data, data store, runtime,
 network, AI gateway or host object. ``--placed-only`` restricts the drawing to placed objects.
 Derived ``runs on`` relationships never extend the scope.
 
-Below the figure the page lists every relationship, the pattern's recorded
-characteristics, open questions from Drafting Sessions that target the pattern,
-and an inventory of every in-scope object with its catalog fields as recorded.
+The page holds the logical application diagram and the deployment pattern diagram
+(two inline SVG figures that pin together), then the recorded relationships,
+conflicts, characteristics, open questions and an inventory of every in-scope
+object. The framework version appears only in the footer.
 """
 from __future__ import annotations
 
@@ -43,6 +43,8 @@ from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 TOOLS_ROOT = Path(__file__).resolve().parent
 if str(TOOLS_ROOT) not in sys.path:
     sys.path.insert(0, str(TOOLS_ROOT))
@@ -53,14 +55,6 @@ E = html.escape
 
 CHIP_W = 190
 CHIP_H = 46
-GAP = 12
-ZONE_HEAD = 34
-ZONE_PAD = 12
-ZONE_GAP = 18
-BAND_GUTTER = 90
-MARGIN = 24
-MAX_COLS = 3
-MAX_BAND_COLUMNS = 3  # deployment-target bands are packed into at most this many page columns
 LABEL_LIMIT = 8  # show edge labels permanently only up to this many edges; larger graphs label on hover
 
 
@@ -665,73 +659,6 @@ def wrap(text: str, width: int) -> list[str]:
     return lines
 
 
-class Layout:
-    def __init__(self, model: Model):
-        self.model = model
-        self.pos: dict[str, tuple[float, float]] = {}  # uid -> top-left
-        self.zones: list[dict[str, Any]] = []
-        self.width = 0.0
-        self.height = 0.0
-        self._build()
-
-    def _band_cols(self, groups: list[dict[str, Any]]) -> int:
-        biggest = max((len(g["uids"]) for g in groups), default=1)
-        return 3 if biggest >= 7 else 2 if biggest >= 3 else 1
-
-    def _build(self) -> None:
-        bands: dict[str, list[dict[str, Any]]] = {}
-        for group in self.model.groups:
-            if group["uids"]:
-                bands.setdefault(group["target"], []).append(group)
-        band_list: list[tuple[str, list[dict[str, Any]]]] = list(bands.items())
-        if self.model.unplaced_drawn:
-            band_list.append(
-                ("", [{"name": "Not placed in a service group", "target": "", "uids": self.model.unplaced_drawn, "unplaced": True}])
-            )
-        def rows_for(groups: list[dict[str, Any]], cols: int) -> int:
-            return sum(math.ceil(len(g["uids"]) / cols) for g in groups)
-
-        def est_height(groups: list[dict[str, Any]]) -> float:
-            cols = self._band_cols(groups)
-            return sum(
-                ZONE_HEAD + math.ceil(len(g["uids"]) / cols) * (CHIP_H + GAP) + ZONE_PAD + ZONE_GAP for g in groups
-            )
-
-        n_columns = max(1, min(MAX_BAND_COLUMNS, len(band_list)))
-        heights = [0.0] * n_columns
-        assigned: list[list[tuple[int, list[dict[str, Any]]]]] = [[] for _ in range(n_columns)]
-        for index, (_target, groups) in sorted(enumerate(band_list), key=lambda p: -est_height(p[1][1])):
-            slot = heights.index(min(heights))
-            assigned[slot].append((index, groups))
-            heights[slot] += est_height(groups)
-        columns = sorted((sorted(col) for col in assigned if col), key=lambda col: col[0][0])
-        x = float(MARGIN)
-        for column in columns:
-            cols = max(self._band_cols(groups) for _i, groups in column)
-            col_w = cols * CHIP_W + (cols - 1) * GAP + 2 * ZONE_PAD
-            y = float(MARGIN)
-            for _i, groups in column:
-                for group in groups:
-                    n = len(group["uids"])
-                    rows = math.ceil(n / cols)
-                    zone_h = ZONE_HEAD + rows * CHIP_H + (rows - 1) * GAP + ZONE_PAD
-                    self.zones.append(
-                        {"x": x, "y": y, "w": col_w, "h": zone_h, "name": group["name"], "target": group["target"],
-                         "unplaced": bool(group.get("unplaced"))}
-                    )
-                    for i, uid in enumerate(group["uids"]):
-                        r, c = divmod(i, cols)
-                        self.pos[uid] = (x + ZONE_PAD + c * (CHIP_W + GAP), y + ZONE_HEAD + r * (CHIP_H + GAP))
-                    y += zone_h + ZONE_GAP
-            self.height = max(self.height, y - ZONE_GAP + MARGIN)
-            x += col_w + BAND_GUTTER
-        self.width = max(x - BAND_GUTTER + MARGIN, 2 * MARGIN + CHIP_W)
-
-    def center(self, uid: str) -> tuple[float, float]:
-        x, y = self.pos[uid]
-        return x + CHIP_W / 2, y + CHIP_H / 2
-
-
 def border_point(
     c: tuple[float, float], toward: tuple[float, float], w: float = CHIP_W, h: float = CHIP_H
 ) -> tuple[float, float]:
@@ -743,107 +670,80 @@ def border_point(
     return c[0] + dx * t, c[1] + dy * t
 
 
-# --------------------------------------------------------------------------- svg
-def render_svg(model: Model, layout: Layout) -> str:
-    zones, edges, chips, labels = [], [], [], []
-    for z in layout.zones:
-        cls = "zone un" if z["unplaced"] else "zone"
-        zones.append(f'<rect class="{cls}" x="{z["x"]:.0f}" y="{z["y"]:.0f}" width="{z["w"]:.0f}" height="{z["h"]:.0f}" rx="8"/>')
-        labels.append(f'<text class="zl" x="{z["x"] + 12:.0f}" y="{z["y"] + 16:.0f}">{E(z["name"])}</text>')
-        if z["target"]:
-            labels.append(f'<text class="zt" x="{z["x"] + 12:.0f}" y="{z["y"] + 29:.0f}">{E(z["target"])}</text>')
-        elif not z["unplaced"]:
-            labels.append(f'<text class="zt" x="{z["x"] + 12:.0f}" y="{z["y"] + 29:.0f}">deployment target not recorded</text>')
-    show_labels = len(model.relationships) <= LABEL_LIMIT
-    seen: dict[tuple[str, str], int] = {}
-    for rel in model.relationships:
-        s, t = rel["source"], rel["target"]
-        if s not in layout.pos or t not in layout.pos:
-            continue
-        key = tuple(sorted((s, t)))
-        index = seen.get(key, 0)
-        seen[key] = index + 1
-        if s == t:
-            # A recorded self-relationship: a small loop off the top-right corner of the box.
-            x, y = layout.pos[s]
-            grow = 14.0 * index
-            p1 = (x + CHIP_W * 0.62, y)
-            p2 = (x + CHIP_W, y + CHIP_H * 0.3)
-            c1 = (p1[0], y - 34 - grow)
-            c2 = (x + CHIP_W + 36 + grow, p2[1])
-            path = f"M{p1[0]:.1f} {p1[1]:.1f} C{c1[0]:.1f} {c1[1]:.1f} {c2[0]:.1f} {c2[1]:.1f} {p2[0]:.1f} {p2[1]:.1f}"
-            loop_label = clean(rel.get("label"))
-            tip = f"{model.name(s)} {loop_label or '(no label recorded)'} {model.name(t)} (self-relationship)"
-            edges.append(
-                f'<g class="edge" data-from="{E(s)}" data-to="{E(t)}"><title>{E(tip)}</title>'
-                f'<path class="ln" d="{path}" marker-end="url(#ar)"/></g>'
-            )
-            if loop_label:
-                hide = "" if show_labels else " hov"
-                labels.append(
-                    f'<text class="lb{hide}" data-from="{E(s)}" data-to="{E(t)}" x="{x + CHIP_W * 0.8:.1f}" '
-                    f'y="{y - 28 - grow:.1f}" text-anchor="middle">{E(loop_label)}</text>'
-                )
-            continue
-        cs, ct = layout.center(s), layout.center(t)
-        bend = 0.0 if index == 0 else 26.0 * index * (1 if s < t else -1)
-        mid = ((cs[0] + ct[0]) / 2, (cs[1] + ct[1]) / 2)
-        dx, dy = ct[0] - cs[0], ct[1] - cs[1]
-        length = math.hypot(dx, dy) or 1.0
-        ctrl = (mid[0] - dy / length * bend, mid[1] + dx / length * bend)
-        p1 = border_point(cs, ctrl if bend else ct)
-        p2 = border_point(ct, ctrl if bend else cs)
-        path = f"M{p1[0]:.1f} {p1[1]:.1f} Q{ctrl[0]:.1f} {ctrl[1]:.1f} {p2[0]:.1f} {p2[1]:.1f}" if bend else f"M{p1[0]:.1f} {p1[1]:.1f} L{p2[0]:.1f} {p2[1]:.1f}"
-        label = clean(rel.get("label"))
-        tip = f"{model.name(s)} {label or '(no label recorded)'} {model.name(t)}"
-        edges.append(
-            f'<g class="edge" data-from="{E(s)}" data-to="{E(t)}"><title>{E(tip)}</title>'
-            f'<path class="ln" d="{path}" marker-end="url(#ar)"/></g>'
-        )
-        if label:
-            lx = (p1[0] + 2 * ctrl[0] + p2[0]) / 4 if bend else (p1[0] + p2[0]) / 2
-            ly = (p1[1] + 2 * ctrl[1] + p2[1]) / 4 if bend else (p1[1] + p2[1]) / 2
-            hide = "" if show_labels else " hov"
-            labels.append(
-                f'<text class="lb{hide}" data-from="{E(s)}" data-to="{E(t)}" x="{lx:.1f}" y="{ly:.1f}" text-anchor="middle">{E(label)}</text>'
-            )
-    for uid, (x, y) in layout.pos.items():
-        obj = model.catalog[uid]
-        life = lifecycle(obj)
-        cls = "box"
-        if life == "retired":
-            cls += " ret"
-        elif life == "deprecated":
-            cls += " dep"
-        if uid not in model.placement:
-            cls += " un"
-        lines = wrap(str(obj.get("name", uid)), int((CHIP_W - 16) / 6.0))[:2]
-        count = len(lines) + 1
-        y0 = y + CHIP_H / 2 - (count - 1) * 6.5 + 3.5
-        text = "".join(
-            f'<text class="ttl" x="{x + CHIP_W / 2:.1f}" y="{y0 + i * 13:.1f}" text-anchor="middle">{E(line)}</text>'
-            for i, line in enumerate(lines)
-        )
-        text += f'<text class="sub" x="{x + CHIP_W / 2:.1f}" y="{y0 + len(lines) * 13:.1f}" text-anchor="middle">{E(model.sub(uid))}</text>'
-        chips.append(
-            f'<g class="node" data-id="{E(uid)}" tabindex="0"><title>{E(clean(obj.get("description"))[:300])}</title>'
-            f'<rect class="{cls}" x="{x:.0f}" y="{y:.0f}" width="{CHIP_W}" height="{CHIP_H}" rx="6"/>{text}</g>'
-        )
-    defs = (
-        '<defs><marker id="ar" viewBox="0 0 8 7" refX="8" refY="3.5" markerWidth="8" markerHeight="7" '
-        'markerUnits="userSpaceOnUse" orient="auto"><polygon class="mk" points="0,0 8,3.5 0,7"/></marker></defs>'
-    )
-    aria = (
-        f"{model.sdp.get('name', 'Deployment pattern')}: {len(layout.pos)} objects in "
-        f"{len(layout.zones)} groups with {len(model.relationships)} recorded relationships."
-    )
-    return (
-        f'<svg id="fig" viewBox="0 0 {layout.width:.0f} {layout.height:.0f}" role="img" aria-label="{E(aria)}">'
-        + defs + "".join(zones) + "".join(edges) + "".join(chips) + "".join(labels) + "</svg>"
-    )
-
-
 # --------------------------------------------------------------------------- html parts
+# A vendored copy keeps draft-framework.yaml beside its tools/ inside the framework directory; the source repo keeps it at the root.
+FRAMEWORK_MANIFESTS = (TOOLS_ROOT.parent / "draft-framework.yaml", TOOLS_ROOT.parents[1] / "draft-framework.yaml")
+FIGURE_IDS = ("fig-logical", "fig-deployment")  # D19: the pin script finds both figures by these ids
+
+
+def framework_version() -> str:
+    """The framework version recorded in draft-framework.yaml. It is stamped only in the HTML footer (D15)."""
+    manifest = None
+    for path in FRAMEWORK_MANIFESTS:
+        if path.is_file():
+            try:
+                manifest = yaml.safe_load(path.read_text(encoding="utf-8"))
+            except (OSError, yaml.YAMLError):
+                return "version not recorded"
+            break
+    version = manifest.get("version") if isinstance(manifest, dict) else None
+    return clean(version) or "version not recorded"
+
+
+def _text_of(value: Any) -> str:
+    """Plain text for a nested recorded value such as tierVariants or scalingUnits (D10)."""
+    if isinstance(value, dict):
+        return "; ".join(f"{clean(k)}: {_text_of(v)}" for k, v in value.items() if v not in (None, "", [], {}))
+    if isinstance(value, list):
+        return "; ".join(text for text in (_text_of(v) for v in value) if text)
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    return clean(value)
+
+
+def header_html(model: Model) -> str:
+    """D19 header: pattern name, lifecycle, owner team, and the reference architecture when it resolves."""
+    sdp = model.sdp
+    name = clean(sdp.get("name")) or "Deployment pattern"
+    owner = sdp.get("owner")
+    team = clean(owner.get("team")) if isinstance(owner, dict) else ""
+    lifecycle_text = clean(sdp.get("lifecycleStatus")) or "not recorded"
+    ref_uid = clean(sdp.get("followsReferenceArchitecture"))
+    ref = model.catalog.get(ref_uid) if ref_uid else None
+    ref_name = clean(ref.get("name")) if isinstance(ref, dict) else ""
+    meta = [
+        f"<span>Lifecycle: <b>{E(lifecycle_text)}</b></span>",
+        f"<span>Owner team: <b>{E(team or 'not recorded')}</b></span>",
+    ]
+    if ref_name:
+        meta.append(f"<span>Reference architecture: <b>{E(ref_name)}</b></span>")
+    return (
+        f"<header><h1>{E(name)} Architecture</h1>"
+        f'<div class="meta">{"".join(meta)}</div>'
+        '<p class="lede">Generated from the DRAFT catalog. Each box, arrow and row comes from a catalog object. '
+        "An object with no recorded relationship has no arrow, and nothing is inferred.</p></header>"
+    )
+
+
+def counts_html(model: Model, dm: DiagramModel) -> str:
+    placed = len(model.placement)
+    unplaced = len([u for u in model.scope if u in model.catalog and u not in model.placement])
+    retired = sum(1 for u in model.scope if u in model.catalog and lifecycle(model.catalog[u]) == "retired")
+    drawn = len([n for n in dm.nodes if not n.external])
+    spans = [
+        f"<span><b>{drawn}</b> objects drawn</span>",
+        f"<span><b>{placed}</b> placed in a service group</span>",
+        f"<span><b>{unplaced}</b> in scope but not placed</span>",
+        f"<span><b>{retired}</b> retired</span>",
+        f"<span><b>{len(model.relationship_rows)}</b> recorded relationships</span>",
+    ]
+    if model.placed_only:  # D2: the undrawn count is always reported under --placed-only
+        spans.append(
+            f"<span>{model.undrawn_relationship_count} recorded relationships lead outside the placed set and are not drawn</span>"
+        )
+    return '<div class="counts">' + "".join(spans) + "</div>"
+
+
 def inventory_rows(model: Model) -> str:
     def key(uid: str) -> tuple[int, str, int, str, str]:
         placed = model.placement.get(uid)
@@ -860,7 +760,7 @@ def inventory_rows(model: Model) -> str:
         )
         runs_on = obj.get("runsOn")
         host = model.name(str(runs_on)) if runs_on and str(runs_on) in model.catalog else str(runs_on or "")
-        tech = " · ".join(str(x) for x in (obj.get("language"), obj.get("runtimeRequirement")) if x)
+        tech = technology_line(model.catalog, obj)  # D11: the same rule as the box technology line
         life = lifecycle(obj)
         pill = {"retired": "ret", "deprecated": "dep"}.get(life, "")
         rows.append(
@@ -877,9 +777,19 @@ def relationship_rows(model: Model) -> str:
     for row in model.relationship_rows:
         out.append(
             f'<tr><td>{E(row["from"])}</td><td class="lbl">{E(row["label"] or "no label recorded")}</td>'
-            f'<td>{E(row["to"])}</td><td class="ds">{E(row["description"])}</td></tr>'
+            f'<td>{E(row["to"])}</td><td>{E(row["source"])}</td><td class="ds">{E(row["description"])}</td></tr>'
         )
     return "".join(out)
+
+
+def conflicts_html(model: Model) -> str:
+    rows = []
+    for conflict in model.conflicts:
+        rows.append(
+            f"<tr><td>{E(clean(conflict.group))}</td><td>{E(model.name(conflict.component))}</td>"
+            f"<td>{E(model.name(conflict.runs_on))}</td><td>{E(model.name(conflict.substrate))}</td></tr>"
+        )
+    return "".join(rows)
 
 
 def facts_html(model: Model) -> str:
@@ -902,6 +812,10 @@ def facts_html(model: Model) -> str:
                         items.append((key, "; ".join(clean(v) for v in value if clean(v))))
                     elif value:
                         items.append((key, omitted))
+    for key in ("scalingUnits", "tierVariants"):  # D10: shown as text only, no figure depends on them
+        text = _text_of(model.sdp.get(key))
+        if text:
+            items.append((key, text))
     seen: set[str] = set()
     cards = []
     for key, value in items:
@@ -925,7 +839,8 @@ def empty_groups_html(model: Model) -> str:
 
 def questions_html(model: Model) -> str:
     items = []
-    for obj in model.catalog.values():
+    for uid in sorted(model.catalog):  # D15: catalog insertion order must not reach the page
+        obj = model.catalog[uid]
         if obj.get("type") != "drafting_session" and "unresolvedQuestions" not in obj:
             continue
         if obj.get("primaryObjectUid") != model.sdp.get("uid"):
@@ -944,6 +859,11 @@ def questions_html(model: Model) -> str:
     return "".join(items)
 
 
+def figure_html(svg: str, fig_id: str) -> str:
+    """The figure SVG with its element id added to the inline copy only; the standalone SVG files are unchanged."""
+    return '<div class="scroll">' + svg.replace("<svg ", '<svg id="' + fig_id + '" ', 1) + "</div>"
+
+
 CSS = """
 :root{--bg:#f5f7fa;--fg:#1a2230;--muted:#586374;--surface:#fff;--line:#aab4c2;--zone:#eaeff5;--zone-line:#9aa6b6;--accent:#0b62c4;--amber:#a85a00;--warn:#9a3412}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e131a;--fg:#e4e9f0;--muted:#97a2b3;--surface:#18202b;--line:#4a586b;--zone:#121923;--zone-line:#3c485a;--accent:#5fadff;--amber:#f2a64e;--warn:#fb923c;color-scheme:dark}}
@@ -951,24 +871,16 @@ CSS = """
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:28px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
 .wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:30px}
+header{display:flex;flex-direction:column;gap:6px}
 h1{font-size:26px;line-height:1.2;margin:0;font-weight:600}h2{font-size:17px;margin:0 0 4px;font-weight:600}
 .lede,.sec>p,.cap{color:var(--muted);max-width:76ch;font-size:14px;margin:6px 0 12px}
+.meta{display:flex;flex-wrap:wrap;gap:4px 22px;font-size:13.5px;color:var(--muted)}.meta b{color:var(--fg);font-weight:600}
 .counts{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:13.5px}.counts b{font-variant-numeric:tabular-nums}
-.legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--muted);margin-bottom:12px}.legend span{display:inline-flex;align-items:center;gap:8px}
-.legend i{display:inline-block;width:26px;border-top:2px solid var(--line)}
-.legend b{display:inline-block;width:22px;height:14px;border:1.5px solid var(--line);border-radius:3px;background:var(--surface)}
-.legend b.r{border-style:dashed;opacity:.8}.legend b.d{border-style:dashed;border-color:var(--amber)}.legend b.u{border-color:var(--accent)}
 .scroll,.tw{overflow-x:auto;border:1px solid var(--zone-line);border-radius:6px;background:var(--surface)}
 svg{display:block;width:100%;min-width:760px;height:auto;color:var(--fg)}svg text{fill:currentColor;font-family:inherit}
-.box{fill:var(--surface);stroke:var(--line);stroke-width:1.4}.box.ret{stroke-dasharray:5 3;opacity:.78}.box.dep{stroke-dasharray:5 3;stroke:var(--amber)}.box.un{stroke:var(--accent)}
-.zone{fill:var(--zone);stroke:var(--zone-line);stroke-width:1.1;stroke-dasharray:6 4}.zone.un{stroke:var(--accent)}
-.ttl{font-size:11.5px;font-weight:600}.sub,.zt{fill:var(--muted)!important;font-size:10px}.zl{fill:var(--muted)!important;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
-.ln{stroke:var(--line);stroke-width:1.6;fill:none}.mk{fill:var(--line)}.edge{opacity:.7}
-.lb{font-size:10.5px;fill:var(--muted)!important;paint-order:stroke;stroke:var(--zone);stroke-width:4px;stroke-linejoin:round}.lb.hov{display:none}
-.node{cursor:pointer}.node:focus-visible rect{outline:2px solid var(--accent)}
-svg.focus .edge,svg.focus .node,svg.focus .lb{opacity:.15}
-svg.focus .edge.on,svg.focus .node.on,svg.focus .lb.on{opacity:1}
-svg.focus .edge.on .ln{stroke:var(--accent);stroke-width:2.4}svg.focus .lb.on{display:block;fill:var(--accent)!important}
+svg.focus .edge,svg.focus .node,svg.focus .group{opacity:.15}
+svg.focus .edge.on,svg.focus .node.on,svg.focus .group.on{opacity:1}
+svg [data-id]:focus{outline:none}svg [data-id]:focus>rect{stroke:var(--accent);stroke-width:2.4}
 table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--zone-line)}
 th{background:var(--zone);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);white-space:nowrap}tr:last-child td{border-bottom:0}
 td.nm{font-weight:600;white-space:nowrap}td.lbl{color:var(--accent);white-space:nowrap}td.ds{min-width:320px;color:var(--muted)}td.src{font:11px ui-monospace,Menlo,monospace;color:var(--muted);white-space:nowrap}
@@ -978,26 +890,35 @@ td.nm{font-weight:600;white-space:nowrap}td.lbl{color:var(--accent);white-space:
 dl.facts{margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:10px}
 .fact{border:1px solid var(--zone-line);border-radius:6px;padding:10px 12px;background:var(--surface);min-width:0}.fact dt{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:3px}.fact dd{margin:0;font-size:13.5px;overflow-wrap:anywhere}
 ul.q{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;max-width:90ch}ul.q li{border:1px solid var(--zone-line);border-radius:6px;padding:10px 12px;background:var(--surface);font-size:13.5px}.ans{color:var(--muted);margin-top:6px;font-size:13px}
+.foot{color:var(--muted);font-size:12.5px;border-top:1px solid var(--zone-line);padding-top:12px}
 """
 
 JS = """
 (function(){
- var svg=document.getElementById('fig');if(svg){
-  var nodes=[].slice.call(svg.querySelectorAll('.node')),edges=[].slice.call(svg.querySelectorAll('.edge')),labs=[].slice.call(svg.querySelectorAll('.lb')),pinned=null;
-  function show(id){
-   if(!id){svg.classList.remove('focus');[].concat(nodes,edges,labs).forEach(function(n){n.classList.remove('on')});return}
-   svg.classList.add('focus');var near={};near[id]=1;
-   function on(el){var a=el.getAttribute('data-from'),b=el.getAttribute('data-to'),hit=a===id||b===id;if(hit){near[a]=1;near[b]=1}el.classList.toggle('on',hit)}
-   edges.forEach(on);labs.forEach(on);nodes.forEach(function(n){n.classList.toggle('on',!!near[n.getAttribute('data-id')])});
-  }
-  nodes.forEach(function(n){var id=n.getAttribute('data-id');
-   n.addEventListener('mouseenter',function(){if(!pinned)show(id)});n.addEventListener('mouseleave',function(){if(!pinned)show(null)});
-   n.addEventListener('focus',function(){if(!pinned)show(id)});n.addEventListener('blur',function(){if(!pinned)show(null)});
-   n.addEventListener('click',function(){pinned=pinned===id?null:id;show(pinned)});
-   n.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();pinned=pinned===id?null:id;show(pinned)}});
+ var figs=['fig-logical','fig-deployment'].map(function(id){return document.getElementById(id)}).filter(Boolean);
+ var pinned=null,hover=null;
+ function uidOf(t){var el=t&&t.closest?t.closest('[data-id]'):null;return el?el.getAttribute('data-id'):null}
+ function paint(){
+  var id=pinned||hover;
+  figs.forEach(function(svg){
+   var els=[].slice.call(svg.querySelectorAll('[data-id],[data-from]')),near={};
+   if(id){near[id]=1;els.forEach(function(el){var a=el.getAttribute('data-from');if(a!==null&&(a===id||el.getAttribute('data-to')===id)){near[a]=1;near[el.getAttribute('data-to')]=1}})}
+   svg.classList.toggle('focus',!!id);
+   els.forEach(function(el){var a=el.getAttribute('data-from');
+    el.classList.toggle('on',!!id&&(a!==null?(a===id||el.getAttribute('data-to')===id):!!near[el.getAttribute('data-id')]))});
   });
  }
+ figs.forEach(function(svg){
+  [].slice.call(svg.querySelectorAll('[data-id]')).forEach(function(el){el.setAttribute('tabindex','0')});
+  svg.addEventListener('mouseover',function(e){var id=uidOf(e.target);if(id!==hover){hover=id;paint()}});
+  svg.addEventListener('mouseleave',function(){hover=null;paint()});
+  svg.addEventListener('focusin',function(e){hover=uidOf(e.target);paint()});
+  svg.addEventListener('focusout',function(){hover=null;paint()});
+  svg.addEventListener('click',function(e){var id=uidOf(e.target);pinned=id&&pinned!==id?id:null;paint()});
+  svg.addEventListener('keydown',function(e){var id=uidOf(e.target);if(id&&(e.key==='Enter'||e.key===' ')){e.preventDefault();pinned=pinned===id?null:id;paint()}});
+ });
  var q=document.getElementById('q'),lf=document.getElementById('lf'),pf=document.getElementById('pf'),cnt=document.getElementById('cnt');
+ if(!q)return;
  var rows=[].slice.call(document.querySelectorAll('#inv tbody tr'));
  function run(){var t=q.value.toLowerCase(),l=lf.value,p=pf.value,n=0;rows.forEach(function(r){var ok=(!t||r.textContent.toLowerCase().indexOf(t)>-1)&&(!l||r.dataset.life===l)&&(!p||r.dataset.placed===p);r.hidden=!ok;if(ok)n++});cnt.textContent=n+' of '+rows.length+' shown'}
  q.addEventListener('input',run);lf.addEventListener('change',run);pf.addEventListener('change',run);run();
@@ -1005,50 +926,60 @@ JS = """
 """
 
 
-def render_page(model: Model, layout: Layout) -> str:
+def render_page(model: Model, dm: DiagramModel) -> str:
+    """The D19 page: header, counts, the two figures, relationships, conflicts, characteristics, questions, inventory, footer."""
     sdp = model.sdp
-    placed = len(model.placement)
-    unplaced = len([u for u in model.scope if u in model.catalog and u not in model.placement])
-    retired = sum(1 for u in model.scope if u in model.catalog and lifecycle(model.catalog[u]) == "retired")
-    facts = facts_html(model)
-    questions = questions_html(model)
+    title = clean(sdp.get("name")) or "Deployment pattern"
+    logical_empty = not dm.nodes
+    logical_body = (
+        "<p>No object is placed in a service group and no recorded relationship connects an object, so there is nothing to draw.</p>"
+        if logical_empty
+        else figure_html(render_logical_svg(dm), FIGURE_IDS[0])
+    )
     parts = [
-        "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">",
+        '<!doctype html><html lang="en"><head><meta charset="utf-8">',
         '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">',
-        f"<title>{E(str(sdp.get('name', 'Deployment pattern')))} Architecture</title><style>{CSS}</style></head><body><div class=\"wrap\">",
-        f"<header><h1>{E(str(sdp.get('name', 'Deployment pattern')))} Architecture</h1>",
-        '<p class="lede">Generated from the DRAFT catalog. Each box, arrow and row comes from a catalog object. '
-        "An object with no recorded relationship has no arrow, and nothing is inferred.</p>",
-        '<div class="counts">'
-        f"<span><b>{len(layout.pos)}</b> objects drawn</span><span><b>{placed}</b> placed in a service group</span>"
-        f"<span><b>{unplaced}</b> in scope but not placed</span><span><b>{retired}</b> retired</span>"
-        f"<span><b>{len(model.relationship_rows)}</b> recorded relationships</span></div></header>",
-        '<section class="sec"><h2>Deployment topology</h2>'
-        "<p>Zones are the service groups of the deployment pattern, labelled with their recorded deployment target. "
-        "Hover or focus a box to highlight its relationships; click to pin.</p>",
-        '<div class="legend"><span><i></i>Recorded relationship</span><span><b></b>Placed in a service group</span>'
-        '<span><b class="u"></b>Has a relationship but is not placed</span><span><b class="r"></b>Retired</span>'
-        '<span><b class="d"></b>Deprecated</span></div>',
-        (
-            f'<div class="scroll">{render_svg(model, layout)}</div>'
-            if layout.pos
-            else "<p>No objects are placed in a service group and no recorded relationship connects an object, so there is nothing to draw.</p>"
-        )
+        f"<title>{E(title)} Architecture</title><style>{CSS}</style></head><body><div class=\"wrap\">",
+        header_html(model),
+        counts_html(model, dm),
+        f'<section class="sec" id="logical"><h2>{E(LOGICAL_TITLE)}</h2>'
+        "<p>Components in bands by diagram tier. Objects that this pattern does not place sit in the right-hand lane, captioned with the pattern that places them. "
+        "Hover or focus a box to highlight its relationships; click to pin. A dashed box has a derived tier.</p>"
+        + logical_body
+        + "</section>",
+        f'<section class="sec" id="deployment"><h2>{E(DEPLOYMENT_TITLE)}</h2>'
+        "<p>Deployment targets hold service groups, each drawn as a container around its boxes. Pinning an object in one figure highlights it in the other.</p>"
+        + figure_html(render_deployment_svg(dm), FIGURE_IDS[1])
         + empty_groups_html(model)
         + "</section>",
     ]
     if model.relationship_rows:
         parts.append(
             '<section class="sec"><h2>Recorded relationships</h2><div class="tw"><table><thead><tr>'
-            "<th>From</th><th>Relationship</th><th>To</th><th>Description</th></tr></thead><tbody>"
+            "<th>From</th><th>Relationship</th><th>To</th><th>Source</th><th>Description</th></tr></thead><tbody>"
             f"{relationship_rows(model)}</tbody></table></div></section>"
         )
     else:
         parts.append('<section class="sec"><h2>Recorded relationships</h2><p>No relationship objects connect these objects.</p></section>')
-    if facts:
-        parts.append(f'<section class="sec"><h2>Recorded characteristics</h2><p>Quoted from the deployment pattern.</p><dl class="facts">{facts}</dl></section>')
-    if questions:
-        parts.append(f'<section class="sec"><h2>Open questions on record</h2><ul class="q">{questions}</ul></section>')
+    if model.conflicts:
+        parts.append(
+            '<section class="sec"><h2>Recorded conflicts</h2><p>A placed component records a runsOn that differs from its service group substrate. '
+            "Nothing is resolved here; both records are shown as recorded.</p><div class=\"tw\"><table><thead><tr>"
+            "<th>Service group</th><th>Component</th><th>Component runs on</th><th>Group substrate</th></tr></thead>"
+            f"<tbody>{conflicts_html(model)}</tbody></table></div></section>"
+        )
+    facts = facts_html(model)
+    parts.append(
+        '<section class="sec"><h2>Recorded characteristics</h2><p>Quoted from the deployment pattern.</p>'
+        + (f'<dl class="facts">{facts}</dl>' if facts else "<p>No characteristics are recorded for this pattern.</p>")
+        + "</section>"
+    )
+    questions = questions_html(model)
+    parts.append(
+        '<section class="sec"><h2>Open questions on record</h2>'
+        + (f'<ul class="q">{questions}</ul>' if questions else "<p>No open questions are recorded for this pattern.</p>")
+        + "</section>"
+    )
     parts.append(
         '<section class="sec"><h2>Object inventory</h2><p>Every in-scope object with its catalog fields as recorded. '
         "Placed objects are listed first.</p>"
@@ -1062,22 +993,30 @@ def render_page(model: Model, layout: Layout) -> str:
         "<th>Runs on</th><th>Language / runtime</th><th>Description</th><th>UID</th></tr></thead>"
         f"<tbody>{inventory_rows(model)}</tbody></table></div></section>"
     )
+    parts.append(
+        f'<footer class="foot">DRAFT framework version {E(framework_version())}. '
+        "Generated from the catalog; the same catalog always produces the same page.</footer>"
+    )
     parts.append(f"</div><script>{JS}</script></body></html>")
     return "".join(parts)
 
 
 # --------------------------------------------------------------------------- stubs
-def build_diagram_model(catalog: dict[str, dict[str, Any]], sdp: dict[str, Any], placed_only: bool) -> DiagramModel:
-    """The two-view model for one pattern: logical nodes, edges, service group containers and warnings."""
-    model = Model(catalog, sdp, placed_only)
+def diagram_of(model: Model) -> DiagramModel:
+    """The two-view model of one resolved pattern: logical nodes, deployment nodes, edges, containers, warnings."""
     return DiagramModel(
-        sdp_uid=str(sdp.get("uid", "")),
+        sdp_uid=str(model.sdp.get("uid", "")),
         nodes=model.nodes_for_view("logical"),
         deployment_nodes=model.nodes_for_view("deployment"),
         edges=list(model.edges),
         containers=list(model.containers),
         warnings=list(model.warnings),
     )
+
+
+def build_diagram_model(catalog: dict[str, dict[str, Any]], sdp: dict[str, Any], placed_only: bool) -> DiagramModel:
+    """The two-view model for one pattern, built from a catalog dict."""
+    return diagram_of(Model(catalog, sdp, placed_only))
 
 
 # --------------------------------------------------------------------------- logical view
@@ -2227,13 +2166,10 @@ def render_deployment_svg(model: DiagramModel) -> str:
 
 # --------------------------------------------------------------------------- cli
 def build_from_catalog(catalog: dict[str, dict[str, Any]], selector: str | None, placed_only: bool = False) -> tuple[str, Model]:
-    """Public seam (D16c): render one pattern from an already loaded catalog dict.
-
-    Until S8 the page is the legacy page.
-    """
+    """Public seam (D16c): render one pattern's page from an already loaded catalog dict."""
     sdp = pick_sdp(catalog, selector)
     model = Model(catalog, sdp, placed_only)
-    return render_page(model, Layout(model)), model
+    return render_page(model, diagram_of(model)), model
 
 
 def build(workspace: Path, selector: str | None, placed_only: bool = False) -> tuple[str, Model]:
@@ -2264,8 +2200,10 @@ def main(argv: list[str] | None = None) -> int:
     except ValueError as exc:  # D32: a malformed pattern is reported, not traced
         print(f"error: {exc}", file=sys.stderr)
         return 1
+    # D18: the count line, then each distinct warning once, in sorted order (the model sorts and de-duplicates them)
+    print(f"{len(model.warnings)} warnings", file=sys.stderr)
     for warning in model.warnings:
-        print(f"warning: {warning}", file=sys.stderr)
+        print(warning, file=sys.stderr)
     output = args.output or Path(f"{slug(str(model.sdp.get('name', 'diagram')))}-architecture.html")
     replaced = output.exists()
     try:
