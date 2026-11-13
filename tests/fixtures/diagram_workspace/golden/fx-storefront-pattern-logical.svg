@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1110 480" width="1110" height="480" role="img" aria-label="Logical application diagram">
+<title>Logical application diagram</title>
+<desc>generate_diagram FXSDP00001-0001</desc>
+<style>.band{fill:#f3f5f8;stroke:#c3cad4}.lane{fill:#fbf6ec;stroke:#d8c9a8;stroke-dasharray:6 4}.bl,.ll{font:600 11px sans-serif;fill:#586374}.box{fill:#ffffff;stroke:#555555;stroke-width:1.4}.dashed .box{stroke-dasharray:5 3}.ttl{font:600 12px sans-serif;fill:#1a2230}.cap{font:10px sans-serif;fill:#586374}.ln{fill:none;stroke:#7a8696;stroke-width:1.4}</style>
+<rect class="band" x="20" y="20" width="780" height="80" rx="6"/>
+<text class="bl" x="30" y="40">presentation</text>
+<rect class="band" x="20" y="140" width="780" height="80" rx="6"/>
+<text class="bl" x="30" y="160">application</text>
+<rect class="band" x="20" y="260" width="780" height="80" rx="6"/>
+<text class="bl" x="30" y="280">data</text>
+<rect class="band" x="20" y="380" width="780" height="80" rx="6"/>
+<text class="bl" x="30" y="400">utility</text>
+<rect class="lane" x="870" y="20" width="220" height="290" rx="6"/>
+<text class="ll" x="880" y="44">Outside this pattern</text>
+<g class="edge" data-from="FXPRD00001-0001" data-to="FXPRD00002-0001"><title>FX Web Shop places orders FX Order API</title><path class="ln" d="M402.5 90.0 L287.5 150.0"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXDST00001-0001"><title>FX Order API reads and writes orders FX Orders Database</title><path class="ln" d="M287.5 210.0 L402.5 270.0"/></g>
+<g class="edge" data-from="FXPRD00003-0001" data-to="FXPRD00002-0001"><title>FX Order Worker consumes order messages FX Order API</title><path class="ln" d="M360.0 180.0 L330.0 180.0"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00003-0001"><title>FX Order API publishes order placed FX Order Worker</title><path class="ln" d="M330.0 202.6 Q345.0 206.0 360.0 202.6"/></g>
+<g class="edge" data-from="FXPRD00001-0001" data-to="FXDCP00001-0001"><title>FX Web Shop shares session state FX Session Cache</title><path class="ln" d="M431.2 90.0 L258.8 270.0"/></g>
+<g class="edge" data-from="FXNET00001-0001" data-to="FXPRD00001-0001"><title>FX Edge Gateway routes customer traffic FX Web Shop</title><path class="ln" d="M330.0 60.0 L360.0 60.0"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00002-0001"><title>FX Order API checks own health FX Order API</title><path class="ln" d="M254.0 150.0 C254.0 126.0 360.0 168.0 330.0 168.0"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="ext:f2e513630165"><title>FX Order API charges cards FX Payment Provider</title><path class="ln" d="M330.0 192.0 L880.0 258.0"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00010-0001"><title>FX Order API posts ledger entries FX Shared Ledger</title><path class="ln" d="M330.0 180.0 L880.0 180.0"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00005-0001"><title>FX Order API sends notifications FX Unplaced Notifier</title><path class="ln" d="M330.0 168.0 L880.0 102.0"/></g>
+<g class="edge" data-from="FXPRD00004-0001" data-to="FXDST00001-0001"><title>FX Legacy Cart reads historic carts FX Orders Database</title><path class="ln" d="M632.5 210.0 L517.5 270.0"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXDCP00001-0001"><title>FX Order API reads cached sessions FX Session Cache</title><path class="ln" d="M230.0 210.0 L230.0 270.0"/></g>
+<g class="node" data-id="FXNET00001-0001"><title>FX Edge Gateway</title><rect class="box" x="130" y="30" width="200" height="60" rx="6"/><text class="ttl" x="230" y="64" text-anchor="middle">FX Edge Gateway</text></g>
+<g class="node" data-id="FXPRD00001-0001"><title>FX Web Shop</title><rect class="box" x="360" y="30" width="200" height="60" rx="6"/><text class="ttl" x="460" y="64" text-anchor="middle">FX Web Shop</text></g>
+<g class="node" data-id="FXPRD00002-0001"><title>FX Order API</title><rect class="box" x="130" y="150" width="200" height="60" rx="6"/><text class="ttl" x="230" y="184" text-anchor="middle">FX Order API</text></g>
+<g class="node dashed" data-id="FXPRD00003-0001"><title>FX Order Worker</title><rect class="box" x="360" y="150" width="200" height="60" rx="6"/><text class="ttl" x="460" y="184" text-anchor="middle">FX Order Worker</text></g>
+<g class="node" data-id="FXPRD00004-0001"><title>FX Legacy Cart</title><rect class="box" x="590" y="150" width="200" height="60" rx="6"/><text class="ttl" x="690" y="184" text-anchor="middle">FX Legacy Cart</text></g>
+<g class="node" data-id="FXDCP00001-0001"><title>FX Session Cache</title><rect class="box" x="130" y="270" width="200" height="60" rx="6"/><text class="ttl" x="230" y="304" text-anchor="middle">FX Session Cache</text></g>
+<g class="node" data-id="FXDST00001-0001"><title>FX Orders Database</title><rect class="box" x="360" y="270" width="200" height="60" rx="6"/><text class="ttl" x="460" y="304" text-anchor="middle">FX Orders Database</text></g>
+<g class="node" data-id="FXRTC00001-0001"><title>FX Cluster Alpha</title><rect class="box" x="130" y="390" width="200" height="60" rx="6"/><text class="ttl" x="230" y="424" text-anchor="middle">FX Cluster Alpha</text></g>
+<g class="node outside" data-id="FXPRD00005-0001"><title>FX Unplaced Notifier</title><rect class="box" x="880" y="60" width="200" height="60" rx="6"/><text class="ttl" x="980" y="80" text-anchor="middle">FX Unplaced Notifier</text><text class="cap" x="980" y="96" text-anchor="middle">not placed in any pattern</text></g>
+<g class="node outside" data-id="FXPRD00010-0001"><title>FX Shared Ledger</title><rect class="box" x="880" y="150" width="200" height="60" rx="6"/><text class="ttl" x="980" y="170" text-anchor="middle">FX Shared Ledger</text><text class="cap" x="980" y="186" text-anchor="middle">FX Registry Pattern</text></g>
+<g class="node outside external" data-id="ext:f2e513630165"><title>FX Payment Provider</title><rect class="box" x="880" y="240" width="200" height="60" rx="6"/><text class="ttl" x="980" y="260" text-anchor="middle">FX Payment Provider</text><text class="cap" x="980" y="276" text-anchor="middle">external</text></g>
+</svg>
