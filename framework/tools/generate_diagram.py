@@ -1285,10 +1285,13 @@ def render_logical_svg(model: DiagramModel) -> str:
 
 DEPLOY_COLUMNS = 3  # boxes per row inside a zone lane
 DEPLOY_PAD = 10
+DEPLOY_COL_GAP = 140  # wide enough for 25 parallel vertical edge tracks between box columns
+DEPLOY_TRACKS = (0,) + tuple(v for k in range(1, 13) for v in (-5 * k, 5 * k))  # 25 tracks, 5px apart
 DEPLOY_LANE_HEAD = 30
-DEPLOY_GROUP_HEAD = 50
 DEPLOY_TARGET_HEAD = 30
 DEPLOY_TARGET_GAP = 30
+DEPLOY_CHAR_W = 7  # estimated text width in px, used to wrap container text to its container
+DEPLOY_LINE_H = 14
 DEPLOYMENT_TITLE = "Deployment pattern diagram"
 
 
@@ -1307,68 +1310,195 @@ def _deployment_outline(model: DiagramModel) -> list[tuple[str, list[DiagramCont
     return targets
 
 
+def _wrap_to(text: str, width_px: int) -> list[str]:
+    """Wrap catalog text to a pixel width without dropping anything; over-long words are split."""
+    chars = max(8, (width_px - 20) // DEPLOY_CHAR_W)
+    lines: list[str] = []
+    for line in wrap(clean(text), chars):
+        while len(line) > chars:
+            lines.append(line[:chars])
+            line = line[chars:]
+        lines.append(line)
+    return lines
+
+
+def _fmt(value: float) -> str:
+    return str(int(value)) if value == int(value) else f"{value:.1f}"
+
+
+def _route_deployment_edges(
+    model: DiagramModel,
+    rects: dict[str, tuple[int, int, int, int]],
+    containers: set[str],
+    gutters: list[int],
+    lane_gutter: int | None,
+    lane_uids: set[str],
+) -> dict[int, list[tuple[float, float]]]:
+    """Orthogonal route per edge, like _route_edges, over boxes and containers of any size.
+
+    A box end leaves through its top or bottom side. A container end starts on the container border at the
+    point border_point returns toward the other endpoint, then steps outward before turning. Routes run
+    only in the gaps between box rows and in the vertical channels between box columns, so an edge never
+    crosses a box that is not one of its endpoints. Integer arithmetic keyed on edge order and uid.
+    """
+    drawn = [(i, e) for i, e in enumerate(model.edges) if e.source != e.target and e.source in rects and e.target in rects]
+    attach: dict[tuple[int, str], tuple[float, float]] = {}  # container end -> point on the border
+    for i, e in drawn:
+        for uid, other in ((e.source, e.target), (e.target, e.source)):
+            if uid in containers:
+                x, y, w, h = rects[uid]
+                ox, oy, ow, oh = rects[other]
+                attach[(i, uid)] = border_point((x + w / 2, y + h / 2), (ox + ow / 2, oy + oh / 2), w, h)
+    sides: dict[int, tuple[str, str]] = {}
+    slots: dict[tuple[str, str], list[tuple[int, str, int]]] = {}
+    for i, e in drawn:
+        a, b = rects[e.source], rects[e.target]
+        sa = "bottom" if b[1] > a[1] else "top"
+        sb = "top" if b[1] > a[1] else ("bottom" if b[1] < a[1] else "top")
+        sides[i] = (sa, sb)
+        if e.source not in containers:
+            slots.setdefault((e.source, sa), []).append((rects[e.target][0], e.target, i))
+        if e.target not in containers:
+            slots.setdefault((e.target, sb), []).append((rects[e.source][0], e.source, i))
+    offset: dict[tuple[int, str], int] = {}
+    for (uid, _side), items in slots.items():
+        items.sort()
+        span = rects[uid][2] * 4 // 5
+        for rank, (_x, _other, i) in enumerate(items):
+            offset[(i, uid)] = span * (rank + 1) // (len(items) + 1) // GRID * GRID - span // 2
+
+    def end(i: int, uid: str, side: str, track: int, edge_idx: int) -> list[tuple[float, float]]:
+        """Points from the endpoint outward to the first gap-lane point."""
+        x, y, w, h = rects[uid]
+        if uid not in containers:
+            gap = y + h + 5 + 5 * track if side == "bottom" else y - 5 - 5 * track
+            cx = x + w // 2 + offset[(edge_idx, uid)]
+            return [(cx, y + h if side == "bottom" else y), (cx, gap)]
+        px, py = attach[(edge_idx, uid)]
+        eps = 1e-6
+        if abs(py - y) < eps or abs(py - (y + h)) < eps:
+            top = abs(py - y) < eps
+            return [(px, py), (px, y - 5 - 5 * track if top else y + h + 5 + 5 * track)]
+        gap = y + h + 5 + 5 * track if side == "bottom" else y - 5 - 5 * track
+        out = x - 5 - 5 * track if abs(px - x) < eps else x + w + 5 + 5 * track
+        return [(px, py), (out, py), (out, gap)]
+
+    routes: dict[int, list[tuple[float, float]]] = {}
+    taken: dict[float, list[tuple[float, float]]] = {}  # channel x -> vertical spans already used
+    for i, e in drawn:
+        track = i % 2
+        sa, sb = sides[i]
+        head = end(i, e.source, sa, track, i)
+        tail = end(i, e.target, sb, track, i)
+        ax, ga = head[-1]
+        bx, gb = tail[-1]
+        if e.source in lane_uids or e.target in lane_uids:
+            options = ([gutters[-1]] if gutters else []) + ([lane_gutter] if lane_gutter is not None else [])
+            if e.source in lane_uids and e.target in lane_uids and lane_gutter is not None:
+                options = [lane_gutter]
+        else:
+            options = gutters
+        ranked = sorted(options, key=lambda g: (abs(ax - g) + abs(bx - g), g))
+        lo, hi = min(ga, gb), max(ga, gb)
+        gx = ranked[0] + DEPLOY_TRACKS[i % len(DEPLOY_TRACKS)]  # fallback when every track is taken
+        found = False
+        for base in ranked:  # nearest channel with a free track for this vertical span
+            for offset_x in DEPLOY_TRACKS:
+                if all(hi <= a0 or a1 <= lo for a0, a1 in taken.get(base + offset_x, [])):
+                    gx, found = base + offset_x, True
+                    break
+            if found:
+                break
+        taken.setdefault(gx, []).append((lo, hi))
+        raw = head + [(gx, ga), (gx, gb)] + list(reversed(tail))
+        pts: list[tuple[float, float]] = []
+        for point in raw:
+            if not pts or pts[-1] != point:
+                pts.append(point)
+        routes[i] = pts
+    return routes
+
+
 def render_deployment_svg(model: DiagramModel) -> str:
     """The deployment pattern figure: target -> group container -> zone lanes -> boxes (D6).
 
-    Edges are plain straight lines between box or container borders; S7 styles them. Deterministic (D15).
+    Edges are plain solid orthogonal routes between box or container borders; S7 styles them.
+    Container text is wrapped to its container width and the container grows to hold it. Deterministic (D15).
     """
-    step_x = LOGICAL_BOX_W + LOGICAL_COL_GAP
+    step_x = LOGICAL_BOX_W + DEPLOY_COL_GAP
     step_y = LOGICAL_BOX_H + LOGICAL_ROW_GAP
     by_uid = {n.uid: n for n in model.deployment_nodes}
     outline = _deployment_outline(model)
     lane_sizes = [len(lane.members) for _t, groups in outline for g in groups for lane in g.lanes]
     used = min(DEPLOY_COLUMNS, max(lane_sizes, default=1))
-    inner_w = used * LOGICAL_BOX_W + (used - 1) * LOGICAL_COL_GAP
+    inner_w = used * LOGICAL_BOX_W + (used - 1) * DEPLOY_COL_GAP
     lane_w = inner_w + 2 * DEPLOY_PAD
     group_w = lane_w + 2 * DEPLOY_PAD
     target_w = group_w + 2 * DEPLOY_PAD
     rects: dict[str, tuple[int, int, int, int]] = {}  # uid -> x, y, w, h of a box or the first container with that uid
+    container_ids: set[str] = set()
+    names: dict[str, str] = {n.uid: n.name for n in model.deployment_nodes}
     pos: dict[str, tuple[int, int]] = {}
     body: list[str] = []
     y = LOGICAL_MARGIN
     for target, groups in outline:
         tx = LOGICAL_MARGIN
-        group_hs = []
-        for g in groups:
-            lane_hs = [
-                DEPLOY_LANE_HEAD + (-(-len(lane.members) // DEPLOY_COLUMNS)) * LOGICAL_BOX_H
-                + (-(-len(lane.members) // DEPLOY_COLUMNS) - 1) * LOGICAL_ROW_GAP + DEPLOY_PAD
-                for lane in g.lanes
-            ]
-            group_hs.append((DEPLOY_GROUP_HEAD + sum(lane_hs) + DEPLOY_PAD * len(lane_hs), lane_hs))
-        target_h = DEPLOY_TARGET_HEAD + sum(h for h, _ in group_hs) + DEPLOY_PAD * len(groups)
         label = clean(target) or "deployment target not recorded"
+        t_lines = _wrap_to(label, target_w)
+        t_head = DEPLOY_TARGET_HEAD + DEPLOY_LINE_H * (len(t_lines) - 1)
+        plans = []
+        for g in groups:
+            n_lines = _wrap_to(g.group, group_w)
+            c_lines = _wrap_to(g.caption, group_w)
+            g_head = 18 + DEPLOY_LINE_H * (len(n_lines) - 1) + 20 + DEPLOY_LINE_H * (len(c_lines) - 1) + 12
+            lane_plans = []
+            for lane in g.lanes:
+                z_lines = _wrap_to(f"{lane.name} ({lane.tier})" if lane.tier else lane.name, lane_w)
+                head = DEPLOY_LANE_HEAD + DEPLOY_LINE_H * (len(z_lines) - 1)
+                rows = -(-len(lane.members) // DEPLOY_COLUMNS)
+                lane_plans.append((lane, z_lines, head, head + rows * LOGICAL_BOX_H + (rows - 1) * LOGICAL_ROW_GAP + DEPLOY_PAD))
+            plans.append((g, n_lines, c_lines, g_head, lane_plans, g_head + sum(lp[3] for lp in lane_plans) + DEPLOY_PAD * len(lane_plans)))
+        target_h = t_head + sum(pl[5] for pl in plans) + DEPLOY_PAD * len(plans)
+        text = "".join(
+            f'<text class="tl" x="{tx + 10}" y="{y + 20 + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(t_lines)
+        )
         body.append(
             f'<g class="target" data-target="{xml_text(clean(target))}">'
-            f'<rect class="tgt" x="{tx}" y="{y}" width="{target_w}" height="{target_h}" rx="8"/>'
-            f'<text class="tl" x="{tx + 10}" y="{y + 20}">{xml_text(label)}</text>'
+            f'<rect class="tgt" x="{tx}" y="{y}" width="{target_w}" height="{target_h}" rx="8"/>{text}'
         )
-        gy = y + DEPLOY_TARGET_HEAD
-        for g, (group_h, lane_hs) in zip(groups, group_hs):
+        gy = y + t_head
+        for g, n_lines, c_lines, g_head, lane_plans, group_h in plans:
             gx = tx + DEPLOY_PAD
             ident = f' data-id="{xml_text(g.uid)}"' if g.uid else ""
             cls = "group" + (" dashed" if g.derived else "")
             if g.uid and g.uid not in rects:
                 rects[g.uid] = (gx, gy, group_w, group_h)
+                container_ids.add(g.uid)
+                names[g.uid] = g.caption
+            cap_y = gy + 18 + DEPLOY_LINE_H * (len(n_lines) - 1) + 20
+            texts = "".join(
+                f'<text class="gl" x="{gx + 10}" y="{gy + 18 + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(n_lines)
+            ) + "".join(
+                f'<text class="gc" x="{gx + 10}" y="{cap_y + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(c_lines)
+            )
             body.append(
                 f'<g class="{cls}"{ident} data-group="{xml_text(g.group)}"><title>{xml_text(g.group)}</title>'
-                f'<rect class="grp" x="{gx}" y="{gy}" width="{group_w}" height="{group_h}" rx="6"/>'
-                f'<text class="gl" x="{gx + 10}" y="{gy + 18}">{xml_text(_fit_lines(g.group, 60, 1)[0])}</text>'
-                f'<text class="gc" x="{gx + 10}" y="{gy + 38}">{xml_text(g.caption)}</text>'
+                f'<rect class="grp" x="{gx}" y="{gy}" width="{group_w}" height="{group_h}" rx="6"/>{texts}'
             )
-            ly = gy + DEPLOY_GROUP_HEAD
-            for lane, lane_h in zip(g.lanes, lane_hs):
+            ly = gy + g_head
+            for lane, z_lines, lane_head, lane_h in lane_plans:
                 lx = gx + DEPLOY_PAD
-                caption = f"{lane.name} ({lane.tier})" if lane.tier else lane.name
+                ztext = "".join(
+                    f'<text class="zc" x="{lx + 10}" y="{ly + 19 + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(z_lines)
+                )
                 body.append(
                     f'<g class="zlane" data-zone="{xml_text(lane.zone)}">'
-                    f'<rect class="zl" x="{lx}" y="{ly}" width="{lane_w}" height="{lane_h}" rx="5"/>'
-                    f'<text class="zc" x="{lx + 10}" y="{ly + 19}">{xml_text(caption)}</text>'
+                    f'<rect class="zl" x="{lx}" y="{ly}" width="{lane_w}" height="{lane_h}" rx="5"/>{ztext}'
                 )
                 for i, uid in enumerate(lane.members):
                     row, col = divmod(i, DEPLOY_COLUMNS)
                     bx = lx + DEPLOY_PAD + col * step_x
-                    by = ly + DEPLOY_LANE_HEAD + row * step_y
+                    by = ly + lane_head + row * step_y
                     if uid in by_uid and uid not in pos:
                         pos[uid] = (bx, by)
                         rects[uid] = (bx, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
@@ -1381,8 +1511,16 @@ def render_deployment_svg(model: DiagramModel) -> str:
         y += target_h + DEPLOY_TARGET_GAP
     bottom = y - DEPLOY_TARGET_GAP if outline else LOGICAL_MARGIN
     right = LOGICAL_MARGIN + target_w if outline else LOGICAL_MARGIN + 2 * LOGICAL_BOX_W
+    first_col = LOGICAL_MARGIN + 3 * DEPLOY_PAD
+    # Channels between box columns plus one right of the last column; none left of the first column, where
+    # the figure edge is too close for parallel tracks.
+    gutters = [first_col - DEPLOY_COL_GAP // 2 + k * step_x for k in range(1, used + 1)] if outline else []
+    if gutters:
+        right = max(right, gutters[-1] + max(DEPLOY_TRACKS) + 10)
     outer = [n for n in model.deployment_nodes if n.outside]
     lane_box = ""
+    lane_gutter: int | None = None
+    lane_uids: set[str] = set()
     if outer:
         centre_y = {uid: r[1] + r[3] // 2 for uid, r in rects.items()}
         near: dict[str, list[int]] = {n.uid: [] for n in outer}
@@ -1396,11 +1534,13 @@ def render_deployment_svg(model: DiagramModel) -> str:
             return (_band_rank(node), Fraction(sum(ys), len(ys)) if ys else Fraction(0), node.uid)
 
         ordered = sorted(outer, key=lane_key)
-        lane_x = right + LOGICAL_LANE_GAP
+        lane_x = right + LOGICAL_LANE_GAP + max(DEPLOY_TRACKS)
+        lane_gutter = lane_x - 20 - max(DEPLOY_TRACKS)
         for i, node in enumerate(ordered):
             bx, by = lane_x, LOGICAL_MARGIN + LOGICAL_LANE_HEAD + i * step_y
             rects[node.uid] = (bx, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
             pos[node.uid] = (bx, by)
+            lane_uids.add(node.uid)
         lane_h = LOGICAL_LANE_HEAD + len(ordered) * LOGICAL_BOX_H + (len(ordered) - 1) * LOGICAL_ROW_GAP + LOGICAL_BAND_PAD
         lane_box = (
             f'<rect class="lane" x="{lane_x - LOGICAL_BAND_PAD}" y="{LOGICAL_MARGIN}" width="{LOGICAL_BOX_W + 2 * LOGICAL_BAND_PAD}" '
@@ -1409,33 +1549,31 @@ def render_deployment_svg(model: DiagramModel) -> str:
         )
         right = lane_x + LOGICAL_BOX_W + LOGICAL_BAND_PAD
         bottom = max(bottom, LOGICAL_MARGIN + lane_h)
+    routes = _route_deployment_edges(model, rects, container_ids, gutters, lane_gutter, lane_uids)
     edges: list[str] = []
-    for edge in model.edges:
+    loops: dict[str, int] = {}
+    for number, edge in enumerate(model.edges):
         s, t = edge.source, edge.target
         if s not in rects or t not in rects:
             continue
-        tip = xml_text(f"{edge.source} {edge.label or '(no label recorded)'} {edge.target}")
+        tip = xml_text(f"{names.get(s, s)} {edge.label or '(no label recorded)'} {names.get(t, t)}")
         head = f'<g class="edge" data-from="{xml_text(s)}" data-to="{xml_text(t)}"><title>{tip}</title>'
         if s == t:
             if s not in pos:
                 continue  # a container has no loop
-            path = _loop_path(pos[s][0], pos[s][1], 0)
+            grow = 14 * loops.get(s, 0)
+            loops[s] = loops.get(s, 0) + 1
+            path = _loop_path(pos[s][0], pos[s][1], grow)
         else:
-            sx, sy, sw, sh = rects[s]
-            tx_, ty_, tw, th = rects[t]
-            sc = (sx + sw / 2, sy + sh / 2)
-            tc = (tx_ + tw / 2, ty_ + th / 2)
-            a = border_point(sc, tc, sw, sh)
-            b = border_point(tc, sc, tw, th)
-            path = f"M{a[0]:.1f} {a[1]:.1f} L{b[0]:.1f} {b[1]:.1f}"
+            path = "M" + " L".join(f"{_fmt(px)} {_fmt(py)}" for px, py in routes[number])
         edges.append(f'{head}<path class="ln" d="{path}"/></g>')
     empty = [c for c in model.containers if not c.members]
-    width = right + LOGICAL_MARGIN
+    reach = max([px for pts in routes.values() for px, _py in pts], default=0)
+    width = int(max(right, reach)) + LOGICAL_MARGIN
     note = ""
     if empty:
-        names = ", ".join(f"{clean(c.group) or 'unnamed group'} ({clean(c.target) or 'deployment target not recorded'})" for c in empty)
-        text = f"Service groups recorded with no objects to draw: {names}."
-        lines = wrap(text, max(40, (width - 2 * LOGICAL_MARGIN) // 6))
+        listing = ", ".join(f"{clean(c.group) or 'unnamed group'} ({clean(c.target) or 'deployment target not recorded'})" for c in empty)
+        lines = wrap(f"Service groups recorded with no objects to draw: {listing}.", max(40, (width - 2 * LOGICAL_MARGIN) // 6))
         note = "".join(
             f'<text class="cap" x="{LOGICAL_MARGIN}" y="{bottom + 30 + 14 * i}">{xml_text(line)}</text>' for i, line in enumerate(lines)
         )

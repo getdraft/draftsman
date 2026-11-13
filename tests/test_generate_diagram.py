@@ -91,15 +91,6 @@ def xml_unescape(text: str) -> str:
     return html.unescape(text)
 
 
-def edge_polylines_straight(svg: str) -> list:
-    """(from, to, [(x, y), (x, y)]) for each straight edge of a deployment SVG."""
-    found = []
-    for match in re.finditer(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)"><title>[^<]*</title><path class="ln" d="M([-\d.]+) ([-\d.]+) L([-\d.]+) ([-\d.]+)"/>', svg):
-        a, b, x1, y1, x2, y2 = match.groups()
-        found.append((a, b, [(float(x1), float(y1)), (float(x2), float(y2))]))
-    return found
-
-
 def node_rects(svg: str) -> dict:
     """uid -> (x, y, w, h) of each node box in a logical SVG."""
     found = {}
@@ -1112,7 +1103,7 @@ class LaterStoryTests(unittest.TestCase):
         svg = deployment_svg(cat, "SDP-1")
         xml.dom.minidom.parseString(svg)
         self.assertRegex(svg, r'<g class="group[^"]*" data-id="RTC-1"')
-        (_, _, pts), = edge_polylines_straight(svg)
+        (_, _, pts), = edge_polylines(svg)
         group = re.search(r'<g class="group[^"]*" data-id="RTC-1"[^>]*>.*?<rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg, re.S)
         gx, gy, gw, gh = (int(group.group(i)) for i in range(1, 5))
         box = node_rects(svg)["P-2"]
@@ -1121,8 +1112,81 @@ class LaterStoryTests(unittest.TestCase):
         start = generate_diagram.border_point(c_group, c_box, gw, gh)
         end = generate_diagram.border_point(c_box, c_group, box[2], box[3])
         self.assertEqual(pts[0], (round(start[0], 1), round(start[1], 1)))
-        self.assertEqual(pts[1], (round(end[0], 1), round(end[1], 1)))
+        self.assertEqual(pts[-1][0], box[0] + box[2] / 2 + (pts[-1][0] - box[0] - box[2] / 2))
+        self.assertIn(pts[-1][1], (box[1], box[1] + box[3]))
+        for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+            self.assertTrue(ax == bx or ay == by, "orthogonal route")
         self.assertTrue(gx <= pts[0][0] <= gx + gw and gy <= pts[0][1] <= gy + gh)
+
+    def test_deployment_edges_avoid_foreign_boxes(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        for sdp in generate_diagram.sdps(catalog):
+            svg = deployment_svg(catalog, sdp["uid"])
+            self.assertGreater(len(edge_polylines(svg)), 0)
+            self.assertEqual(edges_hitting_foreign_boxes(svg), [], sdp["uid"])
+            segments = []
+            for _s, _t, pts in edge_polylines(svg):
+                segments.extend((min(a[0], b[0]), max(a[0], b[0]), min(a[1], b[1]), max(a[1], b[1])) for a, b in zip(pts, pts[1:]))
+            vertical = [(x0, y0, y1) for x0, x1, y0, y1 in segments if x0 == x1 and y0 < y1]
+            for i, (x, y0, y1) in enumerate(vertical):
+                for x2, a0, a1 in vertical[i + 1 :]:
+                    self.assertFalse(x == x2 and y0 < a1 and a0 < y1, f"collinear overlap at x={x}")
+
+    def _small_pair(self, extra: list) -> str:
+        objects = [component("A-1", "Alpha"), component("B-1", "Beta"), pattern({"G": ["A-1", "B-1"]})] + extra
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        return deployment_svg(cat, "SDP-1")
+
+    def test_deployment_repeated_self_loops_are_distinct(self) -> None:
+        svg = self._small_pair([relationship("R-1", "A-1", "A-1", "one"), relationship("R-2", "A-1", "A-1", "two")])
+        loops = re.findall(r'<g class="edge" data-from="A-1" data-to="A-1">.*?<path class="ln" d="([^"]*)"', svg)
+        self.assertEqual(len(loops), 2)
+        self.assertNotEqual(loops[0], loops[1])
+
+    def test_deployment_parallel_edges_bend_apart(self) -> None:
+        svg = self._small_pair([relationship("R-1", "A-1", "B-1", "x"), relationship("R-2", "B-1", "A-1", "y")])
+        paths = re.findall(r'<path class="ln" d="(M[^"]*)"', svg)
+        self.assertEqual(len(paths), 2)
+        self.assertNotEqual(paths[0], paths[1])
+        self.assertNotEqual(sorted(paths[0].split(" L")[1:-1]), [])
+
+    def test_deployment_long_container_text_stays_inside(self) -> None:
+        long_group = "A very long service group name " * 4
+        objects = [component("A-1", "Alpha"), pattern({long_group.strip(): ["A-1"]})]
+        objects[-1]["serviceGroups"][0]["substrate"] = "FX-MISSING-SUBSTRATE-WITH-A-LONG-IDENTIFIER-0001"
+        objects[-1]["deploymentTarget"] = "t"
+        objects[-1]["serviceGroups"][0]["deploymentTarget"] = "a deployment target with a rather long recorded name " * 2
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        xml.dom.minidom.parseString(svg)
+        grp = re.search(r'<rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg)
+        gx, gy, gw, gh = (int(grp.group(i)) for i in range(1, 5))
+        texts = re.findall(r'<text class="(?:gl|gc)" x="(\d+)" y="(\d+)">([^<]*)</text>', svg)
+        self.assertGreater(len(texts), 3)
+        for x, y, text in texts:
+            self.assertLessEqual(int(x) + len(text) * generate_diagram.DEPLOY_CHAR_W, gx + gw)
+            self.assertLess(int(y), gy + gh)
+        joined = " ".join(t for _x, _y, t in texts)
+        self.assertIn("substrate not found:", joined)
+        self.assertIn("LONG-IDENTIFIER-0001", joined.replace(" ", ""))
+        tgt = re.search(r'<rect class="tgt" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg)
+        for x, _y, text in re.findall(r'<text class="tl" x="(\d+)" y="(\d+)">([^<]*)</text>', svg):
+            self.assertLessEqual(int(x) + len(text) * generate_diagram.DEPLOY_CHAR_W, int(tgt.group(1)) + int(tgt.group(3)))
+
+    def test_deployment_edge_tooltip_uses_names(self) -> None:
+        svg = self._small_pair([relationship("R-1", "A-1", "B-1", "calls")])
+        self.assertIn("<title>Alpha calls Beta</title>", svg)
+
+    def test_declared_zone_lane_precedes_zone_not_recorded(self) -> None:
+        objects = [component("A-1", "Alpha"), component("B-1", "Beta"), pattern({"G": ["A-1", "B-1"]})]
+        sdp = objects[-1]
+        sdp["networkZones"] = [{"id": "z1", "name": "Zone One", "tier": "frontend"}]
+        sdp["serviceGroups"][0]["deployableObjects"][1]["networkZone"] = "z1"
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        self.assertEqual(svg.count('<g class="group'), 1)
+        self.assertEqual(re.findall(r'<g class="zlane" data-zone="([^"]*)"', svg), ["z1", ""])
+        self.assertEqual(re.findall(r'class="zc"[^>]*>([^<]*)<', svg), ["Zone One (frontend)", "zone not recorded"])
 
     def test_outside_lane_in_deployment(self) -> None:
         catalog = load_catalog(FIXTURE)
