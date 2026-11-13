@@ -14,6 +14,7 @@
 ### Changed
 
 - `generate_diagram.py` default scope follows the one-hop rule described under Compatibility Impact. `--placed-only` keeps its meaning.
+- The diagram model reports derived tiers (a placed entry without `diagramTier`), outside-pattern captions, `ext:` external nodes for `externalTarget` relationships, and duplicate placements, and counts undrawn relationships under `--placed-only`. A `runs on` relationship derived from `runsOn` or `host` is never drawn or listed; a `runtimeSpec.dependencies` entry is drawn and listed as an inline dependency. A `serviceGroups` value that is not a list is reported as `error:` with exit code 1.
 
 ### Fixed
 

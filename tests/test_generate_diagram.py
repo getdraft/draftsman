@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import inspect
 import io
 import re
@@ -64,6 +65,33 @@ def svg_of(page: str) -> str:
     return match.group(0)
 
 
+ALLOWED_ONE_HOP = [
+    "product_component",
+    "data_component",
+    "data_store_service",
+    "runtime_service",
+    "network_service",
+    "ai_gateway",
+    "host",
+]
+FIXTURE_SDP = "FXSDP00001-0001"
+
+
+def plain(uid: str, obj_type: str, name: str, **extra: object) -> dict:
+    return {"schemaVersion": "1.0", "uid": uid, "type": obj_type, "name": name, **extra}
+
+
+def model_of(objects: list, placed_only: bool = False, selector=None) -> generate_diagram.Model:
+    with tempfile.TemporaryDirectory() as tmp:
+        _, model = generate_diagram.build(write_workspace(Path(tmp), objects), selector, placed_only=placed_only)
+    return model
+
+
+def fixture_model(placed_only: bool = False) -> generate_diagram.Model:
+    catalog = load_catalog(FIXTURE)
+    return generate_diagram.Model(catalog, catalog[FIXTURE_SDP], placed_only)
+
+
 class GenerateDiagramTests(unittest.TestCase):
     def test_example_workspace_renders_valid_self_contained_page(self) -> None:
         page, model = generate_diagram.build(EXAMPLES, "OpenStack IaaS Platform")
@@ -122,8 +150,9 @@ class GenerateDiagramTests(unittest.TestCase):
         self.assertIn("Linked Unplaced", svg)
         self.assertNotIn("Lonely Unplaced", svg)
         self.assertIn("Not placed in a service group", svg)
-        # Both unplaced components still appear in the inventory.
-        self.assertIn("Lonely Unplaced", page)
+        # One-hop scope (D2): an object with no relationship to a placed object is out of scope.
+        self.assertNotIn("Lonely Unplaced", page)
+        self.assertIn("Linked Unplaced", page)
         self.assertEqual(model.unplaced_drawn, ["U-1"])
 
     def test_placed_only_excludes_unplaced_components(self) -> None:
@@ -140,13 +169,16 @@ class GenerateDiagramTests(unittest.TestCase):
             page, model = generate_diagram.build(workspace, None, placed_only=True)
         self.assertEqual(model.relationships, [])
         self.assertNotIn("Linked Unplaced", page)
+        self.assertEqual(model.undrawn_relationship_count, 1)
 
     def test_unknown_reference_is_a_warning_not_a_node(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             workspace = write_workspace(Path(tmp), [component("A-1", "Alpha"), pattern({"Group": ["A-1", "MISSING-1"]})])
             _, model = generate_diagram.build(workspace, None)
-        self.assertEqual(len(model.warnings), 1)
-        self.assertIn("MISSING-1", model.warnings[0])
+        # The placed component also gets a derived tier warning (D4); only the unknown uid is checked here.
+        unknown = [w for w in model.warnings if "unknown uid" in w]
+        self.assertEqual(len(unknown), 1)
+        self.assertIn("MISSING-1", unknown[0])
 
     def test_text_is_escaped(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -261,6 +293,8 @@ class GenerateDiagramTests(unittest.TestCase):
             placed_only=True,
         )
         self.assertEqual(page.count('class="node"'), 1)
+        self.assertEqual(model.edges, [])
+        self.assertEqual(model.undrawn_relationship_count, 1)
 
     def test_cli_errors_and_output_handling(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -326,49 +360,182 @@ class LaterStoryTests(unittest.TestCase):
         self.assertIsInstance(page, str)
         self.assertIsInstance(model, generate_diagram.Model)
 
-    @unittest.skip("enabled in S3")
     def test_one_hop_scope(self) -> None:
-        self.fail("not implemented until S3")
+        model = fixture_model()
+        nodes = model.nodes_for_view("logical")
+        ids = {node.uid for node in nodes}
+        placed = set(model.placement)
+        self.assertTrue(placed <= ids)
+        # One hop: unplaced direct endpoints of placed objects are nodes.
+        self.assertIn("FXPRD00005-0001", ids)
+        self.assertIn("FXPRD00010-0001", ids)
+        # Two hops: reached only through the outside object FXPRD00010-0001, so not nodes.
+        self.assertNotIn("FXDST00002-0001", ids)
+        self.assertNotIn("FXHST00002-0001", ids)
+        for node in nodes:
+            if node.outside and not node.external:
+                self.assertTrue(
+                    any(
+                        (e.source in placed and e.target == node.uid) or (e.target in placed and e.source == node.uid)
+                        for e in model.edges
+                    ),
+                    node.uid,
+                )
 
-    @unittest.skip("enabled in S3")
     def test_one_hop_type_allow_list(self) -> None:
-        self.fail("not implemented until S3")
+        objects = [plain("P-1", "product_component", "Placed")]
+        for index, obj_type in enumerate(ALLOWED_ONE_HOP):
+            objects.append(plain(f"T-{index}", obj_type, f"Allowed {index}"))
+            objects.append(relationship(f"R-{index}", "P-1", f"T-{index}", "uses"))
+        objects.append(plain("X-1", "api_contract", "Not Allowed"))
+        objects.append(relationship("R-x", "P-1", "X-1", "documents"))
+        objects.append(pattern({"G": ["P-1"]}))
+        model = model_of(objects)
+        ids = {node.uid for node in model.nodes_for_view("logical")}
+        for index in range(len(ALLOWED_ONE_HOP)):
+            self.assertIn(f"T-{index}", ids)
+        self.assertNotIn("X-1", ids)
+        self.assertNotIn("R-x", {edge.uid for edge in model.edges})
+        self.assertEqual(len(model.edges), len(ALLOWED_ONE_HOP))
 
-    @unittest.skip("enabled in S3")
     def test_runs_on_does_not_extend_scope(self) -> None:
-        self.fail("not implemented until S3")
+        model = fixture_model()
+        ids = {node.uid for node in model.nodes_for_view("logical")}
+        # FXHST00001-0001 hosts a placed data store only through a derived runs on relationship.
+        self.assertNotIn("FXHST00001-0001", ids)
+        runs_on = [obj for obj in load_catalog(FIXTURE).values() if generate_diagram.is_runs_on(obj)]
+        self.assertTrue(runs_on)
+        edge_uids = {edge.uid for edge in model.edges}
+        row_uids = {row["uid"] for row in model.relationship_rows}
+        for rel in runs_on:
+            self.assertNotIn(rel["uid"], edge_uids)
+            self.assertNotIn(rel["uid"], row_uids)
+        inline = model_of(
+            [plain("A-1", "product_component", "Alpha", runsOn="H-1"), plain("H-1", "host", "Host"), pattern({"G": ["A-1"]})]
+        )
+        self.assertEqual({node.uid for node in inline.nodes_for_view("logical")}, {"A-1"})
+        self.assertEqual(inline.edges, [])
 
-    @unittest.skip("enabled in S3")
     def test_placed_only_restriction(self) -> None:
-        self.fail("not implemented until S3")
+        model = fixture_model(placed_only=True)
+        placed = set(model.placement)
+        nodes = model.nodes_for_view("logical")
+        self.assertTrue(all(node.placed for node in nodes))
+        self.assertFalse(any(node.external for node in nodes))
+        self.assertTrue(all(e.source in placed and e.target in placed for e in model.edges))
+        self.assertGreater(len(model.edges), 0)
 
-    @unittest.skip("enabled in S3")
     def test_undrawn_relationship_count(self) -> None:
-        self.fail("not implemented until S3")
+        catalog = load_catalog(FIXTURE)
+        placed = set(fixture_model().placement)
+        expected = 0
+        for obj in catalog.values():
+            if obj.get("type") != "relationship" or generate_diagram.is_runs_on(obj):
+                continue
+            source, target = obj.get("source") or "", obj.get("target") or ""
+            if (source in placed or target in placed) and not (source in placed and target in placed):
+                expected += 1
+        placed_only = fixture_model(placed_only=True)
+        self.assertEqual(placed_only.undrawn_relationship_count, expected)
+        # FXEDG00008 (external), FXEDG00009 and FXEDG00010 leave the placed set.
+        self.assertEqual(expected, 3)
+        self.assertEqual(fixture_model().undrawn_relationship_count, 0)
 
-    @unittest.skip("enabled in S3")
     def test_outside_lane_classification(self) -> None:
-        self.fail("not implemented until S3")
+        model = fixture_model()
+        nodes = {node.uid: node for node in model.nodes_for_view("logical")}
+        self.assertFalse(nodes["FXPRD00001-0001"].outside)
+        self.assertTrue(nodes["FXPRD00010-0001"].outside)
+        self.assertEqual(nodes["FXPRD00010-0001"].caption, "FX Registry Pattern")
+        self.assertEqual(nodes["FXPRD00005-0001"].caption, "not placed in any pattern")
+        self.assertEqual([n.caption for n in nodes.values() if n.external], ["external"])
+        objects = [
+            plain("P-1", "product_component", "Placed"),
+            plain("S-1", "product_component", "Shared"),
+            relationship("R-1", "P-1", "S-1", "uses"),
+            pattern({"G": ["P-1"]}),
+        ]
+        for uid, name in (("SDP-2", "Second Pattern"), ("SDP-3", "Third Pattern")):
+            other = pattern({"G": ["S-1"]})
+            other["uid"], other["name"] = uid, name
+            objects.append(other)
+        multi = model_of(objects, selector="Demo Pattern")
+        shared = {node.uid: node for node in multi.nodes_for_view("logical")}["S-1"]
+        self.assertEqual(shared.caption, "placed in 2 other patterns")
 
-    @unittest.skip("enabled in S3")
     def test_derived_tier_warning(self) -> None:
-        self.fail("not implemented until S3")
+        model = fixture_model()
+        tier_warnings = [w for w in model.warnings if w.startswith("derived tier:")]
+        self.assertEqual(tier_warnings, ["derived tier: FX Order Worker (FXPRD00003-0001) -> application"])
+        nodes = {node.uid: node for node in model.nodes_for_view("logical")}
+        self.assertTrue(nodes["FXPRD00003-0001"].derived)
+        self.assertEqual(nodes["FXPRD00003-0001"].band, "application")
+        self.assertEqual([n.uid for n in nodes.values() if n.derived], ["FXPRD00003-0001"])
+        # FXPRD00005-0001 is an unplaced endpoint without a tier: no warning.
+        self.assertFalse(any("FXPRD00005-0001" in w for w in model.warnings))
 
-    @unittest.skip("enabled in S3")
     def test_external_nodes(self) -> None:
-        self.fail("not implemented until S3")
+        model = fixture_model()
+        expected = "ext:" + hashlib.sha256("FX Payment Provider".encode("utf-8")).hexdigest()[:12]
+        external = [node for node in model.nodes_for_view("logical") if node.external]
+        self.assertEqual([node.uid for node in external], [expected])
+        self.assertEqual(external[0].caption, "external")
+        self.assertTrue(external[0].outside)
+        self.assertTrue(any(e.source == "FXPRD00002-0001" and e.target == expected for e in model.edges))
+        # Surrounding and repeated whitespace is trimmed and collapsed before hashing (D3).
+        objects = [
+            plain("A-1", "product_component", "Alpha"),
+            plain("R-1", "relationship", "R-1", source="A-1", externalTarget="  Payments   API  ", label="calls"),
+            plain("R-2", "relationship", "R-2", source="A-1", externalTarget="Payments API", label="calls"),
+            pattern({"G": ["A-1"]}),
+        ]
+        ext = [node for node in model_of(objects).nodes_for_view("logical") if node.external]
+        self.assertEqual(len(ext), 1)
+        self.assertRegex(ext[0].uid, r"^ext:[0-9a-f]{12}$")
+        self.assertEqual(ext[0].uid, "ext:" + hashlib.sha256(b"Payments API").hexdigest()[:12])
+        self.assertEqual(ext[0].caption, "external")
+        self.assertEqual(model_of(objects, placed_only=True).undrawn_relationship_count, 2)
 
-    @unittest.skip("enabled in S3")
     def test_duplicate_placement(self) -> None:
-        self.fail("not implemented until S3")
+        model = fixture_model()
+        duplicates = [w for w in model.warnings if w.startswith("duplicate placement:")]
+        self.assertEqual(
+            duplicates,
+            ["duplicate placement: FX Order Worker (FXPRD00003-0001) first placed in Application; also listed in Batch"],
+        )
+        drawn = [node for node in model.nodes_for_view("logical") if node.uid == "FXPRD00003-0001"]
+        self.assertEqual(len(drawn), 1)
+        self.assertEqual(model.placement["FXPRD00003-0001"]["group"], "Application")
+        same_group = model_of([plain("A-1", "product_component", "Alpha"), pattern({"G": ["A-1", "A-1"]})])
+        self.assertIn("duplicate placement: Alpha (A-1) first placed in G; also listed in G", same_group.warnings)
+        self.assertEqual(len(same_group.nodes_for_view("logical")), 1)
 
-    @unittest.skip("enabled in S3")
     def test_derived_relationships(self) -> None:
-        self.fail("not implemented until S3")
+        model = fixture_model()
+        rows = {row["label"]: row for row in model.relationship_rows}
+        self.assertEqual(rows["reads cached sessions"]["source"], "inline dependency")
+        self.assertEqual(rows["places orders"]["source"], "relationship object")
+        self.assertNotIn("runs on", rows)
+        dependencies = [edge for edge in model.edges if edge.origin == "inline dependency"]
+        self.assertEqual([(e.source, e.target) for e in dependencies], [("FXPRD00002-0001", "FXDCP00001-0001")])
+        self.assertTrue(dependencies[0].derived)
+        self.assertIn("FXDCP00001-0001", model.scope)
 
-    @unittest.skip("enabled in S3")
     def test_malformed_service_groups_model(self) -> None:
-        self.fail("not implemented until S3")
+        catalog = load_catalog(FIXTURE)
+        malformed = dict(catalog[FIXTURE_SDP], serviceGroups="Edge")
+        with self.assertRaises(ValueError) as raised:
+            generate_diagram.Model(catalog, malformed, False)
+        self.assertEqual(str(raised.exception), "serviceGroups must be a list")
+        sdp = pattern({"G": []})
+        sdp["serviceGroups"] = "not a list"
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = write_workspace(Path(tmp), [sdp])
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+                code = generate_diagram.main(["--workspace", str(workspace)])
+        self.assertEqual(code, 1)
+        self.assertTrue(err.getvalue().startswith("error: serviceGroups must be a list"))
 
     @unittest.skip("enabled in S4")
     def test_container_caption_variants(self) -> None:
