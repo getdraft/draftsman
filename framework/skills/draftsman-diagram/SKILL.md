@@ -59,7 +59,7 @@ The generator prints a `N warnings` count line, then each distinct warning once 
 - `conflict: <component> runsOn <X>; group substrate is <Y>`: a recorded disagreement (see Recorded conflicts).
 - `substrate also listed as deployable object`, `unknown substrate uid`, `substrate ... has type ...`: the service group's substrate is recorded inconsistently.
 - `duplicate placement: <name> (<uid>) first placed in <A>; also listed in <B>`: the object is placed in more than one group; the first placement is shown.
-- `undeclared network zone: <id> in <group>`, `unknown flow '<value>' on <uid>`: a value the schema does not expect; the edge is drawn as if the value were absent.
+- `undeclared network zone: <id> in <group>`: the entry names a zone the pattern does not declare; the object is drawn in the `zone not recorded` lane. `unknown flow '<value>' on <uid>`: the edge is drawn as if `flow` were absent.
 
 ## Delivering the page
 
