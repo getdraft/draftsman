@@ -1065,7 +1065,7 @@ class LaterStoryTests(unittest.TestCase):
         model = generate_diagram.build_diagram_model(catalog, catalog[FIXTURE_SDP], False)
         svg = deployment_svg(catalog, FIXTURE_SDP)
         captions = re.findall(r'class="gc"[^>]*>([^<]*)<', svg)
-        self.assertEqual(captions, [xml_unescape(c.caption) for c in model.containers if c.members])
+        self.assertEqual(captions, [xml_unescape(c.caption) for c in model.containers if c.drawn])
         self.assertIn("substrate not recorded", captions)
         objects = [
             plain("RTC-1", "runtime_service", "Cluster"),
@@ -1206,9 +1206,9 @@ class LaterStoryTests(unittest.TestCase):
                         horizontals.append((ay, min(ax, bx), max(ax, bx), number))
             for i, (y, x0, x1, n1) in enumerate(horizontals):
                 for y2, a0, a1, n2 in horizontals[i + 1 :]:
-                    if y == y2 and n1 != n2:
+                    if abs(y - y2) < generate_diagram.DEPLOY_LEVEL and n1 != n2:
                         gap = max(a0 - x1, x0 - a1)
-                        self.assertGreaterEqual(gap, generate_diagram.DEPLOY_LEVEL, f"runs of two edges {gap}px apart on y={y}")
+                        self.assertGreaterEqual(gap, generate_diagram.DEPLOY_LEVEL, f"runs of two edges {gap}px apart on y={y} and y={y2}")
             horizontals = [(y, x0, x1) for y, x0, x1, _n in horizontals]
             lanes = [tuple(int(v) for v in m) for m in re.findall(r'<rect class="zl" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg)]
             captions = [int(y) for y in re.findall(r'<text class="zc" x="\d+" y="(\d+)"', svg)]
@@ -1414,6 +1414,81 @@ class LaterStoryTests(unittest.TestCase):
         svg = deployment_svg(cat, "SDP-1")
         self.assertEqual(re.findall(r'<g class="target" data-target="([^"]*)"', svg), ["later-in-the-alphabet", "azure"])
 
+    def test_two_left_border_ends_on_one_container_take_separate_verticals(self) -> None:
+        # Edges between a container and boxes drawn inside it leave through its left border when the box sits
+        # in the first column; each such end needs its own vertical outside the border.
+        objects = [plain("RTC-1", "runtime_service", "Cluster")] + [component(f"P-{k}", f"Part {k}") for k in range(6)]
+        objects.append(pattern({"G": [f"P-{k}" for k in range(6)]}))
+        objects[-1]["serviceGroups"][0]["substrate"] = "RTC-1"
+        objects += [relationship("R-1", "P-0", "RTC-1", "deploys to"), relationship("R-2", "RTC-1", "P-3", "hosts"), relationship("R-3", "P-3", "RTC-1", "reports to")]
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        xml.dom.minidom.parseString(svg)
+        self.assertEqual(len(edge_polylines(svg)), 3)
+        group = re.search(r'<rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg)
+        gx, gy, gw, gh = (int(group.group(i)) for i in range(1, 5))
+        tgt = re.search(r'<rect class="tgt" x="(\d+)"', svg)
+        lefts = [pts for _s, _t, pts in edge_polylines(svg) if any(abs(px - gx) < 0.11 and gy < py < gy + gh for px, py in pts)]
+        self.assertGreaterEqual(len(lefts), 2, "the fixture must exercise two left-border ends")
+        for pts in lefts:
+            for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+                if ax == bx and ax < gx:
+                    self.assertGreaterEqual(gx - ax, generate_diagram.DEPLOY_BORDER_CLEAR)
+                    self.assertGreaterEqual(ax - int(tgt.group(1)), generate_diagram.DEPLOY_BORDER_CLEAR)
+        self._assert_runs_clean(svg)
+        self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+        self.assertTrue(all(int(x) % generate_diagram.GRID == 0 and int(y) % generate_diagram.GRID == 0 for x, y, _w, _h in node_rects(svg).values()))
+
+    def test_deployment_boxes_sit_on_the_grid(self) -> None:
+        # D14: positions snapped to a fixed grid, in the deployment view as well.
+        catalog = load_catalog(FIXTURE)
+        for sdp in generate_diagram.sdps(catalog):
+            for uid, (x, y, _w, _h) in node_rects(deployment_svg(catalog, sdp["uid"])).items():
+                self.assertEqual((x % generate_diagram.GRID, y % generate_diagram.GRID), (0, 0), (sdp["uid"], uid, x, y))
+
+    def _seeded_objects(self, seed: int) -> list:
+        """A random but reproducible pattern: shared substrates, substrates listed in their own group, boxes in every
+        column with edges to their own container, loops, parallel edges, outside and external endpoints."""
+        import random
+
+        rnd = random.Random(seed)
+        runtimes = [plain(f"RT-{k}", "runtime_service", f"Runtime {k}") for k in range(3)]
+        comps = [component(f"C-{k}", f"Comp {k}") for k in range(rnd.randint(6, 14))]
+        groups: dict = {}
+        pool = [c["uid"] for c in comps]
+        rnd.shuffle(pool)
+        for g in range(rnd.randint(2, 4)):
+            take = pool[: rnd.randint(0, 4)]
+            pool = pool[len(take) :]
+            groups[f"G{g}"] = take
+        sdp = pattern(groups)
+        for g, entry in enumerate(sdp["serviceGroups"]):
+            entry["deploymentTarget"] = rnd.choice(["azure", "aws"])
+            if rnd.random() < 0.8:
+                entry["substrate"] = f"RT-{rnd.randrange(3)}"
+                if rnd.random() < 0.3:
+                    entry["deployableObjects"].append({"ref": entry["substrate"]})
+        uids = [c["uid"] for c in comps] + [r["uid"] for r in runtimes]
+        rels = []
+        for k in range(rnd.randint(8, 24)):
+            a, b = rnd.choice(uids), rnd.choice(uids)
+            rels.append(relationship(f"R-{k}", a, b, f"rel {k}"))
+        if rnd.random() < 0.5:
+            rels.append({"schemaVersion": "1.0", "uid": "R-X", "type": "relationship", "name": "R-X", "source": uids[0], "externalTarget": "Outside Service", "label": "calls"})
+        return runtimes + comps + [sdp] + rels
+
+    def test_seeded_patterns_route_cleanly(self) -> None:
+        for seed in range(1, 25):
+            with self.subTest(seed=seed):
+                cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), self._seeded_objects(seed)))
+                svg = deployment_svg(cat, "SDP-1")
+                xml.dom.minidom.parseString(svg)
+                self._assert_runs_clean(svg)
+                self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+                for uid, (x, y, _w, _h) in node_rects(svg).items():
+                    self.assertEqual((x % generate_diagram.GRID, y % generate_diagram.GRID), (0, 0), (uid, x, y))
+                self.assertEqual(svg, deployment_svg(dict(reversed(list(cat.items()))), "SDP-1"))
+
     def test_edge_runs_stay_in_free_bands_and_channels(self) -> None:
         """Comb routing: vertical runs are stubs inside a lane or channels right of every target and left of the
         outside lane; horizontal runs never cross a target, group or lane caption area."""
@@ -1446,7 +1521,7 @@ class LaterStoryTests(unittest.TestCase):
                             self.assertFalse(min(ax, bx) < x1 and x0 < max(ax, bx) and y0 <= ay <= y1, f"run at y={ay} crosses a caption area")
 
     def _assert_runs_clean(self, svg: str) -> None:
-        """No two vertical runs collinear with overlapping y; same-level horizontal runs at least DEPLOY_LEVEL apart."""
+        """No two vertical runs collinear with overlapping y; horizontal runs within DEPLOY_LEVEL in y are DEPLOY_LEVEL apart in x."""
         verticals, horizontals = [], []
         for number, (_s, _t, pts) in enumerate(edge_polylines(svg)):
             for (ax, ay), (bx, by) in zip(pts, pts[1:]):
@@ -1460,8 +1535,8 @@ class LaterStoryTests(unittest.TestCase):
                     self.assertFalse(x == x2 and y0 < a1 and a0 < y1, f"collinear vertical runs at x={x}")
         for i, (y, x0, x1, n1) in enumerate(horizontals):
             for y2, a0, a1, n2 in horizontals[i + 1 :]:
-                if n1 != n2 and y == y2:
-                    self.assertGreaterEqual(max(a0 - x1, x0 - a1), generate_diagram.DEPLOY_LEVEL, f"horizontal runs too close at y={y}")
+                if n1 != n2 and abs(y - y2) < generate_diagram.DEPLOY_LEVEL:
+                    self.assertGreaterEqual(max(a0 - x1, x0 - a1), generate_diagram.DEPLOY_LEVEL, f"horizontal runs too close at y={y} and y={y2}")
 
     def test_hub_with_many_inbound_edges_has_clean_runs(self) -> None:
         names = [f"P-{k:02d}" for k in range(20)]

@@ -1407,7 +1407,7 @@ def _route_deployment_edges(
     bands: list,
     loops: dict,
     stack_right: int,
-) -> tuple[dict, int]:
+) -> tuple[dict, int, dict]:
     """Comb routing (D15, deterministic): every edge runs out of the stack to a vertical channel on its right.
 
     A box end leaves through its top or bottom side (whichever faces the other endpoint) at its own x, runs
@@ -1419,7 +1419,8 @@ def _route_deployment_edges(
     group and target borders first. Within a band, ends are levelled so that a run never crosses another
     end's stub. Everything is keyed on edge document order and geometry; nothing else.
 
-    Returns the polyline per edge index and the number of channels used.
+    Returns the polyline per edge index, the number of channels used, and the number of left-border ends per
+    container (the layout widens the target's left padding to hold their verticals).
     """
     centre = {uid: (x + w / 2, y + h / 2) for uid, (x, y, w, h) in rects.items()}
     ends: dict[tuple[int, str], _End] = {}
@@ -1430,22 +1431,31 @@ def _route_deployment_edges(
             if uid in containers:
                 x, y, w, h = rects[uid]
                 attach[(i, uid)] = border_point(centre[uid], centre[other], w, h)
-    shared: dict[tuple[str, float, float], list[int]] = {}
-    for (i, uid), (px, py) in attach.items():
-        shared.setdefault((uid, round(px, 3), round(py, 3)), []).append(i)
-    for (uid, px, py), edge_ids in sorted(shared.items(), key=lambda kv: (kv[0][0], kv[0][1], kv[0][2])):
-        if len(edge_ids) < 2:
+    # Ends on one border of one container are pushed DEPLOY_SPREAD apart along that border (edge order breaks
+    # ties); a lone end keeps its exact border_point, and a cluster slides back as a whole when it meets a corner.
+    on_border: dict[tuple[str, str], list[tuple[float, int]]] = {}
+    for (i, uid), (px, py) in sorted(attach.items()):
+        x, y, w, h = rects[uid]
+        if abs(py - y) < 1e-6 or abs(py - (y + h)) < 1e-6:
+            on_border.setdefault((uid, "top" if abs(py - y) < 1e-6 else "bottom"), []).append((px, i))
+        else:
+            on_border.setdefault((uid, "left" if abs(px - x) < 1e-6 else "right"), []).append((py, i))
+    for (uid, border), items in sorted(on_border.items()):
+        if len(items) < 2:
             continue
         x, y, w, h = rects[uid]
-        horizontal = abs(py - y) < 1e-6 or abs(py - (y + h)) < 1e-6
-        for rank, i in enumerate(sorted(edge_ids)):
-            shift = (rank - (len(edge_ids) - 1) / 2) * DEPLOY_SPREAD
-            if horizontal:
-                attach[(i, uid)] = (min(max(px + shift, x + 4), x + w - 4), py)
-            else:
-                attach[(i, uid)] = (px, min(max(py + shift, y + 4), y + h - 4))
+        low, high = (x + 4, x + w - 4) if border in ("top", "bottom") else (y + 4, y + h - 4)
+        items.sort()
+        placed = [items[0][0]]
+        for value, _i in items[1:]:
+            placed.append(max(value, placed[-1] + DEPLOY_SPREAD))
+        placed = [max(low, v - max(0, placed[-1] - high)) for v in placed]
+        for (_value, i), v in zip(items, placed):
+            px, py = attach[(i, uid)]
+            attach[(i, uid)] = (v, py) if border in ("top", "bottom") else (px, v)
     # Box ends: the side facing the other endpoint; stub x by the other endpoint's x so stubs never cross.
     slots: dict[tuple[str, str], list[tuple[float, str, int]]] = {}
+    left_ends: dict[str, list[tuple[int, float, int]]] = {}  # container uid -> (band order, border y, edge index)
     for i, e in drawn:
         for uid, other in ((e.source, e.target), (e.target, e.source)):
             if uid in containers:
@@ -1460,10 +1470,18 @@ def _route_deployment_edges(
                 else:
                     side = "top" if centre[other][1] < centre[uid][1] else "bottom"
                     ends[(i, uid)] = _End(uid, side, px, py, pools[uid][side], step_x=x - DEPLOY_SIDE_STEP)
+                    left_ends.setdefault(uid, []).append((0 if side == "top" else 1, py if side == "top" else -py, i))
             else:
                 side = "top" if centre[other][1] <= centre[uid][1] else "bottom"
                 slots.setdefault((uid, side), []).append((centre[other][0], other, i))
                 ends[(i, uid)] = _End(uid, side, 0, 0, pools[uid][side])
+    # Left-border ends of one container each take their own vertical: the end nearest its band is innermost,
+    # so a run out to a farther vertical never crosses an inner end's vertical.
+    for uid, items in left_ends.items():
+        items.sort()
+        for rank, (_order, _py, i) in enumerate(items):
+            ends[(i, uid)].step_x = rects[uid][0] - DEPLOY_SIDE_STEP - DEPLOY_LEVEL * rank
+    left_counts = {uid: len(items) for uid, items in left_ends.items()}
     for (uid, side), items in slots.items():
         items.sort()
         x, y, w, h = rects[uid]
@@ -1497,16 +1515,17 @@ def _route_deployment_edges(
             chan_of[i] = len(channels) - 1
     chan_x = {i: stack_right + DEPLOY_CHANNEL_PAD + DEPLOY_CHANNEL_STEP * k for i, k in chan_of.items()}
     # Levels. Right-border runs are fixed by geometry and go first; band levels then avoid them, and the
-    # outside lane's bands avoid the stack's, so two runs on one y are always DEPLOY_LEVEL apart.
-    taken: dict[float, list[tuple[float, float]]] = {}
+    # outside lane's bands avoid the stack's, so two runs within DEPLOY_LEVEL in y are always apart in x.
+    taken: list[tuple[float, float, float]] = []  # (y, x0, x1) of every horizontal run so far
 
     def clear(y: float, x0: float, x1: float) -> bool:
-        return all(x1 + DEPLOY_LEVEL <= a or b + DEPLOY_LEVEL <= x0 for a, b in taken.get(y, []))
+        """No run closer than DEPLOY_LEVEL in y overlaps x0..x1 within DEPLOY_LEVEL."""
+        return all(abs(y - ty) >= DEPLOY_LEVEL or x1 + DEPLOY_LEVEL <= a or b + DEPLOY_LEVEL <= x0 for ty, a, b in taken)
 
     for (i, uid), end in sorted(ends.items()):
         if end.side == "right":
             end.level = end.y
-            taken.setdefault(end.y, []).append((end.x, chan_x[i]))
+            taken.append((end.y, end.x, chan_x[i]))
         else:
             pool = end.band.lower if end.side == "top" else end.band.upper
             pool.append((end.x, i, uid))
@@ -1530,7 +1549,7 @@ def _route_deployment_edges(
                     if clear(level, x0, x1):
                         break
                 end.level = level
-                taken.setdefault(level, []).append((x0, x1))
+                taken.append((level, x0, x1))
     routes: dict[int, list[tuple[float, float]]] = {}
     for i, e in drawn:
         cx = chan_x[i]
@@ -1548,7 +1567,7 @@ def _route_deployment_edges(
             if not pts or pts[-1] != point:
                 pts.append(point)
         routes[i] = pts
-    return routes, len(channels)
+    return routes, len(channels), left_counts
 
 
 def render_deployment_svg(model: DiagramModel) -> str:
@@ -1582,175 +1601,191 @@ def render_deployment_svg(model: DiagramModel) -> str:
 
     loop_room = (LOOP_REACH + LOOP_STEP * (most_loops - 1) + 4 - DEPLOY_PAD) if most_loops else 0
     col_gap = max(DEPLOY_COL_GAP, LOOP_REACH + LOOP_STEP * (most_loops - 1) + 10) if most_loops else DEPLOY_COL_GAP
+    col_gap = -(-col_gap // GRID) * GRID  # D14: box x on the grid
     step_x = LOGICAL_BOX_W + col_gap
     lane_sizes = [len(lane.members) for _t, groups in outline for g in groups for lane in g.lanes]
     used = min(DEPLOY_COLUMNS, max(lane_sizes, default=1))
     inner_w = used * LOGICAL_BOX_W + (used - 1) * col_gap
     lane_w = inner_w + 2 * DEPLOY_PAD + loop_room
     group_w = lane_w + 2 * DEPLOY_PAD
-    target_w = group_w + 2 * DEPLOY_PAD
 
-    bands: list[_Band] = []
-    rects: dict[str, tuple[int, int, int, int]] = {}  # uid -> x, y, w, h of a box or the first container with that uid
-    pools: dict[str, dict[str, _Band]] = {}
-    names: dict[str, str] = {n.uid: n.name for n in model.deployment_nodes}
-    pos: dict[str, tuple[int, int]] = {}
-    body: list[str] = []
+    def build_stack(left_room: int) -> tuple:
+        """Lay out the stack and the outside lane's rows. left_room widens the targets' left padding (D14 grid) so
+        every left-border container end has its own vertical (see _route_deployment_edges)."""
+        target_w = group_w + 2 * DEPLOY_PAD + left_room
+        bands: list[_Band] = []
+        rects: dict[str, tuple[int, int, int, int]] = {}  # uid -> x, y, w, h of a box or the first container with that uid
+        pools: dict[str, dict[str, _Band]] = {}
+        names: dict[str, str] = {n.uid: n.name for n in model.deployment_nodes}
+        pos: dict[str, tuple[int, int]] = {}
+        body: list[str] = []
 
-    def band_at(lo: int, cap: int, rise_px: int, rightward: bool = True) -> _Band:
-        band = _Band(lo=lo, hi=lo + _band_height(cap, rise_px), rise=rise_px, rightward=rightward)
-        bands.append(band)
-        return band
+        def band_at(lo: int, cap: int, rise_px: int, rightward: bool = True) -> _Band:
+            hi = -(-(lo + _band_height(cap, rise_px)) // GRID) * GRID  # D14: the row below starts on the grid
+            band = _Band(lo=lo, hi=hi, rise=rise_px, rightward=rightward)
+            bands.append(band)
+            return band
 
-    def rows_of(members: list) -> list[list[str]]:
-        return [members[r : r + DEPLOY_COLUMNS] for r in range(0, len(members), DEPLOY_COLUMNS)]
+        def rows_of(members: list) -> list[list[str]]:
+            return [members[r : r + DEPLOY_COLUMNS] for r in range(0, len(members), DEPLOY_COLUMNS)]
 
-    y = LOGICAL_MARGIN
-    for target, groups in outline:
-        tx = LOGICAL_MARGIN
-        label = clean(target) or "deployment target not recorded"
-        t_lines = _wrap_to(label, target_w)
-        ty = y
-        cursor = y + DEPLOY_TARGET_HEAD + DEPLOY_LINE_H * (len(t_lines) - 1)
-        # Geometry first (band heights depend only on edge counts), then the SVG text in nesting order.
-        group_boxes: list[str] = []
-        for g_index, g in enumerate(groups):
-            prev_uid = groups[g_index - 1].uid if g_index else ""
-            band = band_at(cursor, inc([prev_uid, g.uid]), 0)
-            if prev_uid and prev_uid in pools and "bottom" not in pools[prev_uid]:
-                pools[prev_uid]["bottom"] = band
-            gy = band.hi
-            n_lines = _wrap_to(g.group, group_w)
-            c_lines = _wrap_to(g.caption, group_w)
-            g_head = 18 + DEPLOY_LINE_H * (len(n_lines) - 1) + 20 + DEPLOY_LINE_H * (len(c_lines) - 1) + 12
-            gx = tx + DEPLOY_PAD
-            first_time = bool(g.uid) and g.uid not in rects
-            if first_time:
-                pools[g.uid] = {"top": band}
-                names[g.uid] = g.name or g.caption
-            lane_svgs: list[str] = []
-            ly = gy + g_head
-            for lane in g.lanes:
-                lx = gx + DEPLOY_PAD
-                z_lines = _wrap_to(f"{lane.name} ({lane.tier})" if lane.tier else lane.name, lane_w)
-                caption_end = DEPLOY_LANE_HEAD + DEPLOY_LINE_H * (len(z_lines) - 1)
-                rows = rows_of(lane.members)
-                cursor2 = ly + caption_end
-                node_svgs: list[str] = []
-                prev_row: list[str] = []
-                for row in rows:
-                    above = band_at(cursor2, inc(prev_row + row), rise(row))
+        y = LOGICAL_MARGIN
+        for target, groups in outline:
+            tx = LOGICAL_MARGIN
+            label = clean(target) or "deployment target not recorded"
+            t_lines = _wrap_to(label, target_w)
+            ty = y
+            cursor = y + DEPLOY_TARGET_HEAD + DEPLOY_LINE_H * (len(t_lines) - 1)
+            # Geometry first (band heights depend only on edge counts), then the SVG text in nesting order.
+            group_boxes: list[str] = []
+            for g_index, g in enumerate(groups):
+                prev_uid = groups[g_index - 1].uid if g_index else ""
+                band = band_at(cursor, inc([prev_uid, g.uid]), 0)
+                if prev_uid and prev_uid in pools and "bottom" not in pools[prev_uid]:
+                    pools[prev_uid]["bottom"] = band
+                gy = band.hi
+                n_lines = _wrap_to(g.group, group_w)
+                c_lines = _wrap_to(g.caption, group_w)
+                g_head = 18 + DEPLOY_LINE_H * (len(n_lines) - 1) + 20 + DEPLOY_LINE_H * (len(c_lines) - 1) + 12
+                gx = tx + DEPLOY_PAD + left_room
+                first_time = bool(g.uid) and g.uid not in rects
+                if first_time:
+                    pools[g.uid] = {"top": band}
+                    names[g.uid] = g.name or g.caption
+                lane_svgs: list[str] = []
+                ly = gy + g_head
+                for lane in g.lanes:
+                    lx = gx + DEPLOY_PAD
+                    z_lines = _wrap_to(f"{lane.name} ({lane.tier})" if lane.tier else lane.name, lane_w)
+                    caption_end = DEPLOY_LANE_HEAD + DEPLOY_LINE_H * (len(z_lines) - 1)
+                    rows = rows_of(lane.members)
+                    cursor2 = ly + caption_end
+                    node_svgs: list[str] = []
+                    prev_row: list[str] = []
+                    for row in rows:
+                        above = band_at(cursor2, inc(prev_row + row), rise(row))
+                        for uid in prev_row:
+                            if uid in pools and "bottom" not in pools[uid]:
+                                pools[uid]["bottom"] = above
+                        row_top = above.hi
+                        for col, uid in enumerate(row):
+                            bx = lx + DEPLOY_PAD + col * step_x
+                            if uid in by_uid and uid not in pos:
+                                pos[uid] = (bx, row_top)
+                                rects[uid] = (bx, row_top, LOGICAL_BOX_W, LOGICAL_BOX_H)
+                                pools[uid] = {"top": above}
+                                node_svgs.append(_node_svg(by_uid[uid], bx, row_top))
+                        cursor2 = row_top + LOGICAL_BOX_H
+                        prev_row = row
+                    below = band_at(cursor2, inc(prev_row), 0)
                     for uid in prev_row:
                         if uid in pools and "bottom" not in pools[uid]:
-                            pools[uid]["bottom"] = above
-                    row_top = above.hi
-                    for col, uid in enumerate(row):
-                        bx = lx + DEPLOY_PAD + col * step_x
-                        if uid in by_uid and uid not in pos:
-                            pos[uid] = (bx, row_top)
-                            rects[uid] = (bx, row_top, LOGICAL_BOX_W, LOGICAL_BOX_H)
-                            pools[uid] = {"top": above}
-                            node_svgs.append(_node_svg(by_uid[uid], bx, row_top))
-                    cursor2 = row_top + LOGICAL_BOX_H
-                    prev_row = row
-                below = band_at(cursor2, inc(prev_row), 0)
-                for uid in prev_row:
-                    if uid in pools and "bottom" not in pools[uid]:
-                        pools[uid]["bottom"] = below
-                lane_h = below.hi - ly
-                ztext = "".join(
-                    f'<text class="zc" x="{lx + 10}" y="{ly + 19 + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(z_lines)
+                            pools[uid]["bottom"] = below
+                    lane_h = below.hi - ly
+                    ztext = "".join(
+                        f'<text class="zc" x="{lx + 10}" y="{ly + 19 + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(z_lines)
+                    )
+                    lane_svgs.append(
+                        f'<g class="zlane" data-zone="{xml_text(lane.zone)}">'
+                        f'<rect class="zl" x="{lx}" y="{ly}" width="{lane_w}" height="{lane_h}" rx="5"/>{ztext}'
+                        + "".join("\n" + node for node in node_svgs)
+                        + "\n</g>"
+                    )
+                    ly += lane_h + DEPLOY_PAD
+                group_h = (ly if g.lanes else ly + DEPLOY_PAD) - gy
+                if first_time:
+                    rects[g.uid] = (gx, gy, group_w, group_h)
+                cap_y = gy + 18 + DEPLOY_LINE_H * (len(n_lines) - 1) + 20
+                texts = "".join(
+                    f'<text class="gl" x="{gx + 10}" y="{gy + 18 + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(n_lines)
+                ) + "".join(
+                    f'<text class="gc" x="{gx + 10}" y="{cap_y + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(c_lines)
                 )
-                lane_svgs.append(
-                    f'<g class="zlane" data-zone="{xml_text(lane.zone)}">'
-                    f'<rect class="zl" x="{lx}" y="{ly}" width="{lane_w}" height="{lane_h}" rx="5"/>{ztext}'
-                    + "".join("\n" + node for node in node_svgs)
+                ident = f' data-id="{xml_text(g.uid)}"' if g.uid else ""
+                cls = "group" + (" dashed" if g.derived else "")
+                group_boxes.append(
+                    f'<g class="{cls}"{ident} data-group="{xml_text(g.group)}"><title>{xml_text(g.group)}</title>'
+                    f'<rect class="grp" x="{gx}" y="{gy}" width="{group_w}" height="{group_h}" rx="6"/>{texts}'
+                    + "".join("\n" + lane for lane in lane_svgs)
                     + "\n</g>"
                 )
-                ly += lane_h + DEPLOY_PAD
-            group_h = (ly if g.lanes else ly + DEPLOY_PAD) - gy
-            if first_time:
-                rects[g.uid] = (gx, gy, group_w, group_h)
-            cap_y = gy + 18 + DEPLOY_LINE_H * (len(n_lines) - 1) + 20
-            texts = "".join(
-                f'<text class="gl" x="{gx + 10}" y="{gy + 18 + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(n_lines)
-            ) + "".join(
-                f'<text class="gc" x="{gx + 10}" y="{cap_y + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(c_lines)
+                cursor = gy + group_h
+            last_uid = groups[-1].uid
+            tail_band = band_at(cursor, inc([last_uid]), 0)
+            if last_uid and last_uid in pools and "bottom" not in pools[last_uid]:
+                pools[last_uid]["bottom"] = tail_band
+            target_h = tail_band.hi - ty
+            text = "".join(
+                f'<text class="tl" x="{tx + 10}" y="{ty + 20 + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(t_lines)
             )
-            ident = f' data-id="{xml_text(g.uid)}"' if g.uid else ""
-            cls = "group" + (" dashed" if g.derived else "")
-            group_boxes.append(
-                f'<g class="{cls}"{ident} data-group="{xml_text(g.group)}"><title>{xml_text(g.group)}</title>'
-                f'<rect class="grp" x="{gx}" y="{gy}" width="{group_w}" height="{group_h}" rx="6"/>{texts}'
-                + "".join("\n" + lane for lane in lane_svgs)
+            body.append(
+                f'<g class="target" data-target="{xml_text(clean(target))}">'
+                f'<rect class="tgt" x="{tx}" y="{ty}" width="{target_w}" height="{target_h}" rx="8"/>{text}'
+                + "".join("\n" + group for group in group_boxes)
                 + "\n</g>"
             )
-            cursor = gy + group_h
-        last_uid = groups[-1].uid
-        tail_band = band_at(cursor, inc([last_uid]), 0)
-        if last_uid and last_uid in pools and "bottom" not in pools[last_uid]:
-            pools[last_uid]["bottom"] = tail_band
-        target_h = tail_band.hi - ty
-        text = "".join(
-            f'<text class="tl" x="{tx + 10}" y="{ty + 20 + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(t_lines)
-        )
-        body.append(
-            f'<g class="target" data-target="{xml_text(clean(target))}">'
-            f'<rect class="tgt" x="{tx}" y="{ty}" width="{target_w}" height="{target_h}" rx="8"/>{text}'
-            + "".join("\n" + group for group in group_boxes)
-            + "\n</g>"
-        )
-        y = ty + target_h + DEPLOY_TARGET_GAP
-    stack_bottom = y - DEPLOY_TARGET_GAP if outline else LOGICAL_MARGIN
-    stack_right = LOGICAL_MARGIN + target_w if outline else LOGICAL_MARGIN
-    # The outside lane (D5): boxes in a single column at the right, ordered as in the logical view; their y
-    # positions do not depend on the lane's x, which waits for the channel count.
-    outer = [n for n in model.deployment_nodes if n.outside]
-    lane_rows: list[tuple[DiagramNode, int]] = []
-    lane_top = LOGICAL_MARGIN
-    lane_h = 0
-    if outer:
-        centre_y = {uid: r[1] + r[3] / 2 for uid, r in rects.items()}
-        near: dict[str, list[float]] = {n.uid: [] for n in outer}
-        for _i, e in drawn:
-            for lane_uid, other in ((e.source, e.target), (e.target, e.source)):
-                if lane_uid in near and other in centre_y:
-                    near[lane_uid].append(centre_y[other])
+            y = ty + target_h + DEPLOY_TARGET_GAP
+        stack_bottom = y - DEPLOY_TARGET_GAP if outline else LOGICAL_MARGIN
+        stack_right = LOGICAL_MARGIN + target_w if outline else LOGICAL_MARGIN
+        # The outside lane (D5): boxes in a single column at the right, ordered as in the logical view; their y
+        # positions do not depend on the lane's x, which waits for the channel count.
+        outer = [n for n in model.deployment_nodes if n.outside]
+        lane_rows: list[tuple[DiagramNode, int]] = []
+        lane_top = LOGICAL_MARGIN
+        lane_h = 0
+        if outer:
+            centre_y = {uid: r[1] + r[3] / 2 for uid, r in rects.items()}
+            near: dict[str, list[float]] = {n.uid: [] for n in outer}
+            for _i, e in drawn:
+                for lane_uid, other in ((e.source, e.target), (e.target, e.source)):
+                    if lane_uid in near and other in centre_y:
+                        near[lane_uid].append(centre_y[other])
 
-        def lane_key(node: DiagramNode) -> tuple[int, Fraction, str]:
-            ys = near[node.uid]
-            return (_band_rank(node), Fraction(sum(ys)) / len(ys) if ys else Fraction(0), node.uid)
+            def lane_key(node: DiagramNode) -> tuple[int, Fraction, str]:
+                ys = near[node.uid]
+                return (_band_rank(node), Fraction(sum(ys)) / len(ys) if ys else Fraction(0), node.uid)
 
-        ordered = sorted(outer, key=lane_key)
-        cursor = lane_top + DEPLOY_LANE_HEAD
-        prev: list[str] = []
-        for node in ordered:
-            above = band_at(cursor, inc(prev + [node.uid]), rise([node.uid]), rightward=False)
-            for uid in prev:
-                pools[uid]["bottom"] = above
-            lane_rows.append((node, above.hi))
-            pools[node.uid] = {"top": above}
-            cursor = above.hi + LOGICAL_BOX_H
-            prev = [node.uid]
-        below = band_at(cursor, inc(prev), 0, rightward=False)
-        pools[prev[0]]["bottom"] = below
-        lane_h = below.hi - lane_top
-    outside = {n.uid for n in outer}
-    lane_x_provisional = stack_right + DEPLOY_LANE_GAP
-    for node, by in lane_rows:  # x is provisional until the channel count is known; y is final
-        rects[node.uid] = (lane_x_provisional, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
-    # Channel count depends only on band spans, so route once with a provisional lane x to learn it, then
-    # fix the lane and route for real (container border points toward outside boxes need the final x).
-    _routes, n_channels = _route_deployment_edges(drawn, rects, pools, containers, bands, loops, stack_right)
-    for band in bands:
-        band.upper.clear()
-        band.lower.clear()
+            ordered = sorted(outer, key=lane_key)
+            cursor = lane_top + DEPLOY_LANE_HEAD
+            prev: list[str] = []
+            for node in ordered:
+                above = band_at(cursor, inc(prev + [node.uid]), rise([node.uid]), rightward=False)
+                for uid in prev:
+                    pools[uid]["bottom"] = above
+                lane_rows.append((node, above.hi))
+                pools[node.uid] = {"top": above}
+                cursor = above.hi + LOGICAL_BOX_H
+                prev = [node.uid]
+            below = band_at(cursor, inc(prev), 0, rightward=False)
+            pools[prev[0]]["bottom"] = below
+            lane_h = below.hi - lane_top
+        return bands, rects, pools, names, pos, body, stack_bottom, stack_right, lane_rows, lane_top, lane_h, outer
+
+    def provisional(left_room: int) -> tuple:
+        laid = build_stack(left_room)
+        bands, rects, pools, _names, _pos, _body, _sb, stack_right, lane_rows, _lt, _lh, _outer = laid
+        for node, by in lane_rows:  # x is provisional until the channel count is known; y is final
+            rects[node.uid] = (stack_right + DEPLOY_LANE_GAP, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
+        _routes, n_channels, left_counts = _route_deployment_edges(drawn, rects, pools, containers, bands, loops, stack_right)
+        for band in bands:
+            band.upper.clear()
+            band.lower.clear()
+        return laid, n_channels, left_counts
+
+    # Channel count and left-border end counts depend on band spans and directions only, so route once with
+    # a provisional lane x to learn them, widen the left padding if several left ends share a container,
+    # then fix the lane and route for real (container border points toward outside boxes need the final x).
+    laid, n_channels, left_counts = provisional(0)
+    need = max(left_counts.values(), default=0)
+    if need > 1:
+        laid, n_channels, left_counts = provisional(-(-(DEPLOY_LEVEL * (need - 1)) // GRID) * GRID)
+    bands, rects, pools, names, pos, body, stack_bottom, stack_right, lane_rows, lane_top, lane_h, outer = laid
     last_channel = stack_right + DEPLOY_CHANNEL_PAD + DEPLOY_CHANNEL_STEP * (n_channels - 1) if n_channels else stack_right
-    lane_x = last_channel + DEPLOY_LANE_GAP
+    lane_x = -(-(last_channel + DEPLOY_LANE_GAP) // GRID) * GRID  # D14
     for node, by in lane_rows:
         rects[node.uid] = (lane_x, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
         pos[node.uid] = (lane_x, by)
-    routes, _n = _route_deployment_edges(drawn, rects, pools, containers, bands, loops, stack_right)
+    routes, _n, _left = _route_deployment_edges(drawn, rects, pools, containers, bands, loops, stack_right)
     lane_box = ""
     right = max(stack_right, last_channel + DEPLOY_CHANNEL_PAD) if n_channels else stack_right
     bottom = stack_bottom
