@@ -6,6 +6,8 @@ import inspect
 import io
 import math
 import re
+import subprocess
+import sys
 import tempfile
 import unittest
 import xml.dom.minidom
@@ -2108,6 +2110,19 @@ class LaterStoryTests(unittest.TestCase):
             self.assertNotIn(version, figure_of(page, "fig-deployment"))
             self.assertNotIn(version, logical_svg(catalog, uid))
             self.assertNotIn(version, deployment_svg(catalog, uid))
+
+    def test_footer_version_in_a_vendored_layout(self) -> None:
+        # A vendored copy keeps tools/ beside draft-framework.yaml inside the framework directory (D15).
+        with tempfile.TemporaryDirectory() as tmp:
+            framework = Path(tmp) / "framework"
+            tools = framework / "tools"
+            tools.mkdir(parents=True)
+            (framework / "draft-framework.yaml").write_text('version: "9.8.7"\n', encoding="utf-8")
+            for name in ("generate_diagram.py", "generate_c4.py"):
+                (tools / name).write_text((REPO_ROOT / "framework" / "tools" / name).read_text(encoding="utf-8"), encoding="utf-8")
+            script = "import sys; sys.path.insert(0, sys.argv[1]); import generate_diagram as g; print(g.framework_version())"
+            result = subprocess.run([sys.executable, "-I", "-c", script, str(tools)], capture_output=True, text=True, check=True)
+        self.assertEqual(result.stdout.strip(), "9.8.7")
 
     def test_relationship_source_column(self) -> None:
         page, model = generate_diagram.build(FIXTURE, FIXTURE_SDP)

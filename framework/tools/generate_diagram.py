@@ -671,16 +671,21 @@ def border_point(
 
 
 # --------------------------------------------------------------------------- html parts
-FRAMEWORK_MANIFEST = TOOLS_ROOT.parents[1] / "draft-framework.yaml"
+# A vendored copy keeps draft-framework.yaml beside its tools/ inside the framework directory; the source repo keeps it at the root.
+FRAMEWORK_MANIFESTS = (TOOLS_ROOT.parent / "draft-framework.yaml", TOOLS_ROOT.parents[1] / "draft-framework.yaml")
 FIGURE_IDS = ("fig-logical", "fig-deployment")  # D19: the pin script finds both figures by these ids
 
 
 def framework_version() -> str:
     """The framework version recorded in draft-framework.yaml. It is stamped only in the HTML footer (D15)."""
-    try:
-        manifest = yaml.safe_load(FRAMEWORK_MANIFEST.read_text(encoding="utf-8"))
-    except (OSError, yaml.YAMLError):
-        return "version not recorded"
+    manifest = None
+    for path in FRAMEWORK_MANIFESTS:
+        if path.is_file():
+            try:
+                manifest = yaml.safe_load(path.read_text(encoding="utf-8"))
+            except (OSError, yaml.YAMLError):
+                return "version not recorded"
+            break
     version = manifest.get("version") if isinstance(manifest, dict) else None
     return clean(version) or "version not recorded"
 
