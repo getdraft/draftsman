@@ -2227,6 +2227,11 @@ class LaterStoryTests(unittest.TestCase):
         script = page.split("<script>")[1].split("</script>")[0]
         self.assertIn("'fig-logical'", script)
         self.assertIn("'fig-deployment'", script)
+        css = page.split("<style>")[1].split("</style>")[0]
+        for token in ("--hi-edge:#7c3a6b", "--hi-node:#006064", "svg .edge.on .ln{stroke:var(--hi-edge)", "svg .node.on .box{stroke:var(--hi-node)", "svg .group.on>.grp{stroke:var(--hi-node)"):
+            self.assertIn(token, css)
+        self.assertNotIn("opacity:.15", css, "highlighting colours the selection; it does not fade the rest")
+        self.assertIn("appendChild(el)", script, "highlighted edges are raised above the others")
 
     def test_property_render_twice(self) -> None:
         for uid in [sdp["uid"] for sdp in generate_diagram.sdps(load_catalog(FIXTURE))]:
