@@ -880,9 +880,9 @@ h1{font-size:26px;line-height:1.2;margin:0;font-weight:600}h2{font-size:17px;mar
 .counts{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:13.5px}.counts b{font-variant-numeric:tabular-nums}
 .scroll,.tw{overflow-x:auto;border:1px solid var(--zone-line);border-radius:6px;background:var(--surface)}
 svg{display:block;width:100%;min-width:760px;height:auto;color:var(--fg)}svg text{fill:currentColor;font-family:inherit}
-svg .edge.on .ln{stroke:var(--hi-edge);stroke-width:3}svg .edge.on text{fill:var(--hi-edge);font-weight:700}svg .mk{fill:context-stroke}
-svg .node.on .box{stroke:var(--hi-node);stroke-width:2.6;fill:var(--hi-node-bg)}svg .node.on text{font-weight:700}svg .group.on>.grp{stroke:var(--hi-node);stroke-width:2.6}
-svg [data-id]:focus{outline:none}svg [data-id]:focus>rect{stroke:var(--accent);stroke-width:2.4}
+svg .edge.on .ln{stroke:var(--hi-edge);stroke-width:3}svg .edge.on text{fill:var(--hi-edge)}svg .mk{fill:context-stroke}
+svg .node.on .box{stroke:var(--hi-node);stroke-width:2.6;fill:var(--hi-node-bg)}svg .group.on>.grp{stroke:var(--hi-node);stroke-width:2.6}
+svg [data-id]:focus{outline:none}svg [data-id]:focus>rect,svg .node.on:focus>.box,svg .group.on:focus>.grp{stroke:var(--accent);stroke-width:2.6}
 table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--zone-line)}
 th{background:var(--zone);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);white-space:nowrap}tr:last-child td{border-bottom:0}
 td.nm{font-weight:600;white-space:nowrap}td.lbl{color:var(--accent);white-space:nowrap}td.ds{min-width:320px;color:var(--muted)}td.src{font:11px ui-monospace,Menlo,monospace;color:var(--muted);white-space:nowrap}
