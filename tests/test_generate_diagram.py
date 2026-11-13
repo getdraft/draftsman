@@ -565,29 +565,154 @@ class LaterStoryTests(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertTrue(err.getvalue().startswith("error: serviceGroups must be a list"))
 
-    @unittest.skip("enabled in S4")
     def test_container_caption_variants(self) -> None:
-        self.fail("not implemented until S4")
+        objects = [
+            plain("RTC-1", "runtime_service", "Cluster"),
+            plain("RTC-2", "runtime_service", "Cluster Two", host="HST-1"),
+            plain("HST-1", "host", "Host One"),
+            plain("DST-1", "data_store_service", "Store"),
+            plain("P-1", "product_component", "Alpha"),
+            plain("P-2", "product_component", "Beta", runsOn="RTC-1"),
+            plain("P-3", "product_component", "Gamma", runsOn="RTC-1"),
+            plain("P-4", "product_component", "Delta", runsOn="RTC-1"),
+            plain("P-5", "product_component", "Epsilon", runsOn="RTC-2"),
+            plain("P-6", "product_component", "Zeta"),
+            plain("P-7", "product_component", "Eta"),
+            plain("P-8", "product_component", "Theta"),
+            pattern({"One": ["P-1"], "Two": ["P-2", "P-3"], "Three": ["P-4", "P-5"], "Four": ["P-6"], "Five": ["P-7"], "Six": ["P-8"]}),
+        ]
+        sdp = objects[-1]
+        groups = sdp["serviceGroups"]
+        groups[0]["substrate"] = "RTC-1"
+        groups[3]["substrate"] = "FX-MISSING"
+        groups[4]["substrate"] = "DST-1"
+        groups[5]["substrate"] = "RTC-2"
+        model = model_of(objects)
+        captions = [container.caption for container in model.containers]
+        self.assertEqual(
+            captions,
+            [
+                "Cluster",
+                "Cluster derived",
+                "substrate not recorded",
+                "substrate not found: FX-MISSING",
+                "Store (data_store_service)",
+                "Cluster Two on Host One",
+            ],
+        )
+        self.assertEqual(model.containers[0].uid, "RTC-1")
+        self.assertTrue(model.containers[1].derived)
+        self.assertEqual(model.containers[2].uid, "")
+        self.assertEqual(model.containers[3].uid, "")
+        self.assertEqual(model.containers[5].members, ["P-8"])
 
-    @unittest.skip("enabled in S4")
     def test_substrate_type_mismatch_and_unknown_uid_warnings(self) -> None:
-        self.fail("not implemented until S4")
+        objects = [
+            plain("DST-1", "data_store_service", "Store"),
+            plain("P-1", "product_component", "Alpha"),
+            plain("P-2", "product_component", "Beta"),
+            pattern({"Data": ["P-1"], "Other": ["P-2"]}),
+        ]
+        objects[-1]["serviceGroups"][0]["substrate"] = "DST-1"
+        objects[-1]["serviceGroups"][1]["substrate"] = "FX-MISSING"
+        model = model_of(objects)
+        self.assertIn("substrate Store (DST-1) has type data_store_service; expected runtime_service or host", model.warnings)
+        self.assertIn("unknown substrate uid 'FX-MISSING' in Other", model.warnings)
+        self.assertEqual(model.containers[1].uid, "")
+        # A recorded substrate is drawn as the container even when its type is not allowed.
+        self.assertEqual(model.containers[0].uid, "DST-1")
+        self.assertEqual(model.containers[0].caption, "Store (data_store_service)")
 
-    @unittest.skip("enabled in S4")
     def test_conflict_warning(self) -> None:
-        self.fail("not implemented until S4")
+        objects = [
+            plain("RTC-1", "runtime_service", "Cluster"),
+            plain("RTC-2", "runtime_service", "Cluster Two"),
+            plain("P-1", "product_component", "Alpha", runsOn="RTC-2"),
+            plain("P-2", "product_component", "Beta", runsOn="RTC-1"),
+            pattern({"G": ["P-1", "P-2"]}),
+        ]
+        objects[-1]["serviceGroups"][0]["substrate"] = "RTC-1"
+        model = model_of(objects)
+        self.assertEqual(len(model.conflicts), 1)
+        self.assertEqual(model.conflicts[0].component, "P-1")
+        self.assertIn("conflict: Alpha runsOn Cluster Two; group substrate is Cluster", model.warnings)
+        self.assertEqual(model.containers[0].caption, "Cluster")
+        # A derived substrate never conflicts: every runsOn agrees by construction.
+        objects[-1]["serviceGroups"][0].pop("substrate")
+        self.assertEqual(model_of(objects[:-1] + [pattern({"G": ["P-2"]})]).conflicts, [])
 
-    @unittest.skip("enabled in S4")
     def test_zone_assignment_and_warning(self) -> None:
-        self.fail("not implemented until S4")
+        objects = [
+            plain("A-1", "product_component", "Data Part"),
+            plain("B-1", "product_component", "App Part"),
+            plain("C-1", "product_component", "Unzoned"),
+            plain("D-1", "product_component", "Stray"),
+        ]
+        sdp = pattern({"G": []})
+        sdp["networkZones"] = [
+            {"id": "z-app", "name": "App Zone", "tier": "application"},
+            {"id": "z-data", "name": "Data Zone", "tier": "data"},
+        ]
+        sdp["serviceGroups"][0]["deployableObjects"] = [
+            {"ref": "A-1", "networkZone": "z-data"},
+            {"ref": "B-1", "networkZone": "z-app"},
+            {"ref": "C-1"},
+            {"ref": "D-1", "networkZone": "z-gone"},
+        ]
+        model = model_of(objects + [sdp])
+        lanes = model.containers[0].lanes
+        self.assertEqual([lane.name for lane in lanes], ["App Zone", "Data Zone", "zone not recorded"])
+        self.assertEqual([lane.members for lane in lanes], [["B-1"], ["A-1"], ["C-1", "D-1"]])
+        self.assertEqual(lanes[0].tier, "application")
+        self.assertIn("undeclared network zone: z-gone in G", model.warnings)
+        self.assertEqual([w for w in model.warnings if w.startswith("undeclared")], ["undeclared network zone: z-gone in G"])
 
-    @unittest.skip("enabled in S4")
     def test_node_sets_per_view(self) -> None:
-        self.fail("not implemented until S4")
+        objects = [
+            plain("RTC-1", "runtime_service", "Cluster"),
+            plain("RTC-2", "runtime_service", "Cluster Two"),
+            plain("P-1", "product_component", "Alpha"),
+            plain("P-2", "product_component", "Beta"),
+            pattern({"G": ["RTC-1", "P-1"], "H": ["P-2"]}),
+        ]
+        objects[-1]["serviceGroups"][0]["substrate"] = "RTC-1"
+        objects[-1]["serviceGroups"][1]["substrate"] = "RTC-2"
+        model = model_of(objects)
+        logical = {node.uid for node in model.nodes_for_view("logical")}
+        deployment = {node.uid for node in model.nodes_for_view("deployment")}
+        self.assertIn("RTC-1", logical)
+        self.assertNotIn("RTC-1", deployment)
+        self.assertEqual(model.containers[0].uid, "RTC-1")
+        # A substrate that is neither placed nor a one-hop endpoint is a container only.
+        self.assertNotIn("RTC-2", logical)
+        self.assertNotIn("RTC-2", deployment)
+        self.assertEqual(model.containers[1].uid, "RTC-2")
+        self.assertEqual(logical, {"RTC-1", "P-1", "P-2"})
+        self.assertEqual(deployment, {"P-1", "P-2"})
+        self.assertEqual(
+            [w for w in model.warnings if w.startswith("substrate also listed")],
+            ["substrate also listed as deployable object: Cluster (RTC-1) in G"],
+        )
+        self.assertEqual(model.containers[0].members, ["P-1"])
+        with self.assertRaises(ValueError):
+            model.nodes_for_view("unknown")
 
-    @unittest.skip("enabled in S4")
     def test_warning_dedup_sorted(self) -> None:
-        self.fail("not implemented until S4")
+        objects = [
+            plain("DST-1", "data_store_service", "Store"),
+            plain("P-1", "product_component", "Alpha"),
+            plain("P-2", "product_component", "Beta"),
+            pattern({"One": ["P-1"], "Two": ["P-2"]}),
+        ]
+        objects[-1]["serviceGroups"][0]["substrate"] = "DST-1"
+        objects[-1]["serviceGroups"][1]["substrate"] = "DST-1"
+        model = model_of(objects)
+        type_warning = "substrate Store (DST-1) has type data_store_service; expected runtime_service or host"
+        self.assertEqual(model.warnings.count(type_warning), 1)
+        self.assertEqual(model.warnings, sorted(set(model.warnings)))
+        self.assertEqual(len(model.warnings), len(set(model.warnings)))
+        self.assertEqual(model.warning_count_line, f"{len(model.warnings)} warnings")
+        self.assertTrue(model.warnings)
 
     @unittest.skip("enabled in S5")
     def test_logical_golden(self) -> None:

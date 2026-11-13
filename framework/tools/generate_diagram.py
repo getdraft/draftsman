@@ -133,10 +133,36 @@ class DiagramEdge:
 
 
 @dataclass
+class DiagramLane:
+    """One network-zone lane inside a service group container (D9). zone is "" for 'zone not recorded'."""
+
+    zone: str
+    name: str
+    tier: str  # informational only; never affects band placement (D4, D9)
+    members: list[str] = field(default_factory=list)
+
+
+@dataclass
 class DiagramContainer:
+    """The drawn container of one service group (D6, D7). uid is "" when no catalog object resolves."""
+
     uid: str
     caption: str = ""
-    members: list[str] = field(default_factory=list)
+    group: str = ""
+    target: str = ""
+    derived: bool = False
+    members: list[str] = field(default_factory=list)  # placed objects drawn as boxes; never the container itself
+    lanes: list[DiagramLane] = field(default_factory=list)
+
+
+@dataclass
+class Conflict:
+    """A placed component whose runsOn differs from its group's recorded substrate (D8). Nothing is resolved."""
+
+    group: str
+    component: str
+    runs_on: str
+    substrate: str
 
 
 @dataclass
@@ -152,6 +178,9 @@ class DiagramModel:
 ONE_HOP_TYPES = frozenset(
     {"product_component", "data_component", "data_store_service", "runtime_service", "network_service", "ai_gateway", "host"}
 )
+
+# D7: types whose runsOn may name the substrate of their service group.
+COMPONENT_TYPES = frozenset({"product_component", "data_component"})
 
 # D4: band derived from type when the placing entry records no diagramTier.
 TYPE_BANDS = {
@@ -226,9 +255,18 @@ class Model:
         self.warnings: list[str] = []  # in discovery order; de-duplicated and sorted by the page (S4)
         self.placement: dict[str, dict[str, str]] = {}  # first placement of each uid, in document order
         self.groups: list[dict[str, Any]] = []
+        self.containers: list[DiagramContainer] = []
+        self.conflicts: list[Conflict] = []
+        self.container_uids: set[str] = set()  # membership tests only
         self._read_groups()
         self._other_patterns = _other_pattern_names(catalog, sdp)
         self._build_nodes_and_edges()
+        self._build_containers()
+        self.warnings = sorted(set(self.warnings))  # D18: each distinct string once, in code-point order
+
+    @property
+    def warning_count_line(self) -> str:
+        return f"{len(self.warnings)} warnings"
 
     def name(self, uid: str) -> str:
         return str(self.catalog.get(uid, {}).get("name") or uid)
@@ -240,9 +278,12 @@ class Model:
         return str(obj.get("classification") or str(obj.get("type", "")).replace("_", " "))
 
     def nodes_for_view(self, view: str) -> list[DiagramNode]:
-        if view != "logical":
-            raise ValueError(f"unknown view: {view!r}")
-        return list(self._nodes)
+        if view == "logical":
+            return list(self._nodes)
+        if view == "deployment":
+            # D29: a service group's drawn container is never also a box in the deployment view.
+            return [node for node in self._nodes if node.uid not in self.container_uids]
+        raise ValueError(f"unknown view: {view!r}")
 
     def _read_groups(self) -> None:
         raw_groups = self.sdp.get("serviceGroups")
@@ -258,6 +299,8 @@ class Model:
             group_name = str(group.get("name", ""))
             target = str(group.get("deploymentTarget", ""))
             uids: list[str] = []
+            group_listed: list[str] = []  # every resolvable ref in this group, repeats included (D7 "also listed")
+            zone_of: dict[str, str] = {}  # first-listed uid of this group -> its networkZone ("" when absent)
             for entry in group.get("deployableObjects") or []:
                 if not isinstance(entry, dict) or not entry.get("ref"):
                     self.warnings.append(f"service group '{group.get('name')}' has an entry without a ref; skipped")
@@ -267,11 +310,28 @@ class Model:
                     self.warnings.append(f"service group '{group.get('name')}' references unknown uid '{ref}'")
                     continue
                 occurrences.setdefault(ref, []).append(group_name)
+                group_listed.append(ref)
                 if ref in self.placement:
                     continue
                 uids.append(ref)
-                self.placement[ref] = {"group": group_name, "target": target, "tier": clean(entry.get("diagramTier"))}
-            self.groups.append({"name": group_name, "target": target, "uids": uids})
+                zone = clean(entry.get("networkZone"))
+                zone_of[ref] = zone
+                self.placement[ref] = {
+                    "group": group_name,
+                    "target": target,
+                    "tier": clean(entry.get("diagramTier")),
+                    "zone": zone,
+                }
+            self.groups.append(
+                {
+                    "name": group_name,
+                    "target": target,
+                    "uids": uids,
+                    "substrate": clean(group.get("substrate")),
+                    "listed": group_listed,
+                    "zone_of": zone_of,
+                }
+            )
         for uid, listed in occurrences.items():  # D26
             if len(listed) > 1:
                 later: list[str] = []
@@ -392,6 +452,102 @@ class Model:
             for rel in recorded
             if (_endpoint(rel, "source") in placed or _endpoint(rel, "target") in placed) and id(rel) not in drawn
         )
+
+    def _derive_substrate(self, uids: list[str]) -> str:
+        """D7: the runsOn target that every placed component recording runsOn agrees on, else ''.
+
+        Only runsOn of product and data components is read; host fields are never used.
+        """
+        targets = {clean(self.catalog[uid].get("runsOn")) for uid in uids if self.catalog[uid].get("type") in COMPONENT_TYPES}
+        targets.discard("")
+        return targets.pop() if len(targets) == 1 else ""
+
+    def _build_containers(self) -> None:
+        """Service group containers with caption variants (D7), conflicts (D8) and zone lanes (D9)."""
+        catalog = self.catalog
+        zones = self.sdp.get("networkZones")
+        declared: dict[str, dict[str, Any]] = {}  # zone id -> entry, in networkZones document order
+        for zone in zones if isinstance(zones, list) else []:
+            zone_id = clean(zone.get("id")) if isinstance(zone, dict) else ""
+            if zone_id:
+                declared.setdefault(zone_id, zone)
+        for group in self.groups:
+            group_name = group["name"]
+            recorded = group["substrate"]
+            sub_uid = recorded or self._derive_substrate(group["uids"])
+            derived = bool(sub_uid) and not recorded
+            container_uid = ""
+            if not sub_uid:
+                caption = "substrate not recorded"
+            elif sub_uid not in catalog:
+                caption = f"substrate not found: {sub_uid}"
+                self.warnings.append(f"unknown substrate uid '{sub_uid}' in {group_name}")
+            else:
+                container_uid = sub_uid
+                obj = catalog[sub_uid]
+                name = self.name(sub_uid)
+                sub_type = str(obj.get("type", ""))
+                caption = name
+                if sub_type not in ("runtime_service", "host"):
+                    caption = f"{name} ({sub_type})"
+                    self.warnings.append(
+                        f"substrate {name} ({sub_uid}) has type {sub_type}; expected runtime_service or host"
+                    )
+                if derived:
+                    caption += " derived"
+                host = clean(obj.get("host"))
+                if host:  # one level only: the host's own host is not followed
+                    caption += f" on {self.name(host)}"
+                if sub_uid in group["listed"]:
+                    self.warnings.append(f"substrate also listed as deployable object: {name} ({sub_uid}) in {group_name}")
+            if recorded:  # D8: only a recorded substrate can conflict; nothing is resolved
+                for uid in group["uids"]:
+                    obj = catalog[uid]
+                    runs_on = clean(obj.get("runsOn")) if obj.get("type") in COMPONENT_TYPES else ""
+                    if runs_on and runs_on != recorded:
+                        self.conflicts.append(Conflict(group=group_name, component=uid, runs_on=runs_on, substrate=recorded))
+                        self.warnings.append(
+                            f"conflict: {self.name(uid)} runsOn {self.name(runs_on)}; group substrate is {self.name(recorded)}"
+                        )
+            members = [uid for uid in group["uids"] if uid != container_uid]
+            zone_of = group["zone_of"]
+            buckets: dict[str, list[str]] = {}
+            unrecorded: list[str] = []
+            undeclared: list[str] = []
+            for uid in members:
+                zone = zone_of.get(uid, "")
+                if zone in declared:
+                    buckets.setdefault(zone, []).append(uid)
+                else:
+                    unrecorded.append(uid)
+                    if zone and zone not in undeclared:
+                        undeclared.append(zone)
+            for zone in undeclared:
+                self.warnings.append(f"undeclared network zone: {zone} in {group_name}")
+            lanes = [
+                DiagramLane(
+                    zone=zone,
+                    name=clean(declared[zone].get("name")) or zone,
+                    tier=clean(declared[zone].get("tier")),
+                    members=buckets[zone],
+                )
+                for zone in declared
+                if zone in buckets
+            ]
+            if unrecorded:  # D9: absent or undeclared zones share a last lane
+                lanes.append(DiagramLane(zone="", name="zone not recorded", tier="", members=unrecorded))
+            self.containers.append(
+                DiagramContainer(
+                    uid=container_uid,
+                    caption=caption,
+                    group=group_name,
+                    target=group["target"],
+                    derived=derived,
+                    members=members,
+                    lanes=lanes,
+                )
+            )
+        self.container_uids = {container.uid for container in self.containers if container.uid}
 
     def _caption(self, uid: str) -> str:
         names = self._other_patterns.get(uid, [])
@@ -817,12 +973,13 @@ def render_page(model: Model, layout: Layout) -> str:
 
 # --------------------------------------------------------------------------- stubs
 def build_diagram_model(catalog: dict[str, dict[str, Any]], sdp: dict[str, Any], placed_only: bool) -> DiagramModel:
-    """The two-view model for one pattern. Containers stay empty until S4."""
+    """The two-view model for one pattern: logical nodes, edges, service group containers and warnings."""
     model = Model(catalog, sdp, placed_only)
     return DiagramModel(
         sdp_uid=str(sdp.get("uid", "")),
         nodes=model.nodes_for_view("logical"),
         edges=list(model.edges),
+        containers=list(model.containers),
         warnings=list(model.warnings),
     )
 
