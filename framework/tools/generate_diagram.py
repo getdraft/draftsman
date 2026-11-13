@@ -867,9 +867,9 @@ def figure_html(svg: str, fig_id: str) -> str:
 
 
 CSS = """
-:root{--bg:#f5f7fa;--fg:#1a2230;--muted:#586374;--surface:#fff;--line:#aab4c2;--zone:#eaeff5;--zone-line:#9aa6b6;--accent:#0b62c4;--amber:#a85a00;--warn:#9a3412}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e131a;--fg:#e4e9f0;--muted:#97a2b3;--surface:#18202b;--line:#4a586b;--zone:#121923;--zone-line:#3c485a;--accent:#5fadff;--amber:#f2a64e;--warn:#fb923c;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0e131a;--fg:#e4e9f0;--muted:#97a2b3;--surface:#18202b;--line:#4a586b;--zone:#121923;--zone-line:#3c485a;--accent:#5fadff;--amber:#f2a64e;--warn:#fb923c;color-scheme:dark}
+:root{--bg:#f5f7fa;--fg:#1a2230;--muted:#586374;--surface:#fff;--line:#aab4c2;--zone:#eaeff5;--zone-line:#9aa6b6;--accent:#0b62c4;--amber:#a85a00;--warn:#9a3412;--hi-edge:#7c3a6b;--hi-node:#006064;--hi-node-bg:#e0f2f1}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e131a;--fg:#e4e9f0;--muted:#97a2b3;--surface:#18202b;--line:#4a586b;--zone:#121923;--zone-line:#3c485a;--accent:#5fadff;--amber:#f2a64e;--warn:#fb923c;--hi-edge:#c58fd3;--hi-node:#3fc1b4;--hi-node-bg:#103a38;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e131a;--fg:#e4e9f0;--muted:#97a2b3;--surface:#18202b;--line:#4a586b;--zone:#121923;--zone-line:#3c485a;--accent:#5fadff;--amber:#f2a64e;--warn:#fb923c;--hi-edge:#c58fd3;--hi-node:#3fc1b4;--hi-node-bg:#103a38;color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:28px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
 .wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:30px}
@@ -880,8 +880,8 @@ h1{font-size:26px;line-height:1.2;margin:0;font-weight:600}h2{font-size:17px;mar
 .counts{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:13.5px}.counts b{font-variant-numeric:tabular-nums}
 .scroll,.tw{overflow-x:auto;border:1px solid var(--zone-line);border-radius:6px;background:var(--surface)}
 svg{display:block;width:100%;min-width:760px;height:auto;color:var(--fg)}svg text{fill:currentColor;font-family:inherit}
-svg.focus .edge,svg.focus .node,svg.focus .group{opacity:.15}
-svg.focus .edge.on,svg.focus .node.on,svg.focus .group.on{opacity:1}
+svg .edge.on .ln{stroke:var(--hi-edge);stroke-width:3}svg .edge.on text{fill:var(--hi-edge);font-weight:700}svg .mk{fill:context-stroke}
+svg .node.on .box{stroke:var(--hi-node);stroke-width:2.6;fill:var(--hi-node-bg)}svg .node.on text{font-weight:700}svg .group.on>.grp{stroke:var(--hi-node);stroke-width:2.6}
 svg [data-id]:focus{outline:none}svg [data-id]:focus>rect{stroke:var(--accent);stroke-width:2.4}
 table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--zone-line)}
 th{background:var(--zone);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);white-space:nowrap}tr:last-child td{border-bottom:0}
@@ -908,6 +908,7 @@ JS = """
    svg.classList.toggle('focus',!!id);
    els.forEach(function(el){var a=el.getAttribute('data-from');
     el.classList.toggle('on',!!id&&(a!==null?(a===id||el.getAttribute('data-to')===id):!!near[el.getAttribute('data-id')]))});
+   els.forEach(function(el){if(el.hasAttribute('data-from')&&el.classList.contains('on'))el.parentNode.appendChild(el)});
   });
  }
  figs.forEach(function(svg){
@@ -946,7 +947,7 @@ def render_page(model: Model, dm: DiagramModel) -> str:
         counts_html(model, dm),
         f'<section class="sec" id="logical"><h2>{E(LOGICAL_TITLE)}</h2>'
         "<p>Components in bands by diagram tier. Objects that this pattern does not place sit in the right-hand lane, captioned with the pattern that places them. "
-        "Hover or focus a box to highlight its relationships; click to pin. A dashed box has a derived tier.</p>"
+        "Hover or focus a box to colour it and its relationships; click to pin. A dashed box has a derived tier.</p>"
         + logical_body
         + "</section>",
         f'<section class="sec" id="deployment"><h2>{E(DEPLOYMENT_TITLE)}</h2>'

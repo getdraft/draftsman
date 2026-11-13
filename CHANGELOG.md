@@ -25,6 +25,7 @@
 
 - The `draftsman-diagram` skill is rewritten: agents use `framework/tools/generate_diagram.py` for the logical and deployment views and must not hand-draw SVG; the skill explains the dashed derived-tier convention, the outside lane, the Recorded conflicts section and how to read warnings back to the user. Mermaid and C4 text is documented as outside the determinism guarantee.
 - The diagram figures draw the edge and node vocabulary: dashed edges for asynchronous, dotted for event, arrowheads by `flow` (an unknown flow warns and is read as absent), edge labels with the recorded technology (labels show on hover or pin above 8 edges), a type chip and technology line on each node box, and CSS custom properties with light and dark values. Retired and deprecated objects carry their lifecycle classes. Layout coordinates are unchanged; the golden SVGs were regenerated for the new styling and labels.
+- The diagram page highlights the hovered or pinned object and its relationships in the palette's teal and purple, drawn above the other edges, instead of fading everything else.
 
 ### Fixed
 
