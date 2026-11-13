@@ -1112,8 +1112,13 @@ class LaterStoryTests(unittest.TestCase):
         start = generate_diagram.border_point(c_group, c_box, gw, gh)
         end = generate_diagram.border_point(c_box, c_group, box[2], box[3])
         self.assertEqual(pts[0], (round(start[0], 1), round(start[1], 1)))
-        self.assertEqual(pts[-1][0], box[0] + box[2] / 2 + (pts[-1][0] - box[0] - box[2] / 2))
+        # The far end lies on the box border; the container end is the border_point checked above.
         self.assertIn(pts[-1][1], (box[1], box[1] + box[3]))
+        self.assertTrue(box[0] <= pts[-1][0] <= box[0] + box[2])
+        on_border = (
+            abs(pts[0][0] - gx) < 0.1 or abs(pts[0][0] - (gx + gw)) < 0.1 or abs(pts[0][1] - gy) < 0.1 or abs(pts[0][1] - (gy + gh)) < 0.1
+        )
+        self.assertTrue(on_border, "container end lies on the container border")
         for (ax, ay), (bx, by) in zip(pts, pts[1:]):
             self.assertTrue(ax == bx or ay == by, "orthogonal route")
         self.assertTrue(gx <= pts[0][0] <= gx + gw and gy <= pts[0][1] <= gy + gh)
@@ -1187,6 +1192,69 @@ class LaterStoryTests(unittest.TestCase):
         self.assertEqual(svg.count('<g class="group'), 1)
         self.assertEqual(re.findall(r'<g class="zlane" data-zone="([^"]*)"', svg), ["z1", ""])
         self.assertEqual(re.findall(r'class="zc"[^>]*>([^<]*)<', svg), ["Zone One (frontend)", "zone not recorded"])
+
+    def test_deployment_horizontal_runs_do_not_overlap_or_touch_text_and_borders(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        for sdp in generate_diagram.sdps(catalog):
+            svg = deployment_svg(catalog, sdp["uid"])
+            horizontals = []
+            for _s, _t, pts in edge_polylines(svg):
+                for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+                    if ay == by and ax != bx:
+                        horizontals.append((ay, min(ax, bx), max(ax, bx)))
+            for i, (y, x0, x1) in enumerate(horizontals):
+                for y2, a0, a1 in horizontals[i + 1 :]:
+                    self.assertFalse(y == y2 and x0 < a1 and a0 < x1, f"collinear horizontal overlap at y={y}")
+            lanes = [tuple(int(v) for v in m) for m in re.findall(r'<rect class="zl" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg)]
+            captions = [int(y) for y in re.findall(r'<text class="zc" x="\d+" y="(\d+)"', svg)]
+            self.assertGreaterEqual(len(captions), len(lanes))
+            for y, x0, x1 in horizontals:
+                for lx, ly, lw, lh in lanes:
+                    if not (x0 < lx + lw and lx < x1):
+                        continue
+                    self.assertGreaterEqual(abs(y - ly), 3, f"run on lane top border at y={y}")
+                    self.assertGreaterEqual(abs(y - (ly + lh)), 3, f"run on lane bottom border at y={y}")
+                    for cy in captions:
+                        if ly <= cy <= ly + 40:
+                            self.assertFalse(cy - 13 <= y <= cy + 8, f"run inside caption band at y={y}")
+
+    def test_deployment_derived_host_and_mismatch_captions(self) -> None:
+        objects = [
+            plain("RTC-1", "runtime_service", "Cluster"),
+            plain("RTC-2", "runtime_service", "Cluster Two", host="HST-1"),
+            plain("HST-1", "host", "Host One"),
+            plain("DST-1", "data_store_service", "Store"),
+            plain("P-2", "product_component", "Beta", runsOn="RTC-1"),
+            plain("P-5", "product_component", "Epsilon", runsOn="RTC-2"),
+            plain("P-7", "product_component", "Eta"),
+            pattern({"Derived": ["P-2"], "OnHost": ["P-5"], "Mismatch": ["P-7"]}),
+        ]
+        groups = objects[-1]["serviceGroups"]
+        groups[1]["substrate"] = "RTC-2"
+        groups[2]["substrate"] = "DST-1"
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        model = generate_diagram.build_diagram_model(cat, cat["SDP-1"], False)
+        svg = deployment_svg(cat, "SDP-1")
+        xml.dom.minidom.parseString(svg)
+        groups_svg = re.findall(r'<g class="(group[^"]*)"[^>]*>.*?(?=<g class="group|</g>\n</g>\n<g class="group|$)', svg, re.S)
+        self.assertEqual(groups_svg, ["group dashed", "group", "group"])
+        captions = []
+        for block in re.split(r'(?=<g class="group)', svg)[1:]:
+            captions.append(" ".join(xml_unescape(t) for t in re.findall(r'class="gc"[^>]*>([^<]*)<', block.split('<g class="zlane"')[0])))
+        self.assertEqual(captions, [c.caption for c in model.containers])
+        self.assertEqual(captions, ["Cluster derived", "Cluster Two on Host One", "Store (data_store_service)"])
+
+    def test_deployment_self_loops_are_clear_of_other_edges(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        for sdp in generate_diagram.sdps(catalog):
+            svg = deployment_svg(catalog, sdp["uid"])
+            rects = node_rects(svg)
+            for match in re.finditer(r'data-from="([^"]*)" data-to="\1"><title>[^<]*</title><path class="ln" d="M[\d. ]+ C', svg):
+                x, y, w, h = rects[match.group(1).replace("&amp;", "&")]
+                for _s, _t, pts in edge_polylines(svg):
+                    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+                        crosses = min(ax, bx) < x + w + 50 and max(ax, bx) > x + w and min(ay, by) < y + h and max(ay, by) > y
+                        self.assertFalse(crosses, f"edge runs through the self-loop of {match.group(1)}")
 
     def test_outside_lane_in_deployment(self) -> None:
         catalog = load_catalog(FIXTURE)

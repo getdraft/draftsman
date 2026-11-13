@@ -1,21 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 770 410" width="770" height="410" role="img" aria-label="Deployment pattern diagram">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 770 790" width="770" height="790" role="img" aria-label="Deployment pattern diagram">
 <title>Deployment pattern diagram</title>
 <desc>generate_diagram FXSDP00002-0001</desc>
 <style>.tgt{fill:#eef1f6;stroke:#9aa6b6;stroke-width:1.4}.grp{fill:#f8f9fb;stroke:#7a8696}.group.dashed .grp{stroke-dasharray:5 3}.zl{fill:#ffffff;stroke:#c3cad4;stroke-dasharray:3 3}.lane{fill:#fbf6ec;stroke:#d8c9a8;stroke-dasharray:6 4}.tl{font:700 12px sans-serif;fill:#1a2230}.gl{font:600 11px sans-serif;fill:#586374}.gc{font:600 12px sans-serif;fill:#1a2230}.zc,.ll{font:600 11px sans-serif;fill:#586374}.box{fill:#ffffff;stroke:#555555;stroke-width:1.4}.dashed .box{stroke-dasharray:5 3}.ttl{font:600 12px sans-serif;fill:#1a2230}.cap{font:10px sans-serif;fill:#586374}.ln{fill:none;stroke:#7a8696;stroke-width:1.4}</style>
-<g class="target" data-target="fx-dc-west"><rect class="tgt" x="20" y="20" width="260" height="370" rx="8"/><text class="tl" x="30" y="40">fx-dc-west</text>
-<g class="group" data-id="FXRTC00003-0001" data-group="Ledger Core"><title>Ledger Core</title><rect class="grp" x="30" y="50" width="240" height="160" rx="6"/><text class="gl" x="40" y="68">Ledger Core</text><text class="gc" x="40" y="88">FX Cluster Gamma</text>
-<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="100" width="220" height="100" rx="5"/><text class="zc" x="50" y="119">FX Data Zone (data)</text>
-<g class="node" data-id="FXPRD00010-0001"><title>FX Shared Ledger</title><rect class="box" x="50" y="130" width="200" height="60" rx="6"/><text class="ttl" x="150" y="164" text-anchor="middle">FX Shared Ledger</text></g>
+<g class="target" data-target="fx-dc-west"><rect class="tgt" x="20" y="20" width="260" height="750" rx="8"/><text class="tl" x="30" y="40">fx-dc-west</text>
+<g class="group" data-id="FXRTC00003-0001" data-group="Ledger Core"><title>Ledger Core</title><rect class="grp" x="30" y="110" width="240" height="270" rx="6"/><text class="gl" x="40" y="128">Ledger Core</text><text class="gc" x="40" y="148">FX Cluster Gamma</text>
+<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="160" width="220" height="210" rx="5"/><text class="zc" x="50" y="179">FX Data Zone (data)</text>
+<g class="node" data-id="FXPRD00010-0001"><title>FX Shared Ledger</title><rect class="box" x="50" y="250" width="200" height="60" rx="6"/><text class="ttl" x="150" y="284" text-anchor="middle">FX Shared Ledger</text></g>
 </g>
 </g>
-<g class="group" data-group="Ledger Store"><title>Ledger Store</title><rect class="grp" x="30" y="220" width="240" height="160" rx="6"/><text class="gl" x="40" y="238">Ledger Store</text><text class="gc" x="40" y="258">substrate not recorded</text>
-<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="270" width="220" height="100" rx="5"/><text class="zc" x="50" y="289">FX Data Zone (data)</text>
-<g class="node" data-id="FXDST00002-0001"><title>FX Ledger Store</title><rect class="box" x="50" y="300" width="200" height="60" rx="6"/><text class="ttl" x="150" y="334" text-anchor="middle">FX Ledger Store</text></g>
+<g class="group" data-group="Ledger Store"><title>Ledger Store</title><rect class="grp" x="30" y="440" width="240" height="270" rx="6"/><text class="gl" x="40" y="458">Ledger Store</text><text class="gc" x="40" y="478">substrate not recorded</text>
+<g class="zlane" data-zone="fx-data"><rect class="zl" x="40" y="490" width="220" height="210" rx="5"/><text class="zc" x="50" y="509">FX Data Zone (data)</text>
+<g class="node" data-id="FXDST00002-0001"><title>FX Ledger Store</title><rect class="box" x="50" y="580" width="200" height="60" rx="6"/><text class="ttl" x="150" y="614" text-anchor="middle">FX Ledger Store</text></g>
 </g>
 </g>
 </g>
-<rect class="lane" x="530" y="20" width="220" height="110" rx="6"/><text class="ll" x="540" y="44">Outside this pattern</text><g class="node outside" data-id="FXPRD00002-0001"><title>FX Order API</title><rect class="box" x="540" y="60" width="200" height="60" rx="6"/><text class="ttl" x="640" y="80" text-anchor="middle">FX Order API</text><text class="cap" x="640" y="96" text-anchor="middle">FX Storefront Pattern</text></g>
-<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00002-0001"><title>FX Order API checks own health FX Order API</title><path class="ln" d="M664.0 60.0 C664.0 36.0 770.0 78.0 740.0 78.0"/></g>
-<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00010-0001"><title>FX Order API posts ledger entries FX Shared Ledger</title><path class="ln" d="M640 120 L640 130 L320 130 L320 120 L150 120 L150 130"/></g>
-<g class="edge" data-from="FXPRD00010-0001" data-to="FXDST00002-0001"><title>FX Shared Ledger persists ledger entries FX Ledger Store</title><path class="ln" d="M150 190 L150 195 L320 195 L320 295 L150 295 L150 300"/></g>
+<rect class="lane" x="530" y="20" width="220" height="210" rx="6"/><text class="ll" x="540" y="44">Outside this pattern</text><g class="node outside" data-id="FXPRD00002-0001"><title>FX Order API</title><rect class="box" x="540" y="110" width="200" height="60" rx="6"/><text class="ttl" x="640" y="130" text-anchor="middle">FX Order API</text><text class="cap" x="640" y="146" text-anchor="middle">FX Storefront Pattern</text></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00002-0001"><title>FX Order API checks own health FX Order API</title><path class="ln" d="M740 128 C776 116 776 164 740 152"/></g>
+<g class="edge" data-from="FXPRD00002-0001" data-to="FXPRD00010-0001"><title>FX Order API posts ledger entries FX Shared Ledger</title><path class="ln" d="M640 170 L640 176 L320 176 L320 196 L150 196 L150 250"/></g>
+<g class="edge" data-from="FXPRD00010-0001" data-to="FXDST00002-0001"><title>FX Shared Ledger persists ledger entries FX Ledger Store</title><path class="ln" d="M150 310 L150 316 L320 316 L320 526 L150 526 L150 580"/></g>
 </svg>
