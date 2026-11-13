@@ -525,11 +525,17 @@ class Model:
             if container_uid:
                 if members:
                     self.drawn_container_uids.add(container_uid)
-                elif container_uid not in drawn_elsewhere and any(n.uid == container_uid for n in self._nodes):
-                    # D29: nothing is drawn for this group, so its substrate would vanish with its edges; keep it as a box.
-                    self.warnings.append(
-                        f"substrate of a group with no drawable objects kept as a box: {self.name(container_uid)} ({container_uid}) in {group_name}"
-                    )
+                elif container_uid not in drawn_elsewhere:
+                    # D29: nothing is drawn for this group. A substrate that is a node stays a box; any other
+                    # substrate has no node, so say plainly that it is not drawn.
+                    if any(n.uid == container_uid for n in self._nodes):
+                        self.warnings.append(
+                            f"substrate of a group with no drawable objects kept as a box: {self.name(container_uid)} ({container_uid}) in {group_name}"
+                        )
+                    else:
+                        self.warnings.append(
+                            f"substrate of a group with no drawable objects is not drawn: {self.name(container_uid)} ({container_uid}) in {group_name}"
+                        )
             zone_of = group["zone_of"]
             buckets: dict[str, list[str]] = {}
             unrecorded: list[str] = []
@@ -1302,7 +1308,8 @@ DEPLOY_COL_GAP = 140  # wide enough for 25 parallel vertical edge tracks between
 LOOP_REACH = 36  # how far a _loop_path loop reaches right of its box, before the per-loop grow
 DEPLOY_ZONE = 90  # free band around every row of boxes and every group; edge runs live here
 DEPLOY_LEVEL = 6  # distance between edge levels in a free band and from the band edges
-DEPLOY_STUB_STEPS = (5, 10, 15, 20, 25)
+DEPLOY_STUB_STEPS = (5, 10, 15, 20, 25, 30)
+DEPLOY_BORDER_CLEAR = 4  # vertical edge runs keep this far from every container border
 DEPLOY_TRACKS = (0,) + tuple(v for k in range(1, 13) for v in (-5 * k, 5 * k))  # 25 tracks, 5px apart
 DEPLOY_LANE_HEAD = 30
 DEPLOY_TARGET_HEAD = 30
@@ -1354,7 +1361,8 @@ def _route_deployment_edges(
     gutters: list[int],
     lane_gutter: int | None,
     lane_uids: set[str],
-    reserved: list[tuple[int, int, int, int]],
+    reserved: list[tuple[str, int, int, int, int]],
+    borders: list[int],
 ) -> dict[int, list[tuple[float, float]]]:
     """Orthogonal route per edge, like _route_edges, over boxes and containers of any size.
 
@@ -1384,16 +1392,20 @@ def _route_deployment_edges(
             slots.setdefault((e.source, sa), []).append((rects[e.target][0], e.target, i))
         if e.target not in containers:
             slots.setdefault((e.target, sb), []).append((rects[e.source][0], e.source, i))
+    looped = {r[0] for r in reserved}
     offset: dict[tuple[int, str], int] = {}
-    for (uid, _side), items in slots.items():
+    for (uid, side), items in slots.items():
         items.sort()
         span = rects[uid][2] * 4 // 5
         for rank, (_x, _other, i) in enumerate(items):
-            offset[(i, uid)] = span * (rank + 1) // (len(items) + 1) // GRID * GRID - span // 2
+            if uid in looped and side == "top":  # keep top stubs left of the self-loop, which starts at 62% of the width
+                offset[(i, uid)] = 100 * (rank + 1) // (len(items) + 1) // GRID * GRID - 90
+            else:
+                offset[(i, uid)] = span * (rank + 1) // (len(items) + 1) // GRID * GRID - span // 2
 
     taken_v: dict[float, list[tuple[float, float]]] = {}  # x -> vertical spans in use
     taken_h: dict[tuple[Any, float], list[tuple[float, float]]] = {}  # (pool key, y) -> x ranges in use
-    for x0, x1, y0, y1 in reserved:  # room kept clear for self-relationship loops
+    for _loop_uid, x0, x1, y0, y1 in reserved:  # room kept clear for self-relationship loops
         for rx in range(x0 - x0 % 5, x1 + 6, 5):
             taken_v.setdefault(rx, []).append((y0, y1))
         for uid, (ux, uy, uw, uh) in rects.items():
@@ -1406,6 +1418,8 @@ def _route_deployment_edges(
                     level_y += DEPLOY_LEVEL
 
     def vertical_free(x: float, lo: float, hi: float) -> bool:
+        if any(abs(x - b) < DEPLOY_BORDER_CLEAR for b in borders):
+            return False  # never ride on or next to a container border
         return all(hi <= a0 or a1 <= lo for a0, a1 in taken_v.get(x, []))
 
     def level(pool: Pool, x0: float, x1: float, extra: list) -> float:
@@ -1450,6 +1464,7 @@ def _route_deployment_edges(
                 options = [lane_gutter]
         else:
             options = gutters
+        options = options or [max(ax, bx) + DEPLOY_COL_GAP // 2]
         ranked = sorted(options, key=lambda g: (abs(ax - g) + abs(bx - g), g))
 
         def plan(gx: float) -> tuple[float, float]:
@@ -1506,7 +1521,9 @@ def render_deployment_svg(model: DiagramModel) -> str:
     step_y = LOGICAL_BOX_H + zone
     outline = _deployment_outline(model)
     lane_sizes = [len(lane.members) for _t, groups in outline for g in groups for lane in g.lanes]
-    used = min(DEPLOY_COLUMNS, max(lane_sizes, default=1))
+    in_lanes = {uid for _t, groups in outline for g in groups for lane in g.lanes for uid in lane.members}
+    stray_count = len([n for n in model.deployment_nodes if not n.outside and n.uid not in in_lanes])
+    used = min(DEPLOY_COLUMNS, max(lane_sizes + [stray_count], default=1))
     inner_w = used * LOGICAL_BOX_W + (used - 1) * DEPLOY_COL_GAP
     lane_w = inner_w + 2 * DEPLOY_PAD + loop_room
     group_w = lane_w + 2 * DEPLOY_PAD
@@ -1612,16 +1629,16 @@ def render_deployment_svg(model: DiagramModel) -> str:
         stray_h = head + rows * LOGICAL_BOX_H + (rows - 1) * zone + zone
         sy = bottom + DEPLOY_TARGET_GAP if outline else LOGICAL_MARGIN
         ztext = "".join(
-            f'<text class="zc" x="{LOGICAL_MARGIN + 10}" y="{sy + 19 + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(c_lines)
+            f'<text class="zc" x="{LOGICAL_MARGIN + 3 * DEPLOY_PAD}" y="{sy + 19 + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(c_lines)
         )
         body.append(
-            f'<g class="stray"><rect class="lane stray" x="{LOGICAL_MARGIN}" y="{sy}" width="{lane_w}" height="{stray_h}" rx="6"/>{ztext}'
+            f'<g class="stray"><rect class="lane stray" x="{LOGICAL_MARGIN + 2 * DEPLOY_PAD}" y="{sy}" width="{lane_w}" height="{stray_h}" rx="6"/>{ztext}'
         )
         lows = [sy + caption_end] + [sy + head + (r - 1) * step_y + LOGICAL_BOX_H for r in range(1, rows + 1)]
         highs = [sy + head + r * step_y for r in range(rows)] + [sy + stray_h]
         for i, node in enumerate(strays):
             row, col = divmod(i, DEPLOY_COLUMNS)
-            bx, by = LOGICAL_MARGIN + DEPLOY_PAD + col * step_x, sy + head + row * step_y
+            bx, by = LOGICAL_MARGIN + 3 * DEPLOY_PAD + col * step_x, sy + head + row * step_y
             pos[node.uid] = (bx, by)
             rects[node.uid] = (bx, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
             pools[node.uid] = {
@@ -1631,11 +1648,11 @@ def render_deployment_svg(model: DiagramModel) -> str:
             body.append(_node_svg(node, bx, by))
         body.append("</g>")
         bottom = sy + stray_h
-    right = LOGICAL_MARGIN + lane_w if strays and not outline else (LOGICAL_MARGIN + target_w if outline else LOGICAL_MARGIN + 2 * LOGICAL_BOX_W)
+    right = LOGICAL_MARGIN + target_w if outline else (LOGICAL_MARGIN + 2 * DEPLOY_PAD + lane_w if strays else LOGICAL_MARGIN + 2 * LOGICAL_BOX_W)
     first_col = LOGICAL_MARGIN + 3 * DEPLOY_PAD
     # Channels between box columns plus one right of the last column; none left of the first column, where
     # the figure edge is too close for parallel tracks.
-    gutters = [first_col - DEPLOY_COL_GAP // 2 + k * step_x for k in range(1, used + 1)] if outline else []
+    gutters = [first_col - DEPLOY_COL_GAP // 2 + k * step_x for k in range(1, used + 1)] if outline or strays else []
     if gutters:
         right = max(right, gutters[-1] + max(DEPLOY_TRACKS) + 10)
     outer = [n for n in model.deployment_nodes if n.outside]
@@ -1675,18 +1692,21 @@ def render_deployment_svg(model: DiagramModel) -> str:
             f'height="{lane_h}" rx="6"/><text class="ll" x="{lane_x}" y="{top + 24}">Outside this pattern</text>'
             + "".join(_node_svg(node, *pos[node.uid]) for node in ordered)
         )
-        right = lane_x + LOGICAL_BOX_W + LOGICAL_BAND_PAD
+        right = lane_x + LOGICAL_BOX_W + LOGICAL_BAND_PAD + loop_room
         bottom = max(bottom, top + lane_h)
+    borders = sorted(
+        {int(v) for m in re.findall(r'<rect class="(?:tgt|grp|zl|lane stray|lane)" x="(-?\d+)" y="-?\d+" width="(\d+)"', "".join(body) + lane_box) for v in (m[0], int(m[0]) + int(m[1]))}
+    )
     loop_count: dict[str, int] = {}
-    reserved: list[tuple[int, int, int, int]] = []
+    reserved: list[tuple[str, int, int, int, int]] = []
     for edge in model.edges:
         if edge.source == edge.target and edge.source in pos:
             n = loop_count.get(edge.source, 0)
             loop_count[edge.source] = n + 1
             bx, by = pos[edge.source]
             # x range and y range (above the box top to its right-hand side) the loop curve may touch
-            reserved.append((bx + int(LOGICAL_BOX_W * 0.6), bx + LOGICAL_BOX_W + LOOP_REACH + 14 * n, by - 30 - 14 * n, by + LOGICAL_BOX_H // 2))
-    routes = _route_deployment_edges(model, rects, pools, container_ids, gutters, lane_gutter, lane_uids, reserved)
+            reserved.append((edge.source, bx + int(LOGICAL_BOX_W * 0.6), bx + LOGICAL_BOX_W + LOOP_REACH + 14 * n, by - 30 - 14 * n, by + LOGICAL_BOX_H // 2))
+    routes = _route_deployment_edges(model, rects, pools, container_ids, gutters, lane_gutter, lane_uids, reserved, borders)
     edges: list[str] = []
     loops: dict[str, int] = {}
     for number, edge in enumerate(model.edges):

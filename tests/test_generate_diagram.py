@@ -1251,13 +1251,69 @@ class LaterStoryTests(unittest.TestCase):
         catalog = load_catalog(FIXTURE)
         for sdp in generate_diagram.sdps(catalog):
             svg = deployment_svg(catalog, sdp["uid"])
-            rects = node_rects(svg)
-            for match in re.finditer(r'data-from="([^"]*)" data-to="\1"><title>[^<]*</title><path class="ln" d="M[\d. ]+ C', svg):
-                x, y, w, h = rects[match.group(1).replace("&amp;", "&")]
-                for _s, _t, pts in edge_polylines(svg):
+            routed = edge_polylines(svg)
+            for match in re.finditer(r'<g class="edge" data-from="([^"]*)" data-to="\1"><title>[^<]*</title><path class="ln" d="(M[^"]*)"', svg):
+                numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", match.group(2))]
+                x0, x1, y0, y1 = min(numbers[0::2]), max(numbers[0::2]), min(numbers[1::2]), max(numbers[1::2])
+                for _s, _t, pts in routed:
                     for (ax, ay), (bx, by) in zip(pts, pts[1:]):
-                        crosses = min(ax, bx) < x + w + 50 and max(ax, bx) > x + w and min(ay, by) < y + h and max(ay, by) > y
-                        self.assertFalse(crosses, f"edge runs through the self-loop of {match.group(1)}")
+                        crosses = min(ax, bx) <= x1 and max(ax, bx) >= x0 and min(ay, by) <= y1 and max(ay, by) >= y0
+                        self.assertFalse(crosses, f"edge segment {(ax, ay, bx, by)} runs through the self-loop of {match.group(1)}")
+
+    def test_deployment_rects_inside_viewbox(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        objects = [component("A-1", "Alpha"), pattern({"G": ["A-1"]}), relationship("R-1", "A-1", "A-1", "loop")]
+        small = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svgs = [deployment_svg(catalog, sdp["uid"]) for sdp in generate_diagram.sdps(catalog)] + [deployment_svg(small, "SDP-1")]
+        for svg in svgs:
+            width, height = (int(v) for v in re.search(r'viewBox="0 0 (\d+) (\d+)"', svg).groups())
+            for x, y, w, h in re.findall(r'<rect class="[^"]*" x="(-?\d+)" y="(-?\d+)" width="(\d+)" height="(\d+)"', svg):
+                self.assertGreaterEqual(int(x), 0)
+                self.assertLessEqual(int(x) + int(w), width, (x, w, width))
+                self.assertLessEqual(int(y) + int(h), height)
+
+    def test_vertical_runs_keep_clear_of_container_borders(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        for sdp in generate_diagram.sdps(catalog):
+            svg = deployment_svg(catalog, sdp["uid"])
+            borders = []
+            for x, y, w, h in re.findall(r'<rect class="(?:tgt|grp|zl|lane stray|lane)" x="(-?\d+)" y="(-?\d+)" width="(\d+)" height="(\d+)"', svg):
+                borders += [(int(x), int(y), int(y) + int(h)), (int(x) + int(w), int(y), int(y) + int(h))]
+            for _s, _t, pts in edge_polylines(svg):
+                for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+                    if ax != bx:
+                        continue
+                    for bxx, by0, by1 in borders:
+                        if min(ay, by) < by1 and max(ay, by) > by0:
+                            self.assertGreaterEqual(abs(ax - bxx), generate_diagram.DEPLOY_BORDER_CLEAR, f"vertical run at x={ax} beside border x={bxx}")
+
+    def test_stray_substrates_joined_by_an_edge_render(self) -> None:
+        objects = [
+            plain("RTC-1", "runtime_service", "One"),
+            plain("RTC-2", "runtime_service", "Two"),
+            pattern({"E1": [], "E2": []}),
+            relationship("R-1", "RTC-1", "RTC-2", "talks"),
+        ]
+        objects[2]["serviceGroups"][0]["substrate"] = "RTC-1"
+        objects[2]["serviceGroups"][1]["substrate"] = "RTC-2"
+        for name in ("RTC-1", "RTC-2"):
+            objects[2]["serviceGroups"][0 if name == "RTC-1" else 1]["deployableObjects"] = [{"ref": name}]
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        xml.dom.minidom.parseString(svg)
+        self.assertEqual(len(edge_polylines(svg)), 1)
+        self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+
+    def test_unplaced_substrate_of_empty_group_is_warned(self) -> None:
+        objects = [component("P-1", "Alpha"), plain("RTC-9", "runtime_service", "Lonely"), pattern({"Full": ["P-1"], "Empty": []})]
+        objects[2]["serviceGroups"][1]["substrate"] = "RTC-9"
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        model = generate_diagram.build_diagram_model(cat, cat["SDP-1"], False)
+        self.assertEqual(
+            [w for w in model.warnings if w.startswith("substrate of a group")],
+            ["substrate of a group with no drawable objects is not drawn: Lonely (RTC-9) in Empty"],
+        )
+        self.assertNotIn('data-id="RTC-9"', deployment_svg(cat, "SDP-1"))
 
     def _borders_of(self, svg: str) -> tuple:
         rect = r'<rect class="%s" x="(-?\d+)" y="(-?\d+)" width="(\d+)" height="(\d+)"'
