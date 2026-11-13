@@ -27,7 +27,7 @@ LARGE_MAX_CROSSINGS = 869
 def edge_polylines(svg: str) -> list:
     """(from uid, to uid, [(x, y), ...]) for every routed edge; self-loop curves are skipped."""
     found = []
-    for match in re.finditer(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)"><title>[^<]*</title><path class="ln" d="(M[-\d. L]+)"/>', svg):
+    for match in re.finditer(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)"><title>[^<]*</title><path class="ln[^"]*" d="(M[-\d. L]+)"[^>]*/>', svg):
         numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", match.group(3))]
         found.append((match.group(1).replace("&amp;", "&"), match.group(2).replace("&amp;", "&"), list(zip(numbers[0::2], numbers[1::2]))))
     return found
@@ -143,6 +143,37 @@ def svg_of(page: str) -> str:
     match = re.search(r"<svg.*?</svg>", page, re.S)
     assert match, "page has no svg"
     return match.group(0)
+
+
+def svg_for(objects: list, view: str = "logical", uid: str = "SDP-1") -> str:
+    with tempfile.TemporaryDirectory() as tmp:
+        catalog = load_catalog(write_workspace(Path(tmp), objects))
+        return logical_svg(catalog, uid) if view == "logical" else deployment_svg(catalog, uid)
+
+
+def class_of(svg: str, uid: str) -> str:
+    """The class attribute of the node or group element whose data-id is uid."""
+    match = re.search(r'<g class="((?:node|group)[^"]*)"[^>]*data-id="' + re.escape(uid) + '"', svg)
+    assert match, f"no element with data-id {uid}"
+    return match.group(1)
+
+
+def edge_classes(svg: str) -> dict:
+    """(from, to) -> class attribute of the edge path, for edges whose pair is unique in the figure."""
+    return {
+        (s, t): cls
+        for s, t, cls in re.findall(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)"><title>[^<]*</title><path class="([^"]*)"', svg)
+    }
+
+
+def edge_paths(svg: str) -> dict:
+    """(from, to) -> the path's attribute text after d, which holds the arrowhead markers."""
+    return {
+        (s, t): attrs
+        for s, t, attrs in re.findall(
+            r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)"><title>[^<]*</title><path class="[^"]*" d="[^"]*"([^>]*)/>', svg
+        )
+    }
 
 
 ALLOWED_ONE_HOP = [
@@ -1809,33 +1840,165 @@ class LaterStoryTests(unittest.TestCase):
         self.assertLess(time.monotonic() - started, 30)
         xml.dom.minidom.parseString(svg)
 
-    @unittest.skip("enabled in S7")
     def test_edge_stroke_classes(self) -> None:
-        self.fail("not implemented until S7")
+        objects = [component(f"C-{n}", n) for n in "ABCD"] + [pattern({"G": ["C-A", "C-B", "C-C", "C-D"]})]
+        objects += [
+            relationship("R-ASYNC", "C-A", "C-B", "a"),
+            relationship("R-EVENT", "C-B", "C-C", "e"),
+            relationship("R-SYNC", "C-C", "C-D", "s"),
+            relationship("R-NONE", "C-D", "C-A", "n"),
+        ]
+        objects[5]["direction"] = "asynchronous"
+        objects[6]["direction"] = "event"
+        objects[7]["direction"] = "synchronous"
+        classes = edge_classes(svg_for(objects))
+        self.assertIn("dashed", classes[("C-A", "C-B")])
+        self.assertIn("dotted", classes[("C-B", "C-C")])
+        self.assertEqual(classes[("C-C", "C-D")], "ln")
+        self.assertEqual(classes[("C-D", "C-A")], "ln")
+        self.assertNotIn("dashed", classes[("C-C", "C-D")])
+        self.assertNotIn("dotted", classes[("C-D", "C-A")])
+        deployment = svg_for(objects, view="deployment")
+        self.assertIn("dashed", edge_classes(deployment)[("C-A", "C-B")])
 
-    @unittest.skip("enabled in S7")
     def test_flow_arrowheads(self) -> None:
-        self.fail("not implemented until S7")
+        names = "ABCDEFGH"
+        objects = [component(f"C-{n}", n) for n in names] + [pattern({"G": [f"C-{n}" for n in names]})]
+        flows = {("A", "B"): "inbound", ("C", "D"): "bidirectional", ("E", "F"): "outbound", ("G", "H"): None}
+        for index, ((source, target), flow) in enumerate(flows.items()):
+            rel = relationship(f"R-{index}", f"C-{source}", f"C-{target}", source)
+            if flow:
+                rel["flow"] = flow
+            objects.append(rel)
+        svg = svg_for(objects)
+        paths = edge_paths(svg)
+        start_marker, end_marker = 'marker-start="url(#lg-start)"', 'marker-end="url(#lg-end)"'
+        self.assertIn(start_marker, paths[("C-A", "C-B")])
+        self.assertNotIn(end_marker, paths[("C-A", "C-B")])
+        self.assertIn(start_marker, paths[("C-C", "C-D")])
+        self.assertIn(end_marker, paths[("C-C", "C-D")])
+        self.assertIn(end_marker, paths[("C-E", "C-F")])
+        self.assertNotIn(start_marker, paths[("C-E", "C-F")])
+        self.assertIn(end_marker, paths[("C-G", "C-H")])
+        self.assertNotIn(start_marker, paths[("C-G", "C-H")])
+        self.assertIn('id="lg-start"', svg)
+        self.assertIn('id="lg-end"', svg)
 
-    @unittest.skip("enabled in S7")
     def test_unknown_flow_warning(self) -> None:
-        self.fail("not implemented until S7")
+        objects = [component("C-A", "A"), component("C-B", "B"), pattern({"G": ["C-A", "C-B"]})]
+        rel = relationship("REL-X", "C-A", "C-B", "sideways")
+        rel["flow"] = "sideways"
+        objects.append(rel)
+        model = model_of(objects)
+        self.assertIn("unknown flow 'sideways' on REL-X", model.warnings)
+        svg = svg_for(objects)
+        self.assertIn('marker-end="url(#lg-end)"', edge_paths(svg)[("C-A", "C-B")])
+        self.assertNotIn('marker-start="url(#lg-start)"', edge_paths(svg)[("C-A", "C-B")])
 
-    @unittest.skip("enabled in S7")
     def test_label_visibility_threshold(self) -> None:
-        self.fail("not implemented until S7")
+        def chain(count: int) -> str:
+            objects = [component(f"C-{n}", f"N{n}") for n in range(count + 1)]
+            objects.append(pattern({"G": [f"C-{n}" for n in range(count + 1)]}))
+            for n in range(count):
+                rel = relationship(f"R-{n}", f"C-{n}", f"C-{n + 1}", f"rel {n}")
+                if n == 0:
+                    rel["technology"] = "HTTPS"
+                objects.append(rel)
+            return svg_for(objects)
 
-    @unittest.skip("enabled in S7")
+        eight = chain(8)
+        self.assertEqual(eight.count('class="lb"'), 8)
+        self.assertNotIn('class="lb hov"', eight)
+        nine = chain(9)
+        self.assertEqual(nine.count('class="lb hov"'), 9)
+        self.assertNotIn('class="lb"', nine)
+        self.assertIn('<tspan class="tech"> / HTTPS</tspan>', eight)
+        self.assertIn(".lb .tech{font-weight:400}", eight)
+
     def test_node_type_chip_and_tech_line(self) -> None:
-        self.fail("not implemented until S7")
+        objects = [
+            component("C-P", "Api", language="Python"),
+            plain("D-1", "data_component", "Ledger", targetEngine="PostgreSQL"),
+            plain("TC-1", "technology_component", "Engine X"),
+            plain("S-1", "data_store_service", "Cache", productName="Aurora"),
+            plain("S-2", "data_store_service", "Queue", primaryTechnologyComponent="TC-1"),
+            plain("R-1", "runtime_service", "Runner", primaryTechnologyComponent="TC-MISSING"),
+            plain("N-1", "network_service", "Edge", productName="Gateway Pro"),
+            plain("G-1", "ai_gateway", "Llm"),
+            plain("H-1", "host", "Box", computePlatformComponent="TC-1"),
+            plain("H-2", "host", "Box two", operatingSystemComponent="TC-MISSING"),
+        ]
+        ids = [o["uid"] for o in objects if o["type"] != "technology_component"]
+        objects.append(pattern({"G": ids}))
+        external = relationship("R-EXT", "C-P", "", "calls out")
+        external["externalTarget"] = "Partner API"
+        objects.append(external)
+        catalog = {o["uid"]: o for o in objects}
+        tech = {uid: generate_diagram.technology_line(catalog, catalog[uid]) for uid in ids}
+        self.assertEqual(tech["C-P"], "Python")
+        self.assertEqual(tech["D-1"], "PostgreSQL")
+        self.assertEqual(tech["S-1"], "Aurora")
+        self.assertEqual(tech["S-2"], "Engine X")
+        self.assertEqual(tech["R-1"], "TC-MISSING")
+        self.assertEqual(tech["N-1"], "Gateway Pro")
+        self.assertEqual(tech["G-1"], "")
+        self.assertEqual(tech["H-1"], "Engine X")
+        self.assertEqual(tech["H-2"], "TC-MISSING")
+        svg = svg_for(objects)
+        for chip in ("component", "data", "runtime", "network", "ai gateway", "host", "data store", "external"):
+            self.assertRegex(svg, rf'class="chip-t" x="\d+" y="\d+">{chip}</text>', chip)
+        self.assertIn('class="tech-line"', svg)
+        self.assertRegex(svg, r'class="tech-line" x="\d+" y="\d+">TC-MISSING</text>')
+        self.assertRegex(svg, r'class="tech-line" x="\d+" y="\d+">Python</text>')
 
-    @unittest.skip("enabled in S7")
     def test_lifecycle_and_theme_css(self) -> None:
-        self.fail("not implemented until S7")
+        objects = [
+            component("C-RET", "Old", lifecycleStatus="retired"),
+            component("C-DEP", "Aging", lifecycleStatus="deprecated"),
+            plain("SUB-1", "runtime_service", "Host Pool", lifecycleStatus="deprecated"),
+            pattern({"G": ["C-RET", "C-DEP"]}),
+        ]
+        objects[3]["serviceGroups"][0]["substrate"] = "SUB-1"
+        logical = svg_for(objects)
+        self.assertIn("ret", class_of(logical, "C-RET").split())
+        self.assertIn("dep", class_of(logical, "C-DEP").split())
+        deployment = svg_for(objects, view="deployment")
+        self.assertIn("dep", class_of(deployment, "SUB-1").split())
+        for svg in (logical, deployment):
+            self.assertIn("--chip-component:#dbeafe", svg)
+            self.assertIn("@media (prefers-color-scheme:dark)", svg)
+            self.assertIn('[data-theme="dark"]', svg)
+            self.assertIn("--chip-component:#1e3a5f", svg)
+            self.assertIn(".dep .box{stroke:var(--amber,#a85a00)}", svg)
 
-    @unittest.skip("enabled in S7")
     def test_svg_data_id_parity(self) -> None:
-        self.fail("not implemented until S7")
+        catalog = load_catalog(FIXTURE)
+        shared_seen = 0
+        for sdp in generate_diagram.sdps(catalog):
+            with self.subTest(sdp=sdp["uid"]):
+                model = generate_diagram.build_diagram_model(catalog, sdp, False)
+                logical = logical_svg(catalog, sdp["uid"])
+                deployment = deployment_svg(catalog, sdp["uid"])
+                logical_uids = {n.uid for n in model.nodes}
+                deployment_uids = {n.uid for n in model.deployment_nodes}
+                deployment_uids |= {c.uid for c in model.containers if c.uid and c.drawn}
+                shared = logical_uids & deployment_uids
+                shared_seen += len(shared)
+                for uid in sorted(shared):
+                    self.assertIn(f'data-id="{xml_escape(uid)}"', logical)
+                    self.assertIn(f'data-id="{xml_escape(uid)}"', deployment)
+        self.assertGreater(shared_seen, 0)
+
+    def test_dependency_edges_drawn_like_relationships(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        sdp = next(p for p in generate_diagram.sdps(catalog) if p["uid"] == "FXSDP00001-0001")
+        model = generate_diagram.build_diagram_model(catalog, sdp, False)
+        derived = [e for e in model.edges if e.derived]
+        self.assertTrue(derived)
+        svg = logical_svg(catalog, sdp["uid"])
+        for edge in derived:
+            self.assertIn(f'data-from="{xml_escape(edge.source)}" data-to="{xml_escape(edge.target)}"', svg)
+        self.assertNotIn("runs on", svg)
 
     @unittest.skip("enabled in S8")
     def test_page_section_order(self) -> None:

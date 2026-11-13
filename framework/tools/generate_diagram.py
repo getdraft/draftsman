@@ -117,6 +117,8 @@ class DiagramNode:
     band: str = ""  # D4 band; empty for externals, which have no catalog type
     derived: bool = False  # placed entry without diagramTier (D4)
     caption: str = ""  # D5 caption for outside-lane nodes
+    life: str = ""  # lifecycleStatus of the object; empty for external nodes (D12)
+    tech: str = ""  # technology line of the box (D11)
 
 
 @dataclass
@@ -157,6 +159,7 @@ class DiagramContainer:
     lanes: list[DiagramLane] = field(default_factory=list)
     name: str = ""  # the substrate object's recorded name, for edge tooltips; "" when no object resolves
     drawn: bool = False  # D6: False for a group with nothing to draw, which the caption names instead
+    life: str = ""  # lifecycleStatus of the container's object, for the retired and deprecated classes (D12)
 
 
 @dataclass
@@ -183,6 +186,9 @@ class DiagramModel:
 ONE_HOP_TYPES = frozenset(
     {"product_component", "data_component", "data_store_service", "runtime_service", "network_service", "ai_gateway", "host"}
 )
+
+# D13: flow values from the relationship schema; any other recorded value is treated as absent, with a warning.
+FLOWS = ("outbound", "inbound", "bidirectional")
 
 # D7: types whose runsOn may name the substrate of their service group.
 COMPONENT_TYPES = frozenset({"product_component", "data_component"})
@@ -243,6 +249,33 @@ def _other_pattern_names(catalog: dict[str, dict[str, Any]], sdp: dict[str, Any]
                     if all(seen != position for seen, _name in places):
                         places.append((position, label))
     return {uid: [name for _position, name in places] for uid, places in found.items()}
+
+
+def technology_line(catalog: dict[str, dict[str, Any]], obj: dict[str, Any]) -> str:
+    """D11: the technology line of a node box. The inventory column of the page uses the same rule.
+
+    A reference that does not resolve is shown as its raw uid. Empty means nothing is recorded.
+    """
+
+    def named(value: Any) -> str:
+        uid = clean(value)
+        if not uid:
+            return ""
+        target = catalog.get(uid)
+        if isinstance(target, dict):
+            return clean(target.get("name")) or uid
+        return uid
+
+    kind = str(obj.get("type", ""))
+    if kind == "product_component":
+        return clean(obj.get("language"))
+    if kind == "data_component":
+        return clean(obj.get("targetEngine"))
+    if kind in ("data_store_service", "runtime_service", "network_service", "ai_gateway"):
+        return clean(obj.get("productName")) or named(obj.get("primaryTechnologyComponent"))
+    if kind == "host":
+        return named(obj.get("computePlatformComponent")) or named(obj.get("operatingSystemComponent"))
+    return ""
 
 
 class Model:
@@ -384,6 +417,8 @@ class Model:
                     placed=True,
                     band=tier or type_band(obj.get("type")),
                     derived=not tier,
+                    life=lifecycle(obj),
+                    tech=technology_line(catalog, obj),
                 )
             )
         outer: list[DiagramNode] = []
@@ -397,6 +432,8 @@ class Model:
                     outside=True,
                     band=type_band(obj.get("type")),
                     caption=self._caption(uid),
+                    life=lifecycle(obj),
+                    tech=technology_line(catalog, obj),
                 )
             )
         for ext_id, text in externals.items():
@@ -416,6 +453,10 @@ class Model:
         self.relationship_rows: list[dict[str, str]] = []
         drawn: set[int] = set()  # ids of drawn relationship dicts; membership only
         for rel in recorded:
+            flow = str(rel.get("flow") or "")
+            if flow and flow not in FLOWS:  # D13: an unknown flow is absent flow, with a warning
+                self.warnings.append(f"unknown flow '{flow}' on {rel.get('uid', '')}")
+                flow = ""
             source, target = _endpoint(rel, "source"), _endpoint(rel, "target")
             if target:
                 end = target
@@ -435,7 +476,7 @@ class Model:
                 uid=str(rel.get("uid", "")),
                 origin="inline dependency" if dependency else "relationship object",
                 direction=str(rel.get("direction") or ""),
-                flow=str(rel.get("flow") or ""),
+                flow=flow,
                 technology=clean(rel.get("technology")),
             )
             self.edges.append(edge)
@@ -596,6 +637,7 @@ class Model:
                     lanes=lanes,
                     name=self.name(container_uid) if container_uid else "",
                     drawn=drawable[group_index],
+                    life=lifecycle(catalog[container_uid]) if container_uid else "",
                 )
             )
 
@@ -1260,41 +1302,222 @@ def _loop_path(x: float, y: float, grow: float) -> str:
     )
 
 
+# --------------------------------------------------------------------------- vocabulary (D11, D12, D13)
+# Type chip label and CSS class key for each node type (D11). Unknown types get the chip "other" with the raw type name.
+CHIP_LABELS = {
+    "product_component": "component",
+    "data_component": "data",
+    "data_store_service": "data store",
+    "runtime_service": "runtime",
+    "network_service": "network",
+    "ai_gateway": "ai gateway",
+    "host": "host",
+    "external": "external",
+}
+CHIP_KEYS = ("component", "data", "data-store", "runtime", "network", "ai-gateway", "host", "external", "other")
+
+# D12: every colour is a custom property with a light and a dark value. The dark values apply under
+# prefers-color-scheme unless the page forces light, and under an explicit data-theme="dark".
+THEME_TOKENS = {
+    "surface": ("#ffffff", "#18202b"),
+    "ink": ("#1a2230", "#e4e9f0"),
+    "muted": ("#586374", "#97a2b3"),
+    "line": ("#7a8696", "#8c99ab"),
+    "box": ("#ffffff", "#18202b"),
+    "box-line": ("#555555", "#8c99ab"),
+    "band": ("#f3f5f8", "#121923"),
+    "band-line": ("#c3cad4", "#3c485a"),
+    "lane": ("#fbf6ec", "#221d12"),
+    "lane-line": ("#d8c9a8", "#6b5d3f"),
+    "target": ("#eef1f6", "#121923"),
+    "target-line": ("#9aa6b6", "#3c485a"),
+    "group": ("#f8f9fb", "#141b25"),
+    "group-line": ("#7a8696", "#4a586b"),
+    "zone-line": ("#c3cad4", "#3c485a"),
+    "amber": ("#a85a00", "#f2a64e"),
+    "chip-component": ("#dbeafe", "#1e3a5f"),
+    "chip-data": ("#dcfce7", "#14532d"),
+    "chip-data-store": ("#ccfbf1", "#134e4a"),
+    "chip-runtime": ("#ede9fe", "#4c1d95"),
+    "chip-network": ("#fef3c7", "#713f12"),
+    "chip-ai-gateway": ("#fce7f3", "#831843"),
+    "chip-host": ("#e5e7eb", "#374151"),
+    "chip-external": ("#f1f5f9", "#0f172a"),
+    "chip-other": ("#f5f5f4", "#292524"),
+    "chip-ink": ("#1a2230", "#e4e9f0"),
+}
+
+
+def _theme_css() -> str:
+    light = "".join(f"--{name}:{pair[0]};" for name, pair in THEME_TOKENS.items())
+    dark = "".join(f"--{name}:{pair[1]};" for name, pair in THEME_TOKENS.items())
+    return (
+        f":root{{{light}}}"
+        "@media (prefers-color-scheme:dark){:root:not([data-theme=\"light\"]){" + dark + "}}"
+        ":root[data-theme=\"dark\"]{" + dark + "}"
+    )
+
+
+_FIGURE_CSS = (
+    ".band{fill:var(--band);stroke:var(--band-line)}"
+    ".lane{fill:var(--lane);stroke:var(--lane-line);stroke-dasharray:6 4}"
+    ".bl,.ll{font:600 11px sans-serif;fill:var(--muted)}"
+    ".tgt{fill:var(--target);stroke:var(--target-line);stroke-width:1.4}"
+    ".grp{fill:var(--group);stroke:var(--group-line)}"
+    ".zl{fill:var(--surface);stroke:var(--zone-line);stroke-dasharray:3 3}"
+    ".tl{font:700 12px sans-serif;fill:var(--ink)}"
+    ".gl,.zc{font:600 11px sans-serif;fill:var(--muted)}"
+    ".gc{font:600 12px sans-serif;fill:var(--ink)}"
+    ".box{fill:var(--box);stroke:var(--box-line);stroke-width:1.4}"
+    ".ttl{font:600 12px sans-serif;fill:var(--ink)}"
+    ".cap{font:10px sans-serif;fill:var(--muted)}"
+    ".dashed .box,.group.dashed .grp{stroke-dasharray:5 3}"
+    ".ret .box{stroke-dasharray:5 3;opacity:.6}.dep .box{stroke:var(--amber)}"
+    ".ret .grp{stroke-dasharray:5 3;opacity:.6}.dep .grp{stroke:var(--amber)}"
+    + "".join(f".chip-{key}{{fill:var(--chip-{key})}}" for key in CHIP_KEYS)
+    + ".chip-t{font:600 9px sans-serif;fill:var(--chip-ink)}"
+    ".tech-line{font:9px sans-serif;fill:var(--muted)}"
+    ".ln{fill:none;stroke:var(--line);stroke-width:1.4}"
+    ".ln.dashed{stroke-dasharray:6 4}"
+    ".ln.dotted{stroke-dasharray:1 3;stroke-linecap:round;stroke-width:1.8}"
+    ".mk{fill:var(--line)}"
+    ".lb{font:600 10.5px sans-serif;fill:var(--muted);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}"
+    ".lb .tech{font-weight:400}"
+    ".lb.hov{display:none}"
+    ".edge:hover .lb.hov,.edge.on .lb.hov{display:inline}"
+)
+def _with_fallbacks(css: str) -> str:
+    """Each var(--token) gets its light value as fallback, so viewers without custom properties still draw colour."""
+    return re.sub(r"var\(--([a-z0-9-]+)\)", lambda m: f"var(--{m.group(1)},{THEME_TOKENS[m.group(1)][0]})", css)
+
+
+SVG_STYLE = _theme_css() + _with_fallbacks(_FIGURE_CSS)
+
+
+def chip_label(node_type: str) -> str:
+    return CHIP_LABELS.get(node_type, node_type.replace("_", " ") or "other")
+
+
+def chip_key(node_type: str) -> str:
+    return CHIP_LABELS[node_type].replace(" ", "-") if node_type in CHIP_LABELS else "other"
+
+
+def _clip(text: str, width: int) -> str:
+    return text if len(text) <= width else text[: max(1, width - 3)] + "..."
+
+
+def _marker_defs(prefix: str) -> str:
+    """Arrowheads for one figure (D13). ``-end`` points along the path; ``-start`` points back toward its start."""
+
+    def marker(suffix: str, orient: str) -> str:
+        return (
+            f'<marker id="{prefix}-{suffix}" viewBox="0 0 8 7" refX="8" refY="3.5" markerWidth="8" markerHeight="7" '
+            f'markerUnits="userSpaceOnUse" orient="{orient}"><polygon class="mk" points="0,0 8,3.5 0,7"/></marker>'
+        )
+
+    return "<defs>" + marker("end", "auto") + marker("start", "auto-start-reverse") + "</defs>"
+
+
+def _edge_marks(edge: DiagramEdge, prefix: str) -> tuple[str, str]:
+    """Path class and arrowhead attributes (D13).
+
+    Asynchronous draws dashed and event dotted; synchronous or absent is solid. The arrowhead is at the target for
+    outbound or absent flow, at the source for inbound, and at both ends for bidirectional.
+    """
+    cls = "ln"
+    if edge.direction == "asynchronous":
+        cls += " dashed"
+    elif edge.direction == "event":
+        cls += " dotted"
+    marks = ""
+    if edge.flow in ("", "outbound", "bidirectional"):
+        marks += f' marker-end="url(#{prefix}-end)"'
+    if edge.flow in ("inbound", "bidirectional"):
+        marks += f' marker-start="url(#{prefix}-start)"'
+    return cls, marks
+
+
+def _polyline_mid(pts: list) -> tuple:
+    """The point halfway along an orthogonal polyline, by length; edge labels sit there."""
+    total = sum(abs(bx - ax) + abs(by - ay) for (ax, ay), (bx, by) in zip(pts, pts[1:]))
+    if total == 0:
+        return pts[0]
+    half = total / 2
+    walked = 0.0
+    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+        seg = abs(bx - ax) + abs(by - ay)
+        if seg and walked + seg >= half:
+            t = (half - walked) / seg
+            return (ax + (bx - ax) * t, ay + (by - ay) * t)
+        walked += seg
+    return pts[-1]
+
+
+def _edge_label(edge: DiagramEdge, mid: tuple, cls: str) -> str:
+    """Label, then the recorded technology in a lighter weight (D13). Empty when neither is recorded."""
+    label, tech = clean(edge.label), clean(edge.technology)
+    if not label and not tech:
+        return ""
+    body = xml_text(label) if label else ""
+    if tech:
+        body += '<tspan class="tech">' + (" / " if label else "") + xml_text(tech) + "</tspan>"
+    return f'<text class="{cls}" x="{mid[0]:.1f}" y="{mid[1] - 4:.1f}" text-anchor="middle">{body}</text>'
+
+
 def _node_svg(node: DiagramNode, x: int, y: int) -> str:
-    """One node box, shared by the logical and deployment figures."""
+    """One node box, shared by the logical and deployment figures (D11, D12).
+
+    The top row holds the type chip and the technology line beside it. The name takes at most two lines. An
+    outside-lane box puts its caption on the bottom row. Retired and deprecated boxes carry those classes.
+    """
     cls = "node" + (" dashed" if node.derived else "") + (" outside" if node.outside else "") + (" external" if node.external else "")
+    if node.life == "retired":
+        cls += " ret"
+    elif node.life == "deprecated":
+        cls += " dep"
     lines = _fit_lines(node.name, 26, 2)
     mid = x + LOGICAL_BOX_W // 2
-    first = y + (20 if node.outside else 22 if len(lines) == 2 else 34)
+    first = y + (31 if len(lines) == 2 else 37)
+    label = chip_label(node.node_type)
+    chip_w = int(len(label) * 5.4) + 12
+    chip_x = x + 8
+    top = (
+        f'<rect class="chip chip-{chip_key(node.node_type)}" x="{chip_x}" y="{y + 5}" width="{chip_w}" height="13" rx="3"/>'
+        f'<text class="chip-t" x="{chip_x + 6}" y="{y + 15}">{xml_text(label)}</text>'
+    )
+    tech = clean(node.tech)
+    room = int((LOGICAL_BOX_W - 16 - chip_w - 6) / 5.4)
+    if tech and room > 3:
+        top += f'<text class="tech-line" x="{chip_x + chip_w + 6}" y="{y + 15}">{xml_text(_clip(tech, room))}</text>'
     text = "".join(
-        f'<text class="ttl" x="{mid}" y="{first + 14 * i}" text-anchor="middle">{xml_text(line)}</text>'
+        f'<text class="ttl" x="{mid}" y="{first + 13 * i}" text-anchor="middle">{xml_text(line)}</text>'
         for i, line in enumerate(lines)
     )
     if node.outside and node.caption:
         cap = _fit_lines(node.caption, 34, 1)[0]
-        text += f'<text class="cap" x="{mid}" y="{first + 14 * (len(lines) - 1) + 16}" text-anchor="middle">{xml_text(cap)}</text>'
+        text += f'<text class="cap" x="{mid}" y="{y + 56}" text-anchor="middle">{xml_text(cap)}</text>'
     return (
         f'<g class="{cls}" data-id="{xml_text(node.uid)}"><title>{xml_text(node.name)}</title>'
-        f'<rect class="box" x="{x}" y="{y}" width="{LOGICAL_BOX_W}" height="{LOGICAL_BOX_H}" rx="6"/>{text}</g>'
+        f'<rect class="box" x="{x}" y="{y}" width="{LOGICAL_BOX_W}" height="{LOGICAL_BOX_H}" rx="6"/>{top}{text}</g>'
     )
 
 
 def render_logical_svg(model: DiagramModel) -> str:
-    """The logical application figure as a standalone SVG: plain solid edges only (S7 styles them).
+    """The logical application figure as a standalone SVG (D11 to D13).
 
     Deterministic (D15): no version, timestamp or path; ``<desc>`` holds the generator name and SDP uid only.
     """
     layout = layout_logical(model)
     by_uid = {n.uid: n for n in model.nodes}
+    shown = [e for e in model.edges if e.source in layout.pos and e.target in layout.pos]
+    label_cls = "lb hov" if len(shown) > LABEL_LIMIT else "lb"  # D13: more than 8 edges, labels on hover or pin
     out: list[str] = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {layout.width} {layout.height}" '
         f'width="{layout.width}" height="{layout.height}" role="img" aria-label="{LOGICAL_TITLE}">',
         f"<title>{LOGICAL_TITLE}</title>",
         f"<desc>{xml_text(GENERATOR_NAME)} {xml_text(model.sdp_uid)}</desc>",
-        "<style>.band{fill:#f3f5f8;stroke:#c3cad4}.lane{fill:#fbf6ec;stroke:#d8c9a8;stroke-dasharray:6 4}"
-        ".bl,.ll{font:600 11px sans-serif;fill:#586374}.box{fill:#ffffff;stroke:#555555;stroke-width:1.4}"
-        ".dashed .box{stroke-dasharray:5 3}.ttl{font:600 12px sans-serif;fill:#1a2230}.cap{font:10px sans-serif;fill:#586374}"
-        ".ln{fill:none;stroke:#7a8696;stroke-width:1.4}</style>",
+        _marker_defs("lg"),
+        f"<style>{SVG_STYLE}</style>",
     ]
     for band, y, height, width in layout.bands:
         out.append(f'<rect class="band" x="{LOGICAL_MARGIN}" y="{y}" width="{width}" height="{height}" rx="6"/>')
@@ -1311,15 +1534,18 @@ def render_logical_svg(model: DiagramModel) -> str:
             continue
         tip = xml_text(f"{by_uid[s].name} {edge.label or '(no label recorded)'} {by_uid[t].name}")
         head = f'<g class="edge" data-from="{xml_text(s)}" data-to="{xml_text(t)}"><title>{tip}</title>'
+        cls, marks = _edge_marks(edge, "lg")
         if s == t:  # a self-relationship: a small loop off the top-right corner
             x, y = layout.pos[s]
             grow = 14 * loops.get(s, 0)
             loops[s] = loops.get(s, 0) + 1
             path = _loop_path(x, y, grow)
+            mid = (x + LOGICAL_BOX_W * 0.8, y - 26 - grow)
         else:
             pts = routes[number]
             path = "M" + " L".join(f"{px} {py}" for px, py in pts)
-        out.append(f'{head}<path class="ln" d="{path}"/></g>')
+            mid = _polyline_mid(pts)
+        out.append(f'{head}<path class="{cls}" d="{path}"{marks}/>{_edge_label(edge, mid, label_cls)}</g>')
     for uid in [u for names in layout.order for u in names] + layout.lane_order:
         x, y = layout.pos[uid]
         out.append(_node_svg(by_uid[uid], x, y))
@@ -1810,6 +2036,7 @@ def render_deployment_svg(model: DiagramModel) -> str:
                 )
                 ident = f' data-id="{xml_text(g.uid)}"' if g.uid else ""
                 cls = "group" + (" dashed" if g.derived else "")
+                cls += " ret" if g.life == "retired" else " dep" if g.life == "deprecated" else ""
                 group_boxes.append(
                     f'<g class="{cls}"{ident} data-group="{xml_text(g.group)}"><title>{xml_text(g.group)}</title>'
                     f'<rect class="grp" x="{gx}" y="{gy}" width="{group_w}" height="{group_h}" rx="6"/>{texts}'
@@ -1906,20 +2133,27 @@ def render_deployment_svg(model: DiagramModel) -> str:
         bottom = max(bottom, lane_top + lane_h)
     edges: list[str] = []
     loop_count: dict[str, int] = {}
+    shown = [e for e in model.edges if e.source in rects and e.target in rects]
+    label_cls = "lb hov" if len(shown) > LABEL_LIMIT else "lb"  # D13: more than 8 edges, labels on hover or pin
     for number, edge in enumerate(model.edges):
         s, t = edge.source, edge.target
         if s not in rects or t not in rects:
             continue
         tip = xml_text(f"{names.get(s, s)} {edge.label or '(no label recorded)'} {names.get(t, t)}")
         head = f'<g class="edge" data-from="{xml_text(s)}" data-to="{xml_text(t)}"><title>{tip}</title>'
+        cls, marks = _edge_marks(edge, "dp")
         if s == t:  # D13: the existing loop, off the top-right corner of the box or of the container
             grow = LOOP_STEP * loop_count.get(s, 0)
             loop_count[s] = loop_count.get(s, 0) + 1
             rx, ry, rw, _rh = rects[s]
-            path = _loop_path(rx + rw - LOGICAL_BOX_W, ry, grow)
+            x0 = rx + rw - LOGICAL_BOX_W
+            path = _loop_path(x0, ry, grow)
+            mid = (x0 + LOGICAL_BOX_W * 0.8, ry - 26 - grow)
         else:
-            path = "M" + " L".join(f"{_fmt(px)} {_fmt(py)}" for px, py in routes[number])
-        edges.append(f'{head}<path class="ln" d="{path}"/></g>')
+            pts = routes[number]
+            path = "M" + " L".join(f"{_fmt(px)} {_fmt(py)}" for px, py in pts)
+            mid = _polyline_mid(pts)
+        edges.append(f'{head}<path class="{cls}" d="{path}"{marks}/>{_edge_label(edge, mid, label_cls)}</g>')
     width = right + LOGICAL_MARGIN
     note = ""
     empty = [c for c in model.containers if not c.drawn]
@@ -1937,12 +2171,8 @@ def render_deployment_svg(model: DiagramModel) -> str:
         f'width="{width}" height="{height}" role="img" aria-label="{DEPLOYMENT_TITLE}">',
         f"<title>{DEPLOYMENT_TITLE}</title>",
         f"<desc>{xml_text(GENERATOR_NAME)} {xml_text(model.sdp_uid)}</desc>",
-        "<style>.tgt{fill:#eef1f6;stroke:#9aa6b6;stroke-width:1.4}.grp{fill:#f8f9fb;stroke:#7a8696}.group.dashed .grp{stroke-dasharray:5 3}"
-        ".zl{fill:#ffffff;stroke:#c3cad4;stroke-dasharray:3 3}.lane{fill:#fbf6ec;stroke:#d8c9a8;stroke-dasharray:6 4}"
-        ".tl{font:700 12px sans-serif;fill:#1a2230}.gl{font:600 11px sans-serif;fill:#586374}.gc{font:600 12px sans-serif;fill:#1a2230}"
-        ".zc,.ll{font:600 11px sans-serif;fill:#586374}.box{fill:#ffffff;stroke:#555555;stroke-width:1.4}"
-        ".dashed .box{stroke-dasharray:5 3}.ttl{font:600 12px sans-serif;fill:#1a2230}.cap{font:10px sans-serif;fill:#586374}"
-        ".ln{fill:none;stroke:#7a8696;stroke-width:1.4}</style>",
+        _marker_defs("dp"),
+        f"<style>{SVG_STYLE}</style>",
     ]
     out.extend(body)
     out.append(lane_box)
