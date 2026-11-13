@@ -1323,8 +1323,10 @@ DEPLOY_BAND_SPARE = 2  # spare levels per band, for runs that must skip a level 
 DEPLOY_CHANNEL_PAD = 20  # from the stack's right border to the first vertical channel
 DEPLOY_CHANNEL_STEP = 8  # between vertical channels
 DEPLOY_LANE_GAP = 40  # from the last channel to the outside lane
-DEPLOY_MAX_PASSES = 12  # layout and routing passes before the fixed-point loop gives up (it ends in 2 or 3)
+DEPLOY_MAX_PASSES = 400  # safety net for the layout and routing fixed-point loop; every pass grows something, so
+# the loop ends by itself (3 passes for the fixtures, about 25 for a pattern of 200 edges)
 DEPLOY_SPREAD = 8  # between container ends that would otherwise share one border point
+DEPLOY_MIN_STUB = 4  # a box side takes more stubs than fit this far apart only when the other side is full too
 DEPLOY_BORDER_CLEAR = 4  # vertical edge runs keep at least this far from every container border
 DEPLOY_SIDE_STEP = 5  # a container end on a left border steps this far out, between the group and target borders
 LOOP_REACH = 36  # a self-loop reaches this far right of its box; each further loop on the same box adds LOOP_STEP
@@ -1487,13 +1489,31 @@ def _route_deployment_edges(
         for rank, (_order, _py, i) in enumerate(items):
             ends[(i, uid)].step_x = rects[uid][0] - DEPLOY_SIDE_STEP - DEPLOY_LEVEL * rank
     left_counts = {uid: len(items) for uid, items in left_ends.items()}
-    for (uid, side), items in slots.items():
+    def stub_span(uid: str, side: str) -> tuple[int, int]:
+        x, _y, w, _h = rects[uid]
+        if side == "top" and loops.get(uid):  # stay left of the self-loop, which starts at 62% of the width
+            return x + 8, int(w * 0.6) - 16
+        return x + w // 10, w - 2 * (w // 10)
+
+    # A side holds at most span / DEPLOY_MIN_STUB ends before stubs merge visually; the ends beyond that (the
+    # last in x order) leave through the box's other side instead and reach their channel through that band.
+    for uid in sorted({uid for uid, _side in slots}):
+        for side, other_side in (("top", "bottom"), ("bottom", "top")):
+            items = slots.get((uid, side), [])
+            room = stub_span(uid, side)[1] // DEPLOY_MIN_STUB - 1
+            spare = stub_span(uid, other_side)[1] // DEPLOY_MIN_STUB - 1 - len(slots.get((uid, other_side), []))
+            if len(items) > room and spare > 0:
+                items.sort()
+                moved = items[room:][:spare]
+                del items[room : room + len(moved)]
+                slots.setdefault((uid, other_side), []).extend(moved)
+                for _ox, _other, i in moved:
+                    ends[(i, uid)].side = other_side
+                    ends[(i, uid)].band = pools[uid][other_side]
+    for (uid, side), items in sorted(slots.items()):
         items.sort()
         x, y, w, h = rects[uid]
-        if side == "top" and loops.get(uid):  # stay left of the self-loop, which starts at 62% of the width
-            left, span = x + 8, int(w * 0.6) - 16
-        else:
-            left, span = x + w // 10, w - 2 * (w // 10)
+        left, span = stub_span(uid, side)
         for rank, (_ox, _other, i) in enumerate(items):
             end = ends[(i, uid)]
             end.x = left + Fraction(span * (rank + 1), len(items) + 1)
@@ -1781,7 +1801,8 @@ def render_deployment_svg(model: DiagramModel) -> str:
     # Layout and routing depend on each other in three small ways: the outside lane's x follows the channel
     # count, several left-border ends on one container need a wider left padding, and a band may run out of
     # levels when it has to dodge runs from the other column. Iterate to a fixed point (every step only grows
-    # something, so it ends); the loop is a pure function of the catalog, so the result is deterministic.
+    # something, so it ends); the loop is a pure function of the catalog, so the result is deterministic. Each
+    # pass is cheap, so the cap is only a safety net.
     left_room, extras, n_channels = 0, [], len(drawn)
     for _attempt in range(DEPLOY_MAX_PASSES):
         laid = build_stack(left_room, extras)
@@ -1835,6 +1856,7 @@ def render_deployment_svg(model: DiagramModel) -> str:
     if empty:
         listing = ", ".join(f"{clean(c.group) or 'unnamed group'} ({clean(c.target) or 'deployment target not recorded'})" for c in empty)
         lines = wrap(f"Service groups recorded with no objects to draw: {listing}.", max(40, (width - 2 * LOGICAL_MARGIN) // 6))
+        width = max(width, 2 * LOGICAL_MARGIN + 6 * max(len(line) for line in lines))  # D6: the caption is content too
         note = "".join(
             f'<text class="cap" x="{LOGICAL_MARGIN}" y="{bottom + 30 + 14 * i}">{xml_text(line)}</text>' for i, line in enumerate(lines)
         )

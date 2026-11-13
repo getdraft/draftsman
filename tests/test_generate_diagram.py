@@ -995,12 +995,12 @@ class LaterStoryTests(unittest.TestCase):
     def test_svg_desc_has_no_version(self) -> None:
         catalog = load_catalog(FIXTURE)
         for sdp in generate_diagram.sdps(catalog):
-            svg = logical_svg(catalog, sdp["uid"])
-            desc = re.search(r"<desc>(.*?)</desc>", svg).group(1)
-            self.assertEqual(desc, f"generate_diagram {sdp['uid']}")
-            self.assertNotRegex(svg, r"\d+\.\d+\.\d+")
-            self.assertNotRegex(svg, r"\d{4}-\d{2}-\d{2}T|/Users/|/home/|[A-Za-z]:\\")
-            self.assertNotIn(str(REPO_ROOT), svg)
+            for svg in (logical_svg(catalog, sdp["uid"]), deployment_svg(catalog, sdp["uid"])):
+                desc = re.search(r"<desc>(.*?)</desc>", svg).group(1)
+                self.assertEqual(desc, f"generate_diagram {sdp['uid']}")
+                self.assertNotRegex(svg, r"\d+\.\d+\.\d+")
+                self.assertNotRegex(svg, r"\d{4}-\d{2}-\d{2}T|/Users/|/home/|[A-Za-z]:\\")
+                self.assertNotIn(str(REPO_ROOT), svg)
 
     def test_deployment_golden(self) -> None:
         catalog = load_catalog(FIXTURE)
@@ -1438,6 +1438,38 @@ class LaterStoryTests(unittest.TestCase):
         self._assert_runs_clean(svg)
         self.assertEqual(edges_hitting_foreign_boxes(svg), [])
         self.assertTrue(all(int(x) % generate_diagram.GRID == 0 and int(y) % generate_diagram.GRID == 0 for x, y, _w, _h in node_rects(svg).values()))
+
+    def test_all_empty_groups_caption_fits_the_figure(self) -> None:
+        # D6: when every group is empty the caption is the figure's only content; the viewBox must hold it.
+        objects = [component("P-1", "Alpha"), pattern({"Alpha Group": [], "Beta Group": []})]
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        xml.dom.minidom.parseString(svg)
+        width = int(re.search(r'viewBox="0 0 (\d+) (\d+)"', svg).group(1))
+        captions = re.findall(r'<text class="cap" x="(\d+)" y="\d+">([^<]*)</text>', svg)
+        self.assertTrue(captions)
+        for x, text in captions:
+            self.assertLessEqual(int(x) + 6 * len(text), width, text)
+        self.assertIn("Alpha Group (azure), Beta Group (azure)", " ".join(text for _x, text in captions))
+
+    def test_hub_with_too_many_ends_on_one_side_spills_to_the_other(self) -> None:
+        # 60 inbound edges on one box from boxes above it: at most span / DEPLOY_MIN_STUB stubs fit on the top side,
+        # so the rest leave through the bottom and stubs stay at least DEPLOY_MIN_STUB apart on both sides.
+        names = [f"P-{k:02d}" for k in range(60)]
+        objects = [component(u, u) for u in names] + [component("HUB-1", "Hub"), pattern({"G": names + ["HUB-1"]})]
+        objects += [relationship(f"R-{k:02d}", u, "HUB-1", "calls") for k, u in enumerate(names)]
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = deployment_svg(cat, "SDP-1")
+        hub = node_rects(svg)["HUB-1"]
+        ends = [pts[-1] for _s, _t, pts in edge_polylines(svg)]
+        self.assertEqual(len(ends), 60)
+        tops = sorted(x for x, y in ends if y == hub[1])
+        bottoms = sorted(x for x, y in ends if y == hub[1] + hub[3])
+        self.assertTrue(tops and bottoms, "both sides in use")
+        for side in (tops, bottoms):
+            self.assertGreaterEqual(min(b - a for a, b in zip(side, side[1:])), generate_diagram.DEPLOY_MIN_STUB - 0.5)
+        self._assert_runs_clean(svg)
+        self.assertEqual(edges_hitting_foreign_boxes(svg), [])
 
     def test_deployment_boxes_sit_on_the_grid(self) -> None:
         # D14: positions snapped to a fixed grid, in the deployment view as well.
