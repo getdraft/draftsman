@@ -45,7 +45,7 @@ Framework-level ReferenceArchitectures use capability slots to describe the role
 
 - `slot`: a stable kebab-case role name used by the Draftsman onboarding flow, such as `application-runtime`, `managed-state-store`, or `messaging-backbone`.
 - `capability`: the Capability UID the selected implementation must satisfy.
-- `objectType`: the deployable object type the implementation should resolve to in an SDP, such as `runtime_service`, `data_store_service`, or `network_service`.
+- `objectType`: the type of service the standard provides for this slot, such as `runtime_service`, `data_store_service`, or `network_service`.
 - `ref`: optional, only for company-authored or catalog-specific ReferenceArchitectures that deliberately pin a concrete object.
 
 `objectType`, `ref`, and `capability` are optional independently for backward compatibility, but new framework starter patterns should prefer `slot` + `capability` + `objectType`. A company catalog satisfies a slot by either assigning the Capability directly to the deployable service or by listing that service (or its underlying TechnologyComponent) in the Capability's `implementations`.
@@ -130,8 +130,8 @@ The core field in a ReferenceArchitecture is `serviceGroups`. Each group cluster
 services that work together in the deployment pattern. Inside each group, the
 pattern declares:
 
-- the deployable objects that must exist
-- the `diagramTier` each deployable object belongs to
+- the slots (roles the standard provides) that must exist; a pattern that follows the RA does not copy them into its own `deployableObjects`
+- the `diagramTier` each slot belongs to
 - any group-local interactions or notes that matter to the pattern
 
 This does more than list ingredients. It shows how the pattern is meant to be

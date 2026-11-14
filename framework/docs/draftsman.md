@@ -609,9 +609,9 @@ compositional rules that the validator enforces against every SDP that declares
 Each constraint has a `when` condition and a `require` list:
 
 - `when.anyServiceGroup.diagramTier: X` — the constraint fires if any
-  deployable object in any service group has that diagram tier.
+  deployable object (a ProductComponent or DataComponent) in any service group has that diagram tier.
 - `when.anyServiceGroup.objectType: Y` — the constraint fires if any
-  deployable object resolves to that catalog object type.
+  deployable object (a ProductComponent or DataComponent) resolves to that catalog object type.
 - If `when` is absent the constraint fires unconditionally.
 - `require` lists the object characteristics that must be present in the SDP's
   service groups when the constraint fires (`objectType`, `diagramTier`).
@@ -675,7 +675,7 @@ deferred, or recorded as unresolved.
 Use this procedure:
 
 1. Identify the service groups.
-2. Identify the deployable objects in each group.
+2. Identify the deployable objects in each group (ProductComponents and DataComponents only; runtimes and hosts are the group's `substrate`, data stores are `runsOn`).
 3. Resolve or draft each deployable object.
 4. Resolve `runsOn` for each ProductComponent.
 5. Resolve the delivery model for each RuntimeService, DataStoreService,
@@ -988,7 +988,7 @@ output to the user.
 |---|---|---|
 | `Add required field 'uid' with generated value` | Object is missing its stable machine identity | Run `framework/tools/repair_uids.py --workspace <path> --file <relative-path> --uid <generated>` |
 | `Replace malformed uid '...' with generated value` | uid exists but does not match the Crockford Base32 pattern | Run `repair_uids.py` with the suggested generated value |
-| `RA constraint '...' violated` | An SDP following an RA is missing a required object type in a service group | Add a deployable object entry of the required `objectType` and `diagramTier` to the appropriate service group, then resolve the specific catalog object using the Capability Lookup procedure |
+| `RA constraint '...' violated` | An SDP following an RA is missing a required object type in a service group | If the required `objectType` is a product or data component, add that entry with its `diagramTier` to the service group. If it is a runtime, host, data store or network service, do not add a deployable object: set the group's `substrate`, the data component's `runsOn`, or nothing when the followed RA already states the edge; resolve the specific catalog object using the Capability Lookup procedure |
 | `Satisfy ... / ...` | An active workspace RequirementGroup requires evidence not yet present | Add a `requirementImplementations` entry with `status: satisfied` citing the applicable mechanism, or mark it `not-applicable` if the requirement does not apply |
 | `Set lifecycleStatus: deprecated` | A TechnologyComponent in the object's graph has passed its vendor end-of-support date | Set `lifecycleStatus: deprecated` and add `notes.lifecycleRationale` explaining the transition plan |
 | `deliveryModel must be one of` | An invalid delivery model value was used | Replace with one of `self-managed`, `saas`, `paas`, `appliance` |

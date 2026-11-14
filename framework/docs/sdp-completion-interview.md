@@ -163,12 +163,13 @@ Ask one question per platform category. Present each as a yes/no:
 > Does it call any shared internal platform — for example a message bus,
 > secrets manager, or feature-flag service? (yes / no)
 
-For each **yes**, search the catalog for the deployable object that represents
-that platform (RuntimeService, DataStoreService, or NetworkService
-with a matching `deliveryModel`). If found, create a relationship object with
-`source` set to the dependent service and `target` set to the platform UID.
-If not found and the user can name the platform, draft the appropriate service
-object first, then create the relationship.
+For each **yes**, the target is an external service: search the catalog for an
+instance of that platform owned elsewhere (not a service definition under the
+shared-services folder, and not an object with `serviceRole: definition`). If
+found, create a relationship object with `source` set to the calling component
+and `target` set to that instance's UID. If there is no catalog instance, set
+`externalTarget` to the platform name. Never target a service definition and do
+not draft a service object just to have a target.
 
 Record each confirmed external dependency as a relationship object in the catalog.
 
