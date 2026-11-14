@@ -384,12 +384,14 @@ class GenerateDiagramTests(unittest.TestCase):
         page, model = generate_diagram.build(EXAMPLES, "OpenStack IaaS Platform")
         xml.dom.minidom.parseString(svg_of(page))
         self.assertIn("OpenStack IaaS Platform Architecture", page)
-        self.assertEqual(logical_of(page).count('<g class="edge"'), len(model.edges))
+        # D43: every placed object here is infrastructure, so the logical view has nothing to draw and the
+        # deployment view carries every edge.
+        self.assertIn("nothing to draw", page)
+        self.assertEqual(figure_of(page, "fig-deployment").count('<g class="edge"'), len(model.edges))
         catalog = load_catalog(EXAMPLES)
-        logical = logical_svg(catalog, model.sdp["uid"])
-        xml.dom.minidom.parseString(logical)
-        self.assertEqual(logical.count('<g class="edge"'), len(generate_diagram.build_diagram_model(catalog, model.sdp, False).edges))
-        self.assertGreater(logical.count('<g class="edge"'), 0)
+        deployment = deployment_svg(catalog, model.sdp["uid"])
+        xml.dom.minidom.parseString(deployment)
+        self.assertGreater(deployment.count('<g class="edge"'), 0)
         self.assertGreater(len(model.relationships), 0)
         self.assertNotRegex(page, r'(?:src|href)="https?://')
 
@@ -700,6 +702,201 @@ class GenerateDiagramTests(unittest.TestCase):
             _, model = generate_diagram.build(ws, "SDP-2")
             self.assertEqual(model.sdp["uid"], "SDP-2")
 
+REGISTRY_SDP = "FXSDP00002-0001"
+INFRA_FIXTURE_UIDS = ("FXNET00002-0001", "FXDST00002-0001", "FXDST00003-0001", "FXHST00002-0001")
+
+
+def store_containers(svg: str) -> dict:
+    """data-group caption -> (data-id or "", (x, y, w, h)) of each data store container (D45)."""
+    found = {}
+    for m in re.finditer(
+        r'<g class="group store[^"]*"(?: data-id="([^"]*)")? data-group="([^"]*)"><title>[^<]*</title>'
+        r'<rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"',
+        svg,
+    ):
+        found[m.group(2)] = (m.group(1) or "", tuple(int(m.group(i)) for i in range(3, 7)))
+    return found
+
+
+class InfrastructurePlacementTests(unittest.TestCase):
+    """S17: infrastructure in the deployment view only (D43), no borrowed flows (D44), data components in their store (D45)."""
+
+    def registry(self) -> tuple:
+        catalog = load_catalog(FIXTURE)
+        return catalog, generate_diagram.Model(catalog, catalog[REGISTRY_SDP], False)
+
+    def test_logical_view_has_no_placed_infrastructure(self) -> None:  # AC26
+        catalog, model = self.registry()
+        logical, deployment = logical_svg(catalog, REGISTRY_SDP), deployment_svg(catalog, REGISTRY_SDP)
+        ids = {n.uid for n in model.nodes_for_view("logical")}
+        for uid in INFRA_FIXTURE_UIDS:
+            self.assertNotIn(uid, ids)
+            self.assertNotIn(f'data-id="{uid}"', logical)
+        self.assertIn("FXNET00002-0001", node_rects(deployment))  # a placed network service is a deployment box
+        self.assertIn("FXHST00002-0001", node_rects(deployment))  # and so is a placed host
+        for uid in ("FXDST00002-0001", "FXDST00003-0001"):  # placed data store services are containers there
+            self.assertIn(f'data-id="{uid}"', deployment)
+        self.assertEqual(edges_hitting_foreign_boxes(logical), [])
+        # No edge of the logical view touches the infrastructure; the deployment view draws it.
+        self.assertNotIn("FXNET00002-0001", " ".join(f"{s} {t}" for s, t, _p in edge_polylines(logical)))
+        self.assertIn("FXNET00002-0001", " ".join(f"{s} {t}" for s, t, _p in edge_polylines(deployment)))
+
+    def test_all_five_infrastructure_types_leave_the_logical_view(self) -> None:  # AC26
+        objects = [
+            plain("N-1", "network_service", "Edge"),
+            plain("R-1", "runtime_service", "Runner"),
+            plain("H-1", "host", "Box"),
+            plain("G-1", "ai_gateway", "Llm"),
+            plain("S-1", "data_store_service", "Store"),
+            component("C-1", "App"),
+            plain("D-1", "data_component", "Rows", runsOn="S-1"),
+            pattern({"G": ["N-1", "R-1", "H-1", "G-1", "S-1", "C-1", "D-1"]}),
+            relationship("E-1", "C-1", "N-1", "uses"),
+            relationship("E-2", "C-1", "D-1", "reads"),
+        ]
+        model = model_of(objects)
+        self.assertEqual({n.uid for n in model.nodes_for_view("logical")}, {"C-1", "D-1"})
+        deployment = {n.uid for n in model.nodes_for_view("deployment")}
+        self.assertEqual(deployment, {"N-1", "R-1", "H-1", "G-1", "C-1", "D-1"})  # S-1 is D-1's container
+        self.assertEqual(len(model.relationship_rows), 2)  # the edge to the network service keeps its table row
+        logical = svg_for(objects)
+        self.assertNotIn("N-1", data_ids(logical))
+        self.assertEqual(len(edge_polylines(logical)), 1)
+        self.assertEqual(len(edge_polylines(svg_for(objects, "deployment"))), 2)
+
+    def test_unplaced_infrastructure_dependency_stays_in_the_lane(self) -> None:  # AC26
+        catalog, model = self.registry()
+        nodes = {n.uid: n for n in model.nodes_for_view("logical")}
+        self.assertTrue(nodes["FXRTC00004-0001"].outside)
+        self.assertIn("FXRTC00004-0001", node_rects(logical_svg(catalog, REGISTRY_SDP)))
+        self.assertIn("FXRTC00004-0001", node_rects(deployment_svg(catalog, REGISTRY_SDP)))
+
+    def test_infrastructure_relationships_to_other_patterns_are_not_borrowed(self) -> None:  # AC27
+        catalog, model = self.registry()
+        labels = {(row["from"], row["to"]) for row in model.relationship_rows}
+        self.assertIn(("FX Ledger Gateway", "FX Shared Ledger"), labels)
+        self.assertNotIn("FX Web Shop", {to for _from, to in labels})
+        self.assertNotIn("FXEDG00014-0001", {e.uid for e in model.edges})
+        self.assertNotIn("FXPRD00001-0001", model.scope)  # the elsewhere-placed target does not enter scope
+        for svg in (logical_svg(catalog, REGISTRY_SDP), deployment_svg(catalog, REGISTRY_SDP)):
+            self.assertNotIn("FXPRD00001-0001", data_ids(svg))
+        self.assertNotIn("routes shop requests", generate_diagram.render_page(model, generate_diagram.diagram_of(model)))
+
+    def test_infrastructure_sourced_relationships_need_a_placed_target(self) -> None:  # AC27
+        objects = [
+            plain("N-1", "network_service", "Edge"),
+            component("C-1", "Placed"),
+            component("X-1", "Elsewhere"),
+            component("U-1", "Unplaced"),
+            pattern({"G": ["N-1", "C-1"]}),
+            relationship("E-1", "N-1", "C-1", "routes here"),
+            relationship("E-2", "N-1", "X-1", "routes away"),
+            relationship("E-3", "N-1", "U-1", "also away"),
+            {"schemaVersion": "1.0", "uid": "E-4", "type": "relationship", "name": "E-4", "source": "N-1", "externalTarget": "Partner", "label": "out"},
+            relationship("E-5", "C-1", "U-1", "calls"),  # a component's own dependency still enters scope
+        ]
+        model = model_of(objects)
+        self.assertEqual([e.uid for e in model.edges], ["E-1", "E-5"])
+        self.assertEqual({r["uid"] for r in model.relationship_rows}, {"E-1", "E-5"})
+        self.assertEqual(model.scope, {"N-1", "C-1", "U-1"})
+        self.assertFalse(any(n.external for n in model.nodes_for_view("logical")))
+
+    def test_data_components_sit_in_their_data_store_container(self) -> None:  # AC28
+        catalog, model = self.registry()
+        svg = deployment_svg(catalog, REGISTRY_SDP)
+        xml.dom.minidom.parseString(svg)
+        boxes = store_containers(svg)
+        self.assertEqual(sorted(boxes), ["FX Audit Store", "FX Ledger Store", "data store not recorded"])
+        self.assertEqual(boxes["FX Ledger Store"][0], "FXDST00002-0001")
+        self.assertEqual(boxes["data store not recorded"][0], "")
+        rects = node_rects(svg)
+
+        def inside(uid: str, caption: str) -> bool:
+            bx, by, bw, bh = boxes[caption][1]
+            x, y, w, h = rects[uid]
+            return bx <= x and by <= y and x + w <= bx + bw and y + h <= by + bh
+
+        self.assertTrue(inside("FXDCP00002-0001", "FX Ledger Store"))  # two data components share one container
+        self.assertTrue(inside("FXDCP00003-0001", "FX Ledger Store"))
+        self.assertTrue(inside("FXDCP00004-0001", "FX Audit Store"))  # a third has its own
+        self.assertTrue(inside("FXDCP00005-0001", "data store not recorded"))  # no runsOn
+        self.assertFalse(inside("FXDCP00004-0001", "FX Ledger Store"))
+        self.assertNotRegex(svg, r'<g class="node[^"]*" data-id="FXDST0000[23]-0001"')  # the stores have no boxes
+        warnings = [w for w in model.warnings if w.startswith("data store not recorded")]
+        self.assertEqual(warnings, ["data store not recorded: FX Ledger Scratch (FXDCP00005-0001) has no runsOn data store service"])
+        lane = re.search(r'<g class="zlane" data-zone="fx-data">.*?<g class="group store"', svg, re.S)
+        self.assertIsNotNone(lane, "the container is drawn inside its data components' zone lane")
+
+    def test_store_with_no_data_components_stays_a_box(self) -> None:  # AC28
+        catalog = load_catalog(FIXTURE)
+        svg = deployment_svg(catalog, FIXTURE_SDP)
+        self.assertIn("FXDST00001-0001", node_rects(svg))
+        self.assertIn("data store not recorded", store_containers(svg))  # FX Session Cache has no runsOn
+        self.assertNotIn("FXDST00001-0001", {u for u, _r in store_containers(svg).values()})
+
+    def test_store_container_is_per_group(self) -> None:  # AC28
+        objects = [
+            plain("S-1", "data_store_service", "Shared Store"),
+            plain("D-1", "data_component", "One", runsOn="S-1"),
+            plain("D-2", "data_component", "Two", runsOn="S-1"),
+            plain("D-3", "data_component", "Three", runsOn="MISSING"),
+            plain("S-2", "data_store_service", "Other Store"),
+            plain("D-4", "data_component", "Four", runsOn="S-2"),  # keeps S-1 from being derived as group A's substrate
+            pattern({"A": ["S-1", "D-1", "D-4"], "B": ["D-2", "D-3"]}),
+        ]
+        model = model_of(objects)
+        stores = [[(st.uid, st.members) for lane in c.lanes for st in lane.stores] for c in model.containers]
+        self.assertEqual(stores, [[("S-1", ["D-1"]), ("S-2", ["D-4"])], [("S-1", ["D-2"]), ("", ["D-3"])]])
+        self.assertEqual(len([w for w in model.warnings if w.startswith("data store not recorded")]), 1)
+        svg = svg_for(objects, "deployment")
+        xml.dom.minidom.parseString(svg)
+        self.assertEqual(svg.count('data-group="Shared Store"'), 2)  # one container per group, not one per store
+
+    def test_edges_attach_to_the_data_component_box_and_the_store_border(self) -> None:
+        catalog, _model = self.registry()
+        svg = deployment_svg(catalog, REGISTRY_SDP)
+        rects = node_rects(svg)
+        boxes = store_containers(svg)
+        seen = 0
+        for source, target, pts in edge_polylines(svg):
+            if source != "FXPRD00010-0001":
+                continue
+            if target.startswith("FXDCP"):
+                x, y, w, _h = rects[target]
+                ex, ey = pts[-1]
+                self.assertEqual(ey, y, target)  # the last point lies on the top side of the box
+                self.assertTrue(x <= ex <= x + w, target)
+                seen += 1
+            elif target == "FXDST00002-0001":
+                x, y, w, h = boxes["FX Ledger Store"][1]
+                ex, ey = pts[-1]
+                on_border = (ey in (y, y + h) and x <= ex <= x + w) or (ex in (x, x + w) and y <= ey <= y + h)
+                self.assertTrue(on_border, pts[-1])
+                self.assertNotIn(target, rects)
+                seen += 1
+        self.assertEqual(seen, 5)
+
+    def test_store_containers_are_deterministic_and_on_the_grid(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        first = deployment_svg(catalog, REGISTRY_SDP)
+        self.assertEqual(first, deployment_svg(load_catalog(FIXTURE), REGISTRY_SDP))
+        self.assertEqual(first, deployment_svg(dict(reversed(list(catalog.items()))), REGISTRY_SDP))
+        for _uid, (x, y, _w, _h) in node_rects(first).items():
+            self.assertEqual((x % generate_diagram.GRID, y % generate_diagram.GRID), (0, 0))
+        for _uid, (_x, (x, y, _w, _h)) in store_containers(first).items():
+            self.assertEqual((x % generate_diagram.GRID, y % generate_diagram.GRID), (0, 0))
+        self.assertEqual(logical_svg(catalog, REGISTRY_SDP), logical_svg(load_catalog(FIXTURE), REGISTRY_SDP))
+
+    def test_layout_writer_lists_data_components_and_store_containers(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        model = generate_diagram.Model(catalog, catalog[REGISTRY_SDP], False)
+        order = generate_diagram.drawn_order(model)["deployment"]
+        drawn = [uid for container in order for uid in container]
+        for uid in ("FXDCP00002-0001", "FXDCP00005-0001", "FXDST00002-0001", "FXDST00003-0001", "FXNET00002-0001"):
+            self.assertIn(uid, drawn)
+        self.assertEqual(len(drawn), len(set(drawn)))
+
+
 if __name__ == "__main__":
     unittest.main()
 
@@ -728,7 +925,10 @@ class LaterStoryTests(unittest.TestCase):
         ids = {node.uid for node in nodes}
         self.assertNotIn("FXCON00001-0001", ids)
         placed = set(model.placement)
-        self.assertTrue(placed <= ids)
+        infra = {u for u in placed if catalog[u]["type"] in generate_diagram.INFRA_TYPES}  # D43: deployment view only
+        self.assertTrue(infra)
+        self.assertTrue((placed - infra) <= ids)
+        self.assertFalse(infra & ids)
         # One hop: unplaced objects a placed object sources a relationship to (D42) are nodes.
         self.assertIn("FXPRD00005-0001", ids)
         self.assertIn("FXPRD00010-0001", ids)
@@ -736,18 +936,20 @@ class LaterStoryTests(unittest.TestCase):
         self.assertNotIn("FXDST00002-0001", ids)
         self.assertNotIn("FXHST00002-0001", ids)
         # Exact set: placed objects, allow-listed direct endpoints, and external nodes for placed sources.
-        expected = set(placed)
+        expected = set(placed) - infra
         for rel in catalog.values():
             if rel.get("type") != "relationship" or generate_diagram.is_runs_on(rel):
                 continue
             source, target = rel.get("source") or "", rel.get("target") or ""
+            if source in infra:  # D44: a placed infrastructure object's relationships never extend scope
+                continue
             if source in placed and target:
                 if catalog.get(target, {}).get("type") in ALLOWED_ONE_HOP:
                     expected.add(target)
             elif source in placed and rel.get("externalTarget"):
                 expected.add("ext:" + hashlib.sha256(" ".join(str(rel["externalTarget"]).split()).encode("utf-8")).hexdigest()[:12])
             # D42: a source outside the placed set (a consumer) never enters scope.
-        self.assertEqual(ids, expected)
+        self.assertEqual(ids, expected - infra)
         self.assertTrue(all(e.source in placed for e in model.edges))
         for node in nodes:
             if node.outside and not node.external:
@@ -814,9 +1016,10 @@ class LaterStoryTests(unittest.TestCase):
                 expected += 1
         placed_only = fixture_model(placed_only=True)
         self.assertEqual(placed_only.undrawn_relationship_count, expected)
-        # FXEDG00008 (external), FXEDG00009 and FXEDG00010 leave the placed set.
-        self.assertEqual(expected, 3)
-        self.assertEqual(fixture_model().undrawn_relationship_count, 0)
+        # FXEDG00008 (external), FXEDG00009 and FXEDG00010 leave the placed set; FXEDG00014 comes in from the
+        # registry pattern's gateway.
+        self.assertEqual(expected, 4)
+        self.assertEqual(fixture_model().undrawn_relationship_count, 1)  # FXEDG00014: a consumer, not drawn (D42)
 
     def test_outside_lane_classification(self) -> None:
         model = fixture_model()
@@ -1042,14 +1245,14 @@ class LaterStoryTests(unittest.TestCase):
         model = model_of(objects)
         logical = {node.uid for node in model.nodes_for_view("logical")}
         deployment = {node.uid for node in model.nodes_for_view("deployment")}
-        self.assertIn("RTC-1", logical)
+        self.assertNotIn("RTC-1", logical)  # D43: placed infrastructure is not in the logical view
         self.assertNotIn("RTC-1", deployment)
         self.assertEqual(model.containers[0].uid, "RTC-1")
         # A substrate that is neither placed nor a one-hop endpoint is a container only.
         self.assertNotIn("RTC-2", logical)
         self.assertNotIn("RTC-2", deployment)
         self.assertEqual(model.containers[1].uid, "RTC-2")
-        self.assertEqual(logical, {"RTC-1", "P-1", "P-2"})
+        self.assertEqual(logical, {"P-1", "P-2"})
         self.assertEqual(deployment, {"P-1", "P-2"})
         self.assertEqual(
             [w for w in model.warnings if w.startswith("substrate also listed")],
@@ -1113,7 +1316,7 @@ class LaterStoryTests(unittest.TestCase):
         self.assertNotIn("RTC-1", deployment)
         for uid in lane_members:
             self.assertIn(uid, deployment)
-        self.assertIn("RTC-1", {node.uid for node in model.nodes_for_view("logical")})
+        self.assertNotIn("RTC-1", {node.uid for node in model.nodes_for_view("logical")})  # D43
 
     def test_logical_golden(self) -> None:
         catalog = load_catalog(FIXTURE)
@@ -1126,16 +1329,18 @@ class LaterStoryTests(unittest.TestCase):
 
     def test_logical_bands_and_dashed_derived(self) -> None:
         objects = [
-            plain("N-1", "network_service", "Gateway"),
+            plain("N-1", "product_component", "Gateway"),
             plain("P-1", "product_component", "Alpha"),
-            plain("D-1", "data_store_service", "Store"),
-            plain("H-1", "host", "Machine"),
+            plain("D-1", "data_component", "Store"),
+            plain("H-1", "product_component", "Machine"),
             plain("P-2", "product_component", "Tiered"),
             plain("X-1", "product_component", "Elsewhere"),
             pattern({"G": ["N-1", "P-1", "D-1", "H-1", "P-2"]}),
             relationship("R-1", "P-1", "X-1", "calls"),
         ]
-        next(o for o in objects if o["uid"] == "SDP-1")["serviceGroups"][0]["deployableObjects"][4]["diagramTier"] = "utility"
+        entries = next(o for o in objects if o["uid"] == "SDP-1")["serviceGroups"][0]["deployableObjects"]
+        for index, tier in ((0, "presentation"), (2, "data"), (3, "utility"), (4, "utility")):
+            entries[index]["diagramTier"] = tier
         catalog = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
         svg = logical_svg(catalog, "SDP-1")
         xml.dom.minidom.parseString(svg)
@@ -1259,8 +1464,7 @@ class LaterStoryTests(unittest.TestCase):
     def test_logical_substrate_is_box(self) -> None:
         catalog = load_catalog(FIXTURE)
         svg = logical_svg(catalog, FIXTURE_SDP)
-        self.assertIn('data-id="FXRTC00001-0001"', svg)
-        self.assertRegex(svg, r'<g class="node[^"]*" data-id="FXRTC00001-0001">')
+        self.assertNotIn('data-id="FXRTC00001-0001"', svg)  # D43: placed infrastructure is deployment-only
 
     def test_logical_order_independent_of_insertion_order(self) -> None:
         catalog = load_catalog(FIXTURE)
@@ -1298,7 +1502,7 @@ class LaterStoryTests(unittest.TestCase):
                 expected_targets.append(container.target)
         self.assertEqual(re.findall(r'<g class="target" data-target="([^"]*)"', svg), expected_targets)
         drawn = [c for c in model.containers if c.drawn]
-        self.assertEqual(re.findall(r'<g class="group[^"]*"(?: data-id="[^"]*")? data-group="([^"]*)"', svg), [
+        self.assertEqual(re.findall(r'<g class="(?!group store)group[^"]*"(?: data-id="[^"]*")? data-group="([^"]*)"', svg), [
             c.group for t in expected_targets for c in drawn if c.target == t
         ])
         dom = xml.dom.minidom.parseString(svg)
@@ -1312,7 +1516,7 @@ class LaterStoryTests(unittest.TestCase):
                 for lane in [x for x in group.childNodes if getattr(x, "tagName", "") == "g"]:
                     self.assertEqual(lane.getAttribute("class"), "zlane")
                     for box in [x for x in lane.childNodes if getattr(x, "tagName", "") == "g"]:
-                        self.assertTrue(box.getAttribute("class").startswith("node"))
+                        self.assertTrue(box.getAttribute("class").startswith(("node", "group store")))  # D45
         ids = re.findall(r'<g class="node[^"]*" data-id="([^"]*)"', svg)
         in_lanes = [uid for c in drawn for lane in c.lanes for uid in lane.members]
         self.assertEqual([i for i in ids if i in in_lanes], [u for t in expected_targets for c in drawn if c.target == t for lane in c.lanes for u in generate_diagram.apply_positions(lane.members, model.deployment_positions)])
@@ -1334,7 +1538,7 @@ class LaterStoryTests(unittest.TestCase):
         deployment = deployment_svg(catalog, FIXTURE_SDP)
         self.assertRegex(deployment, rf'<g class="group[^"]*" data-id="{uid}"')
         self.assertNotRegex(deployment, rf'<g class="node[^"]*" data-id="{uid}"')
-        self.assertRegex(logical_svg(catalog, FIXTURE_SDP), rf'<g class="node[^"]*" data-id="{uid}"')
+        self.assertNotIn(f'data-id="{uid}"', logical_svg(catalog, FIXTURE_SDP))  # D43
 
     def test_container_captions_and_conflict(self) -> None:
         catalog = load_catalog(FIXTURE)
@@ -1757,7 +1961,7 @@ class LaterStoryTests(unittest.TestCase):
     def test_self_relationship_on_a_container_is_a_loop_on_its_corner(self) -> None:
         # D13 with D29: a self-relationship whose endpoint is drawn as a container keeps the loop, off the
         # container's top-right corner, clear of the container's other edge ends and of the channels.
-        objects = [plain("RT-1", "runtime_service", "Runtime"), component("A-1", "Alpha"), component("O-1", "Outside"), pattern({"G": ["A-1", "RT-1"]})]
+        objects = [plain("RT-1", "runtime_service", "Runtime"), component("A-1", "Alpha"), component("O-1", "Outside"), pattern({"G": ["A-1", "RT-1"], "Other": ["O-1"]})]
         objects[3]["serviceGroups"][0]["substrate"] = "RT-1"
         objects += [relationship("R-1", "RT-1", "RT-1", "self"), relationship("R-2", "RT-1", "A-1", "serves"), relationship("R-3", "RT-1", "O-1", "calls")]
         cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
@@ -1773,12 +1977,12 @@ class LaterStoryTests(unittest.TestCase):
             for (ax, ay), (bx, by) in zip(pts, pts[1:]):
                 self.assertFalse(min(ax, bx) <= x1 and max(ax, bx) >= x0 and min(ay, by) <= y1 and max(ay, by) >= y0, f"segment {(ax, ay, bx, by)} meets the container loop")
         self._assert_runs_clean(svg)
-        self.assertIn('data-from="RT-1" data-to="RT-1"', logical_svg(cat, "SDP-1"))
+        self.assertNotIn('data-from="RT-1"', logical_svg(cat, "SDP-1"))  # D43: infrastructure edges are deployment-only
 
     def test_many_container_out_edges_share_one_bottom_attachment(self) -> None:
         # A group listing only its own substrate is a small container with twelve edges to two outside nodes: D36
         # sends all of them through one attachment point on its bottom border, whatever the border's length.
-        objects = [plain("RT-1", "runtime_service", "Runtime"), component("O-1", "Outside One"), component("O-2", "Outside Two"), pattern({"Own": ["RT-1"]})]
+        objects = [plain("RT-1", "runtime_service", "Runtime"), component("O-1", "Outside One"), component("O-2", "Outside Two"), pattern({"Own": ["RT-1"], "Other": ["O-1", "O-2"]})]
         objects[3]["serviceGroups"][0]["substrate"] = "RT-1"
         objects += [relationship(f"R-{k:02d}", "RT-1", "O-1" if k % 2 else "O-2", f"rel {k}") for k in range(12)]
         cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
@@ -1794,13 +1998,13 @@ class LaterStoryTests(unittest.TestCase):
     def test_groups_naming_each_others_substrate_are_both_drawn(self) -> None:
         # G lists RT-2 and names RT-1 as substrate; H lists RT-1 and names RT-2. Neither object may vanish: both
         # groups are drawn, each as the container of its own substrate (review round 6, R1).
-        objects = [plain("RT-1", "runtime_service", "Runtime One"), plain("RT-2", "runtime_service", "Runtime Two"), component("P-1", "Alpha"), pattern({"G": ["RT-2"], "H": ["RT-1"]})]
+        objects = [plain("RT-1", "runtime_service", "Runtime One"), plain("RT-2", "runtime_service", "Runtime Two"), component("P-1", "Alpha"), pattern({"G": ["RT-2"], "H": ["RT-1"], "J": ["P-1"]})]
         objects[3]["serviceGroups"][0]["substrate"] = "RT-1"
         objects[3]["serviceGroups"][1]["substrate"] = "RT-2"
         objects += [relationship("R-1", "RT-1", "P-1", "uses"), relationship("R-2", "RT-1", "RT-2", "peers")]
         cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
         model = generate_diagram.build_diagram_model(cat, cat["SDP-1"], False)
-        self.assertEqual([(c.group, c.drawn, c.members) for c in model.containers], [("G", True, []), ("H", True, [])])
+        self.assertEqual([(c.group, c.drawn, c.members) for c in model.containers], [("G", True, []), ("H", True, []), ("J", True, ["P-1"])])
         svg = deployment_svg(cat, "SDP-1")
         xml.dom.minidom.parseString(svg)
         self.assertRegex(svg, r'<g class="group" data-id="RT-1" data-group="G">')
@@ -1813,12 +2017,12 @@ class LaterStoryTests(unittest.TestCase):
     def test_container_out_edges_share_one_attachment_clear_of_its_loop(self) -> None:
         # A container with a self-loop, eight edges to an outside node above and eleven to one below: D36 sends all
         # nineteen through one bottom attachment point, and the routes stay clean of the loop (D13).
-        objects = [plain("RT-1", "runtime_service", "Runtime"), component("O-1", "Above"), component("O-2", "Below"), component("P-1", "Alpha"), pattern({"Own": ["RT-1"], "Rest": ["P-1"]})]
-        objects[4]["serviceGroups"][0]["substrate"] = "RT-1"
+        objects = [plain("RT-1", "runtime_service", "Runtime"), component("O-1", "Above"), component("O-2", "Below"), component("P-1", "Alpha"), pattern({"Up": ["O-1"], "Own": ["RT-1"], "Down": ["O-2"], "Rest": ["P-1"]})]
+        objects[4]["serviceGroups"][1]["substrate"] = "RT-1"
         objects += [relationship("R-00", "RT-1", "RT-1", "self")]
         objects += [relationship(f"R-{k:02d}", "RT-1", "O-1", f"up {k}") for k in range(1, 9)]
         objects += [relationship(f"R-{k:02d}", "RT-1", "O-2", f"down {k}") for k in range(9, 20)]
-        objects += [relationship("R-90", "O-1", "P-1", "x")] + [relationship(f"R-{k}", "P-1", "O-2", "y") for k in range(91, 97)]
+        objects += [relationship("R-90", "P-1", "O-1", "x")] + [relationship(f"R-{k}", "P-1", "O-2", "y") for k in range(91, 97)]
         cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
         svg = deployment_svg(cat, "SDP-1")
         polys = edge_polylines(svg)
@@ -2036,7 +2240,8 @@ class LaterStoryTests(unittest.TestCase):
                 heads.append((x, x + w, y, y + generate_diagram.DEPLOY_TARGET_HEAD))
             for x, y, w, h in groups:
                 inner = [l for l in lanes if x < l[0] < x + w and y < l[1] < y + h]
-                heads.append((x, x + w, y, min(l[1] for l in inner) if inner else y + h))
+                # a data store container (D45) has no lanes; its caption and type chip fill the top 44 px
+                heads.append((x, x + w, y, min(l[1] for l in inner) if inner else min(y + h, y + 44)))
             for x, y, w, h in lanes:
                 heads.append((x, x + w, y, y + generate_diagram.DEPLOY_LANE_HEAD))
             for _s, _t, pts in edge_polylines(svg):
@@ -2281,7 +2486,7 @@ class LaterStoryTests(unittest.TestCase):
         self.assertEqual(tech["G-1"], "")
         self.assertEqual(tech["H-1"], "Engine X")
         self.assertEqual(tech["H-2"], "TC-MISSING")
-        svg = svg_for(objects)
+        svg = svg_for(objects, "deployment")  # D43: infrastructure boxes are drawn in the deployment view
         for chip in ("component", "data", "runtime", "network", "ai gateway", "host", "data store", "external"):
             self.assertRegex(svg, rf'class="chip-t" x="\d+" y="\d+">{chip}</text>', chip)
         self.assertIn('class="tech-line"', svg)
@@ -2762,13 +2967,12 @@ class DiagramLayoutTests(unittest.TestCase):
         catalog = load_catalog(FIXTURE)
         rects = node_rects(logical_svg(catalog, FIXTURE_SDP))
         base = node_rects(logical_svg(fixture_catalog_without_layout(), FIXTURE_SDP))
-        self.assertLess(rects["FXPRD00001-0001"][0], rects["FXNET00001-0001"][0])
-        self.assertEqual(rects["FXPRD00001-0001"][1], rects["FXNET00001-0001"][1])
+        self.assertNotIn("FXNET00001-0001", rects)  # D43: the placed gateway is deployment-only
         self.assertLess(rects["FXPRD00004-0001"][0], rects["FXPRD00002-0001"][0])
         self.assertLess(rects["FXPRD00002-0001"][0], rects["FXPRD00003-0001"][0])  # unpositioned follows positioned
         self.assertLess(rects[EXT_ID][1], rects["FXPRD00010-0001"][1])
         self.assertLess(rects["FXPRD00010-0001"][1], rects["FXPRD00005-0001"][1])
-        self.assertLess(base["FXNET00001-0001"][0], base["FXPRD00001-0001"][0])  # without the layout the order differs
+        self.assertLess(base["FXPRD00002-0001"][0], base["FXPRD00004-0001"][0])  # without the layout the order differs
 
     def test_deployment_view_honours_positions(self) -> None:  # AC23
         catalog = load_catalog(FIXTURE)
@@ -2776,7 +2980,7 @@ class DiagramLayoutTests(unittest.TestCase):
         base = node_rects(deployment_svg(fixture_catalog_without_layout(), FIXTURE_SDP))
         self.assertLess(rects["FXPRD00003-0001"][0], rects["FXPRD00002-0001"][0])
         self.assertEqual(rects["FXPRD00003-0001"][1], rects["FXPRD00002-0001"][1])
-        self.assertLess(rects["FXDCP00001-0001"][0], rects["FXDST00001-0001"][0])
+        self.assertGreater(rects["FXDCP00001-0001"][1], rects["FXDST00001-0001"][1])  # D45: a data container follows the boxes
         self.assertLess(rects["FXPRD00010-0001"][1], rects[EXT_ID][1])
         self.assertLess(rects[EXT_ID][1], rects["FXPRD00005-0001"][1])
         self.assertLess(base["FXPRD00002-0001"][0], base["FXPRD00003-0001"][0])
@@ -2826,13 +3030,13 @@ class DiagramLayoutTests(unittest.TestCase):
         catalog = load_catalog(FIXTURE)
         lower = {
             "schemaVersion": "1.0", "uid": "FXDGM00000-0001", "type": "diagram_layout", "name": "Lower", "pattern": FIXTURE_SDP,
-            "catalogStatus": "complete", "logical": [{"ref": "FXNET00001-0001", "position": 1}],
+            "catalogStatus": "complete", "logical": [{"ref": "FXPRD00002-0001", "position": 1}],
         }
         catalog[lower["uid"]] = lower
         model = generate_diagram.Model(catalog, catalog[FIXTURE_SDP], False)
         self.assertIn(f"multiple diagram layouts for {FIXTURE_SDP}; using FXDGM00000-0001", model.warnings)
         rects = node_rects(generate_diagram.render_logical_svg(generate_diagram.diagram_of(model)))
-        self.assertLess(rects["FXNET00001-0001"][0], rects["FXPRD00001-0001"][0])  # the lower layout, not the fixture one, ordered it
+        self.assertLess(rects["FXPRD00002-0001"][0], rects["FXPRD00004-0001"][0])  # the lower layout, not the fixture one, ordered it
 
     def test_undrawn_ref_warns_once_and_render_succeeds(self) -> None:
         catalog = load_catalog(FIXTURE)
@@ -2847,12 +3051,12 @@ class DiagramLayoutTests(unittest.TestCase):
 
     def test_layout_never_changes_band_or_lane(self) -> None:
         catalog = load_catalog(FIXTURE)
-        catalog[LAYOUT_UID]["logical"].append({"ref": "FXDST00001-0001", "position": 1})  # a data box asking to be first
+        catalog[LAYOUT_UID]["logical"].append({"ref": "FXDCP00001-0001", "position": 1})  # a data box asking to be first
         model = generate_diagram.build_diagram_model(catalog, catalog[FIXTURE_SDP], False)
         layout = generate_diagram.layout_logical(model)
         bands = dict(zip(layout.band_names, layout.order))
-        self.assertIn("FXDST00001-0001", bands["data"])
-        self.assertNotIn("FXDST00001-0001", bands["presentation"])
+        self.assertIn("FXDCP00001-0001", bands["data"])
+        self.assertNotIn("FXDCP00001-0001", bands["presentation"])
 
     def test_write_layout_requires_sdp(self) -> None:
         code, _out, err = run_cli(["--workspace", str(FIXTURE), "--write-layout"])
@@ -2910,10 +3114,9 @@ class DiagramLayoutTests(unittest.TestCase):
             self.assertNotIn("FXGONE00001-0001", logical)
             self.assertEqual(logical["FXPRD00004-0001"], 1)  # kept
             self.assertEqual(logical["FXPRD00001-0001"], 1)
-            self.assertEqual(logical["FXNET00001-0001"], 2)
             # FXPRD00002 and FXPRD00003 have no position in their band; each follows the highest one there
             self.assertEqual(sorted(logical[u] for u in ("FXPRD00002-0001", "FXPRD00003-0001")), [2, 3])
-            self.assertEqual(len(updated["logical"]), 11)
+            self.assertEqual(len(updated["logical"]), 8)
             self.assertEqual(len(list((workspace / "catalog").glob("diagram-layout-*.yaml"))), 1)
 
     def test_write_layout_with_placed_only_is_a_usage_error(self) -> None:

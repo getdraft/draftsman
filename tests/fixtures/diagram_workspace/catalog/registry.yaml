@@ -3,7 +3,7 @@ schemaVersion: '1.0'
 uid: FXSDP00002-0001
 type: software_deployment_pattern
 name: FX Registry Pattern
-description: Invented second pattern; its shared ledger component is also drawn as an outside endpoint of the storefront pattern.
+description: Invented second pattern; its shared ledger component is also drawn as an outside endpoint of the storefront pattern. It also places a gateway, a host and ledger data components for the infrastructure and data store container checks.
 owner:
   team: fx-team-registry
 catalogStatus: complete
@@ -20,12 +20,34 @@ serviceGroups:
   - ref: FXPRD00010-0001
     networkZone: fx-data
     diagramTier: application
+- name: Ledger Edge
+  deploymentTarget: fx-dc-west
+  deployableObjects:
+  - ref: FXNET00002-0001
+    diagramTier: presentation
 - name: Ledger Store
   deploymentTarget: fx-dc-west
   deployableObjects:
   - ref: FXDST00002-0001
     networkZone: fx-data
     diagramTier: data
+  - ref: FXDST00003-0001
+    networkZone: fx-data
+    diagramTier: data
+  - ref: FXDCP00002-0001
+    networkZone: fx-data
+    diagramTier: data
+  - ref: FXDCP00003-0001
+    networkZone: fx-data
+    diagramTier: data
+  - ref: FXDCP00004-0001
+    networkZone: fx-data
+    diagramTier: data
+  - ref: FXDCP00005-0001
+    networkZone: fx-data
+    diagramTier: data
+  - ref: FXHST00002-0001
+    diagramTier: utility
 ---
 schemaVersion: '1.0'
 uid: FXRTC00003-0001
@@ -67,5 +89,134 @@ name: FX Shared Ledger persists entries
 source: FXPRD00010-0001
 target: FXDST00002-0001
 label: persists ledger entries
+direction: synchronous
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXNET00002-0001
+type: network_service
+name: FX Ledger Gateway
+productName: FX Gateway
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXDST00003-0001
+type: data_store_service
+name: FX Audit Store
+productName: FX Audit DB
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXDCP00002-0001
+type: data_component
+name: FX Ledger Entries
+targetEngine: FX Ledger DB
+runsOn: FXDST00002-0001
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXDCP00003-0001
+type: data_component
+name: FX Ledger Balances
+targetEngine: FX Ledger DB
+runsOn: FXDST00002-0001
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXDCP00004-0001
+type: data_component
+name: FX Audit Trail
+targetEngine: FX Audit DB
+runsOn: FXDST00003-0001
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXDCP00005-0001
+type: data_component
+name: FX Ledger Scratch
+targetEngine: FX Scratch
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXRTC00004-0001
+type: runtime_service
+name: FX Identity Runtime
+productName: FX Identity
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXEDG00013-0001
+type: relationship
+name: FX Ledger Gateway routes to the ledger
+source: FXNET00002-0001
+target: FXPRD00010-0001
+label: routes ledger requests
+flow: inbound
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00014-0001
+type: relationship
+name: FX Ledger Gateway routes to the web shop
+source: FXNET00002-0001
+target: FXPRD00001-0001
+label: routes shop requests
+flow: inbound
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00015-0001
+type: relationship
+name: FX Shared Ledger reads entries
+source: FXPRD00010-0001
+target: FXDCP00002-0001
+label: reads ledger entries
+direction: synchronous
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00016-0001
+type: relationship
+name: FX Shared Ledger reads balances
+source: FXPRD00010-0001
+target: FXDCP00003-0001
+label: reads ledger balances
+direction: synchronous
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00017-0001
+type: relationship
+name: FX Shared Ledger writes audit trail
+source: FXPRD00010-0001
+target: FXDCP00004-0001
+label: writes audit trail
+direction: synchronous
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00018-0001
+type: relationship
+name: FX Shared Ledger writes scratch data
+source: FXPRD00010-0001
+target: FXDCP00005-0001
+label: writes scratch data
+direction: synchronous
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00019-0001
+type: relationship
+name: FX Shared Ledger authenticates callers
+source: FXPRD00010-0001
+target: FXRTC00004-0001
+label: authenticates callers
 direction: synchronous
 catalogStatus: complete

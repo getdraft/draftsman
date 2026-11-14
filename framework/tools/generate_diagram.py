@@ -134,6 +134,19 @@ class DiagramEdge:
 
 
 @dataclass
+class DiagramStore:
+    """The container of the data components of one group that run on one data store service (D45).
+
+    uid is "" for the 'data store not recorded' container (runsOn absent or not a data store service).
+    """
+
+    uid: str
+    name: str  # the store's recorded name, or "data store not recorded"
+    members: list[str] = field(default_factory=list)  # data components drawn as boxes inside it, in listing order
+    life: str = ""  # lifecycleStatus of the store, for the retired and deprecated classes (D12)
+
+
+@dataclass
 class DiagramLane:
     """One network-zone lane inside a service group container (D9). zone is "" for 'zone not recorded'."""
 
@@ -141,6 +154,7 @@ class DiagramLane:
     name: str
     tier: str  # informational only; never affects band placement (D4, D9)
     members: list[str] = field(default_factory=list)
+    stores: list[DiagramStore] = field(default_factory=list)  # D45: data store containers in this lane
 
 
 @dataclass
@@ -188,6 +202,10 @@ ONE_HOP_TYPES = frozenset(
 
 # D13: flow values from the relationship schema; any other recorded value is treated as absent, with a warning.
 FLOWS = ("outbound", "inbound", "bidirectional")
+
+# D43: placed objects of these types are drawn in the deployment view only; D44: what they source is kept
+# only when its target is placed in the same pattern.
+INFRA_TYPES = frozenset({"network_service", "runtime_service", "host", "ai_gateway", "data_store_service"})
 
 # D7: types whose runsOn may name the substrate of their service group.
 COMPONENT_TYPES = frozenset({"product_component", "data_component"})
@@ -298,6 +316,7 @@ class Model:
         self.conflicts: list[Conflict] = []
         self.container_uids: set[str] = set()  # membership tests only
         self.drawn_container_uids: set[str] = set()  # containers of groups that have drawable objects
+        self.store_container_uids: set[str] = set()  # D45: data store services drawn as containers, never as boxes
         self._read_groups()
         self._other_patterns = _other_pattern_names(catalog, sdp)
         self._build_nodes_and_edges()
@@ -322,11 +341,14 @@ class Model:
 
     def nodes_for_view(self, view: str) -> list[DiagramNode]:
         if view == "logical":
-            return list(self._nodes)
+            # D43: placed infrastructure belongs to the deployment view; unplaced dependencies stay in the lane.
+            return [node for node in self._nodes if not (node.placed and node.node_type in INFRA_TYPES)]
         if view == "deployment":
             # D29: a service group's drawn container is never also a box in the deployment view. A substrate
             # whose group is not drawn has no container figure, so it stays a box (see _build_containers).
-            return [node for node in self._nodes if node.uid not in self.drawn_container_uids]
+            # D45: likewise a data store service that is drawn as a data component container.
+            hidden = self.drawn_container_uids | self.store_container_uids
+            return [node for node in self._nodes if node.uid not in hidden]
         raise ValueError(f"unknown view: {view!r}")
 
     def _read_layout(self) -> None:
@@ -343,7 +365,7 @@ class Model:
         layout = self.catalog[found[0]]
         drawn = {
             "logical": {n.uid for n in self.nodes_for_view("logical")},
-            "deployment": {n.uid for n in self.nodes_for_view("deployment")} | self.drawn_container_uids,
+            "deployment": {n.uid for n in self.nodes_for_view("deployment")} | self.drawn_container_uids | self.store_container_uids,
         }
         for view in ("logical", "deployment"):
             entries = layout.get(view)
@@ -428,12 +450,16 @@ class Model:
             (o for o in catalog.values() if o.get("type") == "relationship" and not is_runs_on(o)),
             key=lambda o: str(o.get("uid", "")),
         )
+        infra = {uid for uid in placed if catalog[uid].get("type") in INFRA_TYPES}  # D44: sources that carry no borrowed flows
         outside: set[str] = set()
         externals: dict[str, str] = {}  # external id -> trimmed, whitespace-collapsed text (D3)
         if not self.placed_only:
             for rel in recorded:
                 source, target = _endpoint(rel, "source"), _endpoint(rel, "target")
                 # D42: only the objects a placed object depends on enter scope; consumers do not.
+                # D44: a placed infrastructure object's relationship to an unplaced target belongs to another page.
+                if source in infra:
+                    continue
                 if source in placed and target and target not in placed and catalog.get(target, {}).get("type") in ONE_HOP_TYPES:
                     outside.add(target)
                 text = clean(rel.get("externalTarget"))
@@ -503,6 +529,8 @@ class Model:
             if source not in self._by_uid or end not in self._by_uid:
                 continue
             if source not in placed:  # D41/D42: edges of unplaced sources (consumers, outside-to-outside) are not drawn
+                continue
+            if source in infra and end not in placed:  # D44: no borrowed flows, so not drawn and not tabled
                 continue
             dependency = is_dependency(rel)
             edge = DiagramEdge(
@@ -587,6 +615,12 @@ class Model:
                 drawable[index] = True
         self.container_uids = {uid for uid, ok in zip(planned, drawable) if ok and uid}
         self.drawn_container_uids = set(self.container_uids)
+        for index, group in enumerate(self.groups):  # D45: a store hosting a drawn data component is a container
+            if drawable[index]:
+                for uid in group["uids"]:
+                    store = self._store_of(uid)
+                    if store:
+                        self.store_container_uids.add(store)
         for group_index, group in enumerate(self.groups):
             group_name = group["name"]
             recorded = group["substrate"]
@@ -625,7 +659,24 @@ class Model:
                         self.warnings.append(
                             f"conflict: {self.name(uid)} runsOn {self.name(runs_on)}; group substrate is {self.name(recorded)}"
                         )
-            members = [uid for uid in group["uids"] if uid not in self.container_uids] if drawable[group_index] else []
+            hidden = self.container_uids | self.store_container_uids
+            members = [uid for uid in group["uids"] if uid not in hidden] if drawable[group_index] else []
+            plain: list[str] = []
+            stores: dict[str, DiagramStore] = {}  # D45: store uid ("" when not recorded) -> container, in listing order
+            for uid in members:
+                store = self._store_of(uid)
+                if store is None:
+                    plain.append(uid)
+                    continue
+                if store not in stores:
+                    stores[store] = DiagramStore(
+                        uid=store,
+                        name=self.name(store) if store else "data store not recorded",
+                        life=lifecycle(catalog[store]) if store else "",
+                    )
+                stores[store].members.append(uid)
+                if not store:
+                    self.warnings.append(f"data store not recorded: {self.name(uid)} ({uid}) has no runsOn data store service")
             if container_uid and not drawable[group_index] and container_uid not in self.container_uids:
                 # D29: nothing is drawn for this group. A substrate that is a node stays a box; any other
                 # substrate has no node, so say plainly that it is not drawn.
@@ -641,12 +692,22 @@ class Model:
             buckets: dict[str, list[str]] = {}
             unrecorded: list[str] = []
             undeclared: list[str] = []
-            for uid in members:
+            store_buckets: dict[str, list[DiagramStore]] = {}
+            store_unrecorded: list[DiagramStore] = []
+            for uid in plain:
                 zone = zone_of.get(uid, "")
                 if zone in declared:
                     buckets.setdefault(zone, []).append(uid)
                 else:
                     unrecorded.append(uid)
+                    if zone and zone not in undeclared:
+                        undeclared.append(zone)
+            for store in stores.values():  # D45: the container takes the zone lane of its first data component
+                zone = zone_of.get(store.members[0], "")
+                if zone in declared:
+                    store_buckets.setdefault(zone, []).append(store)
+                else:
+                    store_unrecorded.append(store)
                     if zone and zone not in undeclared:
                         undeclared.append(zone)
             for zone in undeclared:
@@ -656,13 +717,14 @@ class Model:
                     zone=zone,
                     name=clean(declared[zone].get("name")) or zone,
                     tier=clean(declared[zone].get("tier")),
-                    members=buckets[zone],
+                    members=buckets.get(zone, []),
+                    stores=store_buckets.get(zone, []),
                 )
                 for zone in declared
-                if zone in buckets
+                if zone in buckets or zone in store_buckets
             ]
-            if unrecorded:  # D9: absent or undeclared zones share a last lane
-                lanes.append(DiagramLane(zone="", name="zone not recorded", tier="", members=unrecorded))
+            if unrecorded or store_unrecorded:  # D9: absent or undeclared zones share a last lane
+                lanes.append(DiagramLane(zone="", name="zone not recorded", tier="", members=unrecorded, stores=store_unrecorded))
             self.containers.append(
                 DiagramContainer(
                     uid=container_uid,
@@ -677,6 +739,21 @@ class Model:
                     life=lifecycle(catalog[container_uid]) if container_uid else "",
                 )
             )
+
+    def _store_of(self, uid: str) -> str | None:
+        """D45: the data store service a placed data component runs on; "" when not recorded; None for other objects.
+
+        A data component whose runsOn is a group's own drawn substrate stays a plain box (D7, D29), so None too.
+        """
+        obj = self.catalog[uid]
+        if obj.get("type") != "data_component":
+            return None
+        runs_on = clean(obj.get("runsOn"))
+        if runs_on in self.container_uids:
+            return None
+        if runs_on and self.catalog.get(runs_on, {}).get("type") == "data_store_service":
+            return runs_on
+        return ""
 
     def _caption(self, uid: str) -> str:
         names = self._other_patterns.get(uid, [])
@@ -983,7 +1060,7 @@ def render_page(model: Model, dm: DiagramModel) -> str:
     title = clean(sdp.get("name")) or "Deployment pattern"
     logical_empty = not dm.nodes
     logical_body = (
-        "<p>No object is placed in a service group and no recorded relationship connects an object, so there is nothing to draw.</p>"
+        "<p>No component or data component is placed in a service group and the pattern records no dependency outside it, so there is nothing to draw here; placed infrastructure is in the deployment diagram.</p>"
         if logical_empty
         else figure_html(render_logical_svg(dm), FIGURE_IDS[0])
     )
@@ -995,14 +1072,14 @@ def render_page(model: Model, dm: DiagramModel) -> str:
         counts_html(model, dm),
         f'<section class="sec" id="logical"><h2>{E(LOGICAL_TITLE)}</h2>'
         '<label class="tog"><input type="checkbox" data-all="fig-logical"> Show all connections</label><span class="key"><span class="o"><i></i>calls it makes</span><span class="i"><i></i>calls it receives</span></span>'
-        "<p>Components in bands by diagram tier. Objects that this pattern does not place sit in the right-hand lane, captioned with the pattern that places them. "
+        "<p>Components and data components in bands by diagram tier; placed infrastructure (network, runtime, host, AI gateway and data store services) is drawn in the deployment diagram only. Dependencies that this pattern does not place sit in the right-hand lane, captioned with the pattern that places them. "
         "Connections are hidden until you hover over, focus or click a box; then only that box's own connections appear, purple for calls it makes and orange for calls it receives. "
         "Click to pin. A dashed box has a derived tier.</p>"
         + logical_body
         + "</section>",
         f'<section class="sec" id="deployment"><h2>{E(DEPLOYMENT_TITLE)}</h2>'
         '<label class="tog"><input type="checkbox" data-all="fig-deployment"> Show all connections</label><span class="key"><span class="o"><i></i>calls it makes</span><span class="i"><i></i>calls it receives</span></span>'
-        "<p>Deployment targets hold service groups, each drawn as a container around its boxes. Connections are hidden until you hover over, focus or click a box, and pinning an object in one figure highlights it in the other.</p>"
+        "<p>Deployment targets hold service groups, each drawn as a container around its boxes, including the infrastructure the logical diagram leaves out. Data components sit inside a container named for the data store service they run on. Connections are hidden until you hover over, focus or click a box, and pinning an object in one figure highlights it in the other.</p>"
         + figure_html(render_deployment_svg(dm), FIGURE_IDS[1])
         + empty_groups_html(model)
         + "</section>",
@@ -1694,6 +1771,7 @@ _FIGURE_CSS = (
     ".bl,.ll{font:600 11px sans-serif;fill:var(--muted)}"
     ".tgt{fill:var(--target);stroke:var(--target-line);stroke-width:1.4}"
     ".grp{fill:var(--group);stroke:var(--group-line)}"
+    ".store>.grp{fill:var(--band);stroke:var(--band-line)}"
     ".zl{fill:var(--surface);stroke:var(--zone-line);stroke-dasharray:3 3}"
     ".tl{font:700 12px sans-serif;fill:var(--ink)}"
     ".gl,.zc{font:600 11px sans-serif;fill:var(--muted)}"
@@ -1984,6 +2062,12 @@ def _wrap_to(text: str, width_px: int) -> list[str]:
     return lines
 
 
+def _ordered_stores(stores: list[DiagramStore], positions: dict[str, int]) -> list[DiagramStore]:
+    """D39: positioned data store containers first, by (position, uid); the rest follow in listing order."""
+    placed = sorted((st for st in stores if st.uid in positions), key=lambda st: (positions[st.uid], st.uid))
+    return placed + [st for st in stores if st.uid not in positions]
+
+
 def _fmt(value: Any) -> str:
     value = float(value)
     return str(int(value)) if value == int(value) else f"{value:.1f}"
@@ -2122,6 +2206,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     by_uid = {n.uid: n for n in model.deployment_nodes}
     outline = _deployment_outline(model)
     containers = {g.uid for _t, groups in outline for g in groups if g.uid}
+    containers |= {st.uid for _t, groups in outline for g in groups for lane in g.lanes for st in lane.stores if st.uid}  # D45
     drawable = set(by_uid) | containers
     drawn = [(i, e) for i, e in enumerate(model.edges) if e.source != e.target and e.source in drawable and e.target in drawable]
     loops: dict[str, int] = {}
@@ -2144,6 +2229,12 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     lane_sizes = [len(lane.members) for _t, groups in outline for g in groups for lane in g.lanes]
     used = min(DEPLOY_COLUMNS, max(lane_sizes, default=1))
     inner_w = used * LOGICAL_BOX_W + (used - 1) * col_gap
+
+    def store_width(store: DiagramStore) -> int:  # D45: a data store container holds its data components in rows
+        cols = min(DEPLOY_COLUMNS, len(store.members))
+        return cols * LOGICAL_BOX_W + (cols - 1) * col_gap + 2 * DEPLOY_PAD
+
+    inner_w = max([inner_w] + [store_width(st) for _t, groups in outline for g in groups for lane in g.lanes for st in lane.stores])
     lane_w = inner_w + 2 * DEPLOY_PAD + loop_room
     group_w = lane_w + 2 * DEPLOY_PAD
 
@@ -2205,21 +2296,72 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
                     cursor2 = ly + caption_end
                     node_svgs: list[str] = []
                     prev_row: list[str] = []
-                    for row in rows:
-                        above = band_at(cursor2, rise(row))
+
+                    def lay_rows(rows_in: list, cx: int, cursor_in: int, prev_in: list) -> tuple:
+                        """Rows of boxes at x cx from cursor_in; returns the new cursor and the last row's uids."""
+                        for row in rows_in:
+                            above = band_at(cursor_in, rise(row))
+                            for uid in prev_in:
+                                if uid in pools and "bottom" not in pools[uid]:
+                                    pools[uid]["bottom"] = above
+                            row_top = above.hi
+                            for col, uid in enumerate(row):
+                                bx = cx + col * step_x
+                                if uid in by_uid and uid not in pos:
+                                    pos[uid] = (bx, row_top)
+                                    rects[uid] = (bx, row_top, LOGICAL_BOX_W, LOGICAL_BOX_H)
+                                    pools[uid] = {"top": above}
+                                    node_svgs.append(_node_svg(by_uid[uid], bx, row_top))
+                            cursor_in = row_top + LOGICAL_BOX_H
+                            prev_in = row
+                        return cursor_in, prev_in
+
+                    cursor2, prev_row = lay_rows(rows, lx + DEPLOY_PAD, cursor2, prev_row)
+                    for store in _ordered_stores(lane.stores, model.deployment_positions):  # D45
+                        above = band_at(cursor2, rise([store.uid]))
                         for uid in prev_row:
                             if uid in pools and "bottom" not in pools[uid]:
                                 pools[uid]["bottom"] = above
-                        row_top = above.hi
-                        for col, uid in enumerate(row):
-                            bx = lx + DEPLOY_PAD + col * step_x
-                            if uid in by_uid and uid not in pos:
-                                pos[uid] = (bx, row_top)
-                                rects[uid] = (bx, row_top, LOGICAL_BOX_W, LOGICAL_BOX_H)
-                                pools[uid] = {"top": above}
-                                node_svgs.append(_node_svg(by_uid[uid], bx, row_top))
-                        cursor2 = row_top + LOGICAL_BOX_H
-                        prev_row = row
+                        sx, sy, sw = lx + DEPLOY_PAD, above.hi, store_width(store)
+                        s_lines = _wrap_to(store.name, sw)
+                        s_head = 18 + DEPLOY_LINE_H * (len(s_lines) - 1) + 6 + 13 + 8
+                        inner: list[str] = []
+                        saved = node_svgs
+                        node_svgs = inner
+                        s_rows = rows_of(apply_positions(store.members, model.deployment_positions))  # D39
+                        s_cursor, s_prev = lay_rows(s_rows, sx + DEPLOY_PAD, sy + s_head, [])
+                        node_svgs = saved
+                        s_below = band_at(s_cursor, 0)
+                        for uid in s_prev:
+                            if uid in pools and "bottom" not in pools[uid]:
+                                pools[uid]["bottom"] = s_below
+                        sh = s_below.hi - sy
+                        first_store = bool(store.uid) and store.uid not in rects
+                        if first_store:
+                            rects[store.uid] = (sx, sy, sw, sh)
+                            pools[store.uid] = {"top": above}
+                            names[store.uid] = store.name
+                        chip_w = int(len(chip_label("data_store_service")) * 5.4) + 12
+                        s_text = "".join(
+                            f'<text class="gl" x="{sx + 10}" y="{sy + 18 + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(s_lines)
+                        )
+                        if store.uid:
+                            chip_y = sy + 18 + DEPLOY_LINE_H * (len(s_lines) - 1) + 6
+                            s_text += (
+                                f'<rect class="chip chip-{chip_key("data_store_service")}" x="{sx + 10}" y="{chip_y}" width="{chip_w}" height="13" rx="3"/>'
+                                f'<text class="chip-t" x="{sx + 16}" y="{chip_y + 10}">{xml_text(chip_label("data_store_service"))}</text>'
+                            )
+                        s_cls = "group store" + (" dashed" if not store.uid else "")
+                        s_cls += " ret" if store.life == "retired" else " dep" if store.life == "deprecated" else ""
+                        s_ident = f' data-id="{xml_text(store.uid)}"' if store.uid else ""
+                        node_svgs.append(
+                            f'<g class="{s_cls}"{s_ident} data-group="{xml_text(store.name)}"><title>{xml_text(store.name)}</title>'
+                            f'<rect class="grp" x="{sx}" y="{sy}" width="{sw}" height="{sh}" rx="6"/>{s_text}'
+                            + "".join("\n" + node for node in inner)
+                            + "\n</g>"
+                        )
+                        cursor2 = sy + sh
+                        prev_row = [store.uid]
                     below = band_at(cursor2, 0)
                     for uid in prev_row:
                         if uid in pools and "bottom" not in pools[uid]:
@@ -2444,7 +2586,10 @@ def drawn_order(model: Model) -> dict[str, list[list[str]]]:
     for _target, groups in _deployment_outline(dm):
         for group in groups:
             for lane in group.lanes:
-                out["deployment"].append(apply_positions(lane.members, dm.deployment_positions))
+                stores = [st for st in _ordered_stores(lane.stores, dm.deployment_positions) if st.uid]
+                out["deployment"].append(apply_positions(lane.members, dm.deployment_positions) + [st.uid for st in stores])
+                for store in _ordered_stores(lane.stores, dm.deployment_positions):  # D45
+                    out["deployment"].append(apply_positions(store.members, dm.deployment_positions))
     order_out: dict[str, list[str]] = {}
     render_deployment_svg(dm, order_out)
     if order_out.get("outside"):
