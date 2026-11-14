@@ -163,14 +163,13 @@ serviceGroup:
     deployableObjects: deployableObjectEntry
   fieldDescriptions:
     substrate: >
-      UID of the RuntimeService or Host that hosts the
-      ProductComponents in this service group. When set, the hosting runtime is
-      rendered as the deployment container for this group in the browser and does
-      not need to appear as a separate entry in deployableObjects. List only
-      ProductComponents (and any DataComponents) in deployableObjects. Omit
-      substrate when this service group is a data-tier group whose primary object
-      is a DataStoreService — DataStoreServices remain in deployableObjects because
-      they are relationship targets for other groups.
+      UID of the RuntimeService or Host that hosts the ProductComponents in this
+      service group. The substrate is a service definition consumed by the group:
+      it is rendered as the deployment container for the group and is never listed
+      in deployableObjects. Runtime and host services belong here, not in
+      deployableObjects. Planned validation rule sdp-placement-types (ratcheted)
+      reports a deployableObjects ref that is not a ProductComponent or
+      DataComponent and names this field as the place for it.
     deploymentTarget: >
       Workspace vocabulary value identifying the physical or logical deployment
       target for this service group (e.g. aws-us-east-1, openstack-controller).
@@ -178,13 +177,18 @@ serviceGroup:
       tierVariants.serviceGroupVariants.
   aiHint: >
     A service group is one deployment unit within an SDP — a set of objects that
-    share a deployment target, network placement, and scaling boundary. Use
-    substrate to declare the hosting runtime (RuntimeService or Host) when this
-    group contains ProductComponents; list only the
-    ProductComponents in deployableObjects rather than repeating the runtime
-    alongside them. For data-tier groups whose primary object is a DataStoreService,
-    leave substrate unset and include the DataStoreService in deployableObjects so
-    other groups can reference it as a relationship target.
+    share a deployment target, network placement, and scaling boundary. A pattern
+    places only ProductComponents and DataComponents, and only those go in
+    deployableObjects. The group's runtime or host goes in substrate. A
+    DataComponent names the DataStoreService it lives in through its own runsOn;
+    the store is shown as the container around the data component, not as a
+    placed entry. Edge services (load balancer, firewall, ingress) come from the
+    ReferenceArchitecture the pattern follows. External services (identity
+    providers, secrets managers, SaaS) are relationship targets drawn as External
+    interactions, not placed entries. A service definition (an object under the
+    shared-services catalog folder, or serviceRole: definition) is consumed
+    through substrate and runsOn and is never placed. Planned ratcheted rule
+    sdp-placement-types reports any other placement.
 deployableObjectEntry:
   requiredFields:
   - ref
@@ -206,6 +210,14 @@ deployableObjectEntry:
     - sa
     - standalone
   fieldDescriptions:
+    ref: >
+      UID of a ProductComponent or DataComponent placed by this pattern. Do not
+      reference a DataStoreService, RuntimeService, Host or NetworkService here:
+      use substrate on the service group for a runtime or host, runsOn on the
+      DataComponent for its data store, and the followed ReferenceArchitecture for
+      edge services (planned ratcheted rule sdp-placement-types). Inside a
+      ReferenceArchitecture the same entry shape describes capability slots, which
+      is a different use.
     networkZone: >
       ID of a networkZone declared on this SDP. The zone's tier classification
       determines which tier requirements apply to this service. Required for

@@ -41,11 +41,11 @@ declarations, remove internal names), then submit a pull request.
 
 ## Capability Slots
 
-Framework-level ReferenceArchitectures use capability slots to describe the roles a deployment must fill without naming company-specific catalog objects. A slot appears inside `serviceGroups[].deployableObjects[]` and may include:
+Framework-level ReferenceArchitectures use capability slots to describe the roles a deployment must fill without naming company-specific catalog objects. A slot appears inside the ReferenceArchitecture's `serviceGroups[].deployableObjects[]` (a slot describes a role to fill, unlike an SDP, whose `deployableObjects` hold only ProductComponents and DataComponents) and may include:
 
 - `slot`: a stable kebab-case role name used by the Draftsman onboarding flow, such as `application-runtime`, `managed-state-store`, or `messaging-backbone`.
 - `capability`: the Capability UID the selected implementation must satisfy.
-- `objectType`: the deployable object type the implementation should resolve to in an SDP, such as `runtime_service`, `data_store_service`, or `network_service`.
+- `objectType`: the type of service the standard provides for this slot, such as `runtime_service`, `data_store_service`, or `network_service`.
 - `ref`: optional, only for company-authored or catalog-specific ReferenceArchitectures that deliberately pin a concrete object.
 
 `objectType`, `ref`, and `capability` are optional independently for backward compatibility, but new framework starter patterns should prefer `slot` + `capability` + `objectType`. A company catalog satisfies a slot by either assigning the Capability directly to the deployable service or by listing that service (or its underlying TechnologyComponent) in the Capability's `implementations`.
@@ -56,7 +56,7 @@ If a slot requires a shared service type and the company catalog does not yet co
 
 ## Framework RA objectType Entries
 
-Framework-level RAs use capability slots instead of company-specific `ref` values in `deployableObjects` entries. `objectType` declares the expected catalog object type, while `capability` declares the governed architecture outcome that the selected object or implementation must satisfy. The company catalog defines which specific Host, RuntimeService, DataStoreService, or NetworkService objects satisfy each slot when the SDP is drafted.
+Framework-level RAs use capability slots instead of company-specific `ref` values in `deployableObjects` entries. `objectType` declares the expected catalog object type, while `capability` declares the governed architecture outcome that the selected object or implementation must satisfy. The company catalog defines which specific Host, RuntimeService, DataStoreService, or NetworkService definitions satisfy each slot. The SDP that follows the RA does not copy those definitions into its own `deployableObjects`: it consumes them through `substrate` and `runsOn`, and edge services come from the RA's slots (ratcheted rule `sdp-placement-types`).
 
 When a company authors their own RA or extends a framework RA, they may use
 `ref` to point to specific catalog objects, `objectType` for type-level
@@ -130,8 +130,8 @@ The core field in a ReferenceArchitecture is `serviceGroups`. Each group cluster
 services that work together in the deployment pattern. Inside each group, the
 pattern declares:
 
-- the deployable objects that must exist
-- the `diagramTier` each deployable object belongs to
+- the slots (roles the standard provides) that must exist; a pattern that follows the RA does not copy them into its own `deployableObjects`
+- the `diagramTier` each slot belongs to
 - any group-local interactions or notes that matter to the pattern
 
 This does more than list ingredients. It shows how the pattern is meant to be
