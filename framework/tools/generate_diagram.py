@@ -342,7 +342,13 @@ class Model:
     def nodes_for_view(self, view: str) -> list[DiagramNode]:
         if view == "logical":
             # D43: placed infrastructure belongs to the deployment view; unplaced dependencies stay in the lane.
-            return [node for node in self._nodes if not (node.placed and node.node_type in INFRA_TYPES)]
+            # An outside node reached only by infrastructure-sourced edges would sit in the lane with no edge.
+            fed = {e.target for e in self.edges if not self._is_infra_source(e.source)}
+            return [
+                node
+                for node in self._nodes
+                if not (node.placed and node.node_type in INFRA_TYPES) and (not node.outside or node.uid in fed)
+            ]
         if view == "deployment":
             # D29: a service group's drawn container is never also a box in the deployment view. A substrate
             # whose group is not drawn has no container figure, so it stays a box (see _build_containers).
@@ -457,8 +463,8 @@ class Model:
             for rel in recorded:
                 source, target = _endpoint(rel, "source"), _endpoint(rel, "target")
                 # D42: only the objects a placed object depends on enter scope; consumers do not.
-                # D44: a placed infrastructure object's relationship to an unplaced target belongs to another page.
-                if source in infra:
+                # D44: a placed infrastructure object's relationship to a target another pattern places belongs to that page.
+                if source in infra and target in self._other_patterns:
                     continue
                 if source in placed and target and target not in placed and catalog.get(target, {}).get("type") in ONE_HOP_TYPES:
                     outside.add(target)
@@ -530,7 +536,7 @@ class Model:
                 continue
             if source not in placed:  # D41/D42: edges of unplaced sources (consumers, outside-to-outside) are not drawn
                 continue
-            if source in infra and end not in placed:  # D44: no borrowed flows, so not drawn and not tabled
+            if source in infra and end not in placed and end in self._other_patterns:  # D44: no borrowed flows, so not drawn and not tabled
                 continue
             dependency = is_dependency(rel)
             edge = DiagramEdge(
@@ -571,9 +577,24 @@ class Model:
 
         Only runsOn of product and data components is read; host fields are never used.
         """
-        targets = {clean(self.catalog[uid].get("runsOn")) for uid in uids if self.catalog[uid].get("type") in COMPONENT_TYPES}
+        targets = {
+            clean(self.catalog[uid].get("runsOn"))
+            for uid in uids
+            if self.catalog[uid].get("type") in COMPONENT_TYPES and not self._on_store(uid)
+        }
         targets.discard("")
         return targets.pop() if len(targets) == 1 else ""
+
+    def _is_infra_source(self, uid: str) -> bool:
+        return uid in self.placement and self.catalog[uid].get("type") in INFRA_TYPES
+
+    def _on_store(self, uid: str) -> bool:
+        """D45/D8: a data component whose runsOn resolves to a data store service sits in that store's container.
+
+        It is never compared with the group substrate and does not take part in substrate derivation.
+        """
+        obj = self.catalog[uid]
+        return obj.get("type") == "data_component" and self.catalog.get(clean(obj.get("runsOn")), {}).get("type") == "data_store_service"
 
     def _build_containers(self) -> None:
         """Service group containers with caption variants (D7), conflicts (D8) and zone lanes (D9)."""
@@ -618,7 +639,7 @@ class Model:
         for index, group in enumerate(self.groups):  # D45: a store hosting a drawn data component is a container
             if drawable[index]:
                 for uid in group["uids"]:
-                    store = self._store_of(uid)
+                    store = self._store_of(uid, planned[index])
                     if store:
                         self.store_container_uids.add(store)
         for group_index, group in enumerate(self.groups):
@@ -653,7 +674,7 @@ class Model:
             if recorded:  # D8: only a recorded substrate can conflict; nothing is resolved
                 for uid in group["uids"]:
                     obj = catalog[uid]
-                    runs_on = clean(obj.get("runsOn")) if obj.get("type") in COMPONENT_TYPES else ""
+                    runs_on = clean(obj.get("runsOn")) if obj.get("type") in COMPONENT_TYPES and not self._on_store(uid) else ""
                     if runs_on and runs_on != recorded:
                         self.conflicts.append(Conflict(group=group_name, component=uid, runs_on=runs_on, substrate=recorded))
                         self.warnings.append(
@@ -664,16 +685,19 @@ class Model:
             plain: list[str] = []
             stores: dict[str, DiagramStore] = {}  # D45: store uid ("" when not recorded) -> container, in listing order
             for uid in members:
-                store = self._store_of(uid)
+                store = self._store_of(uid, sub_uid)
                 if store is None:
                     plain.append(uid)
                     continue
                 if store not in stores:
-                    stores[store] = DiagramStore(
-                        uid=store,
-                        name=self.name(store) if store else "data store not recorded",
-                        life=lifecycle(catalog[store]) if store else "",
-                    )
+                    store_name = self.name(store) if store else "data store not recorded"
+                    store_type = str(catalog[store].get("type", "")) if store else ""
+                    if store and store_type != "data_store_service":  # D45, as D7 for a substrate: name the type and warn
+                        store_name = f"{store_name} ({store_type})"
+                        self.warnings.append(
+                            f"data store {self.name(store)} ({store}) has type {store_type}; expected data_store_service"
+                        )
+                    stores[store] = DiagramStore(uid=store, name=store_name, life=lifecycle(catalog[store]) if store else "")
                 stores[store].members.append(uid)
                 if not store:
                     self.warnings.append(f"data store not recorded: {self.name(uid)} ({uid}) has no runsOn data store service")
@@ -702,8 +726,14 @@ class Model:
                     unrecorded.append(uid)
                     if zone and zone not in undeclared:
                         undeclared.append(zone)
-            for store in stores.values():  # D45: the container takes the zone lane of its first data component
+            # D45: the container takes the zone lane of its first data component; 'not recorded' is always last (D40)
+            for store in sorted(stores.values(), key=lambda st: not st.uid):
                 zone = zone_of.get(store.members[0], "")
+                for uid in store.members[1:]:  # a data component is never silently moved out of its zone (D9)
+                    other = zone_of.get(uid, "")
+                    if (other if other in declared else "") != (zone if zone in declared else ""):
+                        lane_name = clean(declared[zone].get("name")) or zone if zone in declared else "zone not recorded"
+                        self.warnings.append(f"data component {self.name(uid)} zone {other or 'not recorded'} drawn in lane {lane_name}")
                 if zone in declared:
                     store_buckets.setdefault(zone, []).append(store)
                 else:
@@ -740,20 +770,18 @@ class Model:
                 )
             )
 
-    def _store_of(self, uid: str) -> str | None:
-        """D45: the data store service a placed data component runs on; "" when not recorded; None for other objects.
+    def _store_of(self, uid: str, substrate: str) -> str | None:
+        """D45: the object a placed data component runs on; "" when runsOn is absent or unresolved; None for other objects.
 
-        A data component whose runsOn is a group's own drawn substrate stays a plain box (D7, D29), so None too.
+        A data component whose runsOn is its own group's substrate stays a plain box (D7, D29), so None too.
         """
         obj = self.catalog[uid]
         if obj.get("type") != "data_component":
             return None
         runs_on = clean(obj.get("runsOn"))
-        if runs_on in self.container_uids:
+        if runs_on and runs_on == substrate:
             return None
-        if runs_on and self.catalog.get(runs_on, {}).get("type") == "data_store_service":
-            return runs_on
-        return ""
+        return runs_on if runs_on in self.catalog else ""
 
     def _caption(self, uid: str) -> str:
         names = self._other_patterns.get(uid, [])
@@ -849,7 +877,10 @@ def counts_html(model: Model, dm: DiagramModel) -> str:
     placed = len(model.placement)
     unplaced = len([u for u in model.scope if u in model.catalog and u not in model.placement])
     retired = sum(1 for u in model.scope if u in model.catalog and lifecycle(model.catalog[u]) == "retired")
-    drawn = len([n for n in dm.nodes if not n.external])
+    seen = {n.uid for n in dm.nodes + dm.deployment_nodes if not n.external}  # drawn in either view (D43)
+    seen |= {c.uid for c in dm.containers if c.drawn and c.uid}
+    seen |= {st.uid for c in dm.containers for lane in c.lanes for st in lane.stores if st.uid}
+    drawn = len(seen & model.scope)
     spans = [
         f"<span><b>{drawn}</b> objects drawn</span>",
         f"<span><b>{placed}</b> placed in a service group</span>",
@@ -1060,7 +1091,11 @@ def render_page(model: Model, dm: DiagramModel) -> str:
     title = clean(sdp.get("name")) or "Deployment pattern"
     logical_empty = not dm.nodes
     logical_body = (
-        "<p>No component or data component is placed in a service group and the pattern records no dependency outside it, so there is nothing to draw here; placed infrastructure is in the deployment diagram.</p>"
+        (
+            "<p>This pattern places no component or data component, so there is nothing to draw here; its infrastructure is in the deployment diagram.</p>"
+            if model.placement
+            else "<p>No object is placed in a service group, so there is nothing to draw.</p>"
+        )
         if logical_empty
         else figure_html(render_logical_svg(dm), FIGURE_IDS[0])
     )
@@ -2063,9 +2098,14 @@ def _wrap_to(text: str, width_px: int) -> list[str]:
 
 
 def _ordered_stores(stores: list[DiagramStore], positions: dict[str, int]) -> list[DiagramStore]:
-    """D39: positioned data store containers first, by (position, uid); the rest follow in listing order."""
+    """D39: positioned data store containers first, by (position, uid); the rest follow in listing order.
+
+    The 'data store not recorded' container cannot be positioned and always comes last, so a layout written from
+    the drawn order renders the same order again (D40).
+    """
     placed = sorted((st for st in stores if st.uid in positions), key=lambda st: (positions[st.uid], st.uid))
-    return placed + [st for st in stores if st.uid not in positions]
+    rest = [st for st in stores if st.uid not in positions]
+    return placed + [st for st in rest if st.uid] + [st for st in rest if not st.uid]  # 'not recorded' has no uid: last
 
 
 def _fmt(value: Any) -> str:

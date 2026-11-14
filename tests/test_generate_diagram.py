@@ -782,24 +782,38 @@ class InfrastructurePlacementTests(unittest.TestCase):
             self.assertNotIn("FXPRD00001-0001", data_ids(svg))
         self.assertNotIn("routes shop requests", generate_diagram.render_page(model, generate_diagram.diagram_of(model)))
 
-    def test_infrastructure_sourced_relationships_need_a_placed_target(self) -> None:  # AC27
+    def test_infrastructure_sourced_relationships_drop_only_targets_other_patterns_place(self) -> None:  # AC27, R5
+        other = pattern({"Shop": ["X-1"]})
+        other.update({"uid": "SDP-2", "name": "Shop Pattern"})
         objects = [
             plain("N-1", "network_service", "Edge"),
             component("C-1", "Placed"),
             component("X-1", "Elsewhere"),
-            component("U-1", "Unplaced"),
+            component("U-1", "Never Placed"),
             pattern({"G": ["N-1", "C-1"]}),
+            other,
             relationship("E-1", "N-1", "C-1", "routes here"),
             relationship("E-2", "N-1", "X-1", "routes away"),
-            relationship("E-3", "N-1", "U-1", "also away"),
+            relationship("E-3", "N-1", "U-1", "to nobody's pattern"),
             {"schemaVersion": "1.0", "uid": "E-4", "type": "relationship", "name": "E-4", "source": "N-1", "externalTarget": "Partner", "label": "out"},
-            relationship("E-5", "C-1", "U-1", "calls"),  # a component's own dependency still enters scope
+            relationship("E-5", "C-1", "U-1", "calls"),
         ]
-        model = model_of(objects)
-        self.assertEqual([e.uid for e in model.edges], ["E-1", "E-5"])
-        self.assertEqual({r["uid"] for r in model.relationship_rows}, {"E-1", "E-5"})
+        model = model_of(objects, selector="SDP-1")
+        self.assertEqual([e.uid for e in model.edges], ["E-1", "E-3", "E-4", "E-5"])  # only E-2, to another pattern's object, is dropped
+        self.assertEqual({r["uid"] for r in model.relationship_rows}, {"E-1", "E-3", "E-4", "E-5"})
         self.assertEqual(model.scope, {"N-1", "C-1", "U-1"})
+        self.assertNotIn("X-1", model.scope)
+        # A lane node that only infrastructure reaches would have no edge in the logical view, so it is left out there.
+        logical = {n.uid for n in model.nodes_for_view("logical")}
+        self.assertIn("U-1", logical)  # also a dependency of a component
         self.assertFalse(any(n.external for n in model.nodes_for_view("logical")))
+        self.assertTrue(any(n.external for n in model.nodes_for_view("deployment")))
+
+    def test_openstack_example_keeps_infrastructure_external_dependencies(self) -> None:  # R5
+        _page, model = generate_diagram.build(EXAMPLES, "OpenStack IaaS Platform")
+        externals = [n for n in model.nodes_for_view("deployment") if n.external]
+        self.assertGreater(len(externals), 0)
+        self.assertTrue(any(e.target == externals[0].uid for e in model.edges))
 
     def test_data_components_sit_in_their_data_store_container(self) -> None:  # AC28
         catalog, model = self.registry()
@@ -839,7 +853,7 @@ class InfrastructurePlacementTests(unittest.TestCase):
             plain("S-1", "data_store_service", "Shared Store"),
             plain("D-1", "data_component", "One", runsOn="S-1"),
             plain("D-2", "data_component", "Two", runsOn="S-1"),
-            plain("D-3", "data_component", "Three", runsOn="MISSING"),
+            plain("D-3", "data_component", "Three"),
             plain("S-2", "data_store_service", "Other Store"),
             plain("D-4", "data_component", "Four", runsOn="S-2"),  # keeps S-1 from being derived as group A's substrate
             pattern({"A": ["S-1", "D-1", "D-4"], "B": ["D-2", "D-3"]}),
@@ -897,6 +911,129 @@ class InfrastructurePlacementTests(unittest.TestCase):
         for uid in ("FXDCP00002-0001", "FXDCP00005-0001", "FXDST00002-0001", "FXDST00003-0001", "FXNET00002-0001"):
             self.assertIn(uid, drawn)
         self.assertEqual(len(drawn), len(set(drawn)))
+
+
+class InfrastructureReviewFixTests(unittest.TestCase):
+    """S17 review round 1: R1 to R9."""
+
+    @staticmethod
+    def stores_of(model) -> list:
+        return [(c.group, lane.zone, [(st.uid, st.name, st.members) for st in lane.stores]) for c in model.containers for lane in c.lanes]
+
+    def test_store_that_is_another_groups_substrate_is_still_a_container_here(self) -> None:  # R1
+        objects = [
+            plain("S-1", "data_store_service", "Ledger Store"),
+            plain("D-1", "data_component", "Entries", runsOn="S-1"),
+            plain("D-2", "data_component", "Marts", runsOn="S-1"),
+            pattern({"A": ["S-1", "D-1"], "B": ["D-2"]}),
+        ]
+        objects[-1]["serviceGroups"][0]["substrate"] = "S-1"
+        model = model_of(objects)
+        by_group: dict = {}
+        for group, _zone, stores in self.stores_of(model):
+            by_group.setdefault(group, []).extend((uid, members) for uid, _name, members in stores)
+        self.assertEqual(by_group.get("A", []), [])  # D-1 runs on its own group's substrate: a plain box (D7)
+        self.assertEqual(by_group["B"], [("S-1", ["D-2"])])  # D-2 gets a container
+
+    def test_layout_written_from_the_drawn_order_renders_identically(self) -> None:  # R2
+        objects = [
+            plain("S-1", "data_store_service", "Alpha Store"),
+            plain("S-2", "data_store_service", "Beta Store"),
+            plain("D-1", "data_component", "One", runsOn="S-1"),
+            plain("D-2", "data_component", "Loose"),
+            plain("D-3", "data_component", "Three", runsOn="S-2"),
+            pattern({"G": ["D-1", "D-2", "D-3"]}),
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            catalog = load_catalog(write_workspace(Path(tmp), objects))
+        model = generate_diagram.Model(catalog, catalog["SDP-1"], False)
+        before = generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model))
+        self.assertEqual([st[0] for _g, _z, sts in self.stores_of(model) for st in sts], ["S-1", "S-2", ""])  # 'not recorded' last
+        order = generate_diagram.drawn_order(model)["deployment"]
+        entries = generate_diagram._layout_entries(order, {})
+        catalog["LAY-1"] = {"uid": "LAY-1", "type": "diagram_layout", "name": "L", "pattern": "SDP-1", "deployment": entries}
+        again = generate_diagram.Model(catalog, catalog["SDP-1"], False)
+        self.assertEqual(generate_diagram.render_deployment_svg(generate_diagram.diagram_of(again)), before)
+        second = generate_diagram._layout_entries(generate_diagram.drawn_order(again)["deployment"], dict(again.layout_positions["deployment"]))
+        self.assertEqual(second, entries)  # a second write changes nothing
+
+    def test_store_listed_beside_its_data_components_is_not_a_derived_substrate(self) -> None:  # R3
+        objects = [
+            plain("S-1", "data_store_service", "Ledger Store"),
+            plain("D-1", "data_component", "Entries", runsOn="S-1"),
+            plain("D-2", "data_component", "Balances", runsOn="S-1"),
+            component("C-1", "App"),
+            pattern({"App": ["C-1"], "Data": ["S-1", "D-1", "D-2"]}),
+        ]
+        model = model_of(objects)
+        data = next(c for c in model.containers if c.group == "Data")
+        self.assertEqual((data.uid, data.derived, data.caption), ("", False, "substrate not recorded"))
+        self.assertEqual(self.stores_of(model)[1][2], [("S-1", "Ledger Store", ["D-1", "D-2"])])
+        self.assertEqual([w for w in model.warnings if "substrate" in w and "derived" not in w and "tier" not in w], [])
+        self.assertFalse(any("data_store_service" in w for w in model.warnings))
+        # A product component without runsOn must not pull the whole group into a store container.
+        mixed = [*objects[:-1], component("C-2", "Loose"), pattern({"Data": ["S-1", "D-1", "C-2"]})]
+        again = model_of(mixed)
+        group = next(c for c in again.containers if c.group == "Data")
+        self.assertEqual(group.uid, "")
+        self.assertEqual([m for lane in group.lanes for m in lane.members], ["C-2"])
+
+    def test_data_component_on_its_store_is_not_a_conflict_with_the_runtime_substrate(self) -> None:  # R4
+        objects = [
+            plain("RT-1", "runtime_service", "Cluster"),
+            plain("S-1", "data_store_service", "Ledger Store"),
+            component("C-1", "App", runsOn="RT-1"),
+            plain("D-1", "data_component", "Entries", runsOn="S-1"),
+            pattern({"App": ["C-1", "D-1"]}),
+        ]
+        objects[-1]["serviceGroups"][0]["substrate"] = "RT-1"
+        model = model_of(objects)
+        self.assertEqual(model.conflicts, [])
+        self.assertFalse([w for w in model.warnings if w.startswith("conflict")])
+        self.assertEqual(self.stores_of(model)[0][2], [("S-1", "Ledger Store", ["D-1"])])
+
+    def test_nothing_to_draw_text_says_only_what_is_true(self) -> None:  # R6
+        infra = model_of([plain("N-1", "network_service", "Edge"), pattern({"G": ["N-1"]})])
+        page = generate_diagram.render_page(infra, generate_diagram.diagram_of(infra))
+        self.assertIn("its infrastructure is in the deployment diagram", page)
+        self.assertNotIn("records no dependency", page)
+        empty = model_of([pattern({})])
+        page = generate_diagram.render_page(empty, generate_diagram.diagram_of(empty))
+        self.assertIn("No object is placed in a service group, so there is nothing to draw", page)
+        self.assertNotIn("its infrastructure is in the deployment diagram", page)
+
+    def test_objects_drawn_counts_either_view(self) -> None:  # R7
+        model = model_of([plain("N-1", "network_service", "Edge"), plain("H-1", "host", "Box"), pattern({"G": ["N-1", "H-1"]})])
+        page = generate_diagram.render_page(model, generate_diagram.diagram_of(model))
+        self.assertIn("<b>2</b> objects drawn", page)
+
+    def test_data_component_in_another_zone_than_its_store_container_is_warned(self) -> None:  # R8
+        objects = [
+            plain("S-1", "data_store_service", "Shared Store"),
+            plain("D-1", "data_component", "One", runsOn="S-1"),
+            plain("D-2", "data_component", "Two", runsOn="S-1"),
+            pattern({"G": ["D-1", "D-2"]}),
+        ]
+        sdp = objects[-1]
+        sdp["networkZones"] = [{"id": "z1", "name": "Zone One", "tier": "data"}, {"id": "z2", "name": "Zone Two", "tier": "data"}]
+        sdp["serviceGroups"][0]["deployableObjects"][0]["networkZone"] = "z1"
+        sdp["serviceGroups"][0]["deployableObjects"][1]["networkZone"] = "z2"
+        model = model_of(objects)
+        self.assertIn("data component Two zone z2 drawn in lane Zone One", model.warnings)
+        self.assertEqual([w for w in model.warnings if w.startswith("data component")], ["data component Two zone z2 drawn in lane Zone One"])
+
+    def test_data_component_on_a_runtime_or_host_is_captioned_with_the_type(self) -> None:  # R9
+        objects = [
+            plain("RT-1", "runtime_service", "Cluster"),
+            plain("D-1", "data_component", "On Runtime", runsOn="RT-1"),
+            plain("RT-2", "runtime_service", "Other Cluster"),
+            component("C-1", "App", runsOn="RT-2"),  # two runsOn targets: no derived substrate
+            pattern({"G": ["C-1", "D-1"], "Infra": ["RT-1", "RT-2"]}),
+        ]
+        model = model_of(objects)
+        self.assertEqual(self.stores_of(model)[0][2], [("RT-1", "Cluster (runtime_service)", ["D-1"])])
+        self.assertIn("data store Cluster (RT-1) has type runtime_service; expected data_store_service", model.warnings)
+        self.assertFalse([w for w in model.warnings if w.startswith("data store not recorded")])
 
 
 if __name__ == "__main__":
