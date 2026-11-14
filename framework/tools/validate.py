@@ -4250,6 +4250,38 @@ def validate_relationship(
             "add the referenced object to the catalog or correct the UID"
         )
 
+def validate_diagram_layout(
+    obj: dict[str, Any],
+    path: Path,
+    catalog_by_id: dict[str, dict[str, Any]],
+    failures: list[str],
+    warnings: list[str],
+) -> None:
+    pattern = obj.get("pattern")
+    if is_non_empty(pattern):
+        target = catalog_by_id.get(pattern)
+        if target is None:
+            failures.append(f"{path}: diagram_layout field 'pattern' references unknown object '{pattern}' — use the uid of a software_deployment_pattern")
+        elif target.get("type") != "software_deployment_pattern":
+            failures.append(
+                f"{path}: diagram_layout field 'pattern' must reference a software_deployment_pattern "
+                f"(got '{target.get('type')}' for '{pattern}')"
+            )
+    for view in ("logical", "deployment"):
+        entries = obj.get(view)
+        if not isinstance(entries, list):
+            continue
+        for index, entry in enumerate(entries):
+            if not isinstance(entry, dict):
+                continue
+            position = entry.get("position")
+            if position is not None and (isinstance(position, bool) or not isinstance(position, int) or position < 1):
+                failures.append(f"{path}: {view}[{index}].position must be a positive integer (got {position!r})")
+            ref = entry.get("ref")
+            if is_non_empty(ref) and ref not in catalog_by_id and not str(ref).startswith("ext:"):
+                warnings.append(f"{path}: {view}[{index}].ref '{ref}' resolves to no catalog object and is not an ext: id")
+
+
 def scan_for_secrets(data: Any, path: Path, failures: list[str], current_field_path: str = "") -> None:
     if isinstance(data, dict):
         for k, v in data.items():
@@ -4395,6 +4427,8 @@ def main(argv: list[str] | None = None) -> int:
             )
         if obj.get("type") == "relationship":
             validate_relationship(obj, path, catalog_by_id, failures)
+        if obj.get("type") == "diagram_layout":
+            validate_diagram_layout(obj, path, catalog_by_id, failures, warnings)
         if obj.get("type") == "system":
             validate_system(obj, path, catalog_by_id, failures, warnings)
         if obj.get("type") == "environment_tier":

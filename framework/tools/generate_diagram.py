@@ -176,6 +176,8 @@ class DiagramModel:
     containers: list[DiagramContainer] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     deployment_nodes: list[DiagramNode] = field(default_factory=list)  # D29: nodes minus drawn containers
+    logical_positions: dict[str, int] = field(default_factory=dict)  # D38/D39: diagram_layout positions, logical view
+    deployment_positions: dict[str, int] = field(default_factory=dict)  # D38/D39: diagram_layout positions, deployment view
 
 
 # D2: object types that may appear one hop away from a placed object.
@@ -297,6 +299,9 @@ class Model:
         self._other_patterns = _other_pattern_names(catalog, sdp)
         self._build_nodes_and_edges()
         self._build_containers()
+        self.layout_uid = ""  # uid of the honoured diagram_layout; "" when none
+        self.layout_positions: dict[str, dict[str, int]] = {"logical": {}, "deployment": {}}
+        self._read_layout()
         self.warnings = sorted(set(self.warnings))  # D18: each distinct string once, in code-point order
 
     @property
@@ -320,6 +325,37 @@ class Model:
             # whose group is not drawn has no container figure, so it stays a box (see _build_containers).
             return [node for node in self._nodes if node.uid not in self.drawn_container_uids]
         raise ValueError(f"unknown view: {view!r}")
+
+    def _read_layout(self) -> None:
+        """D38: the diagram_layout for this pattern (lowest uid wins), read as view -> ref -> position (D39)."""
+        sdp_uid = str(self.sdp.get("uid", ""))
+        found = sorted(
+            str(uid) for uid, obj in self.catalog.items() if obj.get("type") == "diagram_layout" and obj.get("pattern") == sdp_uid
+        )
+        if not found:
+            return
+        self.layout_uid = found[0]
+        if len(found) > 1:
+            self.warnings.append(f"multiple diagram layouts for {sdp_uid}; using {found[0]}")
+        layout = self.catalog[found[0]]
+        drawn = {
+            "logical": {n.uid for n in self.nodes_for_view("logical")},
+            "deployment": {n.uid for n in self.nodes_for_view("deployment")} | self.drawn_container_uids,
+        }
+        for view in ("logical", "deployment"):
+            entries = layout.get(view)
+            for entry in entries if isinstance(entries, list) else []:
+                if not isinstance(entry, dict) or not entry.get("ref"):
+                    continue
+                ref = str(entry["ref"])
+                position = entry.get("position")
+                if isinstance(position, bool) or not isinstance(position, int) or position < 1:
+                    continue
+                if ref not in drawn[view]:
+                    self.warnings.append(f"layout position for undrawn object {ref}")
+                    continue
+                known = self.layout_positions[view].get(ref)
+                self.layout_positions[view][ref] = position if known is None else min(known, position)
 
     def _read_groups(self) -> None:
         raw_groups = self.sdp.get("serviceGroups")
@@ -1024,6 +1060,8 @@ def diagram_of(model: Model) -> DiagramModel:
         edges=list(model.edges),
         containers=list(model.containers),
         warnings=list(model.warnings),
+        logical_positions=dict(model.layout_positions["logical"]),
+        deployment_positions=dict(model.layout_positions["deployment"]),
     )
 
 
@@ -1100,6 +1138,12 @@ def barycentre_order(layers: list[list[str]], pairs: list[tuple[str, str]], colu
     return order
 
 
+def apply_positions(order: list[str], positions: dict[str, int]) -> list[str]:
+    """D39: positioned uids first, by (position, uid); the rest follow in their given order."""
+    placed = sorted((u for u in order if u in positions), key=lambda u: (positions[u], u))
+    return placed + [u for u in order if u not in positions]
+
+
 @dataclass
 class LogicalLayout:
     pos: dict[str, tuple[int, int]] = field(default_factory=dict)  # uid -> top-left, multiples of GRID
@@ -1128,7 +1172,7 @@ def layout_logical(model: DiagramModel) -> LogicalLayout:
             layers.append(uids)
             names.append(band)
     layout = LogicalLayout()
-    layout.order = barycentre_order(layers, pairs)
+    layout.order = [apply_positions(layer, model.logical_positions) for layer in barycentre_order(layers, pairs)]
     layout.band_names = names
     step_x = LOGICAL_BOX_W + LOGICAL_COL_GAP
     step_y = LOGICAL_BOX_H + LOGICAL_ROW_GAP
@@ -1160,7 +1204,7 @@ def layout_logical(model: DiagramModel) -> LogicalLayout:
             ys = near[node.uid]
             return (_band_rank(node), Fraction(sum(ys), len(ys)) if ys else Fraction(0), node.uid)
 
-        layout.lane_order = [n.uid for n in sorted(outer, key=lane_key)]
+        layout.lane_order = apply_positions([n.uid for n in sorted(outer, key=lane_key)], model.logical_positions)
         lane_x = x0 + main_w + LOGICAL_LANE_GAP
         layout.lane_gutter = lane_x - 20
         top = LOGICAL_MARGIN
@@ -1902,7 +1946,7 @@ def _route_deployment_edges(
     return routes, len(channels), left_counts
 
 
-def render_deployment_svg(model: DiagramModel) -> str:
+def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] | None = None) -> str:
     """The deployment pattern figure: target -> group container -> zone lanes -> boxes (D6).
 
     Edges are plain solid orthogonal routes (S7 styles them) from the boxes and containers to vertical
@@ -1999,7 +2043,7 @@ def render_deployment_svg(model: DiagramModel) -> str:
                     lx = gx + DEPLOY_PAD
                     z_lines = _wrap_to(f"{lane.name} ({lane.tier})" if lane.tier else lane.name, lane_w)
                     caption_end = DEPLOY_LANE_HEAD + DEPLOY_LINE_H * (len(z_lines) - 1)
-                    rows = rows_of(lane.members)
+                    rows = rows_of(apply_positions(lane.members, model.deployment_positions))  # D39
                     cursor2 = ly + caption_end
                     node_svgs: list[str] = []
                     prev_row: list[str] = []
@@ -2087,7 +2131,8 @@ def render_deployment_svg(model: DiagramModel) -> str:
                 ys = near[node.uid]
                 return (_band_rank(node), Fraction(sum(ys)) / len(ys) if ys else Fraction(0), node.uid)
 
-            ordered = sorted(outer, key=lane_key)
+            by_node = {n.uid: n for n in outer}
+            ordered = [by_node[u] for u in apply_positions([n.uid for n in sorted(outer, key=lane_key)], model.deployment_positions)]  # D39
             cursor = lane_top + DEPLOY_LANE_HEAD
             prev: list[str] = []
             for node in ordered:
@@ -2127,6 +2172,8 @@ def render_deployment_svg(model: DiagramModel) -> str:
     else:  # the cap is a safety net; the figure is still drawn, from the last pass
         last_channel = stack_right + chan_pad + DEPLOY_CHANNEL_STEP * (max(used, 1) - 1)
         lane_x = max(lane_x, -(-(last_channel + DEPLOY_LANE_GAP) // GRID) * GRID)
+    if order_out is not None:
+        order_out["outside"] = [node.uid for node, _by in lane_rows]  # drawn order of the outside lane (D40)
     lane_box = ""
     loop_reach = LOOP_REACH + LOOP_STEP * (container_loops - 1) + DEPLOY_LEVEL if container_loops else 0
     right = max(stack_right + loop_reach, (last_channel + DEPLOY_CHANNEL_PAD) if n_channels else 0)  # container loops pass the target border
@@ -2230,6 +2277,99 @@ def pattern_stems(patterns: list[dict[str, Any]]) -> tuple[list[str], list[str]]
     return stems, notes
 
 
+# --------------------------------------------------------------------------- layout writer (D40)
+def drawn_order(model: Model) -> dict[str, list[list[str]]]:
+    """Per view, the uids of each container (band, lane, outside lane) in drawn order."""
+    dm = diagram_of(model)
+    logical = layout_logical(dm)
+    out: dict[str, list[list[str]]] = {"logical": [list(layer) for layer in logical.order], "deployment": []}
+    if logical.lane_order:
+        out["logical"].append(list(logical.lane_order))
+    for _target, groups in _deployment_outline(dm):
+        for group in groups:
+            for lane in group.lanes:
+                out["deployment"].append(apply_positions(lane.members, dm.deployment_positions))
+    order_out: dict[str, list[str]] = {}
+    render_deployment_svg(dm, order_out)
+    if order_out.get("outside"):
+        out["deployment"].append(order_out["outside"])
+    return out
+
+
+def _layout_entries(containers: list[list[str]], kept: dict[str, int]) -> list[dict[str, Any]]:
+    """One entry per drawn node. Kept positions stay; a new node follows the highest position of its container."""
+    entries: list[dict[str, Any]] = []
+    for uids in containers:
+        top = max([kept[u] for u in uids if u in kept], default=0)
+        for number, uid in enumerate(uids, start=1):
+            if kept:
+                if uid in kept:
+                    position = kept[uid]
+                else:
+                    top += 1
+                    position = top
+            else:
+                position = number
+            entries.append({"ref": uid, "position": position})
+    return entries
+
+
+def _yaml_docs(path: Path) -> list[Any]:
+    with path.open("r", encoding="utf-8") as handle:
+        return [d for d in yaml.safe_load_all(handle) if d is not None]
+
+
+def write_layout(workspace: Path, model: Model) -> Path:
+    """D40: write or update the pattern's diagram_layout file; no other file is touched. Returns its path."""
+    from generate_c4 import discover_yaml_files, workspace_yaml_roots
+    from uid_utils import generate_uid
+
+    sdp_uid = str(model.sdp.get("uid", ""))
+    sdp_file: Path | None = None
+    files: dict[str, Path] = {}  # uid -> file, first seen
+    for root in workspace_yaml_roots(workspace):
+        for path in discover_yaml_files(root):
+            try:
+                docs = _yaml_docs(path)
+            except Exception:
+                continue
+            for doc in docs:
+                if isinstance(doc, dict) and doc.get("uid"):
+                    files.setdefault(str(doc["uid"]), path)
+                    if str(doc["uid"]) == sdp_uid and sdp_file is None:
+                        sdp_file = path
+    if sdp_file is None:
+        raise ValueError(f"cannot find the file that defines {sdp_uid}")
+    existing_uid = model.layout_uid
+    if existing_uid:
+        target = files[existing_uid]
+        docs = _yaml_docs(target)
+        if len(docs) != 1 or not isinstance(docs[0], dict):
+            raise ValueError(f"{target} holds more than one document; move the layout to its own file")
+        doc = dict(docs[0])
+    else:
+        target = sdp_file.parent / f"diagram-layout-{slug(str(model.sdp.get('name', 'diagram')))}.yaml"
+        if target.exists():
+            raise ValueError(f"{target} already exists and is not the layout of {sdp_uid}")
+        pattern_name = clean(model.sdp.get("name")) or sdp_uid
+        doc = {
+            "schemaVersion": "1.0",
+            "uid": generate_uid(list(model.catalog)),
+            "type": "diagram_layout",
+            "name": f"{pattern_name} diagram layout",
+            "pattern": sdp_uid,
+            "catalogStatus": "complete",
+        }
+    order = drawn_order(model)
+    doc["logical"] = _layout_entries(order["logical"], dict(model.layout_positions["logical"]))
+    doc["deployment"] = _layout_entries(order["deployment"], dict(model.layout_positions["deployment"]))
+    text = yaml.safe_dump(doc, sort_keys=False, allow_unicode=True, default_flow_style=False)
+    if not target.exists() or target.read_text(encoding="utf-8") != text:
+        target.write_text(text, encoding="utf-8")
+    return target
+
+
+
 def _print_warnings(model: Model) -> None:
     # D18: the count line, then each distinct warning once, in sorted order (the model sorts and de-duplicates them)
     print(f"{len(model.warnings)} warnings", file=sys.stderr)
@@ -2254,6 +2394,11 @@ def _check_arguments(parser: argparse.ArgumentParser, args: argparse.Namespace) 
         ):
             if given:
                 parser.error(f"--list cannot be combined with {flag}")
+    if args.write_layout:
+        if args.sdp is None:
+            parser.error("--write-layout requires --sdp")
+        if args.placed_only:
+            parser.error("--write-layout cannot be combined with --placed-only (the layout would drop nodes the full drawing shows)")
     if args.all:
         if args.output_dir is None:
             parser.error("--all requires --output-dir DIR")
@@ -2290,6 +2435,13 @@ def _render_single(args: argparse.Namespace) -> int:
     print(f"Wrote {output} ({len(model.relationships)} relationships, {len(model.scope)} objects in scope){note}")
     for name, _ in svgs:
         print(f"Wrote {args.svg_dir / name}")
+    if args.write_layout:
+        try:
+            layout_path = write_layout(args.workspace, model)
+        except (OSError, ValueError) as exc:
+            print(f"error: cannot write layout: {exc}", file=sys.stderr)
+            return 1
+        print(f"Wrote {layout_path}")
     return 0
 
 
@@ -2345,6 +2497,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--svg-dir", type=Path, help="Also write <slug>-logical.svg and <slug>-deployment.svg into this directory.")
     parser.add_argument("--all", action="store_true", help="Render every deployment pattern; requires --output-dir.")
     parser.add_argument("--output-dir", type=Path, help="With --all: directory that receives one <slug>.html per pattern.")
+    parser.add_argument("--write-layout", action="store_true", help="With --sdp: write or update the pattern's diagram_layout file beside the pattern file from the drawn order.")
     args = parser.parse_args(argv)
     _check_arguments(parser, args)
     if not (args.workspace / "catalog").is_dir():
