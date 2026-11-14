@@ -2169,9 +2169,8 @@ def _flow_overlay(path: str, flow: str) -> str:
 LABEL_BAND = 18  # D37: one label row: 14 px of text plus 4 px of pad
 LABEL_PAD = 2
 LABEL_H = 14
-LABEL_DX = 6  # a label starts this far right of its edge's own stub
+LABEL_DX = 5  # a label starts this far right of its own box's left edge (a container end: the container's)
 LABEL_CHAR_W = 6.2  # D13 metrics: about 6.2 px a character, 14 px tall
-LABEL_MAX_CHARS = int((200 - 10 - 4) / LABEL_CHAR_W)  # text is clipped to LOGICAL_BOX_W - 10 px
 CALLOUT_CHAR_W = 6.8
 
 
@@ -2184,24 +2183,30 @@ def _has_label(edge: DiagramEdge) -> bool:
     return bool(clean(edge.label) or clean(edge.technology))
 
 
-def _label_parts(edge: DiagramEdge, clip: bool = True) -> tuple:
-    """The label and the technology part (with its separator) as drawn; clipped with an ellipsis to LABEL_MAX_CHARS."""
+def _max_chars(width: float) -> int:
+    """Characters that fit a label under a box of ``width`` px: the text is clipped to the box width minus 10 px."""
+    return max(4, int((width - 10 - 4) / LABEL_CHAR_W))
+
+
+def _label_parts(edge: DiagramEdge, limit: Any = None) -> tuple:
+    """The label and the technology part (with its separator) as drawn; clipped with an ellipsis to ``limit``
+    characters when one is given."""
     label, tech = clean(edge.label), clean(edge.technology)
     tech_part = ((" / " if label else "") + tech) if tech else ""
-    if clip and len(label) + len(tech_part) > LABEL_MAX_CHARS:
-        whole = (label + tech_part)[: LABEL_MAX_CHARS - 3] + "..."
+    if limit is not None and len(label) + len(tech_part) > limit:
+        whole = (label + tech_part)[: limit - 3] + "..."
         return whole[: len(label)], whole[len(label) :]
     return label, tech_part
 
 
-def _label_len(edge: DiagramEdge) -> int:
+def _label_len(edge: DiagramEdge, limit: Any = None) -> int:
     """Characters of an edge label as drawn."""
-    return sum(len(part) for part in _label_parts(edge))
+    return sum(len(part) for part in _label_parts(edge, limit))
 
 
-def _label_box_at(x: float, top: float, edge: DiagramEdge) -> tuple:
+def _label_box_at(x: float, top: float, edge: DiagramEdge, limit: Any) -> tuple:
     """(x, y, w, h) of a label whose text starts at x and whose box starts at top."""
-    return (x - 2, top, _label_len(edge) * LABEL_CHAR_W + 4, LABEL_H)
+    return (x - 2, top, _label_len(edge, limit) * LABEL_CHAR_W + 4, LABEL_H)
 
 
 def _label_pairs(drawn: list) -> tuple:
@@ -2242,55 +2247,53 @@ def _callout_at(pts: list, edge: DiagramEdge, obstacles: list) -> tuple:
 
 
 def _loop_callout(at: tuple, edge: DiagramEdge, obstacles: list) -> tuple:
-    """The callout of a self-loop: above the loop's label, one row up, moved up while it overlaps an obstacle."""
+    """The callout of a self-loop: one row above the loop's label, moved up while it overlaps an obstacle (node
+    boxes, captions and every label visible while the box is selected). ``at`` is (x, baseline, limit)."""
     width = (len(clean(edge.label)) + (len(clean(edge.technology)) + 3 if clean(edge.technology) else 0)) * CALLOUT_CHAR_W + 6
+    cx = at[0] - 2 + (_label_len(edge, at[2]) * LABEL_CHAR_W + 4) / 2  # centred over its label
     base = at[1] - LABEL_BAND
-    for _ in range(8):
-        if not any(_overlap((at[0] - width / 2, base - 12, width, 18), o) for o in obstacles):
+    for _ in range(12):
+        if not any(_overlap((cx - width / 2, base - 10, width, 18), o) for o in obstacles):
             break
         base -= LABEL_BAND
-    return (at[0], base)
+    return (cx, base)
 
 
 def _place_loop_label(base: tuple, edge: DiagramEdge, avoid: list) -> tuple:
-    """A self-loop's label (centred above the loop) steps up one row at a time until it is clear of ``avoid`` (node
-    boxes, captions and the labels of the edges that share its box); least overlap if nothing is clear."""
+    """A self-loop's label (left-aligned above the loop) steps up one row at a time until it is clear of ``avoid``
+    (node boxes, captions and the labels of the edges that share its box); least overlap if nothing is clear.
+    ``base`` is (x, baseline, limit)."""
     best: tuple = ()
     for step in range(8):
         y = base[1] - LABEL_BAND * step
-        box = (base[0] - _label_len(edge) * LABEL_CHAR_W / 2 - 2, y - 10, _label_len(edge) * LABEL_CHAR_W + 4, LABEL_H)
-        area = sum(_overlap(box, o) for o in avoid)
+        area = sum(_overlap(_loop_box((base[0], y, base[2]), edge), o) for o in avoid)
         if area == 0:
-            return (base[0], y)
+            return (base[0], y, base[2])
         if not best or area < best[0]:
-            best = (area, (base[0], y))
+            best = (area, (base[0], y, base[2]))
     return best[1]
 
 
 def _loop_box(at: tuple, edge: DiagramEdge) -> tuple:
-    return (at[0] - _label_len(edge) * LABEL_CHAR_W / 2 - 2, at[1] - 10, _label_len(edge) * LABEL_CHAR_W + 4, LABEL_H)
+    return (at[0] - 2, at[1] - 10, _label_len(edge, at[2]) * LABEL_CHAR_W + 4, LABEL_H)
 
 
 def _edge_label(edge: DiagramEdge, ends: tuple, loop: Any, callout: tuple) -> str:
     """Two labels per edge (D37): ``lb lb-s`` beside the source end and ``lb lb-t`` beside the target end, each
-    (x, baseline); a self-loop has one ``lb lb-t`` label (``loop``, centred). The label text is clipped and
-    followed by the recorded technology in a lighter weight (D13); the callout repeats the full text. Empty when
-    neither label nor technology is recorded."""
+    (x, baseline, limit), left-aligned; a self-loop has one ``lb lb-t`` label (``loop``). The label text is clipped
+    to its box and followed by the recorded technology in a lighter weight (D13); the callout repeats the full
+    text. Empty when neither label nor technology is recorded."""
     if not _has_label(edge):
         return ""
-    label, tech = _label_parts(edge)
-    full_label, full_tech = _label_parts(edge, clip=False)
+    full_label, full_tech = _label_parts(edge)
 
     def body(l: str, t: str) -> str:
         return (xml_text(l) if l else "") + (f'<tspan class="tech">{xml_text(t)}</tspan>' if t else "")
 
     out = ""
-    if loop is not None:
-        out += f'<text class="lb lb-t" x="{loop[0]:.1f}" y="{loop[1]:.1f}" text-anchor="middle">{body(label, tech)}</text>'
-    else:
-        (sx, sy), (tx, ty) = ends
-        out += f'<text class="lb lb-s" x="{sx:.1f}" y="{sy:.1f}" text-anchor="start">{body(label, tech)}</text>'
-        out += f'<text class="lb lb-t" x="{tx:.1f}" y="{ty:.1f}" text-anchor="start">{body(label, tech)}</text>'
+    placed = [("lb-t", loop)] if loop is not None else [("lb-s", ends[0]), ("lb-t", ends[1])]
+    for cls, (x, y, limit) in placed:
+        out += f'<text class="lb {cls}" x="{x:.1f}" y="{y:.1f}" text-anchor="start">{body(*_label_parts(edge, limit))}</text>'
     out += f'<text class="callout" x="{callout[0]:.1f}" y="{callout[1]:.1f}" text-anchor="middle">{body(full_label, full_tech)}</text>'
     return out
 
@@ -2299,29 +2302,39 @@ def _edge_label_svgs(edges: list, routes: dict, tops: dict, loops: dict, obstacl
     """D37: the label and callout markup of every drawn edge, by edge number.
 
     ``edges`` is a list of (number, edge); ``routes`` the polyline of each non-loop edge; ``tops`` the row tops
-    ((source x, source row top), (target x, target row top)) of each labelled non-loop edge, computed by the view
-    from its label bands; ``loops`` the default (x, baseline) of each self-loop's label. A self-loop label steps up
-    until it is clear of ``obstacles`` and of the labels of edges that share its box.
+    (((source box left, width), row top), ((target box left, width), row top)) of each labelled non-loop edge,
+    computed by the view from its label bands; ``loops`` (box left, width, default baseline) of each self-loop's
+    label. A label starts 5 px right of its box's left edge and is clipped to the box width minus 10 px. A
+    self-loop label steps up until it is clear of ``obstacles`` and of the labels of edges that share its box.
     """
     boxes: dict[int, list] = {}
     texts: dict[int, tuple] = {}
     for number, edge in edges:
         if number in tops:
-            (sx, st), (tx, tt) = tops[number]
-            boxes[number] = [_label_box_at(sx + LABEL_DX, st, edge), _label_box_at(tx + LABEL_DX, tt, edge)]
-            texts[number] = ((sx + LABEL_DX, st + 10), (tx + LABEL_DX, tt + 10))
+            ends = []
+            for (left, width), top in tops[number]:
+                limit = _max_chars(width)
+                ends.append((left + LABEL_DX, top, limit))
+            boxes[number] = [_label_box_at(x, top, edge, limit) for x, top, limit in ends]
+            texts[number] = tuple((x, top + 10, limit) for x, top, limit in ends)
     out: dict[int, str] = {}
+    loop_at: dict[int, tuple] = {}
     placed_loops: list = []
+    for number, edge in edges:
+        if edge.source == edge.target and _has_label(edge):
+            left, width, base = loops[number]
+            avoid = list(obstacles) + [b for n, e in edges if n in boxes and edge.source in (e.source, e.target) for b in boxes[n]]
+            avoid += [b for uid, b in placed_loops if uid == edge.source]
+            at = _place_loop_label((left + LABEL_DX, base, _max_chars(width)), edge, avoid)
+            loop_at[number] = at
+            placed_loops.append((edge.source, _loop_box(at, edge)))
     for number, edge in edges:
         if not _has_label(edge):
             out[number] = ""
-            continue
-        if edge.source == edge.target:
-            avoid = list(obstacles) + [b for n, e in edges if n in boxes and edge.source in (e.source, e.target) for b in boxes[n]]
-            avoid += [b for uid, b in placed_loops if uid == edge.source]
-            at = _place_loop_label(loops[number], edge, avoid)
-            placed_loops.append((edge.source, _loop_box(at, edge)))
-            out[number] = _edge_label(edge, (), at, _loop_callout(at, edge, obstacles))
+        elif edge.source == edge.target:
+            visible = list(obstacles) + [b for n, e in edges if n in boxes and edge.source in (e.source, e.target) for b in boxes[n]]
+            visible += [b for uid, b in placed_loops if uid == edge.source]
+            out[number] = _edge_label(edge, (), loop_at[number], _loop_callout(loop_at[number], edge, visible))
         else:
             out[number] = _edge_label(edge, texts[number], None, _callout_at(routes[number], edge, obstacles))
     return out
@@ -2406,7 +2419,7 @@ def render_logical_svg(model: DiagramModel) -> str:
             x, y = layout.pos[edge.source]
             grow = 14 * loops.get(edge.source, 0)
             loops[edge.source] = loops.get(edge.source, 0) + 1
-            loop_base[number] = (x + LOGICAL_BOX_W * 0.8, y - 30 - grow)
+            loop_base[number] = (x, LOGICAL_BOX_W, y - 30 - grow)
         elif number in layout.label_rows:
             k = layout.label_rows[number]
             gs, gt = _gap_of(layout, ("out", edge.source)), _gap_of(layout, ("in", edge.target))
@@ -2414,7 +2427,7 @@ def render_logical_svg(model: DiagramModel) -> str:
             gtop, gsize = layout.gaps[gt]
             own_rise = LOOP_RISE + LOOP_STEP * (loop_total[edge.target] - 1) if loop_total.get(edge.target) else 0
             bottom_t = gtop + gsize - own_rise  # a target's own loops rise under its label
-            tops[number] = ((routes[number][0][0], top_s), (routes[number][-1][0], bottom_t - LABEL_BAND * (k + 1) + LABEL_PAD))
+            tops[number] = (((layout.pos[edge.source][0], LOGICAL_BOX_W), top_s), ((layout.pos[edge.target][0], LOGICAL_BOX_W), bottom_t - LABEL_BAND * (k + 1) + LABEL_PAD))
     labels = _edge_label_svgs(shown, routes, tops, loop_base, obstacles)
     loops = {}
     for number, edge in shown:
@@ -2790,6 +2803,9 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
                             pools[store.uid] = {"top": above}
                             names[store.uid] = store.name
                         chip_w = int(len(chip_label("data_store_service")) * 5.4) + 12
+                        captions.extend((sx + 10, sy + 18 + DEPLOY_LINE_H * k - 11, len(line) * DEPLOY_CHAR_W + 4, 12) for k, line in enumerate(s_lines))
+                        if store.uid:
+                            captions.append((sx + 10, sy + 18 + DEPLOY_LINE_H * (len(s_lines) - 1) + 6, chip_w, 13))
                         s_text = "".join(
                             f'<text class="gl" x="{sx + 10}" y="{sy + 18 + DEPLOY_LINE_H * k}">{xml_text(line)}</text>' for k, line in enumerate(s_lines)
                         )
@@ -2953,13 +2969,13 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
             grow = LOOP_STEP * loop_count.get(edge.source, 0)
             loop_count[edge.source] = loop_count.get(edge.source, 0) + 1
             rx, ry, rw, _rh = rects[edge.source]
-            loop_base[number] = (rx + rw - LOGICAL_BOX_W + LOGICAL_BOX_W * 0.8, ry - 30 - grow)
+            loop_base[number] = (rx + rw - LOGICAL_BOX_W, LOGICAL_BOX_W, ry - 30 - grow)
         elif number in label_rows:
             k = label_rows[number]
             band_s, band_t = pools[edge.source]["bottom"], pools[edge.target]["top"]
             top_s = band_s.lo + LABEL_PAD + LABEL_BAND * k
             bottom_t = band_t.hi - rise([edge.target])  # a target's own loops rise under its label
-            tops[number] = ((routes[number][0][0], top_s), (routes[number][-1][0], bottom_t - LABEL_BAND * (k + 1) + LABEL_PAD))
+            tops[number] = (((rects[edge.source][0], rects[edge.source][2]), top_s), ((rects[edge.target][0], rects[edge.target][2]), bottom_t - LABEL_BAND * (k + 1) + LABEL_PAD))
     labels = _edge_label_svgs(shown, routes, tops, loop_base, deploy_obstacles)
     loop_count = {}
     for number, edge in shown:

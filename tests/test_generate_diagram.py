@@ -2659,13 +2659,22 @@ class LaterStoryTests(unittest.TestCase):
         found = []
         for source, target, body in re.findall(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)">(.*?)</g>', svg, re.S):
             pts = [(float(a), float(b)) for a, b in re.findall(r"[ML]([\d.-]+) ([\d.-]+)", re.search(r'<path class="ln[^"]*" d="([^"]*)"', body).group(1))]
-            for kind, x, base, anchor, text in re.findall(r'<text class="lb lb-([st])" x="([\d.]+)" y="([\d.]+)" text-anchor="(\w+)">(.*?)</text>', body):
+            for kind, x, base, text in re.findall(r'<text class="lb lb-([st])" x="([\d.]+)" y="([\d.]+)" text-anchor="start">(.*?)</text>', body):
                 w = len(xml_unescape(re.sub(r"<[^>]*>", "", text))) * 6.2 + 4
-                left = float(x) - 2 if anchor == "start" else float(x) - w / 2
                 found.append(
                     {
                         "source": source, "target": target, "loop": source == target, "kind": kind, "x": float(x), "pts": pts,
-                        "box": (left, float(base) - 10, w, 14), "text": xml_unescape(re.sub(r"<[^>]*>", "", text)),
+                        "box": (float(x) - 2, float(base) - 10, w, 14), "text": xml_unescape(re.sub(r"<[^>]*>", "", text)),
+                    }
+                )
+            m = re.search(r'<text class="callout" x="([\d.]+)" y="([\d.]+)" text-anchor="middle">(.*?)</text>', body)
+            if m:
+                full = len(xml_unescape(re.sub(r"<[^>]*>", "", m.group(3))))
+                width = full * generate_diagram.CALLOUT_CHAR_W + 6
+                found.append(
+                    {
+                        "source": source, "target": target, "loop": source == target, "kind": "callout", "x": float(m.group(1)), "pts": pts,
+                        "box": (float(m.group(1)) - width / 2, float(m.group(2)) - 10, width, 18), "text": xml_unescape(re.sub(r"<[^>]*>", "", m.group(3))),
                     }
                 )
         return found
@@ -2676,17 +2685,40 @@ class LaterStoryTests(unittest.TestCase):
         dy = max(box[1] - py, 0, py - (box[1] + box[3]))
         return dx + dy
 
+    @staticmethod
+    def _captions(svg: str) -> list:
+        return [
+            (float(x), float(y) - 11, len(xml_unescape(text)) * 7 + 4, 12)
+            for _cls, x, y, text in re.findall(r'<text class="(bl|ll|zc|gl|gc|tl)" x="([\d.]+)" y="([\d.]+)">([^<]*)</text>', svg)
+        ]
+
     def _assert_labels_clean(self, svg: str) -> None:
-        labels = self._label_elements(svg)
+        elements = self._label_elements(svg)
+        labels = [el for el in elements if el["kind"] != "callout"]
         nodes = node_rects(svg)
-        captions = []
-        for cls, x, y, text in re.findall(r'<text class="(bl|ll|zc|gl|gc|tl)" x="([\d.]+)" y="([\d.]+)">([^<]*)</text>', svg):
-            captions.append((float(x), float(y) - 11, len(xml_unescape(text)) * 7 + 4, 12))
+        captions = self._captions(svg)
+        width, height = (int(v) for v in re.search(r'viewBox="0 0 (\d+) (\d+)"', svg).groups())
+        borders = [
+            tuple(float(v) for v in m)
+            for m in re.findall(r'<rect class="(?:tgt|grp|zl|band|lane)" x="([\d.-]+)" y="([\d.-]+)" width="([\d.]+)" height="([\d.]+)"', svg)
+        ]
         for el in labels:  # no label text on a node box or a caption
             for box in list(nodes.values()) + captions:
                 self.assertEqual(generate_diagram._overlap(el["box"], box), 0, (el["text"], el["box"], box))
-        # AC22: for every box, the labels shown when it is selected (out edges at their target end, in edges at
-        # their source end, a loop's own label) are pairwise disjoint.
+        for el in labels:  # R1, R2: inside the figure, across no container, zone, target, band or lane border, on no vertical track
+            x, y, w, h = el["box"]
+            self.assertTrue(0 <= x and x + w <= width and 0 <= y and y + h <= height, (el["text"], el["box"], width, height))
+            for bx, by, bw, bh in borders:
+                inside = bx <= x and x + w <= bx + bw and by <= y and y + h <= by + bh
+                self.assertTrue(inside or generate_diagram._overlap(el["box"], (bx, by, bw, bh)) == 0, (el["text"], el["box"], (bx, by, bw, bh)))
+            for other in elements:  # middle segments of a route are tracks; its first and last are the stubs
+                for (ax, ay), (bx2, by2) in zip(other["pts"][1:-2], other["pts"][2:-1]):
+                    if ax == bx2:
+                        self.assertFalse(x < ax < x + w and min(ay, by2) < y + h and y < max(ay, by2), (el["text"], el["box"], ax, ay, by2))
+        for el in elements:  # callouts keep clear of node boxes and captions (loop callouts also of visible labels, below)
+            if el["kind"] == "callout" and not el["loop"]:
+                for box in list(nodes.values()) + captions:
+                    self.assertEqual(generate_diagram._overlap(el["box"], box), 0, ("callout", el["text"], box))
         for uid in sorted(nodes):
             shown = [
                 el["box"]
@@ -2694,11 +2726,16 @@ class LaterStoryTests(unittest.TestCase):
                 if (el["loop"] and el["source"] == uid)
                 or (not el["loop"] and ((el["source"] == uid and el["kind"] == "t") or (el["target"] == uid and el["kind"] == "s")))
             ]
+            for el in elements:  # R3: a loop's callout avoids node boxes, captions and every label shown with its box
+                if el["kind"] == "callout" and el["loop"] and el["source"] == uid:
+                    for box in shown + list(nodes.values()) + captions:
+                        self.assertEqual(generate_diagram._overlap(el["box"], box), 0, ("loop callout", el["text"], box))
+            # AC22: for every box, the labels shown when it is selected are pairwise disjoint.
             for i, a in enumerate(shown):
                 for b in shown[i + 1 :]:
                     self.assertEqual(generate_diagram._overlap(a, b), 0, (uid, a, b))
-        # Each stub label sits within LABEL_BAND of its own end's attachment point, one row more per same-pair sibling,
-        # and past the loop rise of a target that has self-loops.
+        # Each stub label is a label band from its own end's attachment point (vertically), one row more per
+        # same-pair sibling and past the loop rise of a target with self-loops; it starts 5 px inside its own box.
         pair_count: dict = {}
         for el in labels:
             if not el["loop"] and el["kind"] == "s":
@@ -2714,8 +2751,10 @@ class LaterStoryTests(unittest.TestCase):
             allowed = generate_diagram.LABEL_BAND * pair_count[(el["source"], el["target"])]
             if el["kind"] == "t" and loops_of.get(el["target"]):
                 allowed += generate_diagram.LOOP_RISE + generate_diagram.LOOP_STEP * (loops_of[el["target"]] - 1)
-            self.assertLessEqual(self._gap(end[0], end[1], el["box"]), allowed, el["text"])
-            self.assertLessEqual(abs(el["x"] - end[0] - generate_diagram.LABEL_DX), 0.1)
+            self.assertLessEqual(self._gap(el["box"][0], end[1], el["box"]), allowed, el["text"])
+            uid = el["source"] if el["kind"] == "s" else el["target"]
+            if uid in nodes:
+                self.assertEqual(el["x"], nodes[uid][0] + generate_diagram.LABEL_DX, el["text"])
 
     def test_callout_sits_on_the_line(self) -> None:
         for render, sdp in ((logical_svg, "FXSDP00002-0001"), (deployment_svg, "FXSDP00002-0001")):
@@ -2767,6 +2806,8 @@ class LaterStoryTests(unittest.TestCase):
         objects.append(rel)
         svg = svg_for(objects)
         for el in self._label_elements(svg):
+            if el["kind"] == "callout":
+                continue
             self.assertLessEqual(el["box"][2], generate_diagram.LOGICAL_BOX_W - 10)
             self.assertTrue(el["text"].endswith("..."))
         self.assertIn("a very long label that keeps going and going forever and ever<tspan class=\"tech\"> / PostgreSQL wire protocol</tspan></text>", svg)
@@ -2795,6 +2836,49 @@ class LaterStoryTests(unittest.TestCase):
                 entry["networkZone"] = "z2" if entry["ref"] == "C-X" else "z1"
             objects += [relationship(f"R-{n}", u, "C-X", f"reads {n}") for n, u in enumerate(("C-A", "C-B", "C-C"))]
             return tier(objects, {"C-A": "presentation", "C-B": "presentation", "C-C": "presentation", "C-X": "data"})
+        if name == "hub12in_long":
+            srcs = [f"S-{k:02d}" for k in range(12)]
+            objects = [component(u, u) for u in srcs] + [component("H-1", "Hub"), pattern({"G": srcs + ["H-1"]})]
+            objects += [relationship(f"R-{k:02d}", u, "H-1", f"reads the shared customer profile {k}") for k, u in enumerate(srcs)]
+            return tier(objects, {**{u: "presentation" for u in srcs}, "H-1": "application"})
+        if name == "longlabels":
+            ids = ["S-0", "S-1", "S-2", "D-1", "N-1", "N-2"]
+            objects = [component(u, u) for u in ids] + [pattern({"G": ids})]
+            for k in range(3):
+                rel = relationship(f"R-{k}", f"S-{k}", "D-1", "reads from and writes to")
+                rel["technology"] = "PostgreSQL wire protocol"
+                objects.append(rel)
+            return tier(objects, {"S-0": "presentation", "S-1": "presentation", "S-2": "presentation", "D-1": "data", "N-1": "data", "N-2": "data"})
+        if name == "upward":
+            ids = ["W-1", "A-1", "Q-1", "D-1"]
+            objects = [component(u, u) for u in ids] + [pattern({"G": ids})]
+            objects += [
+                relationship("R-1", "W-1", "A-1", "calls"), relationship("R-2", "A-1", "D-1", "reads and writes orders"),
+                relationship("R-3", "Q-1", "W-1", "delivers order status events"), relationship("R-4", "A-1", "Q-1", "publishes order events"),
+            ]
+            return tier(objects, {"W-1": "presentation", "A-1": "application", "Q-1": "data", "D-1": "data"})
+        if name == "webshop":
+            names = {
+                "W-1": "presentation", "M-1": "presentation", "A-1": "application", "B-1": "application", "U-1": "application",
+                "I-1": "application", "N-1": "application", "D-1": "data", "D-2": "data", "K-1": "data", "C-1": "data",
+            }
+            objects = [component(u, u) for u in names] + [component("X-1", "Identity provider"), component("X-2", "Payment processor"), pattern({"G": list(names)})]
+            rels = [
+                ("W-1", "A-1", "places orders", "HTTPS"), ("W-1", "B-1", "browses catalog", "HTTPS"), ("W-1", "U-1", "signs in", "OIDC"),
+                ("W-1", "C-1", "stores session", "Redis"), ("M-1", "A-1", "places orders", "HTTPS"), ("M-1", "B-1", "browses catalog", "HTTPS"),
+                ("M-1", "U-1", "signs in", "OIDC"), ("A-1", "D-1", "reads and writes orders", "PostgreSQL"),
+                ("A-1", "K-1", "publishes order placed events", "Kafka"), ("A-1", "I-1", "reserves stock", "gRPC"), ("A-1", "X-2", "charges cards", "HTTPS"),
+                ("A-1", "U-1", "validates tokens", "HTTPS"), ("B-1", "D-2", "reads catalog", "PostgreSQL"), ("I-1", "D-2", "updates stock levels", "PostgreSQL"),
+                ("I-1", "K-1", "publishes stock events", "Kafka"), ("K-1", "N-1", "delivers order placed events", "Kafka"),
+                ("K-1", "I-1", "delivers order placed events", "Kafka"), ("N-1", "W-1", "pushes order status", "WebSocket"),
+                ("U-1", "X-1", "federates sign-in", "OIDC"), ("U-1", "C-1", "caches tokens", "Redis"), ("A-1", "A-1", "retries failed payments", ""),
+            ]
+            for k, (src, dst, label, tech) in enumerate(rels):
+                rel = relationship(f"R-{k:02d}", src, dst, label)
+                if tech:
+                    rel["technology"] = tech
+                objects.append(rel)
+            return tier(objects, names)
         ids = ["C-A", "C-B", "C-C", "C-X", "C-U"]  # loop_plus_in
         objects = [component(u, u) for u in ids] + [pattern({"G": ids})]
         objects += [
@@ -2806,8 +2890,51 @@ class LaterStoryTests(unittest.TestCase):
         ]
         return tier(objects, {"C-U": "presentation", "C-A": "application", "C-B": "application", "C-C": "application", "C-X": "data"})
 
+    def test_loop_label_steps_up_clear_of_what_it_would_overlap(self) -> None:
+        # R5: the self-loop collision step. A label that starts on an obstacle moves up until it is clear.
+        edge = generate_diagram.DiagramEdge("N-1", "N-1", "checks own health")
+        other = generate_diagram.DiagramEdge("N-0", "N-1", "feeds")
+        base = (105.0, 200.0, generate_diagram._max_chars(200))
+        free = generate_diagram._edge_label_svgs([(0, edge)], {}, {}, {0: (100.0, 200, 200.0)}, [])
+        self.assertIn('y="200.0"', free[0])
+        tops = {1: (((100.0, 200), 150.0), ((100.0, 200), 190.0))}  # the source end's label box sits on the loop label's row
+        pushed = generate_diagram._edge_label_svgs(
+            [(0, edge), (1, other)], {1: [(0, 0), (0, 300)]}, tops, {0: (100.0, 200, 200.0)}, [(0, 190, 400, 20)]
+        )
+        y = float(re.search(r'class="lb lb-t" x="[\d.]+" y="([\d.]+)"', pushed[0]).group(1))
+        self.assertLess(y, 200.0 - generate_diagram.LABEL_BAND + 1)
+        box = (base[0] - 2, y - 10, generate_diagram._label_len(edge, base[2]) * generate_diagram.LABEL_CHAR_W + 4, 14)
+        self.assertEqual(generate_diagram._overlap(box, (0, 190, 400, 20)), 0)
+        # and the loop's callout keeps clear of the labels visible with its box
+        callout = re.search(r'class="callout" x="([\d.]+)" y="([\d.]+)"', pushed[0])
+        self.assertIsNotNone(callout)
+
+    def test_callout_obstacles_include_every_caption(self) -> None:
+        # R5: the callout avoids captions in both views (zone, group, target and lane captions in the deployment view).
+        seen = []
+        real = generate_diagram._edge_label_svgs
+
+        def spy(edges, routes, tops, loops, obstacles):
+            seen.append(list(obstacles))
+            return real(edges, routes, tops, loops, obstacles)
+
+        cases = [(load_catalog(FIXTURE), "FXSDP00002-0001"), (load_catalog(FIXTURE), "FXSDP00001-0001"),
+                 (load_catalog(write_workspace(Path(tempfile.mkdtemp()), self._shape("zone3in"))), "SDP-1")]
+        generate_diagram._edge_label_svgs = spy
+        try:
+            for cat, sdp in cases:
+                for render in (logical_svg, deployment_svg):
+                    seen.clear()
+                    svg = render(cat, sdp)
+                    captions = self._captions(svg)
+                    self.assertTrue(captions)
+                    for caption in captions:
+                        self.assertTrue(any(generate_diagram._overlap(caption, o) > 0 for o in seen[-1]), (render.__name__, caption))
+        finally:
+            generate_diagram._edge_label_svgs = real
+
     def test_label_shapes_from_review(self) -> None:
-        for name in ("hub12in", "hub8out", "zone3in", "loop_plus_in"):
+        for name in ("hub12in", "hub12in_long", "hub8out", "zone3in", "loop_plus_in", "upward", "longlabels", "webshop"):
             cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), self._shape(name)))
             for render in (logical_svg, deployment_svg):
                 with self.subTest(shape=name, view=render.__name__):
