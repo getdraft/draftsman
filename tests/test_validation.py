@@ -3185,7 +3185,7 @@ requirementGroups:
             self.assertIn("Validated ", quiet_result.stdout)
 
     def test_sdp_deployable_object_intent_is_ignored(self) -> None:
-        for intent in ("standalone", "sa", "ha"):
+        for intent in ("standalone", "sa", "ha", "xyz"):
             with self.subTest(intent=intent), tempfile.TemporaryDirectory() as directory:
                 workspace = Path(directory)
                 ensure_workspace_layout(workspace)
@@ -3264,7 +3264,7 @@ requirementGroups:
                         deployableObjects:
                           - objectType: runtime_service
                             diagramTier: application
-                            intent: ha
+                            intent: xyz
                     """
                 ).strip()
                 + "\n",
