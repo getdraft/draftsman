@@ -3,12 +3,13 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import os
 import sys
 import re
 from datetime import date, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Iterable
 
 import yaml
 
@@ -212,7 +213,164 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         metavar=("SDP_UID", "TARGET_UID"),
         help="Check if a SoftwareDeploymentPattern is deployment-ready for a DeploymentTarget.",
     )
+    parser.add_argument(
+        "--write-baseline",
+        action="store_true",
+        help="Write .draft/validation-baseline.yaml from the current ratcheted violations, dropping stale entries, and exit 0.",
+    )
+    parser.add_argument(
+        "--no-baseline",
+        action="store_true",
+        help="Ignore .draft/validation-baseline.yaml: every ratcheted violation is an error.",
+    )
     return parser.parse_args(argv)
+
+
+# ---------------------------------------------------------------------------
+# Validation ratchet (D49)
+#
+# A ratcheted rule binds an object only when the object changes. Each rule has a
+# stable id. `--write-baseline` records every object that violates a ratcheted
+# rule in `.draft/validation-baseline.yaml` as {rule, uid, hash}. On a normal run
+# a violation whose (rule, uid) is in the baseline with the same content hash is
+# a warning prefixed `baseline:`; any other ratcheted violation is an error.
+#
+# Registering a rule (the API later rules use):
+#
+#     def _check(obj: dict, catalog_by_id: dict) -> Iterable[str]:
+#         ...yield one message per problem found on this object...
+#
+#     register_ratchet_rule("my-rule-id", _check)
+#
+# A rule is called once per authored object that has a uid. The runner turns the
+# messages into (rule_id, uid, message) violations.
+# ---------------------------------------------------------------------------
+BASELINE_RELATIVE_PATH = Path(".draft") / "validation-baseline.yaml"
+BASELINE_SCHEMA_VERSION = "1.0"
+RatchetCheck = Callable[[dict, dict], Iterable[str]]
+RATCHET_RULES: dict[str, RatchetCheck] = {}
+
+
+def register_ratchet_rule(rule_id: str, check: RatchetCheck) -> None:
+    if rule_id in RATCHET_RULES:
+        raise ValueError(f"ratcheted rule '{rule_id}' is already registered")
+    RATCHET_RULES[rule_id] = check
+
+
+def _check_ratchet_test_marker(obj: dict, catalog_by_id: dict) -> Iterable[str]:
+    # TEST-ONLY rule: exists so tests/test_validate_ratchet.py can exercise the
+    # ratchet plumbing end to end. It fires only on an object carrying the
+    # top-level field `xRatchetTest: fail`. A later story may remove it.
+    if obj.get("xRatchetTest") == "fail":
+        return ["xRatchetTest is set to 'fail' (test-only ratcheted rule)"]
+    return []
+
+
+register_ratchet_rule("ratchet-test-marker", _check_ratchet_test_marker)
+
+
+def object_hash(obj: dict[str, Any]) -> str:
+    dumped = yaml.safe_dump(obj, sort_keys=True, allow_unicode=True)
+    return hashlib.sha256(dumped.encode("utf-8")).hexdigest()
+
+
+def collect_ratchet_violations(
+    objects: dict[Path, dict[str, Any]],
+    catalog_by_id: dict[str, dict[str, Any]],
+) -> list[tuple[str, str, str, Path, str]]:
+    """Return (rule_id, uid, message, path, hash) for every ratcheted violation."""
+    found: list[tuple[str, str, str, Path, str]] = []
+    for path, obj in objects.items():
+        if not isinstance(obj, dict) or not is_non_empty(obj.get("uid")):
+            continue
+        uid = str(obj["uid"])
+        for rule_id in sorted(RATCHET_RULES):
+            messages = list(RATCHET_RULES[rule_id](obj, catalog_by_id))
+            if messages:
+                found.append((rule_id, uid, "; ".join(messages), path, object_hash(obj)))
+    found.sort(key=lambda item: (item[0], item[1]))
+    return found
+
+
+def framework_version_text(workspace_root: Path) -> str:
+    candidates = [REPO_ROOT / "draft-framework.yaml", FRAMEWORK_ROOT / "draft-framework.yaml"]
+    for candidate in candidates:
+        if candidate.is_file():
+            try:
+                data = yaml.safe_load(candidate.read_text(encoding="utf-8")) or {}
+            except Exception:  # noqa: BLE001
+                continue
+            if isinstance(data, dict) and data.get("version"):
+                return str(data["version"])
+    lock = workspace_root / ".draft" / "framework.lock"
+    if lock.is_file():
+        try:
+            data = yaml.safe_load(lock.read_text(encoding="utf-8")) or {}
+        except Exception:  # noqa: BLE001
+            data = {}
+        if isinstance(data, dict) and data.get("version"):
+            return str(data["version"])
+    return "unknown"
+
+
+def load_baseline(workspace_root: Path, failures: list[str]) -> dict[tuple[str, str], str]:
+    path = workspace_root / BASELINE_RELATIVE_PATH
+    if not path.is_file():
+        return {}
+    try:
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except Exception as exc:  # noqa: BLE001
+        failures.append(f"{path}: Fix validation baseline YAML; parser reported {exc}")
+        return {}
+    entries = data.get("entries") if isinstance(data, dict) else None
+    if not isinstance(entries, list):
+        failures.append(f"{path}: Make the validation baseline a mapping with an 'entries' list")
+        return {}
+    baseline: dict[tuple[str, str], str] = {}
+    for entry in entries:
+        if isinstance(entry, dict) and entry.get("rule") and entry.get("uid"):
+            baseline[(str(entry["rule"]), str(entry["uid"]))] = str(entry.get("hash", ""))
+    return baseline
+
+
+def write_baseline(workspace_root: Path, violations: list[tuple[str, str, str, Path, str]]) -> int:
+    entries = sorted(
+        ({"rule": rule, "uid": uid, "hash": digest} for rule, uid, _msg, _path, digest in violations),
+        key=lambda entry: (entry["rule"], entry["uid"]),
+    )
+    document = {
+        "schemaVersion": BASELINE_SCHEMA_VERSION,
+        "frameworkVersion": framework_version_text(workspace_root),
+        "entries": entries,
+    }
+    path = workspace_root / BASELINE_RELATIVE_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(yaml.safe_dump(document, sort_keys=False, allow_unicode=True), encoding="utf-8")
+    return len(entries)
+
+
+def apply_ratchet(
+    violations: list[tuple[str, str, str, Path, str]],
+    baseline: dict[tuple[str, str], str],
+    use_baseline: bool,
+    failures: list[str],
+    warnings: list[str],
+) -> None:
+    current = set()
+    for rule, uid, message, path, digest in violations:
+        current.add((rule, uid))
+        text = f"{path}: [{rule}] {uid}: {message}"
+        if use_baseline and baseline.get((rule, uid)) == digest:
+            warnings.append(f"baseline: {text}")
+        else:
+            failures.append(text)
+    if use_baseline:
+        for rule, uid in sorted(baseline):
+            if (rule, uid) not in current:
+                warnings.append(
+                    f"stale baseline entry: rule '{rule}' uid '{uid}' no longer violates or no longer exists; "
+                    f"run validate.py --write-baseline to drop it"
+                )
 
 
 def load_workspace_requirements(workspace_root: Path, failures: list[str]) -> dict[str, Any]:
@@ -4559,6 +4717,15 @@ def main(argv: list[str] | None = None) -> int:
             if not failures:
                 print("")
                 print(f"SoftwareDeploymentPattern '{sdp_obj.get('name')}' is deployment-ready for DeploymentTarget '{target_obj.get('name')}' (200 OK).")
+
+    ratchet_violations = collect_ratchet_violations(objects, catalog_by_id)
+    if args.write_baseline:
+        count = write_baseline(workspace_root, ratchet_violations)
+        print(f"Wrote {count} baseline entries to {BASELINE_RELATIVE_PATH.as_posix()}.")
+        return 0
+    use_baseline = not args.no_baseline
+    baseline = load_baseline(workspace_root, failures) if use_baseline else {}
+    apply_ratchet(ratchet_violations, baseline, use_baseline, failures, warnings)
 
     failing_paths = {entry.split(":", 1)[0] for entry in failures}
 

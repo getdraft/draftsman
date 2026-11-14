@@ -395,9 +395,14 @@ The normal refresh flow is:
 2. Open a branch in the company repo.
 3. Replace `.draft/framework/` with that reviewed framework version.
 4. Update `.draft/framework.lock` with the synced source, commit, and version.
-5. Validate the workspace against the refreshed framework.
-6. Review and commit the `.draft/framework/` and `.draft/framework.lock`
-   changes through a normal pull request.
+5. Run `python3 .draft/framework/tools/validate.py --workspace . --write-baseline`
+   so objects that already break a newly ratcheted rule are recorded in
+   `.draft/validation-baseline.yaml` and show as `baseline:` warnings instead
+   of errors.
+6. Validate the workspace against the refreshed framework.
+7. Review and commit the `.draft/framework/` and `.draft/framework.lock`
+   changes, together with `.draft/validation-baseline.yaml`, through a normal
+   pull request.
 
 Company-specific changes should remain in top-level `configurations/` as
 overlays or object patches. Avoid editing `.draft/framework/` directly unless
