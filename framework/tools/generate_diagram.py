@@ -22,9 +22,9 @@ What is drawn comes only from the catalog:
   entry whose source and target are both drawn. A component with no recorded
   relationship gets no arrow. Nothing is inferred.
 
-By default the scope is the objects placed in the pattern plus each direct relationship
-endpoint (one hop) of a placed object whose type is a component, data, data store, runtime,
-network, AI gateway or host object. ``--placed-only`` restricts the drawing to placed objects.
+By default the scope is the objects placed in the pattern plus each object a placed
+object has a relationship to (its dependencies, D42) whose type is a component, data, data store,
+runtime, network, AI gateway or host object. Objects that only call into the pattern are not drawn. ``--placed-only`` restricts the drawing to placed objects.
 Derived ``runs on`` relationships never extend the scope.
 
 The page holds the logical application diagram and the deployment pattern diagram
@@ -430,9 +430,9 @@ class Model:
         if not self.placed_only:
             for rel in recorded:
                 source, target = _endpoint(rel, "source"), _endpoint(rel, "target")
-                for near, far in ((source, target), (target, source)):
-                    if near in placed and far and far not in placed and catalog.get(far, {}).get("type") in ONE_HOP_TYPES:
-                        outside.add(far)
+                # D42: only the objects a placed object depends on enter scope; consumers do not.
+                if source in placed and target and target not in placed and catalog.get(target, {}).get("type") in ONE_HOP_TYPES:
+                    outside.add(target)
                 text = clean(rel.get("externalTarget"))
                 if source in placed and not target and text:
                     externals.setdefault(external_uid(text), text)
@@ -498,6 +498,8 @@ class Model:
                     continue
                 end = external_uid(text)
             if source not in self._by_uid or end not in self._by_uid:
+                continue
+            if source not in placed:  # D41/D42: edges of unplaced sources (consumers, outside-to-outside) are not drawn
                 continue
             dependency = is_dependency(rel)
             edge = DiagramEdge(
@@ -1572,13 +1574,13 @@ def render_logical_svg(model: DiagramModel) -> str:
     if layout.lane:
         lx, ly, lw, lh = layout.lane
         out.append(f'<rect class="lane" x="{lx}" y="{ly}" width="{lw}" height="{lh}" rx="6"/>')
-        out.append(f'<text class="ll" x="{lx + 10}" y="{ly + 24}">Outside this pattern</text>')
+        out.append(f'<text class="ll" x="{lx + 10}" y="{ly + 24}">External interactions</text>')
     routes = _route_edges(model, layout)
     # D13: edge labels keep clear of node boxes, band labels and the outside lane caption.
     obstacles = [(x0, y0, LOGICAL_BOX_W, LOGICAL_BOX_H) for x0, y0 in layout.pos.values()]
     obstacles += [(LOGICAL_MARGIN + 10, y + 11, len(band) * 7 + 4, 12) for band, y, _h, _w in layout.bands]
     if layout.lane:
-        obstacles.append((layout.lane[0] + 10, layout.lane[1] + 15, len("Outside this pattern") * 7 + 4, 12))
+        obstacles.append((layout.lane[0] + 10, layout.lane[1] + 15, len("External interactions") * 7 + 4, 12))
     loops: dict[str, int] = {}
     for number, edge in enumerate(model.edges):
         s, t = edge.source, edge.target
@@ -2181,7 +2183,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     if outer:
         lane_box = (
             f'<rect class="lane" x="{lane_x - LOGICAL_BAND_PAD}" y="{lane_top}" width="{LOGICAL_BOX_W + 2 * LOGICAL_BAND_PAD + loop_room}" '
-            f'height="{lane_h}" rx="6"/><text class="ll" x="{lane_x}" y="{lane_top + 24}">Outside this pattern</text>'
+            f'height="{lane_h}" rx="6"/><text class="ll" x="{lane_x}" y="{lane_top + 24}">External interactions</text>'
             + "".join(_node_svg(node, *pos[node.uid]) for node, _by in lane_rows)
         )
         right = lane_x + LOGICAL_BOX_W + LOGICAL_BAND_PAD + loop_room
@@ -2190,7 +2192,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     loop_count: dict[str, int] = {}
     deploy_obstacles = [rects[u] for u in by_uid if u in rects]  # D13: boxes, then the outside lane caption
     if outer:
-        deploy_obstacles.append((lane_x, lane_top + 15, len("Outside this pattern") * 7 + 4, 12))
+        deploy_obstacles.append((lane_x, lane_top + 15, len("External interactions") * 7 + 4, 12))
     shown = [e for e in model.edges if e.source in rects and e.target in rects]
     label_cls = "lb hov" if len(shown) > LABEL_LIMIT else "lb"  # D13: more than 8 edges, labels on hover or pin
     for number, edge in enumerate(model.edges):

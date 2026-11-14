@@ -32,13 +32,13 @@ When the framework is vendored into a workspace, run `.draft/framework/tools/gen
 - `--svg-dir` writes `<slug>-logical.svg` and `<slug>-deployment.svg` for the two figures. Only use these as files for the user to open or publish.
 - `--all --output-dir` renders every pattern. Exit code 0 means all rendered; 1 means at least one pattern failed or none exist; 2 means a usage error or no `catalog/` under the workspace.
 
-Scope is the pattern's placed objects plus their direct relationship endpoints (one hop). `--placed-only` keeps only placed objects; the counts line then reports how many recorded relationships lead outside the placed set and are not drawn.
+Scope is the pattern's placed objects plus the objects they depend on (a placed object is the source of the relationship). Objects that only call into the pattern, and relationships between two unplaced objects, are not drawn. `--placed-only` keeps only placed objects; the counts line then reports how many recorded relationships lead outside the placed set and are not drawn.
 
 ## Reading the page
 
 - **Logical application diagram.** Components and the services they talk to, in bands top to bottom: presentation, application, data, utility. Every edge is a recorded relationship object or a recorded `runtimeSpec.dependencies` entry.
 - **Dashed derived-tier convention.** A placed object without a `diagramTier` is drawn in the band its `type` implies, with a **dashed border** and a `derived tier:` warning. Tell the user the tier is derived, not recorded. A dashed border on a derived container (a service group whose substrate was inferred) means the same thing.
-- **Outside lane.** The right-hand lane holds one-hop endpoints not placed in this pattern, captioned with the pattern that places them (or `placed in N other patterns`, `not placed in any pattern`, or `external` for `externalTarget` nodes). Solid borders there mean the object is recorded; nothing in the lane is a pattern member.
+- **External interactions lane.** The right-hand lane holds dependencies of the pattern not placed in it, captioned with the pattern that places them (or `placed in N other patterns`, `not placed in any pattern`, or `external` for `externalTarget` nodes). Solid borders there mean the object is recorded; nothing in the lane is a pattern member.
 - **Deployment pattern diagram.** Deployment target, then service group container, then network-zone lane, then component box. A substrate appears as the container, not a box. Its caption is the recorded `substrate`, or `derived` when every placed component's `runsOn` agrees; `substrate not recorded` means neither exists.
 - **Recorded conflicts section.** Appears only when a placed component's `runsOn` names an object other than its group's substrate. The generator shows both and resolves nothing. Quote both values to the user and ask which is right; do not pick one.
 - **Relationships table.** A `Source` column reads `relationship object` or `inline dependency`. Placement (`runsOn`, `host`) is never drawn as an edge and is not in this table.

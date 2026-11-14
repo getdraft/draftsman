@@ -12,7 +12,7 @@
 <rect class="band" x="20" y="380" width="780" height="80" rx="6"/>
 <text class="bl" x="30" y="400">utility</text>
 <rect class="lane" x="870" y="20" width="220" height="290" rx="6"/>
-<text class="ll" x="880" y="44">Outside this pattern</text>
+<text class="ll" x="880" y="44">External interactions</text>
 <g class="edge" data-from="FXPRD00001-0001" data-to="FXPRD00002-0001"><title>FX Web Shop places orders FX Order API</title><path class="ln" d="M250 90 L250 95 L335 95 L335 145 L400 145 L400 150" marker-end="url(#lg-end)"/><path class="fl" d="M250 90 L250 95 L335 95 L335 145 L400 145 L400 150"/><text class="lb hov" x="292.5" y="109.0" text-anchor="middle">places orders<tspan class="tech"> / HTTPS JSON</tspan></text></g>
 <g class="edge" data-from="FXPRD00002-0001" data-to="FXDST00001-0001"><title>FX Order API reads and writes orders FX Orders Database</title><path class="ln" d="M460 210 L460 220 L575 220 L575 260 L480 260 L480 270" marker-end="url(#lg-end)"/><path class="fl" d="M460 210 L460 220 L575 220 L575 260 L480 260 L480 270"/><text class="lb hov" x="517.5" y="234.0" text-anchor="middle">reads and writes orders<tspan class="tech"> / SQL</tspan></text></g>
 <g class="edge" data-from="FXPRD00003-0001" data-to="FXPRD00002-0001"><title>FX Order Worker consumes order messages FX Order API</title><path class="ln dashed" d="M660 150 L660 145 L585 145 L430 145 L430 150" marker-end="url(#lg-end)"/><path class="fl" d="M660 150 L660 145 L585 145 L430 145 L430 150"/><text class="lb hov" x="507.5" y="141.0" text-anchor="middle">consumes order messages</text></g>

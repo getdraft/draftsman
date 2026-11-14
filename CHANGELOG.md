@@ -17,6 +17,7 @@
 
 ### Changed
 
+- The outside lane of `generate_diagram.py` is captioned `External interactions` and holds only objects a placed object depends on: consumers (unplaced objects that only call into the pattern) and relationships between two unplaced objects are no longer drawn or tabled.
 - `generate_diagram.py` default scope follows the one-hop rule described under Compatibility Impact. `--placed-only` keeps its meaning.
 - The diagram model reports derived tiers (a placed entry without `diagramTier`), outside-pattern captions, `ext:` external nodes for `externalTarget` relationships, and duplicate placements, and counts undrawn relationships under `--placed-only`. A `runs on` relationship derived from `runsOn` or `host` is never drawn or listed; a `runtimeSpec.dependencies` entry is drawn and listed as an inline dependency. A `serviceGroups` value that is not a list is reported as `error:` with exit code 1.
 - The diagram model derives a container for each service group, captioned from its recorded `substrate` (or a `runsOn` that every placed component agrees on, marked `derived`), records `runsOn` disagreements as conflicts, assigns placed objects to network-zone lanes in `networkZones` order (zone `tier` is informational only), and reports warnings once each in sorted order with a `N warnings` count line. Objects that are only a group's substrate are drawn as containers in the deployment view and not as boxes.
