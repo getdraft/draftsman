@@ -167,7 +167,7 @@ serviceGroup:
       service group. The substrate is a service definition consumed by the group:
       it is rendered as the deployment container for the group and is never listed
       in deployableObjects. Runtime and host services belong here, not in
-      deployableObjects. Planned validation rule sdp-placement-types (ratcheted)
+      deployableObjects. Validation rule sdp-placement-types (ratcheted, enforced)
       reports a deployableObjects ref that is not a ProductComponent or
       DataComponent and names this field as the place for it.
     deploymentTarget: >
@@ -187,8 +187,9 @@ serviceGroup:
     providers, secrets managers, SaaS) are relationship targets drawn as External
     interactions, not placed entries. A service definition (an object under the
     shared-services catalog folder, or serviceRole: definition) is consumed
-    through substrate and runsOn and is never placed. Planned ratcheted rule
-    sdp-placement-types reports any other placement.
+    through substrate and runsOn and is never placed (the definitions folder is paths.serviceDefinitionsFolder in
+    workspace.yaml when set, else the shared-services catalog folder). The ratcheted
+    rule sdp-placement-types is enforced and reports any other placement.
 deployableObjectEntry:
   requiredFields:
   - ref
@@ -215,7 +216,7 @@ deployableObjectEntry:
       reference a DataStoreService, RuntimeService, Host or NetworkService here:
       use substrate on the service group for a runtime or host, runsOn on the
       DataComponent for its data store, and the followed ReferenceArchitecture for
-      edge services (planned ratcheted rule sdp-placement-types). Inside a
+      edge services (enforced by ratcheted rule sdp-placement-types). Inside a
       ReferenceArchitecture the same entry shape describes capability slots, which
       is a different use.
     networkZone: >

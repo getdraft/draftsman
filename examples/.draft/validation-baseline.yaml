@@ -1,0 +1,6 @@
+schemaVersion: '1.0'
+frameworkVersion: 1.3.1
+entries:
+- rule: sdp-placement-types
+  uid: STCK000001-SDP1
+  hash: 3d52519ed429acf9908b27540a53aeaddf0eacc126f85e9c5786ea19bd7d9c92
