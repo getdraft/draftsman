@@ -1,3 +1,27 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None for workspaces. This is a browser stylesheet change only; catalog files and validation are unaffected.
+
+### Added
+
+- None.
+
+### Changed
+
+- The generated browser stylesheets no longer style `intent`: the intent badge, tag and dot rules are removed from `framework/browser/draft-browser.css` and `framework/browser/draft-browser-sdp.css`. The `.zone-tag` rules are kept.
+- At viewports 1180px wide and narrower, the SDP KPI strip is now a 2x2 grid of four cards.
+
+### Fixed
+
+- The SDP service-group row grid now has three columns (`200px 90px 1fr`) matching the service, zone and notes cells, so notes use the flexible track instead of a stale empty intent column.
+- The SDP KPI strip uses four columns at wide widths to match its four cards, with no empty fifth column.
+
+### Migration Notes
+
+- None. Regenerate the browser to pick up the stylesheet changes.
+
 ## 1.5.1 - 2026-11-14
 
 ### Compatibility Impact

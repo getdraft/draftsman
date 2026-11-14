@@ -239,5 +239,60 @@ class IntentRemovedFromBrowserTests(unittest.TestCase):
             self.assertNotIn("HA Components", data_text)
 
 
+class IntentRemovedFromBrowserCssTests(unittest.TestCase):
+    """Source-level proxies: the repo has no browser render test, so these assert on
+    the shipped CSS text, not on a rendered layout."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.css_dir = REPO_ROOT / "framework" / "browser"
+        cls.base = (cls.css_dir / "draft-browser.css").read_text(encoding="utf-8")
+        cls.sdp = (cls.css_dir / "draft-browser-sdp.css").read_text(encoding="utf-8")
+        cls.js = BROWSER_JS.read_text(encoding="utf-8")
+
+    @staticmethod
+    def _block(css: str, selector: str) -> str:
+        start = css.index(selector + " {")
+        return css[start:css.index("}", start)]
+
+    def test_no_intent_in_any_browser_css(self) -> None:
+        for path in (self.css_dir).glob("*.css"):
+            text = path.read_text(encoding="utf-8")
+            self.assertIsNone(re.search(r"\bintent\b", text, re.I), path.name)
+
+    def test_zone_tag_rules_retained(self) -> None:
+        self.assertIn(".sdp-detail .group-row .zone-tag {", self.sdp)
+        self.assertIn(".sdp-detail .group-row .zone-tag .dot {", self.sdp)
+        self.assertIn('.zone-tag[data-zone="public"]', self.sdp)
+
+    def test_group_row_columns_match_emitted_cells(self) -> None:
+        block = self._block(self.sdp, ".sdp-detail .group-row")
+        tracks = re.search(r"grid-template-columns:\s*([^;]+);", block).group(1).split()
+        start = self.js.index('<div class="group-row">')
+        end = self.js.index("</div>`;", start)
+        row = self.js[start:end]
+        body = row[len('<div class="group-row">'):]
+        # Direct children: the svc div, the zone-tag span, the notes span.
+        cells = len(re.findall(r'^\s{8}<(?:div|span) class="(?:svc|zone-tag|notes)\b', body, re.M))
+        self.assertEqual(cells, 3)
+        self.assertEqual(len(tracks), cells)
+        self.assertEqual(tracks[-1], "1fr")
+        self.assertTrue(body.strip().splitlines()[-1].lstrip().startswith('<span class="notes"'))
+
+    def test_kpi_strip_four_columns_at_wide_width(self) -> None:
+        block = self._block(self.sdp, ".sdp-detail .kpi-strip")
+        self.assertIn("grid-template-columns: repeat(4, minmax(0, 1fr));", block)
+
+    def test_kpi_strip_two_by_two_at_1180(self) -> None:
+        start = self.sdp.index("@media (max-width: 1180px) {")
+        media = self.sdp[start:self.sdp.index("\n}", start)]
+        self.assertRegex(media, r"\.kpi-strip\s*\{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}")
+
+    def test_kpi_strip_four_cards_fit_at_760(self) -> None:
+        start = self.sdp.index("@media (max-width: 760px) {")
+        media = self.sdp[start:self.sdp.index("\n}", start)]
+        self.assertRegex(media, r"\.kpi-strip\s*\{ grid-template-columns: repeat\(2, 1fr\); \}")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -765,16 +765,6 @@ html, body {
   color: #bfdbfe;
   width: fit-content;
 }
-.intent-ha {
-  border-color: rgba(16,185,129,0.45);
-  color: #bbf7d0;
-  background: rgba(16,185,129,0.14);
-}
-.intent-sa {
-  border-color: rgba(245,158,11,0.45);
-  color: #fde68a;
-  background: rgba(245,158,11,0.14);
-}
 .ard-link {
   color: #93c5fd;
   cursor: pointer;
