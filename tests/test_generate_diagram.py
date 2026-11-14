@@ -25,7 +25,10 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES = REPO_ROOT / "examples"
 FIXTURE = REPO_ROOT / "tests" / "fixtures" / "diagram_workspace"
 # Edge crossings allowed in the large logical figure (AC14). Set from the first committed golden; lower only on purpose.
-LARGE_MAX_CROSSINGS = 869
+# Raised from 869 to 873 by S12 (D35): the old router hid crossings in 96 collinear overlaps between 73 distinct pairs
+# of co-visible edges drawn on top of each other (collinear runs count as no crossing); D35 forbids that, so those
+# edges now cross on separate tracks.
+LARGE_MAX_CROSSINGS = 873
 
 
 def edge_polylines(svg: str) -> list:
@@ -74,6 +77,135 @@ def edges_hitting_foreign_boxes(svg: str) -> list:
                 ) or (lo_y == hi_y and y < lo_y < y + h and lo_x < x + w and x < hi_x):
                     hits.append((source, target, uid))
     return hits
+
+
+def endpoint_rects(svg: str) -> dict:
+    """uid -> (x, y, w, h) of every box, and of every drawn container (its first rectangle) in a deployment SVG."""
+    rects = dict(node_rects(svg))
+    for m in re.finditer(r'<g class="group[^"]*" data-id="([^"]*)"[^>]*>.*?<rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg, re.S):
+        rects.setdefault(xml_unescape(m.group(1)), tuple(int(m.group(k)) for k in range(2, 6)))
+    return rects
+
+
+def _line_of(a: tuple, b: tuple):
+    """(axis, coordinate, lo, hi) of an axis-parallel segment of positive length, else None."""
+    if a[0] == b[0] and a[1] != b[1]:
+        return ("v", a[0], min(a[1], b[1]), max(a[1], b[1]))
+    if a[1] == b[1] and a[0] != b[0]:
+        return ("h", a[1], min(a[0], b[0]), max(a[0], b[0]))
+    return None
+
+
+def _common_prefix(p: list, q: list) -> list:
+    """The polyline two routes share from their first point until they part (D36: the shared run of a bundle)."""
+    if not p or not q or p[0] != q[0]:
+        return []
+    out, cur, i, j = [p[0]], p[0], 0, 0
+    while i + 1 < len(p) and j + 1 < len(q):
+        lp, lq = abs(p[i + 1][0] - cur[0]) + abs(p[i + 1][1] - cur[1]), abs(q[j + 1][0] - cur[0]) + abs(q[j + 1][1] - cur[1])
+        if lp == 0:
+            i += 1
+            continue
+        if lq == 0:
+            j += 1
+            continue
+        dp = ((p[i + 1][0] - cur[0]) / lp, (p[i + 1][1] - cur[1]) / lp)
+        dq = ((q[j + 1][0] - cur[0]) / lq, (q[j + 1][1] - cur[1]) / lq)
+        if dp != dq:
+            break
+        step = min(lp, lq)
+        cur = (cur[0] + dp[0] * step, cur[1] + dp[1] * step)
+        out.append(cur)
+        i += lp == step
+        j += lq == step
+    return out
+
+
+def _covered(line: tuple, path: list) -> bool:
+    """Whether the overlap ``line`` lies on the polyline ``path``."""
+    axis, coord, lo, hi = line
+    spans = sorted(
+        (seg[2], seg[3]) for seg in (_line_of(a, b) for a, b in zip(path, path[1:])) if seg and seg[0] == axis and seg[1] == coord
+    )
+    reach = None
+    for a, b in spans:
+        if reach is None or a > reach[1]:
+            reach = [a, b]
+        else:
+            reach[1] = max(reach[1], b)
+        if reach[0] <= lo and hi <= reach[1]:
+            return True
+    return False
+
+
+def covisible_track_clashes(svg: str) -> list:
+    """D35: pairs of co-visible edges (sharing an endpoint uid) with collinear runs that overlap, outside the part
+    of their routes a fan bundle shares (D36: the common start of two edges of one source, the common end of two
+    edges of one target). Horizontal runs that share a y over an overlapping x span, and vertical runs that share an
+    x over an overlapping y span, both count."""
+    edges = edge_polylines(svg)
+    clashes = []
+    for n, (s1, t1, p1) in enumerate(edges):
+        for s2, t2, p2 in edges[n + 1 :]:
+            if not {s1, t1} & {s2, t2}:
+                continue
+            prefix = _common_prefix(p1, p2) if s1 == s2 else []
+            suffix = _common_prefix(p1[::-1], p2[::-1]) if t1 == t2 else []
+            for a, b in zip(p1, p1[1:]):
+                one = _line_of(a, b)
+                for c, d in zip(p2, p2[1:]):
+                    two = _line_of(c, d)
+                    if not one or not two or one[:2] != two[:2]:
+                        continue
+                    lo, hi = max(one[2], two[2]), min(one[3], two[3])
+                    if hi <= lo:
+                        continue
+                    shared = (one[0], one[1], lo, hi)
+                    if not (_covered(shared, prefix) or _covered(shared, suffix)):
+                        clashes.append((s1, t1, s2, t2, shared))
+    return clashes
+
+
+def covisible_stub_crossings(svg: str, free_x: list) -> list:
+    """D35, D36: a horizontal run of one edge that crosses a vertical of a co-visible edge (sharing an endpoint uid),
+    where the vertical is not inside one of the free x ranges ``free_x`` (gutters and channels, which runs cross by
+    design): a box's stub or the drop of an edge into the next row."""
+    edges = edge_polylines(svg)
+    out = []
+    for n1, (s1, t1, p1) in enumerate(edges):
+        for (ax, ay), (bx, by) in zip(p1, p1[1:]):
+            if ay != by:
+                continue
+            x0, x1 = min(ax, bx), max(ax, bx)
+            for n2, (s2, t2, p2) in enumerate(edges):
+                if n2 == n1 or not {s1, t1} & {s2, t2}:
+                    continue
+                for (cx, cy), (dx, dy) in zip(p2, p2[1:]):
+                    if cx == dx and not any(lo < cx < hi for lo, hi in free_x) and x0 < cx < x1 and min(cy, dy) < ay < max(cy, dy):
+                        out.append((s1, t1, s2, t2, (cx, ay)))
+    return out
+
+
+def logical_free_x(catalog: dict, uid: str) -> list:
+    """The gutters of a logical figure, as x ranges."""
+    layout = generate_diagram.layout_logical(generate_diagram.build_diagram_model(catalog, catalog[uid], False))
+    return [(left, left + width) for left, width in layout.spaces]
+
+
+def side_violations(svg: str) -> list:
+    """D36: edges whose first point is not on the bottom side of the source, whose last point is not on the top side
+    of the target, or whose first or last segment does not run downward."""
+    rects = endpoint_rects(svg)
+    bad = []
+    for source, target, pts in edge_polylines(svg):
+        sx, sy, sw, sh = rects[source]
+        tx, ty, tw, _th = rects[target]
+        (x0, y0), (x1, y1) = pts[0], pts[-1]
+        if not (abs(y0 - (sy + sh)) < 0.11 and sx <= x0 <= sx + sw and pts[1][1] > y0):
+            bad.append((source, target, "start", pts[0]))
+        if not (abs(y1 - ty) < 0.11 and tx <= x1 <= tx + tw and pts[-2][1] < y1):
+            bad.append((source, target, "end", pts[-1]))
+    return bad
 
 
 def logical_svg(catalog: dict, uid: str, placed_only: bool = False) -> str:
@@ -1250,24 +1382,15 @@ class LaterStoryTests(unittest.TestCase):
         self.assertRegex(svg, r'<g class="group[^"]*" data-id="RTC-1"')
         self.assertIn("<title>Cluster serves Beta</title>", svg)  # the object's name, not the container caption
         (_, _, pts), = edge_polylines(svg)
-        group = re.search(r'<g class="group[^"]*" data-id="RTC-1"[^>]*>.*?<rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg, re.S)
-        gx, gy, gw, gh = (int(group.group(i)) for i in range(1, 5))
+        gx, gy, gw, gh = endpoint_rects(svg)["RTC-1"]
         box = node_rects(svg)["P-2"]
-        c_group = (gx + gw / 2, gy + gh / 2)
-        c_box = (box[0] + box[2] / 2, box[1] + box[3] / 2)
-        start = generate_diagram.border_point(c_group, c_box, gw, gh)
-        end = generate_diagram.border_point(c_box, c_group, box[2], box[3])
-        self.assertEqual(pts[0], (round(start[0], 1), round(start[1], 1)))
-        # The far end lies on the box border; the container end is the border_point checked above.
-        self.assertIn(pts[-1][1], (box[1], box[1] + box[3]))
-        self.assertTrue(box[0] <= pts[-1][0] <= box[0] + box[2])
-        on_border = (
-            abs(pts[0][0] - gx) < 0.1 or abs(pts[0][0] - (gx + gw)) < 0.1 or abs(pts[0][1] - gy) < 0.1 or abs(pts[0][1] - (gy + gh)) < 0.1
-        )
-        self.assertTrue(on_border, "container end lies on the container border")
+        # D29 as amended by D36: the container end is on its bottom border at centre + ATTACH_DX (the edge leaves
+        # it), the box end on the box's top side at centre - ATTACH_DX (the edge enters it).
+        self.assertEqual(pts[0], (gx + gw // 2 + generate_diagram.ATTACH_DX, gy + gh))
+        self.assertEqual(pts[-1], (box[0] + box[2] // 2 - generate_diagram.ATTACH_DX, box[1]))
         for (ax, ay), (bx, by) in zip(pts, pts[1:]):
             self.assertTrue(ax == bx or ay == by, "orthogonal route")
-        self.assertTrue(gx <= pts[0][0] <= gx + gw and gy <= pts[0][1] <= gy + gh)
+        self._assert_runs_clean(svg)
 
     def test_deployment_edges_avoid_foreign_boxes(self) -> None:
         catalog = load_catalog(FIXTURE)
@@ -1275,13 +1398,7 @@ class LaterStoryTests(unittest.TestCase):
             svg = deployment_svg(catalog, sdp["uid"])
             self.assertGreater(len(edge_polylines(svg)), 0)
             self.assertEqual(edges_hitting_foreign_boxes(svg), [], sdp["uid"])
-            segments = []
-            for _s, _t, pts in edge_polylines(svg):
-                segments.extend((min(a[0], b[0]), max(a[0], b[0]), min(a[1], b[1]), max(a[1], b[1])) for a, b in zip(pts, pts[1:]))
-            vertical = [(x0, y0, y1) for x0, x1, y0, y1 in segments if x0 == x1 and y0 < y1]
-            for i, (x, y0, y1) in enumerate(vertical):
-                for x2, a0, a1 in vertical[i + 1 :]:
-                    self.assertFalse(x == x2 and y0 < a1 and a0 < y1, f"collinear overlap at x={x}")
+            self.assertEqual(covisible_track_clashes(svg), [], sdp["uid"])  # D35: only co-visible edges must not share
 
     def _small_pair(self, extra: list) -> str:
         objects = [component("A-1", "Alpha"), component("B-1", "Beta"), pattern({"G": ["A-1", "B-1"]})] + extra
@@ -1343,17 +1460,12 @@ class LaterStoryTests(unittest.TestCase):
         catalog = load_catalog(FIXTURE)
         for sdp in generate_diagram.sdps(catalog):
             svg = deployment_svg(catalog, sdp["uid"])
+            self._assert_runs_clean(svg)  # D35: co-visible runs keep apart; others may share a track
             horizontals = []
-            for number, (_s, _t, pts) in enumerate(edge_polylines(svg)):
+            for _s, _t, pts in edge_polylines(svg):
                 for (ax, ay), (bx, by) in zip(pts, pts[1:]):
                     if ay == by and ax != bx:
-                        horizontals.append((ay, min(ax, bx), max(ax, bx), number))
-            for i, (y, x0, x1, n1) in enumerate(horizontals):
-                for y2, a0, a1, n2 in horizontals[i + 1 :]:
-                    if abs(y - y2) < generate_diagram.DEPLOY_LEVEL and n1 != n2:
-                        gap = max(a0 - x1, x0 - a1)
-                        self.assertGreaterEqual(gap, generate_diagram.DEPLOY_LEVEL, f"runs of two edges {gap}px apart on y={y} and y={y2}")
-            horizontals = [(y, x0, x1) for y, x0, x1, _n in horizontals]
+                        horizontals.append((ay, min(ax, bx), max(ax, bx)))
             lanes = [tuple(int(v) for v in m) for m in re.findall(r'<rect class="zl" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg)]
             captions = [int(y) for y in re.findall(r'<text class="zc" x="\d+" y="(\d+)"', svg)]
             self.assertGreaterEqual(len(captions), len(lanes))
@@ -1567,27 +1679,25 @@ class LaterStoryTests(unittest.TestCase):
         svg = deployment_svg(cat, "SDP-1")
         self.assertEqual(re.findall(r'<g class="target" data-target="([^"]*)"', svg), ["later-in-the-alphabet", "azure"])
 
-    def test_two_left_border_ends_on_one_container_take_separate_verticals(self) -> None:
-        # Edges between a container and boxes drawn inside it leave through its left border when the box sits
-        # in the first column; each such end needs its own vertical outside the border.
+    def test_container_and_its_own_boxes_attach_bottom_out_top_in(self) -> None:
+        # D29 as amended by D36: edges between a container and boxes drawn inside it leave through the bottom side
+        # and enter through the top side like every other edge, so no end sits on a side border.
         objects = [plain("RTC-1", "runtime_service", "Cluster")] + [component(f"P-{k}", f"Part {k}") for k in range(6)]
         objects.append(pattern({"G": [f"P-{k}" for k in range(6)] + ["RTC-1"]}))
         objects[-1]["serviceGroups"][0]["substrate"] = "RTC-1"
         objects += [relationship("R-1", "P-0", "RTC-1", "deploys to"), relationship("R-2", "RTC-1", "P-3", "hosts"), relationship("R-3", "P-3", "RTC-1", "reports to")]
+        objects += [relationship("R-4", "P-0", "RTC-1", "also")]
         cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
         svg = deployment_svg(cat, "SDP-1")
         xml.dom.minidom.parseString(svg)
-        self.assertEqual(len(edge_polylines(svg)), 3)
-        group = re.search(r'<rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg)
-        gx, gy, gw, gh = (int(group.group(i)) for i in range(1, 5))
-        tgt = re.search(r'<rect class="tgt" x="(\d+)"', svg)
-        lefts = [pts for _s, _t, pts in edge_polylines(svg) if any(abs(px - gx) < 0.11 and gy < py < gy + gh for px, py in pts)]
-        self.assertGreaterEqual(len(lefts), 2, "the fixture must exercise two left-border ends")
-        for pts in lefts:
-            for (ax, ay), (bx, by) in zip(pts, pts[1:]):
-                if ax == bx and ax < gx:
-                    self.assertGreaterEqual(gx - ax, generate_diagram.DEPLOY_BORDER_CLEAR)
-                    self.assertGreaterEqual(ax - int(tgt.group(1)), generate_diagram.DEPLOY_BORDER_CLEAR)
+        polys = edge_polylines(svg)
+        self.assertEqual(len(polys), 4)
+        gx, gy, gw, gh = endpoint_rects(svg)["RTC-1"]
+        for _s, _t, pts in polys:
+            self.assertFalse(any(px in (gx, gx + gw) and gy < py < gy + gh for px, py in pts), pts)
+        into = [pts[-1] for _s, t_uid, pts in polys if t_uid == "RTC-1"]
+        self.assertEqual(len(set(into)), 1, "the container's in-edges share one attachment point (D36)")
+        self.assertEqual(into[0][1], gy)
         self._assert_runs_clean(svg)
         self.assertEqual(edges_hitting_foreign_boxes(svg), [])
         self.assertTrue(all(int(x) % generate_diagram.GRID == 0 and int(y) % generate_diagram.GRID == 0 for x, y, _w, _h in node_rects(svg).values()))
@@ -1605,22 +1715,21 @@ class LaterStoryTests(unittest.TestCase):
             self.assertLessEqual(int(x) + 6 * len(text), width, text)
         self.assertIn("Alpha Group (azure), Beta Group (azure)", " ".join(text for _x, text in captions))
 
-    def test_hub_with_too_many_ends_on_one_side_spills_to_the_other(self) -> None:
-        # 60 inbound edges on one box from boxes above it: at most span / DEPLOY_MIN_STUB stubs fit on the top side,
-        # so the rest leave through the bottom and stubs stay at least DEPLOY_MIN_STUB apart on both sides.
+    def test_hub_in_edges_share_one_top_attachment(self) -> None:
+        # D36: 60 inbound edges on one box all enter through its top side at one attachment point and share its
+        # in-run; D35: the band above the hub grows only by the tracks its runs need, not by the edge count.
         names = [f"P-{k:02d}" for k in range(60)]
         objects = [component(u, u) for u in names] + [component("HUB-1", "Hub"), pattern({"G": names + ["HUB-1"]})]
         objects += [relationship(f"R-{k:02d}", u, "HUB-1", "calls") for k, u in enumerate(names)]
         cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
         svg = deployment_svg(cat, "SDP-1")
-        hub = node_rects(svg)["HUB-1"]
-        ends = [pts[-1] for _s, _t, pts in edge_polylines(svg)]
-        self.assertEqual(len(ends), 60)
-        tops = sorted(x for x, y in ends if y == hub[1])
-        bottoms = sorted(x for x, y in ends if y == hub[1] + hub[3])
-        self.assertTrue(tops and bottoms, "both sides in use")
-        for side in (tops, bottoms):
-            self.assertGreaterEqual(min(b - a for a, b in zip(side, side[1:])), generate_diagram.DEPLOY_MIN_STUB - 0.5)
+        rects = node_rects(svg)
+        hub = rects["HUB-1"]
+        ends = {pts[-1] for _s, _t, pts in edge_polylines(svg)}
+        self.assertEqual(ends, {(hub[0] + hub[2] // 2 - generate_diagram.ATTACH_DX, hub[1])})
+        row_above = max(y + h for _x, y, _w, h in rects.values() if y + h <= hub[1])
+        tracks = 1 + sum(1 for _x, y, _w, h in rects.values() if y + h == row_above)  # the hub's in-run and the out-runs above it
+        self.assertLessEqual(hub[1] - row_above, -(-generate_diagram._band_height(tracks, 0) // 10) * 10)
         self._assert_runs_clean(svg)
         self.assertEqual(edges_hitting_foreign_boxes(svg), [])
 
@@ -1666,9 +1775,9 @@ class LaterStoryTests(unittest.TestCase):
         self._assert_runs_clean(svg)
         self.assertIn('data-from="RT-1" data-to="RT-1"', logical_svg(cat, "SDP-1"))
 
-    def test_container_border_over_capacity_spills_to_another_border(self) -> None:
-        # A group listing only its own substrate is a 60 px container; twelve edges to two outside nodes do not fit
-        # on its right border 8 px apart, so the surplus takes the top and bottom borders (review round 5, R1).
+    def test_many_container_out_edges_share_one_bottom_attachment(self) -> None:
+        # A group listing only its own substrate is a small container with twelve edges to two outside nodes: D36
+        # sends all of them through one attachment point on its bottom border, whatever the border's length.
         objects = [plain("RT-1", "runtime_service", "Runtime"), component("O-1", "Outside One"), component("O-2", "Outside Two"), pattern({"Own": ["RT-1"]})]
         objects[3]["serviceGroups"][0]["substrate"] = "RT-1"
         objects += [relationship(f"R-{k:02d}", "RT-1", "O-1" if k % 2 else "O-2", f"rel {k}") for k in range(12)]
@@ -1677,7 +1786,8 @@ class LaterStoryTests(unittest.TestCase):
         polys = edge_polylines(svg)
         self.assertEqual(len(polys), 12)
         starts = [pts[0] for _s, _t, pts in polys]
-        self.assertEqual(len(set(starts)), 12, "every container end has its own border point")
+        gx, gy, gw, gh = endpoint_rects(svg)["RT-1"]
+        self.assertEqual(set(starts), {(gx + gw // 2 + generate_diagram.ATTACH_DX, gy + gh)}, "D36: one bottom attachment point")
         self._assert_runs_clean(svg)
         self.assertEqual(edges_hitting_foreign_boxes(svg), [])
 
@@ -1700,10 +1810,9 @@ class LaterStoryTests(unittest.TestCase):
         self.assertEqual([w for w in model.warnings if w.startswith("substrate of a group")], [])
         self._assert_runs_clean(svg)
 
-    def test_container_cluster_sliding_back_from_a_corner_stays_spread(self) -> None:
-        # A container with a self-loop (which reserves the top of its right border), eight edges to an outside node
-        # above and eleven to one below: the right-border cluster slides back from the bottom corner and must not
-        # collapse onto the reserved top (review round 6, R2).
+    def test_container_out_edges_share_one_attachment_clear_of_its_loop(self) -> None:
+        # A container with a self-loop, eight edges to an outside node above and eleven to one below: D36 sends all
+        # nineteen through one bottom attachment point, and the routes stay clean of the loop (D13).
         objects = [plain("RT-1", "runtime_service", "Runtime"), component("O-1", "Above"), component("O-2", "Below"), component("P-1", "Alpha"), pattern({"Own": ["RT-1"], "Rest": ["P-1"]})]
         objects[4]["serviceGroups"][0]["substrate"] = "RT-1"
         objects += [relationship("R-00", "RT-1", "RT-1", "self")]
@@ -1715,7 +1824,7 @@ class LaterStoryTests(unittest.TestCase):
         polys = edge_polylines(svg)
         starts = [pts[0] for s_uid, _t, pts in polys if s_uid == "RT-1"]
         self.assertEqual(len(starts), 19)
-        self.assertEqual(len(set(starts)), 19, "every container end has its own border point")
+        self.assertEqual(len(set(starts)), 1, "D36: the container's out-edges share one attachment point")
         self._assert_runs_clean(svg)
 
     def test_deployment_boxes_sit_on_the_grid(self) -> None:
@@ -1780,18 +1889,18 @@ class LaterStoryTests(unittest.TestCase):
         self._assert_runs_clean(svg)
         self.assertEqual(edges_hitting_foreign_boxes(svg), [])
 
-    def test_left_border_ends_level_in_vertical_order(self) -> None:
-        # Four rows in one container; two first-column boxes above the centre both get left-border container ends.
-        # The outer vertical must take the farther level so its run never crosses the inner vertical (round 2, R2).
+    def test_in_edges_from_one_column_join_the_containers_in_run(self) -> None:
+        # Two first-column boxes in different rows of one container both call it: D36 sends both through their own
+        # bottom sides to the container's single top attachment point (D29 as amended by D36).
         parts = [component(f"P-{k:02d}", f"Part {k}") for k in range(12)]
         objects = [plain("RTC-1", "runtime_service", "Cluster")] + parts + [pattern({"G": [p["uid"] for p in parts]})]
         objects[-1]["serviceGroups"][0]["substrate"] = "RTC-1"
         objects += [relationship("R-1", "P-03", "RTC-1", "a"), relationship("R-2", "P-00", "RTC-1", "b")]
         cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
         svg = deployment_svg(cat, "SDP-1")
-        gx = int(re.search(r'<rect class="grp" x="(\d+)"', svg).group(1))
-        lefts = [pts for _s, _t, pts in edge_polylines(svg) if any(ax == bx and ax < gx for (ax, _ay), (bx, _by) in zip(pts, pts[1:]))]
-        self.assertEqual(len(lefts), 2, "two left-border ends expected")
+        polys = edge_polylines(svg)
+        self.assertEqual(len(polys), 2)
+        self.assertEqual(polys[0][2][-1], polys[1][2][-1])
         self._assert_runs_clean(svg)
 
     def test_seeded_patterns_route_cleanly(self) -> None:
@@ -1806,6 +1915,110 @@ class LaterStoryTests(unittest.TestCase):
                 for uid, (x, y, _w, _h) in node_rects(svg).items():
                     self.assertEqual((x % generate_diagram.GRID, y % generate_diagram.GRID), (0, 0), (uid, x, y))
                 self.assertEqual(svg, deployment_svg(dict(reversed(list(cat.items()))), "SDP-1"))
+                # AC21 in the logical figure too: D35 tracks, D36 sides, no foreign box, byte-identical.
+                logical = logical_svg(cat, "SDP-1")
+                xml.dom.minidom.parseString(logical)
+                self.assertEqual(side_violations(logical), [])
+                self.assertEqual(covisible_track_clashes(logical), [])
+                self.assertEqual(edges_hitting_foreign_boxes(logical), [])
+                self.assertEqual(covisible_stub_crossings(logical, logical_free_x(cat, "SDP-1")), [])
+                self.assertEqual(logical, logical_svg(dict(reversed(list(cat.items()))), "SDP-1"))
+
+    def test_fixture_routes_keep_covisible_tracks_apart_and_attach_bottom_out_top_in(self) -> None:
+        # AC21 on every fixture pattern, both figures.
+        catalog = load_catalog(FIXTURE)
+        for sdp in generate_diagram.sdps(catalog):
+            for render in (logical_svg, deployment_svg):
+                with self.subTest(sdp=sdp["uid"], view=render.__name__):
+                    svg = render(catalog, sdp["uid"])
+                    self.assertGreater(len(edge_polylines(svg)), 0)
+                    self.assertEqual(side_violations(svg), [])
+                    self.assertEqual(covisible_track_clashes(svg), [])
+                    self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+                    if render is logical_svg:  # the deployment figure checks stubs in _assert_runs_clean
+                        self.assertEqual(covisible_stub_crossings(svg, logical_free_x(catalog, sdp["uid"])), [])
+
+    def test_logical_stubs_are_not_crossed_whatever_the_document_order(self) -> None:
+        # Review round 1, R1: four services in one row feeding one database in the next, and a hub with eight
+        # in-edges from the row above, in forward, reversed and mixed relationship order. No run may cross a
+        # co-visible stub or drop, and the figure must be the same in every order.
+        def tiered(objects: list, tiers: dict) -> list:
+            for entry in objects[-1]["serviceGroups"][0]["deployableObjects"]:
+                entry["diagramTier"] = tiers[entry["ref"]]
+            return objects
+
+        services = [f"S-{k}" for k in range(4)]
+        ups = [f"U-{k:02d}" for k in range(8)]
+        cases = {
+            "staircase": (services + ["DB-1"], {**{u: "application" for u in services}, "DB-1": "data"}, [(u, "DB-1") for u in services]),
+            "hub": (ups + ["HUB-1"], {**{u: "presentation" for u in ups}, "HUB-1": "application"}, [(ups[(k * 5) % 8], "HUB-1") for k in range(8)]),
+        }
+        for name, (uids, tiers, pairs) in cases.items():
+            renders = []
+            for order in (pairs, pairs[::-1], pairs[1::2] + pairs[0::2]):
+                objects = tiered([component(u, u) for u in uids] + [pattern({"G": uids})], tiers)
+                objects += [relationship(f"R-{n}", a, b, "reads") for n, (a, b) in enumerate(order)]
+                cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+                svg = logical_svg(cat, "SDP-1")
+                with self.subTest(case=name, order=order[0]):
+                    self.assertEqual(covisible_stub_crossings(svg, logical_free_x(cat, "SDP-1")), [])
+                    self.assertEqual(covisible_track_clashes(svg), [])
+                renders.append(re.sub(r"<title>[^<]*</title>|data-[a-z]+=\"R-\d+\"", "", "\n".join(sorted(re.findall(r'<path class="ln[^"]*" d="[^"]*"', svg)))))
+            self.assertEqual(len(set(renders)), 1, f"{name}: routes depend on relationship order")
+
+    def test_fan_out_into_one_gutter_shares_attachment_and_first_run(self) -> None:
+        # D36 on the fixture: the out-edges of one box share their first point and their first run (the stub down
+        # to the out-run and the out-run's y); out-edges that go on into the same gutter share the run to it too.
+        catalog = load_catalog(FIXTURE)
+        seen = 0
+        for sdp in generate_diagram.sdps(catalog):
+            for render in (logical_svg, deployment_svg):
+                by_source: dict = {}
+                for source, _t, pts in edge_polylines(render(catalog, sdp["uid"])):
+                    by_source.setdefault(source, []).append(pts)
+                for source, routes in sorted(by_source.items()):
+                    if len(routes) < 2:
+                        continue
+                    self.assertEqual(len({pts[0] for pts in routes}), 1, (sdp["uid"], source))
+                    self.assertEqual(len({pts[1] for pts in routes}), 1, (sdp["uid"], source))
+                    gutters: dict = {}
+                    for pts in routes:
+                        if len(pts) >= 5:  # down, across to a gutter or channel, then along it
+                            gutters.setdefault(pts[2][0], []).append(pts)
+                    for x, group in sorted(gutters.items()):
+                        if len(group) >= 2:
+                            seen += 1
+                            self.assertEqual(len({tuple(pts[:3]) for pts in group}), 1, (sdp["uid"], source, x))
+        self.assertGreater(seen, 0, "the fixture must have a box with two out-edges into one gutter")
+
+    def test_row_gaps_grow_only_with_covisible_density(self) -> None:
+        # D35 growth bound: 16 boxes in one band, 160 edges i -> i + k (k = 1..10, mod 16), so every box has 20 edges
+        # and the largest set of pairwise co-visible edges is 20. No row gap may exceed 20 * pitch + 2 * pad.
+        uids = [f"P-{i:02d}" for i in range(16)]
+        objects = [component(u, u) for u in uids] + [pattern({"G": uids})]
+        for entry in objects[-1]["serviceGroups"][0]["deployableObjects"]:
+            entry["diagramTier"] = "application"
+        edges = [(uids[i], uids[(i + k) % 16]) for k in range(1, 11) for i in range(16)]
+        objects += [relationship(f"R-{n:03d}", a, b, "x") for n, (a, b) in enumerate(edges)]
+        degree: dict = {}
+        for a, b in edges:
+            degree[a] = degree.get(a, 0) + 1
+            degree[b] = degree.get(b, 0) + 1
+        self.assertEqual((len(edges), max(degree.values())), (160, 20))
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        svg = logical_svg(cat, "SDP-1")
+        self.assertEqual(len(edge_polylines(svg)), 160)
+        bound = 20 * generate_diagram.TRACK_PITCH + 2 * generate_diagram.LOGICAL_TRACK_PAD
+        rows = sorted({y for _x, y, _w, _h in node_rects(svg).values()})
+        self.assertEqual(len(rows), 4)
+        for upper, lower in zip(rows, rows[1:]):
+            self.assertLessEqual(lower - upper - generate_diagram.LOGICAL_BOX_H, bound, (upper, lower))
+        band_y, band_h = (int(v) for v in re.search(r'<rect class="band" x="\d+" y="(\d+)" width="\d+" height="(\d+)"', svg).groups())
+        self.assertLessEqual(rows[0] - band_y, bound)  # the gap above the first row
+        self.assertLessEqual(band_y + band_h - rows[-1] - generate_diagram.LOGICAL_BOX_H, bound)  # and below the last
+        self.assertEqual(side_violations(svg), [])
+        self.assertEqual(covisible_track_clashes(svg), [])
+        self.assertEqual(edges_hitting_foreign_boxes(svg), [])
 
     def test_edge_runs_stay_in_free_bands_and_channels(self) -> None:
         """Comb routing: vertical runs are stubs inside a lane or channels right of every target and left of the
@@ -1838,39 +2051,35 @@ class LaterStoryTests(unittest.TestCase):
                             self.assertFalse(min(ax, bx) < x1 and x0 < max(ax, bx) and y0 <= ay <= y1, f"run at y={ay} crosses a caption area")
 
     def _assert_runs_clean(self, svg: str) -> None:
-        """No two vertical runs collinear with overlapping y; horizontal runs within DEPLOY_LEVEL in y are DEPLOY_LEVEL
-        apart in x; no run crosses another edge's stub or left-border vertical (channels are the only verticals a run may cross)."""
+        """D35, D36: every edge leaves its source's bottom and enters its target's top; co-visible edges (sharing an
+        endpoint) never share a track outside their fan bundle; co-visible horizontal runs closer than DEPLOY_LEVEL
+        in y are DEPLOY_LEVEL apart in x; and no run crosses the stub of a co-visible edge (channels are the only
+        verticals a run may cross). Edges that share no endpoint may share a track (D35)."""
+        self.assertEqual(side_violations(svg), [])
+        self.assertEqual(covisible_track_clashes(svg), [])
         targets = [tuple(int(v) for v in m) for m in re.findall(r'<rect class="tgt" x="(-?\d+)" y="(-?\d+)" width="(\d+)" height="(\d+)"', svg)]
         outside = re.search(r'<rect class="lane" x="(-?\d+)"', svg)
         stack_right = max([x + w for x, _y, w, _h in targets], default=0)
         lane_left = int(outside.group(1)) if outside else math.inf
-        rects = dict(node_rects(svg))
-        for m in re.finditer(r'<g class="group[^"]*" data-id="([^"]*)"[^>]*>.*?<rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg, re.S):
-            rects.setdefault(xml_unescape(m.group(1)), tuple(int(m.group(k)) for k in range(2, 6)))
-        for s_uid, t_uid, pts in edge_polylines(svg):  # every polyline end lies on its endpoint's border (D29)
-            for uid, (px, py) in ((s_uid, pts[0]), (t_uid, pts[-1])):
-                x, y, w, h = rects[uid]
-                on_h = (abs(py - y) < 0.11 or abs(py - (y + h)) < 0.11) and x - 0.11 <= px <= x + w + 0.11
-                on_v = (abs(px - x) < 0.11 or abs(px - (x + w)) < 0.11) and y - 0.11 <= py <= y + h + 0.11
-                self.assertTrue(on_h or on_v, f"end {(px, py)} of {s_uid}->{t_uid} is not on the border of {uid} {rects[uid]}")
+        edges = edge_polylines(svg)
         verticals, horizontals = [], []
-        for number, (_s, _t, pts) in enumerate(edge_polylines(svg)):
+        for number, (_s, _t, pts) in enumerate(edges):
             for (ax, ay), (bx, by) in zip(pts, pts[1:]):
                 if ax == bx and ay != by:
                     verticals.append((ax, min(ay, by), max(ay, by), number))
                 elif ay == by and ax != bx:
                     horizontals.append((ay, min(ax, bx), max(ax, bx), number))
-        for i, (x, y0, y1, n1) in enumerate(verticals):
-            for x2, a0, a1, n2 in verticals[i + 1 :]:
-                if n1 != n2:
-                    self.assertFalse(x == x2 and y0 < a1 and a0 < y1, f"collinear vertical runs at x={x}")
+
+        def covisible(n1: int, n2: int) -> bool:
+            return n1 != n2 and bool({edges[n1][0], edges[n1][1]} & {edges[n2][0], edges[n2][1]})
+
         for i, (y, x0, x1, n1) in enumerate(horizontals):
             for y2, a0, a1, n2 in horizontals[i + 1 :]:
-                if n1 != n2 and abs(y - y2) < generate_diagram.DEPLOY_LEVEL:
+                if covisible(n1, n2) and 0 < abs(y - y2) < generate_diagram.DEPLOY_LEVEL:
                     self.assertGreaterEqual(max(a0 - x1, x0 - a1), generate_diagram.DEPLOY_LEVEL, f"horizontal runs too close at y={y} and y={y2}")
         for y, x0, x1, n1 in horizontals:
             for x, y0, y1, n2 in verticals:
-                if n1 != n2 and not (stack_right < x < lane_left) and x0 < x < x1 and y0 < y < y1:
+                if covisible(n1, n2) and not (stack_right < x < lane_left) and x0 < x < x1 and y0 < y < y1:
                     self.fail(f"run of edge {n1} at y={y} crosses the stub of edge {n2} at x={x}")
 
     def test_hub_with_many_inbound_edges_has_clean_runs(self) -> None:
@@ -1883,12 +2092,11 @@ class LaterStoryTests(unittest.TestCase):
         self.assertEqual(len(edge_polylines(svg)), 20)
         self._assert_runs_clean(svg)
         self.assertEqual(edges_hitting_foreign_boxes(svg), [])
-        stubs = sorted(pts[-1][0] for _s, _t, pts in edge_polylines(svg))  # the hub end of every edge
-        self.assertGreaterEqual(min(b - a for a, b in zip(stubs, stubs[1:])), 2, "hub stubs at least 2 px apart")
+        self.assertEqual(len({pts[-1] for _s, _t, pts in edge_polylines(svg)}), 1, "D36: the hub's in-edges share one point")
         for sdp in generate_diagram.sdps(load_catalog(FIXTURE)):
             self._assert_runs_clean(deployment_svg(load_catalog(FIXTURE), sdp["uid"]))
 
-    def test_two_edges_leaving_one_container_start_apart(self) -> None:
+    def test_two_edges_leaving_one_container_share_attachment_and_out_run(self) -> None:
         objects = [
             plain("RTC-1", "runtime_service", "Cluster"),
             component("P-1", "Alpha"),
@@ -1903,12 +2111,12 @@ class LaterStoryTests(unittest.TestCase):
         svg = deployment_svg(cat, "SDP-1")
         paths = edge_polylines(svg)
         self.assertEqual(len(paths), 2)
-        self.assertNotEqual(paths[0][2][0], paths[1][2][0])
+        self.assertEqual(paths[0][2][:2], paths[1][2][:2])  # D36: one attachment point and one out-run
         group = re.search(r'<g class="group[^"]*" data-id="RTC-1"[^>]*>.*?<rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg, re.S)
         gx, gy, gw, gh = (int(group.group(i)) for i in range(1, 5))
         for _s, _t, pts in paths:
             px, py = pts[0]
-            self.assertTrue(gx <= px <= gx + gw and abs(py - (gy + gh)) < 0.11 or abs(py - gy) < 0.11, "start lies on the container border")
+            self.assertTrue(gx <= px <= gx + gw and abs(py - (gy + gh)) < 0.11, "start lies on the container's bottom border")
         self._assert_runs_clean(svg)
 
     def test_placed_substrate_of_empty_group_stays_in_its_drawn_group(self) -> None:

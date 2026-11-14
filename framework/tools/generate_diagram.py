@@ -37,6 +37,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import html
+import itertools
 import math
 import re
 import sys
@@ -1148,6 +1149,66 @@ def apply_positions(order: list[str], positions: dict[str, int]) -> list[str]:
     return placed + [u for u in order if u not in positions]
 
 
+def _fit_lines(text: str, width: int, limit: int) -> list[str]:
+    lines = wrap(clean(text), width)
+    if len(lines) > limit:
+        lines = lines[:limit]
+        lines[-1] += "..."
+    return [line if len(line) <= width + 3 else line[: width - 1] + "..." for line in lines]
+
+
+TRACK_PITCH = 5  # D35: distance between two tracks of a row gap, gutter, band or channel, in both views
+ATTACH_DX = 20  # D36: a box's edges leave its bottom at centre + ATTACH_DX and enter its top at centre - ATTACH_DX
+LOGICAL_TRACK_PAD = 10  # D35: free space between a gap's or gutter's outer tracks and its boxes
+LOGICAL_LANE_SPACE = 50  # minimum free space between the main area and the outside lane (the lane gutter)
+GUTTER_EXACT = 7  # a gutter with at most this many tracks gets the crossing-minimal track order
+LOGICAL_LANE_SHIFT = 2  # outside-lane tracks sit this far off the main TRACK_PITCH lattice, so the two never share a y
+
+
+def _ceil_grid(value: int) -> int:
+    return -(-value // GRID) * GRID
+
+
+def _track_space(tracks: int, minimum: int) -> int:
+    """D35: a gap or gutter is its default size until its tracks need more: tracks * pitch + 2 * pad, on the grid."""
+    return max(minimum, _ceil_grid(tracks * TRACK_PITCH + 2 * LOGICAL_TRACK_PAD)) if tracks else minimum
+
+
+def _track_at(start: int, size: int, tracks: int, track: int) -> int:
+    """Coordinate of one track in a space: the tracks are centred, on a TRACK_PITCH lattice from start."""
+    return start + (size - TRACK_PITCH * (tracks - 1)) // (2 * TRACK_PITCH) * TRACK_PITCH + TRACK_PITCH * track
+
+
+@dataclass
+class _Run:
+    """One horizontal or vertical run of a bundle of edges (D35, D36) and the uids its edges touch."""
+
+    key: tuple
+    lo: int
+    hi: int
+    uids: set
+    first: int  # smallest edge index in the bundle; the left-edge tie-break
+    track: int = 0
+    gap: Any = None  # the row gap of a horizontal run in the logical view
+    x: int = 0  # attachment x of a row-gap run's box
+    parts: list = field(default_factory=list)  # (lo, hi, endpoint uids) of each edge's own stretch of the run
+
+
+def _left_edge(runs: list) -> int:
+    """D35: left-edge track assignment. Runs sorted by start coordinate, then edge order, each take the lowest
+    track that holds no co-visible run (one sharing an endpoint uid) overlapping its span. Returns the track count."""
+    tracks: list[list[_Run]] = []
+    for run in sorted(runs, key=lambda r: (r.lo, r.first, r.key)):
+        k = 0
+        while k < len(tracks) and any(run.uids & o.uids and run.lo <= o.hi and o.lo <= run.hi for o in tracks[k]):
+            k += 1
+        if k == len(tracks):
+            tracks.append([])
+        tracks[k].append(run)
+        run.track = k
+    return len(tracks)
+
+
 @dataclass
 class LogicalLayout:
     pos: dict[str, tuple[int, int]] = field(default_factory=dict)  # uid -> top-left, multiples of GRID
@@ -1156,14 +1217,103 @@ class LogicalLayout:
     order: list[list[str]] = field(default_factory=list)  # uid order of each drawn band
     band_names: list[str] = field(default_factory=list)  # band of each entry in order
     lane_order: list[str] = field(default_factory=list)
-    gutters: list[int] = field(default_factory=list)  # x of each vertical channel between box columns
-    lane_gutter: int | None = None  # x of the vertical channel left of the outside lane
+    gutters: list[int] = field(default_factory=list)  # x of the centre of each vertical channel between box columns
+    lane_gutter: int | None = None  # x of the centre of the vertical channel left of the outside lane
     width: int = 0
     height: int = 0
+    rows: list[list[str]] = field(default_factory=list)  # main rows top to bottom, across bands
+    row_of: dict[str, tuple[str, int]] = field(default_factory=dict)  # uid -> ("m", row) or ("l", lane row)
+    gaps: dict[tuple[str, int], tuple[int, int]] = field(default_factory=dict)  # gap (stack, k) above row k -> top, size
+    gap_tracks: dict[tuple[str, int], int] = field(default_factory=dict)
+    spaces: list[tuple[int, int]] = field(default_factory=list)  # left, width of each gutter; the lane gutter is last
+    space_tracks: list[int] = field(default_factory=list)
+    plan: dict[int, tuple] = field(default_factory=dict)  # edge index -> ("direct",), ("gutter", j) or ("lane",)
+    halves: dict[int, tuple] = field(default_factory=dict)  # edge index -> keys of its out-run and in-run (None if direct)
+    runs: dict[tuple, _Run] = field(default_factory=dict)  # bundle runs by key; see _plan_logical_tracks
+
+
+def _place_logical(layout: LogicalLayout, outer: bool) -> None:
+    """Positions from the order and the track counts (D35): every gap and gutter is as large as its tracks need."""
+    gap_size = layout.gap_tracks.get
+    n_cols = len(layout.space_tracks) - 2
+    # spaces[0 .. n_cols] are the gutters left of each column and right of the last; the lane gutter comes last.
+    layout.spaces = []
+    columns: list[int] = []
+    x = LOGICAL_MARGIN + LOGICAL_LABEL_W - 10
+    for j in range(n_cols + 1):
+        width = _track_space(layout.space_tracks[j], LOGICAL_COL_GAP)
+        layout.spaces.append((x, width))
+        x += width
+        if j < n_cols:
+            columns.append(x)
+            x += LOGICAL_BOX_W
+    band_right = x
+    layout.spaces.append((x, _track_space(layout.space_tracks[-1], LOGICAL_LANE_SPACE)))
+    layout.gutters = [left + width // 2 for left, width in layout.spaces[:-1]]
+    layout.lane_gutter = layout.spaces[-1][0] + layout.spaces[-1][1] // 2
+    layout.pos = {}
+    layout.bands = []
+    layout.gaps = {}
+    count = len(layout.rows)
+    y = LOGICAL_MARGIN
+    r = 0
+    for b, (band, layer) in enumerate(zip(layout.band_names, layout.order)):
+        band_rows = -(-len(layer) // LOGICAL_COLUMNS)
+        top = y
+        pad = _track_space(gap_size(("m", 0), 0), LOGICAL_BAND_PAD) if b == 0 else LOGICAL_BAND_PAD
+        if b == 0:
+            layout.gaps[("m", 0)] = (top, pad)
+        y += pad
+        for k in range(band_rows):
+            for col, uid in enumerate(layout.rows[r]):
+                layout.pos[uid] = (columns[col], y)
+            y += LOGICAL_BOX_H
+            r += 1
+            if k < band_rows - 1:
+                size = _track_space(gap_size(("m", r), 0), LOGICAL_ROW_GAP)
+                layout.gaps[("m", r)] = (y, size)
+                y += size
+        last = b == len(layout.order) - 1
+        pad = _track_space(gap_size(("m", count), 0), LOGICAL_BAND_PAD) if last else LOGICAL_BAND_PAD
+        if last:
+            layout.gaps[("m", count)] = (y, pad)
+        y += pad
+        layout.bands.append((band, top, y - top, band_right - LOGICAL_MARGIN))
+        if not last:
+            size = _track_space(gap_size(("m", r), 0), LOGICAL_BAND_GAP)
+            layout.gaps[("m", r)] = (y, size)  # an inter-band gap keeps its tracks between the two band rectangles
+            y += size
+    bottom = y if layout.bands else LOGICAL_MARGIN
+    right = band_right
+    layout.lane = None
+    if outer:
+        lane_x = layout.spaces[-1][0] + layout.spaces[-1][1] + LOGICAL_BAND_PAD
+        top = LOGICAL_MARGIN
+        y = top + LOGICAL_LANE_HEAD - LOGICAL_BAND_PAD  # the lane caption sits above the first gap
+        for i, uid in enumerate(layout.lane_order):
+            size = _track_space(gap_size(("l", i), 0), LOGICAL_BAND_PAD if i == 0 else LOGICAL_ROW_GAP)
+            layout.gaps[("l", i)] = (y, size)
+            y += size
+            layout.pos[uid] = (lane_x, y)
+            y += LOGICAL_BOX_H
+        size = _track_space(gap_size(("l", len(layout.lane_order)), 0), LOGICAL_BAND_PAD)
+        layout.gaps[("l", len(layout.lane_order))] = (y, size)
+        y += size
+        layout.lane = (lane_x - LOGICAL_BAND_PAD, top, LOGICAL_BOX_W + 2 * LOGICAL_BAND_PAD, y - top)
+        right = lane_x + LOGICAL_BOX_W + LOGICAL_BAND_PAD
+        bottom = max(bottom, y)
+    layout.width = right + LOGICAL_MARGIN
+    layout.height = bottom + LOGICAL_MARGIN
 
 
 def layout_logical(model: DiagramModel) -> LogicalLayout:
-    """Band rows top to bottom (D4), barycentre order (D14), outside lane at the right edge (D5)."""
+    """Band rows top to bottom (D4), barycentre order (D14), outside lane at the right edge (D5).
+
+    Gap and gutter sizes come from the edge tracks they carry (D35), so placing and routing run in two passes
+    (see _plan_logical_tracks): the order and the lane order come from a layout with no tracks, row-gap tracks are
+    assigned on that layout's x order, the rows are placed, gutter tracks are assigned on the placed y, and the
+    columns are placed. Neither pass changes the order of anything, so the result is a pure function of the model.
+    """
     main = [n for n in model.nodes if not n.outside]
     outer = [n for n in model.nodes if n.outside]
     known = {n.uid for n in model.nodes}
@@ -1178,24 +1328,14 @@ def layout_logical(model: DiagramModel) -> LogicalLayout:
     layout = LogicalLayout()
     layout.order = [apply_positions(layer, model.logical_positions) for layer in barycentre_order(layers, pairs)]
     layout.band_names = names
-    step_x = LOGICAL_BOX_W + LOGICAL_COL_GAP
-    step_y = LOGICAL_BOX_H + LOGICAL_ROW_GAP
+    for layer in layout.order:
+        for start in range(0, len(layer), LOGICAL_COLUMNS):
+            for uid in layer[start : start + LOGICAL_COLUMNS]:
+                layout.row_of[uid] = ("m", len(layout.rows))
+            layout.rows.append(layer[start : start + LOGICAL_COLUMNS])
     used = min(LOGICAL_COLUMNS, max((len(layer) for layer in layout.order), default=1))
-    main_w = used * LOGICAL_BOX_W + (used - 1) * LOGICAL_COL_GAP
-    x0 = LOGICAL_MARGIN + LOGICAL_LABEL_W
-    layout.gutters = [x0 - 15 + k * step_x for k in range(used + 1)]
-    y = LOGICAL_MARGIN
-    for band, layer in zip(names, layout.order):
-        rows = -(-len(layer) // LOGICAL_COLUMNS)
-        height = rows * LOGICAL_BOX_H + (rows - 1) * LOGICAL_ROW_GAP + 2 * LOGICAL_BAND_PAD
-        layout.bands.append((band, y, height, LOGICAL_LABEL_W + main_w + LOGICAL_BAND_PAD))
-        for i, uid in enumerate(layer):
-            row, col = divmod(i, LOGICAL_COLUMNS)
-            layout.pos[uid] = (x0 + col * step_x, y + LOGICAL_BAND_PAD + row * step_y)
-        y += height + LOGICAL_BAND_GAP
-    main_bottom = y - LOGICAL_BAND_GAP if layout.bands else LOGICAL_MARGIN
-    right = x0 + main_w + LOGICAL_BAND_PAD if layout.bands else LOGICAL_MARGIN + LOGICAL_LABEL_W
-    bottom = main_bottom
+    layout.space_tracks = [0] * (used + 2)  # used + 1 gutters, then the lane gutter
+    _place_logical(layout, False)
     if outer:
         centre_y = {uid: pos[1] + LOGICAL_BOX_H // 2 for uid, pos in layout.pos.items()}
         near: dict[str, list[int]] = {n.uid: [] for n in outer}
@@ -1208,82 +1348,272 @@ def layout_logical(model: DiagramModel) -> LogicalLayout:
             ys = near[node.uid]
             return (_band_rank(node), Fraction(sum(ys), len(ys)) if ys else Fraction(0), node.uid)
 
-        layout.lane_order = apply_positions([n.uid for n in sorted(outer, key=lane_key)], model.logical_positions)
-        lane_x = x0 + main_w + LOGICAL_LANE_GAP
-        layout.lane_gutter = lane_x - 20
-        top = LOGICAL_MARGIN
+        layout.lane_order = apply_positions([n.uid for n in sorted(outer, key=lane_key)], model.logical_positions)  # D39
         for i, uid in enumerate(layout.lane_order):
-            layout.pos[uid] = (lane_x, top + LOGICAL_LANE_HEAD + i * step_y)
-        lane_h = LOGICAL_LANE_HEAD + len(outer) * LOGICAL_BOX_H + (len(outer) - 1) * LOGICAL_ROW_GAP + LOGICAL_BAND_PAD
-        layout.lane = (lane_x - LOGICAL_BAND_PAD, top, LOGICAL_BOX_W + 2 * LOGICAL_BAND_PAD, lane_h)
-        right = lane_x + LOGICAL_BOX_W + LOGICAL_BAND_PAD
-        bottom = max(bottom, top + lane_h)
-    layout.width = right + LOGICAL_MARGIN
-    layout.height = bottom + LOGICAL_MARGIN
+            layout.row_of[uid] = ("l", i)
+    _place_logical(layout, bool(outer))
+    _plan_logical_tracks(model, layout, bool(outer))
     return layout
 
 
-def _fit_lines(text: str, width: int, limit: int) -> list[str]:
-    lines = wrap(clean(text), width)
-    if len(lines) > limit:
-        lines = lines[:limit]
-        lines[-1] += "..."
-    return [line if len(line) <= width + 3 else line[: width - 1] + "..." for line in lines]
+def _logical_drawn(model: DiagramModel, layout: LogicalLayout) -> list[tuple[int, DiagramEdge]]:
+    return [(i, e) for i, e in enumerate(model.edges) if e.source != e.target and e.source in layout.pos and e.target in layout.pos]
+
+
+def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool) -> None:
+    """D35 and D36 for the logical view; fills layout.plan, layout.runs and the track counts, then places again.
+
+    Every edge leaves its source's bottom at one attachment point shared by all of the source's edges, runs down
+    to its out-run in the gap below the source, and enters its target's top from the target's in-run in the gap
+    above it. A target in the next row of the same stack is reached straight from the out-run ("direct"); any
+    other target through a gutter between columns, or through the lane gutter when either end is in the outside
+    lane. The out-run of a box is one run for all its edges and so is its in-run; a gutter carries one run per
+    source. Row-gap runs are assigned on the x order of the layout without tracks (a run that ends in a gutter is
+    taken to cover the whole gutter, so the order, and therefore every overlap, is the same once gutters grow);
+    gutter runs are assigned on the y of the placed rows, which the gutter widths do not move.
+    """
+    pos = layout.pos
+    used = len(layout.space_tracks) - 2
+    lane_space = layout.spaces[used + 1]
+    drawn = _logical_drawn(model, layout)
+
+    def out_x(uid: str) -> int:
+        return pos[uid][0] + LOGICAL_BOX_W // 2 + ATTACH_DX
+
+    def in_x(uid: str) -> int:
+        return pos[uid][0] + LOGICAL_BOX_W // 2 - ATTACH_DX
+
+    def toward(x: int, space: tuple[int, int]) -> tuple[int, int]:
+        left, width = space
+        return (min(x, left), max(x, left + width))  # the whole gutter: its tracks are not placed yet
+
+    runs: dict[tuple, _Run] = {}
+
+    def add(key: tuple, lo: int, hi: int, i: int, e: DiagramEdge) -> None:
+        run = runs.get(key)
+        if run is None:
+            run = runs[key] = _Run(key, lo, hi, {e.source, e.target}, i)
+        else:
+            run.lo, run.hi = min(run.lo, lo), max(run.hi, hi)
+            run.uids |= {e.source, e.target}
+        run.parts.append((lo, hi, {e.source, e.target}))
+
+    layout.plan = {}
+    targets: dict[int, tuple] = {}  # edge index -> (out x, far x of the out-run, in x, far x of the in-run or None)
+    for i, e in drawn:
+        (ss, sr), (ts, tr) = layout.row_of[e.source], layout.row_of[e.target]
+        ax, bx = out_x(e.source), in_x(e.target)
+        if ss == ts and tr == sr + 1:
+            layout.plan[i] = ("direct",)
+            targets[i] = (ax, bx, bx, None)
+            continue
+        if ss == "m" and ts == "m":
+            j = min(range(used + 1), key=lambda g: (abs(ax - layout.gutters[g]) + abs(bx - layout.gutters[g]), g))
+            layout.plan[i] = ("gutter", j)
+            space = layout.spaces[j]
+        else:
+            layout.plan[i] = ("lane",)
+            space = lane_space
+        centre = space[0] + space[1] // 2
+        targets[i] = (ax, centre, bx, centre)
+
+    def collect(split: set) -> dict:
+        """Row-gap runs. A box's edges share its stub (D36); in a gap listed in ``split`` its edges leaving to the
+        left and to the right part at the stub and are two runs, elsewhere they are one run."""
+        runs.clear()
+        layout.halves = {}
+        for i, e in drawn:
+            ax, far_a, bx, far_b = targets[i]
+            gap_a = _gap_of(layout, ("out", e.source))
+            out_key = ("out", e.source, (1 if far_a > ax else -1) if gap_a in split else 0)
+            if far_b is None:
+                layout.halves[i] = (out_key, None)
+                add(out_key, min(ax, far_a), max(ax, far_a), i, e)
+                continue
+            space = layout.spaces[layout.plan[i][1]] if layout.plan[i][0] == "gutter" else lane_space
+            gap_b = _gap_of(layout, ("in", e.target))
+            in_key = ("in", e.target, (1 if far_b > bx else -1) if gap_b in split else 0)
+            layout.halves[i] = (out_key, in_key)
+            add(out_key, *toward(ax, space), i, e)
+            add(in_key, *toward(bx, space), i, e)
+        by_gap: dict[tuple[str, int], list[_Run]] = {}
+        for key in sorted(runs):
+            runs[key].gap = _gap_of(layout, key)
+            by_gap.setdefault(runs[key].gap, []).append(runs[key])
+        # The verticals inside each gap: a box's out-stub (from the row above down to its out-run), its in-stub
+        # (from its in-run down to the row below) and the drop of a direct edge (from the source's out-run down to
+        # the target).
+        stubs: dict[tuple[str, int], list[tuple[int, str, tuple, set]]] = {}
+        for key, run in sorted(runs.items()):
+            run.x = out_x(key[1]) if key[0] == "out" else in_x(key[1])
+            stubs.setdefault(run.gap, []).append((run.x, key[0], key, run.uids))
+        for i, e in drawn:
+            if layout.plan[i][0] == "direct":
+                out_key = layout.halves[i][0]
+                stubs[runs[out_key].gap].append((in_x(e.target), "direct", out_key, {e.source, e.target}))
+        return {gap: _order_gap(items, stubs[gap]) for gap, items in sorted(by_gap.items())}
+
+    # A gap whose runs cannot be ordered without crossing a co-visible stub (a cycle of rules in _order_gap) is
+    # split into left and right runs, which removes the cycles a wall (an edge passing both the stub and the drop of
+    # a co-visible direct edge) makes; the other gaps keep one run per box, which keeps their crossings fewer. A
+    # cycle can remain in a split gap under a pinned box order (D39); _order_gap then breaks it as it documents.
+    split: set = set()
+    while True:
+        result = collect(split)
+        broken = {gap for gap, (_count, cycle) in result.items() if cycle} - split
+        if not broken:
+            break
+        split |= broken
+    layout.gap_tracks = {gap: count for gap, (count, _cycle) in result.items()}
+    _place_logical(layout, outer)
+    # Gutter runs: one per source and gutter, from the source's out-run to each target's in-run, on the placed y.
+    vertical: dict[tuple, _Run] = {}
+    for i, e in drawn:
+        step = layout.plan[i]
+        if step[0] == "direct":
+            continue
+        j = step[1] if step[0] == "gutter" else used + 1
+        ya, yb = _run_y(layout, runs[layout.halves[i][0]]), _run_y(layout, runs[layout.halves[i][1]])
+        key = ("v", j, e.source)
+        run = vertical.get(key)
+        if run is None:
+            vertical[key] = _Run(key, min(ya, yb), max(ya, yb), {e.source, e.target}, i)
+        else:
+            run.lo, run.hi = min(run.lo, ya, yb), max(run.hi, ya, yb)
+            run.uids |= {e.source, e.target}
+    joins: dict[tuple, list[tuple[int, int]]] = {}  # vertical run key -> (y, side) of each row-gap run joining it
+    for i, e in drawn:
+        step = layout.plan[i]
+        if step[0] != "direct":
+            j = step[1] if step[0] == "gutter" else used + 1
+            centre = layout.spaces[j][0] + layout.spaces[j][1] // 2
+            for x, key in ((out_x(e.source), layout.halves[i][0]), (in_x(e.target), layout.halves[i][1])):
+                joins.setdefault(("v", j, e.source), []).append((_run_y(layout, runs[key]), 1 if x > centre else -1))
+    layout.space_tracks = [_order_gutter([run for key, run in sorted(vertical.items()) if key[1] == j], joins) for j in range(used + 2)]
+    _place_logical(layout, outer)
+    runs.update(vertical)
+    layout.runs = runs
+
+
+def _order_gap(items: list, stubs: list) -> tuple[int, bool]:
+    """Tracks of one row gap, top to bottom (D35, D36); returns the track count and whether a cycle was broken.
+
+    A run must not cross a vertical of a co-visible edge inside the gap: when the stretch of one of its edges that
+    shares an endpoint with the vertical's edges passes over a box's out-stub
+    it lies below that box's out-run, over an in-stub above that box's in-run, and over the drop of a direct edge
+    above the out-run the drop leaves from. Out-runs otherwise lie above in-runs, so neither crosses the other
+    side's stubs. Runs are placed in an order that honours these rules (ties by kind, start, attachment x and uid;
+    nothing depends on relationship document order), each on the lowest track below every run it must lie under
+    that holds no co-visible run overlapping it. When no run is free of the rules (a cycle), the first remaining run
+    in the tie order is placed anyway and the cycle is reported. A wall across the gap (an edge passing over both
+    the stub and the drop of a co-visible direct edge) makes such cycles, and splitting the gap's runs into left and
+    right halves removes those; a residual cycle can remain under a pinned box order (D39), where at most one
+    co-visible stub crossing can result. D35 and D36 hold either way.
+    """
+    by_key = {run.key: run for run in items}
+    above: dict[tuple, set] = {run.key: set() for run in items}  # run key -> keys of runs that must lie above it
+    required: set = set()
+    for run in items:
+        for x, kind, owner, uids in stubs:
+            if owner == run.key or owner not in by_key or not any(lo < x < hi and ends & uids for lo, hi, ends in run.parts):
+                continue
+            pair = (owner, run.key) if kind == "out" else (run.key, owner)
+            above[pair[1]].add(pair[0])
+            required.add(pair)
+    for out in items:
+        for inner in items:
+            if out.key[0] == "out" and inner.key[0] == "in" and (inner.key, out.key) not in required:
+                above[inner.key].add(out.key)
+    rank = {run.key: (run.key[0] != "out", run.lo, run.x, run.key) for run in items}
+    placed: list = []
+    cycle = False
+    left = sorted(by_key, key=lambda k: rank[k])
+    while left:
+        ready = [k for k in left if not (above[k] & set(left))]
+        cycle = cycle or not ready
+        key = min(ready or left, key=lambda k: rank[k])
+        left.remove(key)
+        run = by_key[key]
+        track = 1 + max([by_key[k].track for k in above[key] if k not in left], default=-1)
+        while any(o.track == track and o.uids & run.uids and run.lo <= o.hi and o.lo <= run.hi for o in placed):
+            track += 1
+        run.track = track
+        placed.append(run)
+    return 1 + max([run.track for run in items], default=-1), cycle
+
+
+def _order_gutter(items: list, joins: dict) -> int:
+    """Assign a gutter's tracks (D35), then choose where each track sits across the gutter.
+
+    The track positions are free, so they are ordered to cut crossings: a row-gap run that joins a gutter run from
+    the left crosses every track left of its own whose runs span its y, and one from the right every track right
+    of it. Up to GUTTER_EXACT tracks the order with the fewest such crossings is found by trying every order (the
+    first in lexicographic order wins a tie); above that tracks keep their left-edge order.
+    """
+    count = _left_edge(items)
+    if 1 < count <= GUTTER_EXACT:
+        spans: list[list[tuple[int, int]]] = [[] for _ in range(count)]
+        ends: list[list[tuple[int, int]]] = [[] for _ in range(count)]
+        for run in items:
+            spans[run.track].append((run.lo, run.hi))
+            ends[run.track].extend(joins[run.key])
+
+        def inside(y: int, k: int) -> int:
+            return sum(1 for lo, hi in spans[k] if lo < y < hi)
+
+        # left[a][b]: crossings between tracks a and b when a sits left of b.
+        left = [[0] * count for _ in range(count)]
+        for a in range(count):
+            for b in range(count):
+                if a != b:
+                    left[a][b] = sum(inside(y, a) for y, side in ends[b] if side < 0) + sum(inside(y, b) for y, side in ends[a] if side > 0)
+        best = min(
+            itertools.permutations(range(count)),
+            key=lambda order: sum(left[order[i]][order[k]] for i in range(count) for k in range(i + 1, count)),
+        )
+        place = {k: n for n, k in enumerate(best)}
+        for run in items:
+            run.track = place[run.track]
+    return count
+
+
+def _gap_of(layout: LogicalLayout, key: tuple) -> tuple[str, int]:
+    """The row gap of an out-run (below its box) or an in-run (above its box)."""
+    stack, row = layout.row_of[key[1]]
+    return (stack, row + 1) if key[0] == "out" else (stack, row)
+
+
+def _run_y(layout: LogicalLayout, run: _Run) -> int:
+    top, size = layout.gaps[run.gap]
+    return _track_at(top, size, layout.gap_tracks[run.gap], run.track) + (LOGICAL_LANE_SHIFT if run.gap[0] == "l" else 0)
+
+
+def _run_x(layout: LogicalLayout, run: _Run) -> int:
+    left, width = layout.spaces[run.key[1]]
+    return _track_at(left, width, layout.space_tracks[run.key[1]], run.track)
 
 
 def _route_edges(model: DiagramModel, layout: LogicalLayout) -> dict[int, list[tuple[int, int]]]:
-    """Orthogonal route per edge (index in model.edges), travelling only in the channels between boxes.
+    """Orthogonal route per edge (index in model.edges) from the tracks layout_logical assigned (D35, D36).
 
-    An edge leaves its source through the top or bottom side, runs along the gap between box rows to a
-    vertical channel between columns, follows it, and enters its target the same way, so it never
-    crosses a box that is not one of its endpoints. Attachment points, gap lanes and channel lanes are
-    spread by edge order so edges do not overlap. Everything is integer arithmetic keyed on uid and
-    edge order.
+    An edge leaves its source through the bottom side and enters its target through the top side; every edge of a
+    source shares its attachment point and out-run, every edge of a target its in-run and attachment point. Runs
+    travel only in row gaps and gutters, so a route never crosses a box that is not one of its endpoints.
     """
     pos = layout.pos
-    lane_uids = set(layout.lane_order)
-    drawn = [
-        (i, e) for i, e in enumerate(model.edges) if e.source != e.target and e.source in pos and e.target in pos
-    ]
-    sides: dict[int, tuple[str, str]] = {}
-    slots: dict[tuple[str, str], list[tuple[int, str, int]]] = {}
-    for i, e in drawn:
-        a, b = pos[e.source], pos[e.target]
-        sa = "bottom" if b[1] > a[1] else "top"
-        sb = "top" if b[1] > a[1] else ("bottom" if b[1] < a[1] else "top")
-        sides[i] = (sa, sb)
-        slots.setdefault((e.source, sa), []).append((pos[e.target][0], e.target, i))
-        slots.setdefault((e.target, sb), []).append((pos[e.source][0], e.source, i))
-    half = LOGICAL_BOX_W // 2
-    offset: dict[tuple[int, str], int] = {}  # (edge index, uid) -> x offset from the box centre
-    for (uid, _side), items in slots.items():
-        items.sort()
-        for rank, (_x, _other, i) in enumerate(items):
-            shift = (160 * (rank + 1)) // (len(items) + 1) // GRID * GRID - 80
-            offset[(i, uid)] = shift
     routes: dict[int, list[tuple[int, int]]] = {}
-    for i, e in drawn:
+    for i, e in _logical_drawn(model, layout):
         a, b = pos[e.source], pos[e.target]
-        sa, sb = sides[i]
-        ax, bx = a[0] + half + offset[(i, e.source)], b[0] + half + offset[(i, e.target)]
-        track = i % 2
-        ga = a[1] + LOGICAL_BOX_H + 5 + 5 * track if sa == "bottom" else a[1] - 5 - 5 * track
-        gb = b[1] + LOGICAL_BOX_H + 5 + 5 * track if sb == "bottom" else b[1] - 5 - 5 * track
-        if e.source in lane_uids or e.target in lane_uids:
-            options = ([layout.gutters[-1]] if layout.gutters else []) + [layout.lane_gutter]
-            if e.source in lane_uids and e.target in lane_uids:
-                options = [layout.lane_gutter]
+        ax, bx = a[0] + LOGICAL_BOX_W // 2 + ATTACH_DX, b[0] + LOGICAL_BOX_W // 2 - ATTACH_DX
+        ya = _run_y(layout, layout.runs[layout.halves[i][0]])
+        step = layout.plan[i]
+        if step[0] == "direct":
+            raw = [(ax, a[1] + LOGICAL_BOX_H), (ax, ya), (bx, ya), (bx, b[1])]
         else:
-            options = layout.gutters
-        gx = min(options, key=lambda g: (abs(ax - g) + abs(bx - g), g)) + (i % 3 - 1) * 10
-        raw = [
-            (ax, a[1] + LOGICAL_BOX_H if sa == "bottom" else a[1]),
-            (ax, ga),
-            (gx, ga),
-            (gx, gb),
-            (bx, gb),
-            (bx, b[1] + LOGICAL_BOX_H if sb == "bottom" else b[1]),
-        ]
+            j = step[1] if step[0] == "gutter" else len(layout.spaces) - 1
+            gx = _run_x(layout, layout.runs[("v", j, e.source)])
+            yb = _run_y(layout, layout.runs[layout.halves[i][1]])
+            raw = [(ax, a[1] + LOGICAL_BOX_H), (ax, ya), (gx, ya), (gx, yb), (bx, yb), (bx, b[1])]
         pts: list[tuple[int, int]] = []
         for point in raw:
             if not pts or pts[-1] != point:
@@ -1612,18 +1942,15 @@ def render_logical_svg(model: DiagramModel) -> str:
 DEPLOY_COLUMNS = 3  # boxes per row inside a zone lane
 DEPLOY_PAD = 10
 DEPLOY_COL_GAP = 60  # minimum gap between box columns; widened when self-loops would reach the next column
-DEPLOY_LEVEL = 6  # distance between horizontal edge runs in a free band, and from the band's edges
+DEPLOY_LEVEL = TRACK_PITCH  # D35: distance between two tracks of a free band
+DEPLOY_TRACK_PAD = 6  # from a band's edges to its outer tracks
 DEPLOY_MIN_BAND = 24  # a free band that carries no edge run is still this tall
-DEPLOY_BAND_SPARE = 2  # spare levels per band, for runs that must skip a level another run holds
 DEPLOY_CHANNEL_PAD = 20  # from the stack's right border to the first vertical channel
-DEPLOY_CHANNEL_STEP = 8  # between vertical channels
+DEPLOY_CHANNEL_STEP = TRACK_PITCH  # D35: between vertical channel tracks
 DEPLOY_LANE_GAP = 40  # from the last channel to the outside lane
-DEPLOY_MAX_PASSES = 400  # safety net for the layout and routing fixed-point loop; every pass grows something, so
-# the loop ends by itself (3 passes for the fixtures, about 25 for a pattern of 200 edges)
-DEPLOY_SPREAD = 8  # between container ends that would otherwise share one border point
-DEPLOY_MIN_STUB = 4  # a box side takes more stubs than fit this far apart only when the other side is full too
+DEPLOY_MAX_PASSES = 400  # safety net for the layout and routing fixed-point loop; bands only grow, so the loop
+# ends by itself in a few passes
 DEPLOY_BORDER_CLEAR = 4  # vertical edge runs keep at least this far from every container border
-DEPLOY_SIDE_STEP = 5  # a container end on a left border steps this far out, between the group and target borders
 LOOP_REACH = 36  # a self-loop reaches this far right of its box; each further loop on the same box adds LOOP_STEP
 LOOP_RISE = 30  # and this far above it
 LOOP_STEP = 14
@@ -1666,288 +1993,122 @@ def _fmt(value: Any) -> str:
 class _Band:
     """A horizontal strip of free space between two rows of boxes, or two containers, that carries edge runs.
 
-    ``upper`` ends belong to the element above the band (they leave through its bottom side) and take levels
-    from the top of the band downward; ``lower`` ends belong to the element below and take levels from the
-    bottom upward, above the ``rise`` reserved for that row's self-loops. ``rightward`` says which way runs
-    leave the band: right toward the channels, or left from the outside lane toward them.
+    Out-runs of the element above the band (its edges leave through its bottom side, D36) take tracks from the top
+    of the band downward; in-runs of the element below take tracks from the bottom upward, above the ``rise``
+    reserved for that row's self-loops. ``rightward`` says which way runs leave the band: right toward the channels,
+    or left from the outside lane toward them. ``tracks`` is what the layout made room for; the router sets ``need``.
     """
 
     lo: int
     hi: int
     rise: int
     rightward: bool
-    upper: list = field(default_factory=list)  # (sort x, edge index, uid)
-    lower: list = field(default_factory=list)
-    extra: int = 0  # levels added by the layout after a routing pass ran out of room here
-    overflow: int = 0  # ends that found no free level in the last routing pass
+    tracks: int = 0
+    need: int = 0
 
 
-def _band_height(cap: int, rise: int, extra: int = 0) -> int:
-    return max(DEPLOY_MIN_BAND, DEPLOY_LEVEL * (cap + 2 + DEPLOY_BAND_SPARE + extra)) + rise
-
-
-@dataclass
-class _End:
-    """One end of a routed edge: where it meets its box or container and which band carries its run."""
-
-    uid: str
-    side: str  # top, bottom, left or right
-    x: Any  # stub x for a box end, border x for a container end
-    y: Any  # border y the edge meets
-    band: Any = None  # _Band, or None for a right-border container end, which runs straight to its channel
-    level: Any = None  # y of the horizontal run, once allocated
-    step_x: Any = None  # left-border container ends only: x of the short vertical outside the border
+def _band_height(tracks: int, rise: int) -> int:
+    """D35: a band is as tall as its tracks need (pitch apart, pad from each edge), and never below DEPLOY_MIN_BAND."""
+    return max(DEPLOY_MIN_BAND, DEPLOY_LEVEL * tracks + 2 * DEPLOY_TRACK_PAD) + rise
 
 
 def _route_deployment_edges(
     drawn: list,
     rects: dict,
     pools: dict,
-    containers: set,
     bands: list,
-    loops: dict,
     stack_right: int,
     chan_pad: int,
-) -> tuple[dict, int, dict]:
-    """Comb routing (D15, deterministic): every edge runs out of the stack to a vertical channel on its right.
+) -> tuple[dict, int]:
+    """Comb routing (D15, D35, D36, deterministic): every edge runs out of the stack to a vertical channel on its right.
 
-    A box end leaves through its top or bottom side (whichever faces the other endpoint) at its own x, runs
-    along a level of the free band beside it to a channel, and the channel carries it to the other end's
-    level. Channels lie right of every container and left of the outside lane, so no run crosses a box, and
-    an edge shares a channel only with edges whose vertical spans are apart. A container end starts at the
-    border_point toward the other endpoint (D29): top and bottom border ends use the band beside the
-    container, a right border end runs straight to its channel, a left border end steps out between the
-    group and target borders first. Within a band, ends are levelled so that a run never crosses another
-    end's stub. Everything is keyed on edge document order and geometry; nothing else.
+    An edge leaves its source, box or container, through the bottom side and enters its target through the top
+    side. All edges of a source share one attachment point, one out-run along a track of the band below the source
+    and one channel; all edges of a target share one in-run along a track of the band above it and one attachment
+    point. Channels lie right of every container and left of the outside lane, so no run crosses a box.
 
-    Returns the polyline per edge index, the number of channels used, and the number of left-border ends per
-    container (the layout widens the target's left padding to hold their verticals). A band that ran out of
-    levels has ``overflow`` set; the layout grows it and routes again.
+    Channel runs are assigned by the left-edge rule over the y span of the bands they join. Band tracks are taken
+    in order from the run nearest the channels outward, each run the lowest track that holds no co-visible run and
+    keeps it clear of the stub of every co-visible run already placed (so a run never crosses such a stub). Runs
+    in the outside lane's bands also keep a track apart from co-visible stack runs that overlap them in x. Runs of
+    edges that share no endpoint may share a track (D35).
+
+    Returns the polyline per edge index and the number of channel tracks; each band's ``need`` holds its tracks.
     """
-    centre = {uid: (x + w / 2, y + h / 2) for uid, (x, y, w, h) in rects.items()}
-    ends: dict[tuple[int, str], _End] = {}
-    # Container ends: border_point toward the other endpoint, then spread coincident points along the border.
-    attach: dict[tuple[int, str], tuple[float, float]] = {}
-    for i, e in drawn:
-        for uid, other in ((e.source, e.target), (e.target, e.source)):
-            if uid in containers:
-                x, y, w, h = rects[uid]
-                toward = centre[other]
-                if toward == centre[uid]:  # a box centred on its own container: the ray has no direction, so use "up"
-                    toward = (toward[0], toward[1] - 1)
-                attach[(i, uid)] = border_point(centre[uid], toward, w, h)
-    # Ends on one border of one container are pushed DEPLOY_SPREAD apart along that border (edge order breaks
-    # ties); a lone end keeps its exact border_point, and a cluster slides back as a whole when it meets a corner.
-    # A border that cannot hold its ends that far apart hands the surplus to another border of the container.
-    partner = {}
-    for i, e in drawn:
-        partner[(i, e.source)] = e.target
-        partner[(i, e.target)] = e.source
-    on_border: dict[tuple[str, str], list[tuple[float, int]]] = {}
-    for (i, uid), (px, py) in sorted(attach.items()):
-        x, y, w, h = rects[uid]
-        if abs(py - y) < 1e-6 or abs(py - (y + h)) < 1e-6:
-            on_border.setdefault((uid, "top" if abs(py - y) < 1e-6 else "bottom"), []).append((px, i))
-        else:
-            on_border.setdefault((uid, "left" if abs(px - x) < 1e-6 else "right"), []).append((py, i))
 
-    def extent(uid: str, border: str) -> tuple[float, float]:
-        x, y, w, h = rects[uid]
-        low, high = (x + 4, x + w - 4) if border in ("top", "bottom") else (y + 4, y + h - 4)
-        if loops.get(uid):  # D13: the container's own loop sits at its top-right corner; ends keep clear of it
-            if border == "top":
-                high = x + w - LOGICAL_BOX_W + int(LOGICAL_BOX_W * 0.62) - DEPLOY_SPREAD
-            elif border == "right":
-                low = y + int(LOGICAL_BOX_H * 0.3) + DEPLOY_SPREAD
-        return low, high
-
-    def capacity(uid: str, border: str) -> int:
-        low, high = extent(uid, border)
-        return max(1, int((high - low) // DEPLOY_SPREAD) + 1)
-
-    for _pass in range(4):  # a receiving border may fill up too; the surplus moves on in a fixed order
-        moved = False
-        for (uid, border) in sorted(on_border):
-            items = on_border[(uid, border)]
-            room = capacity(uid, border)
-            if len(items) <= room:
-                continue
-            items.sort()
-            surplus = items[room:]
-            del items[room:]
-            x, y, w, h = rects[uid]
-            for value, i in surplus:
-                ocx, ocy = centre[partner[(i, uid)]]
-                prefer = ("bottom", "top") if ocy > y + h / 2 else ("top", "bottom")
-                for target in prefer + ("right", "left"):
-                    if target != border and len(on_border.get((uid, target), [])) < capacity(uid, target):
-                        low, high = extent(uid, target)
-                        along = min(max(ocx if target in ("top", "bottom") else ocy, low), high)
-                        on_border.setdefault((uid, target), []).append((along, i))
-                        attach[(i, uid)] = {
-                            "top": (along, y), "bottom": (along, y + h), "left": (x, along), "right": (x + w, along)
-                        }[target]
-                        moved = True
-                        break
-                else:
-                    items.append((value, i))  # every border is full: this end stays where it was
-        if not moved:
-            break
-    for (uid, border), items in sorted(on_border.items()):
-        low, high = extent(uid, border)
-        if len(items) < 2 and low <= items[0][0] <= high:
-            continue  # a lone end keeps its exact border_point
-        items.sort()
-        placed = [max(low, items[0][0])]
-        for value, _i in items[1:]:
-            placed.append(max(value, placed[-1] + DEPLOY_SPREAD))
-        slide = max(0, placed[-1] - high)  # a cluster past the far corner slides back as a whole ...
-        placed = [v - slide for v in placed]
-        for k in range(len(placed)):  # ... and ends that would pass the near corner are spread again from it
-            placed[k] = max(placed[k], low if k == 0 else placed[k - 1] + DEPLOY_SPREAD)
-        for (_value, i), v in zip(items, placed):
-            px, py = attach[(i, uid)]
-            attach[(i, uid)] = (v, py) if border in ("top", "bottom") else (px, v)
-    # Box ends: the side facing the other endpoint; stub x by the other endpoint's x so stubs never cross.
-    slots: dict[tuple[str, str], list[tuple[float, str, int]]] = {}
-    left_ends: dict[str, list[tuple[int, float, int]]] = {}  # container uid -> (band order, border y, edge index)
-    for i, e in drawn:
-        for uid, other in ((e.source, e.target), (e.target, e.source)):
-            if uid in containers:
-                x, y, w, h = rects[uid]
-                px, py = attach[(i, uid)]
-                if abs(py - y) < 1e-6:
-                    ends[(i, uid)] = _End(uid, "top", px, py, pools[uid]["top"])
-                elif abs(py - (y + h)) < 1e-6:
-                    ends[(i, uid)] = _End(uid, "bottom", px, py, pools[uid]["bottom"])
-                elif abs(px - (x + w)) < 1e-6:
-                    ends[(i, uid)] = _End(uid, "right", px, py, None)
-                else:
-                    side = "top" if centre[other][1] < centre[uid][1] else "bottom"
-                    ends[(i, uid)] = _End(uid, side, px, py, pools[uid][side], step_x=x - DEPLOY_SIDE_STEP)
-                    left_ends.setdefault(uid, []).append((0 if side == "top" else 1, py if side == "top" else -py, i))
-            else:
-                side = "top" if centre[other][1] <= centre[uid][1] else "bottom"
-                slots.setdefault((uid, side), []).append((centre[other][0], other, i))
-                ends[(i, uid)] = _End(uid, side, 0, 0, pools[uid][side])
-    # Left-border ends of one container each take their own vertical: the end nearest its band is innermost,
-    # so a run out to a farther vertical never crosses an inner end's vertical.
-    for uid, items in left_ends.items():
-        items.sort()
-        for rank, (_order, _py, i) in enumerate(items):
-            ends[(i, uid)].step_x = rects[uid][0] - DEPLOY_SIDE_STEP - DEPLOY_LEVEL * rank
-    left_counts = {uid: len(items) for uid, items in left_ends.items()}
-    def stub_span(uid: str, side: str) -> tuple[int, int]:
+    def attach(uid: str, out: bool) -> int:
         x, _y, w, _h = rects[uid]
-        if side == "top" and loops.get(uid):  # stay left of the self-loop, which starts at 62% of the width
-            return x + 8, int(w * 0.6) - 16
-        return x + w // 10, w - 2 * (w // 10)
+        return x + w // 2 + (ATTACH_DX if out else -ATTACH_DX)
 
-    # A side holds at most span / DEPLOY_MIN_STUB ends before stubs merge visually; the ends beyond that (the
-    # last in x order) leave through the box's other side instead and reach their channel through that band.
-    for uid in sorted({uid for uid, _side in slots}):
-        for side, other_side in (("top", "bottom"), ("bottom", "top")):
-            items = slots.get((uid, side), [])
-            room = stub_span(uid, side)[1] // DEPLOY_MIN_STUB - 1
-            spare = stub_span(uid, other_side)[1] // DEPLOY_MIN_STUB - 1 - len(slots.get((uid, other_side), []))
-            if len(items) > room and spare > 0:
-                items.sort()
-                moved = items[room:][:spare]
-                del items[room : room + len(moved)]
-                slots.setdefault((uid, other_side), []).extend(moved)
-                for _ox, _other, i in moved:
-                    ends[(i, uid)].side = other_side
-                    ends[(i, uid)].band = pools[uid][other_side]
-    for (uid, side), items in sorted(slots.items()):
-        items.sort()
-        x, y, w, h = rects[uid]
-        left, span = stub_span(uid, side)
-        for rank, (_ox, _other, i) in enumerate(items):
-            end = ends[(i, uid)]
-            end.x = left + Fraction(span * (rank + 1), len(items) + 1)
-            end.y = y if side == "top" else y + h
-    # Channels: first fit by document order over a span that covers both ends' bands, so the exact vertical
-    # runs chosen later are always apart on a shared channel.
-    channels: list[list[tuple[float, float]]] = []
-    chan_of: dict[int, int] = {}
+    chan_runs: dict[str, _Run] = {}
     for i, e in drawn:
-        lo, hi = math.inf, -math.inf
-        for uid in (e.source, e.target):
-            if uid in containers:
-                lo, hi = min(lo, pools[uid]["top"].lo), max(hi, pools[uid]["bottom"].hi)
+        lo = min(pools[e.source]["bottom"].lo, pools[e.target]["top"].lo)
+        hi = max(pools[e.source]["bottom"].hi, pools[e.target]["top"].hi)
+        run = chan_runs.get(e.source)
+        if run is None:
+            chan_runs[e.source] = _Run(("c", e.source), lo, hi, {e.source, e.target}, i)
+        else:
+            run.lo, run.hi = min(run.lo, lo), max(run.hi, hi)
+            run.uids |= {e.source, e.target}
+    count = _left_edge([chan_runs[uid] for uid in sorted(chan_runs)])
+    chan_x = {uid: stack_right + chan_pad + DEPLOY_CHANNEL_STEP * run.track for uid, run in chan_runs.items()}
+    # Band runs, keyed (band index, out-run?, uid, attachment x); lo and hi are the run's x span.
+    runs: dict[tuple, _Run] = {}
+    index = {id(band): k for k, band in enumerate(bands)}  # identity lookup only; nothing iterates this dict
+    for i, e in drawn:
+        for uid, out, band in ((e.source, True, pools[e.source]["bottom"]), (e.target, False, pools[e.target]["top"])):
+            x, cx = attach(uid, out), chan_x[e.source]
+            lo, hi = (x, cx) if band.rightward else (cx, x)
+            key = (index[id(band)], out, uid, x)
+            run = runs.get(key)
+            if run is None:
+                runs[key] = _Run(key, lo, hi, {e.source, e.target}, i)
             else:
-                band = ends[(i, uid)].band
-                lo, hi = min(lo, band.lo), max(hi, band.hi)
-        for k, spans in enumerate(channels):
-            if all(hi + DEPLOY_LEVEL <= a or b + DEPLOY_LEVEL <= lo for a, b in spans):
-                spans.append((lo, hi))
-                chan_of[i] = k
-                break
-        else:
-            channels.append([(lo, hi)])
-            chan_of[i] = len(channels) - 1
-    chan_x = {i: stack_right + chan_pad + DEPLOY_CHANNEL_STEP * k for i, k in chan_of.items()}
-    # Levels. Right-border runs are fixed by geometry and go first; band levels then avoid them, and the
-    # outside lane's bands avoid the stack's, so two runs within DEPLOY_LEVEL in y are always apart in x.
-    taken: list[tuple[float, float, float]] = []  # (y, x0, x1) of every horizontal run so far
-
-    def clear(y: float, x0: float, x1: float) -> bool:
-        """No run closer than DEPLOY_LEVEL in y overlaps x0..x1 within DEPLOY_LEVEL."""
-        return all(abs(y - ty) >= DEPLOY_LEVEL or x1 + DEPLOY_LEVEL <= a or b + DEPLOY_LEVEL <= x0 for ty, a, b in taken)
-
-    for (i, uid), end in sorted(ends.items()):
-        if end.side == "right":
-            end.level = end.y
-            taken.append((end.y, end.x, chan_x[i]))
-        else:
-            if end.step_x is not None:  # the short step out of a left border is a horizontal run too
-                taken.append((end.y, end.step_x, end.x))
-            pool = end.band.lower if end.side == "top" else end.band.upper
-            pool.append((end.x if end.step_x is None else end.step_x, i, uid))
-    for band in bands:
-        deepest = band.lo  # the upper pool's lowest level; the lower pool stays below it so stubs never interleave
-        for pool, from_top in ((band.upper, True), (band.lower, False)):
-            pool.sort(key=lambda item: ((-item[0] if band.rightward else item[0]), item[1]))
-            k = 0
-            for sort_x, i, uid in pool:
-                end = ends[(i, uid)]
-                run_x = end.x if end.step_x is None else end.step_x
-                x0, x1 = (run_x, chan_x[i]) if band.rightward else (chan_x[i], run_x)
-                first = band.lo + DEPLOY_LEVEL if from_top else band.hi - band.rise - DEPLOY_LEVEL
-                last = band.hi - band.rise - DEPLOY_LEVEL if from_top else deepest + DEPLOY_LEVEL
-                level = first
+                run.lo, run.hi = min(run.lo, lo), max(run.hi, hi)
+                run.uids |= {e.source, e.target}
+    level: dict[tuple[bool, str], int] = {}
+    placed: list[tuple[int, _Run]] = []  # (y, run) of every stack run, for the outside lane's bands
+    by_band: dict[int, list[_Run]] = {}
+    for run in sorted(runs.values(), key=lambda r: r.key):
+        by_band.setdefault(run.key[0], []).append(run)
+    order = sorted(by_band, key=lambda k: (not bands[k].rightward, k))  # stack bands first, then the outside lane's
+    for k in order:
+        band = bands[k]
+        used = {True: 0, False: 0}
+        for from_top in (True, False):
+            pool = sorted(
+                (r for r in by_band[k] if r.key[1] == from_top), key=lambda r: ((-r.key[3] if band.rightward else r.key[3]), r.first)
+            )
+            done: list[_Run] = []
+            for run in pool:
+                track = 1 + max([o.track for o in done if o.uids & run.uids], default=-1)
                 while True:
-                    level = first + (DEPLOY_LEVEL * k if from_top else -DEPLOY_LEVEL * k)
-                    k += 1
-                    beyond = level > last if from_top else level < last
-                    if beyond:  # out of room: take the last level and tell the layout to grow this band
-                        level = last
-                        band.overflow += 1
+                    y = band.lo + DEPLOY_TRACK_PAD + DEPLOY_LEVEL * track if from_top else band.hi - band.rise - DEPLOY_TRACK_PAD - DEPLOY_LEVEL * track
+                    if band.rightward or not any(
+                        abs(y - oy) < DEPLOY_LEVEL and o.uids & run.uids and run.lo <= o.hi and o.lo <= run.hi for oy, o in placed
+                    ):
                         break
-                    if clear(level, x0, x1):
-                        break
-                end.level = level
-                taken.append((level, x0, x1))
-                if from_top:
-                    deepest = max(deepest, level)
-    routes: dict[int, list[tuple[float, float]]] = {}
+                    track += 1
+                run.track = track
+                done.append(run)
+                level[(from_top, run.key[2])] = y
+                if band.rightward:
+                    placed.append((y, run))
+                used[from_top] = max(used[from_top], track + 1)
+        band.need = used[True] + used[False]
+    routes: dict[int, list[tuple[int, int]]] = {}
     for i, e in drawn:
-        cx = chan_x[i]
-
-        def leg(end: _End) -> list[tuple[float, float]]:
-            if end.side == "right":
-                return [(end.x, end.y), (cx, end.y)]
-            if end.step_x is not None:
-                return [(end.x, end.y), (end.step_x, end.y), (end.step_x, end.level), (cx, end.level)]
-            return [(end.x, end.y), (end.x, end.level), (cx, end.level)]
-
-        raw = leg(ends[(i, e.source)]) + list(reversed(leg(ends[(i, e.target)])))
-        pts: list[tuple[float, float]] = []
+        sx, sy, _sw, sh = rects[e.source]
+        tx, ty, _tw, _th = rects[e.target]
+        ox, ix, cx = attach(e.source, True), attach(e.target, False), chan_x[e.source]
+        ys, yt = level[(True, e.source)], level[(False, e.target)]
+        raw = [(ox, sy + sh), (ox, ys), (cx, ys), (cx, yt), (ix, yt), (ix, ty)]
+        pts: list[tuple[int, int]] = []
         for point in raw:
             if not pts or pts[-1] != point:
                 pts.append(point)
         routes[i] = pts
-    return routes, len(channels), left_counts
+    return routes, count
 
 
 def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] | None = None) -> str:
@@ -1956,18 +2117,14 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     Edges are plain solid orthogonal routes (S7 styles them) from the boxes and containers to vertical
     channels right of the stack; see _route_deployment_edges. Container text is wrapped to its container
     and the container grows to hold it. Free bands between rows, between groups and around the outside
-    lane's boxes are sized for the edge ends they may carry. Deterministic (D15).
+    lane's boxes are as tall as the tracks their runs need (D35). Deterministic (D15).
     """
     by_uid = {n.uid: n for n in model.deployment_nodes}
     outline = _deployment_outline(model)
     containers = {g.uid for _t, groups in outline for g in groups if g.uid}
     drawable = set(by_uid) | containers
     drawn = [(i, e) for i, e in enumerate(model.edges) if e.source != e.target and e.source in drawable and e.target in drawable]
-    incident: dict[str, int] = {}
     loops: dict[str, int] = {}
-    for _i, e in drawn:
-        incident[e.source] = incident.get(e.source, 0) + 1
-        incident[e.target] = incident.get(e.target, 0) + 1
     for e in model.edges:
         if e.source == e.target and (e.source in by_uid or e.source in containers):
             loops[e.source] = loops.get(e.source, 0) + 1
@@ -1976,9 +2133,6 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     # A container's loop (D13) sits at its top-right corner and reaches past the target border; the channels start
     # beyond its reach.
     chan_pad = max(DEPLOY_CHANNEL_PAD, LOOP_REACH + LOOP_STEP * (container_loops - 1) + DEPLOY_LEVEL) if container_loops else DEPLOY_CHANNEL_PAD
-
-    def inc(uids: list) -> int:
-        return sum(incident.get(u, 0) for u in uids)
 
     def rise(uids: list) -> int:
         return max([LOOP_RISE + LOOP_STEP * (loops[u] - 1) for u in uids if loops.get(u)], default=0)
@@ -1993,14 +2147,14 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     lane_w = inner_w + 2 * DEPLOY_PAD + loop_room
     group_w = lane_w + 2 * DEPLOY_PAD
 
-    def build_stack(left_room: int, extras: list) -> tuple:
+    def build_stack(levels: list) -> tuple:
         """Lay out the stack and the outside lane's rows.
 
-        left_room widens the targets' left padding (on the D14 grid) so every left-border container end has its
-        own vertical; extras[k] adds levels to the k-th band created, after a routing pass ran out of room there
-        (see _route_deployment_edges). Bands are created in the same order on every call.
+        levels[k] is the number of tracks the k-th band created needed in the last routing pass (D35; see
+        _route_deployment_edges); a band no pass has routed yet has none. Bands are created in the same order on
+        every call.
         """
-        target_w = group_w + 2 * DEPLOY_PAD + left_room
+        target_w = group_w + 2 * DEPLOY_PAD
         bands: list[_Band] = []
         rects: dict[str, tuple[int, int, int, int]] = {}  # uid -> x, y, w, h of a box or the first container with that uid
         pools: dict[str, dict[str, _Band]] = {}
@@ -2008,10 +2162,10 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
         pos: dict[str, tuple[int, int]] = {}
         body: list[str] = []
 
-        def band_at(lo: int, cap: int, rise_px: int, rightward: bool = True) -> _Band:
-            extra = extras[len(bands)] if len(bands) < len(extras) else 0
-            hi = -(-(lo + _band_height(cap, rise_px, extra)) // GRID) * GRID  # D14: the row below starts on the grid
-            band = _Band(lo=lo, hi=hi, rise=rise_px, rightward=rightward, extra=extra)
+        def band_at(lo: int, rise_px: int, rightward: bool = True) -> _Band:
+            tracks = levels[len(bands)] if len(bands) < len(levels) else 0
+            hi = -(-(lo + _band_height(tracks, rise_px)) // GRID) * GRID  # D14: the row below starts on the grid
+            band = _Band(lo=lo, hi=hi, rise=rise_px, rightward=rightward, tracks=tracks)
             bands.append(band)
             return band
 
@@ -2029,14 +2183,14 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
             group_boxes: list[str] = []
             for g_index, g in enumerate(groups):
                 prev_uid = groups[g_index - 1].uid if g_index else ""
-                band = band_at(cursor, inc([prev_uid, g.uid]), rise([g.uid]) if g.uid not in rects else 0)
+                band = band_at(cursor, rise([g.uid]) if g.uid not in rects else 0)
                 if prev_uid and prev_uid in pools and "bottom" not in pools[prev_uid]:
                     pools[prev_uid]["bottom"] = band
                 gy = band.hi
                 n_lines = _wrap_to(g.group, group_w)
                 c_lines = _wrap_to(g.caption, group_w)
                 g_head = 18 + DEPLOY_LINE_H * (len(n_lines) - 1) + 20 + DEPLOY_LINE_H * (len(c_lines) - 1) + 12
-                gx = tx + DEPLOY_PAD + left_room
+                gx = tx + DEPLOY_PAD
                 first_time = bool(g.uid) and g.uid not in rects
                 if first_time:
                     pools[g.uid] = {"top": band}
@@ -2052,7 +2206,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
                     node_svgs: list[str] = []
                     prev_row: list[str] = []
                     for row in rows:
-                        above = band_at(cursor2, inc(prev_row + row), rise(row))
+                        above = band_at(cursor2, rise(row))
                         for uid in prev_row:
                             if uid in pools and "bottom" not in pools[uid]:
                                 pools[uid]["bottom"] = above
@@ -2066,7 +2220,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
                                 node_svgs.append(_node_svg(by_uid[uid], bx, row_top))
                         cursor2 = row_top + LOGICAL_BOX_H
                         prev_row = row
-                    below = band_at(cursor2, inc(prev_row), 0)
+                    below = band_at(cursor2, 0)
                     for uid in prev_row:
                         if uid in pools and "bottom" not in pools[uid]:
                             pools[uid]["bottom"] = below
@@ -2101,7 +2255,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
                 )
                 cursor = gy + group_h
             last_uid = groups[-1].uid
-            tail_band = band_at(cursor, inc([last_uid]), 0)
+            tail_band = band_at(cursor, 0)
             if last_uid and last_uid in pools and "bottom" not in pools[last_uid]:
                 pools[last_uid]["bottom"] = tail_band
             target_h = tail_band.hi - ty
@@ -2140,39 +2294,37 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
             cursor = lane_top + DEPLOY_LANE_HEAD
             prev: list[str] = []
             for node in ordered:
-                above = band_at(cursor, inc(prev + [node.uid]), rise([node.uid]), rightward=False)
+                above = band_at(cursor, rise([node.uid]), rightward=False)
                 for uid in prev:
                     pools[uid]["bottom"] = above
                 lane_rows.append((node, above.hi))
                 pools[node.uid] = {"top": above}
                 cursor = above.hi + LOGICAL_BOX_H
                 prev = [node.uid]
-            below = band_at(cursor, inc(prev), 0, rightward=False)
+            below = band_at(cursor, 0, rightward=False)
             pools[prev[0]]["bottom"] = below
             lane_h = below.hi - lane_top
         return bands, rects, pools, names, pos, body, stack_bottom, stack_right, lane_rows, lane_top, lane_h, outer
 
-    # Layout and routing depend on each other in three small ways: the outside lane's x follows the channel
-    # count, several left-border ends on one container need a wider left padding, and a band may run out of
-    # levels when it has to dodge runs from the other column. Iterate to a fixed point (every step only grows
-    # something, so it ends); the loop is a pure function of the catalog, so the result is deterministic. Each
-    # pass is cheap, so the cap is only a safety net.
-    left_room, extras, n_channels = 0, [], len(drawn)
+    # Layout and routing depend on each other: the outside lane's x follows the channel count, and a band is as
+    # tall as the tracks its runs need (D35), which moves everything below it and so the channel spans. Iterate to
+    # a fixed point; band tracks only grow, so it ends. The loop is a pure function of the catalog, so the result is
+    # deterministic. Each pass is cheap, so the cap is only a safety net.
+    levels: list[int] = []
+    n_channels = 0
     for _attempt in range(DEPLOY_MAX_PASSES):
-        laid = build_stack(left_room, extras)
+        laid = build_stack(levels)
         bands, rects, pools, names, pos, body, stack_bottom, stack_right, lane_rows, lane_top, lane_h, outer = laid
         last_channel = stack_right + chan_pad + DEPLOY_CHANNEL_STEP * (n_channels - 1) if n_channels else stack_right
         lane_x = -(-(last_channel + DEPLOY_LANE_GAP) // GRID) * GRID  # D14
         for node, by in lane_rows:
             rects[node.uid] = (lane_x, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
             pos[node.uid] = (lane_x, by)
-        routes, used, left_counts = _route_deployment_edges(drawn, rects, pools, containers, bands, loops, stack_right, chan_pad)
-        need = max(left_counts.values(), default=0)
-        room = -(-(DEPLOY_LEVEL * (need - 1)) // GRID) * GRID if need > 1 else 0
-        grown = [band.extra + band.overflow for band in bands]
-        if used == n_channels and room == left_room and not any(band.overflow for band in bands):
+        routes, used = _route_deployment_edges(drawn, rects, pools, bands, stack_right, chan_pad)
+        grown = [max(band.tracks, band.need) for band in bands]
+        if used == n_channels and grown == [band.tracks for band in bands]:
             break
-        n_channels, left_room, extras = used, room, grown
+        n_channels, levels = used, grown
     else:  # the cap is a safety net; the figure is still drawn, from the last pass
         last_channel = stack_right + chan_pad + DEPLOY_CHANNEL_STEP * (max(used, 1) - 1)
         lane_x = max(lane_x, -(-(last_channel + DEPLOY_LANE_GAP) // GRID) * GRID)
