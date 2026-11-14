@@ -6,6 +6,7 @@ test-only ratcheted rule `ratchet-test-marker` fires on `xRatchetTest: fail`.
 
 from __future__ import annotations
 
+import hashlib
 import subprocess
 import sys
 import tempfile
@@ -140,6 +141,91 @@ class RatchetTests(unittest.TestCase):
         self.assertEqual(0, code, out)
         self.assertNotIn("baseline", out.lower())
         self.assertFalse(self.baseline.exists())
+
+    def test_unparseable_object_blocks_write_baseline(self) -> None:
+        self.put(UID_A)
+        self.run_validate("--write-baseline")
+        (self.ws / "catalog" / "broken.yaml").write_text("uid: [unclosed\n", encoding="utf-8")
+        before = self.baseline.read_text(encoding="utf-8")
+        code, out = self.run_validate("--write-baseline")
+        self.assertEqual(1, code)
+        self.assertIn("Refusing to write the baseline", out)
+        self.assertIn("broken.yaml", out)
+        self.assertEqual(before, self.baseline.read_text(encoding="utf-8"))
+
+    def test_malformed_baseline_is_an_error(self) -> None:
+        self.put(UID_A, fail=False)
+        self.baseline.parent.mkdir(parents=True)
+        self.baseline.write_text("entries: [unclosed\n", encoding="utf-8")
+        code, out = self.run_validate()
+        self.assertEqual(1, code)
+        self.assertIn("validation baseline", out)
+        self.baseline.write_text("entries: not-a-list\n", encoding="utf-8")
+        code, _ = self.run_validate()
+        self.assertEqual(1, code)
+
+    def test_empty_baseline_file_means_no_entries(self) -> None:
+        self.put(UID_A, fail=False)
+        self.baseline.parent.mkdir(parents=True)
+        for text in ("", "  \n\n"):
+            self.baseline.write_text(text, encoding="utf-8")
+            code, out = self.run_validate()
+            self.assertEqual(0, code, out)
+        self.put(UID_A)
+        code, _ = self.run_validate()
+        self.assertEqual(1, code)
+
+    def test_duplicate_entries_are_an_error(self) -> None:
+        self.put(UID_A)
+        self.run_validate("--write-baseline")
+        data = yaml.safe_load(self.baseline.read_text(encoding="utf-8"))
+        data["entries"].append(dict(data["entries"][0]))
+        self.baseline.write_text(yaml.safe_dump(data), encoding="utf-8")
+        code, out = self.run_validate()
+        self.assertEqual(1, code)
+        self.assertIn("duplicate baseline entry", out)
+
+    def test_missing_baseline_file_treats_violation_as_error(self) -> None:
+        self.put(UID_A)
+        code, _ = self.run_validate()
+        self.assertEqual(1, code)
+
+    def test_no_baseline_ignores_stale_entry(self) -> None:
+        self.put(UID_A)
+        self.run_validate("--write-baseline")
+        self.put(UID_A, fail=False)
+        code, out = self.run_validate("--no-baseline")
+        self.assertEqual(0, code, out)
+        self.assertNotIn("stale baseline entry", out)
+
+    def test_hash_formula(self) -> None:
+        self.put(UID_A)
+        self.run_validate("--write-baseline")
+        obj = yaml.safe_load((self.ws / "catalog" / f"{UID_A}.yaml").read_text(encoding="utf-8"))
+        expected = hashlib.sha256(yaml.safe_dump(obj, sort_keys=True, allow_unicode=True).encode("utf-8")).hexdigest()
+        self.assertEqual(expected, self.entries()[0]["hash"])
+
+    def test_framework_version_comes_from_manifest_then_lock(self) -> None:
+        manifest = yaml.safe_load((REPO_ROOT / "draft-framework.yaml").read_text(encoding="utf-8"))
+        self.put(UID_A)
+        self.run_validate("--write-baseline")
+        data = yaml.safe_load(self.baseline.read_text(encoding="utf-8"))
+        self.assertEqual(str(manifest["version"]), data["frameworkVersion"])
+        sys.path.insert(0, str(REPO_ROOT / "framework" / "tools"))
+        try:
+            import validate  # noqa: PLC0415
+        finally:
+            sys.path.pop(0)
+        lock = self.ws / ".draft" / "framework.lock"
+        lock.parent.mkdir(parents=True, exist_ok=True)
+        lock.write_text("framework:\n  version: 9.8.7\n", encoding="utf-8")
+        empty = self.ws / "nowhere"
+        old = (validate.REPO_ROOT, validate.FRAMEWORK_ROOT)
+        validate.REPO_ROOT = validate.FRAMEWORK_ROOT = empty
+        try:
+            self.assertEqual("9.8.7", validate.framework_version_text(self.ws))
+        finally:
+            validate.REPO_ROOT, validate.FRAMEWORK_ROOT = old
 
 
 if __name__ == "__main__":

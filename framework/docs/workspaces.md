@@ -412,8 +412,9 @@ New workspaces also include an optional GitHub Actions workflow at
 `.github/workflows/draft-framework-update.yml`. The workflow checks for a newer
 visible DRAFT Framework version tag and falls back to upstream `main` when tags
 are missing or stale, opens an update branch, refreshes
-`.draft/framework/`, updates `.draft/framework.lock`, and validates the
-workspace.
+`.draft/framework/`, updates `.draft/framework.lock`, records
+`.draft/validation-baseline.yaml` with `validate.py --write-baseline`, and
+validates the workspace.
 
 DRAFT release tags use the `vX.Y.Z` form, such as `v0.41.5`. When manually
 running the update workflow, a bare semantic version like `0.41.5` is accepted

@@ -5,7 +5,7 @@
 - The default node scope of `framework/tools/generate_diagram.py` changes in this release. It is no longer every object owned by the same team; it is the objects placed in the pattern plus the objects they depend on (unplaced objects that a placed object has a relationship to; unplaced objects that only call into the pattern are not drawn). Output for an existing pattern can therefore show fewer components than before.
 - The HTML page of `framework/tools/generate_diagram.py` is reassembled: it shows the logical application diagram and the deployment pattern diagram, in that order, followed by the recorded relationships, conflicts, characteristics, open questions and object inventory. The old flat topology figure is gone, so existing pages look different.
 - Single-mode warnings go to stderr as a `N warnings` count line followed by each distinct warning in sorted order, without the earlier `warning:` prefix. Scripts that parsed the old prefix must read the new form.
-- No schema, validation, or catalog content changes.
+- `validate.py` gains the `--write-baseline` and `--no-baseline` flags and a baseline file, `.draft/validation-baseline.yaml`. No existing rule changes behaviour and no schema or catalog content changes; a workspace with no baseline file validates as before.
 
 ### Added
 

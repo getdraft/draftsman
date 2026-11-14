@@ -308,8 +308,9 @@ def framework_version_text(workspace_root: Path) -> str:
             data = yaml.safe_load(lock.read_text(encoding="utf-8")) or {}
         except Exception:  # noqa: BLE001
             data = {}
-        if isinstance(data, dict) and data.get("version"):
-            return str(data["version"])
+        framework = data.get("framework") if isinstance(data, dict) else None
+        if isinstance(framework, dict) and framework.get("version"):
+            return str(framework["version"])
     return "unknown"
 
 
@@ -317,19 +318,30 @@ def load_baseline(workspace_root: Path, failures: list[str]) -> dict[tuple[str, 
     path = workspace_root / BASELINE_RELATIVE_PATH
     if not path.is_file():
         return {}
+    text = path.read_text(encoding="utf-8")
+    if not text.strip():
+        return {}
     try:
-        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        data = yaml.safe_load(text) or {}
     except Exception as exc:  # noqa: BLE001
         failures.append(f"{path}: Fix validation baseline YAML; parser reported {exc}")
         return {}
     entries = data.get("entries") if isinstance(data, dict) else None
+    if entries is None and isinstance(data, dict) and not data:
+        return {}
     if not isinstance(entries, list):
         failures.append(f"{path}: Make the validation baseline a mapping with an 'entries' list")
         return {}
     baseline: dict[tuple[str, str], str] = {}
     for entry in entries:
         if isinstance(entry, dict) and entry.get("rule") and entry.get("uid"):
-            baseline[(str(entry["rule"]), str(entry["uid"]))] = str(entry.get("hash", ""))
+            key = (str(entry["rule"]), str(entry["uid"]))
+            if key in baseline:
+                failures.append(
+                    f"{path}: Remove the duplicate baseline entry for rule '{key[0]}' uid '{key[1]}'"
+                )
+                continue
+            baseline[key] = str(entry.get("hash", ""))
     return baseline
 
 
@@ -4516,8 +4528,11 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as exc:  # noqa: BLE001
             failures.append(f"{path}: failed to parse YAML ({exc})")
 
+    structural_failures = list(failures)
     validate_object_uids(objects, workspace_root, failures)
+    before_patches = len(failures)
     objects = apply_object_patches(objects, failures)
+    structural_failures.extend(failures[before_patches:])
 
     catalog_by_id = {
         obj["uid"]: obj
@@ -4720,6 +4735,12 @@ def main(argv: list[str] | None = None) -> int:
 
     ratchet_violations = collect_ratchet_violations(objects, catalog_by_id)
     if args.write_baseline:
+        if structural_failures:
+            print("Refusing to write the baseline: YAML parse or object patch failures would silently drop objects from it.")
+            print("Fix these first, then rerun --write-baseline:")
+            for failure in structural_failures:
+                print(f"- {failure}")
+            return 1
         count = write_baseline(workspace_root, ratchet_violations)
         print(f"Wrote {count} baseline entries to {BASELINE_RELATIVE_PATH.as_posix()}.")
         return 0
