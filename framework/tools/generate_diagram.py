@@ -279,9 +279,11 @@ def technology_line(catalog: dict[str, dict[str, Any]], obj: dict[str, Any]) -> 
 class Model:
     """Everything the page shows, resolved from the catalog.
 
-    Scope is one hop (D2): every placed object plus each direct relationship endpoint
-    of a placed object whose type is in ONE_HOP_TYPES. Derived ``runs on`` relationships
-    never extend scope and never become edges or relationship rows (D31).
+    Scope (D2, narrowed by D41 and D42): every placed object plus each unplaced object that a placed
+    object is the source of a relationship to, when its type is in ONE_HOP_TYPES. Unplaced consumers
+    (objects that only source relationships into placed ones) are not nodes, and only relationships
+    whose source is placed are edges or rows. Derived ``runs on`` relationships never extend scope
+    and never become edges or relationship rows (D31).
     """
 
     def __init__(self, catalog: dict[str, dict[str, Any]], sdp: dict[str, Any], placed_only: bool):

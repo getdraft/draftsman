@@ -586,19 +586,24 @@ class LaterStoryTests(unittest.TestCase):
         self.assertIsInstance(model, generate_diagram.Model)
 
     def test_one_hop_scope(self) -> None:
-        model = fixture_model()
+        # The fixture has no consumer, so add one: an unplaced object that only sources into a placed object.
+        catalog = load_catalog(FIXTURE)
+        first_placed = next(iter(fixture_model().placement))
+        catalog["FXCON00001-0001"] = component("FXCON00001-0001", "Consumer Only")
+        catalog["FXREL09999-0001"] = relationship("FXREL09999-0001", "FXCON00001-0001", first_placed, "calls")
+        model = generate_diagram.Model(catalog, catalog[FIXTURE_SDP], False)
         nodes = model.nodes_for_view("logical")
         ids = {node.uid for node in nodes}
+        self.assertNotIn("FXCON00001-0001", ids)
         placed = set(model.placement)
         self.assertTrue(placed <= ids)
-        # One hop: unplaced direct endpoints of placed objects are nodes.
+        # One hop: unplaced objects a placed object sources a relationship to (D42) are nodes.
         self.assertIn("FXPRD00005-0001", ids)
         self.assertIn("FXPRD00010-0001", ids)
         # Two hops: reached only through the outside object FXPRD00010-0001, so not nodes.
         self.assertNotIn("FXDST00002-0001", ids)
         self.assertNotIn("FXHST00002-0001", ids)
         # Exact set: placed objects, allow-listed direct endpoints, and external nodes for placed sources.
-        catalog = load_catalog(FIXTURE)
         expected = set(placed)
         for rel in catalog.values():
             if rel.get("type") != "relationship" or generate_diagram.is_runs_on(rel):
@@ -609,14 +614,14 @@ class LaterStoryTests(unittest.TestCase):
                     expected.add(target)
             elif source in placed and rel.get("externalTarget"):
                 expected.add("ext:" + hashlib.sha256(" ".join(str(rel["externalTarget"]).split()).encode("utf-8")).hexdigest()[:12])
-            if target in placed and source and catalog.get(source, {}).get("type") in ALLOWED_ONE_HOP:
-                expected.add(source)
+            # D42: a source outside the placed set (a consumer) never enters scope.
         self.assertEqual(ids, expected)
+        self.assertTrue(all(e.source in placed for e in model.edges))
         for node in nodes:
             if node.outside and not node.external:
                 self.assertTrue(
                     any(
-                        (e.source in placed and e.target == node.uid) or (e.target in placed and e.source == node.uid)
+                        e.source in placed and e.target == node.uid
                         for e in model.edges
                     ),
                     node.uid,
@@ -1566,9 +1571,9 @@ class LaterStoryTests(unittest.TestCase):
         # Edges between a container and boxes drawn inside it leave through its left border when the box sits
         # in the first column; each such end needs its own vertical outside the border.
         objects = [plain("RTC-1", "runtime_service", "Cluster")] + [component(f"P-{k}", f"Part {k}") for k in range(6)]
-        objects.append(pattern({"G": [f"P-{k}" for k in range(6)]}))
+        objects.append(pattern({"G": [f"P-{k}" for k in range(6)] + ["RTC-1"]}))
         objects[-1]["serviceGroups"][0]["substrate"] = "RTC-1"
-        objects += [relationship("R-1", "P-0", "RTC-1", "deploys to"), relationship("R-2", "P-3", "RTC-1", "hosts"), relationship("R-3", "P-3", "RTC-1", "reports to")]
+        objects += [relationship("R-1", "P-0", "RTC-1", "deploys to"), relationship("R-2", "RTC-1", "P-3", "hosts"), relationship("R-3", "P-3", "RTC-1", "reports to")]
         cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
         svg = deployment_svg(cat, "SDP-1")
         xml.dom.minidom.parseString(svg)
