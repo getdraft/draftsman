@@ -78,7 +78,6 @@ deployableObjectEntry:
   - capability
   - slot
   - diagramTier
-  - intent
   - instance
   - riskRef
   - notes
@@ -96,9 +95,6 @@ deployableObjectEntry:
     - application
     - data
     - utility
-  intent:
-    - ha
-    - sa
   fieldDescriptions:
     ref: Reference a specific catalog object UID when this entry represents a known
       deployable object. Used in company SDPs and RAs that reference catalog-specific

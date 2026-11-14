@@ -4470,9 +4470,6 @@ def validate_service_group_structure(
             risk_ref = entry.get("riskRef")
             if risk_ref and risk_ref not in decision_record_ids:
                 failures.append(f"{path}: serviceGroup '{group_name}' deployable object '{entry_label}' references unknown DecisionRecord '{risk_ref}'")
-            intent = entry.get("intent")
-            if intent and intent not in {"ha", "sa"}:
-                failures.append(f"{path}: serviceGroup '{group_name}' deployable object '{entry_label}' has invalid intent '{intent}'")
 
         if group.get("connections"):
             failures.append(

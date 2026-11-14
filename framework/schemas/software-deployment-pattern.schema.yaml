@@ -196,7 +196,6 @@ deployableObjectEntry:
   optionalFields:
   - networkZone
   - diagramTier
-  - intent
   - instance
   - riskRef
   - notes
@@ -206,10 +205,6 @@ deployableObjectEntry:
     - application
     - data
     - utility
-    intent:
-    - ha
-    - sa
-    - standalone
   fieldDescriptions:
     ref: >
       UID of a ProductComponent or DataComponent placed by this pattern. Do not
