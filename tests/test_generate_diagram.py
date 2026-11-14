@@ -4,6 +4,7 @@ import contextlib
 import hashlib
 import inspect
 import io
+import json
 import math
 import os
 import re
@@ -3335,3 +3336,300 @@ class DiagramLayoutTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertIn("already exists", result.stderr)
             self.assertEqual(foreign.read_bytes(), before)
+
+
+NODE = shutil.which("node")
+
+
+def run_node(source: str) -> str:
+    result = subprocess.run([NODE, "-e", source], capture_output=True, text=True)
+    if result.returncode != 0:
+        raise AssertionError(result.stderr)
+    return result.stdout
+
+
+def editable_model() -> "generate_diagram.Model":
+    catalog = load_catalog(FIXTURE)
+    return generate_diagram.Model(catalog, catalog[FIXTURE_SDP], False)
+
+
+def strip_editable(page: str) -> str:
+    """Remove everything --editable adds, leaving what the plain page holds."""
+    page = re.sub(r' data-ctr="[^"]*" data-ord="\d+"(?: data-fixed="1")?', "", page)
+    page = re.sub(r'<section class="sec edit" id="edit-panel".*?</section>', "", page, flags=re.S)
+    page = page.replace(generate_diagram.EDIT_CSS, "")
+    return page.replace(f"<script>{generate_diagram.EDIT_JS_PURE}{generate_diagram.EDIT_JS_DOM}</script>", "")
+
+
+class EditableRenderTests(unittest.TestCase):
+    """S19: --editable local render (D48) and --write-layout --layout-from."""
+
+    def editable_page(self) -> str:
+        return generate_diagram.build(FIXTURE, FIXTURE_SDP, editable=True)[0]
+
+    def test_plain_page_has_no_editing_additions(self) -> None:  # AC30
+        plain, _ = generate_diagram.build(FIXTURE, FIXTURE_SDP)
+        for token in ("data-ctr", "data-ord", "edit-panel", "Export layout", "<textarea", "draftOrdinals"):
+            self.assertNotIn(token, plain)
+        self.assertEqual(plain.count("<script>"), 1)
+        self.assertEqual(plain, generate_diagram.build(FIXTURE, FIXTURE_SDP, editable=False)[0])
+
+    def test_editable_page_is_the_plain_page_plus_additions(self) -> None:  # AC30
+        plain, _ = generate_diagram.build(FIXTURE, FIXTURE_SDP)
+        self.assertEqual(strip_editable(self.editable_page()), plain)
+
+    def test_browser_generator_never_sets_editable(self) -> None:
+        source = (REPO_ROOT / "framework" / "tools" / "generate_browser.py").read_text(encoding="utf-8")
+        self.assertNotIn("editable", source)
+
+    def test_editable_page_carries_script_control_textarea_and_containers(self) -> None:  # AC30
+        page = self.editable_page()
+        self.assertEqual(page.count("<script>"), 2)
+        self.assertIn("draftLayoutYaml", page)
+        self.assertEqual(page.count('id="export-layout"'), 1)
+        self.assertIn("Export layout", page)
+        self.assertEqual(page.count("<textarea"), 1)
+        self.assertNotIn("localStorage", page)
+        self.assertNotIn("sessionStorage", page)
+        self.assertNotIn("fetch(", page)
+        self.assertNotIn("XMLHttpRequest", page)
+        orders = generate_diagram.drawn_order(editable_model())
+        for fig, view, prefix in (("fig-logical", "logical", "l"), ("fig-deployment", "deployment", "d")):
+            svg = page.split(f'<svg id="{fig}"')[1].split("</svg>")[0]
+            found: dict = {}
+            for uid, ctr, number in re.findall(r'data-id="([^"]*)" data-ctr="([^"]*)" data-ord="(\d+)"', svg):
+                found.setdefault(ctr, []).append((int(number), xml_unescape(uid)))
+            expected = {f"{prefix}{i}": uids for i, uids in enumerate(orders[view]) if uids}
+            self.assertEqual({ctr: [uid for _n, uid in sorted(items)] for ctr, items in found.items()}, expected)
+            for items in found.values():
+                self.assertEqual(sorted(n for n, _ in items), list(range(1, len(items) + 1)))
+
+    def test_editable_output_is_deterministic(self) -> None:
+        self.assertEqual(self.editable_page(), self.editable_page())
+
+    def test_ordinals_python_and_javascript_agree(self) -> None:
+        if NODE is None:
+            self.skipTest("node is not installed")
+        orders = generate_diagram.drawn_order(editable_model())
+        logical = [list(uids) for uids in orders["logical"]]
+        deployment = [list(uids) for uids in orders["deployment"]]
+        logical[1].reverse()  # one reorder: the application band reversed
+        deployment[2].reverse()
+        panel = re.search(r'<section class="sec edit" id="edit-panel" data-uid="([^"]*)" data-pattern="([^"]*)" data-name="([^"]*)"', self.editable_page())
+        self.assertEqual(panel.group(1), LAYOUT_UID)  # the loaded layout's uid is on the page
+        meta = {"uid": "", "pattern": panel.group(2), "name": xml_unescape(panel.group(3))}
+        self.assertEqual(meta["name"], "FX Storefront Pattern diagram layout")  # what --write-layout names a new layout
+        for uid in ("", LAYOUT_UID):
+            meta["uid"] = uid
+            script = (
+                generate_diagram.EDIT_JS_PURE
+                + f"console.log(JSON.stringify([draftOrdinals({json.dumps(logical)}),"
+                + f"draftLayoutYaml({json.dumps(meta)},{json.dumps(logical)},{json.dumps(deployment)})]));"
+            )
+            ordinals, text = json.loads(run_node(script))
+            self.assertEqual(ordinals, generate_diagram.layout_ordinals(logical))
+            expected = generate_diagram.export_layout_document(uid, FIXTURE_SDP, "FX Storefront Pattern", logical, deployment)
+            self.assertEqual(yaml.safe_load(text), expected)
+            self.assertEqual(expected["uid"], uid or "NEW")
+            self.assertEqual(expected["name"], meta["name"])
+
+    def test_emitted_script_parses(self) -> None:
+        if NODE is None:
+            self.skipTest("node is not installed")
+        page = self.editable_page()
+        with tempfile.TemporaryDirectory() as tmp:
+            for index, chunk in enumerate(page.split("<script>")[1:]):
+                path = Path(tmp) / f"s{index}.js"
+                path.write_text(chunk.split("</script>")[0], encoding="utf-8")
+                result = subprocess.run([NODE, "--check", str(path)], capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+
+    def exported(self, tmp: str, ref: str | None = None) -> Path:
+        """An export-shaped document with the application band reversed, plus one extra logical entry when ``ref`` is given."""
+        orders = generate_diagram.drawn_order(editable_model())
+        logical = [list(uids) for uids in orders["logical"]]
+        logical[1].reverse()
+        document = generate_diagram.export_layout_document("NEW", FIXTURE_SDP, "FX Storefront Pattern", logical, orders["deployment"])
+        if ref:
+            document["logical"].append({"ref": ref, "position": 1})
+        path = Path(tmp) / "exported.yaml"
+        path.write_text(yaml.safe_dump(document, sort_keys=False), encoding="utf-8")
+        return path
+
+    def test_layout_from_round_trip_preserves_uid_and_orders_boxes(self) -> None:  # AC30
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = copy_fixture(Path(tmp))
+            exported = self.exported(tmp)
+            page = Path(tmp) / "p.html"
+            argv = ["--workspace", str(workspace), "--sdp", FIXTURE_SDP, "--output", str(page), "--write-layout", "--layout-from", str(exported)]
+            result = run_tool("generate_diagram.py", argv)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            target = workspace / "catalog" / LAYOUT_FILE
+            written = yaml.safe_load(target.read_text(encoding="utf-8"))
+            self.assertEqual(written["uid"], LAYOUT_UID)
+            source = yaml.safe_load(exported.read_text(encoding="utf-8"))
+            self.assertEqual(written["logical"], source["logical"])
+            self.assertEqual(written["deployment"], source["deployment"])
+            before = target.read_bytes()
+            self.assertEqual(run_tool("generate_diagram.py", argv).returncode, 0)
+            self.assertEqual(target.read_bytes(), before)  # a second run changes nothing
+            catalog = load_catalog(workspace)
+            rects = node_rects(logical_svg(catalog, FIXTURE_SDP))
+            self.assertLess(rects["FXPRD00003-0001"][0], rects["FXPRD00002-0001"][0])  # the reversed application band
+            self.assertLess(rects["FXPRD00002-0001"][0], rects["FXPRD00004-0001"][0])
+            self.assertIn(f"PASS {target.resolve()}", run_tool("validate.py", ["--workspace", str(workspace)]).stdout)
+
+    def test_layout_from_without_a_layout_replaces_new_with_a_fresh_uid(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = copy_fixture(Path(tmp), keep_layout=False)
+            exported = self.exported(tmp)
+            self.assertEqual(yaml.safe_load(exported.read_text(encoding="utf-8"))["uid"], "NEW")
+            argv = ["--workspace", str(workspace), "--sdp", FIXTURE_SDP, "--output", str(Path(tmp) / "p.html"), "--write-layout", "--layout-from", str(exported)]
+            self.assertEqual(run_tool("generate_diagram.py", argv).returncode, 0)
+            written = yaml.safe_load((workspace / "catalog" / LAYOUT_FILE).read_text(encoding="utf-8"))
+            self.assertRegex(written["uid"], r"^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$")
+            self.assertEqual(written["name"], "FX Storefront Pattern diagram layout")
+            self.assertIn(f"PASS {(workspace / 'catalog' / LAYOUT_FILE).resolve()}", run_tool("validate.py", ["--workspace", str(workspace)]).stdout)
+
+    def test_layout_from_rejects_an_undrawn_ref(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = copy_fixture(Path(tmp))
+            target = workspace / "catalog" / LAYOUT_FILE
+            before = target.read_bytes()
+            exported = self.exported(tmp, ref="FXNOPE00001-0001")
+            argv = ["--workspace", str(workspace), "--sdp", FIXTURE_SDP, "--output", str(Path(tmp) / "p.html"), "--write-layout", "--layout-from", str(exported)]
+            result = run_tool("generate_diagram.py", argv)
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("FXNOPE00001-0001", result.stderr)
+            self.assertEqual(target.read_bytes(), before)
+
+    def test_usage_errors(self) -> None:
+        code, _out, err = run_cli(["--workspace", str(FIXTURE), "--all", "--output-dir", "x", "--editable"])
+        self.assertEqual(code, 2)
+        self.assertIn("--editable", err)
+        code, _out, err = run_cli(["--workspace", str(FIXTURE), "--sdp", FIXTURE_SDP, "--layout-from", "x.yaml"])
+        self.assertEqual(code, 2)
+        self.assertIn("--layout-from requires --write-layout", err)
+        code, _out, err = run_cli(["--workspace", str(FIXTURE), "--list", "--editable"])
+        self.assertEqual(code, 2)
+
+    def test_editable_cli_writes_the_editable_page(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            page = Path(tmp) / "p.html"
+            result = run_tool("generate_diagram.py", ["--workspace", str(FIXTURE), "--sdp", FIXTURE_SDP, "--editable", "--output", str(page)])
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("Export layout", page.read_text(encoding="utf-8"))
+
+    def run_layout_from(self, mutate, keep_layout: bool = True) -> tuple:
+        """Write an export-shaped document changed by ``mutate`` and run --write-layout --layout-from; (result, layout path, bytes before)."""
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp, True)
+        workspace = copy_fixture(Path(tmp), keep_layout=keep_layout)
+        orders = generate_diagram.drawn_order(editable_model())
+        document = generate_diagram.export_layout_document("NEW", FIXTURE_SDP, "FX Storefront Pattern", orders["logical"], orders["deployment"])
+        mutate(document)
+        source = Path(tmp) / "exported.yaml"
+        source.write_text(yaml.safe_dump(document, sort_keys=False), encoding="utf-8")
+        target = workspace / "catalog" / LAYOUT_FILE
+        before = target.read_bytes() if target.exists() else b""
+        argv = ["--workspace", str(workspace), "--sdp", FIXTURE_SDP, "--output", str(Path(tmp) / "p.html"), "--write-layout", "--layout-from", str(source)]
+        return run_tool("generate_diagram.py", argv), target, before
+
+    def test_layout_from_rejects_a_pattern_mismatch(self) -> None:
+        result, target, before = self.run_layout_from(lambda d: d.update(pattern="FXPRD00001-0001"))
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("FXPRD00001-0001", result.stderr)
+        self.assertEqual(target.read_bytes(), before)
+
+    def test_layout_from_rejects_a_wrong_document_type(self) -> None:
+        result, target, before = self.run_layout_from(lambda d: d.update(type="component"))
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("not a diagram_layout", result.stderr)
+        self.assertEqual(target.read_bytes(), before)
+
+    def test_layout_from_rejects_bad_positions(self) -> None:
+        for bad in (0, -1, True, "2"):
+            result, target, before = self.run_layout_from(lambda d, bad=bad: d["logical"][0].update(position=bad))
+            self.assertEqual(result.returncode, 1, repr(bad))
+            self.assertIn("positive integer", result.stderr, repr(bad))
+            self.assertEqual(target.read_bytes(), before, repr(bad))
+
+    def test_existing_layout_uid_wins_over_the_documents_uid(self) -> None:
+        result, target, _before = self.run_layout_from(lambda d: d.update(uid="FXZZZ99999-0001"))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(yaml.safe_load(target.read_text(encoding="utf-8"))["uid"], LAYOUT_UID)
+
+    def test_edit_script_in_a_fake_dom(self) -> None:
+        if NODE is None:
+            self.skipTest("node is not installed")
+        with tempfile.TemporaryDirectory() as tmp:
+            script = Path(tmp) / "edit.js"
+            script.write_text(generate_diagram.EDIT_JS_PURE + generate_diagram.EDIT_JS_DOM, encoding="utf-8")
+            harness = Path(tmp) / "harness.js"
+            harness.write_text(FAKE_DOM_HARNESS, encoding="utf-8")
+            result = subprocess.run([NODE, str(harness), str(script)], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+
+
+FAKE_DOM_HARNESS = r"""
+const fs=require('fs'),assert=require('assert');
+class El{constructor(tag,attrs){this.tag=tag;this.attrs=Object.assign({},attrs||{});this.children=[];this.parentNode=null;this.l={};this.value='';this.textContent='';
+ this.classList={add(){},remove(){},toggle(){},contains(){return false}}}
+ getAttribute(k){return k in this.attrs?this.attrs[k]:null} setAttribute(k,v){this.attrs[k]=String(v)} removeAttribute(k){delete this.attrs[k]} hasAttribute(k){return k in this.attrs}
+ closest(){let e=this;while(e){if(e.attrs&&'data-ctr' in e.attrs)return e;e=e.parentNode}return null}
+ addEventListener(t,f){(this.l[t]=this.l[t]||[]).push(f)}
+ appendChild(c){if(c.parentNode)c.parentNode.removeChild(c);c.parentNode=this;this.children.push(c);return c}
+ insertBefore(n,r){if(n.parentNode)n.parentNode.removeChild(n);const i=this.children.indexOf(r);n.parentNode=this;this.children.splice(i,0,n);return n}
+ removeChild(c){this.children.splice(this.children.indexOf(c),1);c.parentNode=null}
+ compareDocumentPosition(o){const a=this.parentNode.children;return a.indexOf(o)>a.indexOf(this)?4:2}
+ getBBox(){return{x:+this.attrs.x,y:+this.attrs.y}} getScreenCTM(){return{a:2}} focus(){} select(){} setPointerCapture(){}
+ querySelector(){return null}
+ querySelectorAll(){return this.children.filter(c=>c.attrs&&'data-ctr' in c.attrs)}
+ fire(t,e){(this.l[t]||[]).forEach(f=>f(e))}
+ get ownerSVGElement(){return svg}}
+const svg=new El('svg',{id:'fig-logical'});
+function node(id,ctr,ord,x,fixed){const e=new El('g',Object.assign({'data-id':id,'data-ctr':ctr,'data-ord':ord,x:x,y:0},fixed?{'data-fixed':'1'}:{}));svg.appendChild(e);return e}
+const A=node('A','l0',1,0),B=node('B','l0',2,100),C=node('C','l0',3,200),D=node('D','l1',1,0),E=node('E','l1',2,100),F=node('F','l1',3,200,true);
+const panel=new El('s',{id:'edit-panel','data-uid':'','data-pattern':'P1','data-name':'Pat diagram layout'});
+const out=new El('t'),note=new El('s'),btn=new El('b');
+const ids={'edit-panel':panel,'fig-logical':svg,'layout-out':out,'edit-note':note,'export-layout':btn};
+global.document={getElementById:k=>ids[k]||null,createComment:()=>new El('c')};
+global.navigator={};global.setTimeout=f=>f();
+eval(fs.readFileSync(process.argv[2],'utf8'));
+function exported(){btn.fire('click');const rows=[...out.value.matchAll(/ref: "([^"]*)"\n    position: (\d+)/g)].map(m=>m[1]+m[2]);return rows.join(' ')}
+const ev=(el,o)=>Object.assign({target:el,button:0,pointerId:1,clientX:0,clientY:0,preventDefault(){},stopPropagation(){}},o);
+assert.strictEqual(exported(),'A1 B2 C3 D1 E2 F3');
+// Alt+ArrowRight moves A by one slot: renumbers, swaps places, sorts the DOM
+svg.fire('keydown',ev(A,{altKey:true,key:'ArrowRight'}));
+assert.strictEqual(note.textContent,'A moved to position 2 of 3.');
+assert.strictEqual(exported(),'B1 A2 C3 D1 E2 F3');
+assert.strictEqual(A.attrs.transform,'translate(100 0)');assert.strictEqual(B.attrs.transform,'translate(-100 0)');
+assert.deepStrictEqual(svg.children.map(c=>c.attrs['data-id']),['B','A','C','D','E','F']);
+// a blocked move says so and changes nothing
+svg.fire('keydown',ev(B,{altKey:true,key:'ArrowLeft'}));
+assert.match(note.textContent,/cannot move further/);assert.strictEqual(exported(),'B1 A2 C3 D1 E2 F3');
+// a fixed box stays put, and a movable box does not pass it
+svg.fire('keydown',ev(F,{altKey:true,key:'ArrowLeft'}));
+assert.match(note.textContent,/fixed/);assert.strictEqual(F.attrs.transform,undefined);
+svg.fire('keydown',ev(E,{altKey:true,key:'ArrowRight'}));
+assert.match(note.textContent,/cannot move further/);assert.strictEqual(exported(),'B1 A2 C3 D1 E2 F3');
+svg.fire('pointerdown',ev(F,{clientX:0}));svg.fire('pointermove',ev(F,{clientX:-500}));svg.fire('pointerup',ev(F,{}));
+assert.strictEqual(F.attrs.transform,undefined);assert.strictEqual(exported(),'B1 A2 C3 D1 E2 F3');
+// a drag far outside its container (left and down, towards l1) stays in l0 and re-sorts it
+svg.fire('pointerdown',ev(C,{clientX:400,clientY:0}));
+svg.fire('pointermove',ev(C,{clientX:-4000,clientY:900}));
+assert.strictEqual(C.attrs.transform.split(' ')[1],'0)');  // clamped: no vertical travel into another container
+svg.fire('pointerup',ev(C,{}));
+assert.strictEqual(exported(),'C1 B2 A3 D1 E2 F3');
+// a second pointer is ignored while a drag runs
+svg.fire('pointerdown',ev(D,{clientX:0,pointerId:1}));
+svg.fire('pointerdown',ev(E,{clientX:0,pointerId:2}));
+svg.fire('pointermove',ev(E,{clientX:-500,pointerId:2}));
+assert.strictEqual(E.attrs.transform,undefined);
+svg.fire('pointermove',ev(D,{clientX:400,pointerId:1}));
+svg.fire('lostpointercapture',ev(D,{pointerId:1}));
+assert.strictEqual(exported(),'C1 B2 A3 E1 D2 F3');
+// the order never changes between containers
+assert.deepStrictEqual(out.value.match(/ref: "[ABC]"/g).length,3);
+console.log('ok');
+"""
