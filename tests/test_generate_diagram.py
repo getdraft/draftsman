@@ -2135,7 +2135,7 @@ class LaterStoryTests(unittest.TestCase):
         self.assertEqual(ends, {(hub[0] + hub[2] // 2 - generate_diagram.ATTACH_DX, hub[1])})
         row_above = max(y + h for _x, y, _w, h in rects.values() if y + h <= hub[1])
         tracks = 1 + sum(1 for _x, y, _w, h in rects.values() if y + h == row_above)  # the hub's in-run and the out-runs above it
-        self.assertLessEqual(hub[1] - row_above, -(-generate_diagram._band_height(tracks, 0) // 10) * 10)
+        self.assertLessEqual(hub[1] - row_above, -(-generate_diagram._band_height(tracks, 0, generate_diagram.LABEL_BAND, generate_diagram.LABEL_BAND) // 10) * 10)
         self._assert_runs_clean(svg)
         self.assertEqual(edges_hitting_foreign_boxes(svg), [])
 
@@ -2329,6 +2329,8 @@ class LaterStoryTests(unittest.TestCase):
                 self.assertEqual(edges_hitting_foreign_boxes(logical), [])
                 self.assertEqual(covisible_stub_crossings(logical, logical_free_x(cat, "SDP-1")), [])
                 self.assertEqual(logical, logical_svg(dict(reversed(list(cat.items()))), "SDP-1"))
+                self._assert_labels_clean(logical)  # AC22, D37
+                self._assert_labels_clean(svg)
 
     def test_fixture_routes_keep_covisible_tracks_apart_and_attach_bottom_out_top_in(self) -> None:
         # AC21 on every fixture pattern, both figures.
@@ -2623,7 +2625,8 @@ class LaterStoryTests(unittest.TestCase):
         self.assertIn('marker-end="url(#lg-end)"', edge_paths(svg)[("C-A", "C-B")])
         self.assertNotIn('marker-start="url(#lg-start)"', edge_paths(svg)[("C-A", "C-B")])
 
-    def test_label_visibility_threshold(self) -> None:
+    def test_labels_show_with_the_edge_and_callout_on_hover(self) -> None:
+        # D37: no permanent labels whatever the edge count; two labels per edge, shown by direction; callout on hover.
         def chain(count: int) -> str:
             objects = [component(f"C-{n}", f"N{n}") for n in range(count + 1)]
             objects.append(pattern({"G": [f"C-{n}" for n in range(count + 1)]}))
@@ -2634,30 +2637,337 @@ class LaterStoryTests(unittest.TestCase):
                 objects.append(rel)
             return svg_for(objects)
 
-        eight = chain(8)
-        self.assertEqual(eight.count('class="lb"'), 8)
-        self.assertNotIn('class="lb hov"', eight)
-        nine = chain(9)
-        self.assertEqual(nine.count('class="lb hov"'), 9)
-        self.assertNotIn('class="lb"', nine)
-        self.assertIn('<tspan class="tech"> / HTTPS</tspan>', eight)
-        self.assertIn(".lb .tech{font-weight:400}", eight)
+        for count in (3, 9):
+            svg = chain(count)
+            self.assertEqual(svg.count('class="lb lb-s"'), count)
+            self.assertEqual(svg.count('class="lb lb-t"'), count)
+            self.assertEqual(svg.count('<text class="callout"'), count)
+        self.assertIn('<tspan class="tech"> / HTTPS</tspan>', svg)
+        self.assertIn(".lb .tech{font-weight:400}", svg)
+        self.assertIn(".lb{display:none}", svg)
+        self.assertIn(".edge.on.out .lb-t,.edge.on.in .lb-s{display:inline}", svg)
+        self.assertIn(".callout{display:none;", svg)
+        self.assertIn(".edge:hover .callout{display:inline}", svg)
+        self.assertNotIn(".edge:hover .lb", svg)
+        self.assertIn("<title>N0 rel 0 N1</title>", svg)
+        self.assertFalse(hasattr(generate_diagram, "LABEL_LIMIT"))
+        self.assertFalse(hasattr(generate_diagram, "_polyline_mid"))
 
-    def test_labels_clear_node_boxes(self) -> None:
-        svg = logical_svg(load_catalog(FIXTURE), "FXSDP00002-0001")
-        boxes = node_rects(svg)
-        self.assertTrue(boxes)
-        texts = []  # band labels and the outside lane caption: (left, top, width, height)
-        for x, y, text in re.findall(r'<text class="(?:bl|ll)" x="([\d.]+)" y="([\d.]+)">([^<]*)</text>', svg):
-            texts.append((float(x), float(y) - 11, len(xml_unescape(text)) * 7 + 4, 12))
-        obstacles = [(bx, by, bw, bh) for bx, by, bw, bh in boxes.values()] + texts
-        self.assertTrue(texts)
-        for x, y, text in re.findall(r'<text class="lb" x="([\d.]+)" y="([\d.]+)" text-anchor="middle">([^<]*)</text>', svg):
-            width = len(xml_unescape(text)) * 6.2 + 4
-            left, top = float(x) - width / 2, float(y) - 13
-            for bx, by, bw, bh in obstacles:
-                clear = left + width <= bx or bx + bw <= left or top + 14 <= by or by + bh <= top
-                self.assertTrue(clear, f"label '{text}' overlaps {bx, by}")
+    @staticmethod
+    def _label_elements(svg: str) -> list:
+        """One dict per label element (lb-s, lb-t, loop) with its box by the _label_mid metrics (6.2 px a character, 14 px tall)."""
+        found = []
+        for source, target, body in re.findall(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)">(.*?)</g>', svg, re.S):
+            pts = [(float(a), float(b)) for a, b in re.findall(r"[ML]([\d.-]+) ([\d.-]+)", re.search(r'<path class="ln[^"]*" d="([^"]*)"', body).group(1))]
+            for kind, x, base, anchor, text in re.findall(r'<text class="lb lb-([st])" x="([\d.]+)" y="([\d.]+)" text-anchor="(start|end)">(.*?)</text>', body):
+                w = len(xml_unescape(re.sub(r"<[^>]*>", "", text))) * 6.2 + 4
+                found.append(
+                    {
+                        "source": source, "target": target, "loop": source == target, "kind": kind, "x": float(x), "pts": pts, "anchor": anchor,
+                        "box": ((float(x) - 2) if anchor == "start" else (float(x) - w + 2), float(base) - 10, w, 14), "text": xml_unescape(re.sub(r"<[^>]*>", "", text)),
+                    }
+                )
+            m = re.search(r'<text class="callout" x="([\d.]+)" y="([\d.]+)" text-anchor="middle">(.*?)</text>', body)
+            if m:
+                full = len(xml_unescape(re.sub(r"<[^>]*>", "", m.group(3))))
+                width = full * generate_diagram.CALLOUT_CHAR_W + 6
+                found.append(
+                    {
+                        "source": source, "target": target, "loop": source == target, "kind": "callout", "x": float(m.group(1)), "pts": pts,
+                        "box": (float(m.group(1)) - width / 2, float(m.group(2)) - 10, width, 18), "text": xml_unescape(re.sub(r"<[^>]*>", "", m.group(3))),
+                    }
+                )
+        return found
+
+    @staticmethod
+    def _gap(px: float, py: float, box: tuple) -> float:
+        dx = max(box[0] - px, 0, px - (box[0] + box[2]))
+        dy = max(box[1] - py, 0, py - (box[1] + box[3]))
+        return dx + dy
+
+    @staticmethod
+    def _captions(svg: str) -> list:
+        return [
+            (float(x), float(y) - 11, len(xml_unescape(text)) * 7 + 4, 12)
+            for _cls, x, y, text in re.findall(r'<text class="(bl|ll|zc|gl|gc|tl)" x="([\d.]+)" y="([\d.]+)">([^<]*)</text>', svg)
+        ]
+
+    def _assert_labels_clean(self, svg: str) -> None:
+        elements = self._label_elements(svg)
+        labels = [el for el in elements if el["kind"] != "callout"]
+        nodes = node_rects(svg)
+        captions = self._captions(svg)
+        width, height = (int(v) for v in re.search(r'viewBox="0 0 (\d+) (\d+)"', svg).groups())
+        borders = [
+            tuple(float(v) for v in m)
+            for m in re.findall(r'<rect class="(?:tgt|grp|zl|band|lane)" x="([\d.-]+)" y="([\d.-]+)" width="([\d.]+)" height="([\d.]+)"', svg)
+        ]
+        for el in labels:  # no label text on a node box or a caption
+            for box in list(nodes.values()) + captions:
+                self.assertEqual(generate_diagram._overlap(el["box"], box), 0, (el["text"], el["box"], box))
+        for el in labels:  # R1, R2: inside the figure, across no container, zone, target, band or lane border, on no vertical track
+            x, y, w, h = el["box"]
+            self.assertTrue(0 <= x and x + w <= width and 0 <= y and y + h <= height, (el["text"], el["box"], width, height))
+            for bx, by, bw, bh in borders:
+                inside = bx <= x and x + w <= bx + bw and by <= y and y + h <= by + bh
+                self.assertTrue(inside or generate_diagram._overlap(el["box"], (bx, by, bw, bh)) == 0, (el["text"], el["box"], (bx, by, bw, bh)))
+            for other in elements:  # every vertical segment of every route: tracks (middle) and stubs (first and last)
+                for (ax, ay), (bx2, by2) in zip(other["pts"], other["pts"][1:]):
+                    if ax == bx2:
+                        self.assertFalse(x < ax < x + w and min(ay, by2) < y + h and y < max(ay, by2), (el["text"], el["box"], ax, ay, by2))
+        for el in labels:  # R1 (round 3): no horizontal route segment runs through a label
+            x, y, w, h = el["box"]
+            for other in elements:
+                for (ax, ay), (bx2, by2) in zip(other["pts"], other["pts"][1:]):
+                    if ay == by2 and ax != bx2:
+                        self.assertFalse(y < ay < y + h and min(ax, bx2) < x + w and x < max(ax, bx2), (el["text"], el["box"], ay, ax, bx2))
+        for el in elements:  # callouts keep clear of node boxes and captions (loop callouts also of visible labels, below)
+            if el["kind"] == "callout" and not el["loop"]:
+                for box in list(nodes.values()) + captions:
+                    self.assertEqual(generate_diagram._overlap(el["box"], box), 0, ("callout", el["text"], box))
+        for uid in sorted(nodes):
+            shown = [
+                el["box"]
+                for el in labels
+                if (el["loop"] and el["source"] == uid)
+                or (not el["loop"] and ((el["source"] == uid and el["kind"] == "t") or (el["target"] == uid and el["kind"] == "s")))
+            ]
+            for el in elements:  # R3: a loop's callout avoids node boxes, captions and every label shown with its box
+                if el["kind"] == "callout" and el["loop"] and el["source"] == uid:
+                    for box in shown + list(nodes.values()) + captions:
+                        self.assertEqual(generate_diagram._overlap(el["box"], box), 0, ("loop callout", el["text"], box))
+            # AC22: for every box, the labels shown when it is selected are pairwise disjoint.
+            for i, a in enumerate(shown):
+                for b in shown[i + 1 :]:
+                    self.assertEqual(generate_diagram._overlap(a, b), 0, (uid, a, b))
+        # Each stub label is a label band from its own end's attachment point (vertically), one row more per
+        # same-pair sibling and past the loop rise of a target with self-loops; it starts 5 px inside its own box.
+        pair_count: dict = {}
+        for el in labels:
+            if not el["loop"] and el["kind"] == "s":
+                pair_count[(el["source"], el["target"])] = pair_count.get((el["source"], el["target"]), 0) + 1
+        loops_of: dict = {}
+        for el in labels:
+            if el["loop"]:
+                loops_of[el["source"]] = loops_of.get(el["source"], 0) + 1
+        for el in labels:
+            if el["loop"]:
+                continue
+            end = el["pts"][0] if el["kind"] == "s" else el["pts"][-1]
+            allowed = generate_diagram.LABEL_BAND * pair_count[(el["source"], el["target"])]
+            if el["kind"] == "t" and loops_of.get(el["target"]):
+                allowed += generate_diagram.LOOP_RISE + generate_diagram.LOOP_STEP * (loops_of[el["target"]] - 1)
+            self.assertLessEqual(self._gap(el["box"][0], end[1], el["box"]), allowed, el["text"])
+            uid = el["source"] if el["kind"] == "s" else el["target"]
+            if uid in nodes:
+                nx, _ny, nw, _nh = nodes[uid]
+                if end[0] > nx + nw / 2:
+                    self.assertEqual((el["anchor"], el["x"]), ("start", nx + generate_diagram.LABEL_DX), el["text"])
+                else:
+                    self.assertEqual((el["anchor"], el["x"]), ("end", nx + nw - generate_diagram.LABEL_DX), el["text"])
+
+    def test_callout_sits_on_the_line(self) -> None:
+        for render, sdp in ((logical_svg, "FXSDP00002-0001"), (deployment_svg, "FXSDP00002-0001")):
+            svg = render(load_catalog(FIXTURE), sdp)
+            seen = 0
+            for body in re.findall(r'<g class="edge"[^>]*>(.*?)</g>', svg, re.S):
+                m = re.search(r'<text class="callout" x="([\d.]+)" y="([\d.]+)"', body)
+                if not m:
+                    continue
+                seen += 1
+                pts = [(float(a), float(b)) for a, b in re.findall(r"[ML]([\d.-]+) ([\d.-]+)", re.search(r'<path class="ln[^"]*" d="([^"]*)"', body).group(1))]
+                if len(pts) < 2:
+                    continue
+                cx, cy = float(m.group(1)), float(m.group(2)) + 6
+                on_line = any(
+                    min(a[0], b[0]) - 0.1 <= cx <= max(a[0], b[0]) + 0.1 and min(a[1], b[1]) - 0.1 <= cy <= max(a[1], b[1]) + 0.1
+                    for a, b in zip(pts, pts[1:])
+                )
+                self.assertTrue(on_line or "<path" in body, body)
+            self.assertGreater(seen, 0)
+
+    def test_labels_sit_by_their_own_end_without_collisions(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        seen = 0
+        for sdp in generate_diagram.sdps(catalog):
+            for render in (logical_svg, deployment_svg):
+                with self.subTest(sdp=sdp["uid"], view=render.__name__):
+                    svg = render(catalog, sdp["uid"])
+                    self._assert_labels_clean(svg)
+                    seen += len(self._label_elements(svg))
+                    self.assertEqual(svg, render(catalog, sdp["uid"]))
+        self.assertGreater(seen, 0)
+
+    def test_stacked_labels_for_one_ordered_pair(self) -> None:
+        objects = [component("C-A", "A"), component("C-B", "B"), pattern({"G": ["C-A", "C-B"]})]
+        objects += [relationship(f"R-{n}", "C-A", "C-B", f"rel {n}") for n in range(3)]
+        for svg in (svg_for(objects), deployment_svg(load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects)), "SDP-1")):
+            for kind in ("s", "t"):
+                ys = [el["box"][1] for el in self._label_elements(svg) if el["kind"] == kind]
+                self.assertEqual(len(ys), 3)
+                self.assertEqual(len({round(y) for y in ys}), 3)
+                self.assertGreaterEqual(min(b - a for a, b in zip(sorted(ys), sorted(ys)[1:])), generate_diagram.LABEL_BAND)
+            self._assert_labels_clean(svg)
+
+    def test_label_text_is_clipped_to_the_box_width(self) -> None:
+        objects = [component("C-A", "A"), component("C-B", "B"), pattern({"G": ["C-A", "C-B"]})]
+        rel = relationship("R-1", "C-A", "C-B", "a very long label that keeps going and going forever and ever")
+        rel["technology"] = "PostgreSQL wire protocol"
+        objects.append(rel)
+        svg = svg_for(objects)
+        for el in self._label_elements(svg):
+            if el["kind"] == "callout":
+                continue
+            self.assertLessEqual(el["box"][2], generate_diagram.LOGICAL_BOX_W - 10)
+            self.assertTrue(el["text"].endswith("..."))
+        self.assertIn("a very long label that keeps going and going forever and ever<tspan class=\"tech\"> / PostgreSQL wire protocol</tspan></text>", svg)
+
+    def _shape(self, name: str) -> list:
+        def tier(objects: list, tiers: dict) -> list:
+            sdp = next(o for o in objects if o["type"] == "software_deployment_pattern")
+            for entry in sdp["serviceGroups"][0]["deployableObjects"]:
+                entry["diagramTier"] = tiers[entry["ref"]]
+            return objects
+
+        if name == "hub12in":
+            srcs = [f"S-{k:02d}" for k in range(12)]
+            objects = [component(u, u) for u in srcs] + [component("H-1", "Hub"), pattern({"G": srcs + ["H-1"]})]
+            objects += [relationship(f"R-{k:02d}", u, "H-1", f"rel {k}") for k, u in enumerate(srcs)]
+            return tier(objects, {**{u: "presentation" for u in srcs}, "H-1": "application"})
+        if name == "hub8out":
+            tgts = [f"T-{k:02d}" for k in range(8)]
+            objects = [component(u, u) for u in tgts] + [component("H-1", "Hub"), pattern({"G": ["H-1"] + tgts})]
+            objects += [relationship(f"R-{k:02d}", "H-1", u, f"writes {k}") for k, u in enumerate(tgts)]
+            return tier(objects, {**{u: "data" for u in tgts}, "H-1": "application"})
+        if name == "zone3in":
+            objects = [component(u, u) for u in ("C-A", "C-B", "C-C", "C-X")] + [pattern({"G": ["C-A", "C-B", "C-C", "C-X"]})]
+            objects[-1]["networkZones"] = [{"id": "z1", "name": "Zone One", "tier": "frontend"}, {"id": "z2", "name": "Zone Two", "tier": "data"}]
+            for entry in objects[-1]["serviceGroups"][0]["deployableObjects"]:
+                entry["networkZone"] = "z2" if entry["ref"] == "C-X" else "z1"
+            objects += [relationship(f"R-{n}", u, "C-X", f"reads {n}") for n, u in enumerate(("C-A", "C-B", "C-C"))]
+            return tier(objects, {"C-A": "presentation", "C-B": "presentation", "C-C": "presentation", "C-X": "data"})
+        if name == "hub12in_long":
+            srcs = [f"S-{k:02d}" for k in range(12)]
+            objects = [component(u, u) for u in srcs] + [component("H-1", "Hub"), pattern({"G": srcs + ["H-1"]})]
+            objects += [relationship(f"R-{k:02d}", u, "H-1", f"reads the shared customer profile {k}") for k, u in enumerate(srcs)]
+            return tier(objects, {**{u: "presentation" for u in srcs}, "H-1": "application"})
+        if name == "longlabels":
+            ids = ["S-0", "S-1", "S-2", "D-1", "N-1", "N-2"]
+            objects = [component(u, u) for u in ids] + [pattern({"G": ids})]
+            for k in range(3):
+                rel = relationship(f"R-{k}", f"S-{k}", "D-1", "reads from and writes to")
+                rel["technology"] = "PostgreSQL wire protocol"
+                objects.append(rel)
+            return tier(objects, {"S-0": "presentation", "S-1": "presentation", "S-2": "presentation", "D-1": "data", "N-1": "data", "N-2": "data"})
+        if name == "upward":
+            ids = ["W-1", "A-1", "Q-1", "D-1"]
+            objects = [component(u, u) for u in ids] + [pattern({"G": ids})]
+            objects += [
+                relationship("R-1", "W-1", "A-1", "calls"), relationship("R-2", "A-1", "D-1", "reads and writes orders"),
+                relationship("R-3", "Q-1", "W-1", "delivers order status events"), relationship("R-4", "A-1", "Q-1", "publishes order events"),
+            ]
+            return tier(objects, {"W-1": "presentation", "A-1": "application", "Q-1": "data", "D-1": "data"})
+        if name == "webshop":
+            names = {
+                "W-1": "presentation", "M-1": "presentation", "A-1": "application", "B-1": "application", "U-1": "application",
+                "I-1": "application", "N-1": "application", "D-1": "data", "D-2": "data", "K-1": "data", "C-1": "data",
+            }
+            objects = [component(u, u) for u in names] + [component("X-1", "Identity provider"), component("X-2", "Payment processor"), pattern({"G": list(names)})]
+            rels = [
+                ("W-1", "A-1", "places orders", "HTTPS"), ("W-1", "B-1", "browses catalog", "HTTPS"), ("W-1", "U-1", "signs in", "OIDC"),
+                ("W-1", "C-1", "stores session", "Redis"), ("M-1", "A-1", "places orders", "HTTPS"), ("M-1", "B-1", "browses catalog", "HTTPS"),
+                ("M-1", "U-1", "signs in", "OIDC"), ("A-1", "D-1", "reads and writes orders", "PostgreSQL"),
+                ("A-1", "K-1", "publishes order placed events", "Kafka"), ("A-1", "I-1", "reserves stock", "gRPC"), ("A-1", "X-2", "charges cards", "HTTPS"),
+                ("A-1", "U-1", "validates tokens", "HTTPS"), ("B-1", "D-2", "reads catalog", "PostgreSQL"), ("I-1", "D-2", "updates stock levels", "PostgreSQL"),
+                ("I-1", "K-1", "publishes stock events", "Kafka"), ("K-1", "N-1", "delivers order placed events", "Kafka"),
+                ("K-1", "I-1", "delivers order placed events", "Kafka"), ("N-1", "W-1", "pushes order status", "WebSocket"),
+                ("U-1", "X-1", "federates sign-in", "OIDC"), ("U-1", "C-1", "caches tokens", "Redis"), ("A-1", "A-1", "retries failed payments", ""),
+            ]
+            for k, (src, dst, label, tech) in enumerate(rels):
+                rel = relationship(f"R-{k:02d}", src, dst, label)
+                if tech:
+                    rel["technology"] = tech
+                objects.append(rel)
+            return tier(objects, names)
+        ids = ["C-A", "C-B", "C-C", "C-X", "C-U"]  # loop_plus_in
+        objects = [component(u, u) for u in ids] + [pattern({"G": ids})]
+        objects += [
+            relationship("R-0", "C-X", "C-X", "checks own health"),
+            relationship("R-1", "C-A", "C-X", "consumes order messages"),
+            relationship("R-2", "C-B", "C-X", "queries"),
+            relationship("R-3", "C-C", "C-X", "publishes"),
+            relationship("R-4", "C-X", "C-X", "retries"),
+        ]
+        return tier(objects, {"C-U": "presentation", "C-A": "application", "C-B": "application", "C-C": "application", "C-X": "data"})
+
+    def test_loop_label_steps_up_clear_of_what_it_would_overlap(self) -> None:
+        # R5: the self-loop collision step. A label that starts on an obstacle moves up until it is clear.
+        edge = generate_diagram.DiagramEdge("N-1", "N-1", "checks own health")
+        other = generate_diagram.DiagramEdge("N-0", "N-1", "feeds")
+        base = (186.0, 200.0, 16)
+        free = generate_diagram._edge_label_svgs([(0, edge)], {}, {}, {0: (100.0, 200, 200.0)}, [])
+        self.assertIn('y="200.0"', free[0])
+        tops = {1: (((100.0, 200, 220.0), 150.0), ((100.0, 200, 180.0), 190.0))}  # the source end's label box sits on the loop label's row
+        pushed = generate_diagram._edge_label_svgs(
+            [(0, edge), (1, other)], {1: [(0, 0), (0, 300)]}, tops, {0: (100.0, 200, 200.0)}, [(0, 190, 400, 20)]
+        )
+        y = float(re.search(r'class="lb lb-t" x="[\d.]+" y="([\d.]+)"', pushed[0]).group(1))
+        self.assertLess(y, 200.0 - generate_diagram.LABEL_BAND + 1)
+        box = (base[0] - 2, y - 10, generate_diagram._label_len(edge, base[2]) * generate_diagram.LABEL_CHAR_W + 4, 14)
+        self.assertEqual(generate_diagram._overlap(box, (0, 190, 400, 20)), 0)
+        # and the loop's callout keeps clear of the labels visible with its box
+        callout = re.search(r'class="callout" x="([\d.]+)" y="([\d.]+)"', pushed[0])
+        self.assertIsNotNone(callout)
+
+    def test_callout_obstacles_include_every_caption(self) -> None:
+        # R5: the callout avoids captions in both views (zone, group, target and lane captions in the deployment view).
+        seen = []
+        real = generate_diagram._edge_label_svgs
+
+        def spy(edges, routes, tops, loops, obstacles):
+            seen.append(list(obstacles))
+            return real(edges, routes, tops, loops, obstacles)
+
+        cases = [(load_catalog(FIXTURE), "FXSDP00002-0001"), (load_catalog(FIXTURE), "FXSDP00001-0001"),
+                 (load_catalog(write_workspace(Path(tempfile.mkdtemp()), self._shape("zone3in"))), "SDP-1")]
+        generate_diagram._edge_label_svgs = spy
+        try:
+            for cat, sdp in cases:
+                for render in (logical_svg, deployment_svg):
+                    seen.clear()
+                    svg = render(cat, sdp)
+                    captions = self._captions(svg)
+                    self.assertTrue(captions)
+                    for caption in captions:
+                        self.assertTrue(any(generate_diagram._overlap(caption, o) > 0 for o in seen[-1]), (render.__name__, caption))
+        finally:
+            generate_diagram._edge_label_svgs = real
+
+    def test_callout_avoids_labels_visible_with_its_endpoints(self) -> None:
+        # R2 (round 3): FXPRD00003 pinned, FXPRD00002 -> FXPRD00003 hovered: the callout overlaps none of the labels
+        # then visible (lb-t of out edges and lb-s of in edges of either end).
+        for render in (logical_svg, deployment_svg):
+            svg = render(load_catalog(FIXTURE), "FXSDP00001-0001")
+            elements = self._label_elements(svg)
+            hovered = [el for el in elements if el["kind"] == "callout" and el["source"] == "FXPRD00002-0001" and el["target"] == "FXPRD00003-0001"]
+            self.assertTrue(hovered, render.__name__)
+            for call in hovered:
+                for end in ("FXPRD00002-0001", "FXPRD00003-0001"):
+                    for el in elements:
+                        if el["kind"] != "callout" and not el["loop"] and ((el["source"] == end and el["kind"] == "t") or (el["target"] == end and el["kind"] == "s")):
+                            self.assertEqual(generate_diagram._overlap(call["box"], el["box"]), 0, (render.__name__, call["text"], el["text"]))
+
+    def test_label_shapes_from_review(self) -> None:
+        for name in ("hub12in", "hub12in_long", "hub8out", "zone3in", "loop_plus_in", "upward", "longlabels", "webshop"):
+            cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), self._shape(name)))
+            for render in (logical_svg, deployment_svg):
+                with self.subTest(shape=name, view=render.__name__):
+                    svg = render(cat, "SDP-1")
+                    xml.dom.minidom.parseString(svg)
+                    self.assertTrue(self._label_elements(svg))
+                    self._assert_labels_clean(svg)
+                    self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+                    self.assertEqual(covisible_track_clashes(svg), [])
 
     def test_node_type_chip_and_tech_line(self) -> None:
         objects = [

@@ -66,5 +66,5 @@ The generator prints a `N warnings` count line, then each distinct warning once 
 
 - If your harness can publish a page or file for the user, publish the generated HTML so they get a link, and republish to the same place after each regeneration.
 - Otherwise give the user the output file path and tell them to open it in a browser.
-- Click a box to pin its relationships; the same uid is highlighted in both figures. Edge labels show on hover or pin above eight edges.
+- Click a box to pin its relationships; the same uid is highlighted in both figures. Edge labels show with their edge, at the end farthest from the selected box (clipped to the box width); hover a single line to see its full label and technology in a callout.
 - Offer Mermaid or C4 text only when the user wants something to embed.
