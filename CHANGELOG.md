@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None for workspaces. The generated browser no longer shows `intent`; catalog files that still carry the field continue to validate.
+
+### Added
+
+- None.
+
+### Changed
+
+- The generated browser no longer renders `intent`. The intent badge, tag and dot, the drawer "Intent" row, the "HA Components" KPI card, the topology legend "Intent" group and the topology-node intent slot are removed from `framework/browser/draft-browser.js`. The `riskRef` display is unchanged.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Standalone entries without a `riskRef` no longer show the "Explicit architecture decision" icon in topology nodes. This is an accepted effect of removing `intent`. No workspace action is required.
+
 ## 1.5.0 - 2026-11-14
 
 ### Compatibility Impact
