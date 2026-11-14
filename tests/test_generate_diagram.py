@@ -4,6 +4,7 @@ import contextlib
 import hashlib
 import inspect
 import io
+import json
 import math
 import os
 import re
@@ -3335,3 +3336,182 @@ class DiagramLayoutTests(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             self.assertIn("already exists", result.stderr)
             self.assertEqual(foreign.read_bytes(), before)
+
+
+NODE = shutil.which("node")
+
+
+def run_node(source: str) -> str:
+    result = subprocess.run([NODE, "-e", source], capture_output=True, text=True)
+    if result.returncode != 0:
+        raise AssertionError(result.stderr)
+    return result.stdout
+
+
+def editable_model() -> "generate_diagram.Model":
+    catalog = load_catalog(FIXTURE)
+    return generate_diagram.Model(catalog, catalog[FIXTURE_SDP], False)
+
+
+def strip_editable(page: str) -> str:
+    """Remove everything --editable adds, leaving what the plain page holds."""
+    page = re.sub(r' data-ctr="[^"]*" data-ord="\d+"(?: data-fixed="1")?', "", page)
+    page = re.sub(r'<section class="sec edit" id="edit-panel".*?</section>', "", page, flags=re.S)
+    page = page.replace(generate_diagram.EDIT_CSS, "")
+    return page.replace(f"<script>{generate_diagram.EDIT_JS_PURE}{generate_diagram.EDIT_JS_DOM}</script>", "")
+
+
+class EditableRenderTests(unittest.TestCase):
+    """S19: --editable local render (D48) and --write-layout --layout-from."""
+
+    def editable_page(self) -> str:
+        return generate_diagram.build(FIXTURE, FIXTURE_SDP, editable=True)[0]
+
+    def test_plain_page_has_no_editing_additions(self) -> None:  # AC30
+        plain, _ = generate_diagram.build(FIXTURE, FIXTURE_SDP)
+        for token in ("data-ctr", "data-ord", "edit-panel", "Export layout", "<textarea", "draftOrdinals"):
+            self.assertNotIn(token, plain)
+        self.assertEqual(plain.count("<script>"), 1)
+        self.assertEqual(plain, generate_diagram.build(FIXTURE, FIXTURE_SDP, editable=False)[0])
+
+    def test_editable_page_is_the_plain_page_plus_additions(self) -> None:  # AC30
+        plain, _ = generate_diagram.build(FIXTURE, FIXTURE_SDP)
+        self.assertEqual(strip_editable(self.editable_page()), plain)
+
+    def test_browser_generator_never_sets_editable(self) -> None:
+        source = (REPO_ROOT / "framework" / "tools" / "generate_browser.py").read_text(encoding="utf-8")
+        self.assertNotIn("editable", source)
+
+    def test_editable_page_carries_script_control_textarea_and_containers(self) -> None:  # AC30
+        page = self.editable_page()
+        self.assertEqual(page.count("<script>"), 2)
+        self.assertIn("draftLayoutYaml", page)
+        self.assertEqual(page.count('id="export-layout"'), 1)
+        self.assertIn("Export layout", page)
+        self.assertEqual(page.count("<textarea"), 1)
+        self.assertNotIn("localStorage", page)
+        self.assertNotIn("sessionStorage", page)
+        self.assertNotIn("fetch(", page)
+        self.assertNotIn("XMLHttpRequest", page)
+        orders = generate_diagram.drawn_order(editable_model())
+        for fig, view, prefix in (("fig-logical", "logical", "l"), ("fig-deployment", "deployment", "d")):
+            svg = page.split(f'<svg id="{fig}"')[1].split("</svg>")[0]
+            found: dict = {}
+            for uid, ctr, number in re.findall(r'data-id="([^"]*)" data-ctr="([^"]*)" data-ord="(\d+)"', svg):
+                found.setdefault(ctr, []).append((int(number), xml_unescape(uid)))
+            expected = {f"{prefix}{i}": uids for i, uids in enumerate(orders[view]) if uids}
+            self.assertEqual({ctr: [uid for _n, uid in sorted(items)] for ctr, items in found.items()}, expected)
+            for items in found.values():
+                self.assertEqual(sorted(n for n, _ in items), list(range(1, len(items) + 1)))
+
+    def test_editable_output_is_deterministic(self) -> None:
+        self.assertEqual(self.editable_page(), self.editable_page())
+
+    def test_ordinals_python_and_javascript_agree(self) -> None:
+        if NODE is None:
+            self.skipTest("node is not installed")
+        orders = generate_diagram.drawn_order(editable_model())
+        logical = [list(uids) for uids in orders["logical"]]
+        deployment = [list(uids) for uids in orders["deployment"]]
+        logical[1].reverse()  # one reorder: the application band reversed
+        deployment[2].reverse()
+        meta = {"uid": "", "pattern": FIXTURE_SDP, "name": "FX Storefront Pattern diagram layout"}
+        for uid in ("", LAYOUT_UID):
+            meta["uid"] = uid
+            script = (
+                generate_diagram.EDIT_JS_PURE
+                + f"console.log(JSON.stringify([draftOrdinals({json.dumps(logical)}),"
+                + f"draftLayoutYaml({json.dumps(meta)},{json.dumps(logical)},{json.dumps(deployment)})]));"
+            )
+            ordinals, text = json.loads(run_node(script))
+            self.assertEqual(ordinals, generate_diagram.layout_ordinals(logical))
+            expected = generate_diagram.export_layout_document(uid, FIXTURE_SDP, "FX Storefront Pattern", logical, deployment)
+            self.assertEqual(yaml.safe_load(text), expected)
+            self.assertEqual(expected["uid"], uid or "NEW")
+
+    def test_emitted_script_parses(self) -> None:
+        if NODE is None:
+            self.skipTest("node is not installed")
+        page = self.editable_page()
+        with tempfile.TemporaryDirectory() as tmp:
+            for index, chunk in enumerate(page.split("<script>")[1:]):
+                path = Path(tmp) / f"s{index}.js"
+                path.write_text(chunk.split("</script>")[0], encoding="utf-8")
+                result = subprocess.run([NODE, "--check", str(path)], capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+
+    def exported(self, tmp: str, ref: str | None = None) -> Path:
+        """An export-shaped document with the application band reversed, plus one extra logical entry when ``ref`` is given."""
+        orders = generate_diagram.drawn_order(editable_model())
+        logical = [list(uids) for uids in orders["logical"]]
+        logical[1].reverse()
+        document = generate_diagram.export_layout_document("NEW", FIXTURE_SDP, "FX Storefront Pattern", logical, orders["deployment"])
+        if ref:
+            document["logical"].append({"ref": ref, "position": 1})
+        path = Path(tmp) / "exported.yaml"
+        path.write_text(yaml.safe_dump(document, sort_keys=False), encoding="utf-8")
+        return path
+
+    def test_layout_from_round_trip_preserves_uid_and_orders_boxes(self) -> None:  # AC30
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = copy_fixture(Path(tmp))
+            exported = self.exported(tmp)
+            page = Path(tmp) / "p.html"
+            argv = ["--workspace", str(workspace), "--sdp", FIXTURE_SDP, "--output", str(page), "--write-layout", "--layout-from", str(exported)]
+            result = run_tool("generate_diagram.py", argv)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            target = workspace / "catalog" / LAYOUT_FILE
+            written = yaml.safe_load(target.read_text(encoding="utf-8"))
+            self.assertEqual(written["uid"], LAYOUT_UID)
+            source = yaml.safe_load(exported.read_text(encoding="utf-8"))
+            self.assertEqual(written["logical"], source["logical"])
+            self.assertEqual(written["deployment"], source["deployment"])
+            before = target.read_bytes()
+            self.assertEqual(run_tool("generate_diagram.py", argv).returncode, 0)
+            self.assertEqual(target.read_bytes(), before)  # a second run changes nothing
+            catalog = load_catalog(workspace)
+            rects = node_rects(logical_svg(catalog, FIXTURE_SDP))
+            self.assertLess(rects["FXPRD00003-0001"][0], rects["FXPRD00002-0001"][0])  # the reversed application band
+            self.assertLess(rects["FXPRD00002-0001"][0], rects["FXPRD00004-0001"][0])
+            self.assertIn(f"PASS {target.resolve()}", run_tool("validate.py", ["--workspace", str(workspace)]).stdout)
+
+    def test_layout_from_without_a_layout_replaces_new_with_a_fresh_uid(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = copy_fixture(Path(tmp), keep_layout=False)
+            exported = self.exported(tmp)
+            self.assertEqual(yaml.safe_load(exported.read_text(encoding="utf-8"))["uid"], "NEW")
+            argv = ["--workspace", str(workspace), "--sdp", FIXTURE_SDP, "--output", str(Path(tmp) / "p.html"), "--write-layout", "--layout-from", str(exported)]
+            self.assertEqual(run_tool("generate_diagram.py", argv).returncode, 0)
+            written = yaml.safe_load((workspace / "catalog" / LAYOUT_FILE).read_text(encoding="utf-8"))
+            self.assertRegex(written["uid"], r"^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$")
+            self.assertEqual(written["name"], "FX Storefront Pattern diagram layout")
+            self.assertIn(f"PASS {(workspace / 'catalog' / LAYOUT_FILE).resolve()}", run_tool("validate.py", ["--workspace", str(workspace)]).stdout)
+
+    def test_layout_from_rejects_an_undrawn_ref(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = copy_fixture(Path(tmp))
+            target = workspace / "catalog" / LAYOUT_FILE
+            before = target.read_bytes()
+            exported = self.exported(tmp, ref="FXNOPE00001-0001")
+            argv = ["--workspace", str(workspace), "--sdp", FIXTURE_SDP, "--output", str(Path(tmp) / "p.html"), "--write-layout", "--layout-from", str(exported)]
+            result = run_tool("generate_diagram.py", argv)
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("FXNOPE00001-0001", result.stderr)
+            self.assertEqual(target.read_bytes(), before)
+
+    def test_usage_errors(self) -> None:
+        code, _out, err = run_cli(["--workspace", str(FIXTURE), "--all", "--output-dir", "x", "--editable"])
+        self.assertEqual(code, 2)
+        self.assertIn("--editable", err)
+        code, _out, err = run_cli(["--workspace", str(FIXTURE), "--sdp", FIXTURE_SDP, "--layout-from", "x.yaml"])
+        self.assertEqual(code, 2)
+        self.assertIn("--layout-from requires --write-layout", err)
+        code, _out, err = run_cli(["--workspace", str(FIXTURE), "--list", "--editable"])
+        self.assertEqual(code, 2)
+
+    def test_editable_cli_writes_the_editable_page(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            page = Path(tmp) / "p.html"
+            result = run_tool("generate_diagram.py", ["--workspace", str(FIXTURE), "--sdp", FIXTURE_SDP, "--editable", "--output", str(page)])
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("Export layout", page.read_text(encoding="utf-8"))

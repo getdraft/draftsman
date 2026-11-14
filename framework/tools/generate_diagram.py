@@ -4,7 +4,7 @@
 Usage:
     python3 framework/tools/generate_diagram.py --list [--workspace PATH]
     python3 framework/tools/generate_diagram.py --sdp NAME_OR_UID [--workspace PATH]
-        [--output FILE] [--placed-only] [--svg-dir DIR] [--write-layout]
+        [--output FILE] [--placed-only] [--svg-dir DIR] [--write-layout] [--editable] [--layout-from FILE]
     python3 framework/tools/generate_diagram.py --all --output-dir DIR [--svg-dir DIR]
         [--workspace PATH] [--placed-only]
 
@@ -1097,11 +1097,212 @@ JS = """
 """
 
 
-def render_page(model: Model, dm: DiagramModel, back_link: str | None = None) -> str:
+# --------------------------------------------------------------------------- editable local render (D48)
+# The pure part of the edit script. ``draftOrdinals`` is the JavaScript twin of ``layout_ordinals`` and ``draftLayoutYaml``
+# of ``export_layout_document`` (tests run both on one fixture). It touches no DOM, so node can load it alone.
+EDIT_JS_PURE = """
+function draftOrdinals(lists){
+ var out=[];
+ lists.forEach(function(list){list.forEach(function(ref,i){out.push({ref:ref,position:i+1})})});
+ return out;
+}
+function draftLayoutYaml(meta,logical,deployment){
+ function entries(lists){var rows=draftOrdinals(lists);if(!rows.length)return ' []';
+  return '\\n'+rows.map(function(r){return '  - ref: '+JSON.stringify(r.ref)+'\\n    position: '+r.position}).join('\\n')}
+ return ['schemaVersion: "1.0"','uid: '+(meta.uid?JSON.stringify(meta.uid):'NEW'),'type: diagram_layout','name: '+JSON.stringify(meta.name),
+  'pattern: '+JSON.stringify(meta.pattern),'catalogStatus: complete','logical:'+entries(logical),'deployment:'+entries(deployment)].join('\\n')+'\\n';
+}
+"""
+
+EDIT_JS_DOM = """
+(function(){
+ var panel=document.getElementById('edit-panel');if(!panel)return;
+ var meta={uid:panel.getAttribute('data-uid'),pattern:panel.getAttribute('data-pattern'),name:panel.getAttribute('data-name')};
+ var state={},slots={},base={},drag=null,justDragged=false;
+ function ctrOf(el){return el.getAttribute('data-ctr')}
+ ['fig-logical','fig-deployment'].forEach(function(fid){
+  var svg=document.getElementById(fid);if(!svg)return;
+  [].slice.call(svg.querySelectorAll('[data-ctr]')).forEach(function(el){
+   var id=ctrOf(el);(state[id]=state[id]||[]).push(el);
+  });
+ });
+ Object.keys(state).forEach(function(id){
+  state[id].sort(function(a,b){return +a.getAttribute('data-ord')-+b.getAttribute('data-ord')});
+  state[id].forEach(function(el){var b=el.getBBox();base[key(el)]={x:b.x,y:b.y}});
+  slots[id]=state[id].map(function(el){return base[key(el)]});
+ });
+ function key(el){return el.getAttribute('data-id')+'|'+ctrOf(el)+'|'+el.getAttribute('data-ord')}
+ function movable(id){return state[id].filter(function(el){return !el.hasAttribute('data-fixed')})}
+ function place(id){
+  var mv=movable(id);
+  var origin=mv.map(function(el){return +el.getAttribute('data-ord')}).sort(function(a,b){return a-b});
+  mv.forEach(function(el,i){var own=base[key(el)],slot=slots[id][origin[i]-1];
+   var dx=slot.x-own.x,dy=slot.y-own.y;
+   if(dx||dy)el.setAttribute('transform','translate('+dx+' '+dy+')');else el.removeAttribute('transform')});
+ }
+ function sortDom(id){
+  var list=state[id],parts=list.slice().sort(function(a,b){return a.compareDocumentPosition(b)&4?-1:1});
+  var marks=parts.map(function(el){var m=document.createComment('');el.parentNode.insertBefore(m,el);return m});
+  list.forEach(function(el,i){marks[i].parentNode.insertBefore(el,marks[i])});
+  marks.forEach(function(m){m.parentNode.removeChild(m)});
+ }
+ function moveTo(el,index){
+  var id=ctrOf(el),mv=movable(id),from=mv.indexOf(el);
+  if(from<0)return;
+  index=Math.max(0,Math.min(mv.length-1,index));
+  if(index===from)return;
+  mv.splice(from,1);mv.splice(index,0,el);
+  var fixed=state[id].filter(function(x){return x.hasAttribute('data-fixed')});
+  state[id]=mv.concat(fixed);
+  place(id);sortDom(id);status(id);
+ }
+ function status(id){var n=document.getElementById('edit-note');if(n)n.textContent='Container '+id+' now has '+state[id].length+' boxes in the order shown; use Export layout to save.'}
+ function scaleOf(svg){var m=svg.getScreenCTM();return m?m.a:1}
+ function onDown(e){
+  var el=e.target.closest?e.target.closest('[data-ctr]'):null;
+  if(!el||el.hasAttribute('data-fixed')||(e.button!==undefined&&e.button!==0))return;
+  var svg=el.ownerSVGElement,id=ctrOf(el),mv=movable(id);
+  var tr=(el.getAttribute('transform')||'').match(/translate\\(([-\\d.]+) ([-\\d.]+)\\)/);
+  var s=slots[id],xs=s.map(function(r){return r.x}),ys=s.map(function(r){return r.y});
+  drag={el:el,svg:svg,id:id,sx:e.clientX,sy:e.clientY,ox:tr?+tr[1]:0,oy:tr?+tr[2]:0,k:scaleOf(svg),moved:false,
+   box:{x0:Math.min.apply(null,xs),x1:Math.max.apply(null,xs),y0:Math.min.apply(null,ys),y1:Math.max.apply(null,ys)},own:base[key(el)]};
+  try{el.setPointerCapture(e.pointerId)}catch(x){}
+ }
+ function onMove(e){
+  if(!drag)return;
+  var dx=(e.clientX-drag.sx)/drag.k,dy=(e.clientY-drag.sy)/drag.k;
+  if(!drag.moved&&Math.abs(dx)+Math.abs(dy)<4)return;
+  drag.moved=true;
+  var nx=drag.own.x+drag.ox+dx,ny=drag.own.y+drag.oy+dy;
+  nx=Math.max(drag.box.x0,Math.min(drag.box.x1,nx));ny=Math.max(drag.box.y0,Math.min(drag.box.y1,ny));
+  drag.el.setAttribute('transform','translate('+(nx-drag.own.x)+' '+(ny-drag.own.y)+')');
+  drag.cx=nx;drag.cy=ny;
+ }
+ function onUp(){
+  if(!drag)return;
+  var d=drag;drag=null;
+  if(!d.moved)return;
+  justDragged=true;setTimeout(function(){justDragged=false},0);
+  var mv=movable(d.id),origin=mv.map(function(el){return +el.getAttribute('data-ord')}).sort(function(a,b){return a-b});
+  var best=0,bd=1e18;
+  origin.forEach(function(o,i){var r=slots[d.id][o-1],dist=Math.pow(r.x-d.cx,2)+Math.pow(r.y-d.cy,2);if(dist<bd){bd=dist;best=i}});
+  var from=mv.indexOf(d.el);
+  if(best===from){place(d.id)}else{moveTo(d.el,best)}
+ }
+ function onKey(e){
+  var el=e.target.closest?e.target.closest('[data-ctr]'):null;
+  if(!el||!e.altKey||el.hasAttribute('data-fixed'))return;
+  var back=e.key==='ArrowLeft'||e.key==='ArrowUp',fwd=e.key==='ArrowRight'||e.key==='ArrowDown';
+  if(!back&&!fwd)return;
+  e.preventDefault();
+  var mv=movable(ctrOf(el));moveTo(el,mv.indexOf(el)+(fwd?1:-1));el.focus();
+ }
+ ['fig-logical','fig-deployment'].forEach(function(fid){
+  var svg=document.getElementById(fid);if(!svg)return;
+  svg.classList.add('editing');
+  svg.addEventListener('pointerdown',onDown);svg.addEventListener('pointermove',onMove);
+  svg.addEventListener('pointerup',onUp);svg.addEventListener('pointercancel',onUp);
+  svg.addEventListener('keydown',onKey);
+  svg.addEventListener('click',function(e){if(justDragged){e.stopPropagation();e.preventDefault()}},true);
+ });
+ function names(prefix){return Object.keys(state).filter(function(id){return id.charAt(0)===prefix}).sort(function(a,b){return +a.slice(1)-+b.slice(1)})}
+ function lists(prefix){return names(prefix).map(function(id){return state[id].map(function(el){return el.getAttribute('data-id')})})}
+ var out=document.getElementById('layout-out'),note=document.getElementById('edit-note');
+ document.getElementById('export-layout').addEventListener('click',function(){
+  var text=draftLayoutYaml(meta,lists('l'),lists('d'));
+  out.value=text;out.focus();out.select();
+  var done=function(msg){note.textContent=msg};
+  try{
+   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){done('Layout copied to the clipboard and shown below.')},function(){done('Layout shown below; copy it from the box.')})}
+   else{done('Layout shown below; copy it from the box.')}
+  }catch(x){done('Layout shown below; copy it from the box.')}
+ });
+})();
+"""
+
+EDIT_CSS = """
+.edit{border:1px solid var(--zone-line);border-radius:6px;background:var(--surface);padding:12px 14px}
+.edit button{font:inherit;font-size:13.5px;padding:6px 12px;border:1px solid var(--line);border-radius:6px;background:var(--zone);color:var(--fg);cursor:pointer}
+.edit textarea{display:block;width:100%;min-height:12em;margin-top:10px;font:12px ui-monospace,Menlo,monospace;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:8px}
+svg.editing [data-ctr]:not([data-fixed]){cursor:grab;touch-action:none}
+"""
+
+
+def layout_ordinals(containers: list[list[str]]) -> list[dict[str, Any]]:
+    """D48: one ``{ref, position}`` entry per drawn node, positions 1-based in drawn order within each container.
+
+    The Export layout control computes the same thing in JavaScript (``draftOrdinals``); tests run both on one fixture."""
+    return [{"ref": uid, "position": number} for uids in containers for number, uid in enumerate(uids, start=1)]
+
+
+def export_layout_document(uid: str, pattern_uid: str, pattern_name: str, logical: list[list[str]], deployment: list[list[str]]) -> dict[str, Any]:
+    """D48: the complete diagram_layout object the Export layout control serialises. ``uid`` is ``NEW`` when no layout was loaded."""
+    return {
+        "schemaVersion": "1.0",
+        "uid": uid or "NEW",
+        "type": "diagram_layout",
+        "name": f"{pattern_name} diagram layout",
+        "pattern": pattern_uid,
+        "catalogStatus": "complete",
+        "logical": layout_ordinals(logical),
+        "deployment": layout_ordinals(deployment),
+    }
+
+
+def annotate_containers(svg: str, containers: list[list[str]], prefix: str, fixed: set[str] | None = None) -> str:
+    """D48: add ``data-ctr`` (container id, prefix plus index in drawn order) and ``data-ord`` (1-based place in it) to each drawn node.
+
+    The k-th ``data-id`` occurrence of a uid in the figure pairs with the k-th place that uid has in ``containers``, which
+    follow the same document order. ``fixed`` uids (data store containers) are marked ``data-fixed`` and are not draggable."""
+    places: dict[str, list[tuple[str, int]]] = {}
+    for index, uids in enumerate(containers):
+        for number, uid in enumerate(uids, start=1):
+            places.setdefault(xml_text(uid), []).append((f"{prefix}{index}", number))
+    taken: dict[str, int] = {}
+
+    def attach(match: re.Match) -> str:
+        uid = match.group(1)
+        k = taken.get(uid, 0)
+        found = places.get(uid, [])
+        if k >= len(found):
+            return match.group(0)
+        taken[uid] = k + 1
+        ctr, number = found[k]
+        extra = ' data-fixed="1"' if fixed and uid in fixed else ""
+        return f'{match.group(0)} data-ctr="{ctr}" data-ord="{number}"{extra}'
+
+    return re.sub(r'data-id="([^"]*)"', attach, svg)
+
+
+def _deployment_store_uids(dm: DiagramModel) -> set[str]:
+    """Escaped uids of the data store containers of the deployment figure; they keep their place in the layout but are not draggable."""
+    return {xml_text(st.uid) for _t, groups in _deployment_outline(dm) for g in groups for lane in g.lanes for st in lane.stores if st.uid}
+
+
+def edit_panel_html(model: Model) -> str:
+    sdp_uid = str(model.sdp.get("uid", ""))
+    name = clean(model.sdp.get("name")) or sdp_uid
+    return (
+        f'<section class="sec edit" id="edit-panel" data-uid="{E(model.layout_uid)}" data-pattern="{E(sdp_uid)}" data-name="{E(name)}">'
+        "<h2>Edit box order</h2>"
+        "<p>Drag a box, or focus it and press Alt with an arrow key, to move it within its own band, zone lane or data store container. "
+        "Connections are not redrawn while you edit. Export layout writes the order shown as a diagram_layout document; "
+        "nothing is stored, and reloading returns to the catalog order. Save the text to a file and run "
+        "<code>generate_diagram.py --sdp NAME --write-layout --layout-from FILE</code>.</p>"
+        '<button type="button" id="export-layout">Export layout</button> <span id="edit-note" role="status"></span>'
+        '<textarea id="layout-out" aria-label="Exported diagram layout" spellcheck="false"></textarea></section>'
+    )
+
+
+def render_page(model: Model, dm: DiagramModel, back_link: str | None = None, editable: bool = False) -> str:
     """The D19 page: header, counts, the two figures, relationships, conflicts, characteristics, questions, inventory, footer.
 
-    ``back_link`` (D46) is a relative href that adds a ``Back to catalog`` link to the footer; it is set only by the browser generator."""
+    ``back_link`` (D46) is a relative href that adds a ``Back to catalog`` link to the footer; it is set only by the browser generator.
+    ``editable`` (D48) adds the edit script, the Export layout panel and container attributes on the boxes; only ``--editable`` sets it."""
     sdp = model.sdp
+    marks: dict[str, list[list[str]]] = {}
+    if editable:
+        marks = drawn_order(model)
     title = clean(sdp.get("name")) or "Deployment pattern"
     logical_empty = not dm.nodes
     logical_body = (
@@ -1111,14 +1312,15 @@ def render_page(model: Model, dm: DiagramModel, back_link: str | None = None) ->
             else "<p>No object is placed in a service group, so there is nothing to draw.</p>"
         )
         if logical_empty
-        else figure_html(render_logical_svg(dm), FIGURE_IDS[0])
+        else figure_html(annotate_containers(render_logical_svg(dm), marks["logical"], "l") if editable else render_logical_svg(dm), FIGURE_IDS[0])
     )
     parts = [
         '<!doctype html><html lang="en"><head><meta charset="utf-8">',
         '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">',
-        f"<title>{E(title)} Architecture</title><style>{CSS}</style></head><body><div class=\"wrap\">",
+        f"<title>{E(title)} Architecture</title><style>{CSS}{EDIT_CSS if editable else ''}</style></head><body><div class=\"wrap\">",
         header_html(model),
         counts_html(model, dm),
+        edit_panel_html(model) if editable else "",
         f'<section class="sec" id="logical"><h2>{E(LOGICAL_TITLE)}</h2>'
         '<label class="tog"><input type="checkbox" data-all="fig-logical"> Show all connections</label><span class="key"><span class="o"><i></i>calls it makes</span><span class="i"><i></i>calls it receives</span></span>'
         "<p>Components and data components in bands by diagram tier; placed infrastructure (network, runtime, host, AI gateway and data store services) is drawn in the deployment diagram only. Dependencies that this pattern does not place sit in the right-hand lane, captioned with the pattern that places them. "
@@ -1129,7 +1331,10 @@ def render_page(model: Model, dm: DiagramModel, back_link: str | None = None) ->
         f'<section class="sec" id="deployment"><h2>{E(DEPLOYMENT_TITLE)}</h2>'
         '<label class="tog"><input type="checkbox" data-all="fig-deployment"> Show all connections</label><span class="key"><span class="o"><i></i>calls it makes</span><span class="i"><i></i>calls it receives</span></span>'
         "<p>Deployment targets hold service groups, each drawn as a container around its boxes, including the infrastructure the logical diagram leaves out. Data components sit inside a container named for the data store service they run on. Connections are hidden until you hover over, focus or click a box, and pinning an object in one figure highlights it in the other.</p>"
-        + figure_html(render_deployment_svg(dm), FIGURE_IDS[1])
+        + figure_html(
+            annotate_containers(render_deployment_svg(dm), marks["deployment"], "d", _deployment_store_uids(dm)) if editable else render_deployment_svg(dm),
+            FIGURE_IDS[1],
+        )
         + empty_groups_html(model)
         + "</section>",
     ]
@@ -1179,7 +1384,8 @@ def render_page(model: Model, dm: DiagramModel, back_link: str | None = None) ->
         + (f' <a href="{E(back_link)}">Back to catalog</a>' if back_link else "")
         + "</footer>"
     )
-    parts.append(f"</div><script>{JS}</script></body></html>")
+    scripts = f"<script>{JS}</script>" + (f"<script>{EDIT_JS_PURE}{EDIT_JS_DOM}</script>" if editable else "")
+    parts.append(f"</div>{scripts}</body></html>")
     return "".join(parts)
 
 
@@ -2602,8 +2808,13 @@ def build_from_catalog(catalog: dict[str, dict[str, Any]], selector: str | None,
     return render_page(model, diagram_of(model)), model
 
 
-def build(workspace: Path, selector: str | None, placed_only: bool = False) -> tuple[str, Model]:
-    return build_from_catalog(load_catalog(workspace), selector, placed_only)
+def build(workspace: Path, selector: str | None, placed_only: bool = False, editable: bool = False) -> tuple[str, Model]:
+    """The page and model for one pattern. ``editable`` (D48) is set only by the ``--editable`` command line option."""
+    catalog = load_catalog(workspace)
+    if not editable:
+        return build_from_catalog(catalog, selector, placed_only)
+    model = Model(catalog, pick_sdp(catalog, selector), placed_only)
+    return render_page(model, diagram_of(model), editable=True), model
 
 
 def slug(text: str) -> str:
@@ -2676,8 +2887,48 @@ def _yaml_docs(path: Path) -> list[Any]:
         return [d for d in yaml.safe_load_all(handle) if d is not None]
 
 
-def write_layout(workspace: Path, model: Model) -> Path:
-    """D40: write or update the pattern's diagram_layout file; no other file is touched. Returns its path."""
+def read_layout_source(path: Path, model: Model) -> dict[str, list[dict[str, Any]]]:
+    """D48: the logical and deployment entries of an exported diagram_layout document, checked against what the pattern draws.
+
+    Raises ValueError, naming the ref, for an entry the pattern does not draw in that view."""
+    try:
+        docs = _yaml_docs(path)
+    except (OSError, yaml.YAMLError) as exc:
+        raise ValueError(f"cannot read {path}: {exc}")
+    if len(docs) != 1 or not isinstance(docs[0], dict):
+        raise ValueError(f"{path} must hold one diagram_layout document")
+    doc = docs[0]
+    sdp_uid = str(model.sdp.get("uid", ""))
+    if doc.get("type") != "diagram_layout":
+        raise ValueError(f"{path} is not a diagram_layout document")
+    if doc.get("pattern") != sdp_uid:
+        raise ValueError(f"{path} orders pattern {doc.get('pattern')}, not {sdp_uid}")
+    order = drawn_order(model)
+    result: dict[str, list[dict[str, Any]]] = {}
+    for view in ("logical", "deployment"):
+        drawn = {uid for uids in order[view] for uid in uids}
+        entries = doc.get(view) or []
+        if not isinstance(entries, list):
+            raise ValueError(f"{view} must be a list of ref and position entries")
+        checked = []
+        for entry in entries:
+            if not isinstance(entry, dict) or "ref" not in entry or "position" not in entry:
+                raise ValueError(f"every {view} entry needs ref and position")
+            ref, position = str(entry["ref"]), entry["position"]
+            if not isinstance(position, int) or isinstance(position, bool) or position < 1:
+                raise ValueError(f"position of {ref} in {view} must be a positive integer")
+            if ref not in drawn:
+                raise ValueError(f"{view} ref {ref} is not drawn by pattern {sdp_uid}")
+            checked.append({"ref": ref, "position": position})
+        result[view] = checked
+    return result
+
+
+def write_layout(workspace: Path, model: Model, source: dict[str, list[dict[str, Any]]] | None = None) -> Path:
+    """D40: write or update the pattern's diagram_layout file; no other file is touched. Returns its path.
+
+    With ``source`` (D48, entries from ``read_layout_source``) the entries come from an exported document instead of the
+    computed order; an existing layout keeps its uid and a new one gets a fresh uid, never the literal ``NEW``."""
     from generate_c4 import discover_yaml_files, workspace_yaml_roots
     from uid_utils import generate_uid
 
@@ -2717,9 +2968,13 @@ def write_layout(workspace: Path, model: Model) -> Path:
             "pattern": sdp_uid,
             "catalogStatus": "complete",
         }
-    order = drawn_order(model)
-    doc["logical"] = _layout_entries(order["logical"], dict(model.layout_positions["logical"]))
-    doc["deployment"] = _layout_entries(order["deployment"], dict(model.layout_positions["deployment"]))
+    if source is not None:
+        doc["logical"] = source["logical"]
+        doc["deployment"] = source["deployment"]
+    else:
+        order = drawn_order(model)
+        doc["logical"] = _layout_entries(order["logical"], dict(model.layout_positions["logical"]))
+        doc["deployment"] = _layout_entries(order["deployment"], dict(model.layout_positions["deployment"]))
     text = yaml.safe_dump(doc, sort_keys=False, allow_unicode=True, default_flow_style=False)
     if not target.exists() or target.read_text(encoding="utf-8") != text:
         target.write_text(text, encoding="utf-8")
@@ -2750,6 +3005,13 @@ def _check_arguments(parser: argparse.ArgumentParser, args: argparse.Namespace) 
         ):
             if given:
                 parser.error(f"--list cannot be combined with {flag}")
+    if args.layout_from is not None and not args.write_layout:
+        parser.error("--layout-from requires --write-layout")
+    if args.editable:
+        if args.all:
+            parser.error("--editable renders one page, so it cannot be combined with --all")
+        if args.list:
+            parser.error("--editable cannot be combined with --list")
     if args.write_layout:
         if args.sdp is None:
             parser.error("--write-layout requires --sdp")
@@ -2768,7 +3030,8 @@ def _check_arguments(parser: argparse.ArgumentParser, args: argparse.Namespace) 
 
 def _render_single(args: argparse.Namespace) -> int:
     try:
-        page, model = build(args.workspace, args.sdp, args.placed_only)
+        page, model = build(args.workspace, args.sdp, args.placed_only, args.editable)
+        source = read_layout_source(args.layout_from, model) if args.layout_from is not None else None
     except ValueError as exc:  # D32: a malformed pattern is reported, not traced
         print(f"error: {exc}", file=sys.stderr)
         return 1
@@ -2793,7 +3056,7 @@ def _render_single(args: argparse.Namespace) -> int:
         print(f"Wrote {args.svg_dir / name}")
     if args.write_layout:
         try:
-            layout_path = write_layout(args.workspace, model)
+            layout_path = write_layout(args.workspace, model, source)
         except (OSError, ValueError) as exc:
             print(f"error: cannot write layout: {exc}", file=sys.stderr)
             return 1
@@ -2854,6 +3117,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--all", action="store_true", help="Render every deployment pattern; requires --output-dir.")
     parser.add_argument("--output-dir", type=Path, help="With --all: directory that receives one <slug>.html per pattern.")
     parser.add_argument("--write-layout", action="store_true", help="With --sdp: write or update the pattern's diagram_layout file beside the pattern file from the drawn order. An update rewrites the file and drops hand-written comments.")
+    parser.add_argument("--editable", action="store_true", help="With --sdp: add an edit mode to the page (drag or Alt+arrow boxes within their band or lane, then Export layout). Nothing is stored.")
+    parser.add_argument("--layout-from", type=Path, help="With --write-layout: write the layout from an exported diagram_layout document instead of the drawn order.")
     args = parser.parse_args(argv)
     _check_arguments(parser, args)
     if not (args.workspace / "catalog").is_dir():
