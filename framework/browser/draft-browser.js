@@ -394,7 +394,6 @@ function deliveryModelBadge(object) {
   return '<span class="badge">self-managed</span>';
 }
 
-
 function boolBadge(value, trueLabel = 'true', falseLabel = 'false') {
   const active = value === true;
   const text = active ? trueLabel : falseLabel;

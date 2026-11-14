@@ -226,9 +226,10 @@ class IntentRemovedFromBrowserTests(unittest.TestCase):
     def test_standalone_without_risk_ref_has_no_decision_icon(self) -> None:
         self.assertNotIn("Explicit architecture decision", self.js)
 
-    def test_browser_data_has_no_intent_key(self) -> None:
-        # The generator copies catalog entries through unchanged, so this proves the
-        # fixture-derived data carries no intent key; it does not strip legacy input.
+    def test_fixture_derived_browser_data_has_no_intent_key(self) -> None:
+        # The fixture has no intent, so this only covers fixture-derived data. The generator
+        # passes unknown entry keys through, so legacy intent values in real catalogs still
+        # reach browser-data.js as inert payload; this test does not prove stripping.
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "site"
             result = run_browser(FIXTURE, out)
