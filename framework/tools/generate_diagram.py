@@ -589,12 +589,16 @@ class Model:
         return uid in self.placement and self.catalog[uid].get("type") in INFRA_TYPES
 
     def _on_store(self, uid: str) -> bool:
-        """D45/D8: a data component whose runsOn resolves to a data store service sits in that store's container.
+        """D45/D8: a data component whose runsOn is a data store service, absent or unresolved sits in a store container.
 
         It is never compared with the group substrate and does not take part in substrate derivation.
         """
         obj = self.catalog[uid]
-        return obj.get("type") == "data_component" and self.catalog.get(clean(obj.get("runsOn")), {}).get("type") == "data_store_service"
+        if obj.get("type") != "data_component":
+            return False
+        runs_on = clean(obj.get("runsOn"))
+        # absent or unresolved runsOn is D45's 'data store not recorded' case, not a D7 substrate target
+        return runs_on not in self.catalog or self.catalog[runs_on].get("type") == "data_store_service"
 
     def _build_containers(self) -> None:
         """Service group containers with caption variants (D7), conflicts (D8) and zone lanes (D9)."""
@@ -612,8 +616,19 @@ class Model:
         planned = [group["substrate"] or self._derive_substrate(group["uids"]) for group in self.groups]
         planned = [uid if uid in catalog else "" for uid in planned]
         drawable = [bool(group["uids"]) for group in self.groups]
+
+        def store_hosts(flags: list) -> set:
+            """D45: data store services drawn as data component containers by the groups flagged as drawn."""
+            return {
+                store
+                for index, (group, ok) in enumerate(zip(self.groups, flags))
+                if ok
+                for store in (self._store_of(uid, planned[index]) for uid in group["uids"])
+                if store
+            }
+
         while True:
-            containers = {uid for uid, ok in zip(planned, drawable) if ok and uid}
+            containers = {uid for uid, ok in zip(planned, drawable) if ok and uid} | store_hosts(drawable)
             again = [
                 ok and any(uid == planned[index] or uid not in containers for uid in group["uids"])
                 for index, (group, ok) in enumerate(zip(self.groups, drawable))
@@ -625,7 +640,7 @@ class Model:
         # container. Every placed object needs a home, so such a group is drawn after all (its substrate then
         # becomes a container, and the object it lists stays a box or becomes the other group's container).
         while True:
-            containers = {uid for uid, ok in zip(planned, drawable) if ok and uid}
+            containers = {uid for uid, ok in zip(planned, drawable) if ok and uid} | store_hosts(drawable)
             homeless = [
                 index for index, (group, ok) in enumerate(zip(self.groups, drawable))
                 if not ok and any(uid not in containers for uid in group["uids"])
@@ -636,12 +651,7 @@ class Model:
                 drawable[index] = True
         self.container_uids = {uid for uid, ok in zip(planned, drawable) if ok and uid}
         self.drawn_container_uids = set(self.container_uids)
-        for index, group in enumerate(self.groups):  # D45: a store hosting a drawn data component is a container
-            if drawable[index]:
-                for uid in group["uids"]:
-                    store = self._store_of(uid, planned[index])
-                    if store:
-                        self.store_container_uids.add(store)
+        self.store_container_uids = store_hosts(drawable)  # D45: a store hosting a drawn data component is a container
         for group_index, group in enumerate(self.groups):
             group_name = group["name"]
             recorded = group["substrate"]
@@ -729,8 +739,12 @@ class Model:
             # D45: the container takes the zone lane of its first data component; 'not recorded' is always last (D40)
             for store in sorted(stores.values(), key=lambda st: not st.uid):
                 zone = zone_of.get(store.members[0], "")
-                for uid in store.members[1:]:  # a data component is never silently moved out of its zone (D9)
+                for uid in store.members:  # a data component is never silently moved out of its zone (D9)
                     other = zone_of.get(uid, "")
+                    if other and other not in declared and other not in undeclared:
+                        undeclared.append(other)
+                    if uid == store.members[0]:
+                        continue
                     if (other if other in declared else "") != (zone if zone in declared else ""):
                         lane_name = clean(declared[zone].get("name")) or zone if zone in declared else "zone not recorded"
                         self.warnings.append(f"data component {self.name(uid)} zone {other or 'not recorded'} drawn in lane {lane_name}")
@@ -738,8 +752,6 @@ class Model:
                     store_buckets.setdefault(zone, []).append(store)
                 else:
                     store_unrecorded.append(store)
-                    if zone and zone not in undeclared:
-                        undeclared.append(zone)
             for zone in undeclared:
                 self.warnings.append(f"undeclared network zone: {zone} in {group_name}")
             lanes = [

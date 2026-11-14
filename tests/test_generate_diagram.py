@@ -1036,6 +1036,68 @@ class InfrastructureReviewFixTests(unittest.TestCase):
         self.assertFalse([w for w in model.warnings if w.startswith("data store not recorded")])
 
 
+class InfrastructureReviewRoundTwoTests(unittest.TestCase):
+    """S17 review round 2: R1 to R3."""
+
+    def test_unresolved_runs_on_is_a_not_recorded_container_not_a_substrate(self) -> None:  # R1
+        alone = model_of([
+            plain("D-1", "data_component", "Entries", runsOn="FXDST-MISSING"),
+            component("C-1", "App"),
+            pattern({"App": ["C-1"], "Data": ["D-1"]}),
+        ])
+        data = next(c for c in alone.containers if c.group == "Data")
+        self.assertEqual(data.caption, "substrate not recorded")
+        self.assertEqual([(st.uid, st.name, st.members) for lane in data.lanes for st in lane.stores], [("", "data store not recorded", ["D-1"])])
+        self.assertFalse([w for w in alone.warnings if "unknown substrate" in w])
+        self.assertEqual(len([w for w in alone.warnings if w.startswith("data store not recorded")]), 1)
+        objects = [
+            plain("RT-1", "runtime_service", "Cluster"),
+            component("C-1", "App", runsOn="RT-1"),
+            plain("D-1", "data_component", "Entries", runsOn="FXDST-MISSING"),
+            pattern({"App": ["C-1", "D-1"]}),
+        ]
+        objects[-1]["serviceGroups"][0]["substrate"] = "RT-1"
+        recorded = model_of(objects)
+        self.assertEqual(recorded.conflicts, [])
+        self.assertFalse([w for w in recorded.warnings if w.startswith("conflict")])
+        objects[-1]["serviceGroups"][0].pop("substrate")
+        derived = model_of(objects)  # the component's runsOn does not stop RT-1 being derived
+        self.assertEqual(derived.containers[0].uid, "RT-1")
+
+    def test_group_whose_objects_are_all_store_containers_elsewhere_is_not_drawn(self) -> None:  # R2
+        objects = [
+            plain("RT-1", "runtime_service", "Cluster"),
+            plain("H-1", "host", "Metal"),
+            plain("D-3", "data_component", "On Runtime", runsOn="RT-1"),
+            plain("D-4", "data_component", "On Host", runsOn="H-1"),
+            component("C-1", "App"),
+            pattern({"G": ["C-1", "D-3", "D-4"], "Infra": ["RT-1", "H-1"]}),
+        ]
+        model = model_of(objects)
+        infra = next(c for c in model.containers if c.group == "Infra")
+        self.assertFalse(infra.drawn)
+        svg = svg_for(objects, "deployment")
+        self.assertNotIn('data-group="Infra"', svg)
+        notes = " ".join(re.findall(r'<text class="cap"[^>]*>([^<]*)</text>', svg))
+        self.assertIn("recorded with no objects to draw: Infra (azure)", notes)
+
+    def test_undeclared_zone_on_a_later_store_member_is_warned(self) -> None:  # R3
+        objects = [
+            plain("S-1", "data_store_service", "Store"),
+            plain("D-1", "data_component", "One", runsOn="S-1"),
+            plain("D-2", "data_component", "Two", runsOn="S-1"),
+            pattern({"G": ["D-1", "D-2"]}),
+        ]
+        objects[-1]["networkZones"] = [{"id": "z1", "name": "Zone One", "tier": "data"}]
+        objects[-1]["serviceGroups"][0]["deployableObjects"][1]["networkZone"] = "zz-undeclared"
+        model = model_of(objects)
+        self.assertIn("undeclared network zone: zz-undeclared in G", model.warnings)
+        objects[-1]["serviceGroups"][0]["deployableObjects"][0]["networkZone"] = "z1"
+        model = model_of(objects)
+        self.assertIn("undeclared network zone: zz-undeclared in G", model.warnings)
+        self.assertIn("data component Two zone zz-undeclared drawn in lane Zone One", model.warnings)
+
+
 if __name__ == "__main__":
     unittest.main()
 
