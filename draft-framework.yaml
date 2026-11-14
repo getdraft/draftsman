@@ -1,7 +1,7 @@
 schemaVersion: "1.0"
 id: draft-framework
 name: DRAFT Framework
-version: "1.4.0"
+version: "1.4.1"
 releasePhase: GA
 compatibility:
   minDraftTableVersion: "1.0.0"
