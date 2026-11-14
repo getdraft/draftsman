@@ -1190,6 +1190,8 @@ class _Run:
     first: int  # smallest edge index in the bundle; the left-edge tie-break
     track: int = 0
     gap: Any = None  # the row gap of a horizontal run in the logical view
+    x: int = 0  # attachment x of a row-gap run's box
+    parts: list = field(default_factory=list)  # (lo, hi, endpoint uids) of each edge's own stretch of the run
 
 
 def _left_edge(runs: list) -> int:
@@ -1226,6 +1228,7 @@ class LogicalLayout:
     spaces: list[tuple[int, int]] = field(default_factory=list)  # left, width of each gutter; the lane gutter is last
     space_tracks: list[int] = field(default_factory=list)
     plan: dict[int, tuple] = field(default_factory=dict)  # edge index -> ("direct",), ("gutter", j) or ("lane",)
+    halves: dict[int, tuple] = field(default_factory=dict)  # edge index -> keys of its out-run and in-run (None if direct)
     runs: dict[tuple, _Run] = field(default_factory=dict)  # bundle runs by key; see _plan_logical_tracks
 
 
@@ -1389,18 +1392,20 @@ def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool
     def add(key: tuple, lo: int, hi: int, i: int, e: DiagramEdge) -> None:
         run = runs.get(key)
         if run is None:
-            runs[key] = _Run(key, lo, hi, {e.source, e.target}, i)
+            run = runs[key] = _Run(key, lo, hi, {e.source, e.target}, i)
         else:
             run.lo, run.hi = min(run.lo, lo), max(run.hi, hi)
             run.uids |= {e.source, e.target}
+        run.parts.append((lo, hi, {e.source, e.target}))
 
     layout.plan = {}
+    targets: dict[int, tuple] = {}  # edge index -> (out x, far x of the out-run, in x, far x of the in-run or None)
     for i, e in drawn:
         (ss, sr), (ts, tr) = layout.row_of[e.source], layout.row_of[e.target]
         ax, bx = out_x(e.source), in_x(e.target)
         if ss == ts and tr == sr + 1:
             layout.plan[i] = ("direct",)
-            add(("out", e.source), min(ax, bx), max(ax, bx), i, e)
+            targets[i] = (ax, bx, bx, None)
             continue
         if ss == "m" and ts == "m":
             j = min(range(used + 1), key=lambda g: (abs(ax - layout.gutters[g]) + abs(bx - layout.gutters[g]), g))
@@ -1409,25 +1414,56 @@ def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool
         else:
             layout.plan[i] = ("lane",)
             space = lane_space
-        add(("out", e.source), *toward(ax, space), i, e)
-        add(("in", e.target), *toward(bx, space), i, e)
-    by_gap: dict[tuple[str, int], list[_Run]] = {}
-    for key in sorted(runs):
-        runs[key].gap = _gap_of(layout, key)
-        by_gap.setdefault(runs[key].gap, []).append(runs[key])
-    layout.gap_tracks = {}
-    for gap, items in sorted(by_gap.items()):
-        # Out-runs take the tracks nearer the row above and in-runs those nearer the row below, so no run crosses
-        # the stub of a box on the other side of the gap.
-        outs = [run for run in items if run.key[0] == "out"]
-        ins = [run for run in items if run.key[0] == "in"]
-        upper = _left_edge(outs)
-        for run in ins:
-            run.track = 0
-        lower = _left_edge(ins)
-        for run in ins:
-            run.track = upper + lower - 1 - run.track
-        layout.gap_tracks[gap] = upper + lower
+        centre = space[0] + space[1] // 2
+        targets[i] = (ax, centre, bx, centre)
+
+    def collect(split: set) -> dict:
+        """Row-gap runs. A box's edges share its stub (D36); in a gap listed in ``split`` its edges leaving to the
+        left and to the right part at the stub and are two runs, elsewhere they are one run."""
+        runs.clear()
+        layout.halves = {}
+        for i, e in drawn:
+            ax, far_a, bx, far_b = targets[i]
+            gap_a = _gap_of(layout, ("out", e.source))
+            out_key = ("out", e.source, (1 if far_a > ax else -1) if gap_a in split else 0)
+            if far_b is None:
+                layout.halves[i] = (out_key, None)
+                add(out_key, min(ax, far_a), max(ax, far_a), i, e)
+                continue
+            space = layout.spaces[layout.plan[i][1]] if layout.plan[i][0] == "gutter" else lane_space
+            gap_b = _gap_of(layout, ("in", e.target))
+            in_key = ("in", e.target, (1 if far_b > bx else -1) if gap_b in split else 0)
+            layout.halves[i] = (out_key, in_key)
+            add(out_key, *toward(ax, space), i, e)
+            add(in_key, *toward(bx, space), i, e)
+        by_gap: dict[tuple[str, int], list[_Run]] = {}
+        for key in sorted(runs):
+            runs[key].gap = _gap_of(layout, key)
+            by_gap.setdefault(runs[key].gap, []).append(runs[key])
+        # The verticals inside each gap: a box's out-stub (from the row above down to its out-run), its in-stub
+        # (from its in-run down to the row below) and the drop of a direct edge (from the source's out-run down to
+        # the target).
+        stubs: dict[tuple[str, int], list[tuple[int, str, tuple, set]]] = {}
+        for key, run in sorted(runs.items()):
+            run.x = out_x(key[1]) if key[0] == "out" else in_x(key[1])
+            stubs.setdefault(run.gap, []).append((run.x, key[0], key, run.uids))
+        for i, e in drawn:
+            if layout.plan[i][0] == "direct":
+                out_key = layout.halves[i][0]
+                stubs[runs[out_key].gap].append((in_x(e.target), "direct", out_key, {e.source, e.target}))
+        return {gap: _order_gap(items, stubs[gap]) for gap, items in sorted(by_gap.items())}
+
+    # A gap whose runs cannot be ordered without crossing a co-visible stub (a cycle of rules in _order_gap) is
+    # split into left and right runs, which removes every such cycle; the other gaps keep one run per box side,
+    # which keeps their crossings fewer.
+    split: set = set()
+    while True:
+        result = collect(split)
+        broken = {gap for gap, (_count, cycle) in result.items() if cycle} - split
+        if not broken:
+            break
+        split |= broken
+    layout.gap_tracks = {gap: count for gap, (count, _cycle) in result.items()}
     _place_logical(layout, outer)
     # Gutter runs: one per source and gutter, from the source's out-run to each target's in-run, on the placed y.
     vertical: dict[tuple, _Run] = {}
@@ -1436,7 +1472,7 @@ def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool
         if step[0] == "direct":
             continue
         j = step[1] if step[0] == "gutter" else used + 1
-        ya, yb = _run_y(layout, runs[("out", e.source)]), _run_y(layout, runs[("in", e.target)])
+        ya, yb = _run_y(layout, runs[layout.halves[i][0]]), _run_y(layout, runs[layout.halves[i][1]])
         key = ("v", j, e.source)
         run = vertical.get(key)
         if run is None:
@@ -1450,12 +1486,56 @@ def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool
         if step[0] != "direct":
             j = step[1] if step[0] == "gutter" else used + 1
             centre = layout.spaces[j][0] + layout.spaces[j][1] // 2
-            for uid, x, key in ((e.source, out_x(e.source), "out"), (e.target, in_x(e.target), "in")):
-                joins.setdefault(("v", j, e.source), []).append((_run_y(layout, runs[(key, uid)]), 1 if x > centre else -1))
+            for x, key in ((out_x(e.source), layout.halves[i][0]), (in_x(e.target), layout.halves[i][1])):
+                joins.setdefault(("v", j, e.source), []).append((_run_y(layout, runs[key]), 1 if x > centre else -1))
     layout.space_tracks = [_order_gutter([run for key, run in sorted(vertical.items()) if key[1] == j], joins) for j in range(used + 2)]
     _place_logical(layout, outer)
     runs.update(vertical)
     layout.runs = runs
+
+
+def _order_gap(items: list, stubs: list) -> tuple[int, bool]:
+    """Tracks of one row gap, top to bottom (D35, D36); returns the track count and whether a cycle was broken.
+
+    A run must not cross a vertical of a co-visible edge inside the gap: when the stretch of one of its edges that
+    shares an endpoint with the vertical's edges passes over a box's out-stub
+    it lies below that box's out-run, over an in-stub above that box's in-run, and over the drop of a direct edge
+    above the out-run the drop leaves from. Out-runs otherwise lie above in-runs, so neither crosses the other
+    side's stubs. Runs are placed in an order that honours these rules (ties by kind, start, attachment x and uid;
+    nothing depends on relationship document order), each on the lowest track below every run it must lie under
+    that holds no co-visible run overlapping it. A cycle of rules, which only an edge passing over both the stub and
+    the drop of a co-visible direct edge (a wall across the gap) can make, is broken at the earliest run in that order.
+    """
+    by_key = {run.key: run for run in items}
+    above: dict[tuple, set] = {run.key: set() for run in items}  # run key -> keys of runs that must lie above it
+    required: set = set()
+    for run in items:
+        for x, kind, owner, uids in stubs:
+            if owner == run.key or owner not in by_key or not any(lo < x < hi and ends & uids for lo, hi, ends in run.parts):
+                continue
+            pair = (owner, run.key) if kind == "out" else (run.key, owner)
+            above[pair[1]].add(pair[0])
+            required.add(pair)
+    for out in items:
+        for inner in items:
+            if out.key[0] == "out" and inner.key[0] == "in" and (inner.key, out.key) not in required:
+                above[inner.key].add(out.key)
+    rank = {run.key: (run.key[0] != "out", run.lo, run.x, run.key) for run in items}
+    placed: list = []
+    cycle = False
+    left = sorted(by_key, key=lambda k: rank[k])
+    while left:
+        ready = [k for k in left if not (above[k] & set(left))]
+        cycle = cycle or not ready
+        key = min(ready or left, key=lambda k: rank[k])
+        left.remove(key)
+        run = by_key[key]
+        track = 1 + max([by_key[k].track for k in above[key] if k not in left], default=-1)
+        while any(o.track == track and o.uids & run.uids and run.lo <= o.hi and o.lo <= run.hi for o in placed):
+            track += 1
+        run.track = track
+        placed.append(run)
+    return 1 + max([run.track for run in items], default=-1), cycle
 
 
 def _order_gutter(items: list, joins: dict) -> int:
@@ -1521,14 +1601,14 @@ def _route_edges(model: DiagramModel, layout: LogicalLayout) -> dict[int, list[t
     for i, e in _logical_drawn(model, layout):
         a, b = pos[e.source], pos[e.target]
         ax, bx = a[0] + LOGICAL_BOX_W // 2 + ATTACH_DX, b[0] + LOGICAL_BOX_W // 2 - ATTACH_DX
-        ya = _run_y(layout, layout.runs[("out", e.source)])
+        ya = _run_y(layout, layout.runs[layout.halves[i][0]])
         step = layout.plan[i]
         if step[0] == "direct":
             raw = [(ax, a[1] + LOGICAL_BOX_H), (ax, ya), (bx, ya), (bx, b[1])]
         else:
             j = step[1] if step[0] == "gutter" else len(layout.spaces) - 1
             gx = _run_x(layout, layout.runs[("v", j, e.source)])
-            yb = _run_y(layout, layout.runs[("in", e.target)])
+            yb = _run_y(layout, layout.runs[layout.halves[i][1]])
             raw = [(ax, a[1] + LOGICAL_BOX_H), (ax, ya), (gx, ya), (gx, yb), (bx, yb), (bx, b[1])]
         pts: list[tuple[int, int]] = []
         for point in raw:

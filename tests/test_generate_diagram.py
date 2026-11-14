@@ -25,8 +25,9 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES = REPO_ROOT / "examples"
 FIXTURE = REPO_ROOT / "tests" / "fixtures" / "diagram_workspace"
 # Edge crossings allowed in the large logical figure (AC14). Set from the first committed golden; lower only on purpose.
-# Raised from 869 to 873 by S12 (D35): the old router hid crossings by drawing 96 pairs of co-visible edges on top
-# of each other (collinear runs count as no crossing); D35 forbids that, so those edges now cross on separate tracks.
+# Raised from 869 to 873 by S12 (D35): the old router hid crossings in 96 collinear overlaps between 73 distinct pairs
+# of co-visible edges drawn on top of each other (collinear runs count as no crossing); D35 forbids that, so those
+# edges now cross on separate tracks.
 LARGE_MAX_CROSSINGS = 873
 
 
@@ -163,6 +164,32 @@ def covisible_track_clashes(svg: str) -> list:
                     if not (_covered(shared, prefix) or _covered(shared, suffix)):
                         clashes.append((s1, t1, s2, t2, shared))
     return clashes
+
+
+def covisible_stub_crossings(svg: str, free_x: list) -> list:
+    """D35, D36: a horizontal run of one edge that crosses a vertical of a co-visible edge (sharing an endpoint uid),
+    where the vertical is not inside one of the free x ranges ``free_x`` (gutters and channels, which runs cross by
+    design): a box's stub or the drop of an edge into the next row."""
+    edges = edge_polylines(svg)
+    out = []
+    for n1, (s1, t1, p1) in enumerate(edges):
+        for (ax, ay), (bx, by) in zip(p1, p1[1:]):
+            if ay != by:
+                continue
+            x0, x1 = min(ax, bx), max(ax, bx)
+            for n2, (s2, t2, p2) in enumerate(edges):
+                if n2 == n1 or not {s1, t1} & {s2, t2}:
+                    continue
+                for (cx, cy), (dx, dy) in zip(p2, p2[1:]):
+                    if cx == dx and not any(lo < cx < hi for lo, hi in free_x) and x0 < cx < x1 and min(cy, dy) < ay < max(cy, dy):
+                        out.append((s1, t1, s2, t2, (cx, ay)))
+    return out
+
+
+def logical_free_x(catalog: dict, uid: str) -> list:
+    """The gutters of a logical figure, as x ranges."""
+    layout = generate_diagram.layout_logical(generate_diagram.build_diagram_model(catalog, catalog[uid], False))
+    return [(left, left + width) for left, width in layout.spaces]
 
 
 def side_violations(svg: str) -> list:
@@ -1357,8 +1384,8 @@ class LaterStoryTests(unittest.TestCase):
         (_, _, pts), = edge_polylines(svg)
         gx, gy, gw, gh = endpoint_rects(svg)["RTC-1"]
         box = node_rects(svg)["P-2"]
-        # D36 (superseding D29's nearest border point): the container end is on its bottom border, the box end on
-        # the box's top side, each at the element's shared attachment point.
+        # D29 as amended by D36: the container end is on its bottom border at centre + ATTACH_DX (the edge leaves
+        # it), the box end on the box's top side at centre - ATTACH_DX (the edge enters it).
         self.assertEqual(pts[0], (gx + gw // 2 + generate_diagram.ATTACH_DX, gy + gh))
         self.assertEqual(pts[-1], (box[0] + box[2] // 2 - generate_diagram.ATTACH_DX, box[1]))
         for (ax, ay), (bx, by) in zip(pts, pts[1:]):
@@ -1653,8 +1680,8 @@ class LaterStoryTests(unittest.TestCase):
         self.assertEqual(re.findall(r'<g class="target" data-target="([^"]*)"', svg), ["later-in-the-alphabet", "azure"])
 
     def test_container_and_its_own_boxes_attach_bottom_out_top_in(self) -> None:
-        # D36 supersedes the left-border container ends of D29: edges between a container and boxes drawn inside it
-        # leave and enter through the bottom and top sides like every other edge; none touches a side border.
+        # D29 as amended by D36: edges between a container and boxes drawn inside it leave through the bottom side
+        # and enter through the top side like every other edge, so no end sits on a side border.
         objects = [plain("RTC-1", "runtime_service", "Cluster")] + [component(f"P-{k}", f"Part {k}") for k in range(6)]
         objects.append(pattern({"G": [f"P-{k}" for k in range(6)] + ["RTC-1"]}))
         objects[-1]["serviceGroups"][0]["substrate"] = "RTC-1"
@@ -1748,9 +1775,9 @@ class LaterStoryTests(unittest.TestCase):
         self._assert_runs_clean(svg)
         self.assertIn('data-from="RT-1" data-to="RT-1"', logical_svg(cat, "SDP-1"))
 
-    def test_container_border_over_capacity_spills_to_another_border(self) -> None:
-        # A group listing only its own substrate is a 60 px container; twelve edges to two outside nodes do not fit
-        # on its right border 8 px apart, so the surplus takes the top and bottom borders (review round 5, R1).
+    def test_many_container_out_edges_share_one_bottom_attachment(self) -> None:
+        # A group listing only its own substrate is a small container with twelve edges to two outside nodes: D36
+        # sends all of them through one attachment point on its bottom border, whatever the border's length.
         objects = [plain("RT-1", "runtime_service", "Runtime"), component("O-1", "Outside One"), component("O-2", "Outside Two"), pattern({"Own": ["RT-1"]})]
         objects[3]["serviceGroups"][0]["substrate"] = "RT-1"
         objects += [relationship(f"R-{k:02d}", "RT-1", "O-1" if k % 2 else "O-2", f"rel {k}") for k in range(12)]
@@ -1783,10 +1810,9 @@ class LaterStoryTests(unittest.TestCase):
         self.assertEqual([w for w in model.warnings if w.startswith("substrate of a group")], [])
         self._assert_runs_clean(svg)
 
-    def test_container_cluster_sliding_back_from_a_corner_stays_spread(self) -> None:
-        # A container with a self-loop (which reserves the top of its right border), eight edges to an outside node
-        # above and eleven to one below: the right-border cluster slides back from the bottom corner and must not
-        # collapse onto the reserved top (review round 6, R2).
+    def test_container_out_edges_share_one_attachment_clear_of_its_loop(self) -> None:
+        # A container with a self-loop, eight edges to an outside node above and eleven to one below: D36 sends all
+        # nineteen through one bottom attachment point, and the routes stay clean of the loop (D13).
         objects = [plain("RT-1", "runtime_service", "Runtime"), component("O-1", "Above"), component("O-2", "Below"), component("P-1", "Alpha"), pattern({"Own": ["RT-1"], "Rest": ["P-1"]})]
         objects[4]["serviceGroups"][0]["substrate"] = "RT-1"
         objects += [relationship("R-00", "RT-1", "RT-1", "self")]
@@ -1865,7 +1891,7 @@ class LaterStoryTests(unittest.TestCase):
 
     def test_in_edges_from_one_column_join_the_containers_in_run(self) -> None:
         # Two first-column boxes in different rows of one container both call it: D36 sends both through their own
-        # bottom sides to the container's single top attachment point (formerly two left-border ends, D29).
+        # bottom sides to the container's single top attachment point (D29 as amended by D36).
         parts = [component(f"P-{k:02d}", f"Part {k}") for k in range(12)]
         objects = [plain("RTC-1", "runtime_service", "Cluster")] + parts + [pattern({"G": [p["uid"] for p in parts]})]
         objects[-1]["serviceGroups"][0]["substrate"] = "RTC-1"
@@ -1895,6 +1921,7 @@ class LaterStoryTests(unittest.TestCase):
                 self.assertEqual(side_violations(logical), [])
                 self.assertEqual(covisible_track_clashes(logical), [])
                 self.assertEqual(edges_hitting_foreign_boxes(logical), [])
+                self.assertEqual(covisible_stub_crossings(logical, logical_free_x(cat, "SDP-1")), [])
                 self.assertEqual(logical, logical_svg(dict(reversed(list(cat.items()))), "SDP-1"))
 
     def test_fixture_routes_keep_covisible_tracks_apart_and_attach_bottom_out_top_in(self) -> None:
@@ -1908,6 +1935,36 @@ class LaterStoryTests(unittest.TestCase):
                     self.assertEqual(side_violations(svg), [])
                     self.assertEqual(covisible_track_clashes(svg), [])
                     self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+                    if render is logical_svg:  # the deployment figure checks stubs in _assert_runs_clean
+                        self.assertEqual(covisible_stub_crossings(svg, logical_free_x(catalog, sdp["uid"])), [])
+
+    def test_logical_stubs_are_not_crossed_whatever_the_document_order(self) -> None:
+        # Review round 1, R1: four services in one row feeding one database in the next, and a hub with eight
+        # in-edges from the row above, in forward, reversed and mixed relationship order. No run may cross a
+        # co-visible stub or drop, and the figure must be the same in every order.
+        def tiered(objects: list, tiers: dict) -> list:
+            for entry in objects[-1]["serviceGroups"][0]["deployableObjects"]:
+                entry["diagramTier"] = tiers[entry["ref"]]
+            return objects
+
+        services = [f"S-{k}" for k in range(4)]
+        ups = [f"U-{k:02d}" for k in range(8)]
+        cases = {
+            "staircase": (services + ["DB-1"], {**{u: "application" for u in services}, "DB-1": "data"}, [(u, "DB-1") for u in services]),
+            "hub": (ups + ["HUB-1"], {**{u: "presentation" for u in ups}, "HUB-1": "application"}, [(ups[(k * 5) % 8], "HUB-1") for k in range(8)]),
+        }
+        for name, (uids, tiers, pairs) in cases.items():
+            renders = []
+            for order in (pairs, pairs[::-1], pairs[1::2] + pairs[0::2]):
+                objects = tiered([component(u, u) for u in uids] + [pattern({"G": uids})], tiers)
+                objects += [relationship(f"R-{n}", a, b, "reads") for n, (a, b) in enumerate(order)]
+                cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+                svg = logical_svg(cat, "SDP-1")
+                with self.subTest(case=name, order=order[0]):
+                    self.assertEqual(covisible_stub_crossings(svg, logical_free_x(cat, "SDP-1")), [])
+                    self.assertEqual(covisible_track_clashes(svg), [])
+                renders.append(re.sub(r"<title>[^<]*</title>|data-[a-z]+=\"R-\d+\"", "", "\n".join(sorted(re.findall(r'<path class="ln[^"]*" d="[^"]*"', svg)))))
+            self.assertEqual(len(set(renders)), 1, f"{name}: routes depend on relationship order")
 
     def test_fan_out_into_one_gutter_shares_attachment_and_first_run(self) -> None:
         # D36 on the fixture: the out-edges of one box share their first point and their first run (the stub down
@@ -2039,7 +2096,7 @@ class LaterStoryTests(unittest.TestCase):
         for sdp in generate_diagram.sdps(load_catalog(FIXTURE)):
             self._assert_runs_clean(deployment_svg(load_catalog(FIXTURE), sdp["uid"]))
 
-    def test_two_edges_leaving_one_container_start_apart(self) -> None:
+    def test_two_edges_leaving_one_container_share_attachment_and_out_run(self) -> None:
         objects = [
             plain("RTC-1", "runtime_service", "Cluster"),
             component("P-1", "Alpha"),
