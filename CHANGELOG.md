@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None for workspaces. The upstream Generate Derived Assets workflow now opens a pull request instead of pushing to `main`.
+
+### Added
+
+- None.
+
+### Changed
+
+- `framework/docs/object-types.md` gains a decision test for `serviceRole` on shared-services objects: a definition is a standard each product deploys for itself (two consumers, two deployments); an instance is one shared service everyone calls (two consumers, one endpoint). It names the five object types that carry the field, the folder defaults, and when a gateway is an edge slot rather than a shared instance.
+
+### Fixed
+
+- The Generate Derived Assets workflow pushed regenerated browser, diagram pages and AI index straight to `main`, which branch protection rejects (pull requests only, `validate` required). It now commits to `chore/derived-assets` with the release bot token and opens or updates a pull request, so the required check runs and the assets reach `main` through review.
+
+### Migration Notes
+
+- No file changes are required. Owners of shared-services objects should read the new "Deciding `serviceRole`" section of `framework/docs/object-types.md` and, for every object in the definitions folder that is one shared endpoint everyone calls, set `serviceRole: instance`; objects that each product deploys for itself stay unmarked or `definition`. Adopters that mirrored the Generate Derived Assets workflow need no change unless their `main` is protected, in which case they take the pull-request form of the commit step.
+
 ## 1.4.0 - 2026-11-14
 
 ### Compatibility Impact
