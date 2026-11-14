@@ -13,6 +13,17 @@ from draft_table.repo import ensure_workspace_layout
 from draft_table.validation import build_validate_command, validate_workspace
 
 
+def grandfather_ratcheted_violations(workspace: Path) -> None:
+    # Older-style fixtures place infrastructure in a pattern; the ratcheted ownership
+    # rules (D49 to D51) would flag them, so record them in a baseline first.
+    subprocess.run(
+        [sys.executable, str(REPO_ROOT / "framework" / "tools" / "validate.py"), "--workspace", str(workspace), "--write-baseline", "--quiet"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
 class ValidationTests(unittest.TestCase):
     def _write_decision_records_for_sdp(self, workspace: Path, indent: int = 20) -> str:
         dr_dir = workspace / "catalog" / "decision-records"
@@ -2078,6 +2089,7 @@ requirementGroups:
                 encoding="utf-8",
             )
 
+            grandfather_ratcheted_violations(workspace)
             result = validate_workspace(workspace)
 
         self.assertTrue(result.ok, result.stdout + result.stderr)
@@ -2192,6 +2204,7 @@ requirementGroups:
                 encoding="utf-8",
             )
 
+            grandfather_ratcheted_violations(workspace)
             result = validate_workspace(workspace)
 
         self.assertTrue(result.ok, result.stdout + result.stderr)
@@ -2526,6 +2539,7 @@ requirementGroups:
                 encoding="utf-8",
             )
 
+            grandfather_ratcheted_violations(workspace)
             result = validate_workspace(workspace)
 
         self.assertTrue(result.ok, result.stdout + result.stderr)
@@ -2647,6 +2661,7 @@ requirementGroups:
                 encoding="utf-8",
             )
             
+            grandfather_ratcheted_violations(workspace)
             result = validate_workspace(workspace)
             
         self.assertTrue(result.ok, result.stdout + result.stderr)
@@ -2851,6 +2866,7 @@ requirementGroups:
                 encoding="utf-8",
             )
             
+            grandfather_ratcheted_violations(workspace)
             result1 = validate_workspace(workspace)
             self.assertFalse(result1.ok, result1.stdout + result1.stderr)
             self.assertIn("presentation-to-application-required", result1.stdout)
@@ -2875,6 +2891,7 @@ requirementGroups:
                 encoding="utf-8",
             )
             
+            grandfather_ratcheted_violations(workspace)
             result2 = validate_workspace(workspace)
             self.assertTrue(result2.ok, result2.stdout + result2.stderr)
 
@@ -2977,6 +2994,7 @@ requirementGroups:
                 encoding="utf-8",
             )
             
+            grandfather_ratcheted_violations(workspace)
             result1 = validate_workspace(workspace)
             self.assertTrue(result1.ok, result1.stdout + result1.stderr)
             
@@ -2999,6 +3017,7 @@ requirementGroups:
                 encoding="utf-8",
             )
             
+            grandfather_ratcheted_violations(workspace)
             result2 = validate_workspace(workspace)
             self.assertFalse(result2.ok, result2.stdout + result2.stderr)
             self.assertIn("presentation-to-data-forbidden", result2.stdout)
@@ -3521,6 +3540,7 @@ requirementGroups:
                 encoding="utf-8",
             )
             self._repair_workspace_uids(workspace)
+            grandfather_ratcheted_violations(workspace)
             result = validate_workspace(workspace)
             self.assertTrue(result.ok, result.stdout + result.stderr)
 
@@ -3549,6 +3569,7 @@ requirementGroups:
                 encoding="utf-8",
             )
             self._repair_workspace_uids(workspace)
+            grandfather_ratcheted_violations(workspace)
             result = validate_workspace(workspace)
             self.assertFalse(result.ok, result.stdout + result.stderr)
             self.assertIn("Replace businessContext.ownerNode 'team.does-not-exist' with a declared hierarchy node id", result.stdout)
@@ -3578,6 +3599,7 @@ requirementGroups:
                 encoding="utf-8",
             )
             self._repair_workspace_uids(workspace)
+            grandfather_ratcheted_violations(workspace)
             result = validate_workspace(workspace)
             self.assertFalse(result.ok, result.stdout + result.stderr)
             self.assertIn("pointing to a node with a pillar in its lineage", result.stdout)
@@ -3680,6 +3702,7 @@ requirementGroups:
                 encoding="utf-8",
             )
             self._repair_workspace_uids(workspace)
+            grandfather_ratcheted_violations(workspace)
             result = validate_workspace(workspace)
             self.assertTrue(result.ok, result.stdout + result.stderr)
 
@@ -3862,6 +3885,7 @@ requirementGroups:
                 encoding="utf-8",
             )
             self._repair_workspace_uids(workspace)
+            grandfather_ratcheted_violations(workspace)
             result = validate_workspace(workspace)
             self.assertTrue(result.ok, result.stdout + result.stderr)
 
@@ -3890,6 +3914,7 @@ requirementGroups:
                 encoding="utf-8",
             )
             self._repair_workspace_uids(workspace)
+            grandfather_ratcheted_violations(workspace)
             result = validate_workspace(workspace)
             self.assertFalse(result.ok, result.stdout + result.stderr)
             self.assertIn("Replace businessContext.ownerNode 'team.does-not-exist' with a declared hierarchy node id", result.stdout)
@@ -3919,6 +3944,7 @@ requirementGroups:
                 encoding="utf-8",
             )
             self._repair_workspace_uids(workspace)
+            grandfather_ratcheted_violations(workspace)
             result = validate_workspace(workspace)
             self.assertFalse(result.ok, result.stdout + result.stderr)
             self.assertIn("pointing to a node with a pillar in its lineage", result.stdout)
@@ -3970,6 +3996,7 @@ requirementGroups:
                 encoding="utf-8",
             )
             self._repair_workspace_uids(workspace)
+            grandfather_ratcheted_violations(workspace)
             result = validate_workspace(workspace)
             self.assertFalse(result.ok, result.stdout + result.stderr)
             self.assertIn("Replace businessUnit 'bu.invalid-bu' with a business unit declared in .draft/workspace.yaml", result.stdout)

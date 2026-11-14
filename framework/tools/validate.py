@@ -269,6 +269,140 @@ def _check_ratchet_test_marker(obj: dict, catalog_by_id: dict) -> Iterable[str]:
 register_ratchet_rule("ratchet-test-marker", _check_ratchet_test_marker)
 
 
+# ---------------------------------------------------------------------------
+# Pattern ownership rules (D50, D51)
+# ---------------------------------------------------------------------------
+INFRASTRUCTURE_TYPES = ("runtime_service", "data_store_service", "network_service", "host", "ai_gateway")
+SERVICE_DEFINITIONS_FOLDER_NAME = "shared-services"
+# Filled by main() before ratcheted rules run: workspace root, parsed workspace.yaml
+# and a uid -> path map. Rules need the file location of an object (D51).
+RATCHET_CONTEXT: dict[str, Any] = {"workspace_root": None, "workspace_config": {}, "paths": {}}
+
+
+def service_definition_folders(workspace_config: dict[str, Any] | None) -> list[str]:
+    """Folders (relative to the workspace root or its catalog/) that hold service definitions."""
+    paths = (workspace_config or {}).get("paths")
+    if not isinstance(paths, dict):
+        return []
+    explicit = paths.get("serviceDefinitionsFolder")
+    if isinstance(explicit, str) and explicit.strip():
+        return [explicit.strip().strip("/")]
+    folders = paths.get("catalogFolders")
+    if isinstance(folders, list):
+        return [
+            str(folder).strip().strip("/")
+            for folder in folders
+            if str(folder).strip().strip("/").split("/")[-1] == SERVICE_DEFINITIONS_FOLDER_NAME
+        ]
+    return []
+
+
+def _path_in_folder(path: Path, folder: str, workspace_root: Path | None) -> bool:
+    parts = Path(folder).parts
+    if not parts:
+        return False
+    if workspace_root is not None:
+        try:
+            rel = path.resolve().relative_to(workspace_root.resolve()).parts
+        except ValueError:
+            return False
+        return rel[: len(parts)] == parts or (rel[:1] == ("catalog",) and rel[1 : 1 + len(parts)] == parts)
+    return any(path.parts[i : i + len(parts)] == parts for i in range(len(path.parts)))
+
+
+def service_role(
+    obj: dict[str, Any],
+    path: Path | None,
+    workspace_config: dict[str, Any] | None,
+    workspace_root: Path | None = None,
+) -> str:
+    """Return 'definition' or 'instance' for an infrastructure object (D51)."""
+    declared = obj.get("serviceRole")
+    if declared in ("definition", "instance"):
+        return str(declared)
+    if path is None:
+        return "instance"
+    for folder in service_definition_folders(workspace_config):
+        if _path_in_folder(Path(path), folder, workspace_root):
+            return "definition"
+    return "instance"
+
+
+def _object_role(obj: dict[str, Any]) -> str | None:
+    if obj.get("type") not in INFRASTRUCTURE_TYPES:
+        return None
+    return service_role(
+        obj,
+        RATCHET_CONTEXT["paths"].get(str(obj.get("uid"))),
+        RATCHET_CONTEXT["workspace_config"],
+        RATCHET_CONTEXT["workspace_root"],
+    )
+
+
+def _describe(obj: dict[str, Any], uid: str) -> str:
+    return f"'{obj.get('name') or uid}' (type: {obj.get('type')}, uid: {uid})"
+
+
+PLACEMENT_FIELD_HINT = {
+    "runtime_service": "runtime or host belongs in the service group's substrate",
+    "host": "runtime or host belongs in the service group's substrate",
+    "data_store_service": "data store belongs in a data component's runsOn",
+    "network_service": "edge or external service: record a relationship from the consuming component, or rely on the reference architecture",
+    "ai_gateway": "edge or external service: record a relationship from the consuming component, or rely on the reference architecture",
+}
+
+
+def _check_sdp_placement_types(obj: dict, catalog_by_id: dict) -> Iterable[str]:
+    if obj.get("type") != "software_deployment_pattern":
+        return []
+    groups = obj.get("serviceGroups")
+    if not isinstance(groups, list):
+        return []
+    messages: list[str] = []
+    for group in groups:
+        if not isinstance(group, dict) or not isinstance(group.get("deployableObjects"), list):
+            continue
+        for entry in group["deployableObjects"]:
+            ref = entry.get("ref") if isinstance(entry, dict) else None
+            target = catalog_by_id.get(ref) if isinstance(ref, str) else None
+            if not isinstance(target, dict) or target.get("type") in ("product_component", "data_component"):
+                continue
+            hint = PLACEMENT_FIELD_HINT.get(
+                str(target.get("type")),
+                "a pattern places only product components and data components; use the field that fits the object",
+            )
+            messages.append(
+                f"deployableObjects ref {_describe(target, ref)} in service group '{group.get('name')}' is not a "
+                f"product_component or data_component: {hint}"
+            )
+    return messages
+
+
+def _check_relationship_definition_endpoint(obj: dict, catalog_by_id: dict) -> Iterable[str]:
+    if obj.get("type") != "relationship":
+        return []
+    messages: list[str] = []
+    for end in ("source", "target"):
+        ref = obj.get(end)
+        endpoint = catalog_by_id.get(ref) if isinstance(ref, str) else None
+        if not isinstance(endpoint, dict) or _object_role(endpoint) != "definition":
+            continue
+        message = (
+            f"{end} {_describe(endpoint, ref)} is a service definition, and a definition carries no flows: "
+            f"record the relationship on the component or instance that uses it"
+        )
+        message += (
+            "; if it is an external service that lives in the service definitions folder, "
+            "set serviceRole: instance on that object"
+        )
+        messages.append(message)
+    return messages
+
+
+register_ratchet_rule("sdp-placement-types", _check_sdp_placement_types)
+register_ratchet_rule("relationship-definition-endpoint", _check_relationship_definition_endpoint)
+
+
 def object_hash(obj: dict[str, Any]) -> str:
     dumped = yaml.safe_dump(obj, sort_keys=True, allow_unicode=True)
     return hashlib.sha256(dumped.encode("utf-8")).hexdigest()
@@ -4733,6 +4867,11 @@ def main(argv: list[str] | None = None) -> int:
                 print("")
                 print(f"SoftwareDeploymentPattern '{sdp_obj.get('name')}' is deployment-ready for DeploymentTarget '{target_obj.get('name')}' (200 OK).")
 
+    RATCHET_CONTEXT["workspace_root"] = workspace_root
+    RATCHET_CONTEXT["workspace_config"] = load_workspace_config(workspace_root, [])
+    RATCHET_CONTEXT["paths"] = {
+        str(o["uid"]): p for p, o in sorted(objects.items()) if isinstance(o, dict) and is_non_empty(o.get("uid"))
+    }
     ratchet_violations = collect_ratchet_violations(objects, catalog_by_id)
     if args.write_baseline:
         if structural_failures:

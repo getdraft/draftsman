@@ -15,6 +15,7 @@ optionalFields:
 - version
 - owner
 - tags
+- serviceRole
 - host
 - primaryTechnologyComponent
 - internalComponents
@@ -41,6 +42,9 @@ conditionalRequired:
   - productName
   - productVersion
 enumFields:
+  serviceRole:
+  - definition
+  - instance
   catalogStatus:
   - stub
   - incomplete
@@ -187,6 +191,7 @@ fieldDescriptions:
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name, product-name, or taxonomy changes.
   type: Use ai_gateway exactly.
   name: Use a clear human-readable name for the AI Gateway service.
+  serviceRole: Optional. definition marks the infrastructure team's standard solution (deployed through substrate or runsOn, never a relationship endpoint); instance marks a concrete service that may be a relationship endpoint, such as an external service. When absent, an object under the workspace's service definitions folder (workspace.yaml paths.serviceDefinitionsFolder, else the catalog folder named shared-services in paths.catalogFolders) is a definition and any other object is an instance.
   deliveryModel: Use self-managed, paas, saas, or appliance to state who operates the underlying platform.
   host: For self-managed services, reference the Host this service runs on.
   primaryTechnologyComponent: For self-managed services, reference the main TechnologyComponent that provides the gateway behavior.
