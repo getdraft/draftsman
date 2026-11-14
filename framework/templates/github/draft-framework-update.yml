@@ -334,7 +334,7 @@ jobs:
       - name: Record validation baseline for the refreshed framework
         if: steps.refresh.outputs.update_needed == 'true'
         run: |
-          python .draft/framework/tools/validate.py --workspace . --write-baseline || true
+          python .draft/framework/tools/validate.py --workspace . --write-baseline
 
       - name: Validate workspace against refreshed framework
         id: validate

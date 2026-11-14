@@ -216,7 +216,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument(
         "--write-baseline",
         action="store_true",
-        help="Write .draft/validation-baseline.yaml from the current ratcheted violations, dropping stale entries, and exit 0.",
+        help="Write .draft/validation-baseline.yaml from the current ratcheted violations, dropping stale entries, then report as a normal run (exit 1 if other errors remain).",
     )
     parser.add_argument(
         "--no-baseline",
@@ -4743,8 +4743,7 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         count = write_baseline(workspace_root, ratchet_violations)
         print(f"Wrote {count} baseline entries to {BASELINE_RELATIVE_PATH.as_posix()}.")
-        return 0
-    use_baseline = not args.no_baseline
+    use_baseline = args.write_baseline or not args.no_baseline
     baseline = load_baseline(workspace_root, failures) if use_baseline else {}
     apply_ratchet(ratchet_violations, baseline, use_baseline, failures, warnings)
 

@@ -142,6 +142,20 @@ class RatchetTests(unittest.TestCase):
         self.assertNotIn("baseline", out.lower())
         self.assertFalse(self.baseline.exists())
 
+    def test_write_baseline_with_other_errors_writes_then_exits_one(self) -> None:
+        self.put(UID_A)
+        (self.ws / "catalog" / "bad.yaml").write_text(
+            yaml.safe_dump({"schemaVersion": "1.0", "uid": "01M7C497MU-MSDP", "type": "domain"}), encoding="utf-8"
+        )
+        code, out = self.run_validate("--write-baseline")
+        self.assertEqual(1, code)
+        self.assertIn("Wrote 1 baseline entries", out)
+        self.assertEqual([UID_A], [e["uid"] for e in self.entries()])
+        self.assertIn("Validation failures:", out)
+        self.assertIn("bad.yaml", out)
+        self.assertNotIn(RULE, out.split("Validation failures:")[1].split("Validation warnings:")[0])
+        self.assertIn("baseline:", out)
+
     def test_unparseable_object_blocks_write_baseline(self) -> None:
         self.put(UID_A)
         self.run_validate("--write-baseline")
