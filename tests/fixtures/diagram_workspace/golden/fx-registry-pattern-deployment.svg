@@ -15,5 +15,5 @@
 </g>
 </g>
 </g>
-<g class="edge" data-from="FXPRD00010-0001" data-to="FXDST00002-0001"><title>FX Shared Ledger persists ledger entries FX Ledger Store</title><path class="ln" d="M150 250 L150 256 L300 256 L300 424 L150 424 L150 430" marker-end="url(#dp-end)"/><path class="fl" d="M150 250 L150 256 L300 256 L300 424 L150 424 L150 430"/><text class="lb" x="300.0" y="336.0" text-anchor="middle">persists ledger entries</text></g>
+<g class="edge" data-from="FXPRD00010-0001" data-to="FXDST00002-0001"><title>FX Shared Ledger persists ledger entries FX Ledger Store</title><path class="ln" d="M170 250 L170 256 L300 256 L300 424 L130 424 L130 430" marker-end="url(#dp-end)"/><path class="fl" d="M170 250 L170 256 L300 256 L300 424 L130 424 L130 430"/><text class="lb" x="215.0" y="420.0" text-anchor="middle">persists ledger entries</text></g>
 </svg>
