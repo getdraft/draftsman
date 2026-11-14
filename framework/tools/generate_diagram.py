@@ -58,7 +58,6 @@ E = html.escape
 
 CHIP_W = 190
 CHIP_H = 46
-LABEL_LIMIT = 8  # show edge labels permanently only up to this many edges; larger graphs label on hover
 
 
 # --------------------------------------------------------------------------- model
@@ -2061,7 +2060,10 @@ _FIGURE_CSS = (
     ".lb{font:600 10.5px sans-serif;fill:var(--muted);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}"
     ".lb .tech{font-weight:400}"
     ".lb.hov{display:none}"
-    ".edge:hover .lb.hov,.edge.on .lb.hov{display:inline}"
+    ".edge.on .lb.hov{display:inline}"
+    ".callout{display:none;font:600 11px sans-serif;fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round;pointer-events:none}"
+    ".callout .tech{font-weight:400}"
+    ".edge:hover .callout{display:inline}"
 )
 
 
@@ -2144,32 +2146,14 @@ def _polyline_mid(pts: list) -> tuple:
     return pts[-1]
 
 
-def _label_mid(pts: list, text_len: int, obstacles: list) -> tuple:
-    """D13: the label anchor on a route, chosen so the label keeps clear of every obstacle.
+def _label_box(x: float, y: float, text_len: int) -> tuple:
+    """The (x, y, w, h) box of a label whose left edge is x and whose box bottom is y (D13 metrics: about 6.2 px a character, 14 px tall)."""
+    return (x, y - 13, text_len * 6.2 + 4, 14)
 
-    Obstacles are (x, y, w, h) rectangles: node boxes, band labels and the outside lane caption. Candidates are
-    points at 50%, 25% and 75% along each segment, longest segment first, each tried on the line and 18 px
-    either side of it. The first candidate that overlaps nothing wins. If none is clear, the candidate with the
-    least overlap wins. A label is about 6.2 px per character and 14 px tall, drawn 4 px above its anchor.
-    """
-    width = text_len * 6.2 + 4
-    order = sorted(range(len(pts) - 1), key=lambda i: (-(abs(pts[i + 1][0] - pts[i][0]) + abs(pts[i + 1][1] - pts[i][1])), i))
-    best: tuple = ()
-    for i in order:
-        (ax, ay), (bx, by) = pts[i], pts[i + 1]
-        for fraction in (0.5, 0.25, 0.75):
-            cx = ax + (bx - ax) * fraction
-            for shift in (0, 18, -18):
-                cy = ay + (by - ay) * fraction + shift
-                x0, y0 = cx - width / 2, cy - 13
-                area = 0.0
-                for ox, oy, ow, oh in obstacles:
-                    area += max(0.0, min(x0 + width, ox + ow) - max(x0, ox)) * max(0.0, min(y0 + 14, oy + oh) - max(y0, oy))
-                if area == 0:
-                    return (cx, cy)
-                if not best or area < best[0]:
-                    best = (area, (cx, cy))
-    return best[1] if best else _polyline_mid(pts)
+
+def _overlap(a: tuple, b: tuple) -> float:
+    """Overlapping area of two (x, y, w, h) rectangles."""
+    return max(0.0, min(a[0] + a[2], b[0] + b[2]) - max(a[0], b[0])) * max(0.0, min(a[1] + a[3], b[1] + b[3]) - max(a[1], b[1]))
 
 
 def _label_len(edge: DiagramEdge) -> int:
@@ -2177,15 +2161,77 @@ def _label_len(edge: DiagramEdge) -> int:
     return len(clean(edge.label)) + (len(clean(edge.technology)) + 3 if clean(edge.technology) else 0)
 
 
-def _edge_label(edge: DiagramEdge, mid: tuple, cls: str) -> str:
-    """Label, then the recorded technology in a lighter weight (D13). Empty when neither is recorded."""
+def _has_label(edge: DiagramEdge) -> bool:
+    return bool(clean(edge.label) or clean(edge.technology))
+
+
+LABEL_STEP = 14  # D37: stacked labels sit one label height apart
+LABEL_STEPS = 12  # how many places to try up the entry stub before giving up
+
+
+def _place_labels(items: list, obstacles: list) -> dict:
+    """D37: place every edge label beside the target end of its line.
+
+    ``items`` is a list of (number, edge, pts) in edge order; ``pts`` is None for a self-loop, whose label the
+    caller places. Labels start just above the entry point, right of the line, and step up by 14 px until the
+    box overlaps no obstacle (node boxes, band labels, lane caption) and no label already placed for a co-visible
+    edge (one sharing an endpoint). Then the same steps are tried left of the line. If nothing is clear, the least
+    overlapping place wins. Deterministic: edge order, fixed candidate order. Returns number -> (x, baseline, anchor).
+    """
+    placed: list = []  # (source, target, box)
+    result: dict = {}
+    for number, edge, pts in items:
+        if pts is None or not _has_label(edge):
+            continue
+        length = _label_len(edge)
+        ex, ey = pts[-1]
+        best: tuple = ()
+        for side in (0, 1):
+            left = ex + 4 if side == 0 else ex - 4 - (length * 6.2 + 4)
+            for step in range(LABEL_STEPS):
+                bottom = ey - 2 - LABEL_STEP * step
+                box = _label_box(left, bottom, length)
+                area = sum(_overlap(box, o) for o in obstacles)
+                area += sum(_overlap(box, b) for s, t, b in placed if {s, t} & {edge.source, edge.target})
+                if not best or area < best[0]:
+                    best = (area, box, bottom, left)
+                if area == 0:
+                    break
+            if best[0] == 0:
+                break
+        _area, box, bottom, left = best
+        placed.append((edge.source, edge.target, box))
+        result[number] = (left + 2, bottom - 4, "start")
+    return result
+
+
+def _longest_mid(pts: list) -> tuple:
+    """Midpoint of the longest segment of a route; the first one wins a tie."""
+    best, at = -1, (0.0, 0.0)
+    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+        seg = abs(bx - ax) + abs(by - ay)
+        if seg > best:
+            best, at = seg, ((ax + bx) / 2, (ay + by) / 2)
+    return at
+
+
+def _edge_label(edge: DiagramEdge, at: tuple, pts: list) -> str:
+    """Label, then the recorded technology in a lighter weight (D13), and the hover callout (D37).
+
+    ``at`` is (x, baseline, anchor). The callout repeats the full text at the middle of the line's longest segment.
+    Empty when neither label nor technology is recorded.
+    """
     label, tech = clean(edge.label), clean(edge.technology)
     if not label and not tech:
         return ""
     body = xml_text(label) if label else ""
     if tech:
         body += '<tspan class="tech">' + (" / " if label else "") + xml_text(tech) + "</tspan>"
-    return f'<text class="{cls}" x="{mid[0]:.1f}" y="{mid[1] - 4:.1f}" text-anchor="middle">{body}</text>'
+    mx, my = _longest_mid(pts)
+    return (
+        f'<text class="lb hov" x="{at[0]:.1f}" y="{at[1]:.1f}" text-anchor="{at[2]}">{body}</text>'
+        f'<text class="callout" x="{mx:.1f}" y="{my - 6:.1f}" text-anchor="middle">{body}</text>'
+    )
 
 
 def _node_svg(node: DiagramNode, x: int, y: int) -> str:
@@ -2233,8 +2279,6 @@ def render_logical_svg(model: DiagramModel) -> str:
     """
     layout = layout_logical(model)
     by_uid = {n.uid: n for n in model.nodes}
-    shown = [e for e in model.edges if e.source in layout.pos and e.target in layout.pos]
-    label_cls = "lb hov" if len(shown) > LABEL_LIMIT else "lb"  # D13: more than 8 edges, labels on hover or pin
     out: list[str] = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {layout.width} {layout.height}" '
         f'width="{layout.width}" height="{layout.height}" role="img" aria-label="{LOGICAL_TITLE}">',
@@ -2257,6 +2301,10 @@ def render_logical_svg(model: DiagramModel) -> str:
     if layout.lane:
         obstacles.append((layout.lane[0] + 10, layout.lane[1] + 15, len("External interactions") * 7 + 4, 12))
     loops: dict[str, int] = {}
+    label_at = _place_labels(
+        [(n, e, None if e.source == e.target else routes[n]) for n, e in enumerate(model.edges) if e.source in layout.pos and e.target in layout.pos],
+        obstacles,
+    )
     for number, edge in enumerate(model.edges):
         s, t = edge.source, edge.target
         if s not in layout.pos or t not in layout.pos:
@@ -2270,11 +2318,13 @@ def render_logical_svg(model: DiagramModel) -> str:
             loops[s] = loops.get(s, 0) + 1
             path = _loop_path(x, y, grow)
             mid = (x + LOGICAL_BOX_W * 0.8, y - 26 - grow)
+            pts = [mid, mid]
+            at = (mid[0], mid[1] - 4, "middle")
         else:
             pts = routes[number]
             path = "M" + " L".join(f"{px} {py}" for px, py in pts)
-            mid = _label_mid(pts, _label_len(edge), obstacles)
-        out.append(f'{head}<path class="{cls}" d="{path}"{marks}/>{_flow_overlay(path, edge.flow)}{_edge_label(edge, mid, label_cls)}</g>')
+            at = label_at.get(number, (0.0, 0.0, "start"))
+        out.append(f'{head}<path class="{cls}" d="{path}"{marks}/>{_flow_overlay(path, edge.flow)}{_edge_label(edge, at, pts)}</g>')
     for uid in [u for names in layout.order for u in names] + layout.lane_order:
         x, y = layout.pos[uid]
         out.append(_node_svg(by_uid[uid], x, y))
@@ -2759,8 +2809,10 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     deploy_obstacles = [rects[u] for u in by_uid if u in rects]  # D13: boxes, then the outside lane caption
     if outer:
         deploy_obstacles.append((lane_x, lane_top + 15, len("External interactions") * 7 + 4, 12))
-    shown = [e for e in model.edges if e.source in rects and e.target in rects]
-    label_cls = "lb hov" if len(shown) > LABEL_LIMIT else "lb"  # D13: more than 8 edges, labels on hover or pin
+    label_at = _place_labels(
+        [(n, e, None if e.source == e.target else routes[n]) for n, e in enumerate(model.edges) if e.source in rects and e.target in rects],
+        deploy_obstacles,
+    )
     for number, edge in enumerate(model.edges):
         s, t = edge.source, edge.target
         if s not in rects or t not in rects:
@@ -2775,11 +2827,13 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
             x0 = rx + rw - LOGICAL_BOX_W
             path = _loop_path(x0, ry, grow)
             mid = (x0 + LOGICAL_BOX_W * 0.8, ry - 26 - grow)
+            pts = [mid, mid]
+            at = (mid[0], mid[1] - 4, "middle")
         else:
             pts = routes[number]
             path = "M" + " L".join(f"{_fmt(px)} {_fmt(py)}" for px, py in pts)
-            mid = _label_mid(pts, _label_len(edge), deploy_obstacles)
-        edges.append(f'{head}<path class="{cls}" d="{path}"{marks}/>{_flow_overlay(path, edge.flow)}{_edge_label(edge, mid, label_cls)}</g>')
+            at = label_at.get(number, (0.0, 0.0, "start"))
+        edges.append(f'{head}<path class="{cls}" d="{path}"{marks}/>{_flow_overlay(path, edge.flow)}{_edge_label(edge, at, pts)}</g>')
     width = right + LOGICAL_MARGIN
     note = ""
     empty = [c for c in model.containers if not c.drawn]

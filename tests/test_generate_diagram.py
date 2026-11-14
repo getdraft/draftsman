@@ -2329,6 +2329,8 @@ class LaterStoryTests(unittest.TestCase):
                 self.assertEqual(edges_hitting_foreign_boxes(logical), [])
                 self.assertEqual(covisible_stub_crossings(logical, logical_free_x(cat, "SDP-1")), [])
                 self.assertEqual(logical, logical_svg(dict(reversed(list(cat.items()))), "SDP-1"))
+                self._assert_labels_clean(logical)  # AC22, D37
+                self._assert_labels_clean(svg)
 
     def test_fixture_routes_keep_covisible_tracks_apart_and_attach_bottom_out_top_in(self) -> None:
         # AC21 on every fixture pattern, both figures.
@@ -2623,7 +2625,8 @@ class LaterStoryTests(unittest.TestCase):
         self.assertIn('marker-end="url(#lg-end)"', edge_paths(svg)[("C-A", "C-B")])
         self.assertNotIn('marker-start="url(#lg-start)"', edge_paths(svg)[("C-A", "C-B")])
 
-    def test_label_visibility_threshold(self) -> None:
+    def test_labels_show_with_the_edge_and_callout_on_hover(self) -> None:
+        # D37: no permanent labels whatever the edge count; the callout shows on the hovered line only.
         def chain(count: int) -> str:
             objects = [component(f"C-{n}", f"N{n}") for n in range(count + 1)]
             objects.append(pattern({"G": [f"C-{n}" for n in range(count + 1)]}))
@@ -2634,30 +2637,90 @@ class LaterStoryTests(unittest.TestCase):
                 objects.append(rel)
             return svg_for(objects)
 
-        eight = chain(8)
-        self.assertEqual(eight.count('class="lb"'), 8)
-        self.assertNotIn('class="lb hov"', eight)
-        nine = chain(9)
-        self.assertEqual(nine.count('class="lb hov"'), 9)
-        self.assertNotIn('class="lb"', nine)
-        self.assertIn('<tspan class="tech"> / HTTPS</tspan>', eight)
-        self.assertIn(".lb .tech{font-weight:400}", eight)
+        for count in (3, 9):
+            svg = chain(count)
+            self.assertEqual(svg.count('class="lb hov"'), count)
+            self.assertNotIn('class="lb"', svg)
+            self.assertEqual(svg.count('<text class="callout"'), count)
+        self.assertIn('<tspan class="tech"> / HTTPS</tspan>', svg)
+        self.assertIn(".lb .tech{font-weight:400}", svg)
+        self.assertIn(".lb.hov{display:none}", svg)
+        self.assertIn(".edge.on .lb.hov{display:inline}", svg)
+        self.assertIn(".callout{display:none;", svg)
+        self.assertIn(".edge:hover .callout{display:inline}", svg)
+        self.assertNotIn(".edge:hover .lb", svg)
+        self.assertIn("<title>N0 rel 0 N1</title>", svg)
+        self.assertFalse(hasattr(generate_diagram, "LABEL_LIMIT"))
 
-    def test_labels_clear_node_boxes(self) -> None:
+    def test_callout_sits_on_the_longest_segment(self) -> None:
         svg = logical_svg(load_catalog(FIXTURE), "FXSDP00002-0001")
-        boxes = node_rects(svg)
-        self.assertTrue(boxes)
-        texts = []  # band labels and the outside lane caption: (left, top, width, height)
-        for x, y, text in re.findall(r'<text class="(?:bl|ll)" x="([\d.]+)" y="([\d.]+)">([^<]*)</text>', svg):
-            texts.append((float(x), float(y) - 11, len(xml_unescape(text)) * 7 + 4, 12))
-        obstacles = [(bx, by, bw, bh) for bx, by, bw, bh in boxes.values()] + texts
-        self.assertTrue(texts)
-        for x, y, text in re.findall(r'<text class="lb" x="([\d.]+)" y="([\d.]+)" text-anchor="middle">([^<]*)</text>', svg):
-            width = len(xml_unescape(text)) * 6.2 + 4
-            left, top = float(x) - width / 2, float(y) - 13
-            for bx, by, bw, bh in obstacles:
-                clear = left + width <= bx or bx + bw <= left or top + 14 <= by or by + bh <= top
-                self.assertTrue(clear, f"label '{text}' overlaps {bx, by}")
+        seen = 0
+        for body in re.findall(r'<g class="edge"[^>]*>(.*?)</g>', svg, re.S):
+            m = re.search(r'<text class="callout" x="([\d.]+)" y="([\d.]+)"', body)
+            if not m:
+                continue
+            seen += 1
+            pts = [(float(a), float(b)) for a, b in re.findall(r"[ML]([\d.-]+) ([\d.-]+)", re.search(r'<path class="ln[^"]*" d="([^"]*)"', body).group(1))]
+            mx, my = generate_diagram._longest_mid(pts)
+            self.assertEqual((float(m.group(1)), float(m.group(2))), (round(mx, 1), round(my - 6, 1)))
+        self.assertGreater(seen, 0)
+
+    @staticmethod
+    def _labels_by_edge(svg: str) -> list:
+        """(source, target, endpoint, box) per drawn label, box = (x, y, w, h) by the _label_mid metrics."""
+        found = []
+        for source, target, body in re.findall(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)">(.*?)</g>', svg, re.S):
+            m = re.search(r'<text class="lb hov" x="([\d.]+)" y="([\d.]+)" text-anchor="start">(.*?)</text>', body)
+            if not m:
+                continue
+            d = re.search(r'<path class="ln[^"]*" d="([^"]*)"', body).group(1)
+            end = [(float(a), float(b)) for a, b in re.findall(r"[ML]([\d.-]+) ([\d.-]+)", d)][-1]
+            length = len(xml_unescape(re.sub(r"<[^>]*>", "", m.group(3))))
+            x, base = float(m.group(1)) - 2, float(m.group(2))
+            found.append((source, target, end, (x, base - 9, length * 6.2 + 4, 14)))
+        return found
+
+    def _assert_labels_clean(self, svg: str) -> None:
+        labels = self._labels_by_edge(svg)
+        boxes = list(node_rects(svg).values())
+        uids = {u for s, t, _e, _b in labels for u in (s, t)}
+        for uid in sorted(uids):  # AC22: every box's in and out labels are pairwise disjoint
+            mine = [b for s, t, _e, b in labels if uid in (s, t)]
+            for i, a in enumerate(mine):
+                for b in mine[i + 1 :]:
+                    self.assertEqual(generate_diagram._overlap(a, b), 0, (uid, a, b))
+        for s, t, (ex, ey), box in labels:
+            for node in boxes:
+                self.assertEqual(generate_diagram._overlap(box, node), 0, (s, t, box, node))
+            near_x = min(max(ex, box[0]), box[0] + box[2])
+            near_y = min(max(ey, box[1]), box[1] + box[3])
+            self.assertLessEqual(abs(near_x - ex) + abs(near_y - ey), 20 + 14 * len(labels), (s, t))
+
+    def test_labels_sit_beside_the_target_end_without_collisions(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        seen = 0
+        for sdp in generate_diagram.sdps(catalog):
+            for render in (logical_svg, deployment_svg):
+                with self.subTest(sdp=sdp["uid"], view=render.__name__):
+                    svg = render(catalog, sdp["uid"])
+                    self._assert_labels_clean(svg)
+                    seen += len(self._labels_by_edge(svg))
+                    self.assertEqual(svg, render(catalog, sdp["uid"]))
+        self.assertGreater(seen, 0)
+
+    def test_labels_near_the_entry_point_and_stacked_for_one_pair(self) -> None:
+        objects = [component("C-A", "A"), component("C-B", "B"), pattern({"G": ["C-A", "C-B"]})]
+        objects += [relationship(f"R-{n}", "C-A", "C-B", f"rel {n}") for n in range(3)]
+        svg = svg_for(objects)
+        labels = self._labels_by_edge(svg)
+        self.assertEqual(len(labels), 3)
+        for _s, _t, (ex, ey), (x, y, _w, h) in labels:
+            self.assertEqual(x, ex + 4)  # right of the line
+            self.assertLessEqual(y + h, ey)  # above the entry point
+        self.assertLessEqual(min(abs(b[1] + b[3] - e[1]) for _s, _t, e, b in labels), 3)
+        ys = [b[1] for _s, _t, _e, b in labels]
+        self.assertEqual(len(set(ys)), len(ys))
+        self._assert_labels_clean(svg)
 
     def test_node_type_chip_and_tech_line(self) -> None:
         objects = [
