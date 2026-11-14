@@ -3,12 +3,13 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import os
 import sys
 import re
 from datetime import date, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Iterable
 
 import yaml
 
@@ -212,7 +213,321 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         metavar=("SDP_UID", "TARGET_UID"),
         help="Check if a SoftwareDeploymentPattern is deployment-ready for a DeploymentTarget.",
     )
+    parser.add_argument(
+        "--write-baseline",
+        action="store_true",
+        help="Write .draft/validation-baseline.yaml from the current ratcheted violations, dropping stale entries, then report as a normal run (exit 1 if other errors remain).",
+    )
+    parser.add_argument(
+        "--no-baseline",
+        action="store_true",
+        help="Ignore .draft/validation-baseline.yaml: every ratcheted violation is an error.",
+    )
     return parser.parse_args(argv)
+
+
+# ---------------------------------------------------------------------------
+# Validation ratchet (D49)
+#
+# A ratcheted rule binds an object only when the object changes. Each rule has a
+# stable id. `--write-baseline` records every object that violates a ratcheted
+# rule in `.draft/validation-baseline.yaml` as {rule, uid, hash}. On a normal run
+# a violation whose (rule, uid) is in the baseline with the same content hash is
+# a warning prefixed `baseline:`; any other ratcheted violation is an error.
+#
+# Registering a rule (the API later rules use):
+#
+#     def _check(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
+#         ...yield one message per problem found on this object...
+#
+#     register_ratchet_rule("my-rule-id", _check)
+#
+# A rule is called once per authored object that has a uid. The runner turns the
+# messages into (rule_id, uid, message) violations.
+# ---------------------------------------------------------------------------
+BASELINE_RELATIVE_PATH = Path(".draft") / "validation-baseline.yaml"
+BASELINE_SCHEMA_VERSION = "1.0"
+RatchetCheck = Callable[[dict, dict, dict], Iterable[str]]
+RATCHET_RULES: dict[str, RatchetCheck] = {}
+
+
+def register_ratchet_rule(rule_id: str, check: RatchetCheck) -> None:
+    if rule_id in RATCHET_RULES:
+        raise ValueError(f"ratcheted rule '{rule_id}' is already registered")
+    RATCHET_RULES[rule_id] = check
+
+
+def _check_ratchet_test_marker(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
+    # TEST-ONLY rule: exists so tests/test_validate_ratchet.py can exercise the
+    # ratchet plumbing end to end. It fires only on an object carrying the
+    # top-level field `xRatchetTest: fail`. A later story may remove it.
+    if obj.get("xRatchetTest") == "fail":
+        return ["xRatchetTest is set to 'fail' (test-only ratcheted rule)"]
+    return []
+
+
+register_ratchet_rule("ratchet-test-marker", _check_ratchet_test_marker)
+
+
+# ---------------------------------------------------------------------------
+# Pattern ownership rules (D50, D51)
+# ---------------------------------------------------------------------------
+INFRASTRUCTURE_TYPES = ("runtime_service", "data_store_service", "network_service", "host", "ai_gateway")
+SERVICE_DEFINITIONS_FOLDER_NAME = "shared-services"
+# Every check receives a context dict built by collect_ratchet_violations:
+# {"workspace_root": Path | None, "workspace_config": dict, "paths": {uid: Path}}.
+# Rules need the file location of an object (D51).
+
+
+def service_definition_folders(workspace_config: dict[str, Any] | None) -> list[str]:
+    """Folders (relative to the workspace root or its catalog/) that hold service definitions."""
+    paths = (workspace_config or {}).get("paths")
+    if not isinstance(paths, dict):
+        return []
+    explicit = paths.get("serviceDefinitionsFolder")
+    if isinstance(explicit, str) and explicit.strip():
+        return [explicit.strip().strip("/")]
+    folders = paths.get("catalogFolders")
+    if isinstance(folders, list):
+        return [
+            str(folder).strip().strip("/")
+            for folder in folders
+            if str(folder).strip().strip("/").split("/")[-1] == SERVICE_DEFINITIONS_FOLDER_NAME
+        ]
+    return []
+
+
+def _path_in_folder(path: Path, folder: str, workspace_root: Path | None) -> bool:
+    parts = Path(folder).parts
+    if not parts:
+        return False
+    if workspace_root is not None:
+        try:
+            rel = path.resolve().relative_to(workspace_root.resolve()).parts
+        except ValueError:
+            return False
+        return rel[: len(parts)] == parts or (rel[:1] == ("catalog",) and rel[1 : 1 + len(parts)] == parts)
+    return any(path.parts[i : i + len(parts)] == parts for i in range(len(path.parts)))
+
+
+def service_role(
+    obj: dict[str, Any],
+    path: Path | None,
+    workspace_config: dict[str, Any] | None,
+    workspace_root: Path | None = None,
+) -> str:
+    """Return 'definition' or 'instance' for an infrastructure object (D51)."""
+    declared = obj.get("serviceRole")
+    if declared in ("definition", "instance"):
+        return str(declared)
+    if path is None:
+        return "instance"
+    for folder in service_definition_folders(workspace_config):
+        if _path_in_folder(Path(path), folder, workspace_root):
+            return "definition"
+    return "instance"
+
+
+def _object_role(obj: dict[str, Any], context: dict[str, Any]) -> str | None:
+    if obj.get("type") not in INFRASTRUCTURE_TYPES:
+        return None
+    return service_role(
+        obj,
+        context.get("paths", {}).get(str(obj.get("uid"))),
+        context.get("workspace_config") or {},
+        context.get("workspace_root"),
+    )
+
+
+def _describe(obj: dict[str, Any], uid: str) -> str:
+    return f"'{obj.get('name') or uid}' (type: {obj.get('type')}, uid: {uid})"
+
+
+PLACEMENT_FIELD_HINT = {
+    "runtime_service": "runtime or host belongs in the service group's substrate",
+    "host": "runtime or host belongs in the service group's substrate",
+    "data_store_service": "data store belongs in a data component's runsOn",
+    "network_service": "edge or external service: record a relationship from the consuming component, or rely on the reference architecture",
+    "ai_gateway": "edge or external service: record a relationship from the consuming component, or rely on the reference architecture",
+}
+
+
+def _check_sdp_placement_types(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
+    if obj.get("type") != "software_deployment_pattern":
+        return []
+    groups = obj.get("serviceGroups")
+    if not isinstance(groups, list):
+        return []
+    messages: list[str] = []
+    for group in groups:
+        if not isinstance(group, dict) or not isinstance(group.get("deployableObjects"), list):
+            continue
+        for entry in group["deployableObjects"]:
+            ref = entry.get("ref") if isinstance(entry, dict) else None
+            target = catalog_by_id.get(ref) if isinstance(ref, str) else None
+            if not isinstance(target, dict) or target.get("type") in ("product_component", "data_component"):
+                continue
+            hint = PLACEMENT_FIELD_HINT.get(
+                str(target.get("type")),
+                "a pattern places only product components and data components; use the field that fits the object",
+            )
+            messages.append(
+                f"deployableObjects ref {_describe(target, ref)} in service group '{group.get('name')}' is not a "
+                f"product_component or data_component: {hint}"
+            )
+    return messages
+
+
+def _check_relationship_definition_endpoint(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
+    if obj.get("type") != "relationship":
+        return []
+    messages: list[str] = []
+    for end in ("source", "target"):
+        ref = obj.get(end)
+        endpoint = catalog_by_id.get(ref) if isinstance(ref, str) else None
+        if not isinstance(endpoint, dict) or _object_role(endpoint, context) != "definition":
+            continue
+        message = (
+            f"{end} {_describe(endpoint, ref)} is a service definition, and a definition carries no flows: "
+            f"record the relationship on the component or instance that uses it"
+        )
+        message += (
+            "; if it is an external service that lives in the service definitions folder, "
+            "set serviceRole: instance on that object"
+        )
+        messages.append(message)
+    return messages
+
+
+register_ratchet_rule("sdp-placement-types", _check_sdp_placement_types)
+register_ratchet_rule("relationship-definition-endpoint", _check_relationship_definition_endpoint)
+
+
+def object_hash(obj: dict[str, Any]) -> str:
+    dumped = yaml.safe_dump(obj, sort_keys=True, allow_unicode=True)
+    return hashlib.sha256(dumped.encode("utf-8")).hexdigest()
+
+
+def collect_ratchet_violations(
+    objects: dict[Path, dict[str, Any]],
+    catalog_by_id: dict[str, dict[str, Any]],
+    workspace_root: Path | None = None,
+    workspace_config: dict[str, Any] | None = None,
+) -> list[tuple[str, str, str, Path, str]]:
+    """Return (rule_id, uid, message, path, hash) for every ratcheted violation."""
+    context: dict[str, Any] = {
+        "workspace_root": workspace_root,
+        "workspace_config": workspace_config or {},
+        "paths": {
+            str(o["uid"]): p
+            for p, o in sorted(objects.items())
+            if isinstance(o, dict) and is_non_empty(o.get("uid"))
+        },
+    }
+    found: list[tuple[str, str, str, Path, str]] = []
+    for path, obj in objects.items():
+        if not isinstance(obj, dict) or not is_non_empty(obj.get("uid")):
+            continue
+        uid = str(obj["uid"])
+        for rule_id in sorted(RATCHET_RULES):
+            messages = list(RATCHET_RULES[rule_id](obj, catalog_by_id, context))
+            if messages:
+                found.append((rule_id, uid, "; ".join(messages), path, object_hash(obj)))
+    found.sort(key=lambda item: (item[0], item[1]))
+    return found
+
+
+def framework_version_text(workspace_root: Path) -> str:
+    candidates = [REPO_ROOT / "draft-framework.yaml", FRAMEWORK_ROOT / "draft-framework.yaml"]
+    for candidate in candidates:
+        if candidate.is_file():
+            try:
+                data = yaml.safe_load(candidate.read_text(encoding="utf-8")) or {}
+            except Exception:  # noqa: BLE001
+                continue
+            if isinstance(data, dict) and data.get("version"):
+                return str(data["version"])
+    lock = workspace_root / ".draft" / "framework.lock"
+    if lock.is_file():
+        try:
+            data = yaml.safe_load(lock.read_text(encoding="utf-8")) or {}
+        except Exception:  # noqa: BLE001
+            data = {}
+        framework = data.get("framework") if isinstance(data, dict) else None
+        if isinstance(framework, dict) and framework.get("version"):
+            return str(framework["version"])
+    return "unknown"
+
+
+def load_baseline(workspace_root: Path, failures: list[str]) -> dict[tuple[str, str], str]:
+    path = workspace_root / BASELINE_RELATIVE_PATH
+    if not path.is_file():
+        return {}
+    text = path.read_text(encoding="utf-8")
+    if not text.strip():
+        return {}
+    try:
+        data = yaml.safe_load(text) or {}
+    except Exception as exc:  # noqa: BLE001
+        failures.append(f"{path}: Fix validation baseline YAML; parser reported {exc}")
+        return {}
+    entries = data.get("entries") if isinstance(data, dict) else None
+    if entries is None and isinstance(data, dict) and not data:
+        return {}
+    if not isinstance(entries, list):
+        failures.append(f"{path}: Make the validation baseline a mapping with an 'entries' list")
+        return {}
+    baseline: dict[tuple[str, str], str] = {}
+    for entry in entries:
+        if isinstance(entry, dict) and entry.get("rule") and entry.get("uid"):
+            key = (str(entry["rule"]), str(entry["uid"]))
+            if key in baseline:
+                failures.append(
+                    f"{path}: Remove the duplicate baseline entry for rule '{key[0]}' uid '{key[1]}'"
+                )
+                continue
+            baseline[key] = str(entry.get("hash", ""))
+    return baseline
+
+
+def write_baseline(workspace_root: Path, violations: list[tuple[str, str, str, Path, str]]) -> int:
+    entries = sorted(
+        ({"rule": rule, "uid": uid, "hash": digest} for rule, uid, _msg, _path, digest in violations),
+        key=lambda entry: (entry["rule"], entry["uid"]),
+    )
+    document = {
+        "schemaVersion": BASELINE_SCHEMA_VERSION,
+        "frameworkVersion": framework_version_text(workspace_root),
+        "entries": entries,
+    }
+    path = workspace_root / BASELINE_RELATIVE_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(yaml.safe_dump(document, sort_keys=False, allow_unicode=True), encoding="utf-8")
+    return len(entries)
+
+
+def apply_ratchet(
+    violations: list[tuple[str, str, str, Path, str]],
+    baseline: dict[tuple[str, str], str],
+    use_baseline: bool,
+    failures: list[str],
+    warnings: list[str],
+) -> None:
+    current = set()
+    for rule, uid, message, path, digest in violations:
+        current.add((rule, uid))
+        text = f"{path}: [{rule}] {uid}: {message}"
+        if use_baseline and baseline.get((rule, uid)) == digest:
+            warnings.append(f"baseline: {text}")
+        else:
+            failures.append(text)
+    if use_baseline:
+        for rule, uid in sorted(baseline):
+            if (rule, uid) not in current:
+                warnings.append(
+                    f"stale baseline entry: rule '{rule}' uid '{uid}' no longer violates or no longer exists; "
+                    f"run validate.py --write-baseline to drop it"
+                )
 
 
 def load_workspace_requirements(workspace_root: Path, failures: list[str]) -> dict[str, Any]:
@@ -4250,6 +4565,38 @@ def validate_relationship(
             "add the referenced object to the catalog or correct the UID"
         )
 
+def validate_diagram_layout(
+    obj: dict[str, Any],
+    path: Path,
+    catalog_by_id: dict[str, dict[str, Any]],
+    failures: list[str],
+    warnings: list[str],
+) -> None:
+    pattern = obj.get("pattern")
+    if is_non_empty(pattern):
+        target = catalog_by_id.get(pattern)
+        if target is None:
+            failures.append(f"{path}: diagram_layout field 'pattern' references unknown object '{pattern}' — use the uid of a software_deployment_pattern")
+        elif target.get("type") != "software_deployment_pattern":
+            failures.append(
+                f"{path}: diagram_layout field 'pattern' must reference a software_deployment_pattern "
+                f"(got '{target.get('type')}' for '{pattern}')"
+            )
+    for view in ("logical", "deployment"):
+        entries = obj.get(view)
+        if not isinstance(entries, list):
+            continue
+        for index, entry in enumerate(entries):
+            if not isinstance(entry, dict):
+                continue
+            position = entry.get("position")
+            if position is not None and (isinstance(position, bool) or not isinstance(position, int) or position < 1):
+                failures.append(f"{path}: {view}[{index}].position must be a positive integer (got {position!r})")
+            ref = entry.get("ref")
+            if is_non_empty(ref) and ref not in catalog_by_id and not str(ref).startswith("ext:"):
+                warnings.append(f"{path}: {view}[{index}].ref '{ref}' resolves to no catalog object and is not an ext: id")
+
+
 def scan_for_secrets(data: Any, path: Path, failures: list[str], current_field_path: str = "") -> None:
     if isinstance(data, dict):
         for k, v in data.items():
@@ -4326,8 +4673,11 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as exc:  # noqa: BLE001
             failures.append(f"{path}: failed to parse YAML ({exc})")
 
+    structural_failures = list(failures)
     validate_object_uids(objects, workspace_root, failures)
+    before_patches = len(failures)
     objects = apply_object_patches(objects, failures)
+    structural_failures.extend(failures[before_patches:])
 
     catalog_by_id = {
         obj["uid"]: obj
@@ -4395,6 +4745,8 @@ def main(argv: list[str] | None = None) -> int:
             )
         if obj.get("type") == "relationship":
             validate_relationship(obj, path, catalog_by_id, failures)
+        if obj.get("type") == "diagram_layout":
+            validate_diagram_layout(obj, path, catalog_by_id, failures, warnings)
         if obj.get("type") == "system":
             validate_system(obj, path, catalog_by_id, failures, warnings)
         if obj.get("type") == "environment_tier":
@@ -4525,6 +4877,22 @@ def main(argv: list[str] | None = None) -> int:
             if not failures:
                 print("")
                 print(f"SoftwareDeploymentPattern '{sdp_obj.get('name')}' is deployment-ready for DeploymentTarget '{target_obj.get('name')}' (200 OK).")
+
+    ratchet_violations = collect_ratchet_violations(
+        objects, catalog_by_id, workspace_root, load_workspace_config(workspace_root, [])
+    )
+    if args.write_baseline:
+        if structural_failures:
+            print("Refusing to write the baseline: YAML parse or object patch failures would silently drop objects from it.")
+            print("Fix these first, then rerun --write-baseline:")
+            for failure in structural_failures:
+                print(f"- {failure}")
+            return 1
+        count = write_baseline(workspace_root, ratchet_violations)
+        print(f"Wrote {count} baseline entries to {BASELINE_RELATIVE_PATH.as_posix()}.")
+    use_baseline = args.write_baseline or not args.no_baseline
+    baseline = load_baseline(workspace_root, failures) if use_baseline else {}
+    apply_ratchet(ratchet_violations, baseline, use_baseline, failures, warnings)
 
     failing_paths = {entry.split(":", 1)[0] for entry in failures}
 

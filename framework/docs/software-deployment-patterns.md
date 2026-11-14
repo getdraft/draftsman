@@ -85,7 +85,7 @@ Each service group includes:
 - `name`
 - `deploymentTarget`
 - optional `scalingUnit`
-- optional `deployableObjects`
+- optional `deployableObjects` (ProductComponents and DataComponents only; a runtime or host goes in `substrate`, a data store in the DataComponent's `runsOn`)
 Each deployable object entry should declare:
 
 - `ref`

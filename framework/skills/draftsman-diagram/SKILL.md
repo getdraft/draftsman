@@ -1,43 +1,89 @@
 ---
 name: draftsman-diagram
-description: Use when someone wants to see a DRAFT architecture as a diagram, either a rendered shareable deployment-pattern page or Mermaid and C4 text for a catalog object. Needs the Author profile from draftsman-core.
+description: Use when someone wants to see or change a DRAFT deployment-pattern diagram, fix the catalog objects behind it, record a box order, or get Mermaid or C4 text. Needs the Author profile from draftsman-core.
 ---
 
 # Draftsman Diagram
 
-Load `draftsman-core` first. This skill needs the **Author profile**: read the catalog, run a local command and write an output file. If you only have the Query profile, say so and describe the architecture in words; do not hand-draw a diagram from memory.
+Load `draftsman-core` first. This skill needs the **Author profile** for anything that edits the catalog or runs a command. With only the Query profile, send the link to the published page and describe the architecture in words.
 
-## Choose the output
+Nothing here requires an AI session to produce a diagram. The published site already carries them; this skill explains how to read them and how to change the objects behind them.
 
-- The user wants to *see* the architecture, cannot follow text, or wants a page to open, refresh and share: render a **diagram page** (below).
-- The user wants text to embed in Markdown or a wiki, or asks for a sequence or component view: write **Mermaid or C4** from `references/mermaid.md`.
+## Send people to the published page first
 
-## Rendered diagram page
+The browser generator (`generate_browser.py`) renders one diagram page per deployment pattern into `docs/diagrams/` beside the browser. Each pattern's entry in the browser has a `Diagrams` link, and each page links back to the browser. Give the user that page, not a fresh render and not a drawing. Run the standalone generator only for an unpublished draft or a pattern not yet in the published catalog.
 
-Use the deterministic generator. Do not hand-draw the SVG: hand-drawn layouts differ from run to run and cannot be tested.
+The generator is the only path for the two views (`framework/tools/generate_diagram.py`, the same code the browser generator runs). Hand-drawn SVG is forbidden for the logical or deployment view, including quick sketches and edits to a generated file; hand layouts differ between runs and cannot be tested.
+
+## How to read the page
+
+- **Connections are hidden** until a box is hovered, focused or pinned (click a box; the same uid is highlighted in both figures). Then only that box's connections show.
+- **Colours.** Purple lines are calls the box makes (outbound); orange lines are calls it receives (inbound). Small dots move along each line toward the arrowhead (off under reduced motion). Dashed lines are asynchronous, dotted are event flows.
+- **Show all connections.** A checkbox under each figure restores the full drawing.
+- **Labels** show with their line, at the end farthest from the selected box, inside that box's width. Each is two lines (the label, then its technology) when a technology is recorded, otherwise one, and each line is clipped to the box width. Labels appear only for the edges of the hovered, focused or pinned box; the `Show all connections` toggle does not add them. The full text is in the tooltip and in the callout shown when a single line is hovered.
+- **Logical application diagram.** Components and data components in bands: presentation, application, data, utility. Placed infrastructure is not drawn in the logical view; unplaced infrastructure a component depends on still appears in the External interactions lane.
+- **Deployment pattern diagram.** Deployment target, then service group container (captioned by its substrate), then network-zone lane, then component box. Placed infrastructure (network, runtime, host, AI gateway, data store services) appears only here. Each data component sits inside a container named for the data store service in its `runsOn`; that store has no box of its own unless it hosts no data component. `data store not recorded` means `runsOn` is absent or unresolved.
+- **External interactions lane.** The right-hand lane holds dependencies of the pattern that it does not place, captioned with the pattern that places them, `placed in N other patterns`, `not placed in any pattern`, or `external` for an `externalTarget` string. It shows dependencies only: consumers that merely call into the pattern are not drawn, and neither is any line between two outside objects.
+- **Dashed borders.** A dashed border marks one of three things: a box with a derived tier (no recorded `diagramTier`), a retired or deprecated object, and a `data store not recorded` container. A dashed service group container has an inferred substrate. Say which applies; derived values are not recorded.
+- **Recorded conflicts section** appears only when a placed component's `runsOn` names something other than its group's substrate. Both values are shown and nothing is resolved. Quote both and ask which is right.
+- **Diagrams link.** The pattern view in the browser shows `Diagrams` only after the shell is refreshed on an existing install (`generate_browser.py --refresh-shell`); if it is missing, say so and give the page path instead.
+- **Relationships table.** `Source` reads `relationship object` or `inline dependency`. Placement (`runsOn`, `host`) is never an edge.
+
+## Model rules behind the picture
+
+A pattern owns application components and data components. Service definitions (data stores, runtimes, hosts, load balancers) are deployed through `substrate` on a service group and `runsOn` on a data component, and appear only in the deployment view. External services (Okta, Secrets Manager, SaaS) are External interactions reached by relationships.
+
+1. **Document, do not infer (R1, R3).** Boxes and lines come from recorded catalog data. No relationship means no line. Never add one because it seems likely.
+2. **Show gaps.** Retired and deprecated objects stay, styled as such; a missing label, technology or tier shows as not recorded.
+3. **Report conflicts, do not resolve them.** Quote both recorded values and let the user choose.
+4. **Use the user's scope.** With several patterns and none named, run `--list` and ask.
+
+## Fixing the objects behind a picture
+
+When a diagram looks wrong, the fix is a catalog change, then a pull request, never an edit to the page.
+
+- **Wrong band:** set the right `diagramTier` on the deployable object entry in the pattern.
+- **Missing data component:** add the `data_component` to the pattern's service group with `runsOn` naming its data store service.
+- **A standard placed as a deployable object:** a service definition listed in `deployableObjects` belongs in `substrate` (service group) or `runsOn` (data component). Move it; do not draw it as a component.
+- **A relationship recorded on a definition:** relationships sourced by a placed definition that point to objects in other patterns are not drawn here. Record the relationship on the application component that really makes the call.
+- **Ownership rules.** `sdp-placement-types` rejects any `deployableObjects` ref that is not a `product_component` or `data_component` (runtime, host, data store, network service, AI gateway, or an instance); `relationship-definition-endpoint` rejects a relationship whose source or target is a service definition. Both are ratcheted: existing violations sit in `.draft/validation-baseline.yaml`, and an object you change must be fixed. An external service that lives in the definitions folder takes `serviceRole: instance` so it can be a relationship endpoint.
+- **Wrong placement:** `duplicate placement` and `undeclared network zone` warnings mean the pattern entry needs correcting.
+- Validate with `python3 framework/tools/validate.py`, then open the pull request. A `baseline:` warning is a known violation on an unchanged object; one on an object you changed is an error to fix. Do not run `validate.py --write-baseline` to silence a violation in an object you are editing.
+
+## Recording a box order
+
+People can reorder boxes within their band or zone lane; the order is a `diagram_layout` object beside the pattern file (schema `framework/schemas/diagram-layout.schema.yaml`), and every render honours it. Tiers and zones stay catalog facts.
+
+1. Render the editable local page (never published, never used by workflows):
+   `python3 framework/tools/generate_diagram.py --sdp "<name, alias or uid>" --editable --output FILE`
+2. Drag boxes, or focus one and press Alt with an arrow key, within its own band, zone lane or data store container (store containers are fixed; only the data components inside them move); ordinals renumber per container. Reloading discards changes.
+3. Choose `Export layout` and save the YAML it shows to a file. Its `uid` is `NEW` when no layout existed.
+4. Write it: `python3 framework/tools/generate_diagram.py --sdp "<uid>" --write-layout --layout-from FILE --output /tmp/layout-check.html` (the command also renders a page, so send it to a temp path). `--layout-from` requires `--write-layout`. An existing uid is kept, a new layout gets a fresh uid, and every `ref` must be a drawn node.
+5. Run `python3 framework/tools/validate.py`, then open the pull request. The published page picks the order up on the next browser build.
+
+`--write-layout` without `--layout-from` writes the layout from the current drawn order. It cannot combine with `--placed-only`. An update rewrites the layout file and drops hand-written comments. More than one layout for a pattern warns, and the lowest uid wins.
+
+## Standalone generator (unpublished drafts only)
 
 ```bash
 python3 framework/tools/generate_diagram.py --list [--workspace PATH]
-python3 framework/tools/generate_diagram.py --sdp "<name, alias or uid>" [--workspace PATH] [--output FILE] [--placed-only]
+python3 framework/tools/generate_diagram.py --sdp "<name, alias or uid>" [--workspace PATH] [--output FILE] [--placed-only] [--svg-dir DIR]
+python3 framework/tools/generate_diagram.py --all --output-dir DIR [--svg-dir DIR] [--workspace PATH]
 ```
 
-When the framework is vendored into a workspace, run `.draft/framework/tools/generate_diagram.py` with the workspace root as `--workspace`.
+In a vendored workspace use `.draft/framework/tools/generate_diagram.py` with `--workspace` set to the workspace root. `--sdp` is optional when there is one pattern; an ambiguous selector is an error, so use `--list`. Exit 0 means rendered, 1 means a pattern failed or none exist, 2 means a usage error or no `catalog/`. Without `--output` the page is `<pattern-name>-architecture.html`. Give the user the file path to open, or publish it if your harness can. Scope is placed objects plus what they depend on; `--placed-only` keeps only placed objects.
 
-Scope: by default the page covers every object owned by the same team as the pattern, plus anything the pattern places. `--placed-only` limits it to objects placed in a service group. Without `--output` the file is `<pattern-name>-architecture.html` in the current directory, and an existing file is overwritten (the command says so). `--sdp` is optional when the workspace has one pattern. Exit code 2 means there is no `catalog/` under the workspace; 1 means no pattern matched or the file could not be written.
+## Warnings to read back
 
-The page is one self-contained HTML file with an inline SVG, light and dark themes and no external requests. It has: deployment topology, recorded relationships, recorded characteristics, open Drafting Session questions that target the pattern, and a filterable object inventory.
+The generator prints `N warnings`, then each distinct warning once. Repeat the ones that matter:
 
-## Rules
+- `derived tier: <name> (<uid>) -> <tier>`: ask whether to record `diagramTier`.
+- `conflict: <component> runsOn <X>; group substrate is <Y>`: see Recorded conflicts.
+- `substrate also listed as deployable object`, `unknown substrate uid`, `substrate ... has type ...`: the substrate is recorded inconsistently.
+- `data store not recorded: <name> (<uid>) ...`: ask which store the data component runs on.
+- `duplicate placement`, `undeclared network zone`, `unknown flow`: correct the entry.
+- `multiple diagram layouts for <sdp>`, `layout position for undrawn object <ref>`: remove the stale layout or entry.
 
-1. **Document, do not infer (R1, R3).** Zones are `serviceGroups`, labelled with their recorded `deploymentTarget`. Boxes are the objects in scope (placed ones inside their zone). Arrows are `relationship` objects (including inline ones such as `runsOn`) and nothing else. An object with no recorded relationship has no arrow. Never add a box or arrow because it seems likely.
-2. **Show gaps instead of hiding them.** Objects with a relationship but no service group are drawn in a "Not placed in a service group" zone. Retired and deprecated objects stay on the page, styled as such. A missing target or label is shown as not recorded.
-3. **Report conflicts, do not resolve them.** If two recorded fields disagree (a description names one host, `runsOn` another), say so in your reply, quote both values and do not pick one.
-4. **Use the user's scope.** If several deployment patterns exist, run `--list` and ask which one. An ambiguous `--sdp` selector is an error; pass the uid.
-5. **Check the result.** Confirm the reported relationship count is what you expect and read every `warning:` line (unknown uids, duplicate or malformed service groups) back to the user.
+## Mermaid and C4 text
 
-## Delivering the page
-
-- If your harness can publish a page or file for the user, publish the generated HTML so they get a link, and republish to the same place after each regeneration.
-- Otherwise give the user the output file path and tell them to open it in a browser.
-- Hovering or focusing a box highlights its relationships and clicking pins the highlight. Mention this when the diagram has more than a few arrows: edge labels stay hidden until a box is selected once there are more than eight.
-- Offer the Mermaid or C4 text only when the user wants something to embed.
+For a conversational answer, embeddable text, or a sequence or component view of one object, write text from `references/mermaid.md`. It is outside the determinism guarantee and is never a diagram of record.

@@ -126,6 +126,14 @@ Only include `syncedTag` when `<target-ref>` is a canonical version tag such as
 
 ## Step 7: Run Validation
 
+First record the baseline for any newly ratcheted rule, then commit it with the update:
+
+```bash
+python3 .draft/framework/tools/validate.py --workspace . --write-baseline
+```
+
+Then validate:
+
 ```bash
 python3 .draft/framework/tools/validate.py --workspace .
 ```

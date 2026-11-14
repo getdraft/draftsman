@@ -331,6 +331,11 @@ jobs:
               output.write(f"release_url={release_url}\n")
           PY
 
+      - name: Record validation baseline for the refreshed framework
+        if: steps.refresh.outputs.update_needed == 'true'
+        run: |
+          python .draft/framework/tools/validate.py --workspace . --write-baseline
+
       - name: Validate workspace against refreshed framework
         id: validate
         if: steps.refresh.outputs.update_needed == 'true'
@@ -356,7 +361,7 @@ jobs:
       - name: Commit refreshed framework
         if: steps.refresh.outputs.update_needed == 'true'
         run: |
-          git add .draft/framework .draft/framework.lock docs/assets/draft-browser.css docs/assets/draft-browser.js docs/index.html || true
+          git add .draft/framework .draft/framework.lock .draft/validation-baseline.yaml docs/assets/draft-browser.css docs/assets/draft-browser.js docs/index.html || true
           if git diff --cached --quiet; then
             echo "No framework changes to commit."
           else

@@ -1,0 +1,54 @@
+schemaVersion: '1.0'
+type: diagram_layout
+defaultOwnerRole: shared-services
+requiredFields:
+- schemaVersion
+- uid
+- type
+- name
+- pattern
+- catalogStatus
+optionalFields:
+- description
+- owner
+- tags
+- notes
+- logical
+- deployment
+enumFields:
+  catalogStatus:
+  - stub
+  - incomplete
+  - complete
+fieldTypes:
+  tags: list
+  logical: list
+  deployment: list
+collectionSchemas:
+  logical: layoutEntry
+  deployment: layoutEntry
+layoutEntry:
+  requiredFields:
+  - ref
+  - position
+  optionalFields: []
+  fieldTypes:
+    position: int
+uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
+aiHint: >
+  A Diagram Layout records the box order a person wants for one software_deployment_pattern in the generated diagram page.
+  Keep it beside the pattern file. Use generate_diagram.py --write-layout to create it from the computed order, then edit the
+  position numbers to move boxes. Positioned boxes are drawn first within their band or lane, in position order; boxes without a
+  position follow. The layout never moves a box to another band, lane or group.
+fieldDescriptions:
+  schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
+  uid: Use the generated opaque UID for object identity. Do not edit it for display-name changes.
+  type: Use diagram_layout exactly.
+  name: Use a short human-readable name, normally "<pattern name> diagram layout".
+  pattern: UID of the one software_deployment_pattern this layout orders. At most one layout per pattern is honoured.
+  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition.
+  logical: 'List of {ref, position} entries for the logical view. ref is a catalog uid or an ext: id as the renderer knows it; position is a positive integer ordinal within its band (the outside lane counts as one band).'
+  deployment: 'List of {ref, position} entries for the deployment view. position is a positive integer ordinal within its zone lane of its service group (the outside lane counts as one container).'
+  ref: 'Catalog uid of a drawn object, or an ext: id for an external target.'
+  position: Positive integer. Smaller numbers are drawn first; ties break by uid and gaps are allowed.
+  notes: Any additional context about why the boxes are ordered this way.

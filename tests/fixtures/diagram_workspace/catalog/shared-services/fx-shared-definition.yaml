@@ -1,0 +1,19 @@
+# Fictional fixture (invented names). A service definition under the shared-services
+# catalog folder, and a deliberate relationship that touches it so the
+# relationship-definition-endpoint rule has a grandfathered violation. Both ends are
+# unplaced, so no diagram draws the relationship.
+schemaVersion: '1.0'
+uid: FXRTC00009-0001
+type: runtime_service
+name: FX Shared Runtime Definition
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXEDG00099-0001
+type: relationship
+name: FX Unplaced Notifier calls FX Shared Runtime Definition
+source: FXPRD00005-0001
+target: FXRTC00009-0001
+label: calls
+catalogStatus: complete

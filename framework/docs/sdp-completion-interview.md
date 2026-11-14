@@ -111,21 +111,22 @@ For each service group with missing `deployableObjects`, present the group name
 and ask:
 
 > What runs inside [group name]? I'll look up catalog options — just give me
-> the component or service name and I'll match it.
+> the component name and I'll match it.
 
-Search the catalog for matching ProductComponents, RuntimeServices,
-DataStoreServices, and NetworkServices. Present the top matches as
-a numbered list. If an exact match exists, confirm it. If multiple plausible
-matches exist, ask the user to choose.
+Search the catalog for matching ProductComponents and DataComponents. Present
+the top matches as a numbered list. If an exact match exists, confirm it. If
+multiple plausible matches exist, ask the user to choose. Only these two types
+go in `deployableObjects`. Set the group's runtime or host in `substrate`, record
+each DataComponent's data store in its `runsOn`, and take edge services from the
+followed ReferenceArchitecture. Do not list a RuntimeService, DataStoreService or
+NetworkService as a deployable object (ratcheted rule `sdp-placement-types`).
 
 For each resolved catalog object:
 
 1. Set `diagramTier` based on the object type:
    - ProductComponent → infer from component role (API = application, UI =
      presentation, worker = application)
-   - DataStoreService → data
-   - NetworkService → presentation or utility
-   - RuntimeService → utility
+   - DataComponent → data
    - Ask the user to confirm or correct the inferred tier.
 2. If the catalog object has no entry yet, note that you will draft it and
    continue.
@@ -162,12 +163,13 @@ Ask one question per platform category. Present each as a yes/no:
 > Does it call any shared internal platform — for example a message bus,
 > secrets manager, or feature-flag service? (yes / no)
 
-For each **yes**, search the catalog for the deployable object that represents
-that platform (RuntimeService, DataStoreService, or NetworkService
-with a matching `deliveryModel`). If found, create a relationship object with
-`source` set to the dependent service and `target` set to the platform UID.
-If not found and the user can name the platform, draft the appropriate service
-object first, then create the relationship.
+For each **yes**, the target is an external service: search the catalog for an
+instance of that platform owned elsewhere (not a service definition under the
+shared-services folder, and not an object with `serviceRole: definition`). If
+found, create a relationship object with `source` set to the calling component
+and `target` set to that instance's UID. If there is no catalog instance, set
+`externalTarget` to the platform name. Never target a service definition and do
+not draft a service object just to have a target.
 
 Record each confirmed external dependency as a relationship object in the catalog.
 
