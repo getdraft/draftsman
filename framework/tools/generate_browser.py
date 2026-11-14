@@ -1625,10 +1625,9 @@ def write_diagram_pages(workspace_root: Path, output_path: Path) -> dict[str, st
             print(f"error: diagram for {name} ({uid}): {exc}", file=sys.stderr)
             continue
         used.add(stem)
-        print(f"{len(model.warnings)} warnings", file=sys.stderr)
-        for warning in model.warnings:
-            print(warning, file=sys.stderr)
         pages[uid] = f"{DIAGRAMS_OUTPUT_DIR}/{stem}.html"
+        print(f"{uid}\t{name}\t{len(model.warnings)} warnings\t{diagrams_dir / (stem + '.html')}")
+        gd._print_warnings(model)
     return pages
 
 

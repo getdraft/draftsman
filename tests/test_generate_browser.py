@@ -131,6 +131,22 @@ class DiagramPagesInBrowserTests(unittest.TestCase):
         self.assertIn("error: diagram pages skipped", result.stderr)
         self.assertFalse((out / "diagrams").exists())
 
+    def test_catalog_load_failure_does_not_fail_build(self) -> None:
+        out = self.tmp / "site"
+        code = (
+            f"import sys; sys.path.insert(0, {str(BROWSER_TOOL.parent)!r}); import generate_diagram, generate_browser\n"
+            "def boom(workspace):\n    raise ValueError('catalog unreadable')\n"
+            "generate_diagram.load_catalog = boom\n"
+            f"raise SystemExit(generate_browser.main(['--workspace', {str(FIXTURE)!r}, '--output', {str(out / 'index.html')!r}, "
+            "'--skip-validation', '--skip-user-manual']))"
+        )
+        result = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, cwd=str(REPO_ROOT))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue((out / "index.html").is_file())
+        lines = [ln for ln in result.stderr.splitlines() if "diagram pages skipped" in ln]
+        self.assertEqual(lines, ["error: diagram pages skipped: catalog unreadable"])
+        self.assertFalse((out / "diagrams").exists())
+
     def test_stale_diagram_files_are_removed(self) -> None:
         out = self.tmp / "site"
         stale = out / "diagrams" / "stale.html"
@@ -146,6 +162,7 @@ class DiagramPagesInBrowserTests(unittest.TestCase):
     def test_pattern_warnings_are_printed(self) -> None:
         result = run_browser(FIXTURE, self.tmp / "site")
         self.assertRegex(result.stderr, r"\d+ warnings")
+        self.assertRegex(result.stdout, r"(?m)^\S+\t.+\t\d+ warnings\t.*diagrams.+\.html$")
 
     def test_two_runs_identical(self) -> None:
         first, second = self.tmp / "a", self.tmp / "b"
