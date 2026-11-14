@@ -4173,11 +4173,6 @@ requirementGroups:
             result = validate_workspace(workspace)
             self.assertNotIn("No active capability-ownership object patches found", result.stdout)
 
-
-if __name__ == "__main__":
-    unittest.main()
-
-
 class IntentRemovalDocsTests(unittest.TestCase):
     """Templates, docs, example and changelog no longer mention the intent field."""
 
@@ -4217,3 +4212,7 @@ class IntentRemovalDocsTests(unittest.TestCase):
         ]
         self.assertTrue(all(p >= 0 for p in positions), positions)
         self.assertEqual(positions, sorted(positions))
+
+
+if __name__ == "__main__":
+    unittest.main()
