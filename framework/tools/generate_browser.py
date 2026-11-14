@@ -815,6 +815,15 @@ def build_sdp_connections(obj: dict[str, Any], all_objects: list[dict[str, Any]]
     return connections
 
 
+def strip_legacy_intent(value: Any) -> Any:
+    """Return a copy of value with the legacy `intent` key removed at every depth."""
+    if isinstance(value, dict):
+        return {k: strip_legacy_intent(v) for k, v in value.items() if k != "intent"}
+    if isinstance(value, list):
+        return [strip_legacy_intent(v) for v in value]
+    return value
+
+
 def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: Path) -> dict[str, Any]:
     objects = list(registry.values())
     workspace_vocabulary = load_workspace_vocabulary(workspace_root)
@@ -852,6 +861,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
         return f"#{LIFECYCLE_COLORS.get(status, LIFECYCLE_COLORS['unknown'])}"
 
     for obj in objects:
+        obj = strip_legacy_intent(obj)
         object_id = obj["uid"]
         schema = select_schema(obj, schemas) or {}
         lifecycle_status = browser_lifecycle_status(obj)

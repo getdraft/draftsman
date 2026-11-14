@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None for workspaces. Catalog files that still carry the legacy `intent` field continue to validate; there is no validation change.
+
+### Added
+
+- None.
+
+### Changed
+
+- `browser-data.js` no longer includes the legacy `intent` field from catalog entries. `framework/tools/generate_browser.py` drops `intent` at every depth (top-level objects, service groups, deployable objects and the embedded detail JSON) before building browser output. Test: `tests/test_generate_browser.py::LegacyIntentTests`.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- None. Regenerate the browser to drop `intent` from `browser-data.js`.
+
 ## 1.5.2 - 2026-11-14
 
 ### Compatibility Impact

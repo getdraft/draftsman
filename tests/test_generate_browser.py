@@ -294,5 +294,42 @@ class IntentRemovedFromBrowserCssTests(unittest.TestCase):
         self.assertRegex(media, r"\.kpi-strip\s*\{ grid-template-columns: repeat\(2, 1fr\); \}")
 
 
+class LegacyIntentTests(unittest.TestCase):
+    def test_browser_data_drops_legacy_intent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            ws = Path(tmp) / "ws"
+            shutil.copytree(FIXTURE, ws, ignore=shutil.ignore_patterns("golden"))
+            sdp = ws / "catalog" / "storefront.yaml"
+            text = sdp.read_text(encoding="utf-8")
+            # Legacy intent at the top level, on a service group and on a deployable object.
+            text = text.replace("serviceGroups:\n- name: Edge\n", "intent: ha\nserviceGroups:\n- name: Edge\n  intent: ha\n  notes: legacy group note\n", 1)
+            text = text.replace("  - ref: FXNET00001-0001\n", "  - ref: FXNET00001-0001\n    intent: standalone\n    notes: legacy deployed note\n", 1)
+            self.assertEqual(text.count("intent:"), 3)
+            sdp.write_text(text, encoding="utf-8")
+            out = Path(tmp) / "site"
+            result = run_browser(ws, out)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            raw = (out / "assets" / "browser-data.js").read_text(encoding="utf-8")
+            self.assertNotIn('"intent"', raw)
+            self.assertNotIn("intent:", raw)
+            data = browser_data(out)
+            by_uid = {o["uid"]: o for o in data["objects"]}
+            self.assertIn("FXSDP00002-0001", by_uid)
+            store = by_uid["FXSDP00001-0001"]
+            self.assertEqual(store["name"], "FX Storefront Pattern")
+            edge = store["serviceGroups"][0]
+            self.assertEqual(edge["name"], "Edge")
+            self.assertEqual(edge["notes"], "legacy group note")
+            self.assertEqual(edge["deployableObjects"][0]["ref"], "FXNET00001-0001")
+            self.assertEqual(edge["deployableObjects"][0]["notes"], "legacy deployed note")
+            self.assertNotIn("intent", json.loads(store["detail"]))
+            for obj in data["objects"]:
+                self.assertNotIn("intent", obj)
+                for group in obj.get("serviceGroups", []):
+                    self.assertNotIn("intent", group)
+                    for deployed in group.get("deployableObjects", []):
+                        self.assertNotIn("intent", deployed)
+
+
 if __name__ == "__main__":
     unittest.main()
