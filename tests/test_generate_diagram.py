@@ -302,7 +302,7 @@ class GenerateDiagramTests(unittest.TestCase):
                     component("U-1", "Linked Unplaced"),
                     component("U-2", "Lonely Unplaced"),
                     pattern({"Group": ["A-1"]}),
-                    relationship("R-1", "U-1", "A-1", "calls"),
+                    relationship("R-1", "A-1", "U-1", "calls"),
                 ],
             )
             page, model = generate_diagram.build(workspace, None)
@@ -314,6 +314,70 @@ class GenerateDiagramTests(unittest.TestCase):
         self.assertNotIn("Lonely Unplaced", page)
         self.assertIn("Linked Unplaced", page)
         self.assertEqual(model.unplaced_drawn, ["U-1"])
+
+    def _lane_model(self, extra: list, placed_only: bool = False) -> tuple:
+        objects = [component("A-1", "Alpha"), pattern({"Group": ["A-1"]})] + extra
+        with tempfile.TemporaryDirectory() as tmp:
+            return generate_diagram.build(write_workspace(Path(tmp), objects), None, placed_only=placed_only)
+
+    def test_edge_between_two_unplaced_objects_is_not_drawn_or_tabled(self) -> None:
+        # AC24 / D41: U-1 is a dependency of A-1; U-2 is too; the U-1 to U-2 relationship is nobody's business here.
+        page, model = self._lane_model(
+            [
+                component("U-1", "Dep One"),
+                component("U-2", "Dep Two"),
+                relationship("R-1", "A-1", "U-1", "uses"),
+                relationship("R-2", "A-1", "U-2", "uses too"),
+                relationship("R-3", "U-1", "U-2", "talks to"),
+            ]
+        )
+        self.assertEqual(sorted((e.source, e.target) for e in model.edges), [("A-1", "U-1"), ("A-1", "U-2")])
+        self.assertEqual(sorted(r["uid"] for r in model.relationship_rows), ["R-1", "R-2"])
+        self.assertNotIn("talks to", page)
+        self.assertIn("Dep One", page)
+        self.assertIn("Dep Two", page)
+        self.assertNotIn('data-from="U-1" data-to="U-2"', page)
+
+    def test_consumer_is_not_drawn_listed_or_tabled(self) -> None:
+        # AC25 / D42: C-1 only sources a relationship into a placed object.
+        page, model = self._lane_model([component("C-1", "Caller Only"), component("U-1", "Dep One"), relationship("R-1", "C-1", "A-1", "calls"), relationship("R-2", "A-1", "U-1", "uses")])
+        self.assertNotIn("Caller Only", page)
+        self.assertNotIn("C-1", model.scope)
+        self.assertEqual(model.unplaced_drawn, ["U-1"])
+        self.assertEqual([r["uid"] for r in model.relationship_rows], ["R-2"])
+        self.assertEqual([(e.source, e.target) for e in model.edges], [("A-1", "U-1")])
+        self.assertIn("Dep One", page)
+
+    def test_dependency_and_consumer_is_drawn_with_only_its_dependency_edge(self) -> None:
+        page, model = self._lane_model([component("U-1", "Both Ways"), relationship("R-1", "A-1", "U-1", "uses"), relationship("R-2", "U-1", "A-1", "calls back")])
+        self.assertEqual([(e.source, e.target, e.label) for e in model.edges], [("A-1", "U-1", "uses")])
+        self.assertEqual([r["uid"] for r in model.relationship_rows], ["R-1"])
+        self.assertIn("Both Ways", page)
+        self.assertNotIn("calls back", page)
+
+    def test_derived_dependency_enters_scope_and_derived_consumer_does_not(self) -> None:
+        deps = {"runtimeSpec": {"dependencies": [{"ref": "U-1", "purpose": "reads"}]}}
+        consumer = {"runtimeSpec": {"dependencies": [{"ref": "A-1", "purpose": "calls"}]}}
+        page, model = self._lane_model([component("U-1", "Derived Dep"), component("C-1", "Derived Caller", **consumer)])
+        self.assertNotIn("Derived Caller", page)
+        self.assertEqual(model.edges, [])
+        objects = [component("A-2", "Alpha Two", **deps), component("U-1", "Derived Dep"), pattern({"Group": ["A-2"]})]
+        with tempfile.TemporaryDirectory() as tmp:
+            page, model = generate_diagram.build(write_workspace(Path(tmp), objects), None)
+        self.assertIn("Derived Dep", page)
+        self.assertEqual([(e.source, e.target, e.origin) for e in model.edges], [("A-2", "U-1", "inline dependency")])
+
+    def test_lane_caption_is_external_interactions(self) -> None:
+        page, model = self._lane_model([component("U-1", "Dep One"), relationship("R-1", "A-1", "U-1", "uses")])
+        self.assertEqual(page.count(">External interactions</text>"), 2)
+        self.assertNotIn("Outside this pattern", page)
+
+    def test_placed_only_has_no_lane_and_renders_identically_twice(self) -> None:
+        extra = [component("U-1", "Dep One"), component("C-1", "Caller Only"), relationship("R-1", "A-1", "U-1", "uses"), relationship("R-2", "C-1", "A-1", "calls")]
+        page, model = self._lane_model(extra, placed_only=True)
+        self.assertNotIn("External interactions", page)
+        self.assertNotIn("Dep One", page)
+        self.assertEqual(self._lane_model(extra)[0], self._lane_model(extra)[0])
 
     def test_placed_only_excludes_unplaced_components(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -522,19 +586,24 @@ class LaterStoryTests(unittest.TestCase):
         self.assertIsInstance(model, generate_diagram.Model)
 
     def test_one_hop_scope(self) -> None:
-        model = fixture_model()
+        # The fixture has no consumer, so add one: an unplaced object that only sources into a placed object.
+        catalog = load_catalog(FIXTURE)
+        first_placed = next(iter(fixture_model().placement))
+        catalog["FXCON00001-0001"] = component("FXCON00001-0001", "Consumer Only")
+        catalog["FXREL09999-0001"] = relationship("FXREL09999-0001", "FXCON00001-0001", first_placed, "calls")
+        model = generate_diagram.Model(catalog, catalog[FIXTURE_SDP], False)
         nodes = model.nodes_for_view("logical")
         ids = {node.uid for node in nodes}
+        self.assertNotIn("FXCON00001-0001", ids)
         placed = set(model.placement)
         self.assertTrue(placed <= ids)
-        # One hop: unplaced direct endpoints of placed objects are nodes.
+        # One hop: unplaced objects a placed object sources a relationship to (D42) are nodes.
         self.assertIn("FXPRD00005-0001", ids)
         self.assertIn("FXPRD00010-0001", ids)
         # Two hops: reached only through the outside object FXPRD00010-0001, so not nodes.
         self.assertNotIn("FXDST00002-0001", ids)
         self.assertNotIn("FXHST00002-0001", ids)
         # Exact set: placed objects, allow-listed direct endpoints, and external nodes for placed sources.
-        catalog = load_catalog(FIXTURE)
         expected = set(placed)
         for rel in catalog.values():
             if rel.get("type") != "relationship" or generate_diagram.is_runs_on(rel):
@@ -545,14 +614,14 @@ class LaterStoryTests(unittest.TestCase):
                     expected.add(target)
             elif source in placed and rel.get("externalTarget"):
                 expected.add("ext:" + hashlib.sha256(" ".join(str(rel["externalTarget"]).split()).encode("utf-8")).hexdigest()[:12])
-            if target in placed and source and catalog.get(source, {}).get("type") in ALLOWED_ONE_HOP:
-                expected.add(source)
+            # D42: a source outside the placed set (a consumer) never enters scope.
         self.assertEqual(ids, expected)
+        self.assertTrue(all(e.source in placed for e in model.edges))
         for node in nodes:
             if node.outside and not node.external:
                 self.assertTrue(
                     any(
-                        (e.source in placed and e.target == node.uid) or (e.target in placed and e.source == node.uid)
+                        e.source in placed and e.target == node.uid
                         for e in model.edges
                     ),
                     node.uid,
@@ -1171,7 +1240,7 @@ class LaterStoryTests(unittest.TestCase):
             plain("RTC-1", "runtime_service", "Cluster"),
             plain("P-1", "product_component", "Alpha"),
             plain("P-2", "product_component", "Beta"),
-            pattern({"G": ["P-1"], "H": ["P-2"]}),
+            pattern({"G": ["P-1", "RTC-1"], "H": ["P-2"]}),
             relationship("R-1", "RTC-1", "P-2", "serves"),
         ]
         objects[-2]["serviceGroups"][0]["substrate"] = "RTC-1"
@@ -1502,7 +1571,7 @@ class LaterStoryTests(unittest.TestCase):
         # Edges between a container and boxes drawn inside it leave through its left border when the box sits
         # in the first column; each such end needs its own vertical outside the border.
         objects = [plain("RTC-1", "runtime_service", "Cluster")] + [component(f"P-{k}", f"Part {k}") for k in range(6)]
-        objects.append(pattern({"G": [f"P-{k}" for k in range(6)]}))
+        objects.append(pattern({"G": [f"P-{k}" for k in range(6)] + ["RTC-1"]}))
         objects[-1]["serviceGroups"][0]["substrate"] = "RTC-1"
         objects += [relationship("R-1", "P-0", "RTC-1", "deploys to"), relationship("R-2", "RTC-1", "P-3", "hosts"), relationship("R-3", "P-3", "RTC-1", "reports to")]
         cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
@@ -1579,7 +1648,7 @@ class LaterStoryTests(unittest.TestCase):
     def test_self_relationship_on_a_container_is_a_loop_on_its_corner(self) -> None:
         # D13 with D29: a self-relationship whose endpoint is drawn as a container keeps the loop, off the
         # container's top-right corner, clear of the container's other edge ends and of the channels.
-        objects = [plain("RT-1", "runtime_service", "Runtime"), component("A-1", "Alpha"), component("O-1", "Outside"), pattern({"G": ["A-1"]})]
+        objects = [plain("RT-1", "runtime_service", "Runtime"), component("A-1", "Alpha"), component("O-1", "Outside"), pattern({"G": ["A-1", "RT-1"]})]
         objects[3]["serviceGroups"][0]["substrate"] = "RT-1"
         objects += [relationship("R-1", "RT-1", "RT-1", "self"), relationship("R-2", "RT-1", "A-1", "serves"), relationship("R-3", "RT-1", "O-1", "calls")]
         cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
@@ -1618,7 +1687,7 @@ class LaterStoryTests(unittest.TestCase):
         objects = [plain("RT-1", "runtime_service", "Runtime One"), plain("RT-2", "runtime_service", "Runtime Two"), component("P-1", "Alpha"), pattern({"G": ["RT-2"], "H": ["RT-1"]})]
         objects[3]["serviceGroups"][0]["substrate"] = "RT-1"
         objects[3]["serviceGroups"][1]["substrate"] = "RT-2"
-        objects += [relationship("R-1", "P-1", "RT-1", "uses"), relationship("R-2", "RT-1", "RT-2", "peers")]
+        objects += [relationship("R-1", "RT-1", "P-1", "uses"), relationship("R-2", "RT-1", "RT-2", "peers")]
         cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
         model = generate_diagram.build_diagram_model(cat, cat["SDP-1"], False)
         self.assertEqual([(c.group, c.drawn, c.members) for c in model.containers], [("G", True, []), ("H", True, [])])
@@ -1702,7 +1771,7 @@ class LaterStoryTests(unittest.TestCase):
         # run, which needs more levels than the lane's own edge count (review round 2, R1).
         objects = [component(u, u) for u in ("A-1", "B-1", "C-1")] + [component("O-1", "Outside")]
         objects.append(pattern({"G": ["A-1", "B-1", "C-1"]}))
-        objects += [relationship(f"R-0{k}", "O-1", u, "o") for k, u in enumerate(("A-1", "B-1", "C-1", "A-1", "B-1", "C-1"))]
+        objects += [relationship(f"R-0{k}", u, "O-1", "o") for k, u in enumerate(("A-1", "B-1", "C-1", "A-1", "B-1", "C-1"))]
         pairs = [("A-1", "B-1"), ("B-1", "C-1"), ("A-1", "C-1"), ("B-1", "A-1"), ("C-1", "B-1"), ("C-1", "A-1")]
         objects += [relationship(f"R-1{k}", a, b, "s") for k, (a, b) in enumerate(pairs)]
         cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
@@ -1825,7 +1894,7 @@ class LaterStoryTests(unittest.TestCase):
             component("P-1", "Alpha"),
             component("X-1", "Xray"),
             component("Y-1", "Yankee"),
-            pattern({"G": ["P-1"], "H": ["X-1"], "I": ["Y-1"]}),
+            pattern({"G": ["P-1", "RTC-1"], "H": ["X-1"], "I": ["Y-1"]}),
             relationship("R-1", "RTC-1", "X-1", "one"),
             relationship("R-2", "RTC-1", "Y-1", "two"),
         ]
@@ -1860,7 +1929,7 @@ class LaterStoryTests(unittest.TestCase):
         outer = [n for n in model.deployment_nodes if n.outside]
         self.assertTrue(outer)
         deployment = deployment_svg(catalog, FIXTURE_SDP)
-        self.assertIn("Outside this pattern", deployment)
+        self.assertIn("External interactions", deployment)
         target_right = max(int(x) + int(w) for x, w in re.findall(r'<rect class="tgt" x="(\d+)" y="\d+" width="(\d+)"', deployment))
         rects = node_rects(deployment)
         logical = logical_svg(catalog, FIXTURE_SDP)
@@ -2445,7 +2514,7 @@ class DiagramSkillTests(unittest.TestCase):
 
     def test_skill_explains_derived_tiers_outside_lane_conflicts_and_warnings(self) -> None:
         text = self.SKILL.read_text(encoding="utf-8")
-        for phrase in ("dashed border", "Outside lane", "Recorded conflicts section", "Warnings to read back"):
+        for phrase in ("dashed border", "External interactions lane", "Recorded conflicts section", "Warnings to read back"):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, text)
 
