@@ -2276,6 +2276,13 @@ class LaterStoryTests(unittest.TestCase):
             extra = [component(f"O-{k}", f"Outside {k}") for k in range(rnd.randint(1, 4))]
             uids += [o["uid"] for o in extra]
         rels = [relationship(f"R-{k:02d}", rnd.choice(uids), rnd.choice(uids), f"rel {k}") for k in range(rnd.randint(6, 30))]
+        for k, rel in enumerate(rels):  # two-line labels (D37): every third edge records a technology, drawn without the rng
+            if k % 3 == 0:
+                rel["technology"] = "HTTPS"
+        if len(rels) % 2 == 0:  # and a self-loop with a technology on a box that also takes edges
+            loop = relationship("R-LP", uids[0], uids[0], "retries")
+            loop["technology"] = "gRPC"
+            rels.append(loop)
         if rnd.random() < 0.5:
             rels.append({"schemaVersion": "1.0", "uid": "R-X", "type": "relationship", "name": "R-X", "source": uids[0], "externalTarget": "Outside Service", "label": "calls"})
         return runtimes + comps + extra + [sdp] + rels
@@ -2764,6 +2771,7 @@ class LaterStoryTests(unittest.TestCase):
             allowed = generate_diagram._pitch(two_line) * pair_count[(el["source"], el["target"])]
             if el["kind"] == "t" and loops_of.get(el["target"]):
                 allowed += generate_diagram.LOOP_RISE + generate_diagram.LOOP_STEP * (loops_of[el["target"]] - 1)
+                allowed += generate_diagram.LABEL_H * sum(1 for o in labels if o["loop"] and o["source"] == el["target"] and len(o["lines"]) == 2)
             self.assertLessEqual(self._gap(el["box"][0], end[1], el["box"]), allowed, el["text"])
             uid = el["source"] if el["kind"] == "s" else el["target"]
             if uid in nodes:
@@ -2967,6 +2975,14 @@ class LaterStoryTests(unittest.TestCase):
                     rel["technology"] = tech
                 objects.append(rel)
             return tier(objects, names)
+        if name == "loop2tech":  # two self-loops with technologies on one box, beside three in-edges
+            ids = ["C-A", "C-B", "C-C", "C-X", "C-U"]
+            objects = [component(u, u) for u in ids] + [pattern({"G": ids})]
+            for k, (src, dst, label) in enumerate([("C-X", "C-X", "checks own health"), ("C-A", "C-X", "consumes order messages"), ("C-B", "C-X", "queries"), ("C-C", "C-X", "publishes"), ("C-X", "C-X", "retries")]):
+                rel = relationship(f"R-{k}", src, dst, label)
+                rel["technology"] = ("HTTPS", "AMQP", "SQL", "Kafka", "gRPC")[k]
+                objects.append(rel)
+            return tier(objects, {"C-U": "presentation", "C-A": "application", "C-B": "application", "C-C": "application", "C-X": "data"})
         ids = ["C-A", "C-B", "C-C", "C-X", "C-U"]  # loop_plus_in
         objects = [component(u, u) for u in ids] + [pattern({"G": ids})]
         objects += [
@@ -3036,7 +3052,7 @@ class LaterStoryTests(unittest.TestCase):
                             self.assertEqual(generate_diagram._overlap(call["box"], el["box"]), 0, (render.__name__, call["text"], el["text"]))
 
     def test_label_shapes_from_review(self) -> None:
-        for name in ("hub12in", "hub12in_long", "hub8out", "zone3in", "loop_plus_in", "upward", "longlabels", "webshop"):
+        for name in ("hub12in", "hub12in_long", "hub8out", "zone3in", "loop_plus_in", "loop2tech", "upward", "longlabels", "webshop"):
             cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), self._shape(name)))
             for render in (logical_svg, deployment_svg):
                 with self.subTest(shape=name, view=render.__name__):

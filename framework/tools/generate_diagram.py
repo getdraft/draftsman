@@ -1862,13 +1862,15 @@ def _plan_label_bands(model: DiagramModel, layout: LogicalLayout, drawn: list) -
             rows_s[gs] = max(rows_s.get(gs, 0), n)
             rows_t[gt] = max(rows_t.get(gt, 0), n)
     loops: dict[str, int] = {}
+    loop_tech: dict[str, int] = {}
     for e in model.edges:
         if e.source == e.target and e.source in layout.pos:
             loops[e.source] = loops.get(e.source, 0) + 1
+            loop_tech[e.source] = loop_tech.get(e.source, 0) + (1 if clean(e.technology) else 0)
     rise: dict[tuple, int] = {}
     for uid, n in loops.items():
         gap = _gap_of(layout, ("in", uid))
-        rise[gap] = max(rise.get(gap, 0), LOOP_RISE + LOOP_STEP * (n - 1))
+        rise[gap] = max(rise.get(gap, 0), LOOP_RISE + LOOP_STEP * (n - 1) + LABEL_H * loop_tech.get(uid, 0))  # two-line loop labels
     layout.gap_bands = {
         gap: (_pitch(gap in layout.gap_tech) * rows_s.get(gap, 0), _pitch(gap in layout.gap_tech) * rows_t.get(gap, 0), rise.get(gap, 0))
         for gap in sorted(set(rows_s) | set(rows_t) | set(rise))
@@ -2466,13 +2468,17 @@ def render_logical_svg(model: DiagramModel) -> str:
     tops: dict[int, tuple] = {}
     loop_base: dict[int, tuple] = {}
     loop_total: dict[str, int] = {}
+    loop_tech: dict[str, int] = {}  # loops with a technology: their labels are two lines, 14 px taller
     for _n, edge in shown:
         if edge.source == edge.target:
             loop_total[edge.source] = loop_total.get(edge.source, 0) + 1
+            loop_tech[edge.source] = loop_tech.get(edge.source, 0) + (1 if clean(edge.technology) else 0)
+    tech_before: dict[str, int] = {}
     for number, edge in shown:
         if edge.source == edge.target:
             x, y = layout.pos[edge.source]
-            grow = 14 * loops.get(edge.source, 0)
+            grow = 14 * loops.get(edge.source, 0) + LABEL_H * tech_before.get(edge.source, 0)
+            tech_before[edge.source] = tech_before.get(edge.source, 0) + (1 if clean(edge.technology) else 0)
             loops[edge.source] = loops.get(edge.source, 0) + 1
             loop_base[number] = (x, LOGICAL_BOX_W, y - 30 - grow)
         elif number in layout.label_rows:
@@ -2481,7 +2487,7 @@ def render_logical_svg(model: DiagramModel) -> str:
             ps, pt = _pitch(gs in layout.gap_tech), _pitch(gt in layout.gap_tech)
             top_s = layout.gaps[gs][0] + LABEL_PAD + ps * k
             gtop, gsize = layout.gaps[gt]
-            own_rise = LOOP_RISE + LOOP_STEP * (loop_total[edge.target] - 1) if loop_total.get(edge.target) else 0
+            own_rise = LOOP_RISE + LOOP_STEP * (loop_total[edge.target] - 1) + LABEL_H * loop_tech.get(edge.target, 0) if loop_total.get(edge.target) else 0
             bottom_t = gtop + gsize - own_rise  # a target's own loops rise under its label
             tops[number] = (
                 ((layout.pos[edge.source][0], LOGICAL_BOX_W, routes[number][0][0]), top_s, _row_h(gs in layout.gap_tech)),
@@ -2729,9 +2735,11 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     drawable = set(by_uid) | containers
     drawn = [(i, e) for i, e in enumerate(model.edges) if e.source != e.target and e.source in drawable and e.target in drawable]
     loops: dict[str, int] = {}
+    loop_tech: dict[str, int] = {}  # loops with a technology: their labels are two lines, 14 px taller
     for e in model.edges:
         if e.source == e.target and (e.source in by_uid or e.source in containers):
             loops[e.source] = loops.get(e.source, 0) + 1
+            loop_tech[e.source] = loop_tech.get(e.source, 0) + (1 if clean(e.technology) else 0)
     most_loops = max([n for uid, n in loops.items() if uid in by_uid], default=0)  # box loops size lanes and columns
     container_loops = max([n for uid, n in loops.items() if uid in containers], default=0)
     # A container's loop (D13) sits at its top-right corner and reaches past the target border; the channels start
@@ -2739,7 +2747,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     chan_pad = max(DEPLOY_CHANNEL_PAD, LOOP_REACH + LOOP_STEP * (container_loops - 1) + DEPLOY_LEVEL) if container_loops else DEPLOY_CHANNEL_PAD
 
     def rise(uids: list) -> int:
-        return max([LOOP_RISE + LOOP_STEP * (loops[u] - 1) for u in uids if loops.get(u)], default=0)
+        return max([LOOP_RISE + LOOP_STEP * (loops[u] - 1) + LABEL_H * loop_tech.get(u, 0) for u in uids if loops.get(u)], default=0)
 
     loop_room = (LOOP_REACH + LOOP_STEP * (most_loops - 1) + 4 - DEPLOY_PAD) if most_loops else 0
     col_gap = max(DEPLOY_COL_GAP, LOOP_REACH + LOOP_STEP * (most_loops - 1) + 10) if most_loops else DEPLOY_COL_GAP
@@ -3027,9 +3035,11 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     tops: dict[int, tuple] = {}
     loop_base: dict[int, tuple] = {}
     loop_count: dict[str, int] = {}
+    tech_before: dict[str, int] = {}
     for number, edge in shown:
         if edge.source == edge.target:
-            grow = LOOP_STEP * loop_count.get(edge.source, 0)
+            grow = LOOP_STEP * loop_count.get(edge.source, 0) + LABEL_H * tech_before.get(edge.source, 0)
+            tech_before[edge.source] = tech_before.get(edge.source, 0) + (1 if clean(edge.technology) else 0)
             loop_count[edge.source] = loop_count.get(edge.source, 0) + 1
             rx, ry, rw, _rh = rects[edge.source]
             loop_base[number] = (rx + rw - LOGICAL_BOX_W, LOGICAL_BOX_W, ry - 30 - grow)
