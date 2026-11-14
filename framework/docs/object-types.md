@@ -53,6 +53,15 @@ on components and instances, never on a definition. Ratcheted validation rules
 `sdp-placement-types` and `relationship-definition-endpoint` check these two
 boundaries.
 
+### Deciding `serviceRole` for a shared-services object
+
+Service owners decide which of two things an object under `shared-services` is, and record it with `serviceRole` so the ratcheted rules read it the same way:
+
+- **definition** (the default for the folder): a standard solution that each product deploys for itself. Test: if two products use it, do they get two separate deployments with their own data and lifecycle? Then it is a definition. Examples: a DBMS service standard, Aurora PostgreSQL, DynamoDB, a caching service, an application runtime, a per-product queue. Patterns reach it through `substrate` or a data component's `runsOn`; relationships never name it. Teams that today record relationships to a definition move that fact to a data component and `runsOn` the next time they touch the pattern.
+- **instance**: one running service that every consumer shares as it is. Test: if two products use it, do they talk to the same endpoint, operated by someone else? Then it is an instance, which the pattern model calls an external service. Examples: the identity provider, the secrets store, central logging and monitoring, the API gateway or mesh, a shared message broker or document database cluster, a SaaS product. Patterns name it as a relationship target and the diagram draws it under External interactions.
+
+When in doubt: a definition answers "what should I deploy?"; an instance answers "what do I call?". Set `serviceRole: instance` explicitly on every external service that lives in the definitions folder; leave definitions unmarked or mark them `definition`.
+
 | Object type | YAML `type` | What it represents | Deployable role |
 |---|---|---|---|
 | TechnologyComponent | `technology_component` | A discrete vendor product, agent, operating system, compute platform, software package, or appliance product at a specific product/version level. | Deployed as an ingredient inside Hosts and service objects. |
