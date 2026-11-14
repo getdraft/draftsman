@@ -2659,12 +2659,12 @@ class LaterStoryTests(unittest.TestCase):
         found = []
         for source, target, body in re.findall(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)">(.*?)</g>', svg, re.S):
             pts = [(float(a), float(b)) for a, b in re.findall(r"[ML]([\d.-]+) ([\d.-]+)", re.search(r'<path class="ln[^"]*" d="([^"]*)"', body).group(1))]
-            for kind, x, base, text in re.findall(r'<text class="lb lb-([st])" x="([\d.]+)" y="([\d.]+)" text-anchor="start">(.*?)</text>', body):
+            for kind, x, base, anchor, text in re.findall(r'<text class="lb lb-([st])" x="([\d.]+)" y="([\d.]+)" text-anchor="(start|end)">(.*?)</text>', body):
                 w = len(xml_unescape(re.sub(r"<[^>]*>", "", text))) * 6.2 + 4
                 found.append(
                     {
-                        "source": source, "target": target, "loop": source == target, "kind": kind, "x": float(x), "pts": pts,
-                        "box": (float(x) - 2, float(base) - 10, w, 14), "text": xml_unescape(re.sub(r"<[^>]*>", "", text)),
+                        "source": source, "target": target, "loop": source == target, "kind": kind, "x": float(x), "pts": pts, "anchor": anchor,
+                        "box": ((float(x) - 2) if anchor == "start" else (float(x) - w + 2), float(base) - 10, w, 14), "text": xml_unescape(re.sub(r"<[^>]*>", "", text)),
                     }
                 )
             m = re.search(r'<text class="callout" x="([\d.]+)" y="([\d.]+)" text-anchor="middle">(.*?)</text>', body)
@@ -2711,8 +2711,8 @@ class LaterStoryTests(unittest.TestCase):
             for bx, by, bw, bh in borders:
                 inside = bx <= x and x + w <= bx + bw and by <= y and y + h <= by + bh
                 self.assertTrue(inside or generate_diagram._overlap(el["box"], (bx, by, bw, bh)) == 0, (el["text"], el["box"], (bx, by, bw, bh)))
-            for other in elements:  # middle segments of a route are tracks; its first and last are the stubs
-                for (ax, ay), (bx2, by2) in zip(other["pts"][1:-2], other["pts"][2:-1]):
+            for other in elements:  # every vertical segment of every route: tracks (middle) and stubs (first and last)
+                for (ax, ay), (bx2, by2) in zip(other["pts"], other["pts"][1:]):
                     if ax == bx2:
                         self.assertFalse(x < ax < x + w and min(ay, by2) < y + h and y < max(ay, by2), (el["text"], el["box"], ax, ay, by2))
         for el in elements:  # callouts keep clear of node boxes and captions (loop callouts also of visible labels, below)
@@ -2754,7 +2754,11 @@ class LaterStoryTests(unittest.TestCase):
             self.assertLessEqual(self._gap(el["box"][0], end[1], el["box"]), allowed, el["text"])
             uid = el["source"] if el["kind"] == "s" else el["target"]
             if uid in nodes:
-                self.assertEqual(el["x"], nodes[uid][0] + generate_diagram.LABEL_DX, el["text"])
+                nx, _ny, nw, _nh = nodes[uid]
+                if end[0] > nx + nw / 2:
+                    self.assertEqual((el["anchor"], el["x"]), ("start", nx + generate_diagram.LABEL_DX), el["text"])
+                else:
+                    self.assertEqual((el["anchor"], el["x"]), ("end", nx + nw - generate_diagram.LABEL_DX), el["text"])
 
     def test_callout_sits_on_the_line(self) -> None:
         for render, sdp in ((logical_svg, "FXSDP00002-0001"), (deployment_svg, "FXSDP00002-0001")):
@@ -2894,10 +2898,10 @@ class LaterStoryTests(unittest.TestCase):
         # R5: the self-loop collision step. A label that starts on an obstacle moves up until it is clear.
         edge = generate_diagram.DiagramEdge("N-1", "N-1", "checks own health")
         other = generate_diagram.DiagramEdge("N-0", "N-1", "feeds")
-        base = (105.0, 200.0, generate_diagram._max_chars(200))
+        base = (186.0, 200.0, 16)
         free = generate_diagram._edge_label_svgs([(0, edge)], {}, {}, {0: (100.0, 200, 200.0)}, [])
         self.assertIn('y="200.0"', free[0])
-        tops = {1: (((100.0, 200), 150.0), ((100.0, 200), 190.0))}  # the source end's label box sits on the loop label's row
+        tops = {1: (((100.0, 200, 220.0), 150.0), ((100.0, 200, 180.0), 190.0))}  # the source end's label box sits on the loop label's row
         pushed = generate_diagram._edge_label_svgs(
             [(0, edge), (1, other)], {1: [(0, 0), (0, 300)]}, tops, {0: (100.0, 200, 200.0)}, [(0, 190, 400, 20)]
         )
