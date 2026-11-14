@@ -11,6 +11,7 @@ on:
       - "templates/**"
       - "framework/tools/generate_ai_index.py"
       - "framework/tools/generate_browser.py"
+      - "framework/tools/generate_diagram.py"
       - "framework/tools/generate_indexes.py"
       - "framework/tools/indexes.py"
       - "AGENTS.md"
@@ -49,7 +50,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/index.html docs/assets docs/user-manual.html AI_INDEX.md
+          git add docs/index.html docs/assets docs/user-manual.html docs/diagrams AI_INDEX.md
           git diff --cached --quiet && exit 0
           git commit -m "chore: regenerate derived catalog assets [skip ci]"
           git push

@@ -117,6 +117,36 @@ class DiagramPagesInBrowserTests(unittest.TestCase):
         flagged = [o for o in data["objects"] if o["type"] == "software_deployment_pattern" and "diagramPage" in o]
         self.assertEqual(len(flagged), len(pages))
 
+    def test_diagram_import_failure_does_not_fail_build(self) -> None:
+        out = self.tmp / "site"
+        code = (
+            "import sys; sys.modules['generate_diagram'] = None; "
+            f"sys.path.insert(0, {str(BROWSER_TOOL.parent)!r}); import generate_browser; "
+            f"raise SystemExit(generate_browser.main(['--workspace', {str(FIXTURE)!r}, '--output', {str(out / 'index.html')!r}, "
+            "'--skip-validation', '--skip-user-manual']))"
+        )
+        result = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, cwd=str(REPO_ROOT))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue((out / "index.html").is_file())
+        self.assertIn("error: diagram pages skipped", result.stderr)
+        self.assertFalse((out / "diagrams").exists())
+
+    def test_stale_diagram_files_are_removed(self) -> None:
+        out = self.tmp / "site"
+        stale = out / "diagrams" / "stale.html"
+        stale.parent.mkdir(parents=True)
+        stale.write_text("old", encoding="utf-8")
+        self.assertEqual(run_browser(FIXTURE, out).returncode, 0)
+        self.assertFalse(stale.exists())
+        self.assertTrue(list((out / "diagrams").glob("*.html")))
+        stale.write_text("old", encoding="utf-8")
+        self.assertEqual(run_browser(FIXTURE, out, "--skip-diagrams").returncode, 0)
+        self.assertFalse((out / "diagrams").exists())
+
+    def test_pattern_warnings_are_printed(self) -> None:
+        result = run_browser(FIXTURE, self.tmp / "site")
+        self.assertRegex(result.stderr, r"\d+ warnings")
+
     def test_two_runs_identical(self) -> None:
         first, second = self.tmp / "a", self.tmp / "b"
         self.assertEqual(run_browser(FIXTURE, first).returncode, 0)

@@ -1578,22 +1578,32 @@ def write_user_manual(source_path: Path, output_path: Path) -> bool:
     return write_markdown_page(source_path, output_path, "DRAFT User Manual")
 
 
+def clear_diagram_pages(output_path: Path) -> None:
+    """Remove a previous diagrams/ directory so stale pages cannot outlive their patterns."""
+    shutil.rmtree(output_path.parent / DIAGRAMS_OUTPUT_DIR, ignore_errors=True)
+
+
 def write_diagram_pages(workspace_root: Path, output_path: Path) -> dict[str, str]:
     """D46: render every pattern's diagram page and SVGs into <output dir>/diagrams/.
 
     Uses the same per-pattern functions and D33 slug rule as ``generate_diagram.py --all``. A pattern that
     fails to render is reported on stderr and skipped (D20). Returns pattern uid -> relative page path.
     """
-    import generate_diagram as gd
+    diagrams_dir = output_path.parent / DIAGRAMS_OUTPUT_DIR
+    clear_diagram_pages(output_path)  # the directory's contents are a function of the catalog (D15)
+    try:
+        import generate_diagram as gd
 
-    catalog = gd.load_catalog(workspace_root)
-    patterns = gd.sdps(catalog)
+        catalog = gd.load_catalog(workspace_root)
+        patterns = gd.sdps(catalog)
+    except Exception as exc:  # the diagram step is reported and skipped, never fatal (D20)
+        print(f"error: diagram pages skipped: {exc}", file=sys.stderr)
+        return {}
     if not patterns:
         return {}
     stems, notes = gd.pattern_stems(patterns)
     for note in notes:
         print(note, file=sys.stderr)
-    diagrams_dir = output_path.parent / DIAGRAMS_OUTPUT_DIR
     back_link = f"../{output_path.name}"
     pages: dict[str, str] = {}
     used: set[str] = set()
@@ -1615,6 +1625,9 @@ def write_diagram_pages(workspace_root: Path, output_path: Path) -> dict[str, st
             print(f"error: diagram for {name} ({uid}): {exc}", file=sys.stderr)
             continue
         used.add(stem)
+        print(f"{len(model.warnings)} warnings", file=sys.stderr)
+        for warning in model.warnings:
+            print(warning, file=sys.stderr)
         pages[uid] = f"{DIAGRAMS_OUTPUT_DIR}/{stem}.html"
     return pages
 
@@ -1646,7 +1659,9 @@ def main(argv: list[str] | None = None) -> int:
     registry = load_objects(args.workspace.resolve())
     payload = build_browser_payload(registry, args.workspace.resolve())
     diagram_count = 0
-    if not args.skip_diagrams:
+    if args.skip_diagrams:
+        clear_diagram_pages(output_path)
+    else:
         diagram_pages = write_diagram_pages(args.workspace.resolve(), output_path)
         diagram_count = len(diagram_pages)
         for entry in payload["objects"]:
