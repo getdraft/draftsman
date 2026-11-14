@@ -111,21 +111,22 @@ For each service group with missing `deployableObjects`, present the group name
 and ask:
 
 > What runs inside [group name]? I'll look up catalog options — just give me
-> the component or service name and I'll match it.
+> the component name and I'll match it.
 
-Search the catalog for matching ProductComponents, RuntimeServices,
-DataStoreServices, and NetworkServices. Present the top matches as
-a numbered list. If an exact match exists, confirm it. If multiple plausible
-matches exist, ask the user to choose.
+Search the catalog for matching ProductComponents and DataComponents. Present
+the top matches as a numbered list. If an exact match exists, confirm it. If
+multiple plausible matches exist, ask the user to choose. Only these two types
+go in `deployableObjects`. Set the group's runtime or host in `substrate`, record
+each DataComponent's data store in its `runsOn`, and take edge services from the
+followed ReferenceArchitecture. Do not list a RuntimeService, DataStoreService or
+NetworkService as a deployable object (ratcheted rule `sdp-placement-types`).
 
 For each resolved catalog object:
 
 1. Set `diagramTier` based on the object type:
    - ProductComponent → infer from component role (API = application, UI =
      presentation, worker = application)
-   - DataStoreService → data
-   - NetworkService → presentation or utility
-   - RuntimeService → utility
+   - DataComponent → data
    - Ask the user to confirm or correct the inferred tier.
 2. If the catalog object has no entry yet, note that you will draft it and
    continue.

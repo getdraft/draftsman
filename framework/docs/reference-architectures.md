@@ -41,7 +41,7 @@ declarations, remove internal names), then submit a pull request.
 
 ## Capability Slots
 
-Framework-level ReferenceArchitectures use capability slots to describe the roles a deployment must fill without naming company-specific catalog objects. A slot appears inside `serviceGroups[].deployableObjects[]` and may include:
+Framework-level ReferenceArchitectures use capability slots to describe the roles a deployment must fill without naming company-specific catalog objects. A slot appears inside the ReferenceArchitecture's `serviceGroups[].deployableObjects[]` (a slot describes a role to fill, unlike an SDP, whose `deployableObjects` hold only ProductComponents and DataComponents) and may include:
 
 - `slot`: a stable kebab-case role name used by the Draftsman onboarding flow, such as `application-runtime`, `managed-state-store`, or `messaging-backbone`.
 - `capability`: the Capability UID the selected implementation must satisfy.
@@ -56,7 +56,7 @@ If a slot requires a shared service type and the company catalog does not yet co
 
 ## Framework RA objectType Entries
 
-Framework-level RAs use capability slots instead of company-specific `ref` values in `deployableObjects` entries. `objectType` declares the expected catalog object type, while `capability` declares the governed architecture outcome that the selected object or implementation must satisfy. The company catalog defines which specific Host, RuntimeService, DataStoreService, or NetworkService objects satisfy each slot when the SDP is drafted.
+Framework-level RAs use capability slots instead of company-specific `ref` values in `deployableObjects` entries. `objectType` declares the expected catalog object type, while `capability` declares the governed architecture outcome that the selected object or implementation must satisfy. The company catalog defines which specific Host, RuntimeService, DataStoreService, or NetworkService definitions satisfy each slot. The SDP that follows the RA does not copy those definitions into its own `deployableObjects`: it consumes them through `substrate` and `runsOn`, and edge services come from the RA's slots (ratcheted rule `sdp-placement-types`).
 
 When a company authors their own RA or extends a framework RA, they may use
 `ref` to point to specific catalog objects, `objectType` for type-level

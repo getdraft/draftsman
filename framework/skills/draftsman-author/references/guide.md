@@ -22,6 +22,8 @@ Everything below is inference from file contents. Mark it as inferred and ask th
 | `aws_db_instance` (postgres) | `data_store_service` | `technologyComponent: technology-aws-rds-postgresql` |
 | `aws_lb_listener` (port 443) | `edge_gateway_service` | `technologyComponent: technology-aws-alb` |
 
+The table maps what you find to the object that represents it. Where it lands in a pattern: a `product_component` or `data_component` is placed in `deployableObjects`; a `runtime_service` or host is the group's `substrate`; a `data_store_service` is a data component's `runsOn`; a load balancer or gateway comes from the reference architecture. Never list the infrastructure rows in `deployableObjects`, and never record a relationship on a service definition.
+
 Files worth reading: `Dockerfile`, `docker-compose.yml`, Kubernetes manifests, `*.tf`, `cdk.json`, `package.json`, `pom.xml`, `build.gradle`, `requirements.txt`, `Cargo.toml`, `application.yml`, `appsettings.json`, `.env.example`.
 
 Never copy a secret value from a configuration file into the catalog.

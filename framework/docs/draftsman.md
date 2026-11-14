@@ -258,6 +258,15 @@ by many engineering objects. This is the primary mechanism for catalog scale.
 - A **NetworkService** is authored by Shared Services for reusable network
   and traffic-control behavior such as routing, switching, load balancing, WAF,
   firewalling, ingress, DNS, WAN, or segmentation.
+- These are service definitions. A pattern never places one: it places only
+  ProductComponents and DataComponents. Put a group's runtime or host in
+  `substrate`, name a DataComponent's data store in its `runsOn`, and take edge
+  services (load balancer, firewall, ingress) from the ReferenceArchitecture the
+  pattern follows. External services are relationship targets drawn as External
+  interactions. Never record a relationship on a definition (an object under
+  `catalog/shared-services/` or with `serviceRole: definition`); record it on the
+  component or instance. Ratcheted rules `sdp-placement-types` and
+  `relationship-definition-endpoint` enforce this.
 - A **TechnologyComponent** is authored once per vendor product version and
   referenced by every Host, RuntimeService, DataStoreService, or NetworkService
   that uses it.

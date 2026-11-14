@@ -54,7 +54,7 @@ deliberately queued:
 5. Initial active RequirementGroups selected.
 6. Capability owners identified for the first mapped capabilities.
 7. Acceptable-use TechnologyComponents seeded for the most common standards.
-8. Baseline deployable objects started for common Host, RuntimeService,
+8. Baseline service definitions started for common Host, RuntimeService,
    DataStoreService, and NetworkService patterns.
 9. One real product, system, diagram, repository, or source document selected
    for the first guided DraftingSession.
@@ -202,15 +202,18 @@ The Draftsman will generate one object-patch file per capability in
 TechnologyComponent implementations. Domains with no known owner are patched
 with `owner: TBD` so the gap is visible in the catalog immediately.
 
-### 6. Baseline Deployable Standards
+### 6. Baseline Service Definitions
 
 Create enough reusable deployable objects that product drafting can choose
 standards instead of inventing everything.
 
 Question:
 
-> Which common deployable standard should we draft first: Host, Runtime
+> Which common service definition should we draft first: Host, Runtime
 > Service, DataStoreService, or NetworkService?
+
+These are definitions that product patterns consume through `substrate`,
+`runsOn` and reference-architecture slots; a pattern does not place them.
 
 ### 7. IDE Integration
 

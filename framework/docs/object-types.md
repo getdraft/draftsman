@@ -40,8 +40,18 @@ by the engineering team and deployed inside or on top of Shared Services Objects
 
 ## Shared Services Objects
 
-Shared Services Objects are reusable infrastructure-level deployable objects that
-engineering objects run on or connect to.
+Shared Services Objects are service definitions: reusable infrastructure
+standards that the infrastructure team defines and owns (including DR, backups
+and HA). A product team consumes a definition; it does not place it. A
+SoftwareDeploymentPattern places only ProductComponents and DataComponents. It
+consumes a definition through `substrate` on a service group (runtime or host),
+through `runsOn` on a DataComponent (data store), and through the slots of the
+ReferenceArchitecture it follows (edge services such as load balancer, firewall
+and ingress). External services are not definitions placed in a pattern; they are
+relationship targets drawn as External interactions. Relationships are recorded
+on components and instances, never on a definition. Ratcheted validation rules
+`sdp-placement-types` and `relationship-definition-endpoint` check these two
+boundaries.
 
 | Object type | YAML `type` | What it represents | Deployable role |
 |---|---|---|---|

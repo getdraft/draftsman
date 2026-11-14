@@ -18,6 +18,10 @@ Load `draftsman-core` first. This skill needs the **Author profile**: read the r
 7. **Label what you guessed.** Apply rule R6: any value you did not read from the user, the code or an existing record is marked inferred and confirmed with the user.
 8. **Hand off.** Summarise what changed, what is inferred and what is unknown. If the harness allows git, you may offer to commit on a `draft/<feature>` branch and open a pull request. If it does not, give the user the file list.
 
+## What a pattern places
+
+A software deployment pattern places only product components and data components. A group's runtime or host goes in `substrate`; a data component names its data store in `runsOn`; edge services (load balancer, firewall, ingress) come from the reference architecture the pattern follows. External services are relationship targets, drawn as External interactions. A service definition (an object under the shared-services catalog folder, or `serviceRole: definition`) is never placed and never a relationship endpoint: record the relationship on the component or instance. Rules `sdp-placement-types` and `relationship-definition-endpoint` check this.
+
 ## Scanning a code repository
 
 Read only what the harness already lets you read; never ask the user for credentials or tokens. Map what you find to DRAFT objects and mark every mapping inferred until the user confirms it. The mapping table and the full conversational flow are in `references/guide.md`.
