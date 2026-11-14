@@ -8,8 +8,6 @@ catalogStatus: complete
 logical:
 - ref: FXPRD00001-0001
   position: 1
-- ref: FXNET00001-0001
-  position: 2
 - ref: FXPRD00004-0001
   position: 1
 - ref: FXPRD00002-0001
