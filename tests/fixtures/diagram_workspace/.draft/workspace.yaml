@@ -1,0 +1,4 @@
+workspace:
+  name: fx-diagram-fixture
+paths:
+  serviceDefinitionsFolder: catalog/shared-services

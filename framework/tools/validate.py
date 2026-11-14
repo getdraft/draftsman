@@ -237,7 +237,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 #
 # Registering a rule (the API later rules use):
 #
-#     def _check(obj: dict, catalog_by_id: dict) -> Iterable[str]:
+#     def _check(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
 #         ...yield one message per problem found on this object...
 #
 #     register_ratchet_rule("my-rule-id", _check)
@@ -247,7 +247,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 # ---------------------------------------------------------------------------
 BASELINE_RELATIVE_PATH = Path(".draft") / "validation-baseline.yaml"
 BASELINE_SCHEMA_VERSION = "1.0"
-RatchetCheck = Callable[[dict, dict], Iterable[str]]
+RatchetCheck = Callable[[dict, dict, dict], Iterable[str]]
 RATCHET_RULES: dict[str, RatchetCheck] = {}
 
 
@@ -257,7 +257,7 @@ def register_ratchet_rule(rule_id: str, check: RatchetCheck) -> None:
     RATCHET_RULES[rule_id] = check
 
 
-def _check_ratchet_test_marker(obj: dict, catalog_by_id: dict) -> Iterable[str]:
+def _check_ratchet_test_marker(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
     # TEST-ONLY rule: exists so tests/test_validate_ratchet.py can exercise the
     # ratchet plumbing end to end. It fires only on an object carrying the
     # top-level field `xRatchetTest: fail`. A later story may remove it.
@@ -274,9 +274,9 @@ register_ratchet_rule("ratchet-test-marker", _check_ratchet_test_marker)
 # ---------------------------------------------------------------------------
 INFRASTRUCTURE_TYPES = ("runtime_service", "data_store_service", "network_service", "host", "ai_gateway")
 SERVICE_DEFINITIONS_FOLDER_NAME = "shared-services"
-# Filled by main() before ratcheted rules run: workspace root, parsed workspace.yaml
-# and a uid -> path map. Rules need the file location of an object (D51).
-RATCHET_CONTEXT: dict[str, Any] = {"workspace_root": None, "workspace_config": {}, "paths": {}}
+# Every check receives a context dict built by collect_ratchet_violations:
+# {"workspace_root": Path | None, "workspace_config": dict, "paths": {uid: Path}}.
+# Rules need the file location of an object (D51).
 
 
 def service_definition_folders(workspace_config: dict[str, Any] | None) -> list[str]:
@@ -328,14 +328,14 @@ def service_role(
     return "instance"
 
 
-def _object_role(obj: dict[str, Any]) -> str | None:
+def _object_role(obj: dict[str, Any], context: dict[str, Any]) -> str | None:
     if obj.get("type") not in INFRASTRUCTURE_TYPES:
         return None
     return service_role(
         obj,
-        RATCHET_CONTEXT["paths"].get(str(obj.get("uid"))),
-        RATCHET_CONTEXT["workspace_config"],
-        RATCHET_CONTEXT["workspace_root"],
+        context.get("paths", {}).get(str(obj.get("uid"))),
+        context.get("workspace_config") or {},
+        context.get("workspace_root"),
     )
 
 
@@ -352,7 +352,7 @@ PLACEMENT_FIELD_HINT = {
 }
 
 
-def _check_sdp_placement_types(obj: dict, catalog_by_id: dict) -> Iterable[str]:
+def _check_sdp_placement_types(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
     if obj.get("type") != "software_deployment_pattern":
         return []
     groups = obj.get("serviceGroups")
@@ -378,14 +378,14 @@ def _check_sdp_placement_types(obj: dict, catalog_by_id: dict) -> Iterable[str]:
     return messages
 
 
-def _check_relationship_definition_endpoint(obj: dict, catalog_by_id: dict) -> Iterable[str]:
+def _check_relationship_definition_endpoint(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
     if obj.get("type") != "relationship":
         return []
     messages: list[str] = []
     for end in ("source", "target"):
         ref = obj.get(end)
         endpoint = catalog_by_id.get(ref) if isinstance(ref, str) else None
-        if not isinstance(endpoint, dict) or _object_role(endpoint) != "definition":
+        if not isinstance(endpoint, dict) or _object_role(endpoint, context) != "definition":
             continue
         message = (
             f"{end} {_describe(endpoint, ref)} is a service definition, and a definition carries no flows: "
@@ -411,15 +411,26 @@ def object_hash(obj: dict[str, Any]) -> str:
 def collect_ratchet_violations(
     objects: dict[Path, dict[str, Any]],
     catalog_by_id: dict[str, dict[str, Any]],
+    workspace_root: Path | None = None,
+    workspace_config: dict[str, Any] | None = None,
 ) -> list[tuple[str, str, str, Path, str]]:
     """Return (rule_id, uid, message, path, hash) for every ratcheted violation."""
+    context: dict[str, Any] = {
+        "workspace_root": workspace_root,
+        "workspace_config": workspace_config or {},
+        "paths": {
+            str(o["uid"]): p
+            for p, o in sorted(objects.items())
+            if isinstance(o, dict) and is_non_empty(o.get("uid"))
+        },
+    }
     found: list[tuple[str, str, str, Path, str]] = []
     for path, obj in objects.items():
         if not isinstance(obj, dict) or not is_non_empty(obj.get("uid")):
             continue
         uid = str(obj["uid"])
         for rule_id in sorted(RATCHET_RULES):
-            messages = list(RATCHET_RULES[rule_id](obj, catalog_by_id))
+            messages = list(RATCHET_RULES[rule_id](obj, catalog_by_id, context))
             if messages:
                 found.append((rule_id, uid, "; ".join(messages), path, object_hash(obj)))
     found.sort(key=lambda item: (item[0], item[1]))
@@ -4867,12 +4878,9 @@ def main(argv: list[str] | None = None) -> int:
                 print("")
                 print(f"SoftwareDeploymentPattern '{sdp_obj.get('name')}' is deployment-ready for DeploymentTarget '{target_obj.get('name')}' (200 OK).")
 
-    RATCHET_CONTEXT["workspace_root"] = workspace_root
-    RATCHET_CONTEXT["workspace_config"] = load_workspace_config(workspace_root, [])
-    RATCHET_CONTEXT["paths"] = {
-        str(o["uid"]): p for p, o in sorted(objects.items()) if isinstance(o, dict) and is_non_empty(o.get("uid"))
-    }
-    ratchet_violations = collect_ratchet_violations(objects, catalog_by_id)
+    ratchet_violations = collect_ratchet_violations(
+        objects, catalog_by_id, workspace_root, load_workspace_config(workspace_root, [])
+    )
     if args.write_baseline:
         if structural_failures:
             print("Refusing to write the baseline: YAML parse or object patch failures would silently drop objects from it.")

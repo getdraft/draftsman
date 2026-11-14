@@ -222,11 +222,17 @@ class FixtureBaselineTests(unittest.TestCase):
         return proc.returncode, proc.stdout + proc.stderr
 
     def test_fixture_workspace_violations_are_baseline_warnings(self) -> None:
-        _, out = self.run_ws(REPO_ROOT / "tests" / "fixtures" / "diagram_workspace")
+        code, out = self.run_ws(REPO_ROOT / "tests" / "fixtures" / "diagram_workspace")
         self.assertIn("baseline: ", out)
         errors = [l for l in out.splitlines() if l.startswith("- ") and not l.startswith("- baseline:")]
         self.assertFalse([l for l in errors if "[sdp-placement-types]" in l or "[relationship-definition-endpoint]" in l])
         self.assertTrue([l for l in out.splitlines() if l.startswith("- baseline:") and "[sdp-placement-types]" in l])
+        for rule in ("sdp-placement-types", "relationship-definition-endpoint"):
+            self.assertTrue([l for l in out.splitlines() if l.startswith("- baseline:") and f"[{rule}]" in l], rule)
+        self.assertNotIn("stale baseline entry", out)
+        # The fixture deliberately leaves gaps (a placed entry without diagramTier, data components
+        # without runsOn) that the diagram tests rely on, so the run exits 1 for those reasons only.
+        self.assertEqual(1, code)
 
     def test_examples_workspace_exits_zero(self) -> None:
         code, out = self.run_ws(REPO_ROOT / "examples", "-q")
