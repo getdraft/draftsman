@@ -880,6 +880,8 @@ class InfrastructurePlacementTests(unittest.TestCase):
         catalog = load_catalog(FIXTURE)
         first = deployment_svg(catalog, REGISTRY_SDP)
         self.assertEqual(first, deployment_svg(load_catalog(FIXTURE), REGISTRY_SDP))
+        self.assertEqual(side_violations(first), [])  # D36 holds for edges into store containers and their data components
+        self.assertEqual(covisible_track_clashes(first), [])
         self.assertEqual(first, deployment_svg(dict(reversed(list(catalog.items()))), REGISTRY_SDP))
         for _uid, (x, y, _w, _h) in node_rects(first).items():
             self.assertEqual((x % generate_diagram.GRID, y % generate_diagram.GRID), (0, 0))
