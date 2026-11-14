@@ -2245,6 +2245,10 @@ class LaterStoryTests(unittest.TestCase):
         self.assertEqual(page.count('data-all="fig-deployment"'), 1)
         self.assertEqual(page.count("Show all connections"), 2)
         self.assertEqual(page.count('<span class="key">'), 2)
+        self.assertEqual(page.count('<span class="o"><i></i>calls it makes</span>'), 2, "legend names the outbound colour under each figure")
+        self.assertEqual(page.count('<span class="i"><i></i>calls it receives</span>'), 2, "legend names the inbound colour under each figure")
+        for fid in ("fig-logical", "fig-deployment"):  # toggle and legend sit directly under the heading
+            self.assertRegex(page, r'</h2><label class="tog"><input type="checkbox" data-all="' + fid + '">')
 
     def test_flow_overlay_per_edge(self) -> None:
         # D34: every drawn edge carries an animated overlay hidden until the edge is highlighted; its direction follows flow.

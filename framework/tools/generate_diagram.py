@@ -953,15 +953,15 @@ def render_page(model: Model, dm: DiagramModel) -> str:
         header_html(model),
         counts_html(model, dm),
         f'<section class="sec" id="logical"><h2>{E(LOGICAL_TITLE)}</h2>'
-        '<p>Connections are hidden until you hover over or click a box; then only that box\'s own connections appear, coloured by direction.</p>'
         '<label class="tog"><input type="checkbox" data-all="fig-logical"> Show all connections</label><span class="key"><span class="o"><i></i>calls it makes</span><span class="i"><i></i>calls it receives</span></span>'
         "<p>Components in bands by diagram tier. Objects that this pattern does not place sit in the right-hand lane, captioned with the pattern that places them. "
-        "Hover or focus a box to colour it and its relationships; click to pin. A dashed box has a derived tier.</p>"
+        "Connections are hidden until you hover over, focus or click a box; then only that box's own connections appear, purple for calls it makes and orange for calls it receives. "
+        "Click to pin. A dashed box has a derived tier.</p>"
         + logical_body
         + "</section>",
         f'<section class="sec" id="deployment"><h2>{E(DEPLOYMENT_TITLE)}</h2>'
-        "<p>Deployment targets hold service groups, each drawn as a container around its boxes. Pinning an object in one figure highlights it in the other. Connections are hidden until you hover over or click a box.</p>"
         '<label class="tog"><input type="checkbox" data-all="fig-deployment"> Show all connections</label><span class="key"><span class="o"><i></i>calls it makes</span><span class="i"><i></i>calls it receives</span></span>'
+        "<p>Deployment targets hold service groups, each drawn as a container around its boxes. Connections are hidden until you hover over, focus or click a box, and pinning an object in one figure highlights it in the other.</p>"
         + figure_html(render_deployment_svg(dm), FIGURE_IDS[1])
         + empty_groups_html(model)
         + "</section>",
