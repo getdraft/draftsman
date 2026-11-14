@@ -213,7 +213,7 @@ class IntentRemovedFromBrowserTests(unittest.TestCase):
         flags = node[node.index('class="topology-node-flags"'):]
         flags = flags[:flags.index("</div>")]
         self.assertIn("ps-corner", flags)
-        self.assertEqual(flags.count("<span"), 2)  # badge label or its placeholder, plus ps-corner span
+        self.assertEqual(flags.count("<span"), 2)  # the two literal branches of one ternary: ps-corner span when badgeLabel is set, else the empty placeholder span (mutually exclusive)
 
     def test_risk_ref_still_rendered(self) -> None:
         self.assertIn("function topologyBadgeMarkup(", self.js)
