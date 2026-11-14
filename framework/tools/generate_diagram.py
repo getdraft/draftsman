@@ -1148,28 +1148,32 @@ EDIT_JS_DOM = """
  }
  function moveTo(el,index){
   var id=ctrOf(el),mv=movable(id),from=mv.indexOf(el);
-  if(from<0)return;
+  if(from<0)return false;
   index=Math.max(0,Math.min(mv.length-1,index));
-  if(index===from)return;
+  if(index===from)return false;
   mv.splice(from,1);mv.splice(index,0,el);
   var fixed=state[id].filter(function(x){return x.hasAttribute('data-fixed')});
   state[id]=mv.concat(fixed);
-  place(id);sortDom(id);status(id);
+  place(id);sortDom(id);say(label(el)+' moved to position '+(index+1)+' of '+state[id].length+'.');
+  return true;
  }
- function status(id){var n=document.getElementById('edit-note');if(n)n.textContent='Container '+id+' now has '+state[id].length+' boxes in the order shown; use Export layout to save.'}
+ function label(el){var t=el.querySelector?el.querySelector('title'):null;return t&&t.textContent?t.textContent:el.getAttribute('data-id')}
+ function say(msg){var n=document.getElementById('edit-note');if(n)n.textContent=msg}
  function scaleOf(svg){var m=svg.getScreenCTM();return m?m.a:1}
  function onDown(e){
+  if(drag)return;
   var el=e.target.closest?e.target.closest('[data-ctr]'):null;
   if(!el||el.hasAttribute('data-fixed')||(e.button!==undefined&&e.button!==0))return;
   var svg=el.ownerSVGElement,id=ctrOf(el),mv=movable(id);
-  var tr=(el.getAttribute('transform')||'').match(/translate\\(([-\\d.]+) ([-\\d.]+)\\)/);
+  var tr=(el.getAttribute('transform')||'').match(/translate\\(([-+\\d.eE]+) ([-+\\d.eE]+)\\)/);
   var s=slots[id],xs=s.map(function(r){return r.x}),ys=s.map(function(r){return r.y});
-  drag={el:el,svg:svg,id:id,sx:e.clientX,sy:e.clientY,ox:tr?+tr[1]:0,oy:tr?+tr[2]:0,k:scaleOf(svg),moved:false,
+  drag={pid:e.pointerId,el:el,svg:svg,id:id,sx:e.clientX,sy:e.clientY,ox:tr?+tr[1]:0,oy:tr?+tr[2]:0,k:scaleOf(svg),moved:false,
    box:{x0:Math.min.apply(null,xs),x1:Math.max.apply(null,xs),y0:Math.min.apply(null,ys),y1:Math.max.apply(null,ys)},own:base[key(el)]};
+  svg.classList.add('dragging');
   try{el.setPointerCapture(e.pointerId)}catch(x){}
  }
  function onMove(e){
-  if(!drag)return;
+  if(!drag||e.pointerId!==drag.pid)return;
   var dx=(e.clientX-drag.sx)/drag.k,dy=(e.clientY-drag.sy)/drag.k;
   if(!drag.moved&&Math.abs(dx)+Math.abs(dy)<4)return;
   drag.moved=true;
@@ -1178,9 +1182,9 @@ EDIT_JS_DOM = """
   drag.el.setAttribute('transform','translate('+(nx-drag.own.x)+' '+(ny-drag.own.y)+')');
   drag.cx=nx;drag.cy=ny;
  }
- function onUp(){
-  if(!drag)return;
-  var d=drag;drag=null;
+ function onUp(e){
+  if(!drag||(e&&e.pointerId!==undefined&&e.pointerId!==drag.pid))return;
+  var d=drag;drag=null;d.svg.classList.remove('dragging');
   if(!d.moved)return;
   justDragged=true;setTimeout(function(){justDragged=false},0);
   var mv=movable(d.id),origin=mv.map(function(el){return +el.getAttribute('data-ord')}).sort(function(a,b){return a-b});
@@ -1191,17 +1195,20 @@ EDIT_JS_DOM = """
  }
  function onKey(e){
   var el=e.target.closest?e.target.closest('[data-ctr]'):null;
-  if(!el||!e.altKey||el.hasAttribute('data-fixed'))return;
+  if(!el||!e.altKey)return;
   var back=e.key==='ArrowLeft'||e.key==='ArrowUp',fwd=e.key==='ArrowRight'||e.key==='ArrowDown';
   if(!back&&!fwd)return;
   e.preventDefault();
-  var mv=movable(ctrOf(el));moveTo(el,mv.indexOf(el)+(fwd?1:-1));el.focus();
+  if(el.hasAttribute('data-fixed')){say(label(el)+' is fixed and cannot be moved.');return}
+  var mv=movable(ctrOf(el));
+  if(!moveTo(el,mv.indexOf(el)+(fwd?1:-1)))say(label(el)+' is already at the '+(fwd?'end':'start')+' of its container and cannot move further.');
+  el.focus();
  }
  ['fig-logical','fig-deployment'].forEach(function(fid){
   var svg=document.getElementById(fid);if(!svg)return;
   svg.classList.add('editing');
   svg.addEventListener('pointerdown',onDown);svg.addEventListener('pointermove',onMove);
-  svg.addEventListener('pointerup',onUp);svg.addEventListener('pointercancel',onUp);
+  svg.addEventListener('pointerup',onUp);svg.addEventListener('pointercancel',onUp);svg.addEventListener('lostpointercapture',onUp);
   svg.addEventListener('keydown',onKey);
   svg.addEventListener('click',function(e){if(justDragged){e.stopPropagation();e.preventDefault()}},true);
  });
@@ -1224,6 +1231,7 @@ EDIT_CSS = """
 .edit{border:1px solid var(--zone-line);border-radius:6px;background:var(--surface);padding:12px 14px}
 .edit button{font:inherit;font-size:13.5px;padding:6px 12px;border:1px solid var(--line);border-radius:6px;background:var(--zone);color:var(--fg);cursor:pointer}
 .edit textarea{display:block;width:100%;min-height:12em;margin-top:10px;font:12px ui-monospace,Menlo,monospace;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:8px}
+svg.dragging{user-select:none;-webkit-user-select:none}
 svg.editing [data-ctr]:not([data-fixed]){cursor:grab;touch-action:none}
 """
 
@@ -1283,13 +1291,13 @@ def edit_panel_html(model: Model) -> str:
     sdp_uid = str(model.sdp.get("uid", ""))
     name = clean(model.sdp.get("name")) or sdp_uid
     return (
-        f'<section class="sec edit" id="edit-panel" data-uid="{E(model.layout_uid)}" data-pattern="{E(sdp_uid)}" data-name="{E(name)}">'
+        f'<section class="sec edit" id="edit-panel" data-uid="{E(model.layout_uid)}" data-pattern="{E(sdp_uid)}" data-name="{E(name)} diagram layout">'
         "<h2>Edit box order</h2>"
         "<p>Drag a box, or focus it and press Alt with an arrow key, to move it within its own band, zone lane or data store container. "
         "Connections are not redrawn while you edit. Export layout writes the order shown as a diagram_layout document; "
         "nothing is stored, and reloading returns to the catalog order. Save the text to a file and run "
         "<code>generate_diagram.py --sdp NAME --write-layout --layout-from FILE</code>.</p>"
-        '<button type="button" id="export-layout">Export layout</button> <span id="edit-note" role="status"></span>'
+        '<button type="button" id="export-layout">Export layout</button> <span class="cap">Keyboard: focus a box and press Alt with an arrow key to move it one place.</span> <span id="edit-note" role="status"></span>'
         '<textarea id="layout-out" aria-label="Exported diagram layout" spellcheck="false"></textarea></section>'
     )
 
