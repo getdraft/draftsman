@@ -394,12 +394,6 @@ function deliveryModelBadge(object) {
   return '<span class="badge">self-managed</span>';
 }
 
-function intentBadge(intent) {
-  const normalized = String(intent || '').toLowerCase();
-  const cls = normalized === 'ha' ? 'intent-ha' : normalized === 'sa' ? 'intent-sa' : '';
-  return `<span class="badge ${cls}">${escapeHtml((intent || '').toUpperCase())}</span>`;
-}
-
 function boolBadge(value, trueLabel = 'true', falseLabel = 'false') {
   const active = value === true;
   const text = active ? trueLabel : falseLabel;
@@ -5490,9 +5484,6 @@ function topologyBadgeMarkup(entry) {
     }
     return '<span class="topology-risk" title="Missing Decision Record reference">?</span>';
   }
-  if (String(entry.intent || '').toLowerCase() === 'sa') {
-    return '<span class="topology-info" title="Explicit architecture decision">ⓘ</span>';
-  }
   return '';
 }
 
@@ -5501,7 +5492,6 @@ function topologyNodeMarkup(entry, options = {}) {
     objectType = 'host',
     overrideLabel = null,
     meta = '',
-    intent = entry.intent || '',
     badgeLabel = '',
     scalingUnit = '',
     substrateObj = null,
@@ -5520,7 +5510,6 @@ function topologyNodeMarkup(entry, options = {}) {
       ${topologyBadgeMarkup(entry)}
       <div class="topology-node-flags">
         ${badgeLabel ? `<span class="ps-corner">${escapeHtml(badgeLabel)}</span>` : '<span></span>'}
-        ${intent ? intentBadge(intent) : '<span></span>'}
       </div>
       <span class="topology-node-icon ${icon.cls}">${icon.icon}</span>
       <div class="topology-node-label">${escapeHtml(overrideLabel || entryLabel(entry))}</div>
@@ -6452,7 +6441,7 @@ function _sdpBuildVM(object) {
       const tier = zoneToTier[zone] || 'application';
       members.push({
         ref: e.ref, tier, zone,
-        intent: e.intent || 'sa', notes: e.notes || '', group: sg.name,
+        notes: e.notes || '', group: sg.name,
         riskRef: e.riskRef || null
       });
     });
@@ -6530,20 +6519,11 @@ function _sdpHeroMarkup(object) {
 function _sdpKpiMarkup(object, vm) {
   const d = object.notes || {};
   const n = vm.members.length;
-  const haCount  = vm.members.filter(m => m.intent === 'ha').length;
-  const saGap    = vm.members.filter(m => m.intent !== 'ha' && !m.riskRef).length;
-  const saAccepted = vm.members.filter(m => m.intent !== 'ha' && m.riskRef).length;
-  let haSub;
-  if (n === 0)           haSub = 'no services';
-  else if (haCount === n) haSub = 'fully covered';
-  else if (saGap === 0)  haSub = `${saAccepted} accepted risk`;
-  else                   haSub = `${saGap} gap${saGap > 1 ? 's' : ''}${saAccepted ? ` · ${saAccepted} accepted` : ''}`;
   const kpis = [
     { label: 'Services',      value: n,                        sub: 'deployable objects' },
     { label: 'Zones',         value: vm.activeZones.length,    sub: 'network zones' },
     { label: 'Connections',   value: vm.connections.length,    sub: 'documented paths' },
-    { label: 'Availability',  value: d.availabilityTarget || '—', sub: d.availabilityTarget ? 'target SLA' : 'not specified' },
-    { label: 'HA Components', value: n > 0 ? `${haCount} / ${n}` : '—', sub: haSub }
+    { label: 'Availability',  value: d.availabilityTarget || '—', sub: d.availabilityTarget ? 'target SLA' : 'not specified' }
   ];
   return `<div class="kpi-strip">${kpis.map(k => `
   <div class="kpi">
@@ -6584,7 +6564,6 @@ function _sdpTopologyMarkup(vm) {
         const svc = objectLookup[m.ref] || { name: m.ref, role: '' };
         return `<div class="svc-card" data-ref="${escapeHtml(m.ref)}" data-tier="${escapeHtml(m.tier)}">
           <div class="svc-name"><span>${escapeHtml(svc.name || m.ref)}</span>
-            <span class="intent-dot ${escapeHtml(m.intent)}" title="${m.intent === 'ha' ? 'Highly available' : 'Standalone'}"></span>
           </div>
           <div class="svc-role">${escapeHtml(svc.role || svc.type || '')}</div>
         </div>`;
@@ -6641,11 +6620,6 @@ function _sdpTopologyMarkup(vm) {
     <div class="topo-legend">
       <div class="topo-legend-group"><span class="topo-legend-label">Tiers</span>${legendTiers}</div>
       <div class="topo-legend-group"><span class="topo-legend-label">Protocols</span>${legendProtos}</div>
-      <div class="topo-legend-group">
-        <span class="topo-legend-label">Intent</span>
-        <span class="topo-legend-item"><span class="sw" style="background:var(--ok)"></span>HA</span>
-        <span class="topo-legend-item"><span class="sw" style="background:var(--warn)"></span>Single</span>
-      </div>
     </div>
   </div>
 </div>`;
@@ -6765,11 +6739,6 @@ function _sdpOpenDrawer(ref, vm) {
       ${c.label ? `<div class="note">${escapeHtml(c.label)}</div>` : ''}
     </div>`;
   }).join('');
-  const intentLabel = m.intent === 'ha' ? 'Highly Available'
-    : m.intent === 'sa' && m.riskRef  ? 'Standalone — accepted risk'
-    : m.intent === 'sa'               ? 'Standalone — no HA decision recorded'
-    : (m.intent || '—');
-  const intent = intentLabel;
   const zone = vm.zones.find(z => z.id === m.zone);
   drawer.querySelector('.drawer-eyebrow').innerHTML =
     `<span class="dot" style="background:var(--tier-${escapeHtml(m.tier || 'application')})"></span>
@@ -6779,7 +6748,6 @@ function _sdpOpenDrawer(ref, vm) {
   drawer.querySelector('.drawer-body').innerHTML = `
     ${svc.description ? `<div class="drawer-row"><div class="k">Description</div><div class="v">${escapeHtml(svc.description)}</div></div>` : ''}
     <div class="drawer-row"><div class="k">Zone</div><div class="v">${escapeHtml(zone?.name || m.zone || '—')}</div></div>
-    <div class="drawer-row"><div class="k">Intent</div><div class="v">${escapeHtml(intent)}</div></div>
     ${m.riskRef ? `<div class="drawer-row"><div class="k">HA Decision</div><div class="v"><span class="drawer-risk-ref" data-object-link="${escapeHtml(m.riskRef)}">${escapeHtml(objectLookup[m.riskRef]?.name || m.riskRef)}</span></div></div>` : ''}
     ${m.notes ? `<div class="drawer-row"><div class="k">Notes</div><div class="v">${escapeHtml(m.notes)}</div></div>` : ''}
     ${conns.length ? `<div class="drawer-row"><div class="k">Connections</div><div class="drawer-list">${connRows}</div></div>` : ''}
@@ -6855,14 +6823,12 @@ function _sdpGroupsMarkup(object, vm) {
     const rowsHtml = entries.map(e => {
       const svc = objectLookup[e.ref] || { name: e.ref };
       const zone = vm.zones.find(z => z.id === e.networkZone) || { id: e.networkZone || '', name: e.networkZone || '' };
-      const intent = e.intent || 'sa';
       return `<div class="group-row">
         <div class="svc">
           <span class="svc-link" data-object-link="${escapeHtml(e.ref)}">${escapeHtml(svc.name || e.ref)}</span>
           <span class="svc-uid">${escapeHtml(e.ref)}</span>
         </div>
         <span class="zone-tag" data-zone="${escapeHtml(zone.id)}"><span class="dot"></span>${escapeHtml(zone.name || zone.id)}</span>
-        <span class="intent-tag ${intent}"><span class="dot"></span>${intent.toUpperCase()}</span>
         <span class="notes">${escapeHtml(e.notes || '')}</span>
       </div>`;
     }).join('');

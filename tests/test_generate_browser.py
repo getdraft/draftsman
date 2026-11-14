@@ -171,5 +171,73 @@ class DiagramPagesInBrowserTests(unittest.TestCase):
         self.assertEqual(tree(first / "diagrams"), tree(second / "diagrams"))
 
 
+class IntentRemovedFromBrowserTests(unittest.TestCase):
+    """Source-level proxies: the repo has no browser render test, so these assert on
+    the shipped JS source and on generated browser-data.js, not on rendered DOM."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.js = BROWSER_JS.read_text(encoding="utf-8")
+
+    def _function_source(self, name: str) -> str:
+        start = self.js.index(f"function {name}(")
+        end = self.js.index("\nfunction ", start + 1)
+        return self.js[start:end]
+
+    def test_no_intent_field_or_helper_in_browser_js(self) -> None:
+        # Targets the field and helper identifiers; prose such as "intentionally" is not matched.
+        self.assertIsNone(re.search(r"\bintent(?:Badge|Label|-tag|-dot|-ha|-sa)?\b", self.js, re.I), "intent identifier remains")
+        self.assertNotIn(".intent", self.js)
+        self.assertNotIn("intentBadge", self.js)
+
+    def test_no_intent_in_any_browser_script(self) -> None:
+        for path in (REPO_ROOT / "framework" / "browser").glob("*.js"):
+            text = path.read_text(encoding="utf-8")
+            self.assertIsNone(re.search(r"\bintent\b|intentBadge|intent-(?:tag|dot|ha|sa)", text, re.I), path.name)
+
+    def test_kpi_strip_has_no_ha_components_card(self) -> None:
+        kpi = self._function_source("_sdpKpiMarkup")
+        self.assertNotIn("HA Components", self.js)
+        for label in ("Services", "Zones", "Connections", "Availability"):
+            self.assertIn(f"label: '{label}'", kpi)
+        self.assertEqual(kpi.count("{ label:"), 4)
+
+    def test_legend_has_no_intent_group(self) -> None:
+        self.assertNotIn(">Intent<", self.js)
+        self.assertIn(">Tiers<", self.js)
+        self.assertIn(">Protocols<", self.js)
+
+    def test_topology_node_flags_have_no_intent_slot(self) -> None:
+        node = self._function_source("topologyNodeMarkup")
+        self.assertNotIn("intent", node.lower())
+        flags = node[node.index('class="topology-node-flags"'):]
+        flags = flags[:flags.index("</div>")]
+        self.assertIn("ps-corner", flags)
+        self.assertEqual(flags.count("<span"), 2)  # the two literal branches of one ternary: ps-corner span when badgeLabel is set, else the empty placeholder span (mutually exclusive)
+
+    def test_risk_ref_still_rendered(self) -> None:
+        self.assertIn("function topologyBadgeMarkup(", self.js)
+        badge = self._function_source("topologyBadgeMarkup")
+        self.assertIn("entry.riskRef", badge)
+        self.assertIn("topology-risk", badge)
+        self.assertIn("m.riskRef", self.js)
+        self.assertIn("drawer-risk-ref", self.js)
+
+    def test_standalone_without_risk_ref_has_no_decision_icon(self) -> None:
+        self.assertNotIn("Explicit architecture decision", self.js)
+
+    def test_fixture_derived_browser_data_has_no_intent_key(self) -> None:
+        # The fixture has no intent, so this only covers fixture-derived data. The generator
+        # passes unknown entry keys through, so legacy intent values in real catalogs still
+        # reach browser-data.js as inert payload; this test does not prove stripping.
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "site"
+            result = run_browser(FIXTURE, out)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            data_text = (out / "assets" / "browser-data.js").read_text(encoding="utf-8")
+            self.assertNotIn('"intent"', data_text)
+            self.assertNotIn("HA Components", data_text)
+
+
 if __name__ == "__main__":
     unittest.main()
