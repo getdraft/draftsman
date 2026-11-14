@@ -1454,8 +1454,9 @@ def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool
         return {gap: _order_gap(items, stubs[gap]) for gap, items in sorted(by_gap.items())}
 
     # A gap whose runs cannot be ordered without crossing a co-visible stub (a cycle of rules in _order_gap) is
-    # split into left and right runs, which removes every such cycle; the other gaps keep one run per box side,
-    # which keeps their crossings fewer.
+    # split into left and right runs, which removes the cycles a wall (an edge passing both the stub and the drop of
+    # a co-visible direct edge) makes; the other gaps keep one run per box, which keeps their crossings fewer. A
+    # cycle can remain in a split gap under a pinned box order (D39); _order_gap then breaks it as it documents.
     split: set = set()
     while True:
         result = collect(split)
@@ -1503,8 +1504,11 @@ def _order_gap(items: list, stubs: list) -> tuple[int, bool]:
     above the out-run the drop leaves from. Out-runs otherwise lie above in-runs, so neither crosses the other
     side's stubs. Runs are placed in an order that honours these rules (ties by kind, start, attachment x and uid;
     nothing depends on relationship document order), each on the lowest track below every run it must lie under
-    that holds no co-visible run overlapping it. A cycle of rules, which only an edge passing over both the stub and
-    the drop of a co-visible direct edge (a wall across the gap) can make, is broken at the earliest run in that order.
+    that holds no co-visible run overlapping it. When no run is free of the rules (a cycle), the first remaining run
+    in the tie order is placed anyway and the cycle is reported. A wall across the gap (an edge passing over both
+    the stub and the drop of a co-visible direct edge) makes such cycles, and splitting the gap's runs into left and
+    right halves removes those; a residual cycle can remain under a pinned box order (D39), where at most one
+    co-visible stub crossing can result. D35 and D36 hold either way.
     """
     by_key = {run.key: run for run in items}
     above: dict[tuple, set] = {run.key: set() for run in items}  # run key -> keys of runs that must lie above it
