@@ -1573,6 +1573,7 @@ class LogicalLayout:
     runs: dict[tuple, _Run] = field(default_factory=dict)  # bundle runs by key; see _plan_logical_tracks
     gap_bands: dict[tuple[str, int], tuple[int, int, int]] = field(default_factory=dict)  # D37: px of lb-s band, lb-t band, loop rise
     label_rows: dict[int, int] = field(default_factory=dict)  # edge index -> index among its same-ordered-pair siblings
+    gap_tech: set = field(default_factory=set)  # D37: gaps where a labelled edge records a technology (two-line label rows)
 
 
 def _place_logical(layout: LogicalLayout, outer: bool) -> None:
@@ -1851,10 +1852,13 @@ def _plan_label_bands(model: DiagramModel, layout: LogicalLayout, drawn: list) -
     layout.label_rows, mult = _label_pairs(drawn)
     rows_s: dict[tuple, int] = {}
     rows_t: dict[tuple, int] = {}
+    layout.gap_tech = set()
     for i, e in drawn:
         if i in layout.label_rows:
             n = mult[(e.source, e.target)]
             gs, gt = _gap_of(layout, ("out", e.source)), _gap_of(layout, ("in", e.target))
+            if clean(e.technology):
+                layout.gap_tech.update((gs, gt))
             rows_s[gs] = max(rows_s.get(gs, 0), n)
             rows_t[gt] = max(rows_t.get(gt, 0), n)
     loops: dict[str, int] = {}
@@ -1866,7 +1870,7 @@ def _plan_label_bands(model: DiagramModel, layout: LogicalLayout, drawn: list) -
         gap = _gap_of(layout, ("in", uid))
         rise[gap] = max(rise.get(gap, 0), LOOP_RISE + LOOP_STEP * (n - 1))
     layout.gap_bands = {
-        gap: (LABEL_BAND * rows_s.get(gap, 0), LABEL_BAND * rows_t.get(gap, 0), rise.get(gap, 0))
+        gap: (_pitch(gap in layout.gap_tech) * rows_s.get(gap, 0), _pitch(gap in layout.gap_tech) * rows_t.get(gap, 0), rise.get(gap, 0))
         for gap in sorted(set(rows_s) | set(rows_t) | set(rise))
     }
 
@@ -2169,6 +2173,7 @@ def _flow_overlay(path: str, flow: str) -> str:
 LABEL_BAND = 18  # D37: one label row: 14 px of text plus 4 px of pad
 LABEL_PAD = 2
 LABEL_H = 14
+LABEL_ROW = 28  # D37 two-line amendment: a label row is two 14 px lines in a gap where a labelled edge records a technology
 LABEL_DX = 5  # a label starts this far right of its own box's left edge (a container end: the container's)
 LABEL_CHAR_W = 6.2  # D13 metrics: about 6.2 px a character, 14 px tall
 CALLOUT_CHAR_W = 6.8
@@ -2177,6 +2182,16 @@ CALLOUT_CHAR_W = 6.8
 def _overlap(a: tuple, b: tuple) -> float:
     """Overlapping area of two (x, y, w, h) rectangles."""
     return max(0.0, min(a[0] + a[2], b[0] + b[2]) - max(a[0], b[0])) * max(0.0, min(a[1] + a[3], b[1] + b[3]) - max(a[1], b[1]))
+
+
+def _row_h(tech: bool) -> int:
+    """Height of a label row in a gap: two lines when any labelled edge there records a technology, else one."""
+    return LABEL_ROW if tech else LABEL_H
+
+
+def _pitch(tech: bool) -> int:
+    """Distance between the rows of a label band: the row height plus the 4 px pad of LABEL_BAND."""
+    return _row_h(tech) + LABEL_BAND - LABEL_H
 
 
 def _has_label(edge: DiagramEdge) -> bool:
@@ -2199,15 +2214,27 @@ def _label_parts(edge: DiagramEdge, limit: Any = None) -> tuple:
     return label, tech_part
 
 
-def _label_len(edge: DiagramEdge, limit: Any = None) -> int:
-    """Characters of an edge label as drawn."""
-    return sum(len(part) for part in _label_parts(edge, limit))
+def _clip(text: str, limit: int) -> str:
+    return text if len(text) <= limit else text[: limit - 3] + "..."
 
 
-def _label_box_at(x: float, top: float, edge: DiagramEdge, limit: Any, anchor: str = "start") -> tuple:
-    """(x, y, w, h) of a label whose text starts (or, anchored at the end, ends) at x and whose box starts at top."""
+def _label_lines(edge: DiagramEdge, limit: int) -> list:
+    """D37: the lines of a label as drawn, each clipped independently with an ellipsis to ``limit`` characters:
+    the label phrase, then the recorded technology (each omitted when empty). Returns (text, is technology) pairs."""
+    label, tech = clean(edge.label), clean(edge.technology)
+    return ([(_clip(label, limit), False)] if label else []) + ([(_clip(tech, limit), True)] if tech else [])
+
+
+def _label_len(edge: DiagramEdge, limit: int) -> int:
+    """Characters of the longest line of an edge label as drawn."""
+    return max(len(text) for text, _t in _label_lines(edge, limit))
+
+
+def _label_box_at(x: float, top: float, edge: DiagramEdge, limit: Any, anchor: str = "start", height: Any = None) -> tuple:
+    """(x, y, w, h) of a label whose text starts (or, anchored at the end, ends) at x and whose box starts at top;
+    ``height`` is the row height in effect (one line, or two when the edge records a technology)."""
     w = _label_len(edge, limit) * LABEL_CHAR_W + 4
-    return (x - 2 if anchor == "start" else x - w + 2, top, w, LABEL_H)
+    return (x - 2 if anchor == "start" else x - w + 2, top, w, _row_h(bool(clean(edge.technology))) if height is None else height)
 
 
 def _stub_side(left: float, width: float, stub: float) -> tuple:
@@ -2287,7 +2314,7 @@ def _place_loop_label(base: tuple, edge: DiagramEdge, avoid: list) -> tuple:
 
 
 def _loop_box(at: tuple, edge: DiagramEdge) -> tuple:
-    return (at[0] - 2, at[1] - 10, _label_len(edge, at[2]) * LABEL_CHAR_W + 4, LABEL_H)
+    return (at[0] - 2, at[1] - 10, _label_len(edge, at[2]) * LABEL_CHAR_W + 4, _row_h(bool(clean(edge.technology))))
 
 
 def _edge_label(edge: DiagramEdge, ends: tuple, loop: Any, callout: tuple) -> str:
@@ -2305,7 +2332,11 @@ def _edge_label(edge: DiagramEdge, ends: tuple, loop: Any, callout: tuple) -> st
     out = ""
     placed = [("lb-t", loop + ("start",))] if loop is not None else [("lb-s", ends[0]), ("lb-t", ends[1])]
     for cls, (x, y, limit, anchor) in placed:
-        out += f'<text class="lb {cls}" x="{x:.1f}" y="{y:.1f}" text-anchor="{anchor}">{body(*_label_parts(edge, limit))}</text>'
+        lines = "".join(
+            f'<tspan class="tech" x="{x:.1f}" dy="{LABEL_H * k}">{xml_text(t)}</tspan>' if tech else f'<tspan x="{x:.1f}" dy="{LABEL_H * k}">{xml_text(t)}</tspan>'
+            for k, (t, tech) in enumerate(_label_lines(edge, limit))
+        )
+        out += f'<text class="lb {cls}" x="{x:.1f}" y="{y:.1f}" text-anchor="{anchor}">{lines}</text>'
     out += f'<text class="callout" x="{callout[0]:.1f}" y="{callout[1]:.1f}" text-anchor="middle">{body(full_label, full_tech)}</text>'
     return out
 
@@ -2324,10 +2355,12 @@ def _edge_label_svgs(edges: list, routes: dict, tops: dict, loops: dict, obstacl
     for number, edge in edges:
         if number in tops:
             ends = []
-            for (left, width, stub), top in tops[number]:
+            heights = []
+            for (left, width, stub), top, *row in tops[number]:  # an optional third item: the row height in effect
                 x, anchor, limit = _stub_side(left, width, stub)
                 ends.append((x, top, limit, anchor))
-            boxes[number] = [_label_box_at(x, top, edge, limit, anchor) for x, top, limit, anchor in ends]
+                heights.append(row[0] if row else None)
+            boxes[number] = [_label_box_at(x, top, edge, limit, anchor, h) for (x, top, limit, anchor), h in zip(ends, heights)]
             texts[number] = tuple((x, top + 10, limit, anchor) for x, top, limit, anchor in ends)
     out: dict[int, str] = {}
     loop_at: dict[int, tuple] = {}
@@ -2445,11 +2478,15 @@ def render_logical_svg(model: DiagramModel) -> str:
         elif number in layout.label_rows:
             k = layout.label_rows[number]
             gs, gt = _gap_of(layout, ("out", edge.source)), _gap_of(layout, ("in", edge.target))
-            top_s = layout.gaps[gs][0] + LABEL_PAD + LABEL_BAND * k
+            ps, pt = _pitch(gs in layout.gap_tech), _pitch(gt in layout.gap_tech)
+            top_s = layout.gaps[gs][0] + LABEL_PAD + ps * k
             gtop, gsize = layout.gaps[gt]
             own_rise = LOOP_RISE + LOOP_STEP * (loop_total[edge.target] - 1) if loop_total.get(edge.target) else 0
             bottom_t = gtop + gsize - own_rise  # a target's own loops rise under its label
-            tops[number] = (((layout.pos[edge.source][0], LOGICAL_BOX_W, routes[number][0][0]), top_s), ((layout.pos[edge.target][0], LOGICAL_BOX_W, routes[number][-1][0]), bottom_t - LABEL_BAND * (k + 1) + LABEL_PAD))
+            tops[number] = (
+                ((layout.pos[edge.source][0], LOGICAL_BOX_W, routes[number][0][0]), top_s, _row_h(gs in layout.gap_tech)),
+                ((layout.pos[edge.target][0], LOGICAL_BOX_W, routes[number][-1][0]), bottom_t - pt * (k + 1) + LABEL_PAD, _row_h(gt in layout.gap_tech)),
+            )
     labels = _edge_label_svgs(shown, routes, tops, loop_base, obstacles)
     loops = {}
     for number, edge in shown:
@@ -2551,6 +2588,7 @@ class _Band:
     need: int = 0
     bs: int = 0  # D37: px reserved at the top for lb-s labels of the elements above
     bt: int = 0  # and above the rise, at the bottom, for lb-t labels of the elements below
+    tech: bool = False  # D37: a labelled edge here records a technology, so its label rows are two lines
 
 
 def _band_height(tracks: int, rise: int, bs: int = 0, bt: int = 0) -> int:
@@ -2565,13 +2603,16 @@ def _band_label_rows(drawn: list, pools: dict, bands: list) -> list:
     index = {id(band): k for k, band in enumerate(bands)}
     _rows, mult = _label_pairs(drawn)
     rows = [[0, 0] for _ in bands]
+    techs = [False] * len(bands)  # D37: a band holding a labelled edge with a technology has two-line rows
+    tech_pairs = {(e.source, e.target) for _n, e in drawn if e.source != e.target and _has_label(e) and clean(e.technology)}
     for (source, target), n in sorted(mult.items()):
         for uid, slot, pool in ((source, 0, "bottom"), (target, 1, "top")):
             band = pools.get(uid, {}).get(pool)
             if band is not None:
                 k = index[id(band)]
                 rows[k][slot] = max(rows[k][slot], n)
-    return [(a, b) for a, b in rows]
+                techs[k] = techs[k] or (source, target) in tech_pairs
+    return [(a, b, t, t) for (a, b), t in zip(rows, techs)]
 
 
 def _route_deployment_edges(
@@ -2736,10 +2777,10 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
 
         def band_at(lo: int, rise_px: int, rightward: bool = True) -> _Band:
             tracks = levels[len(bands)] if len(bands) < len(levels) else 0
-            rows_s, rows_t = lab[len(bands)] if len(bands) < len(lab) else (0, 0)
-            bs, bt = LABEL_BAND * rows_s, LABEL_BAND * rows_t
+            rows_s, rows_t, tech_s, tech_t = lab[len(bands)] if len(bands) < len(lab) else (0, 0, False, False)
+            bs, bt = _pitch(tech_s) * rows_s, _pitch(tech_t) * rows_t
             hi = -(-(lo + _band_height(tracks, rise_px, bs, bt)) // GRID) * GRID  # D14: the row below starts on the grid
-            band = _Band(lo=lo, hi=hi, rise=rise_px, rightward=rightward, tracks=tracks, bs=bs, bt=bt)
+            band = _Band(lo=lo, hi=hi, rise=rise_px, rightward=rightward, tracks=tracks, bs=bs, bt=bt, tech=tech_s or tech_t)
             bands.append(band)
             return band
 
@@ -2944,7 +2985,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     # a fixed point; band tracks only grow, so it ends. The loop is a pure function of the catalog, so the result is
     # deterministic. Each pass is cheap, so the cap is only a safety net.
     levels: list[int] = []
-    lab: list[tuple[int, int]] = []  # D37: label rows (top, bottom) each band reserves
+    lab: list[tuple] = []  # D37: label rows (top, bottom) each band reserves
     n_channels = 0
     for _attempt in range(DEPLOY_MAX_PASSES):
         laid = build_stack(levels, lab)
@@ -2995,9 +3036,13 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
         elif number in label_rows:
             k = label_rows[number]
             band_s, band_t = pools[edge.source]["bottom"], pools[edge.target]["top"]
-            top_s = band_s.lo + LABEL_PAD + LABEL_BAND * k
+            ps, pt = _pitch(band_s.tech), _pitch(band_t.tech)
+            top_s = band_s.lo + LABEL_PAD + ps * k
             bottom_t = band_t.hi - rise([edge.target])  # a target's own loops rise under its label
-            tops[number] = (((rects[edge.source][0], rects[edge.source][2], routes[number][0][0]), top_s), ((rects[edge.target][0], rects[edge.target][2], routes[number][-1][0]), bottom_t - LABEL_BAND * (k + 1) + LABEL_PAD))
+            tops[number] = (
+                ((rects[edge.source][0], rects[edge.source][2], routes[number][0][0]), top_s, _row_h(band_s.tech)),
+                ((rects[edge.target][0], rects[edge.target][2], routes[number][-1][0]), bottom_t - pt * (k + 1) + LABEL_PAD, _row_h(band_t.tech)),
+            )
     labels = _edge_label_svgs(shown, routes, tops, loop_base, deploy_obstacles)
     loop_count = {}
     for number, edge in shown:
