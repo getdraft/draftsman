@@ -1436,14 +1436,14 @@ class LaterStoryTests(unittest.TestCase):
                 if outside and box[0] >= int(outside.group(1)):
                     homes = [tuple(int(outside.group(i)) for i in range(1, 5))]
                 self.assertTrue(any(inside(loop, lane) for lane in homes), f"loop {loop} leaves its lane")
-        self.assertEqual(len(re.findall(r'd="M[\d.]+ [\d.]+ C', cases[-1])), 3)
+        self.assertEqual(len(re.findall(r'class="ln[^"]*" d="M[\d.]+ [\d.]+ C', cases[-1])), 3)  # the line paths; the D34 overlay repeats each
 
     def test_loops_keep_the_logical_shape(self) -> None:
         objects = [component("A-1", "Alpha"), pattern({"G": ["A-1"]}), relationship("R-1", "A-1", "A-1", "one"), relationship("R-2", "A-1", "A-1", "two")]
         cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
         deploy = deployment_svg(cat, "SDP-1")
         logical = logical_svg(cat, "SDP-1")
-        shape = lambda svg: [re.sub(r"-?\d+(?:\.\d+)?", "#", d) for d in re.findall(r'd="(M[^"]*C[^"]*)"', svg)]
+        shape = lambda svg: [re.sub(r"-?\d+(?:\.\d+)?", "#", d) for d in re.findall(r'class="ln[^"]*" d="(M[^"]*C[^"]*)"', svg)]
         self.assertEqual(shape(deploy), shape(logical))
         self.assertEqual(len(shape(deploy)), 2)
 
@@ -2232,6 +2232,51 @@ class LaterStoryTests(unittest.TestCase):
             self.assertIn(token, css)
         self.assertNotIn("opacity:.15", css, "highlighting colours the selection; it does not fade the rest")
         self.assertIn("appendChild(el)", script, "highlighted edges are raised above the others")
+        # D34: connections hidden until a box is selected; direction colours; show-all toggle; legend
+        self.assertIn("svg.quiet .edge:not(.on){display:none}", css)
+        self.assertEqual(css.count("--hi-out:"), 3, "light, auto-dark and forced-dark values")
+        self.assertEqual(css.count("--hi-in:"), 3)
+        for token in ("svg .edge.on.out .ln{stroke:var(--hi-out)}", "svg .edge.on.in .ln{stroke:var(--hi-in)}", ".key .o i{border-color:var(--hi-out)}"):
+            self.assertIn(token, css)
+        self.assertIn("svg.classList.add('quiet')", script, "quiet mode is added by script so a page without script shows every line")
+        self.assertIn("el.classList.toggle('out',on&&a===id)", script)
+        self.assertIn("el.classList.toggle('in',on&&a!==id&&to===id)", script)
+        self.assertEqual(page.count('data-all="fig-logical"'), 1)
+        self.assertEqual(page.count('data-all="fig-deployment"'), 1)
+        self.assertEqual(page.count("Show all connections"), 2)
+        self.assertEqual(page.count('<span class="key">'), 2)
+        self.assertEqual(page.count('<span class="o"><i></i>calls it makes</span>'), 2, "legend names the outbound colour under each figure")
+        self.assertEqual(page.count('<span class="i"><i></i>calls it receives</span>'), 2, "legend names the inbound colour under each figure")
+        for fid in ("fig-logical", "fig-deployment"):  # toggle and legend sit directly under the heading
+            self.assertRegex(page, r'</h2><label class="tog"><input type="checkbox" data-all="' + fid + '">')
+
+    def test_flow_overlay_per_edge(self) -> None:
+        # D34: every drawn edge carries an animated overlay hidden until the edge is highlighted; its direction follows flow.
+        objects = [component("A-1", "Alpha"), component("B-1", "Beta"), component("C-1", "Gamma"), component("D-1", "Delta"),
+                   pattern({"G": ["A-1", "B-1", "C-1", "D-1"]}),
+                   relationship("R-1", "A-1", "B-1", "calls"),
+                   dict(relationship("R-2", "A-1", "C-1", "calls"), flow="inbound"),
+                   dict(relationship("R-3", "A-1", "D-1", "calls"), flow="bidirectional")]
+        cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
+        for svg in (logical_svg(cat, "SDP-1"), deployment_svg(cat, "SDP-1")):
+            groups = re.findall(r'<g class="edge" data-from="([^"]+)" data-to="([^"]+)">(.*?)</g>', svg, re.S)
+            self.assertEqual(len(groups), 3)
+            by_target = {t: body for _s, t, body in groups}
+            self.assertEqual(by_target["B-1"].count('<path class="fl" d='), 1)
+            self.assertEqual(by_target["B-1"].count('class="fl rev"'), 0)
+            self.assertEqual(by_target["C-1"].count('<path class="fl rev" d='), 1)
+            self.assertEqual(by_target["C-1"].count('<path class="fl" d='), 0)
+            self.assertEqual(by_target["D-1"].count('<path class="fl" d='), 1)
+            self.assertEqual(by_target["D-1"].count('<path class="fl rev" d='), 1)
+            for _s, _t, body in groups:  # the overlay traces the line exactly
+                ln = re.search(r'<path class="ln[^"]*" d="([^"]+)"', body).group(1)
+                for fl in re.findall(r'<path class="fl(?: rev)?" d="([^"]+)"', body):
+                    self.assertEqual(fl, ln)
+            style = svg.split("<style>")[1].split("</style>")[0]
+            self.assertIn(".fl{display:none;", style)
+            self.assertIn("@keyframes flow{to{stroke-dashoffset:-10}}", style)
+            self.assertIn("@media (prefers-reduced-motion:reduce){.fl{animation:none}}", style)
+            self.assertIn(".fl.rev{animation-direction:reverse}", style)
 
     def test_property_render_twice(self) -> None:
         for uid in [sdp["uid"] for sdp in generate_diagram.sdps(load_catalog(FIXTURE))]:

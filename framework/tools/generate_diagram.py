@@ -867,9 +867,9 @@ def figure_html(svg: str, fig_id: str) -> str:
 
 
 CSS = """
-:root{--bg:#f5f7fa;--fg:#1a2230;--muted:#586374;--surface:#fff;--line:#aab4c2;--zone:#eaeff5;--zone-line:#9aa6b6;--accent:#0b62c4;--amber:#a85a00;--warn:#9a3412;--hi-edge:#7c3a6b;--hi-node:#006064;--hi-node-bg:#e0f2f1}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e131a;--fg:#e4e9f0;--muted:#97a2b3;--surface:#18202b;--line:#4a586b;--zone:#121923;--zone-line:#3c485a;--accent:#5fadff;--amber:#f2a64e;--warn:#fb923c;--hi-edge:#c58fd3;--hi-node:#3fc1b4;--hi-node-bg:#103a38;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0e131a;--fg:#e4e9f0;--muted:#97a2b3;--surface:#18202b;--line:#4a586b;--zone:#121923;--zone-line:#3c485a;--accent:#5fadff;--amber:#f2a64e;--warn:#fb923c;--hi-edge:#c58fd3;--hi-node:#3fc1b4;--hi-node-bg:#103a38;color-scheme:dark}
+:root{--bg:#f5f7fa;--fg:#1a2230;--muted:#586374;--surface:#fff;--line:#aab4c2;--zone:#eaeff5;--zone-line:#9aa6b6;--accent:#0b62c4;--amber:#a85a00;--warn:#9a3412;--hi-edge:#7c3a6b;--hi-out:#7c3a6b;--hi-in:#b45309;--hi-node:#006064;--hi-node-bg:#e0f2f1}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e131a;--fg:#e4e9f0;--muted:#97a2b3;--surface:#18202b;--line:#4a586b;--zone:#121923;--zone-line:#3c485a;--accent:#5fadff;--amber:#f2a64e;--warn:#fb923c;--hi-edge:#c58fd3;--hi-out:#c58fd3;--hi-in:#f0a24a;--hi-node:#3fc1b4;--hi-node-bg:#103a38;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e131a;--fg:#e4e9f0;--muted:#97a2b3;--surface:#18202b;--line:#4a586b;--zone:#121923;--zone-line:#3c485a;--accent:#5fadff;--amber:#f2a64e;--warn:#fb923c;--hi-edge:#c58fd3;--hi-out:#c58fd3;--hi-in:#f0a24a;--hi-node:#3fc1b4;--hi-node-bg:#103a38;color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:28px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
 .wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:30px}
@@ -880,7 +880,7 @@ h1{font-size:26px;line-height:1.2;margin:0;font-weight:600}h2{font-size:17px;mar
 .counts{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:13.5px}.counts b{font-variant-numeric:tabular-nums}
 .scroll,.tw{overflow-x:auto;border:1px solid var(--zone-line);border-radius:6px;background:var(--surface)}
 svg{display:block;width:100%;min-width:760px;height:auto;color:var(--fg)}svg text{fill:currentColor;font-family:inherit}
-svg .edge.on .ln{stroke:var(--hi-edge);stroke-width:3}svg .edge.on text{fill:var(--hi-edge)}svg .mk{fill:context-stroke}
+svg.quiet .edge:not(.on){display:none}svg .edge.on .fl{display:inline}svg .edge.on .ln{stroke:var(--hi-edge);stroke-width:3}svg .edge.on text{fill:var(--hi-edge)}svg .mk{fill:context-stroke}svg .edge.on.out .ln{stroke:var(--hi-out)}svg .edge.on.out text{fill:var(--hi-out)}svg .edge.on.in .ln{stroke:var(--hi-in)}svg .edge.on.in text{fill:var(--hi-in)}.tog{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);margin:0 0 10px}.tog input{margin:0}.key{display:inline-flex;gap:14px;font-size:13px;color:var(--muted);margin-left:14px}.key i{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:middle;margin-right:5px}.key .o i{border-color:var(--hi-out)}.key .i i{border-color:var(--hi-in)}
 svg .node.on .box{stroke:var(--hi-node);stroke-width:2.6;fill:var(--hi-node-bg)}svg .group.on>.grp{stroke:var(--hi-node);stroke-width:2.6}
 svg [data-id]:focus{outline:none}svg [data-id]:focus>rect,svg .node.on:focus>.box,svg .group.on:focus>.grp{stroke:var(--accent);stroke-width:2.6}
 table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--zone-line)}
@@ -908,12 +908,17 @@ JS = """
    var els=[].slice.call(svg.querySelectorAll('[data-id],[data-from]')),near={};
    if(id){near[id]=1;els.forEach(function(el){var a=el.getAttribute('data-from');if(a!==null&&(a===id||el.getAttribute('data-to')===id)){near[a]=1;near[el.getAttribute('data-to')]=1}})}
    svg.classList.toggle('focus',!!id);
-   els.forEach(function(el){var a=el.getAttribute('data-from');
-    el.classList.toggle('on',!!id&&(a!==null?(a===id||el.getAttribute('data-to')===id):!!near[el.getAttribute('data-id')]))});
+   els.forEach(function(el){var a=el.getAttribute('data-from'),to=el.getAttribute('data-to');
+    var on=!!id&&(a!==null?(a===id||to===id):!!near[el.getAttribute('data-id')]);
+    el.classList.toggle('on',on);
+    if(a!==null){el.classList.toggle('out',on&&a===id);el.classList.toggle('in',on&&a!==id&&to===id)}});
    els.forEach(function(el){if(el.hasAttribute('data-from')&&el.classList.contains('on'))el.parentNode.appendChild(el)});
   });
  }
  figs.forEach(function(svg){
+  svg.classList.add('quiet');
+  var tog=document.querySelector('input[data-all="'+svg.id+'"]');
+  if(tog){tog.checked=false;tog.addEventListener('change',function(){svg.classList.toggle('quiet',!tog.checked)})}
   [].slice.call(svg.querySelectorAll('[data-id]')).forEach(function(el){el.setAttribute('tabindex','0')});
   svg.addEventListener('mouseover',function(e){var id=uidOf(e.target);if(id!==hover){hover=id;paint()}});
   svg.addEventListener('mouseleave',function(){hover=null;paint()});
@@ -948,12 +953,15 @@ def render_page(model: Model, dm: DiagramModel) -> str:
         header_html(model),
         counts_html(model, dm),
         f'<section class="sec" id="logical"><h2>{E(LOGICAL_TITLE)}</h2>'
+        '<label class="tog"><input type="checkbox" data-all="fig-logical"> Show all connections</label><span class="key"><span class="o"><i></i>calls it makes</span><span class="i"><i></i>calls it receives</span></span>'
         "<p>Components in bands by diagram tier. Objects that this pattern does not place sit in the right-hand lane, captioned with the pattern that places them. "
-        "Hover or focus a box to colour it and its relationships; click to pin. A dashed box has a derived tier.</p>"
+        "Connections are hidden until you hover over, focus or click a box; then only that box's own connections appear, purple for calls it makes and orange for calls it receives. "
+        "Click to pin. A dashed box has a derived tier.</p>"
         + logical_body
         + "</section>",
         f'<section class="sec" id="deployment"><h2>{E(DEPLOYMENT_TITLE)}</h2>'
-        "<p>Deployment targets hold service groups, each drawn as a container around its boxes. Pinning an object in one figure highlights it in the other.</p>"
+        '<label class="tog"><input type="checkbox" data-all="fig-deployment"> Show all connections</label><span class="key"><span class="o"><i></i>calls it makes</span><span class="i"><i></i>calls it receives</span></span>'
+        "<p>Deployment targets hold service groups, each drawn as a container around its boxes. Connections are hidden until you hover over, focus or click a box, and pinning an object in one figure highlights it in the other.</p>"
         + figure_html(render_deployment_svg(dm), FIGURE_IDS[1])
         + empty_groups_html(model)
         + "</section>",
@@ -1324,6 +1332,10 @@ _FIGURE_CSS = (
     ".ln{fill:none;stroke:var(--line);stroke-width:1.4}"
     ".ln.dashed{stroke-dasharray:6 4}"
     ".ln.dotted{stroke-dasharray:1 3;stroke-linecap:round;stroke-width:1.8}"
+    ".fl{display:none;fill:none;stroke:var(--surface);stroke-width:1.6;stroke-linecap:round;stroke-dasharray:2 8;animation:flow .9s linear infinite}"
+    ".fl.rev{animation-direction:reverse}"
+    "@keyframes flow{to{stroke-dashoffset:-10}}"
+    "@media (prefers-reduced-motion:reduce){.fl{animation:none}}"
     ".mk{fill:var(--line)}"
     ".lb{font:600 10.5px sans-serif;fill:var(--muted);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}"
     ".lb .tech{font-weight:400}"
@@ -1381,6 +1393,18 @@ def _edge_marks(edge: DiagramEdge, prefix: str) -> tuple[str, str]:
     if edge.flow in ("inbound", "bidirectional"):
         marks += f' marker-start="url(#{prefix}-start)"'
     return cls, marks
+
+
+def _flow_overlay(path: str, flow: str) -> str:
+    """D34: animated dots that travel along a highlighted line toward its arrowhead (CSS only; static markup).
+
+    Outbound or absent flow runs source to target; inbound runs the other way; bidirectional draws both.
+    """
+    if flow == "inbound":
+        return f'<path class="fl rev" d="{path}"/>'
+    if flow == "bidirectional":
+        return f'<path class="fl" d="{path}"/><path class="fl rev" d="{path}"/>'
+    return f'<path class="fl" d="{path}"/>'
 
 
 def _polyline_mid(pts: list) -> tuple:
@@ -1529,7 +1553,7 @@ def render_logical_svg(model: DiagramModel) -> str:
             pts = routes[number]
             path = "M" + " L".join(f"{px} {py}" for px, py in pts)
             mid = _label_mid(pts, _label_len(edge), obstacles)
-        out.append(f'{head}<path class="{cls}" d="{path}"{marks}/>{_edge_label(edge, mid, label_cls)}</g>')
+        out.append(f'{head}<path class="{cls}" d="{path}"{marks}/>{_flow_overlay(path, edge.flow)}{_edge_label(edge, mid, label_cls)}</g>')
     for uid in [u for names in layout.order for u in names] + layout.lane_order:
         x, y = layout.pos[uid]
         out.append(_node_svg(by_uid[uid], x, y))
@@ -2140,7 +2164,7 @@ def render_deployment_svg(model: DiagramModel) -> str:
             pts = routes[number]
             path = "M" + " L".join(f"{_fmt(px)} {_fmt(py)}" for px, py in pts)
             mid = _label_mid(pts, _label_len(edge), deploy_obstacles)
-        edges.append(f'{head}<path class="{cls}" d="{path}"{marks}/>{_edge_label(edge, mid, label_cls)}</g>')
+        edges.append(f'{head}<path class="{cls}" d="{path}"{marks}/>{_flow_overlay(path, edge.flow)}{_edge_label(edge, mid, label_cls)}</g>')
     width = right + LOGICAL_MARGIN
     note = ""
     empty = [c for c in model.containers if not c.drawn]
