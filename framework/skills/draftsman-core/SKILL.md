@@ -67,4 +67,4 @@ Load the one that matches the request, after this skill:
 - `draftsman-review`: review a pull request or audit quality and compliance (Author profile).
 - `draftsman-update`: upgrade the vendored framework (Author profile).
 - `draftsman-maturity`: engineering maturity checks for repositories (Author profile).
-- `draftsman-diagram`: rendered diagram pages and Mermaid or C4 text (Author profile).
+- `draftsman-diagram`: the published diagram pages, layout records and Mermaid or C4 text (Author profile).

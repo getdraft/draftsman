@@ -403,7 +403,7 @@ python framework/tools/generate_browser.py
 python framework/tools/generate_ai_index.py
 ```
 
-The browser generator writes `docs/index.html` and, by default, writes this manual to `docs/user-manual.html`. It also renders one diagram page per software deployment pattern into `docs/diagrams/` (pass `--skip-diagrams` to leave them out); the pattern detail view links to its page with a `Diagrams` link, and each page links back to the browser.
+The browser generator writes `docs/index.html` and, by default, writes this manual to `docs/user-manual.html`. It also renders one diagram page per software deployment pattern into `docs/diagrams/` (pass `--skip-diagrams` to leave them out); the pattern detail view links to its page with a `Diagrams` link, and each page links back to the browser. Send people to that published page to see a diagram; connections show when a box is hovered, focused or pinned (purple for calls it makes, orange for calls it receives), and infrastructure appears only in the deployment view. Run `generate_diagram.py` directly only for an unpublished draft, and use `--sdp <uid> --editable` to reorder boxes, export the layout and record it with `--write-layout --layout-from <file>` in a pull request (see the `draftsman-diagram` skill).
 
 ### 4.4 Validation {#validation}
 
