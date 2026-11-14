@@ -432,6 +432,14 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--skip-diagrams",
+        action="store_true",
+        help=(
+            "Do not render the per-pattern diagram pages into diagrams/ beside the browser, "
+            "and do not set diagramPage in the browser data."
+        ),
+    )
+    parser.add_argument(
         "--skip-validation",
         action="store_true",
         help="Skip running DRAFT validation before generating the browser.",
@@ -1033,6 +1041,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
 
 
 BROWSER_DATA_OUTPUT_NAME = "browser-data.js"
+DIAGRAMS_OUTPUT_DIR = "diagrams"
 BROWSER_ASSET_OUTPUT_DIR = "assets"
 BROWSER_ASSET_ROOT = FRAMEWORK_ROOT / "browser"
 BROWSER_INDEX_TEMPLATE_PATH = BROWSER_ASSET_ROOT / "index.template.html"
@@ -1569,6 +1578,59 @@ def write_user_manual(source_path: Path, output_path: Path) -> bool:
     return write_markdown_page(source_path, output_path, "DRAFT User Manual")
 
 
+def clear_diagram_pages(output_path: Path) -> None:
+    """Remove a previous diagrams/ directory so stale pages cannot outlive their patterns."""
+    shutil.rmtree(output_path.parent / DIAGRAMS_OUTPUT_DIR, ignore_errors=True)
+
+
+def write_diagram_pages(workspace_root: Path, output_path: Path) -> dict[str, str]:
+    """D46: render every pattern's diagram page and SVGs into <output dir>/diagrams/.
+
+    Uses the same per-pattern functions and D33 slug rule as ``generate_diagram.py --all``. A pattern that
+    fails to render is reported on stderr and skipped (D20). Returns pattern uid -> relative page path.
+    """
+    diagrams_dir = output_path.parent / DIAGRAMS_OUTPUT_DIR
+    clear_diagram_pages(output_path)  # the directory's contents are a function of the catalog (D15)
+    try:
+        import generate_diagram as gd
+
+        catalog = gd.load_catalog(workspace_root)
+        patterns = gd.sdps(catalog)
+    except Exception as exc:  # the diagram step is reported and skipped, never fatal (D20)
+        print(f"error: diagram pages skipped: {exc}", file=sys.stderr)
+        return {}
+    if not patterns:
+        return {}
+    stems, notes = gd.pattern_stems(patterns)
+    for note in notes:
+        print(note, file=sys.stderr)
+    back_link = f"../{output_path.name}"
+    pages: dict[str, str] = {}
+    used: set[str] = set()
+    for pattern, stem in zip(patterns, stems):
+        uid = str(pattern.get("uid", ""))
+        name = gd.clean(pattern.get("name")) or uid
+        try:
+            if stem in used:
+                raise ValueError(f"output name {stem} is already used by another pattern")
+            model = gd.Model(catalog, pattern, False)
+            dm = gd.diagram_of(model)
+            page = gd.render_page(model, dm, back_link=back_link)
+            svgs = gd._svg_pair(dm, stem)
+            diagrams_dir.mkdir(parents=True, exist_ok=True)
+            (diagrams_dir / f"{stem}.html").write_text(page, encoding="utf-8")
+            for svg_name, text in svgs:
+                (diagrams_dir / svg_name).write_text(text, encoding="utf-8")
+        except Exception as exc:  # one failing pattern must not stop the build (D20)
+            print(f"error: diagram for {name} ({uid}): {exc}", file=sys.stderr)
+            continue
+        used.add(stem)
+        pages[uid] = f"{DIAGRAMS_OUTPUT_DIR}/{stem}.html"
+        print(f"{uid}\t{name}\t{len(model.warnings)} warnings\t{diagrams_dir / (stem + '.html')}")
+        gd._print_warnings(model)
+    return pages
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     
@@ -1595,6 +1657,15 @@ def main(argv: list[str] | None = None) -> int:
     vocabulary_output_path = output_path.parent / COMPANY_VOCABULARY_OUTPUT_NAME
     registry = load_objects(args.workspace.resolve())
     payload = build_browser_payload(registry, args.workspace.resolve())
+    diagram_count = 0
+    if args.skip_diagrams:
+        clear_diagram_pages(output_path)
+    else:
+        diagram_pages = write_diagram_pages(args.workspace.resolve(), output_path)
+        diagram_count = len(diagram_pages)
+        for entry in payload["objects"]:
+            if entry.get("id") in diagram_pages:
+                entry["diagramPage"] = diagram_pages[entry["id"]]
     write_browser(payload, output_path, args.workspace.resolve(), refresh_shell=args.refresh_shell)
     manual_generated = False
     vocabulary_generated = False
@@ -1608,6 +1679,8 @@ def main(argv: list[str] | None = None) -> int:
     for warning in payload.get("warnings", []):
         print(warning, file=sys.stderr)
     print(f"Generated {display_path(output_path)} with {len(payload['objects'])} objects.")
+    if diagram_count:
+        print(f"Generated {diagram_count} diagram pages in {display_path(output_path.parent / DIAGRAMS_OUTPUT_DIR)}.")
     if manual_generated:
         template_used = USER_MANUAL_TEMPLATE_PATH if USER_MANUAL_TEMPLATE_PATH.exists() else USER_MANUAL_SOURCE_PATH
         verb = "Copied" if USER_MANUAL_TEMPLATE_PATH.exists() else "Generated"
