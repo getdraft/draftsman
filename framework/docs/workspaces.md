@@ -395,9 +395,14 @@ The normal refresh flow is:
 2. Open a branch in the company repo.
 3. Replace `.draft/framework/` with that reviewed framework version.
 4. Update `.draft/framework.lock` with the synced source, commit, and version.
-5. Validate the workspace against the refreshed framework.
-6. Review and commit the `.draft/framework/` and `.draft/framework.lock`
-   changes through a normal pull request.
+5. Run `python3 .draft/framework/tools/validate.py --workspace . --write-baseline`
+   so objects that already break a newly ratcheted rule are recorded in
+   `.draft/validation-baseline.yaml` and show as `baseline:` warnings instead
+   of errors.
+6. Validate the workspace against the refreshed framework.
+7. Review and commit the `.draft/framework/` and `.draft/framework.lock`
+   changes, together with `.draft/validation-baseline.yaml`, through a normal
+   pull request.
 
 Company-specific changes should remain in top-level `configurations/` as
 overlays or object patches. Avoid editing `.draft/framework/` directly unless
@@ -407,8 +412,9 @@ New workspaces also include an optional GitHub Actions workflow at
 `.github/workflows/draft-framework-update.yml`. The workflow checks for a newer
 visible DRAFT Framework version tag and falls back to upstream `main` when tags
 are missing or stale, opens an update branch, refreshes
-`.draft/framework/`, updates `.draft/framework.lock`, and validates the
-workspace.
+`.draft/framework/`, updates `.draft/framework.lock`, records
+`.draft/validation-baseline.yaml` with `validate.py --write-baseline`, and
+validates the workspace.
 
 DRAFT release tags use the `vX.Y.Z` form, such as `v0.41.5`. When manually
 running the update workflow, a bare semantic version like `0.41.5` is accepted
