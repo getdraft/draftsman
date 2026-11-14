@@ -2280,9 +2280,11 @@ class LaterStoryTests(unittest.TestCase):
             if k % 3 == 0:
                 rel["technology"] = "HTTPS"
         if len(rels) % 2 == 0:  # and a self-loop with a technology on a box that also takes edges
-            loop = relationship("R-LP", uids[0], uids[0], "retries")
-            loop["technology"] = "gRPC"
-            rels.append(loop)
+            for n, label in enumerate(("retries", "audits")):  # two loops; the technology goes on the first or the second by seed
+                loop = relationship(f"R-LP{n}", uids[0], uids[0], label)
+                if n == seed % 2:
+                    loop["technology"] = "gRPC"
+                rels.append(loop)
         if rnd.random() < 0.5:
             rels.append({"schemaVersion": "1.0", "uid": "R-X", "type": "relationship", "name": "R-X", "source": uids[0], "externalTarget": "Outside Service", "label": "calls"})
         return runtimes + comps + extra + [sdp] + rels
@@ -2731,6 +2733,15 @@ class LaterStoryTests(unittest.TestCase):
                 for (ax, ay), (bx2, by2) in zip(other["pts"], other["pts"][1:]):
                     if ay == by2 and ax != bx2:
                         self.assertFalse(y < ay < y + h and min(ax, bx2) < x + w and x < max(ax, bx2), (el["text"], el["box"], ay, ax, bx2))
+        for curve in re.findall(r'<path class="ln[^"]*" d="M([\d.-]+) ([\d.-]+) C([\d.-]+) ([\d.-]+) ([\d.-]+) ([\d.-]+) ([\d.-]+) ([\d.-]+)"', svg):
+            x0, y0, x1, y1, x2, y2, x3, y3 = (float(v) for v in curve)  # a self-loop curve: no label box on it (D37 R2)
+            for i in range(101):
+                t = i / 100
+                px = (1 - t) ** 3 * x0 + 3 * (1 - t) ** 2 * t * x1 + 3 * (1 - t) * t * t * x2 + t ** 3 * x3
+                py = (1 - t) ** 3 * y0 + 3 * (1 - t) ** 2 * t * y1 + 3 * (1 - t) * t * t * y2 + t ** 3 * y3
+                for el in labels:
+                    bx, by, bw, bh = el["box"]
+                    self.assertFalse(bx <= px <= bx + bw and by <= py <= by + bh, ("label on a loop curve", el["text"], el["box"], (px, py)))
         for el in elements:  # callouts keep clear of node boxes and captions (loop callouts also of visible labels, below)
             if el["kind"] == "callout" and not el["loop"]:
                 for box in list(nodes.values()) + captions:
@@ -2975,6 +2986,17 @@ class LaterStoryTests(unittest.TestCase):
                     rel["technology"] = tech
                 objects.append(rel)
             return tier(objects, names)
+        if name in ("loop2_second", "loop3_third", "loop3_middle"):  # one-line and two-line loop labels in every order
+            ids = ["C-A", "C-B", "C-C", "C-X", "C-U"]
+            objects = [component(u, u) for u in ids] + [pattern({"G": ids})]
+            tech = {"loop2_second": (0, 1), "loop3_third": (0, 0, 1), "loop3_middle": (0, 1, 0)}[name]
+            rels = [("C-X", "C-X", f"loop {k}", bool(t)) for k, t in enumerate(tech)] + [("C-A", "C-X", "consumes", True), ("C-B", "C-X", "queries", False), ("C-C", "C-X", "publishes", True)]
+            for k, (src, dst, label, has) in enumerate(rels):
+                rel = relationship(f"R-{k}", src, dst, label)
+                if has:
+                    rel["technology"] = "HTTPS"
+                objects.append(rel)
+            return tier(objects, {"C-U": "presentation", "C-A": "application", "C-B": "application", "C-C": "application", "C-X": "data"})
         if name == "loop2tech":  # two self-loops with technologies on one box, beside three in-edges
             ids = ["C-A", "C-B", "C-C", "C-X", "C-U"]
             objects = [component(u, u) for u in ids] + [pattern({"G": ids})]
@@ -3052,7 +3074,7 @@ class LaterStoryTests(unittest.TestCase):
                             self.assertEqual(generate_diagram._overlap(call["box"], el["box"]), 0, (render.__name__, call["text"], el["text"]))
 
     def test_label_shapes_from_review(self) -> None:
-        for name in ("hub12in", "hub12in_long", "hub8out", "zone3in", "loop_plus_in", "loop2tech", "upward", "longlabels", "webshop"):
+        for name in ("hub12in", "hub12in_long", "hub8out", "zone3in", "loop_plus_in", "loop2tech", "loop2_second", "loop3_third", "loop3_middle", "upward", "longlabels", "webshop"):
             cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), self._shape(name)))
             for render in (logical_svg, deployment_svg):
                 with self.subTest(shape=name, view=render.__name__):
