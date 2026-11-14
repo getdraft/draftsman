@@ -2276,6 +2276,15 @@ class LaterStoryTests(unittest.TestCase):
             extra = [component(f"O-{k}", f"Outside {k}") for k in range(rnd.randint(1, 4))]
             uids += [o["uid"] for o in extra]
         rels = [relationship(f"R-{k:02d}", rnd.choice(uids), rnd.choice(uids), f"rel {k}") for k in range(rnd.randint(6, 30))]
+        for k, rel in enumerate(rels):  # two-line labels (D37): every third edge records a technology, drawn without the rng
+            if k % 3 == 0:
+                rel["technology"] = "HTTPS"
+        if len(rels) % 2 == 0:  # and a self-loop with a technology on a box that also takes edges
+            for n, label in enumerate(("retries", "audits")):  # two loops; the technology goes on the first or the second by seed
+                loop = relationship(f"R-LP{n}", uids[0], uids[0], label)
+                if n == seed % 2:
+                    loop["technology"] = "gRPC"
+                rels.append(loop)
         if rnd.random() < 0.5:
             rels.append({"schemaVersion": "1.0", "uid": "R-X", "type": "relationship", "name": "R-X", "source": uids[0], "externalTarget": "Outside Service", "label": "calls"})
         return runtimes + comps + extra + [sdp] + rels
@@ -2642,7 +2651,8 @@ class LaterStoryTests(unittest.TestCase):
             self.assertEqual(svg.count('class="lb lb-s"'), count)
             self.assertEqual(svg.count('class="lb lb-t"'), count)
             self.assertEqual(svg.count('<text class="callout"'), count)
-        self.assertIn('<tspan class="tech"> / HTTPS</tspan>', svg)
+        self.assertRegex(svg, r'<tspan class="tech" x="[\d.]+" dy="14">HTTPS</tspan>')
+        self.assertRegex(svg, r'<text class="callout"[^>]*>rel 0<tspan class="tech"> / HTTPS</tspan></text>')  # the callout keeps one line
         self.assertIn(".lb .tech{font-weight:400}", svg)
         self.assertIn(".lb{display:none}", svg)
         self.assertIn(".edge.on.out .lb-t,.edge.on.in .lb-s{display:inline}", svg)
@@ -2660,11 +2670,13 @@ class LaterStoryTests(unittest.TestCase):
         for source, target, body in re.findall(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)">(.*?)</g>', svg, re.S):
             pts = [(float(a), float(b)) for a, b in re.findall(r"[ML]([\d.-]+) ([\d.-]+)", re.search(r'<path class="ln[^"]*" d="([^"]*)"', body).group(1))]
             for kind, x, base, anchor, text in re.findall(r'<text class="lb lb-([st])" x="([\d.]+)" y="([\d.]+)" text-anchor="(start|end)">(.*?)</text>', body):
-                w = len(xml_unescape(re.sub(r"<[^>]*>", "", text))) * 6.2 + 4
+                lines = [xml_unescape(t) for t in re.findall(r"<tspan[^>]*>(.*?)</tspan>", text)]
+                w = max(len(t) for t in lines) * 6.2 + 4
                 found.append(
                     {
                         "source": source, "target": target, "loop": source == target, "kind": kind, "x": float(x), "pts": pts, "anchor": anchor,
-                        "box": ((float(x) - 2) if anchor == "start" else (float(x) - w + 2), float(base) - 10, w, 14), "text": xml_unescape(re.sub(r"<[^>]*>", "", text)),
+                        "box": ((float(x) - 2) if anchor == "start" else (float(x) - w + 2), float(base) - 10, w, 14 * len(lines)),
+                        "text": " / ".join(lines), "lines": lines,
                     }
                 )
             m = re.search(r'<text class="callout" x="([\d.]+)" y="([\d.]+)" text-anchor="middle">(.*?)</text>', body)
@@ -2721,6 +2733,15 @@ class LaterStoryTests(unittest.TestCase):
                 for (ax, ay), (bx2, by2) in zip(other["pts"], other["pts"][1:]):
                     if ay == by2 and ax != bx2:
                         self.assertFalse(y < ay < y + h and min(ax, bx2) < x + w and x < max(ax, bx2), (el["text"], el["box"], ay, ax, bx2))
+        for curve in re.findall(r'<path class="ln[^"]*" d="M([\d.-]+) ([\d.-]+) C([\d.-]+) ([\d.-]+) ([\d.-]+) ([\d.-]+) ([\d.-]+) ([\d.-]+)"', svg):
+            x0, y0, x1, y1, x2, y2, x3, y3 = (float(v) for v in curve)  # a self-loop curve: no label box on it (D37 R2)
+            for i in range(101):
+                t = i / 100
+                px = (1 - t) ** 3 * x0 + 3 * (1 - t) ** 2 * t * x1 + 3 * (1 - t) * t * t * x2 + t ** 3 * x3
+                py = (1 - t) ** 3 * y0 + 3 * (1 - t) ** 2 * t * y1 + 3 * (1 - t) * t * t * y2 + t ** 3 * y3
+                for el in labels:
+                    bx, by, bw, bh = el["box"]
+                    self.assertFalse(bx <= px <= bx + bw and by <= py <= by + bh, ("label on a loop curve", el["text"], el["box"], (px, py)))
         for el in elements:  # callouts keep clear of node boxes and captions (loop callouts also of visible labels, below)
             if el["kind"] == "callout" and not el["loop"]:
                 for box in list(nodes.values()) + captions:
@@ -2754,9 +2775,14 @@ class LaterStoryTests(unittest.TestCase):
             if el["loop"]:
                 continue
             end = el["pts"][0] if el["kind"] == "s" else el["pts"][-1]
-            allowed = generate_diagram.LABEL_BAND * pair_count[(el["source"], el["target"])]
+            two_line = any(  # the row height in effect: two-line rows where a labelled edge of the same gap records a technology
+                len(o["lines"]) == 2 and not o["loop"] and o["kind"] == el["kind"] and (o["pts"][0] if o["kind"] == "s" else o["pts"][-1])[1] == end[1]
+                for o in labels
+            )
+            allowed = generate_diagram._pitch(two_line) * pair_count[(el["source"], el["target"])]
             if el["kind"] == "t" and loops_of.get(el["target"]):
                 allowed += generate_diagram.LOOP_RISE + generate_diagram.LOOP_STEP * (loops_of[el["target"]] - 1)
+                allowed += generate_diagram.LABEL_H * sum(1 for o in labels if o["loop"] and o["source"] == el["target"] and len(o["lines"]) == 2)
             self.assertLessEqual(self._gap(el["box"][0], end[1], el["box"]), allowed, el["text"])
             uid = el["source"] if el["kind"] == "s" else el["target"]
             if uid in nodes:
@@ -2819,8 +2845,79 @@ class LaterStoryTests(unittest.TestCase):
             if el["kind"] == "callout":
                 continue
             self.assertLessEqual(el["box"][2], generate_diagram.LOGICAL_BOX_W - 10)
-            self.assertTrue(el["text"].endswith("..."))
-        self.assertIn("a very long label that keeps going and going forever and ever<tspan class=\"tech\"> / PostgreSQL wire protocol</tspan></text>", svg)
+            self.assertEqual(len(el["lines"]), 2)  # D37 two-line amendment: each line is clipped on its own
+            self.assertTrue(all(line.endswith("...") for line in el["lines"]), el["lines"])
+            self.assertEqual(el["box"][3], generate_diagram.LABEL_ROW)
+        self.assertIn(">a very long label that keeps going and going forever and ever<tspan class=\"tech\"> / PostgreSQL wire protocol</tspan></text>", svg)  # the callout keeps the full single line
+        self.assertIn('<tspan class="tech" x="', svg)
+
+    def test_two_line_labels_and_row_heights(self) -> None:
+        # D37 two-line amendment (AC35): phrase then technology, one line without a technology, 28 px rows only where a
+        # labelled edge of the gap records a technology, 14 px rows otherwise.
+        self.assertEqual((generate_diagram.LABEL_ROW, generate_diagram.LABEL_H), (28, 14))
+        self.assertEqual((generate_diagram._row_h(True), generate_diagram._row_h(False)), (28, 14))
+        self.assertEqual(generate_diagram._pitch(True) - generate_diagram._pitch(False), 14)
+
+        def build(techs: list) -> list:
+            objects = [component("C-A", "A"), component("C-B", "B"), pattern({"G": ["C-A", "C-B"]})]
+            for n, tech in enumerate(techs):
+                rel = relationship(f"R-{n}", "C-A", "C-B", f"rel {n}")
+                if tech:
+                    rel["technology"] = tech
+                objects.append(rel)
+            return objects
+
+        def render(objects: list, view: Any) -> str:
+            return svg_for(objects) if view is logical_svg else deployment_svg(load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects)), "SDP-1")
+
+        def height(svg: str) -> int:
+            return int(re.search(r'viewBox="0 0 \d+ (\d+)"', svg).group(1))
+
+        for view in (logical_svg, deployment_svg):
+            with self.subTest(view=view.__name__):
+                plain = render(build([None, None, None]), view)
+                mixed = render(build(["HTTPS", None, "gRPC"]), view)
+                for svg in (plain, mixed):
+                    self._assert_labels_clean(svg)
+                    xml.dom.minidom.parseString(svg)
+                # no technology anywhere: one line, 14 px boxes, rows 18 px apart (LABEL_BAND)
+                for el in self._label_elements(plain):
+                    if el["kind"] != "callout":
+                        self.assertEqual((len(el["lines"]), el["box"][3]), (1, 14))
+                        self.assertNotIn('class="tech"', re.search(r'<text class="lb lb-%s"[^>]*>(.*?)</text>' % el["kind"], plain).group(0))
+                for kind in ("s", "t"):
+                    ys = sorted(el["box"][1] for el in self._label_elements(plain) if el["kind"] == kind)
+                    self.assertEqual([b - a for a, b in zip(ys, ys[1:])], [generate_diagram.LABEL_BAND] * 2)
+                # a technology in the gap: its edges carry phrase then technology, the others one line, rows 32 px apart
+                lines = {el["text"].split(" / ")[0]: el["lines"] for el in self._label_elements(mixed) if el["kind"] == "s"}
+                self.assertEqual(lines, {"rel 0": ["rel 0", "HTTPS"], "rel 1": ["rel 1"], "rel 2": ["rel 2", "gRPC"]})
+                for kind in ("s", "t"):
+                    ys = sorted(el["box"][1] for el in self._label_elements(mixed) if el["kind"] == kind)
+                    self.assertEqual([b - a for a, b in zip(ys, ys[1:])], [generate_diagram._pitch(True)] * 2)
+                self.assertIn('<tspan class="tech" x="', mixed)
+                self.assertRegex(mixed, r'<tspan x="[\d.]+" dy="0">rel 0</tspan><tspan class="tech" x="[\d.]+" dy="14">HTTPS</tspan>')
+                # the figure grows by the extra 14 px per band row, top and bottom bands, within the 10 px grid
+                growth = height(mixed) - height(plain)
+                self.assertTrue(2 * 3 * 14 - 10 < growth < 2 * 3 * 14 + 10, growth)
+                self.assertEqual(mixed, render(build(["HTTPS", None, "gRPC"]), view))
+
+    def test_each_label_line_is_clipped_on_its_own_and_loops_follow_the_rule(self) -> None:
+        objects = [component("C-A", "A"), component("C-B", "B"), pattern({"G": ["C-A", "C-B"]})]
+        rel = relationship("R-1", "C-A", "C-B", "short")
+        rel["technology"] = "PostgreSQL wire protocol over a very long tunnel"
+        loop = relationship("R-2", "C-A", "C-A", "retries failed payments after waiting")
+        loop["technology"] = "Kafka"
+        objects += [rel, loop]
+        svg = svg_for(objects)
+        self._assert_labels_clean(svg)
+        ends = [el for el in self._label_elements(svg) if el["kind"] in ("s", "t") and not el["loop"]]
+        for el in ends:
+            self.assertEqual(el["lines"][0], "short")  # the short phrase is not clipped by the long technology
+            self.assertTrue(el["lines"][1].endswith("..."), el["lines"])
+        loops = [el for el in self._label_elements(svg) if el["loop"] and el["kind"] != "callout"]
+        self.assertEqual(len(loops), 1)
+        self.assertEqual(len(loops[0]["lines"]), 2)
+        self.assertEqual((loops[0]["lines"][1], loops[0]["box"][3]), ("Kafka", 28))
 
     def _shape(self, name: str) -> list:
         def tier(objects: list, tiers: dict) -> list:
@@ -2889,6 +2986,25 @@ class LaterStoryTests(unittest.TestCase):
                     rel["technology"] = tech
                 objects.append(rel)
             return tier(objects, names)
+        if name in ("loop2_second", "loop3_third", "loop3_middle"):  # one-line and two-line loop labels in every order
+            ids = ["C-A", "C-B", "C-C", "C-X", "C-U"]
+            objects = [component(u, u) for u in ids] + [pattern({"G": ids})]
+            tech = {"loop2_second": (0, 1), "loop3_third": (0, 0, 1), "loop3_middle": (0, 1, 0)}[name]
+            rels = [("C-X", "C-X", f"loop {k}", bool(t)) for k, t in enumerate(tech)] + [("C-A", "C-X", "consumes", True), ("C-B", "C-X", "queries", False), ("C-C", "C-X", "publishes", True)]
+            for k, (src, dst, label, has) in enumerate(rels):
+                rel = relationship(f"R-{k}", src, dst, label)
+                if has:
+                    rel["technology"] = "HTTPS"
+                objects.append(rel)
+            return tier(objects, {"C-U": "presentation", "C-A": "application", "C-B": "application", "C-C": "application", "C-X": "data"})
+        if name == "loop2tech":  # two self-loops with technologies on one box, beside three in-edges
+            ids = ["C-A", "C-B", "C-C", "C-X", "C-U"]
+            objects = [component(u, u) for u in ids] + [pattern({"G": ids})]
+            for k, (src, dst, label) in enumerate([("C-X", "C-X", "checks own health"), ("C-A", "C-X", "consumes order messages"), ("C-B", "C-X", "queries"), ("C-C", "C-X", "publishes"), ("C-X", "C-X", "retries")]):
+                rel = relationship(f"R-{k}", src, dst, label)
+                rel["technology"] = ("HTTPS", "AMQP", "SQL", "Kafka", "gRPC")[k]
+                objects.append(rel)
+            return tier(objects, {"C-U": "presentation", "C-A": "application", "C-B": "application", "C-C": "application", "C-X": "data"})
         ids = ["C-A", "C-B", "C-C", "C-X", "C-U"]  # loop_plus_in
         objects = [component(u, u) for u in ids] + [pattern({"G": ids})]
         objects += [
@@ -2958,7 +3074,7 @@ class LaterStoryTests(unittest.TestCase):
                             self.assertEqual(generate_diagram._overlap(call["box"], el["box"]), 0, (render.__name__, call["text"], el["text"]))
 
     def test_label_shapes_from_review(self) -> None:
-        for name in ("hub12in", "hub12in_long", "hub8out", "zone3in", "loop_plus_in", "upward", "longlabels", "webshop"):
+        for name in ("hub12in", "hub12in_long", "hub8out", "zone3in", "loop_plus_in", "loop2tech", "loop2_second", "loop3_third", "loop3_middle", "upward", "longlabels", "webshop"):
             cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), self._shape(name)))
             for render in (logical_svg, deployment_svg):
                 with self.subTest(shape=name, view=render.__name__):
