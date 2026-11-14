@@ -4,7 +4,7 @@
 Usage:
     python3 framework/tools/generate_diagram.py --list [--workspace PATH]
     python3 framework/tools/generate_diagram.py --sdp NAME_OR_UID [--workspace PATH]
-        [--output FILE] [--placed-only] [--svg-dir DIR]
+        [--output FILE] [--placed-only] [--svg-dir DIR] [--write-layout]
     python3 framework/tools/generate_diagram.py --all --output-dir DIR [--svg-dir DIR]
         [--workspace PATH] [--placed-only]
 
@@ -2369,7 +2369,6 @@ def write_layout(workspace: Path, model: Model) -> Path:
     return target
 
 
-
 def _print_warnings(model: Model) -> None:
     # D18: the count line, then each distinct warning once, in sorted order (the model sorts and de-duplicates them)
     print(f"{len(model.warnings)} warnings", file=sys.stderr)
@@ -2497,7 +2496,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--svg-dir", type=Path, help="Also write <slug>-logical.svg and <slug>-deployment.svg into this directory.")
     parser.add_argument("--all", action="store_true", help="Render every deployment pattern; requires --output-dir.")
     parser.add_argument("--output-dir", type=Path, help="With --all: directory that receives one <slug>.html per pattern.")
-    parser.add_argument("--write-layout", action="store_true", help="With --sdp: write or update the pattern's diagram_layout file beside the pattern file from the drawn order.")
+    parser.add_argument("--write-layout", action="store_true", help="With --sdp: write or update the pattern's diagram_layout file beside the pattern file from the drawn order. An update rewrites the file and drops hand-written comments.")
     args = parser.parse_args(argv)
     _check_arguments(parser, args)
     if not (args.workspace / "catalog").is_dir():

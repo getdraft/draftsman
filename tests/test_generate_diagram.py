@@ -2638,3 +2638,19 @@ class DiagramLayoutTests(unittest.TestCase):
             self.assertEqual(sorted(logical[u] for u in ("FXPRD00002-0001", "FXPRD00003-0001")), [2, 3])
             self.assertEqual(len(updated["logical"]), 11)
             self.assertEqual(len(list((workspace / "catalog").glob("diagram-layout-*.yaml"))), 1)
+
+    def test_write_layout_with_placed_only_is_a_usage_error(self) -> None:
+        code, _out, err = run_cli(["--workspace", str(FIXTURE), "--sdp", FIXTURE_SDP, "--placed-only", "--write-layout"])
+        self.assertEqual(code, 2)
+        self.assertIn("--placed-only", err)
+
+    def test_write_layout_refuses_to_overwrite_a_foreign_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = copy_fixture(Path(tmp), keep_layout=False)
+            foreign = workspace / "catalog" / LAYOUT_FILE
+            foreign.write_text("# someone else's file\nnote: keep me\n", encoding="utf-8")
+            before = foreign.read_bytes()
+            result = run_tool("generate_diagram.py", ["--workspace", str(workspace), "--sdp", FIXTURE_SDP, "--output", str(Path(tmp) / "p.html"), "--write-layout"])
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("already exists", result.stderr)
+            self.assertEqual(foreign.read_bytes(), before)
