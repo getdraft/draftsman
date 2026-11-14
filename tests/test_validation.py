@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import shutil
 import tempfile
 import textwrap
@@ -4171,6 +4172,47 @@ requirementGroups:
             # Validate again. Now the patch is present, so the warning should go away.
             result = validate_workspace(workspace)
             self.assertNotIn("No active capability-ownership object patches found", result.stdout)
+
+
+class IntentRemovalDocsTests(unittest.TestCase):
+    """Templates, docs, example and changelog no longer mention the intent field."""
+
+    FIELD = re.compile(r"intent:|`intent`")
+
+    def _read(self, rel: str) -> str:
+        return (REPO_ROOT / rel).read_text(encoding="utf-8")
+
+    def test_templates_have_no_intent_key(self) -> None:
+        for rel in (
+            "templates/software-deployment-pattern.yaml.tmpl",
+            "templates/reference-architecture.yaml.tmpl",
+        ):
+            self.assertNotRegex(self._read(rel), r"(?m)^\s*intent:", rel)
+
+    def test_openstack_example_has_no_intent_line(self) -> None:
+        rel = "examples/catalog/engineering/software-deployment-patterns/sdp-openstack-iaas-platform.yaml"
+        self.assertNotRegex(self._read(rel), r"(?m)^\s*intent:")
+
+    def test_docs_have_no_intent_field_reference(self) -> None:
+        for rel in (
+            "framework/docs/how-to-add-objects.md",
+            "framework/docs/software-deployment-patterns.md",
+        ):
+            self.assertIsNone(self.FIELD.search(self._read(rel)), rel)
+
+    def test_changelog_has_unreleased_above_newest_version(self) -> None:
+        text = self._read("CHANGELOG.md")
+        unreleased = text.index("## Unreleased")
+        newest = re.search(r"(?m)^## \d+\.\d+\.\d+", text)
+        self.assertIsNotNone(newest)
+        self.assertLess(unreleased, newest.start())
+        section = text[unreleased : newest.start()]
+        positions = [
+            section.find(f"### {name}")
+            for name in ("Compatibility Impact", "Added", "Changed", "Fixed", "Migration Notes")
+        ]
+        self.assertTrue(all(p >= 0 for p in positions), positions)
+        self.assertEqual(positions, sorted(positions))
 
 
 if __name__ == "__main__":

@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None for workspaces. Templates, documentation and the OpenStack example no longer mention the legacy `intent` field; no previously valid catalog file fails validation.
+
+### Added
+
+- None.
+
+### Changed
+
+- The `software-deployment-pattern` and `reference-architecture` templates, `how-to-add-objects.md`, `software-deployment-patterns.md` and the OpenStack IaaS platform example no longer mention the `intent` field. The examples validation baseline hash for `STCK000001-SDP1` is refreshed because the pattern content changed. Test: `tests/test_validation.py::IntentRemovalDocsTests`.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Owners may delete `intent:` lines from their catalog files; they are optional and ignored.
+
 ## 1.5.3 - 2026-11-14
 
 ### Compatibility Impact
