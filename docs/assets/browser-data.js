@@ -20972,7 +20972,8 @@ window.DRAFT_BROWSER_DATA = {
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000001-SDP1\",\n  \"type\": \"software_deployment_pattern\",\n  \"name\": \"OpenStack IaaS Platform\",\n  \"description\": \"Full-stack self-managed OpenStack Infrastructure-as-a-Service deployment pattern covering the complete control plane and data plane. Includes compute (Nova), identity (Keystone), image (Glance), networking (Neutron), block storage (Cinder), object storage (Swift), orchestration (Heat), telemetry (Ceilometer), bare metal (Ironic), database-as-a-service (Trove), data processing (Sahara), and the Horizon web dashboard. All services share a RabbitMQ message broker cluster and MariaDB Galera database cluster running on dedicated controller nodes.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"followsReferenceArchitecture\": \"01KS8N4KR2-3TWA\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"software-deployment-pattern\",\n    \"openstack\",\n    \"iaas\",\n    \"cloud\",\n    \"platform\"\n  ],\n  \"businessContext\": {\n    \"pillar\": \"business-pillar.infrastructure\",\n    \"productFamily\": \"Cloud Infrastructure\"\n  },\n  \"notes\": {\n    \"availabilityTarget\": \"99.9%\",\n    \"availabilityRequirement\": \"All control plane services target 99.9% availability via active-active deployment on a minimum 3-node controller cluster with HAProxy for request distribution. Data plane (running instances, networking) operates independently of control plane availability.\",\n    \"dataClassification\": \"Internal\",\n    \"failureDomain\": {\n      \"scope\": \"platform-wide\",\n      \"description\": \"Failure of the control plane affects all tenants. Data plane (compute, networking, storage) is designed to tolerate control plane outages for running workloads.\"\n    },\n    \"patternDeviations\": \"none\",\n    \"deploymentTargets\": \"Self-managed bare metal deployment on dedicated OpenStack controller nodes and compute nodes within the company private data center. All control plane services run on the openstack-controller host class. Compute services run on openstack-compute host class. No cloud-provider managed services are used; all infrastructure is owned and operated by the platform-engineering team.\",\n    \"reference_architecture_conformance\": \"Follows Three-Tier Web Application RA (01KS8N4KR2-3TWA). Horizon + HAProxy satisfy the presentation tier. Nova, Neutron, Cinder, Glance, Keystone, Heat, and supporting services satisfy the application tier. MariaDB Galera and Swift satisfy the data tier. No WAF is required; the deployment is internal-only and access-controlled by network boundary and VPN/ZTNA. See decision record 01KSE5V73Z-CRZV.\",\n    \"interServiceConnections\": \"Cross-tier and cross-zone communication paths are documented as relationship objects in examples/catalog/relationships/. Key tier crossings include API LB \\u2192 Nova/Neutron/Keystone (presentation\\u2192application), all services \\u2192 RabbitMQ (application\\u2192utility AMQP), all services \\u2192 Keystone (application\\u2192application auth), and all services \\u2192 MariaDB databases (application\\u2192data).\",\n    \"externalDependencies\": \"External dependencies are documented as relationship objects. Keystone optionally federates with an LDAP Directory for enterprise identity. All MariaDB schemas and Swift storage depend on an external Backup Service for point-in-time recovery.\"\n  },\n  \"decisionRecords\": [\n    {\n      \"ref\": \"01KSE5V73Z-CRZV\",\n      \"key\": \"edge-protection\",\n      \"notes\": \"Data classification is Internal per notes.dataClassification. The platform does not process public or confidential data directly; tenant workloads inherit their own classification independently of this SDP.\"\n    },\n    {\n      \"ref\": \"01KT11AQTR-KH1S\",\n      \"key\": \"dataClassification\"\n    },\n    {\n      \"ref\": \"01KT11AQTR-VD4S\",\n      \"key\": \"deploymentTargets\"\n    },\n    {\n      \"ref\": \"01KT11AQTR-VD4S\",\n      \"key\": \"patternDeviations\"\n    },\n    {\n      \"ref\": \"01KT11AQTS-24FW\",\n      \"key\": \"externalDependencies\"\n    },\n    {\n      \"ref\": \"01KT11AQTS-24FW\",\n      \"key\": \"interServiceConnections\"\n    },\n    {\n      \"ref\": \"01KT11AQTT-P9SW\",\n      \"key\": \"availabilityRequirement\"\n    },\n    {\n      \"ref\": \"01KT11AQTT-P9SW\",\n      \"key\": \"failureDomain\"\n    },\n    {\n      \"ref\": \"01KT1340F7-WNNX\",\n      \"key\": \"availability_requirement\"\n    },\n    {\n      \"ref\": \"01KT1340F7-WNNX\",\n      \"key\": \"data_classification\"\n    },\n    {\n      \"ref\": \"01KT1340F7-WNNX\",\n      \"key\": \"reference_architecture_conformance\"\n    }\n  ],\n  \"networkZones\": [\n    {\n      \"id\": \"public\",\n      \"name\": \"Public\",\n      \"tier\": \"frontend\",\n      \"description\": \"Internet-facing tier hosting the Horizon dashboard and OpenStack API endpoints accessible to operators and tenants via CLI tools.\"\n    },\n    {\n      \"id\": \"control\",\n      \"name\": \"Control Plane\",\n      \"tier\": \"application\",\n      \"description\": \"Internal tier hosting all OpenStack API services, schedulers, conductors, and message broker. Not directly accessible from the public internet; fronted by the load balancer.\"\n    },\n    {\n      \"id\": \"data\",\n      \"name\": \"Data Layer\",\n      \"tier\": \"data\",\n      \"description\": \"Internal tier hosting relational databases (MariaDB Galera), message broker (RabbitMQ), and object storage (Swift). Accessible only from control plane services.\"\n    }\n  ],\n  \"serviceGroups\": [\n    {\n      \"name\": \"Presentation & API Layer\",\n      \"deploymentTarget\": \"openstack-controller\",\n      \"deployableObjects\": [\n        {\n          \"ref\": \"01KSF29JTP-9HYA\",\n          \"networkZone\": \"public\",\n          \"diagramTier\": \"presentation\",\n          \"intent\": \"ha\",\n          \"notes\": \"HAProxy load balancer distributing inbound API and dashboard traffic across all active controller nodes. Virtual IP managed by Keepalived provides a single entry point with 2-second failover.\"\n        },\n        {\n          \"ref\": \"STCK000006-RS06\",\n          \"networkZone\": \"public\",\n          \"diagramTier\": \"presentation\",\n          \"intent\": \"ha\",\n          \"notes\": \"Horizon dashboard served via nginx. Internet-facing. Active-active across controller nodes with sticky sessions.\"\n        },\n        {\n          \"ref\": \"STCK000001-RS01\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Nova compute service. nova-api runs active-active behind load balancer. nova-scheduler and nova-conductor run on controller nodes.\"\n        },\n        {\n          \"ref\": \"STCK000002-RS02\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Keystone identity service. Runs active-active. Fernet token validation is stateless, enabling full horizontal HA.\"\n        },\n        {\n          \"ref\": \"STCK000003-RS03\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Glance image service. glance-api runs active-active. Image binaries stored in Swift cluster.\"\n        },\n        {\n          \"ref\": \"STCK000004-RS04\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Neutron networking service. neutron-api runs active-active. ML2 agents deployed on compute and network nodes.\"\n        },\n        {\n          \"ref\": \"STCK000005-RS05\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Cinder block storage service. cinder-api and cinder-scheduler run active-active. iSCSI backend storage.\"\n        },\n        {\n          \"ref\": \"STCK000007-RS07\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Heat orchestration service. heat-api and heat-api-cfn run active-active. heat-engine workers consume from RabbitMQ.\"\n        },\n        {\n          \"ref\": \"STCK000008-RS08\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"utility\",\n          \"intent\": \"ha\",\n          \"notes\": \"Ceilometer telemetry service. Consumes OpenStack notification bus from RabbitMQ. Non-critical path \\u2014 does not affect instance operations.\"\n        },\n        {\n          \"ref\": \"STCK000009-RS09\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Ironic bare metal service. ironic-api runs active-active. ironic-conductor supports multi-conductor HA with node affinity.\"\n        },\n        {\n          \"ref\": \"STCK00000A-RS0A\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Trove database-as-a-service. trove-api runs active-active. Provisions database instances as Nova VMs.\"\n        },\n        {\n          \"ref\": \"STCK00000B-RS0B\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Sahara data processing service. sahara-api runs active-active. Provisions Hadoop/Spark clusters as Nova VM pools.\"\n        },\n        {\n          \"ref\": \"STCK00000C-RS0C\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Swift proxy service. Runs active-active behind load balancer. Fully stateless \\u2014 provides the object storage API gateway.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Data Infrastructure\",\n      \"deploymentTarget\": \"openstack-controller\",\n      \"deployableObjects\": [\n        {\n          \"ref\": \"STCK000001-DAR1\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"data\",\n          \"intent\": \"ha\",\n          \"notes\": \"Nova database schema in the MariaDB Galera cluster. Persists all compute service state.\"\n        },\n        {\n          \"ref\": \"STCK000002-DAR2\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"data\",\n          \"intent\": \"ha\",\n          \"notes\": \"Keystone database schema. Highest-criticality schema \\u2014 loss causes platform-wide outage.\"\n        },\n        {\n          \"ref\": \"STCK000003-DAR3\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"data\",\n          \"intent\": \"ha\",\n          \"notes\": \"Glance database schema. Stores image metadata; image binaries are in Swift.\"\n        },\n        {\n          \"ref\": \"STCK000004-DAR4\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"data\",\n          \"intent\": \"ha\",\n          \"notes\": \"Neutron database schema. Stores virtual network topology state.\"\n        },\n        {\n          \"ref\": \"STCK000005-DAR5\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"data\",\n          \"intent\": \"ha\",\n          \"notes\": \"Cinder database schema. Stores volume and snapshot records.\"\n        },\n        {\n          \"ref\": \"STCK000007-DAR7\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"data\",\n          \"intent\": \"ha\",\n          \"notes\": \"Shared database cluster for Heat, Ironic, Trove, Sahara, and Ceilometer schemas. Each service has an isolated schema within this cluster.\"\n        },\n        {\n          \"ref\": \"STCK000006-DAR6\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"data\",\n          \"intent\": \"ha\",\n          \"notes\": \"Swift object storage cluster providing durable distributed storage. Primary consumer is Glance for image binary storage.\"\n        },\n        {\n          \"ref\": \"STCK00000D-RS0D\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"utility\",\n          \"intent\": \"ha\",\n          \"notes\": \"RabbitMQ 3-node cluster providing shared AMQP message transport for all OpenStack services. Quorum queues ensure message durability.\"\n        }\n      ]\n    }\n  ],\n  \"_source\": \"examples/catalog/engineering/software-deployment-patterns/sdp-openstack-iaas-platform.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
-      "inboundRelationships": []
+      "inboundRelationships": [],
+      "diagramPage": "diagrams/openstack-iaas-platform.html"
     },
     {
       "id": "01KT1340FJ-DCHY",
@@ -48035,6 +48036,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -48069,6 +48071,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -48499,6 +48505,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -48533,6 +48540,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -48967,6 +48978,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -49001,6 +49013,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -49435,6 +49451,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -49469,6 +49486,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -49902,6 +49923,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -49936,6 +49958,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -50389,6 +50415,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -50423,6 +50450,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -50903,6 +50934,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -50937,6 +50969,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -51379,6 +51415,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "notes",
           "operatingSystemComponent",
           "computePlatformComponent",
@@ -51401,6 +51438,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -51862,6 +51903,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "notes",
           "operatingSystemComponent",
           "computePlatformComponent",
@@ -51884,6 +51926,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -52189,6 +52235,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -52226,6 +52273,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -52504,6 +52555,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -52538,6 +52590,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -52881,6 +52937,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -52915,6 +52972,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -53274,6 +53335,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -53308,6 +53370,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -53698,6 +53764,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -53732,6 +53799,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -54118,6 +54189,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -54152,6 +54224,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -54546,6 +54622,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -54580,6 +54657,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -54985,6 +55066,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -55019,6 +55101,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -55439,6 +55525,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -55473,6 +55560,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -55994,6 +56085,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -56028,6 +56120,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -56461,6 +56557,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -56495,6 +56592,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -56942,6 +57043,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -56976,6 +57078,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -57394,6 +57500,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -57428,6 +57535,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -57771,6 +57882,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -57805,6 +57917,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -58152,6 +58268,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -58186,6 +58303,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -85904,7 +86025,8 @@ window.DRAFT_BROWSER_DATA = {
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK000001-SDP1\",\n  \"type\": \"software_deployment_pattern\",\n  \"name\": \"OpenStack IaaS Platform\",\n  \"description\": \"Full-stack self-managed OpenStack Infrastructure-as-a-Service deployment pattern covering the complete control plane and data plane. Includes compute (Nova), identity (Keystone), image (Glance), networking (Neutron), block storage (Cinder), object storage (Swift), orchestration (Heat), telemetry (Ceilometer), bare metal (Ironic), database-as-a-service (Trove), data processing (Sahara), and the Horizon web dashboard. All services share a RabbitMQ message broker cluster and MariaDB Galera database cluster running on dedicated controller nodes.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"followsReferenceArchitecture\": \"01KS8N4KR2-3TWA\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"software-deployment-pattern\",\n    \"openstack\",\n    \"iaas\",\n    \"cloud\",\n    \"platform\"\n  ],\n  \"businessContext\": {\n    \"pillar\": \"business-pillar.infrastructure\",\n    \"productFamily\": \"Cloud Infrastructure\"\n  },\n  \"notes\": {\n    \"availabilityTarget\": \"99.9%\",\n    \"availabilityRequirement\": \"All control plane services target 99.9% availability via active-active deployment on a minimum 3-node controller cluster with HAProxy for request distribution. Data plane (running instances, networking) operates independently of control plane availability.\",\n    \"dataClassification\": \"Internal\",\n    \"failureDomain\": {\n      \"scope\": \"platform-wide\",\n      \"description\": \"Failure of the control plane affects all tenants. Data plane (compute, networking, storage) is designed to tolerate control plane outages for running workloads.\"\n    },\n    \"patternDeviations\": \"none\",\n    \"deploymentTargets\": \"Self-managed bare metal deployment on dedicated OpenStack controller nodes and compute nodes within the company private data center. All control plane services run on the openstack-controller host class. Compute services run on openstack-compute host class. No cloud-provider managed services are used; all infrastructure is owned and operated by the platform-engineering team.\",\n    \"reference_architecture_conformance\": \"Follows Three-Tier Web Application RA (01KS8N4KR2-3TWA). Horizon + HAProxy satisfy the presentation tier. Nova, Neutron, Cinder, Glance, Keystone, Heat, and supporting services satisfy the application tier. MariaDB Galera and Swift satisfy the data tier. No WAF is required; the deployment is internal-only and access-controlled by network boundary and VPN/ZTNA. See decision record 01KSE5V73Z-CRZV.\",\n    \"interServiceConnections\": \"Cross-tier and cross-zone communication paths are documented as relationship objects in examples/catalog/relationships/. Key tier crossings include API LB \\u2192 Nova/Neutron/Keystone (presentation\\u2192application), all services \\u2192 RabbitMQ (application\\u2192utility AMQP), all services \\u2192 Keystone (application\\u2192application auth), and all services \\u2192 MariaDB databases (application\\u2192data).\",\n    \"externalDependencies\": \"External dependencies are documented as relationship objects. Keystone optionally federates with an LDAP Directory for enterprise identity. All MariaDB schemas and Swift storage depend on an external Backup Service for point-in-time recovery.\"\n  },\n  \"decisionRecords\": [\n    {\n      \"ref\": \"01KSE5V73Z-CRZV\",\n      \"key\": \"edge-protection\",\n      \"notes\": \"Data classification is Internal per notes.dataClassification. The platform does not process public or confidential data directly; tenant workloads inherit their own classification independently of this SDP.\"\n    },\n    {\n      \"ref\": \"01KT11AQTR-KH1S\",\n      \"key\": \"dataClassification\"\n    },\n    {\n      \"ref\": \"01KT11AQTR-VD4S\",\n      \"key\": \"deploymentTargets\"\n    },\n    {\n      \"ref\": \"01KT11AQTR-VD4S\",\n      \"key\": \"patternDeviations\"\n    },\n    {\n      \"ref\": \"01KT11AQTS-24FW\",\n      \"key\": \"externalDependencies\"\n    },\n    {\n      \"ref\": \"01KT11AQTS-24FW\",\n      \"key\": \"interServiceConnections\"\n    },\n    {\n      \"ref\": \"01KT11AQTT-P9SW\",\n      \"key\": \"availabilityRequirement\"\n    },\n    {\n      \"ref\": \"01KT11AQTT-P9SW\",\n      \"key\": \"failureDomain\"\n    },\n    {\n      \"ref\": \"01KT1340F7-WNNX\",\n      \"key\": \"availability_requirement\"\n    },\n    {\n      \"ref\": \"01KT1340F7-WNNX\",\n      \"key\": \"data_classification\"\n    },\n    {\n      \"ref\": \"01KT1340F7-WNNX\",\n      \"key\": \"reference_architecture_conformance\"\n    }\n  ],\n  \"networkZones\": [\n    {\n      \"id\": \"public\",\n      \"name\": \"Public\",\n      \"tier\": \"frontend\",\n      \"description\": \"Internet-facing tier hosting the Horizon dashboard and OpenStack API endpoints accessible to operators and tenants via CLI tools.\"\n    },\n    {\n      \"id\": \"control\",\n      \"name\": \"Control Plane\",\n      \"tier\": \"application\",\n      \"description\": \"Internal tier hosting all OpenStack API services, schedulers, conductors, and message broker. Not directly accessible from the public internet; fronted by the load balancer.\"\n    },\n    {\n      \"id\": \"data\",\n      \"name\": \"Data Layer\",\n      \"tier\": \"data\",\n      \"description\": \"Internal tier hosting relational databases (MariaDB Galera), message broker (RabbitMQ), and object storage (Swift). Accessible only from control plane services.\"\n    }\n  ],\n  \"serviceGroups\": [\n    {\n      \"name\": \"Presentation & API Layer\",\n      \"deploymentTarget\": \"openstack-controller\",\n      \"deployableObjects\": [\n        {\n          \"ref\": \"01KSF29JTP-9HYA\",\n          \"networkZone\": \"public\",\n          \"diagramTier\": \"presentation\",\n          \"intent\": \"ha\",\n          \"notes\": \"HAProxy load balancer distributing inbound API and dashboard traffic across all active controller nodes. Virtual IP managed by Keepalived provides a single entry point with 2-second failover.\"\n        },\n        {\n          \"ref\": \"STCK000006-RS06\",\n          \"networkZone\": \"public\",\n          \"diagramTier\": \"presentation\",\n          \"intent\": \"ha\",\n          \"notes\": \"Horizon dashboard served via nginx. Internet-facing. Active-active across controller nodes with sticky sessions.\"\n        },\n        {\n          \"ref\": \"STCK000001-RS01\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Nova compute service. nova-api runs active-active behind load balancer. nova-scheduler and nova-conductor run on controller nodes.\"\n        },\n        {\n          \"ref\": \"STCK000002-RS02\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Keystone identity service. Runs active-active. Fernet token validation is stateless, enabling full horizontal HA.\"\n        },\n        {\n          \"ref\": \"STCK000003-RS03\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Glance image service. glance-api runs active-active. Image binaries stored in Swift cluster.\"\n        },\n        {\n          \"ref\": \"STCK000004-RS04\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Neutron networking service. neutron-api runs active-active. ML2 agents deployed on compute and network nodes.\"\n        },\n        {\n          \"ref\": \"STCK000005-RS05\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Cinder block storage service. cinder-api and cinder-scheduler run active-active. iSCSI backend storage.\"\n        },\n        {\n          \"ref\": \"STCK000007-RS07\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Heat orchestration service. heat-api and heat-api-cfn run active-active. heat-engine workers consume from RabbitMQ.\"\n        },\n        {\n          \"ref\": \"STCK000008-RS08\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"utility\",\n          \"intent\": \"ha\",\n          \"notes\": \"Ceilometer telemetry service. Consumes OpenStack notification bus from RabbitMQ. Non-critical path \\u2014 does not affect instance operations.\"\n        },\n        {\n          \"ref\": \"STCK000009-RS09\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Ironic bare metal service. ironic-api runs active-active. ironic-conductor supports multi-conductor HA with node affinity.\"\n        },\n        {\n          \"ref\": \"STCK00000A-RS0A\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Trove database-as-a-service. trove-api runs active-active. Provisions database instances as Nova VMs.\"\n        },\n        {\n          \"ref\": \"STCK00000B-RS0B\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Sahara data processing service. sahara-api runs active-active. Provisions Hadoop/Spark clusters as Nova VM pools.\"\n        },\n        {\n          \"ref\": \"STCK00000C-RS0C\",\n          \"networkZone\": \"control\",\n          \"diagramTier\": \"application\",\n          \"intent\": \"ha\",\n          \"notes\": \"Swift proxy service. Runs active-active behind load balancer. Fully stateless \\u2014 provides the object storage API gateway.\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Data Infrastructure\",\n      \"deploymentTarget\": \"openstack-controller\",\n      \"deployableObjects\": [\n        {\n          \"ref\": \"STCK000001-DAR1\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"data\",\n          \"intent\": \"ha\",\n          \"notes\": \"Nova database schema in the MariaDB Galera cluster. Persists all compute service state.\"\n        },\n        {\n          \"ref\": \"STCK000002-DAR2\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"data\",\n          \"intent\": \"ha\",\n          \"notes\": \"Keystone database schema. Highest-criticality schema \\u2014 loss causes platform-wide outage.\"\n        },\n        {\n          \"ref\": \"STCK000003-DAR3\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"data\",\n          \"intent\": \"ha\",\n          \"notes\": \"Glance database schema. Stores image metadata; image binaries are in Swift.\"\n        },\n        {\n          \"ref\": \"STCK000004-DAR4\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"data\",\n          \"intent\": \"ha\",\n          \"notes\": \"Neutron database schema. Stores virtual network topology state.\"\n        },\n        {\n          \"ref\": \"STCK000005-DAR5\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"data\",\n          \"intent\": \"ha\",\n          \"notes\": \"Cinder database schema. Stores volume and snapshot records.\"\n        },\n        {\n          \"ref\": \"STCK000007-DAR7\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"data\",\n          \"intent\": \"ha\",\n          \"notes\": \"Shared database cluster for Heat, Ironic, Trove, Sahara, and Ceilometer schemas. Each service has an isolated schema within this cluster.\"\n        },\n        {\n          \"ref\": \"STCK000006-DAR6\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"data\",\n          \"intent\": \"ha\",\n          \"notes\": \"Swift object storage cluster providing durable distributed storage. Primary consumer is Glance for image binary storage.\"\n        },\n        {\n          \"ref\": \"STCK00000D-RS0D\",\n          \"networkZone\": \"data\",\n          \"diagramTier\": \"utility\",\n          \"intent\": \"ha\",\n          \"notes\": \"RabbitMQ 3-node cluster providing shared AMQP message transport for all OpenStack services. Quorum queues ensure message durability.\"\n        }\n      ]\n    }\n  ],\n  \"_source\": \"examples/catalog/engineering/software-deployment-patterns/sdp-openstack-iaas-platform.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
-      "inboundRelationships": []
+      "inboundRelationships": [],
+      "diagramPage": "diagrams/openstack-iaas-platform.html"
     },
     "01KT1340FJ-DCHY": {
       "id": "01KT1340FJ-DCHY",
@@ -112967,6 +113089,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -113001,6 +113124,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -113431,6 +113558,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -113465,6 +113593,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -113899,6 +114031,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -113933,6 +114066,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -114367,6 +114504,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -114401,6 +114539,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -114834,6 +114976,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -114868,6 +115011,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -115321,6 +115468,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -115355,6 +115503,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -115835,6 +115987,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -115869,6 +116022,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -116311,6 +116468,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "notes",
           "operatingSystemComponent",
           "computePlatformComponent",
@@ -116333,6 +116491,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -116794,6 +116956,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "notes",
           "operatingSystemComponent",
           "computePlatformComponent",
@@ -116816,6 +116979,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -117121,6 +117288,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -117158,6 +117326,10 @@ window.DRAFT_BROWSER_DATA = {
           "configurations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -117436,6 +117608,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -117470,6 +117643,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -117813,6 +117990,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -117847,6 +118025,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -118206,6 +118388,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -118240,6 +118423,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -118630,6 +118817,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -118664,6 +118852,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -119050,6 +119242,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -119084,6 +119277,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -119478,6 +119675,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -119512,6 +119710,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -119917,6 +120119,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -119951,6 +120154,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -120371,6 +120578,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -120405,6 +120613,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -120926,6 +121138,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -120960,6 +121173,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -121393,6 +121610,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -121427,6 +121645,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -121874,6 +122096,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -121908,6 +122131,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -122326,6 +122553,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -122360,6 +122588,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -122703,6 +122935,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -122737,6 +122970,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
@@ -123084,6 +123321,7 @@ window.DRAFT_BROWSER_DATA = {
           "version",
           "owner",
           "tags",
+          "serviceRole",
           "host",
           "primaryTechnologyComponent",
           "internalComponents",
@@ -123118,6 +123356,10 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations": "list"
         },
         "enumFields": {
+          "serviceRole": [
+            "definition",
+            "instance"
+          ],
           "provisioningModel": [
             "deployable",
             "reference-only"
