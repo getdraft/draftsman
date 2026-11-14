@@ -28,6 +28,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
+          # The release bot token, not github.token: a push or pull request made
+          # with the default token fires no workflows, so the required validate
+          # check would never run, and this repository does not let Actions open
+          # pull requests with it.
+          token: ${{ secrets.RELEASE_BOT_PAT }}
           fetch-depth: 0
 
       - name: Set up Python
@@ -67,7 +72,7 @@ jobs:
       - name: Open or update the pull request
         if: steps.commit.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.RELEASE_BOT_PAT }}
         run: |
           existing="$(gh pr list --head chore/derived-assets --base main --json number --jq '.[0].number')"
           if [ -z "$existing" ]; then
