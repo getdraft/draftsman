@@ -90,7 +90,6 @@ Each deployable object entry should declare:
 
 - `ref`
 - optional `diagramTier`
-- optional `intent`
 - optional `riskRef`
 - optional `notes`
 
@@ -180,15 +179,11 @@ For each service group, the Draftsman should:
 6. Record unresolved substrate choices in a DraftingSession rather than
    assuming a platform.
 
-## Intent Versus Current State
+## Current State Versus Deployed Topology
 
-The `intent` field on deployed object entries exists only for explicit
-architecture choice. It should be populated when the architect is intentionally
-deviating from the ReferenceArchitecture, or when no ReferenceArchitecture
-exists.
-
-It should not be used as a shorthand way to restate current production state.
-Current state capabilities belong in DecisionRecords and notes.
+Deployed object entries describe the target topology. They should not be used
+as a shorthand way to restate current production state. Current state
+capabilities belong in DecisionRecords and notes.
 
 ## Structure Rules
 

@@ -90,7 +90,7 @@ Optionally, it can declare:
 - `addsExternalInteractions`: Additional external interactions required only in this configuration.
 - `addsNotes`: Rationale and context specific to this configuration.
 
-To satisfy high-availability requirements, the `intent` field of the service instance when placed in a SoftwareDeploymentPattern service group should match the target configuration `id` (e.g. `intent: ha` or `intent: standalone`).
+HA posture is expressed through the deployment configuration's `addressesQualities`, accepted deviations through `riskRef` to a DecisionRecord, and current state in `notes` or DecisionRecords.
 
 ## Add A TechnologyComponent
 
@@ -159,8 +159,7 @@ A ReferenceArchitecture should be generic enough to guide many products, not jus
 6. Build the manifest out through `serviceGroups`, then place only ProductComponents and DataComponents into the appropriate groups' `deployableObjects`. Set each group's runtime or host in `substrate`, and record each DataComponent's data store in its `runsOn`. Edge services come from the followed ReferenceArchitecture. Do not list a Host, RuntimeService, DataStoreService or NetworkService as a deployable object.
    ProductComponent is not a starting-point RequirementGroup object; use it here only when the SoftwareDeploymentPattern needs to express a distinct first-party runtime-behavior component deployed on a substrate.
 7. Set `diagramTier` on every deployable object entry (ProductComponents and DataComponents only) using one of `presentation`, `application`, `data`, or `utility`.
-8. Use `intent` only when the architect is explicitly deviating from the ReferenceArchitecture or when no ReferenceArchitecture exists.
-9. Add product-level `notes`, including availability requirement and data classification, so the SoftwareDeploymentPattern satisfies the SoftwareDeploymentPattern RequirementGroup.
+8. Add product-level `notes`, including availability requirement and data classification, so the SoftwareDeploymentPattern satisfies the SoftwareDeploymentPattern RequirementGroup.
 
 ## Add A DraftingSession
 
