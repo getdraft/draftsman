@@ -1097,8 +1097,10 @@ JS = """
 """
 
 
-def render_page(model: Model, dm: DiagramModel) -> str:
-    """The D19 page: header, counts, the two figures, relationships, conflicts, characteristics, questions, inventory, footer."""
+def render_page(model: Model, dm: DiagramModel, back_link: str | None = None) -> str:
+    """The D19 page: header, counts, the two figures, relationships, conflicts, characteristics, questions, inventory, footer.
+
+    ``back_link`` (D46) is a relative href that adds a ``Back to catalog`` link to the footer; it is set only by the browser generator."""
     sdp = model.sdp
     title = clean(sdp.get("name")) or "Deployment pattern"
     logical_empty = not dm.nodes
@@ -1173,7 +1175,9 @@ def render_page(model: Model, dm: DiagramModel) -> str:
     )
     parts.append(
         f'<footer class="foot">DRAFT framework version {E(framework_version())}. '
-        "Generated from the catalog; the same catalog always produces the same page.</footer>"
+        "Generated from the catalog; the same catalog always produces the same page."
+        + (f' <a href="{E(back_link)}">Back to catalog</a>' if back_link else "")
+        + "</footer>"
     )
     parts.append(f"</div><script>{JS}</script></body></html>")
     return "".join(parts)

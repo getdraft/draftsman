@@ -6513,6 +6513,7 @@ function _sdpHeroMarkup(object) {
       ${_sdpLifecycleBadge(object.lifecycleStatus)}
     </div>
     ${object.description ? `<p class="hero-desc">${escapeHtml(object.description)}</p>` : ''}
+    ${object.diagramPage ? `<p class="hero-diagrams"><a href="${escapeHtml(object.diagramPage)}">Diagrams</a></p>` : ''}
   </div>
   <div class="hero-side">
     ${owner.team    ? `<div class="hero-side-row"><span class="k">Owner</span><span class="v">${escapeHtml(owner.team)}</span></div>` : ''}

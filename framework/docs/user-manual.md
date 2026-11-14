@@ -403,7 +403,7 @@ python framework/tools/generate_browser.py
 python framework/tools/generate_ai_index.py
 ```
 
-The browser generator writes `docs/index.html` and, by default, writes this manual to `docs/user-manual.html`.
+The browser generator writes `docs/index.html` and, by default, writes this manual to `docs/user-manual.html`. It also renders one diagram page per software deployment pattern into `docs/diagrams/` (pass `--skip-diagrams` to leave them out); the pattern detail view links to its page with a `Diagrams` link, and each page links back to the browser.
 
 ### 4.4 Validation {#validation}
 
@@ -453,7 +453,7 @@ python framework/tools/generate_browser.py
 
 The browser shell, CSS, JavaScript, and default theme live in the framework under `browser/`. Generated catalog data is written separately to `docs/assets/browser-data.js`, which keeps content diffs separate from display framework changes.
 
-Use `--refresh-shell` to force-overwrite all browser shell assets from the framework source when pulling a framework design update.
+Use `--refresh-shell` to force-overwrite all browser shell assets from the framework source when pulling a framework design update. The `Diagrams` link comes from the shell, so an existing site needs `--refresh-shell` once to show it.
 
 GitHub Actions workflows typically regenerate derived docs on pushes that change YAML, framework docs, templates, the browser generator, AI bootstrap files, or README content. Check the local `.github/workflows/` files for the exact path filters in a given repo.
 
