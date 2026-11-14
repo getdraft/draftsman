@@ -20,12 +20,13 @@ The generator is the only path for the two views (`framework/tools/generate_diag
 - **Connections are hidden** until a box is hovered, focused or pinned (click a box; the same uid is highlighted in both figures). Then only that box's connections show.
 - **Colours.** Purple lines are calls the box makes (outbound); orange lines are calls it receives (inbound). Small dots move along each line toward the arrowhead (off under reduced motion). Dashed lines are asynchronous, dotted are event flows.
 - **Show all connections.** A checkbox under each figure restores the full drawing.
-- **Labels** show with their line, at the end farthest from the selected box, inside that box's width. Each is two lines (the label, then its technology), each clipped to the box width. The full text is in the tooltip and in the callout shown when a single line is hovered.
+- **Labels** show with their line, at the end farthest from the selected box, inside that box's width. Each is two lines (the label, then its technology) when a technology is recorded, otherwise one, and each line is clipped to the box width. Labels appear only for the edges of the hovered, focused or pinned box; the `Show all connections` toggle does not add them. The full text is in the tooltip and in the callout shown when a single line is hovered.
 - **Logical application diagram.** Components and data components in bands: presentation, application, data, utility. Infrastructure is not drawn here.
 - **Deployment pattern diagram.** Deployment target, then service group container (captioned by its substrate), then network-zone lane, then component box. Placed infrastructure (network, runtime, host, AI gateway, data store services) appears only here. Each data component sits inside a container named for the data store service in its `runsOn`; that store has no box of its own unless it hosts no data component. `data store not recorded` means `runsOn` is absent or unresolved.
-- **External interactions lane.** The right-hand lane holds dependencies of the pattern that it does not place, captioned with the pattern that places them, `external` for an `externalTarget` string, or `not placed in any pattern`. It shows dependencies only: consumers that merely call into the pattern are not drawn, and neither is any line between two outside objects.
+- **External interactions lane.** The right-hand lane holds dependencies of the pattern that it does not place, captioned with the pattern that places them, `placed in N other patterns`, `not placed in any pattern`, or `external` for an `externalTarget` string. It shows dependencies only: consumers that merely call into the pattern are not drawn, and neither is any line between two outside objects.
 - **Dashed border.** A box with a dashed border has a derived tier (no recorded `diagramTier`); a dashed container has an inferred substrate. Say so; it is not recorded.
 - **Recorded conflicts section** appears only when a placed component's `runsOn` names something other than its group's substrate. Both values are shown and nothing is resolved. Quote both and ask which is right.
+- **Diagrams link.** The pattern view in the browser shows `Diagrams` only after the shell is refreshed on an existing install (`generate_browser.py --refresh-shell`); if it is missing, say so and give the page path instead.
 - **Relationships table.** `Source` reads `relationship object` or `inline dependency`. Placement (`runsOn`, `host`) is never an edge.
 
 ## Model rules behind the picture
@@ -54,12 +55,12 @@ People can reorder boxes within their band or zone lane; the order is a `diagram
 
 1. Render the editable local page (never published, never used by workflows):
    `python3 framework/tools/generate_diagram.py --sdp "<name, alias or uid>" --editable --output FILE`
-2. Drag boxes, or focus one and press Alt with an arrow key, within its own band, zone lane or data store container; ordinals renumber per container. Reloading discards changes.
+2. Drag boxes, or focus one and press Alt with an arrow key, within its own band, zone lane or data store container (store containers are fixed; only the data components inside them move); ordinals renumber per container. Reloading discards changes.
 3. Choose `Export layout` and save the YAML it shows to a file. Its `uid` is `NEW` when no layout existed.
-4. Write it: `python3 framework/tools/generate_diagram.py --sdp "<uid>" --write-layout --layout-from FILE`. `--layout-from` requires `--write-layout`. An existing uid is kept, a new layout gets a fresh uid, and every `ref` must be a drawn node.
+4. Write it: `python3 framework/tools/generate_diagram.py --sdp "<uid>" --write-layout --layout-from FILE --output /tmp/layout-check.html` (the command also renders a page, so send it to a temp path). `--layout-from` requires `--write-layout`. An existing uid is kept, a new layout gets a fresh uid, and every `ref` must be a drawn node.
 5. Run `python3 framework/tools/validate.py`, then open the pull request. The published page picks the order up on the next browser build.
 
-`--write-layout` without `--layout-from` writes the layout from the current drawn order. It cannot combine with `--placed-only`. More than one layout for a pattern warns, and the lowest uid wins.
+`--write-layout` without `--layout-from` writes the layout from the current drawn order. It cannot combine with `--placed-only`. An update rewrites the layout file and drops hand-written comments. More than one layout for a pattern warns, and the lowest uid wins.
 
 ## Standalone generator (unpublished drafts only)
 
