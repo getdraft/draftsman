@@ -1,4 +1,4 @@
-## Unreleased
+## 1.5.2 - 2026-11-14
 
 ### Compatibility Impact
 
