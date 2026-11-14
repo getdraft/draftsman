@@ -3184,6 +3184,98 @@ requirementGroups:
             self.assertNotIn("PASS ", quiet_result.stdout)
             self.assertIn("Validated ", quiet_result.stdout)
 
+    def test_sdp_deployable_object_intent_is_ignored(self) -> None:
+        for intent in ("standalone", "sa", "ha"):
+            with self.subTest(intent=intent), tempfile.TemporaryDirectory() as directory:
+                workspace = Path(directory)
+                ensure_workspace_layout(workspace)
+                runtime_dir = workspace / "catalog" / "runtime-services"
+                runtime_dir.mkdir(parents=True, exist_ok=True)
+                (runtime_dir / "runtime-service-test.yaml").write_text(
+                    textwrap.dedent(
+                        """
+                        schemaVersion: "1.0"
+                        uid: 01KQS0TF73-RSRV
+                        type: runtime_service
+                        name: Test RuntimeService
+                        deliveryModel: paas
+                        vendor: Test Vendor
+                        productName: Test Runtime
+                        productVersion: "1.0"
+                        catalogStatus: incomplete
+                        lifecycleStatus: candidate
+                        """
+                    ).strip()
+                    + "\n",
+                    encoding="utf-8",
+                )
+                sdp_dir = workspace / "catalog" / "software-deployment-patterns"
+                sdp_dir.mkdir(parents=True, exist_ok=True)
+                dr_yaml = self._write_decision_records_for_sdp(workspace, indent=24)
+                (sdp_dir / "sdp-tier-test.yaml").write_text(
+                    textwrap.dedent(
+                        f"""
+                        schemaVersion: "1.0"
+                        uid: 01KQS0TF73-SDPN
+                        type: software_deployment_pattern
+                        name: Test Tier Pattern
+                        catalogStatus: incomplete
+                        lifecycleStatus: candidate
+{dr_yaml}
+                        serviceGroups:
+                          - name: Application Tier
+                            deploymentTarget: test-env
+                            deployableObjects:
+                              - ref: 01KQS0TF73-RSRV
+                                diagramTier: application
+                                intent: {intent}
+                        """
+                    ).strip()
+                    + "\n",
+                    encoding="utf-8",
+                )
+
+                grandfather_ratcheted_violations(workspace)
+                result = validate_workspace(workspace)
+
+                self.assertTrue(result.ok, result.stdout + result.stderr)
+                self.assertNotRegex(result.stdout + result.stderr, r"\bintent\b")
+
+    def test_reference_architecture_deployable_object_intent_is_ignored(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            ra_dir = workspace / "configurations" / "reference-architectures"
+            ra_dir.mkdir(parents=True, exist_ok=True)
+            (ra_dir / "ra-tier-test.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF73-RAMN
+                    type: reference_architecture
+                    name: Test Tier RA
+                    catalogStatus: incomplete
+                    lifecycleStatus: preferred
+                    patternType: standard
+                    applicableDefinitionChecklist:
+                      - Runtime service sits in the application tier.
+                    serviceGroups:
+                      - name: Application Tier
+                        deployableObjects:
+                          - objectType: runtime_service
+                            diagramTier: application
+                            intent: ha
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+
+            result = validate_workspace(workspace)
+
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+        self.assertNotRegex(result.stdout + result.stderr, r"\bintent\b")
+
     def test_validate_secrets_scanner_blocks_plaintext_secrets(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             workspace = Path(directory)
