@@ -7,6 +7,7 @@ import io
 import math
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -1113,7 +1114,7 @@ class LaterStoryTests(unittest.TestCase):
                         self.assertTrue(box.getAttribute("class").startswith("node"))
         ids = re.findall(r'<g class="node[^"]*" data-id="([^"]*)"', svg)
         in_lanes = [uid for c in drawn for lane in c.lanes for uid in lane.members]
-        self.assertEqual([i for i in ids if i in in_lanes], [u for t in expected_targets for c in drawn if c.target == t for lane in c.lanes for u in lane.members])
+        self.assertEqual([i for i in ids if i in in_lanes], [u for t in expected_targets for c in drawn if c.target == t for lane in c.lanes for u in generate_diagram.apply_positions(lane.members, model.deployment_positions)])
 
     def test_zone_lanes_order_and_fallback(self) -> None:
         catalog = load_catalog(FIXTURE)
@@ -2452,3 +2453,204 @@ class DiagramSkillTests(unittest.TestCase):
         text = self.MERMAID.read_text(encoding="utf-8")
         self.assertIn("outside the determinism guarantee", text)
         self.assertIn("rendered page", text)
+
+
+LAYOUT_UID = "FXDGM00001-0001"
+LAYOUT_FILE = "diagram-layout-fx-storefront-pattern.yaml"
+EXT_ID = "ext:f2e513630165"
+
+
+def fixture_catalog_without_layout() -> dict:
+    catalog = load_catalog(FIXTURE)
+    del catalog[LAYOUT_UID]
+    return catalog
+
+
+def copy_fixture(root: Path, keep_layout: bool = True) -> Path:
+    workspace = root / "ws"
+    shutil.copytree(FIXTURE / "catalog", workspace / "catalog")
+    if not keep_layout:
+        (workspace / "catalog" / LAYOUT_FILE).unlink()
+    return workspace
+
+
+def run_tool(script: str, argv: list[str]) -> subprocess.CompletedProcess:
+    return subprocess.run([sys.executable, str(REPO_ROOT / "framework" / "tools" / script)] + argv, cwd=str(REPO_ROOT), capture_output=True, text=True)
+
+
+class DiagramLayoutTests(unittest.TestCase):
+    """S14: diagram_layout object (D38), position ordering (D39), --write-layout (D40)."""
+
+    def test_logical_view_honours_positions(self) -> None:  # AC23
+        catalog = load_catalog(FIXTURE)
+        rects = node_rects(logical_svg(catalog, FIXTURE_SDP))
+        base = node_rects(logical_svg(fixture_catalog_without_layout(), FIXTURE_SDP))
+        self.assertLess(rects["FXPRD00001-0001"][0], rects["FXNET00001-0001"][0])
+        self.assertEqual(rects["FXPRD00001-0001"][1], rects["FXNET00001-0001"][1])
+        self.assertLess(rects["FXPRD00004-0001"][0], rects["FXPRD00002-0001"][0])
+        self.assertLess(rects["FXPRD00002-0001"][0], rects["FXPRD00003-0001"][0])  # unpositioned follows positioned
+        self.assertLess(rects[EXT_ID][1], rects["FXPRD00010-0001"][1])
+        self.assertLess(rects["FXPRD00010-0001"][1], rects["FXPRD00005-0001"][1])
+        self.assertLess(base["FXNET00001-0001"][0], base["FXPRD00001-0001"][0])  # without the layout the order differs
+
+    def test_deployment_view_honours_positions(self) -> None:  # AC23
+        catalog = load_catalog(FIXTURE)
+        rects = node_rects(deployment_svg(catalog, FIXTURE_SDP))
+        base = node_rects(deployment_svg(fixture_catalog_without_layout(), FIXTURE_SDP))
+        self.assertLess(rects["FXPRD00003-0001"][0], rects["FXPRD00002-0001"][0])
+        self.assertEqual(rects["FXPRD00003-0001"][1], rects["FXPRD00002-0001"][1])
+        self.assertLess(rects["FXDCP00001-0001"][0], rects["FXDST00001-0001"][0])
+        self.assertLess(rects["FXPRD00010-0001"][1], rects[EXT_ID][1])
+        self.assertLess(rects[EXT_ID][1], rects["FXPRD00005-0001"][1])
+        self.assertLess(base["FXPRD00002-0001"][0], base["FXPRD00003-0001"][0])
+
+    def test_positioned_nodes_sort_by_position_then_uid(self) -> None:
+        self.assertEqual(generate_diagram.apply_positions(["c", "a", "b", "d"], {"d": 1, "b": 1}), ["b", "d", "c", "a"])
+
+    def test_validate_accepts_fixture_layout_and_rejects_non_sdp_pattern(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = copy_fixture(Path(tmp))
+            good = run_tool("validate.py", ["--workspace", str(workspace)])
+            self.assertIn(f"PASS {workspace.resolve() / 'catalog' / LAYOUT_FILE}", good.stdout)
+            layout_path = workspace / "catalog" / LAYOUT_FILE
+            doc = yaml.safe_load(layout_path.read_text(encoding="utf-8"))
+            doc["pattern"] = "FXPRD00001-0001"
+            layout_path.write_text(yaml.safe_dump(doc, sort_keys=False), encoding="utf-8")
+            bad = run_tool("validate.py", ["--workspace", str(workspace)])
+            self.assertNotEqual(bad.returncode, 0)
+            lines = [line for line in bad.stdout.splitlines() if LAYOUT_FILE in line and "'pattern'" in line]
+            self.assertTrue(lines, bad.stdout)
+            self.assertIn("software_deployment_pattern", lines[0])
+
+    def test_validate_warns_on_stale_ref_but_not_ext_ref(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = copy_fixture(Path(tmp))
+            layout_path = workspace / "catalog" / LAYOUT_FILE
+            doc = yaml.safe_load(layout_path.read_text(encoding="utf-8"))
+            doc["logical"].append({"ref": "FXGONE00001-0001", "position": 9})
+            layout_path.write_text(yaml.safe_dump(doc, sort_keys=False), encoding="utf-8")
+            out = run_tool("validate.py", ["--workspace", str(workspace)]).stdout
+            stale = [line for line in out.splitlines() if LAYOUT_FILE in line and "no catalog object" in line]
+            self.assertEqual(len(stale), 1, out)
+            self.assertIn("FXGONE00001-0001", stale[0])
+            self.assertNotIn(EXT_ID, stale[0])
+
+    def test_validate_rejects_non_positive_position(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = copy_fixture(Path(tmp))
+            layout_path = workspace / "catalog" / LAYOUT_FILE
+            doc = yaml.safe_load(layout_path.read_text(encoding="utf-8"))
+            doc["logical"][0]["position"] = 0
+            layout_path.write_text(yaml.safe_dump(doc, sort_keys=False), encoding="utf-8")
+            out = run_tool("validate.py", ["--workspace", str(workspace)]).stdout
+            self.assertTrue([line for line in out.splitlines() if LAYOUT_FILE in line and "position" in line], out)
+
+    def test_duplicate_layouts_use_lowest_uid_and_warn(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        lower = {
+            "schemaVersion": "1.0", "uid": "FXDGM00000-0001", "type": "diagram_layout", "name": "Lower", "pattern": FIXTURE_SDP,
+            "catalogStatus": "complete", "logical": [{"ref": "FXNET00001-0001", "position": 1}],
+        }
+        catalog[lower["uid"]] = lower
+        model = generate_diagram.Model(catalog, catalog[FIXTURE_SDP], False)
+        self.assertIn(f"multiple diagram layouts for {FIXTURE_SDP}; using FXDGM00000-0001", model.warnings)
+        rects = node_rects(generate_diagram.render_logical_svg(generate_diagram.diagram_of(model)))
+        self.assertLess(rects["FXNET00001-0001"][0], rects["FXPRD00001-0001"][0])  # the lower layout, not the fixture one, ordered it
+
+    def test_undrawn_ref_warns_once_and_render_succeeds(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        for view in ("logical", "deployment"):
+            catalog[LAYOUT_UID][view].append({"ref": "FXGONE00001-0001", "position": 7})
+        model = generate_diagram.Model(catalog, catalog[FIXTURE_SDP], False)
+        self.assertEqual(model.warnings.count("layout position for undrawn object FXGONE00001-0001"), 1)
+        dm = generate_diagram.diagram_of(model)
+        self.assertIn("<svg", generate_diagram.render_logical_svg(dm))
+        self.assertIn("<svg", generate_diagram.render_deployment_svg(dm))
+        self.assertEqual(generate_diagram.render_page(model, dm).count("layout position for undrawn object"), 0)
+
+    def test_layout_never_changes_band_or_lane(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        catalog[LAYOUT_UID]["logical"].append({"ref": "FXDST00001-0001", "position": 1})  # a data box asking to be first
+        model = generate_diagram.build_diagram_model(catalog, catalog[FIXTURE_SDP], False)
+        layout = generate_diagram.layout_logical(model)
+        bands = dict(zip(layout.band_names, layout.order))
+        self.assertIn("FXDST00001-0001", bands["data"])
+        self.assertNotIn("FXDST00001-0001", bands["presentation"])
+
+    def test_write_layout_requires_sdp(self) -> None:
+        code, _out, err = run_cli(["--workspace", str(FIXTURE), "--write-layout"])
+        self.assertEqual(code, 2)
+        self.assertIn("--write-layout requires --sdp", err)
+
+    def test_write_layout_creates_file_and_second_run_is_identical(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = copy_fixture(Path(tmp), keep_layout=False)
+            before = sorted(str(p.relative_to(workspace)) for p in workspace.rglob("*") if p.is_file())
+            page = Path(tmp) / "page.html"
+            argv = ["--workspace", str(workspace), "--sdp", FIXTURE_SDP, "--output", str(page), "--write-layout"]
+            first = run_tool("generate_diagram.py", argv)
+            self.assertEqual(first.returncode, 0, first.stderr)
+            target = workspace / "catalog" / LAYOUT_FILE
+            self.assertTrue(target.is_file())
+            after = sorted(str(p.relative_to(workspace)) for p in workspace.rglob("*") if p.is_file())
+            self.assertEqual(after, sorted(before + [f"catalog/{LAYOUT_FILE}"]))  # only the layout file is new
+            doc = yaml.safe_load(target.read_text(encoding="utf-8"))
+            self.assertEqual(doc["type"], "diagram_layout")
+            self.assertEqual(doc["pattern"], FIXTURE_SDP)
+            self.assertEqual(doc["name"], "FX Storefront Pattern diagram layout")
+            self.assertEqual(doc["catalogStatus"], "complete")
+            self.assertRegex(doc["uid"], r"^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$")
+            plain_catalog = fixture_catalog_without_layout()
+            dm = generate_diagram.build_diagram_model(plain_catalog, plain_catalog[FIXTURE_SDP], False)
+            self.assertEqual(sorted(e["ref"] for e in doc["logical"]), sorted(n.uid for n in dm.nodes))
+            self.assertEqual(len(doc["deployment"]), len(dm.deployment_nodes))
+            self.assertTrue(all(isinstance(e["position"], int) and e["position"] >= 1 for e in doc["logical"] + doc["deployment"]))
+            self.assertEqual(min(e["position"] for e in doc["logical"]), 1)
+            file_1, page_1 = target.read_bytes(), page.read_bytes()
+            second = run_tool("generate_diagram.py", argv)
+            self.assertEqual(second.returncode, 0, second.stderr)
+            self.assertEqual(target.read_bytes(), file_1)
+            self.assertEqual(page.read_bytes(), page_1)
+            plain_page = Path(tmp) / "plain.html"
+            run_tool("generate_diagram.py", ["--workspace", str(workspace), "--sdp", FIXTURE_SDP, "--output", str(plain_page)])
+            self.assertEqual(plain_page.read_bytes(), page_1)  # with and without the flag the page is the same
+            checked = run_tool("validate.py", ["--workspace", str(workspace)])
+            self.assertIn(f"PASS {target.resolve()}", checked.stdout)
+
+    def test_write_layout_updates_in_place_keeping_uid_and_positions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = copy_fixture(Path(tmp))  # the fixture layout is already there
+            target = workspace / "catalog" / LAYOUT_FILE
+            doc = yaml.safe_load(target.read_text(encoding="utf-8"))
+            doc["logical"] = [e for e in doc["logical"] if e["ref"] != "FXPRD00002-0001"]  # a node now missing from the layout
+            doc["logical"].append({"ref": "FXGONE00001-0001", "position": 5})  # a node no longer drawn
+            target.write_text(yaml.safe_dump(doc, sort_keys=False), encoding="utf-8")
+            argv = ["--workspace", str(workspace), "--sdp", FIXTURE_SDP, "--output", str(Path(tmp) / "p.html"), "--write-layout"]
+            self.assertEqual(run_tool("generate_diagram.py", argv).returncode, 0)
+            updated = yaml.safe_load(target.read_text(encoding="utf-8"))
+            self.assertEqual(updated["uid"], LAYOUT_UID)
+            logical = {e["ref"]: e["position"] for e in updated["logical"]}
+            self.assertNotIn("FXGONE00001-0001", logical)
+            self.assertEqual(logical["FXPRD00004-0001"], 1)  # kept
+            self.assertEqual(logical["FXPRD00001-0001"], 1)
+            self.assertEqual(logical["FXNET00001-0001"], 2)
+            # FXPRD00002 and FXPRD00003 have no position in their band; each follows the highest one there
+            self.assertEqual(sorted(logical[u] for u in ("FXPRD00002-0001", "FXPRD00003-0001")), [2, 3])
+            self.assertEqual(len(updated["logical"]), 11)
+            self.assertEqual(len(list((workspace / "catalog").glob("diagram-layout-*.yaml"))), 1)
+
+    def test_write_layout_with_placed_only_is_a_usage_error(self) -> None:
+        code, _out, err = run_cli(["--workspace", str(FIXTURE), "--sdp", FIXTURE_SDP, "--placed-only", "--write-layout"])
+        self.assertEqual(code, 2)
+        self.assertIn("--placed-only", err)
+
+    def test_write_layout_refuses_to_overwrite_a_foreign_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = copy_fixture(Path(tmp), keep_layout=False)
+            foreign = workspace / "catalog" / LAYOUT_FILE
+            foreign.write_text("# someone else's file\nnote: keep me\n", encoding="utf-8")
+            before = foreign.read_bytes()
+            result = run_tool("generate_diagram.py", ["--workspace", str(workspace), "--sdp", FIXTURE_SDP, "--output", str(Path(tmp) / "p.html"), "--write-layout"])
+            self.assertEqual(result.returncode, 1)
+            self.assertIn("already exists", result.stderr)
+            self.assertEqual(foreign.read_bytes(), before)
