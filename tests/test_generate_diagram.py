@@ -2715,6 +2715,12 @@ class LaterStoryTests(unittest.TestCase):
                 for (ax, ay), (bx2, by2) in zip(other["pts"], other["pts"][1:]):
                     if ax == bx2:
                         self.assertFalse(x < ax < x + w and min(ay, by2) < y + h and y < max(ay, by2), (el["text"], el["box"], ax, ay, by2))
+        for el in labels:  # R1 (round 3): no horizontal route segment runs through a label
+            x, y, w, h = el["box"]
+            for other in elements:
+                for (ax, ay), (bx2, by2) in zip(other["pts"], other["pts"][1:]):
+                    if ay == by2 and ax != bx2:
+                        self.assertFalse(y < ay < y + h and min(ax, bx2) < x + w and x < max(ax, bx2), (el["text"], el["box"], ay, ax, bx2))
         for el in elements:  # callouts keep clear of node boxes and captions (loop callouts also of visible labels, below)
             if el["kind"] == "callout" and not el["loop"]:
                 for box in list(nodes.values()) + captions:
@@ -2936,6 +2942,20 @@ class LaterStoryTests(unittest.TestCase):
                         self.assertTrue(any(generate_diagram._overlap(caption, o) > 0 for o in seen[-1]), (render.__name__, caption))
         finally:
             generate_diagram._edge_label_svgs = real
+
+    def test_callout_avoids_labels_visible_with_its_endpoints(self) -> None:
+        # R2 (round 3): FXPRD00003 pinned, FXPRD00002 -> FXPRD00003 hovered: the callout overlaps none of the labels
+        # then visible (lb-t of out edges and lb-s of in edges of either end).
+        for render in (logical_svg, deployment_svg):
+            svg = render(load_catalog(FIXTURE), "FXSDP00001-0001")
+            elements = self._label_elements(svg)
+            hovered = [el for el in elements if el["kind"] == "callout" and el["source"] == "FXPRD00002-0001" and el["target"] == "FXPRD00003-0001"]
+            self.assertTrue(hovered, render.__name__)
+            for call in hovered:
+                for end in ("FXPRD00002-0001", "FXPRD00003-0001"):
+                    for el in elements:
+                        if el["kind"] != "callout" and not el["loop"] and ((el["source"] == end and el["kind"] == "t") or (el["target"] == end and el["kind"] == "s")):
+                            self.assertEqual(generate_diagram._overlap(call["box"], el["box"]), 0, (render.__name__, call["text"], el["text"]))
 
     def test_label_shapes_from_review(self) -> None:
         for name in ("hub12in", "hub12in_long", "hub8out", "zone3in", "loop_plus_in", "upward", "longlabels", "webshop"):

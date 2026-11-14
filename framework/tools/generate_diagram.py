@@ -2349,7 +2349,16 @@ def _edge_label_svgs(edges: list, routes: dict, tops: dict, loops: dict, obstacl
             visible += [b for uid, b in placed_loops if uid == edge.source]
             out[number] = _edge_label(edge, (), loop_at[number], _loop_callout(loop_at[number], edge, visible))
         else:
-            out[number] = _edge_label(edge, texts[number], None, _callout_at(routes[number], edge, obstacles))
+            shown = list(obstacles)  # also the labels visible while either end of the hovered line is selected
+            for n2, e2 in edges:
+                if n2 in boxes:
+                    for end in (edge.source, edge.target):
+                        if e2.source == end:
+                            shown.append(boxes[n2][1])
+                        if e2.target == end:
+                            shown.append(boxes[n2][0])
+            shown += [b for uid, b in placed_loops if uid in (edge.source, edge.target)]
+            out[number] = _edge_label(edge, texts[number], None, _callout_at(routes[number], edge, shown))
     return out
 
 
