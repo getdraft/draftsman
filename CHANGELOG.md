@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No previously valid file fails. Files that still contain `intent` on a deployable object entry validate with no failure or warning.
+
+### Added
+
+- None.
+
+### Changed
+
+- The `intent` field is removed from the SoftwareDeploymentPattern and ReferenceArchitecture schemas and from the hardcoded `ha`/`sa` check in `framework/tools/validate.py`. The removal is silent: there is no deprecation warning.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Owners may delete `intent` lines from their patterns and reference architectures. No action is required for validation to pass.
+
 ## 1.4.1 - 2026-11-14
 
 ### Compatibility Impact
