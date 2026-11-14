@@ -6,7 +6,7 @@
 - The default node scope of `framework/tools/generate_diagram.py` changes in this release. It is no longer every object owned by the same team; it is the objects placed in the pattern plus the objects they depend on (unplaced objects that a placed object has a relationship to; unplaced objects that only call into the pattern are not drawn). Output for an existing pattern can therefore show fewer components than before.
 - The HTML page of `framework/tools/generate_diagram.py` is reassembled: it shows the logical application diagram and the deployment pattern diagram, in that order, followed by the recorded relationships, conflicts, characteristics, open questions and object inventory. The old flat topology figure is gone, so existing pages look different.
 - Single-mode warnings go to stderr as a `N warnings` count line followed by each distinct warning in sorted order, without the earlier `warning:` prefix. Scripts that parsed the old prefix must read the new form.
-- `validate.py` gains the `--write-baseline` and `--no-baseline` flags and a baseline file, `.draft/validation-baseline.yaml`. No existing rule changes behaviour and no schema or catalog content changes; a workspace with no baseline file validates as before.
+- `validate.py` gains the `--write-baseline` and `--no-baseline` flags and a baseline file, `.draft/validation-baseline.yaml`. No existing rule changes behaviour and no schema or catalog content changes; a workspace with no baseline file validates as before. Ratcheted rules (ids such as those that police what a pattern places) bind an object only when it changes: after upgrading, run `validate.py --write-baseline` once and commit `.draft/validation-baseline.yaml`, or every existing violation is reported as an error.
 
 ### Added
 
@@ -20,7 +20,6 @@
 - Public seam `build_from_catalog(catalog, selector, placed_only)` in `generate_diagram.py` (renders from an already loaded catalog; output unchanged), plus model data classes and stubs for later work. Test harness `tests/diagram_harness.py` (golden comparison with `UPDATE_GOLDEN=1`, determinism property helpers) and `tests/test_skip_reasons.py`. Test-only otherwise.
 - `framework/tools/generate_diagram.py` gains `--svg-dir DIR`, which writes `<slug>-logical.svg` and `<slug>-deployment.svg` beside the HTML page, and `--all --output-dir DIR`, which renders every deployment pattern in the workspace: one HTML page per pattern, one summary line per pattern, and exit code 1 if any pattern fails while the others still render. Option combinations that do not make sense (for example `--all` without `--output-dir`, or `--list` with `--sdp`) exit with code 2. Pattern names that slugify to the same file name get the lower-cased uid appended to theirs.
 - New catalog type `diagram_layout` (`framework/schemas/diagram-layout.schema.yaml`): per-pattern box order for the two diagram views. `validate.py` requires `pattern` to be a software deployment pattern and warns on a `ref` that resolves to nothing; `generate_diagram.py` draws positioned boxes first in each band or lane (lowest uid wins when a pattern has several layouts), and `--sdp NAME --write-layout` writes or updates the layout file beside the pattern file from the drawn order without changing the page.
-- `generate_diagram.py --sdp NAME --editable` emits a local page in which boxes can be dragged or moved with the keyboard within their own band or zone lane, with an `Export layout` control that shows a complete `diagram_layout` object. `--write-layout --layout-from FILE` writes that exported object (existing uid preserved, every `ref` checked against the drawn nodes). The editable page stores nothing and is never produced by the browser generator; without `--editable` output is unchanged.
 
 ### Changed
 
@@ -52,7 +51,7 @@
 
 ### Migration Notes
 
-- No migration required. Re-render diagram pages after upgrading if a page relied on the team-wide default scope.
+- Re-render diagram pages after upgrading if a page relied on the team-wide default scope. Run `validate.py --write-baseline` once and commit the baseline file when a ratcheted rule is present. No catalog content changes are required.
 - The `Diagrams` link in the pattern detail view needs a shell refresh, because shell assets are install-once: run `generate_browser.py --refresh-shell` or the generate-browser workflow. Diagram pages and the `diagramPage` data are written on every run without a refresh.
 
 ## 1.3.1 - 2026-11-08
