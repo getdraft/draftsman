@@ -16,6 +16,8 @@
 - The logical view draws five columns per band and the deployment view four per zone lane; the figure wrapper scrolls horizontally instead of shrinking the figure.
 - The pattern detail view has Application and Deployment sections that embed the logical and deployment figures from the pattern's diagram page, each with a Fit width / Actual size toggle (fit by default) and an Open full page link, and no longer shows the Topology section, the Mermaid Diagrams section, the tier filter chips or the hero Diagrams link. A pattern without a generated diagram page shows a one-sentence note per section.
 - The detail view's section nav is Application, Deployment, Service Groups, Decisions, Connections, Tier Variants, Metadata.
+- Each deployable-object row in the detail view's Service Groups section shows its `riskRef` as the decision badge (accepted decision, risk, or missing record) beside the object's name, linking to the decision record; this replaces the HA Decision row of the removed service drawer.
+- The detail view's topology grid, tier filter chips and service drawer are removed along with their code and styles; the sidebar Topology tool and the catalog Diagrams tool are unchanged.
 
 ### Fixed
 

@@ -92,6 +92,8 @@ class DiagramPagesInBrowserTests(unittest.TestCase):
         js = BROWSER_JS.read_text(encoding="utf-8")
         self.assertIn("object.diagramPage", js)
         self.assertIn("Open full page", js)  # the hero Diagrams link became the section links (S2)
+        self.assertIn("'sdp-s-application'", js)
+        self.assertIn("'sdp-s-deployment'", js)
 
     def test_skip_diagrams(self) -> None:
         out = self.tmp / "site"
@@ -208,8 +210,10 @@ class IntentRemovedFromBrowserTests(unittest.TestCase):
 
     def test_legend_has_no_intent_group(self) -> None:
         self.assertNotIn(">Intent<", self.js)
-        self.assertIn(">Tiers<", self.js)
-        self.assertIn(">Protocols<", self.js)
+        self.assertNotIn(">Tiers<", self.js)  # the detail-view topology legend is gone
+        self.assertNotIn("data-tier-filter", self.js)
+        self.assertNotIn('class="chip', self.js)
+        self.assertNotIn('class="chip-group', self.js)
 
     def test_topology_node_flags_have_no_intent_slot(self) -> None:
         node = self._function_source("topologyNodeMarkup")
@@ -224,8 +228,30 @@ class IntentRemovedFromBrowserTests(unittest.TestCase):
         badge = self._function_source("topologyBadgeMarkup")
         self.assertIn("entry.riskRef", badge)
         self.assertIn("topology-risk", badge)
-        self.assertIn("m.riskRef", self.js)
-        self.assertIn("drawer-risk-ref", self.js)
+        self.assertNotIn("drawer-risk-ref", self.js)
+        self.assertIn("topologyBadgeMarkup(", self._function_source("_sdpGroupsMarkup"))
+
+    def test_risk_badge_rendered_in_service_group_row(self) -> None:
+        if shutil.which("node") is None:
+            self.skipTest("node is not on PATH; cannot render the Service Groups row")
+        src = "\n".join(self._function_source(n) for n in ("topologyBadgeMarkup", "serviceGroupDomId", "_sdpGroupsMarkup"))
+        script = ("const escapeHtml=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\"/g,'&quot;');"
+                  "const objectLookup={svc:{name:'Svc'},'ard-ok':{id:'ard-ok',name:'Ok',ardCategory:'decision',status:'accepted'},"
+                  "'ard-risk':{id:'ard-risk',name:'Risk',ardCategory:'risk',status:'proposed'}};"
+                  + src + """
+const vm={zones:[]};
+const mk=r=>({serviceGroups:[{name:'G',deployableObjects:[{ref:'svc',networkZone:'z',riskRef:r}]}]});
+const out={};
+for (const [k,r] of [['ok','ard-ok'],['risk','ard-risk'],['missing','nope'],['none',null]]) out[k]=_sdpGroupsMarkup(mk(r),vm);
+process.stdout.write(JSON.stringify(out));""")
+        result = subprocess.run(["node", "-e", script], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        out = json.loads(result.stdout)
+        self.assertIn('class="topology-info" data-object-link="ard-ok"', out["ok"])
+        self.assertIn('class="topology-risk" data-object-link="ard-risk"', out["risk"])
+        self.assertIn('class="topology-risk"', out["missing"])
+        self.assertNotIn("topology-info", out["none"])
+        self.assertNotIn("topology-risk", out["none"])
 
     def test_standalone_without_risk_ref_has_no_decision_icon(self) -> None:
         self.assertNotIn("Explicit architecture decision", self.js)
@@ -300,8 +326,7 @@ class IntentRemovedFromBrowserCssTests(unittest.TestCase):
 
 class DetailDiagramSectionsTests(unittest.TestCase):
     """Source-level proxies for the Application and Deployment sections, fit toggle and sticky nav.
-    The old topology functions stay in the file until a later story, so these assert on the
-    source of the new functions, not on whole-file text."""
+    These assert on the source of the new functions, plus the dead-code removal checks."""
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -421,6 +446,27 @@ process.stdout.write(JSON.stringify(out));""")
         self.assertEqual(out["with"].count('aria-pressed="true"'), 2)
         self.assertEqual(out["without"].count("The diagram page is not generated for this pattern."), 2)
         self.assertNotIn("Open full page", out["without"])
+
+    def test_detail_dead_code_removed(self) -> None:
+        for gone in ("_sdpTopologyMarkup", "_sdpDiagramsMarkup", "_sdpRecomputePaths", "_sdpUpdateCardStates",
+                     "_sdpOpenDrawer", "_sdpCloseDrawer", "_sdpDrawerMarkup", "_sdpCardRefs", "_sdpResizeObs",
+                     "_sdpTierFilter", "_SDP_TIER_ORDER", "_SDP_TIER_LABELS", "diagramRenderId", "sdp-drawer",
+                     "sdp-topology-grid", "data-tier-filter", "svc-card", "vm.diagram"):
+            self.assertNotIn(gone, self.js, gone)
+        for kept in ("function renderDiagramsView(", "function topologyBadgeMarkup(", "function topologyNodeMarkup("):
+            self.assertIn(kept, self.js, kept)
+
+    def test_detail_css_dead_rules_removed(self) -> None:
+        selectors = re.findall(r"(?m)^\s*([^\s{}/@][^{}]*?)\s*\{", self.sdp)
+        parts = [part.strip() for sel in selectors for part in sel.split(",")]
+        prefixes = (".sdp-drawer", ".drawer-", ".sdp-detail .chip", ".topology-wrap", ".topology-grid", ".topo-legend")
+        for part in parts:
+            bare = part.replace(".sdp-detail ", "", 1) if not part.startswith(".sdp-detail .chip") else part
+            self.assertFalse(bare.startswith(prefixes) or part.startswith(prefixes), part)
+            self.assertNotIn("sdp-topology-grid", part)
+        main = (REPO_ROOT / "framework" / "browser" / "draft-browser.css").read_text(encoding="utf-8")
+        self.assertIn(".topology-info", main)
+        self.assertIn(".topology-risk", main)
 
     def test_fit_css_rules(self) -> None:
         fit = re.search(r"\.sdp-diagram-embed\.fit svg \{([^}]*)\}", self.sdp)
