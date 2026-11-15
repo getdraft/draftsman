@@ -1022,8 +1022,13 @@ def questions_html(model: Model) -> str:
 
 
 def figure_html(svg: str, fig_id: str) -> str:
-    """The figure SVG with its element id added to the inline copy only; the standalone SVG files are unchanged."""
-    return '<div class="scroll">' + svg.replace("<svg ", '<svg id="' + fig_id + '" ', 1) + "</div>"
+    """The figure SVG with its element id added to the inline copy only; the standalone SVG files are unchanged.
+
+    The inline copy never draws narrower than its own width, so a figure wider than the page column scrolls
+    horizontally inside its wrapper instead of shrinking its boxes and text."""
+    found = re.search(r'<svg [^>]*?width="(\d+)"', svg)
+    style = f' style="min-width:{max(760, int(found.group(1)))}px"' if found else ""
+    return '<div class="scroll">' + svg.replace("<svg ", '<svg id="' + fig_id + '"' + style + " ", 1) + "</div>"
 
 
 CSS = """
@@ -1040,7 +1045,7 @@ h1{font-size:26px;line-height:1.2;margin:0;font-weight:600}h2{font-size:17px;mar
 .counts{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:13.5px}.counts b{font-variant-numeric:tabular-nums}
 .scroll,.tw{overflow-x:auto;border:1px solid var(--zone-line);border-radius:6px;background:var(--surface)}
 svg{display:block;width:100%;min-width:760px;height:auto;color:var(--fg)}svg text{fill:currentColor;font-family:inherit}
-svg.quiet .edge:not(.on){display:none}svg .edge.on .fl{display:inline}svg .edge.on .ln{stroke:var(--hi-edge);stroke-width:3}svg .edge.on text{fill:var(--hi-edge)}svg .mk{fill:context-stroke}svg .edge.on.out .ln{stroke:var(--hi-out)}svg .edge.on.out text{fill:var(--hi-out)}svg .edge.on.in .ln{stroke:var(--hi-in)}svg .edge.on.in text{fill:var(--hi-in)}.tog{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);margin:0 0 10px}.tog input{margin:0}.key{display:inline-flex;gap:14px;font-size:13px;color:var(--muted);margin-left:14px}.key i{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:middle;margin-right:5px}.key .o i{border-color:var(--hi-out)}.key .i i{border-color:var(--hi-in)}
+svg.quiet .edge:not(.on){display:none}svg.focus:not(.quiet) .edge:not(.on){opacity:.15}svg .edge.on .fl{display:inline}svg .edge.on .ln{stroke:var(--hi-edge);stroke-width:3}svg .edge.on text{fill:var(--hi-edge)}svg .mk{fill:context-stroke}svg .edge.on.out .ln{stroke:var(--hi-out)}svg .edge.on.out text{fill:var(--hi-out)}svg .edge.on.in .ln{stroke:var(--hi-in)}svg .edge.on.in text{fill:var(--hi-in)}.tog{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);margin:0 0 10px}.tog input{margin:0}.key{display:inline-flex;gap:14px;font-size:13px;color:var(--muted);margin-left:14px}.key i{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:middle;margin-right:5px}.key .o i{border-color:var(--hi-out)}.key .i i{border-color:var(--hi-in)}
 svg .node.on .box{stroke:var(--hi-node);stroke-width:2.6;fill:var(--hi-node-bg)}svg .group.on>.grp{stroke:var(--hi-node);stroke-width:2.6}
 svg [data-id]:focus{outline:none}svg [data-id]:focus>rect,svg .node.on:focus>.box,svg .group.on:focus>.grp{stroke:var(--accent);stroke-width:2.6}
 table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--zone-line)}
@@ -1076,9 +1081,8 @@ JS = """
   });
  }
  figs.forEach(function(svg){
-  svg.classList.add('quiet');
   var tog=document.querySelector('input[data-all="'+svg.id+'"]');
-  if(tog){tog.checked=false;tog.addEventListener('change',function(){svg.classList.toggle('quiet',!tog.checked)})}
+  if(tog){tog.checked=true;tog.addEventListener('change',function(){svg.classList.toggle('quiet',!tog.checked)})}
   [].slice.call(svg.querySelectorAll('[data-id]')).forEach(function(el){el.setAttribute('tabindex','0')});
   svg.addEventListener('mouseover',function(e){var id=uidOf(e.target);if(id!==hover){hover=id;paint()}});
   svg.addEventListener('mouseleave',function(){hover=null;paint()});
@@ -1329,15 +1333,16 @@ def render_page(model: Model, dm: DiagramModel, back_link: str | None = None, ed
         counts_html(model, dm),
         edit_panel_html(model) if editable else "",
         f'<section class="sec" id="logical"><h2>{E(LOGICAL_TITLE)}</h2>'
-        '<label class="tog"><input type="checkbox" data-all="fig-logical"> Show all connections</label><span class="key"><span class="o"><i></i>calls it makes</span><span class="i"><i></i>calls it receives</span></span>'
+        '<label class="tog"><input type="checkbox" data-all="fig-logical" checked> Show all connections</label><span class="key"><span class="o"><i></i>calls it makes</span><span class="i"><i></i>calls it receives</span></span>'
         "<p>Components and data components in bands by diagram tier; placed infrastructure (network, runtime, host, AI gateway and data store services) is drawn in the deployment diagram only. Dependencies that this pattern does not place sit in the right-hand lane, captioned with the pattern that places them. "
-        "Connections are hidden until you hover over, focus or click a box; then only that box's own connections appear, purple for calls it makes and orange for calls it receives. "
+        "All connections are shown; hover over, focus or click a box to bring its own connections forward, purple for calls it makes and orange for calls it receives, while the others fade. "
+        "Clear the checkbox to hide them until a box is selected. "
         "Click to pin. A dashed box has a derived tier.</p>"
         + logical_body
         + "</section>",
         f'<section class="sec" id="deployment"><h2>{E(DEPLOYMENT_TITLE)}</h2>'
-        '<label class="tog"><input type="checkbox" data-all="fig-deployment"> Show all connections</label><span class="key"><span class="o"><i></i>calls it makes</span><span class="i"><i></i>calls it receives</span></span>'
-        "<p>Deployment targets hold service groups, each drawn as a container around its boxes, including the infrastructure the logical diagram leaves out. Data components sit inside a container named for the data store service they run on. Connections are hidden until you hover over, focus or click a box, and pinning an object in one figure highlights it in the other.</p>"
+        '<label class="tog"><input type="checkbox" data-all="fig-deployment" checked> Show all connections</label><span class="key"><span class="o"><i></i>calls it makes</span><span class="i"><i></i>calls it receives</span></span>'
+        "<p>Deployment targets hold service groups, each drawn as a container around its boxes, including the infrastructure the logical diagram leaves out. Data components sit inside a container named for the data store service they run on. All connections are shown and a selected box's own connections come forward while the others fade; pinning an object in one figure highlights it in the other.</p>"
         + figure_html(
             annotate_containers(render_deployment_svg(dm), marks["deployment"], "d", _deployment_store_uids(dm)) if editable else render_deployment_svg(dm),
             FIGURE_IDS[1],
@@ -1418,13 +1423,13 @@ def build_diagram_model(catalog: dict[str, dict[str, Any]], sdp: dict[str, Any],
 
 # --------------------------------------------------------------------------- logical view
 GRID = 10  # every node x and y is a multiple of this (D14)
-LOGICAL_COLUMNS = 4  # a band wraps to a new row after this many boxes (D4)
+LOGICAL_COLUMNS = 5  # a band wraps to a new row after this many boxes (D4)
 LOGICAL_SWEEPS = 4  # barycentre sweeps downward, then the same number upward (D14)
 LOGICAL_BOX_W = 200
 LOGICAL_BOX_H = 60
 LOGICAL_COL_GAP = 30
 LOGICAL_ROW_GAP = 30
-LOGICAL_BAND_GAP = 40
+LOGICAL_BAND_GAP = 20  # free space between two band rectangles; tracks run in the bands' own pads
 LOGICAL_BAND_PAD = 10
 LOGICAL_LABEL_W = 110
 LOGICAL_LANE_GAP = 90
@@ -1574,6 +1579,7 @@ class LogicalLayout:
     gap_bands: dict[tuple[str, int], tuple[int, int, int]] = field(default_factory=dict)  # D37: px of lb-s band, lb-t band, loop rise
     label_rows: dict[int, int] = field(default_factory=dict)  # edge index -> index among its same-ordered-pair siblings
     gap_tech: set = field(default_factory=set)  # D37: gaps where a labelled edge records a technology (two-line label rows)
+    band_starts: set = field(default_factory=set)  # main row index of the first row of every band after the first
 
 
 def _place_logical(layout: LogicalLayout, outer: bool) -> None:
@@ -1609,9 +1615,11 @@ def _place_logical(layout: LogicalLayout, outer: bool) -> None:
     for b, (band, layer) in enumerate(zip(layout.band_names, layout.order)):
         band_rows = -(-len(layer) // LOGICAL_COLUMNS)
         top = y
-        pad = room(("m", 0), LOGICAL_BAND_PAD) if b == 0 else LOGICAL_BAND_PAD
-        if b == 0:
-            layout.gaps[("m", 0)] = (top, pad)
+        # Every band holds the tracks of its own rows inside its rectangle: the top pad carries the in-runs of its
+        # first row ("m", first row) and the bottom pad the out-runs of its last row (("o", next band's first row),
+        # or ("m", count) for the last band), so an edge between two boxes of one band never leaves the band.
+        pad = room(("m", r), LOGICAL_BAND_PAD)
+        layout.gaps[("m", r)] = (top, pad)
         y += pad
         for k in range(band_rows):
             for col, uid in enumerate(layout.rows[r]):
@@ -1623,15 +1631,13 @@ def _place_logical(layout: LogicalLayout, outer: bool) -> None:
                 layout.gaps[("m", r)] = (y, size)
                 y += size
         last = b == len(layout.order) - 1
-        pad = room(("m", count), LOGICAL_BAND_PAD) if last else LOGICAL_BAND_PAD
-        if last:
-            layout.gaps[("m", count)] = (y, pad)
+        bottom_gap = ("m", count) if last else ("o", r)
+        pad = room(bottom_gap, LOGICAL_BAND_PAD)
+        layout.gaps[bottom_gap] = (y, pad)
         y += pad
         layout.bands.append((band, top, y - top, band_right - LOGICAL_MARGIN))
         if not last:
-            size = room(("m", r), LOGICAL_BAND_GAP)
-            layout.gaps[("m", r)] = (y, size)  # an inter-band gap keeps its tracks between the two band rectangles
-            y += size
+            y += LOGICAL_BAND_GAP  # the space between two band rectangles carries no track; edges cross it in gutters
     bottom = y if layout.bands else LOGICAL_MARGIN
     right = band_right
     layout.lane = None
@@ -1678,6 +1684,8 @@ def layout_logical(model: DiagramModel) -> LogicalLayout:
     layout.order = [apply_positions(layer, model.logical_positions) for layer in barycentre_order(layers, pairs)]
     layout.band_names = names
     for layer in layout.order:
+        if layout.rows:
+            layout.band_starts.add(len(layout.rows))
         for start in range(0, len(layer), LOGICAL_COLUMNS):
             for uid in layer[start : start + LOGICAL_COLUMNS]:
                 layout.row_of[uid] = ("m", len(layout.rows))
@@ -1752,7 +1760,7 @@ def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool
     for i, e in drawn:
         (ss, sr), (ts, tr) = layout.row_of[e.source], layout.row_of[e.target]
         ax, bx = out_x(e.source), in_x(e.target)
-        if ss == ts and tr == sr + 1:
+        if ss == ts and tr == sr + 1 and _gap_of(layout, ("out", e.source)) == _gap_of(layout, ("in", e.target)):
             layout.plan[i] = ("direct",)
             targets[i] = (ax, bx, bx, None)
             continue
@@ -1958,9 +1966,12 @@ def _order_gutter(items: list, joins: dict) -> int:
 
 
 def _gap_of(layout: LogicalLayout, key: tuple) -> tuple[str, int]:
-    """The row gap of an out-run (below its box) or an in-run (above its box)."""
+    """The row gap of an out-run (below its box) or an in-run (above its box). Below the last row of a band that
+    another band follows, the out-run is in that band's own bottom pad ("o", next row), not in the next band."""
     stack, row = layout.row_of[key[1]]
-    return (stack, row + 1) if key[0] == "out" else (stack, row)
+    if key[0] != "out":
+        return (stack, row)
+    return ("o", row + 1) if stack == "m" and row + 1 in layout.band_starts else (stack, row + 1)
 
 
 def _run_y(layout: LogicalLayout, run: _Run) -> int:
@@ -2541,7 +2552,7 @@ def render_logical_svg(model: DiagramModel) -> str:
     return "\n".join(out) + "\n"
 
 
-DEPLOY_COLUMNS = 3  # boxes per row inside a zone lane
+DEPLOY_COLUMNS = 4  # boxes per row inside a zone lane
 DEPLOY_PAD = 10
 DEPLOY_COL_GAP = 60  # minimum gap between box columns; widened when self-loops would reach the next column
 DEPLOY_LEVEL = TRACK_PITCH  # D35: distance between two tracks of a free band
@@ -2654,8 +2665,23 @@ def _route_deployment_edges(
     bands: list,
     stack_right: int,
     chan_pad: int,
-) -> tuple[dict, int]:
-    """Comb routing (D15, D35, D36, deterministic): every edge runs out of the stack to a vertical channel on its right.
+    lane_of: dict | None = None,
+    gutters: dict | None = None,
+) -> tuple[dict, int, int]:
+    """Comb routing (D15, D35, D36, deterministic): an edge between two boxes of one zone lane stays inside that lane;
+    every other edge runs out of the stack to a vertical channel on its right.
+
+    Same-lane edges (``lane_of`` maps a box drawn directly in a zone lane to (lane, column); ``gutters`` holds per
+    lane the free (left, width) x range right of each column: between columns, and for the last column a gutter
+    reserved inside the lane's right border) leave the source through its bottom, run right along a track of the
+    band below the source row to the gutter right of the rightmost of the two columns, along a gutter track to the
+    band above the target row, left to the target's attachment and into the target's top. Choosing
+    the gutter right of both ends makes every band run head right, as the channel runs do, so the nearest-first
+    track order below keeps every run clear of co-visible stubs (a gutter left of a source would let two co-visible
+    sources each pass over the other's stub, a cycle no track order resolves). The source's out-run and the target's
+    in-run are the shared runs its channel edges use (D36), and a lane's bands and gutters are inside the lane
+    rectangle, so such an edge never crosses a box or a lane border. Gutter tracks are assigned with the left-edge
+    rule per gutter (one run per source, like a channel), so edges that share an endpoint never share a gutter track.
 
     An edge leaves its source, box or container, through the bottom side and enters its target through the top
     side. All edges of a source share one attachment point, one out-run along a track of the band below the source
@@ -2668,15 +2694,25 @@ def _route_deployment_edges(
     in the outside lane's bands also keep a track apart from co-visible stack runs that overlap them in x. Runs of
     edges that share no endpoint may share a track (D35).
 
-    Returns the polyline per edge index and the number of channel tracks; each band's ``need`` holds its tracks.
+    Returns the polyline per edge index, the number of channel tracks, the largest track count of a gutter between
+    columns and that of a last-column gutter; each band's ``need`` holds its tracks.
     """
+    lane_of = lane_of or {}
+    gutters = gutters or {}
 
     def attach(uid: str, out: bool) -> int:
         x, _y, w, _h = rects[uid]
         return x + w // 2 + (ATTACH_DX if out else -ATTACH_DX)
 
+    in_lane: dict[int, tuple] = {}  # edge index -> (lane, gutter index) for a same-lane edge
+    for i, e in drawn:
+        (lane, col_s), (lane_t, col_t) = lane_of.get(e.source, (None, 0)), lane_of.get(e.target, (None, 0))
+        if lane is not None and lane == lane_t:
+            in_lane[i] = (lane, max(col_s, col_t))
     chan_runs: dict[str, _Run] = {}
     for i, e in drawn:
+        if i in in_lane:
+            continue
         lo = min(pools[e.source]["bottom"].lo, pools[e.target]["top"].lo)
         hi = max(pools[e.source]["bottom"].hi, pools[e.target]["top"].hi)
         run = chan_runs.get(e.source)
@@ -2692,8 +2728,13 @@ def _route_deployment_edges(
     index = {id(band): k for k, band in enumerate(bands)}  # identity lookup only; nothing iterates this dict
     for i, e in drawn:
         for uid, out, band in ((e.source, True, pools[e.source]["bottom"]), (e.target, False, pools[e.target]["top"])):
-            x, cx = attach(uid, out), chan_x[e.source]
-            lo, hi = (x, cx) if band.rightward else (cx, x)
+            x = attach(uid, out)
+            if i in in_lane:  # the whole gutter: its tracks are not placed yet
+                left, width = gutters[in_lane[i][0]][in_lane[i][1]]
+                lo, hi = min(x, left), max(x, left + width)
+            else:
+                cx = chan_x[e.source]
+                lo, hi = (x, cx) if band.rightward else (cx, x)
             key = (index[id(band)], out, uid, x)
             run = runs.get(key)
             if run is None:
@@ -2731,11 +2772,36 @@ def _route_deployment_edges(
                     placed.append((y, run))
                 used[from_top] = max(used[from_top], track + 1)
         band.need = used[True] + used[False]
+    # Gutter runs of same-lane edges: one per source and gutter, over the y span of the band runs it joins.
+    vertical: dict[tuple, _Run] = {}
+    for i, e in drawn:
+        if i not in in_lane:
+            continue
+        ys, yt = level[(True, e.source)], level[(False, e.target)]
+        key = ("g", in_lane[i][0], in_lane[i][1], e.source)
+        run = vertical.get(key)
+        if run is None:
+            vertical[key] = _Run(key, min(ys, yt), max(ys, yt), {e.source, e.target}, i)
+        else:
+            run.lo, run.hi = min(run.lo, ys, yt), max(run.hi, ys, yt)
+            run.uids |= {e.source, e.target}
+    gutter_count: dict[tuple, int] = {}
+    last_count = 0
+    for gutter in sorted({key[1:3] for key in vertical}):
+        gutter_count[gutter] = _left_edge([run for key, run in sorted(vertical.items()) if key[1:3] == gutter])
+        if gutter[1] == len(gutters[gutter[0]]) - 1:
+            last_count = max(last_count, gutter_count[gutter])
     routes: dict[int, list[tuple[int, int]]] = {}
     for i, e in drawn:
         sx, sy, _sw, sh = rects[e.source]
         tx, ty, _tw, _th = rects[e.target]
-        ox, ix, cx = attach(e.source, True), attach(e.target, False), chan_x[e.source]
+        ox, ix = attach(e.source, True), attach(e.target, False)
+        if i in in_lane:
+            left, width = gutters[in_lane[i][0]][in_lane[i][1]]
+            run = vertical[("g", in_lane[i][0], in_lane[i][1], e.source)]
+            cx = _track_at(left, width, gutter_count[in_lane[i]], run.track)
+        else:
+            cx = chan_x[e.source]
         ys, yt = level[(True, e.source)], level[(False, e.target)]
         raw = [(ox, sy + sh), (ox, ys), (cx, ys), (cx, yt), (ix, yt), (ix, ty)]
         pts: list[tuple[int, int]] = []
@@ -2743,7 +2809,8 @@ def _route_deployment_edges(
             if not pts or pts[-1] != point:
                 pts.append(point)
         routes[i] = pts
-    return routes, count
+    inner = [n for (lane, j), n in gutter_count.items() if j < len(gutters[lane]) - 1]
+    return routes, count, max(inner, default=0), last_count
 
 
 def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] | None = None) -> str:
@@ -2776,20 +2843,33 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
         return max([_loop_rise(loop_techs[u]) for u in uids if loops.get(u)], default=0)
 
     loop_room = (LOOP_REACH + LOOP_STEP * (most_loops - 1) + 4 - DEPLOY_PAD) if most_loops else 0
-    col_gap = max(DEPLOY_COL_GAP, LOOP_REACH + LOOP_STEP * (most_loops - 1) + 10) if most_loops else DEPLOY_COL_GAP
-    col_gap = -(-col_gap // GRID) * GRID  # D14: box x on the grid
-    step_x = LOGICAL_BOX_W + col_gap
+    loop_ext = (LOOP_REACH + LOOP_STEP * (most_loops - 1) + 4) if most_loops else 0  # a box loop's reach into the gutter on its right
     lane_sizes = [len(lane.members) for _t, groups in outline for g in groups for lane in g.lanes]
-    used = min(DEPLOY_COLUMNS, max(lane_sizes, default=1))
-    inner_w = used * LOGICAL_BOX_W + (used - 1) * col_gap
+    lane_cols = min(DEPLOY_COLUMNS, max(lane_sizes, default=1))
+    col_gap = step_x = inner_w = lane_w = group_w = 0
+
+    def size_columns(gutter_tracks: int, last_tracks: int) -> None:
+        """Column gap and the widths that follow from it. A gutter between box columns carries the tracks of the
+        same-lane edges (right of any self-loop reach), so it widens with the largest gutter track count; the gutter
+        right of a lane's last column is room added inside the lane's right border for its tracks."""
+        nonlocal col_gap, step_x, inner_w, lane_w, group_w
+        gap = max(DEPLOY_COL_GAP, LOOP_REACH + LOOP_STEP * (most_loops - 1) + 10) if most_loops else DEPLOY_COL_GAP
+        if gutter_tracks:
+            gap = max(gap, loop_ext + _track_space(gutter_tracks, 0))
+        col_gap = -(-gap // GRID) * GRID  # D14: box x on the grid
+        step_x = LOGICAL_BOX_W + col_gap
+        inner_w = lane_cols * LOGICAL_BOX_W + (lane_cols - 1) * col_gap
+        inner_w = max([inner_w] + [store_width(st) for _t, groups in outline for g in groups for lane in g.lanes for st in lane.stores])
+        lane_w = inner_w + 2 * DEPLOY_PAD + loop_room + (_track_space(last_tracks, 0) if last_tracks else 0)
+        group_w = lane_w + 2 * DEPLOY_PAD
 
     def store_width(store: DiagramStore) -> int:  # D45: a data store container holds its data components in rows
         cols = min(DEPLOY_COLUMNS, len(store.members))
         return cols * LOGICAL_BOX_W + (cols - 1) * col_gap + 2 * DEPLOY_PAD
 
-    inner_w = max([inner_w] + [store_width(st) for _t, groups in outline for g in groups for lane in g.lanes for st in lane.stores])
-    lane_w = inner_w + 2 * DEPLOY_PAD + loop_room
-    group_w = lane_w + 2 * DEPLOY_PAD
+    size_columns(0, 0)
+    lane_of: dict[str, tuple] = {}  # box uid -> (index of the zone lane it is drawn in, its column), for same-lane routing
+    lane_gutters: dict[int, list] = {}  # zone lane index -> free (left, width) right of each of its box columns
 
     captions: list = []  # (x, y, w, h) of every container caption of the last build_stack call, for D37 obstacles
 
@@ -2802,6 +2882,8 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
         """
         target_w = group_w + 2 * DEPLOY_PAD
         captions.clear()
+        lane_of.clear()
+        lane_gutters.clear()
         bands: list[_Band] = []
         rects: dict[str, tuple[int, int, int, int]] = {}  # uid -> x, y, w, h of a box or the first container with that uid
         pools: dict[str, dict[str, _Band]] = {}
@@ -2855,8 +2937,9 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
                     node_svgs: list[str] = []
                     prev_row: list[str] = []
 
-                    def lay_rows(rows_in: list, cx: int, cursor_in: int, prev_in: list) -> tuple:
-                        """Rows of boxes at x cx from cursor_in; returns the new cursor and the last row's uids."""
+                    def lay_rows(rows_in: list, cx: int, cursor_in: int, prev_in: list, lane_id: Any = None) -> tuple:
+                        """Rows of boxes at x cx from cursor_in; returns the new cursor and the last row's uids.
+                        ``lane_id`` records each box placed here as drawn directly in that zone lane."""
                         for row in rows_in:
                             above = band_at(cursor_in, rise(row))
                             for uid in prev_in:
@@ -2869,12 +2952,22 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
                                     pos[uid] = (bx, row_top)
                                     rects[uid] = (bx, row_top, LOGICAL_BOX_W, LOGICAL_BOX_H)
                                     pools[uid] = {"top": above}
+                                    if lane_id is not None:
+                                        lane_of[uid] = (lane_id, col)
                                     node_svgs.append(_node_svg(by_uid[uid], bx, row_top))
                             cursor_in = row_top + LOGICAL_BOX_H
                             prev_in = row
                         return cursor_in, prev_in
 
-                    cursor2, prev_row = lay_rows(rows, lx + DEPLOY_PAD, cursor2, prev_row)
+                    lane_id = len(lane_gutters)
+                    n_cols = len(rows[0]) if rows else 0
+                    lane_gutters[lane_id] = [
+                        (lx + DEPLOY_PAD + j * step_x + LOGICAL_BOX_W + loop_ext, col_gap - loop_ext) for j in range(n_cols - 1)
+                    ]
+                    if n_cols:  # right of the last column: up to the lane's right border, less the border clearance
+                        last_left = lx + DEPLOY_PAD + (n_cols - 1) * step_x + LOGICAL_BOX_W + loop_ext
+                        lane_gutters[lane_id].append((last_left, max(0, lx + lane_w - DEPLOY_BORDER_CLEAR - last_left)))
+                    cursor2, prev_row = lay_rows(rows, lx + DEPLOY_PAD, cursor2, prev_row, lane_id)
                     for store in _ordered_stores(lane.stores, model.deployment_positions):  # D45
                         above = band_at(cursor2, rise([store.uid]))
                         for uid in prev_row:
@@ -3021,7 +3114,9 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     levels: list[int] = []
     lab: list[tuple] = []  # D37: label rows (top, bottom) each band reserves
     n_channels = 0
+    n_gutter = n_last = 0  # the largest gutter track counts of the last pass; gutters only widen, like bands
     for _attempt in range(DEPLOY_MAX_PASSES):
+        size_columns(n_gutter, n_last)
         laid = build_stack(levels, lab)
         bands, rects, pools, names, pos, body, stack_bottom, stack_right, lane_rows, lane_top, lane_h, outer = laid
         last_channel = stack_right + chan_pad + DEPLOY_CHANNEL_STEP * (n_channels - 1) if n_channels else stack_right
@@ -3029,12 +3124,13 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
         for node, by in lane_rows:
             rects[node.uid] = (lane_x, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
             pos[node.uid] = (lane_x, by)
-        routes, used = _route_deployment_edges(drawn, rects, pools, bands, stack_right, chan_pad)
+        routes, used, gutter_need, last_need = _route_deployment_edges(drawn, rects, pools, bands, stack_right, chan_pad, lane_of, lane_gutters)
         grown = [max(band.tracks, band.need) for band in bands]
         lab_now = _band_label_rows(drawn, pools, bands)
-        if used == n_channels and grown == [band.tracks for band in bands] and lab_now == lab:
+        gutter_now, last_now = max(n_gutter, gutter_need), max(n_last, last_need)
+        if used == n_channels and grown == [band.tracks for band in bands] and lab_now == lab and (gutter_now, last_now) == (n_gutter, n_last):
             break
-        n_channels, levels, lab = used, grown, lab_now
+        n_channels, levels, lab, n_gutter, n_last = used, grown, lab_now, gutter_now, last_now
     else:  # the cap is a safety net; the figure is still drawn, from the last pass
         last_channel = stack_right + chan_pad + DEPLOY_CHANNEL_STEP * (max(used, 1) - 1)
         lane_x = max(lane_x, -(-(last_channel + DEPLOY_LANE_GAP) // GRID) * GRID)

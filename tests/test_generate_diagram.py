@@ -704,6 +704,7 @@ class GenerateDiagramTests(unittest.TestCase):
             self.assertEqual(model.sdp["uid"], "SDP-2")
 
 REGISTRY_SDP = "FXSDP00002-0001"
+LARGE_SDP = "FXSDP00003-0001"
 INFRA_FIXTURE_UIDS = ("FXNET00002-0001", "FXDST00002-0001", "FXDST00003-0001", "FXHST00002-0001")
 
 
@@ -2425,7 +2426,8 @@ class LaterStoryTests(unittest.TestCase):
         cat = load_catalog(write_workspace(Path(tempfile.mkdtemp()), objects))
         svg = logical_svg(cat, "SDP-1")
         self.assertEqual(len(edge_polylines(svg)), 160)
-        bound = 20 * generate_diagram.TRACK_PITCH + 2 * generate_diagram.LOGICAL_TRACK_PAD
+        # Plus the D37 label bands a gap reserves at its top and bottom (one label row each here); they are not tracks.
+        bound = 20 * generate_diagram.TRACK_PITCH + 2 * generate_diagram.LOGICAL_TRACK_PAD + 2 * generate_diagram.LABEL_BAND
         rows = sorted({y for _x, y, _w, _h in node_rects(svg).values()})
         self.assertEqual(len(rows), 4)
         for upper, lower in zip(rows, rows[1:]):
@@ -2471,8 +2473,9 @@ class LaterStoryTests(unittest.TestCase):
     def _assert_runs_clean(self, svg: str) -> None:
         """D35, D36: every edge leaves its source's bottom and enters its target's top; co-visible edges (sharing an
         endpoint) never share a track outside their fan bundle; co-visible horizontal runs closer than DEPLOY_LEVEL
-        in y are DEPLOY_LEVEL apart in x; and no run crosses the stub of a co-visible edge (channels are the only
-        verticals a run may cross). Edges that share no endpoint may share a track (D35)."""
+        in y are DEPLOY_LEVEL apart in x; and no run crosses the stub of a co-visible edge (channels, and the lane
+        gutters same-lane edges use, are the verticals a run may cross). A stub is the first or last segment of an
+        edge; every middle vertical is a channel or a gutter. Edges that share no endpoint may share a track (D35)."""
         self.assertEqual(side_violations(svg), [])
         self.assertEqual(covisible_track_clashes(svg), [])
         targets = [tuple(int(v) for v in m) for m in re.findall(r'<rect class="tgt" x="(-?\d+)" y="(-?\d+)" width="(\d+)" height="(\d+)"', svg)]
@@ -2482,8 +2485,8 @@ class LaterStoryTests(unittest.TestCase):
         edges = edge_polylines(svg)
         verticals, horizontals = [], []
         for number, (_s, _t, pts) in enumerate(edges):
-            for (ax, ay), (bx, by) in zip(pts, pts[1:]):
-                if ax == bx and ay != by:
+            for k, ((ax, ay), (bx, by)) in enumerate(zip(pts, pts[1:])):
+                if ax == bx and ay != by and k in (0, len(pts) - 2):
                     verticals.append((ax, min(ay, by), max(ay, by), number))
                 elif ay == by and ax != bx:
                     horizontals.append((ay, min(ax, bx), max(ax, bx), number))
@@ -3341,7 +3344,8 @@ class LaterStoryTests(unittest.TestCase):
         css = page.split("<style>")[1].split("</style>")[0]
         for token in ("--hi-edge:#7c3a6b", "--hi-node:#006064", "svg .edge.on .ln{stroke:var(--hi-edge)", "svg .node.on .box{stroke:var(--hi-node)", "svg .group.on>.grp{stroke:var(--hi-node)"):
             self.assertIn(token, css)
-        self.assertNotIn("opacity:.15", css, "highlighting colours the selection; it does not fade the rest")
+        # With every connection shown, selecting a box fades the other connections and raises its own.
+        self.assertIn("svg.focus:not(.quiet) .edge:not(.on){opacity:.15}", css)
         self.assertIn("appendChild(el)", script, "highlighted edges are raised above the others")
         # D34: connections hidden until a box is selected; direction colours; show-all toggle; legend
         self.assertIn("svg.quiet .edge:not(.on){display:none}", css)
@@ -3349,7 +3353,9 @@ class LaterStoryTests(unittest.TestCase):
         self.assertEqual(css.count("--hi-in:"), 3)
         for token in ("svg .edge.on.out .ln{stroke:var(--hi-out)}", "svg .edge.on.in .ln{stroke:var(--hi-in)}", ".key .o i{border-color:var(--hi-out)}"):
             self.assertIn(token, css)
-        self.assertIn("svg.classList.add('quiet')", script, "quiet mode is added by script so a page without script shows every line")
+        self.assertNotIn("svg.classList.add('quiet')", script, "every connection is shown by default; the toggle hides them")
+        self.assertIn("tog.checked=true", script)
+        self.assertIn("svg.classList.toggle('quiet',!tog.checked)", script)
         self.assertIn("el.classList.toggle('out',on&&a===id)", script)
         self.assertIn("el.classList.toggle('in',on&&a!==id&&to===id)", script)
         self.assertEqual(page.count('data-all="fig-logical"'), 1)
@@ -3359,7 +3365,7 @@ class LaterStoryTests(unittest.TestCase):
         self.assertEqual(page.count('<span class="o"><i></i>calls it makes</span>'), 2, "legend names the outbound colour under each figure")
         self.assertEqual(page.count('<span class="i"><i></i>calls it receives</span>'), 2, "legend names the inbound colour under each figure")
         for fid in ("fig-logical", "fig-deployment"):  # toggle and legend sit directly under the heading
-            self.assertRegex(page, r'</h2><label class="tog"><input type="checkbox" data-all="' + fid + '">')
+            self.assertRegex(page, r'</h2><label class="tog"><input type="checkbox" data-all="' + fid + '" checked>')
 
     def test_flow_overlay_per_edge(self) -> None:
         # D34: every drawn edge carries an animated overlay hidden until the edge is highlighted; its direction follows flow.
@@ -3536,6 +3542,112 @@ class LaterStoryTests(unittest.TestCase):
                 self.assertEqual(len(list(html_dir.glob("*.html"))), count)
                 self.assertEqual(len(list(svg_dir.glob("*.svg"))), 2 * count)
                 self.assertEqual(len([line for line in out.splitlines() if line.count("\t") == 3]), count)
+
+
+class SameContainerRoutingTests(unittest.TestCase):
+    """E1: edges between boxes of one zone lane or one tier band stay inside it; show-all default; density."""
+
+    @staticmethod
+    def _edges(svg: str) -> list:
+        """(from, to, vertices) for every edge path or polyline, vertices read from its d or points attribute."""
+        root = xml.dom.minidom.parseString(svg).documentElement
+        found = []
+        for g in root.getElementsByTagName("g"):
+            if g.getAttribute("class") != "edge":
+                continue
+            line = next((e for tag in ("path", "polyline") for e in g.getElementsByTagName(tag) if e.getAttribute("class").startswith("ln")), None)
+            assert line is not None, "edge without a line"
+            attr = line.getAttribute("d") or line.getAttribute("points")
+            numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", attr)]
+            found.append((g.getAttribute("data-from"), g.getAttribute("data-to"), list(zip(numbers[0::2], numbers[1::2]))))
+        return found
+
+    @staticmethod
+    def _rect(element) -> tuple:
+        rect = next(c for c in element.childNodes if getattr(c, "tagName", "") == "rect")
+        return tuple(float(rect.getAttribute(k)) for k in ("x", "y", "width", "height"))
+
+    def _assert_inside(self, label: str, source: str, target: str, pts: list, rect: tuple) -> None:
+        x, y, w, h = rect
+        for px, py in pts:
+            self.assertTrue(x <= px <= x + w and y <= py <= y + h, f"{label}: {source}->{target} vertex {(px, py)} outside {rect}")
+
+    def test_same_container_edges_stay_inside_container(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        checked = {"logical": 0, "deployment": 0}
+        for sdp_uid in (FIXTURE_SDP, REGISTRY_SDP, LARGE_SDP):
+            # Fresh renders only; the committed goldens are never read here.
+            logical = logical_svg(catalog, sdp_uid)
+            bands = [tuple(float(m.group(i)) for i in range(1, 5)) for m in re.finditer(r'<rect class="band" x="(-?[\d.]+)" y="(-?[\d.]+)" width="([\d.]+)" height="([\d.]+)"', logical)]
+            nodes = node_rects(logical)
+
+            def band_of(uid: str):
+                if uid not in nodes:
+                    return None
+                nx, ny, nw, nh = nodes[uid]
+                return next((b for b in bands if b[0] <= nx and nx + nw <= b[0] + b[2] and b[1] <= ny and ny + nh <= b[1] + b[3]), None)
+
+            for source, target, pts in self._edges(logical):
+                band = band_of(source)
+                if source != target and band is not None and band == band_of(target):
+                    self._assert_inside("logical band", source, target, pts, band)
+                    checked["logical"] += 1
+
+            deployment = xml.dom.minidom.parseString(deployment_svg(catalog, sdp_uid))
+            lane_of: dict[str, tuple] = {}
+            for g in deployment.documentElement.getElementsByTagName("g"):
+                if g.getAttribute("class") == "zlane":
+                    rect = self._rect(g)
+                    # Only boxes directly in the lane: boxes inside a data store container keep the existing routing.
+                    for child in g.childNodes:
+                        if getattr(child, "tagName", "") == "g" and child.getAttribute("class").split()[0] == "node":
+                            lane_of[child.getAttribute("data-id")] = (id(g), rect)
+            for source, target, pts in self._edges(deployment_svg(catalog, sdp_uid)):
+                if source != target and source in lane_of and target in lane_of and lane_of[source][0] == lane_of[target][0]:
+                    self._assert_inside("deployment lane", source, target, pts, lane_of[source][1])
+                    checked["deployment"] += 1
+        self.assertGreater(checked["logical"], 0, "fixture has no same-band edge to check")
+        self.assertGreater(checked["deployment"], 0, "fixture has no same-lane edge to check")
+
+    def test_toolbars_default_to_show_all(self) -> None:
+        page, _ = generate_diagram.build(FIXTURE, FIXTURE_SDP)
+        for fid in ("fig-logical", "fig-deployment"):
+            self.assertRegex(page, r'<input type="checkbox" data-all="' + fid + r'" checked>')
+        css = page.split("<style>")[1].split("</style>")[0]
+        script = page.split("<script>")[1].split("</script>")[0]
+        self.assertIn("svg.focus:not(.quiet) .edge:not(.on){opacity:.15}", css)
+        self.assertIn("svg.classList.toggle('focus',!!id)", script)
+        self.assertIn("tog.checked=true", script)
+
+    def test_description_paragraphs_describe_show_all_default(self) -> None:
+        page, _ = generate_diagram.build(FIXTURE, FIXTURE_SDP)
+        self.assertEqual(page.count("All connections are shown"), 2)
+        self.assertIn("Clear the checkbox to hide them until a box is selected", page)
+        self.assertNotIn("Connections are hidden until you hover", page)
+
+    def test_column_constants_and_natural_width(self) -> None:
+        self.assertEqual(generate_diagram.LOGICAL_COLUMNS, 5)
+        self.assertEqual(generate_diagram.DEPLOY_COLUMNS, 4)
+        self.assertEqual(generate_diagram.LOGICAL_BOX_W, 200)
+        page, _ = generate_diagram.build(FIXTURE, "FX Large Synthetic Pattern")
+        for fid in ("fig-logical", "fig-deployment"):
+            fig = figure_of(page, fid)
+            width = int(re.search(r'<svg [^>]*?width="(\d+)"', fig).group(1))
+            minimum = int(re.search(r'style="min-width:(\d+)px"', fig).group(1))
+            self.assertGreaterEqual(minimum, min(width, 760))
+            self.assertEqual(minimum, max(760, width))
+        self.assertRegex(page, r"\.scroll,\.tw\{overflow-x:auto")
+
+    def test_examples_workspace_deterministic(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            runs = []
+            for n in (1, 2):
+                out, svg = Path(tmp) / f"html{n}", Path(tmp) / f"svg{n}"
+                code, _o, _e = run_cli(["--workspace", str(EXAMPLES), "--all", "--output-dir", str(out), "--svg-dir", str(svg)])
+                self.assertEqual(code, 0)
+                runs.append({p.relative_to(out.parent).as_posix().replace(f"html{n}", "h").replace(f"svg{n}", "s"): p.read_bytes() for d in (out, svg) for p in sorted(d.iterdir())})
+            self.assertTrue(runs[0])
+            self.assertEqual(runs[0], runs[1])
 
 
 class DiagramSkillTests(unittest.TestCase):
