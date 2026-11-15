@@ -4201,12 +4201,23 @@ class IntentRemovalDocsTests(unittest.TestCase):
             self.assertIsNone(self.FIELD.search(self._read(rel)), rel)
 
     def test_changelog_has_unreleased_above_newest_version(self) -> None:
+        # promote-release turns `## Unreleased` into the numbered section on every
+        # release, so right after a promotion main has no Unreleased section and
+        # that is correct. When the section exists it must sit above the newest
+        # version and carry the five headings in order; when it does not, the
+        # newest version's section is checked for the headings instead.
         text = self._read("CHANGELOG.md")
-        unreleased = text.index("## Unreleased")
         newest = re.search(r"(?m)^## \d+\.\d+\.\d+", text)
         self.assertIsNotNone(newest)
-        self.assertLess(unreleased, newest.start())
-        section = text[unreleased : newest.start()]
+        heading = re.search(r"(?m)^## Unreleased\s*$", text)  # the heading, not a mention in a bullet
+        if heading:
+            unreleased = heading.start()
+            self.assertLess(unreleased, newest.start())
+            section = text[unreleased : newest.start()]
+        else:
+            following = re.search(r"(?m)^## \d+\.\d+\.\d+", text[newest.end():])
+            end = newest.end() + following.start() if following else len(text)
+            section = text[newest.start() : end]
         positions = [
             section.find(f"### {name}")
             for name in ("Compatibility Impact", "Added", "Changed", "Fixed", "Migration Notes")
