@@ -81,8 +81,7 @@ class WebTests(unittest.TestCase):
     def test_sdp_detail_page_embeds_scoped_diagram(self) -> None:
         self.assertIn("function _sdpDiagramsMarkup(vm)", BROWSER_JS)
         self.assertIn("window.DraftDiagrams.buildSdpDiagram(object)", BROWSER_JS)
-        self.assertIn("id: 'sdp-s-diagrams',    label: 'Diagrams', skip: !vm.diagram", BROWSER_JS)
-        self.assertIn("window.DraftDiagrams.renderDiagramsIntoSlots([vm.diagram], vm.diagramRenderId)", BROWSER_JS)
+        # S2: the detail nav entry and the render call are gone; S3 rewrites this test.
 
     def test_sdp_diagram_initial_render_waits_for_dom_content_loaded(self) -> None:
         # Regression: draft-browser.js called applyRouteFromHash() (the initial
