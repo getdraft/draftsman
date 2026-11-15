@@ -315,7 +315,7 @@ class DetailDiagramSectionsTests(unittest.TestCase):
         nav = self.fn("_sdpSectionNavMarkup")
         order = ["sdp-s-application", "sdp-s-deployment", "sdp-s-groups", "sdp-s-decisions",
                  "sdp-s-connections", "sdp-s-tiers", "sdp-s-metadata"]
-        positions = [nav.find(f"'{i}'") for i in order[:3]]
+        positions = [nav.find(f"'{i}'") for i in order]
         self.assertTrue(all(p >= 0 for p in positions), nav)
         self.assertEqual(positions, sorted(positions))
         for label in ("Application", "Deployment", "Service Groups", "Decisions", "Connections", "Tier Variants", "Metadata"):
@@ -376,8 +376,8 @@ class DetailDiagramSectionsTests(unittest.TestCase):
     def test_scope_css_fallback_pure_function(self) -> None:
         if shutil.which("node") is None:
             self.skipTest("node is not on PATH; cannot run the CSS scoping fallback")
-        src = self.fn("_sdpScopeSelector") + "\n" + self.fn("_sdpScopeCssByText")
-        css = (":root{--a:1}html,body{margin:0}.x,.y>b{color:red}"
+        src = "\n".join(self.fn(n) for n in ("_sdpSplitSelectors", "_sdpScopeSelector", "_sdpScopeCssByText"))
+        css = (":root{--a:1}html,body{margin:0}.x,.y>b{color:red}.x:not(.a,.b){}.z{content:\"}\"}"
                "@keyframes spin{from{opacity:0}to{opacity:1}}"
                "@media (prefers-reduced-motion:reduce){.x{animation:none}}"
                "@media (prefers-color-scheme:dark){.x{color:white}}")
@@ -389,9 +389,38 @@ class DetailDiagramSectionsTests(unittest.TestCase):
             result.stdout,
             ".sdp-diagram-embed{--a:1}"
             ".sdp-diagram-embed .x,.sdp-diagram-embed .y>b{color:red}"
+            ".sdp-diagram-embed .x:not(.a,.b){}"
+            ".sdp-diagram-embed .z{content:\"}\"}"
             "@keyframes spin{from{opacity:0}to{opacity:1}}"
             "@media (prefers-reduced-motion:reduce){.sdp-diagram-embed .x{animation:none}}",
         )
+
+    def test_rendered_section_markup(self) -> None:
+        if shutil.which("node") is None:
+            self.skipTest("node is not on PATH; cannot render the section markup")
+        src = "\n".join(self.fn(n) for n in ("_sdpDiagramSectionMarkup", "_sdpApplicationMarkup",
+                                           "_sdpDeploymentMarkup", "_sdpSectionNavMarkup"))
+        script = ("const document={addEventListener(){}};const escapeHtml=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\"/g,'&quot;');"
+                  + src + """
+const vm={connections:[]};
+const out={};
+for (const [k,o] of [['with',{diagramPage:'diagrams/p.html',tierVariants:[]}],['without',{tierVariants:[]}]])
+  out[k]=_sdpSectionNavMarkup(vm,o)+_sdpApplicationMarkup(o)+_sdpDeploymentMarkup(o);
+process.stdout.write(JSON.stringify(out));""")
+        result = subprocess.run(["node", "-e", script], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        out = json.loads(result.stdout)
+        for key in ("with", "without"):
+            html = out[key]
+            self.assertIn('id="sdp-s-application"', html)
+            self.assertIn('id="sdp-s-deployment"', html)
+            self.assertNotIn("sdp-s-topology", html)
+            self.assertNotIn("sdp-s-diagrams", html)
+        self.assertEqual(out["with"].count('href="diagrams/p.html"'), 2)
+        self.assertEqual(out["with"].count("Open full page"), 2)
+        self.assertEqual(out["with"].count('aria-pressed="true"'), 2)
+        self.assertEqual(out["without"].count("The diagram page is not generated for this pattern."), 2)
+        self.assertNotIn("Open full page", out["without"])
 
     def test_fit_css_rules(self) -> None:
         fit = re.search(r"\.sdp-diagram-embed\.fit svg \{([^}]*)\}", self.sdp)

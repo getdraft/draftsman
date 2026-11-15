@@ -6428,6 +6428,8 @@ function _sdpTeardown() {
   _sdpEmbedToken++;
   const embedScript = document.getElementById('sdp-diagram-embed-script');
   if (embedScript) embedScript.remove();
+  const embedStyle = document.getElementById('sdp-diagram-embed-style');
+  if (embedStyle) embedStyle.remove();
 }
 
 // ── View-model builder ────────────────────────────────────────────────────────
@@ -6604,6 +6606,18 @@ function _sdpDeploymentMarkup(object) {
 // it cannot restyle the rest of the browser. :root rules become the container
 // itself (custom properties), html/body rules are dropped, dark-mode rules are
 // dropped (the browser is light only).
+function _sdpSplitSelectors(list) { // comma split that ignores commas inside () and []
+  const out = [];
+  let depth = 0, cur = '';
+  for (const ch of list) {
+    if (ch === '(' || ch === '[') depth++;
+    else if (ch === ')' || ch === ']') depth--;
+    if (ch === ',' && depth === 0) { out.push(cur); cur = ''; } else cur += ch;
+  }
+  out.push(cur);
+  return out;
+}
+
 function _sdpScopeSelector(sel) {
   const scope = '.' + _SDP_EMBED_CLASS;
   sel = sel.trim();
@@ -6623,6 +6637,11 @@ function _sdpScopeCssByText(cssText) {
   const matchBrace = start => { // index of the } closing the { at start
     let depth = 0;
     for (let i = start; i < text.length; i++) {
+      if (text[i] === '"' || text[i] === "'") { // skip string literals
+        const q = text[i];
+        for (i++; i < text.length && text[i] !== q; i++) if (text[i] === '\\') i++;
+        continue;
+      }
       if (text[i] === '{') depth++;
       else if (text[i] === '}' && --depth === 0) return i;
     }
@@ -6641,7 +6660,7 @@ function _sdpScopeCssByText(cssText) {
       else if (/^@(media|supports)\b/.test(prelude)) {
         if (!/prefers-color-scheme/.test(prelude)) out += `${prelude}{${scopeBlock(open + 1, close)}}`;
       } else if (!prelude.startsWith('@')) {
-        const sels = prelude.split(',').map(_sdpScopeSelector).filter(Boolean);
+        const sels = _sdpSplitSelectors(prelude).map(_sdpScopeSelector).filter(Boolean);
         if (sels.length) out += `${sels.join(',')}{${body}}`;
       }
       i = close + 1;
@@ -6661,12 +6680,15 @@ function _sdpScopeDiagramCss(cssText) {
       sheet.replaceSync(cssText);
       const walk = rules => Array.from(rules).map(rule => {
         if (rule.type === 1) { // style rule
-          const sels = rule.selectorText.split(',').map(_sdpScopeSelector).filter(Boolean);
+          const sels = _sdpSplitSelectors(rule.selectorText).map(_sdpScopeSelector).filter(Boolean);
           return sels.length ? `${sels.join(',')}{${rule.style.cssText}}` : '';
         }
-        if (rule.type === 4) { // media rule
-          if (/prefers-color-scheme/.test(rule.conditionText || rule.media.mediaText)) return '';
-          return `@media ${rule.media.mediaText}{${walk(rule.cssRules)}}`;
+        if (rule.type === 7) return rule.cssText; // @keyframes unchanged
+        if (rule.cssRules) { // @media, @supports and other grouping rules
+          const cond = rule.conditionText || (rule.media && rule.media.mediaText) || '';
+          if (/prefers-color-scheme/.test(cond)) return '';
+          const head = rule.cssText.slice(0, rule.cssText.indexOf('{')).trim();
+          return `${head}{${walk(rule.cssRules)}}`;
         }
         return rule.cssText;
       }).join('\n');
