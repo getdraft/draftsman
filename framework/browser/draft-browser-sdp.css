@@ -159,16 +159,31 @@
 }
 
 /* ─── Sticky section nav ─────────────────────────────────────────────────────── */
+/* The nav lives inside .sdp-sections, so it sticks only while those sections
+   are on screen and releases after the last one. Hero and KPI strip sit above
+   the container and are never overlapped. */
+.sdp-detail {
+  --sdp-header-offset: 0px; /* the shell has no fixed top bar; the sidebar is the only chrome */
+  --sdp-nav-height: 46px;
+}
+.sdp-detail .sdp-sections { margin-top: 36px; }
 .sdp-detail .section-nav {
   position: sticky;
-  top: 56px;
+  top: var(--sdp-header-offset);
   z-index: 40;
-  margin: 36px 0 24px;
+  margin: 0 0 24px;
+  height: var(--sdp-nav-height);
+  box-sizing: border-box;
   background: var(--page);
   border-bottom: 1px solid var(--line);
+  /* extend the opaque background and rule to the full width of the page area */
+  box-shadow: -100vmax 0 0 0 var(--page), 100vmax 0 0 0 var(--page);
+  clip-path: inset(0 -100vmax);
   display: flex;
   gap: 4px;
-  padding-bottom: 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
 }
 .sdp-detail .section-nav button {
   background: transparent;
@@ -190,7 +205,7 @@
 }
 
 /* ─── Section headings ───────────────────────────────────────────────────────── */
-.sdp-detail .sdp-section { padding: 28px 0; scroll-margin-top: 140px; }
+.sdp-detail .sdp-section { padding: 28px 0; scroll-margin-top: calc(var(--sdp-header-offset) + var(--sdp-nav-height) + 8px); }
 .sdp-detail .section-head {
   display: flex;
   align-items: baseline;
@@ -859,3 +874,31 @@
   .sdp-detail .ref-grid        { grid-template-columns: 1fr; }
   .sdp-detail .sdp-drawer      { width: 100%; }
 }
+
+/* ─── Embedded diagram sections ──────────────────────────────────────────────── */
+.sdp-detail .sdp-open-full {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 5px 10px;
+  white-space: nowrap;
+}
+.sdp-detail .sdp-open-full:hover { color: var(--ink); border-color: var(--line-strong); }
+.sdp-detail .sdp-embed-note { color: var(--muted); font-size: 13px; margin: 0; }
+.sdp-detail .sdp-diagram-embed { min-width: 0; }
+.sdp-detail .sdp-diagram-embed .tog { display: inline-flex; align-items: center; gap: 6px; margin-right: 18px; font-size: 13px; cursor: pointer; }
+.sdp-detail .sdp-diagram-embed .key { display: inline-flex; gap: 14px; font-size: 12.5px; }
+
+/* The detail grid cell must not grow with a wide figure: the figure scrolls inside .scroll instead. */
+.detail-layout > * { min-width: 0; }
+.sdp-detail .sdp-diagram-embed .scroll { max-width: 100%; overflow-x: auto; }
+
+/* Embedded figure: fit to the page width by default; "Actual size" restores the natural width and scrolls. */
+.sdp-detail .sdp-head-tools { display: flex; gap: 8px; align-items: center; }
+.sdp-detail .sdp-fit-toggle { font: inherit; font-size: 12px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--muted); cursor: pointer; }
+.sdp-detail .sdp-fit-toggle[aria-pressed="true"] { color: var(--ink); border-color: var(--line-strong); }
+.sdp-detail .sdp-diagram-embed.fit svg { width: 100% !important; height: auto !important; min-width: 0 !important; max-width: 100%; }
+.sdp-detail .sdp-diagram-embed.fit .scroll { overflow-x: hidden; }

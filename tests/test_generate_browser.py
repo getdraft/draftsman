@@ -19,6 +19,13 @@ BACK_LINK = ' <a href="../index.html">Back to catalog</a>'
 FOOTER_END = "the same catalog always produces the same page."
 
 
+def function_source(js: str, name: str) -> str:
+    """Source of one top-level function in the shipped JS, up to the next top-level function."""
+    start = js.index(f"function {name}(")
+    end = js.index("\nfunction ", start + 1)
+    return js[start:end]
+
+
 def run_browser(workspace: Path, out_dir: Path, *extra: str) -> subprocess.CompletedProcess:
     return subprocess.run(
         [sys.executable, str(BROWSER_TOOL), "--workspace", str(workspace), "--output", str(out_dir / "index.html"),
@@ -83,9 +90,8 @@ class DiagramPagesInBrowserTests(unittest.TestCase):
             if entry["type"] != "software_deployment_pattern":
                 self.assertNotIn("diagramPage", entry)
         js = BROWSER_JS.read_text(encoding="utf-8")
-        self.assertIn("object.diagramPage ?", js)
-        self.assertIn(">Diagrams</a>", js)
-        self.assertIn(": ''}", js[js.index("object.diagramPage ?"):][:200])
+        self.assertIn("object.diagramPage", js)
+        self.assertIn("Open full page", js)  # the hero Diagrams link became the section links (S2)
 
     def test_skip_diagrams(self) -> None:
         out = self.tmp / "site"
@@ -180,9 +186,7 @@ class IntentRemovedFromBrowserTests(unittest.TestCase):
         cls.js = BROWSER_JS.read_text(encoding="utf-8")
 
     def _function_source(self, name: str) -> str:
-        start = self.js.index(f"function {name}(")
-        end = self.js.index("\nfunction ", start + 1)
-        return self.js[start:end]
+        return function_source(self.js, name)
 
     def test_no_intent_field_or_helper_in_browser_js(self) -> None:
         # Targets the field and helper identifiers; prose such as "intentionally" is not matched.
@@ -292,6 +296,124 @@ class IntentRemovedFromBrowserCssTests(unittest.TestCase):
         start = self.sdp.index("@media (max-width: 760px) {")
         media = self.sdp[start:self.sdp.index("\n}", start)]
         self.assertRegex(media, r"\.kpi-strip\s*\{ grid-template-columns: repeat\(2, 1fr\); \}")
+
+
+class DetailDiagramSectionsTests(unittest.TestCase):
+    """Source-level proxies for the Application and Deployment sections, fit toggle and sticky nav.
+    The old topology functions stay in the file until a later story, so these assert on the
+    source of the new functions, not on whole-file text."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.js = BROWSER_JS.read_text(encoding="utf-8")
+        cls.sdp = (REPO_ROOT / "framework" / "browser" / "draft-browser-sdp.css").read_text(encoding="utf-8")
+
+    def fn(self, name: str) -> str:
+        return function_source(self.js, name)
+
+    def test_detail_sections_application_and_deployment(self) -> None:
+        nav = self.fn("_sdpSectionNavMarkup")
+        order = ["sdp-s-application", "sdp-s-deployment", "sdp-s-groups", "sdp-s-decisions",
+                 "sdp-s-connections", "sdp-s-tiers", "sdp-s-metadata"]
+        positions = [nav.find(f"'{i}'") for i in order[:3]]
+        self.assertTrue(all(p >= 0 for p in positions), nav)
+        self.assertEqual(positions, sorted(positions))
+        for label in ("Application", "Deployment", "Service Groups", "Decisions", "Connections", "Tier Variants", "Metadata"):
+            self.assertIn(f"label: '{label}'", nav)
+        labels = re.findall(r"label: '([^']+)'", nav)
+        self.assertEqual(labels, ["Application", "Deployment", "Service Groups", "Decisions", "Connections", "Tier Variants", "Metadata"])
+        detail = self.fn("_sdpDetailMarkup")
+        app = self.fn("_sdpApplicationMarkup")
+        dep = self.fn("_sdpDeploymentMarkup")
+        section = self.fn("_sdpDiagramSectionMarkup")
+        self.assertIn("'sdp-s-application', '01 \u2014 Application', 'Logical application diagram'", app.replace("\u2014", "\u2014"))
+        self.assertIn("'sdp-s-deployment', '02 \u2014 Deployment', 'Deployment pattern diagram'", dep)
+        self.assertIn("Open full page", section)
+        self.assertIn('aria-pressed="true"', section)
+        self.assertIn("Fit width", section)
+        self.assertIn("The diagram page is not generated for this pattern.", section)
+        self.assertIn("object.diagramPage", section)
+        self.assertLess(detail.index("_sdpApplicationMarkup"), detail.index("_sdpDeploymentMarkup"))
+        self.assertLess(detail.index("_sdpDeploymentMarkup"), detail.index("_sdpGroupsMarkup"))
+        for name in ("_sdpSectionNavMarkup", "_sdpDetailMarkup", "_sdpHeroMarkup", "_sdpDiagramSectionMarkup"):
+            src = self.fn(name)
+            for gone in ("sdp-s-topology", "sdp-s-diagrams", "data-tier-filter", "hero-diagrams", "_sdpTopologyMarkup", "_sdpDiagramsMarkup"):
+                self.assertNotIn(gone, src, f"{gone} in {name}")
+
+    def test_embed_static_contract(self) -> None:
+        load = self.fn("_sdpLoadDiagramEmbeds")
+        self.assertEqual(load.count("fetch("), 1)
+        self.assertIn("_sdpExtractFigureParts", load)
+        self.assertIn("_sdpScopeDiagramCss", load)
+        self.assertIn("createElement('script')", load)
+        self.assertLess(load.index("slot.appendChild(part)"), load.index("createElement('script')"))
+        self.assertIn("_sdpEmbedFail(root, missing)", load)
+        self.assertIn("The diagram page is not generated for this pattern.", load)
+        self.assertEqual(self.js.count("_sdpLoadDiagramEmbeds("), 2)  # definition and the single call site
+        scope = self.fn("_sdpScopeDiagramCss")
+        self.assertIn("replaceSync", scope)
+        self.assertRegex(scope, r"try \{[^}]*replaceSync")
+        self.assertIn("_sdpScopeCssByText", scope)
+
+    def test_embed_render_token_and_ids(self) -> None:
+        load = self.fn("_sdpLoadDiagramEmbeds")
+        self.assertIn("const token = ++_sdpEmbedToken", load)
+        self.assertIn("token !== _sdpEmbedToken", load)
+        self.assertLess(load.index("token !== _sdpEmbedToken"), load.index("document.head.appendChild(style)"))
+        self.assertIn("getElementById(_SDP_EMBED_STYLE_ID)", load)
+        self.assertIn("getElementById('sdp-diagram-embed-script')", load)
+        self.assertIn("const _SDP_EMBED_STYLE_ID = 'sdp-diagram-embed-style'", self.js)
+        self.assertLess(load.index("oldStyle.remove()"), load.index("document.head.appendChild(style)"))
+        self.assertLess(load.index("old.remove()"), load.index("document.body.appendChild(script)"))
+        self.assertIn("sdp-diagram-embed-script", self.fn("_sdpTeardown"))
+
+    def test_browser_js_passes_node_check(self) -> None:
+        if shutil.which("node") is None:
+            self.skipTest("node is not on PATH; cannot run node --check")
+        result = subprocess.run(["node", "--check", str(BROWSER_JS)], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_scope_css_fallback_pure_function(self) -> None:
+        if shutil.which("node") is None:
+            self.skipTest("node is not on PATH; cannot run the CSS scoping fallback")
+        src = self.fn("_sdpScopeSelector") + "\n" + self.fn("_sdpScopeCssByText")
+        css = (":root{--a:1}html,body{margin:0}.x,.y>b{color:red}"
+               "@keyframes spin{from{opacity:0}to{opacity:1}}"
+               "@media (prefers-reduced-motion:reduce){.x{animation:none}}"
+               "@media (prefers-color-scheme:dark){.x{color:white}}")
+        script = ("const _SDP_EMBED_CLASS='sdp-diagram-embed';" + src
+                  + f"\nprocess.stdout.write(_sdpScopeCssByText({json.dumps(css)}));")
+        result = subprocess.run(["node", "-e", script], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(
+            result.stdout,
+            ".sdp-diagram-embed{--a:1}"
+            ".sdp-diagram-embed .x,.sdp-diagram-embed .y>b{color:red}"
+            "@keyframes spin{from{opacity:0}to{opacity:1}}"
+            "@media (prefers-reduced-motion:reduce){.sdp-diagram-embed .x{animation:none}}",
+        )
+
+    def test_fit_css_rules(self) -> None:
+        fit = re.search(r"\.sdp-diagram-embed\.fit svg \{([^}]*)\}", self.sdp)
+        self.assertIsNotNone(fit)
+        for decl in ("width: 100%", "height: auto", "min-width: 0"):
+            self.assertIn(decl, fit.group(1))
+        self.assertRegex(self.sdp, r"\.sdp-diagram-embed\.fit \.scroll \{ overflow-x: hidden; \}")
+        self.assertRegex(self.sdp, r"\.sdp-diagram-embed \.scroll \{[^}]*overflow-x: auto")
+        self.assertRegex(self.sdp, r"\.detail-layout > \* \{ min-width: 0; \}")
+
+    def test_sticky_nav_css(self) -> None:
+        nav = re.search(r"\.sdp-detail \.section-nav \{([^}]*)\}", self.sdp).group(1)
+        self.assertIn("position: sticky", nav)
+        self.assertIn("top: var(--sdp-header-offset)", nav)
+        self.assertIn("background: var(--page)", nav)
+        self.assertIn("border-bottom: 1px solid", nav)
+        self.assertIn("--sdp-header-offset: 0px", self.sdp)
+        self.assertRegex(self.sdp, r"scroll-margin-top: calc\(var\(--sdp-header-offset\) \+ var\(--sdp-nav-height\) \+ 8px\)")
+        detail = self.fn("_sdpDetailMarkup")
+        self.assertIn('<div class="sdp-sections">', detail)
+        self.assertLess(detail.index("_sdpKpiMarkup"), detail.index('class="sdp-sections"'))
+        self.assertLess(detail.index('class="sdp-sections"'), detail.index("_sdpSectionNavMarkup"))
 
 
 class LegacyIntentTests(unittest.TestCase):

@@ -6425,6 +6425,9 @@ function _sdpTeardown() {
   if (_sdpSectionObs) { _sdpSectionObs.disconnect(); _sdpSectionObs = null; }
   _sdpActive = null; _sdpHover = null; _sdpDrawer = null;
   _sdpTierFilter = 'all'; _sdpCardRefs = {};
+  _sdpEmbedToken++;
+  const embedScript = document.getElementById('sdp-diagram-embed-script');
+  if (embedScript) embedScript.remove();
 }
 
 // ── View-model builder ────────────────────────────────────────────────────────
@@ -6502,7 +6505,6 @@ function _sdpHeroMarkup(object) {
       ${_sdpLifecycleBadge(object.lifecycleStatus)}
     </div>
     ${object.description ? `<p class="hero-desc">${escapeHtml(object.description)}</p>` : ''}
-    ${object.diagramPage ? `<p class="hero-diagrams"><a href="${escapeHtml(object.diagramPage)}">Diagrams</a></p>` : ''}
   </div>
   <div class="hero-side">
     ${owner.team    ? `<div class="hero-side-row"><span class="k">Owner</span><span class="v">${escapeHtml(owner.team)}</span></div>` : ''}
@@ -6536,8 +6538,8 @@ function _sdpKpiMarkup(object, vm) {
 // ── Section nav ───────────────────────────────────────────────────────────────
 function _sdpSectionNavMarkup(vm, object) {
   const sections = [
-    { id: 'sdp-s-topology',    label: 'Topology' },
-    { id: 'sdp-s-diagrams',    label: 'Diagrams', skip: !vm.diagram },
+    { id: 'sdp-s-application', label: 'Application' },
+    { id: 'sdp-s-deployment',  label: 'Deployment' },
     { id: 'sdp-s-groups',      label: 'Service Groups' },
     { id: 'sdp-s-decisions',   label: 'Decisions' },
     { id: 'sdp-s-connections', label: 'Connections', skip: !vm.connections.length },
@@ -6547,6 +6549,200 @@ function _sdpSectionNavMarkup(vm, object) {
   return `<nav class="section-nav" id="sdp-section-nav">${sections.map((s, i) =>
     `<button class="${i === 0 ? 'active' : ''}" data-sdp-nav="${s.id}">${escapeHtml(s.label)}</button>`
   ).join('')}</nav>`;
+}
+
+// ── Application / Deployment diagram sections ─────────────────────────────────
+// Both sections embed figures from the generated diagram page (object.diagramPage).
+// The page is fetched once per detail render; its figures, <style> and <script>
+// are moved into the browser so hover, pin, keyboard and the connection toggle
+// behave exactly as on the standalone page.
+const _SDP_EMBED_CLASS = 'sdp-diagram-embed';
+const _SDP_EMBED_STYLE_ID = 'sdp-diagram-embed-style';
+let _sdpEmbedToken = 0;
+
+function _sdpDiagramSectionMarkup(sectionId, eyebrow, title, kind, object) {
+  const page = object.diagramPage;
+  const link = page
+    ? `<a class="sdp-open-full" href="${escapeHtml(page)}" target="_blank" rel="noopener">Open full page &#8599;</a>`
+    : '';
+  const body = page
+    ? `<p class="sdp-embed-note">Loading diagram&hellip;</p>`
+    : `<p class="sdp-embed-note">The diagram page is not generated for this pattern.</p>`;
+  const fit = page
+    ? `<button type="button" class="sdp-fit-toggle" data-sdp-fit="${kind}" aria-pressed="true" title="Scale the figure to the page width, or show it at actual size and scroll">Fit width</button>`
+    : '';
+  return `
+<div class="sdp-section" id="${sectionId}">
+  <div class="section-head">
+    <div><span class="eyebrow">${eyebrow}</span><h2>${title}</h2></div>
+    <div class="sdp-head-tools">${fit}${link}</div>
+  </div>
+  <div class="${_SDP_EMBED_CLASS} fit" data-sdp-embed="${kind}">${body}</div>
+</div>`;
+}
+
+// Fit width / actual size toggle for the embedded figures (one delegated listener).
+document.addEventListener('click', e => {
+  const btn = e.target.closest && e.target.closest('[data-sdp-fit]');
+  if (!btn) return;
+  const embed = btn.closest('.sdp-section') && btn.closest('.sdp-section').querySelector('[data-sdp-embed]');
+  if (!embed) return;
+  const on = !embed.classList.contains('fit');
+  embed.classList.toggle('fit', on);
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  btn.textContent = on ? 'Fit width' : 'Actual size';
+});
+
+function _sdpApplicationMarkup(object) {
+  return _sdpDiagramSectionMarkup('sdp-s-application', '01 — Application', 'Logical application diagram', 'logical', object);
+}
+function _sdpDeploymentMarkup(object) {
+  return _sdpDiagramSectionMarkup('sdp-s-deployment', '02 — Deployment', 'Deployment pattern diagram', 'deployment', object);
+}
+
+// Prefix every rule of the diagram page's stylesheet with .sdp-diagram-embed so
+// it cannot restyle the rest of the browser. :root rules become the container
+// itself (custom properties), html/body rules are dropped, dark-mode rules are
+// dropped (the browser is light only).
+function _sdpScopeSelector(sel) {
+  const scope = '.' + _SDP_EMBED_CLASS;
+  sel = sel.trim();
+  if (!sel) return null;
+  if (/^:root\[data-theme=["']dark["']\]/.test(sel)) return null;
+  if (/^(html|body)\b/.test(sel)) return null;
+  if (sel.startsWith(':root')) return scope + sel.slice(':root'.length).replace(/^:not\(\[data-theme=["']light["']\]\)/, '');
+  return scope + ' ' + sel;
+}
+
+// Fallback used when CSSStyleSheet or replaceSync is unavailable (Safari before
+// 16.4) or throws: a pure string transform of the stylesheet text. Plain rules
+// get the scope prefix, @keyframes are copied unchanged, @media and @supports are
+// recursed into, @media (prefers-color-scheme: dark) is dropped.
+function _sdpScopeCssByText(cssText) {
+  const text = String(cssText).replace(/\/\*[\s\S]*?\*\//g, '');
+  const matchBrace = start => { // index of the } closing the { at start
+    let depth = 0;
+    for (let i = start; i < text.length; i++) {
+      if (text[i] === '{') depth++;
+      else if (text[i] === '}' && --depth === 0) return i;
+    }
+    return text.length - 1;
+  };
+  const scopeBlock = (from, to) => {
+    let out = '';
+    let i = from;
+    while (i < to) {
+      const open = text.indexOf('{', i);
+      if (open < 0 || open >= to) break;
+      const prelude = text.slice(i, open).trim();
+      const close = matchBrace(open);
+      const body = text.slice(open + 1, close);
+      if (/^@(-\w+-)?keyframes\b/.test(prelude)) out += `${prelude}{${body}}`;
+      else if (/^@(media|supports)\b/.test(prelude)) {
+        if (!/prefers-color-scheme/.test(prelude)) out += `${prelude}{${scopeBlock(open + 1, close)}}`;
+      } else if (!prelude.startsWith('@')) {
+        const sels = prelude.split(',').map(_sdpScopeSelector).filter(Boolean);
+        if (sels.length) out += `${sels.join(',')}{${body}}`;
+      }
+      i = close + 1;
+    }
+    return out;
+  };
+  return scopeBlock(0, text.length);
+}
+
+function _sdpScopeDiagramCss(cssText) {
+  const scope = '.' + _SDP_EMBED_CLASS;
+  const tail = `\n${scope}{color:var(--fg);font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}`
+    + `\n${scope} .sec>p{margin:6px 0 12px}`;
+  if (typeof CSSStyleSheet !== 'undefined') {
+    try {
+      const sheet = new CSSStyleSheet();
+      sheet.replaceSync(cssText);
+      const walk = rules => Array.from(rules).map(rule => {
+        if (rule.type === 1) { // style rule
+          const sels = rule.selectorText.split(',').map(_sdpScopeSelector).filter(Boolean);
+          return sels.length ? `${sels.join(',')}{${rule.style.cssText}}` : '';
+        }
+        if (rule.type === 4) { // media rule
+          if (/prefers-color-scheme/.test(rule.conditionText || rule.media.mediaText)) return '';
+          return `@media ${rule.media.mediaText}{${walk(rule.cssRules)}}`;
+        }
+        return rule.cssText;
+      }).join('\n');
+      return walk(sheet.cssRules) + tail;
+    } catch (e) { /* fall through to the string fallback */ }
+  }
+  return _sdpScopeCssByText(cssText) + tail;
+}
+
+function _sdpExtractFigureParts(doc, sectionId) {
+  const sec = doc.getElementById(sectionId);
+  if (!sec) return null;
+  const wrap = document.createElement('div');
+  wrap.className = 'sec';
+  Array.from(sec.children).forEach(child => {
+    if (/^H[1-6]$/.test(child.tagName)) return; // the browser section supplies the heading
+    wrap.appendChild(document.importNode(child, true));
+  });
+  return wrap;
+}
+
+function _sdpEmbedFail(root, message) {
+  root.querySelectorAll('[data-sdp-embed]').forEach(slot => {
+    slot.innerHTML = `<p class="sdp-embed-note">${escapeHtml(message)}</p>`;
+  });
+}
+
+function _sdpLoadDiagramEmbeds(object) {
+  const root = pageRoot;
+  const slots = root.querySelectorAll('[data-sdp-embed]');
+  if (!slots.length || !object.diagramPage) return;
+  const token = ++_sdpEmbedToken;
+  const missing = 'The diagram page is not generated for this pattern.';
+  fetch(object.diagramPage)
+    .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.text(); })
+    .then(html => {
+      if (token !== _sdpEmbedToken || !document.body.contains(slots[0])) return; // navigated away
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const parts = { logical: _sdpExtractFigureParts(doc, 'logical'), deployment: _sdpExtractFigureParts(doc, 'deployment') };
+      if (!parts.logical && !parts.deployment) { _sdpEmbedFail(root, missing); return; }
+      // Style: previous copy removed, then injected once, scoped to the embed container.
+      const oldStyle = document.getElementById(_SDP_EMBED_STYLE_ID);
+      if (oldStyle) oldStyle.remove();
+      const css = Array.from(doc.querySelectorAll('style')).map(s => s.textContent).join('\n');
+      const style = document.createElement('style');
+      style.id = _SDP_EMBED_STYLE_ID;
+      style.textContent = _sdpScopeDiagramCss(css);
+      document.head.appendChild(style);
+      // Markup first, so the script finds both figures and toggles.
+      slots.forEach(slot => {
+        const part = parts[slot.dataset.sdpEmbed];
+        slot.innerHTML = '';
+        if (part) slot.appendChild(part);
+        else slot.innerHTML = `<p class="sdp-embed-note">${escapeHtml(missing)}</p>`;
+      });
+      // Script: run after insertion through a fresh <script> element (scripts
+      // parsed by DOMParser never execute). The page script is an IIFE that looks
+      // figures up by id and does not wait for DOMContentLoaded; if a later
+      // version waits for it, the readyState is already "complete" here so we
+      // wrap the listener to fire immediately.
+      const code = Array.from(doc.querySelectorAll('script'))
+        .filter(s => !s.type || /javascript|module/.test(s.type))
+        .map(s => s.textContent).join('\n;\n');
+      if (!code.trim()) return;
+      const old = document.getElementById('sdp-diagram-embed-script');
+      if (old) old.remove();
+      const script = document.createElement('script');
+      script.id = 'sdp-diagram-embed-script';
+      script.textContent = `(function(){var __dcl=document.addEventListener;`
+        + `document.addEventListener=function(t,f,o){if(t==='DOMContentLoaded'){try{f.call(document)}catch(e){console.error(e)}return}return __dcl.call(document,t,f,o)};`
+        + `try{${code}\n}catch(e){console.error('Diagram embed script failed',e)}finally{document.addEventListener=__dcl}})();`;
+      document.body.appendChild(script);
+    })
+    .catch(() => {
+      if (token === _sdpEmbedToken) _sdpEmbedFail(root, missing);
+    });
 }
 
 // ── Topology section ──────────────────────────────────────────────────────────
@@ -7049,15 +7245,16 @@ function _sdpDetailMarkup(object) {
     html: `<div class="sdp-detail">
       ${_sdpHeroMarkup(object)}
       ${_sdpKpiMarkup(object, vm)}
-      ${_sdpSectionNavMarkup(vm, object)}
-      ${_sdpTopologyMarkup(vm)}
-      ${_sdpDiagramsMarkup(vm)}
-      ${_sdpGroupsMarkup(object, vm)}
-      ${_sdpDecisionsMarkup(object)}
-      ${_sdpConnectionsTableMarkup(vm)}
-      ${_sdpTierVariantsMarkup(object)}
-      ${_sdpMetadataMarkup(object)}
-      ${_sdpDrawerMarkup()}
+      <div class="sdp-sections">
+        ${_sdpSectionNavMarkup(vm, object)}
+        ${_sdpApplicationMarkup(object)}
+        ${_sdpDeploymentMarkup(object)}
+        ${_sdpGroupsMarkup(object, vm)}
+        ${_sdpDecisionsMarkup(object)}
+        ${_sdpConnectionsTableMarkup(vm)}
+        ${_sdpTierVariantsMarkup(object)}
+        ${_sdpMetadataMarkup(object)}
+      </div>
     </div>`,
     vm
   };
@@ -7067,72 +7264,7 @@ function _sdpDetailMarkup(object) {
 function _sdpAttachHandlers(object, vm) {
   const root = pageRoot;
 
-  // ── Collect card refs for SVG overlay
-  _sdpCardRefs = {};
-  root.querySelectorAll('.svc-card[data-ref]').forEach(el => {
-    _sdpCardRefs[el.dataset.ref] = el;
-  });
-
-  // ── Tier filter chips
-  root.querySelectorAll('[data-tier-filter]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      _sdpTierFilter = btn.dataset.tierFilter;
-      root.querySelectorAll('[data-tier-filter]').forEach(b =>
-        b.classList.toggle('active', b.dataset.tierFilter === _sdpTierFilter)
-      );
-      // Show/hide tier bands
-      root.querySelectorAll('.tier-band').forEach(band => {
-        band.hidden = _sdpTierFilter !== 'all' && band.dataset.tier !== _sdpTierFilter;
-      });
-      // Re-collect card refs (some may have moved off screen)
-      _sdpCardRefs = {};
-      root.querySelectorAll('.svc-card[data-ref]').forEach(el => {
-        _sdpCardRefs[el.dataset.ref] = el;
-      });
-      requestAnimationFrame(() => _sdpRecomputePaths(vm));
-    });
-  });
-
-  // ── Service card hover + click
-  root.querySelectorAll('.svc-card[data-ref]').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      _sdpHover = el.dataset.ref;
-      _sdpUpdateCardStates(vm);
-      _sdpRecomputePaths(vm);
-    });
-    el.addEventListener('mouseleave', () => {
-      _sdpHover = null;
-      _sdpUpdateCardStates(vm);
-      _sdpRecomputePaths(vm);
-    });
-    el.addEventListener('click', () => {
-      _sdpActive = _sdpActive === el.dataset.ref ? null : el.dataset.ref;
-      _sdpUpdateCardStates(vm);
-      _sdpRecomputePaths(vm);
-      if (_sdpActive) _sdpOpenDrawer(_sdpActive, vm);
-      else _sdpCloseDrawer();
-    });
-  });
-
-  // ── Drawer close
-  const drawerClose = document.getElementById('sdp-drawer-close');
-  if (drawerClose) {
-    drawerClose.addEventListener('click', () => {
-      _sdpActive = null;
-      _sdpUpdateCardStates(vm);
-      _sdpRecomputePaths(vm);
-      _sdpCloseDrawer();
-    });
-  }
-
-  // ── ResizeObserver for SVG paths
-  const grid = document.getElementById('sdp-topology-grid');
-  if (grid) {
-    _sdpRecomputePaths(vm);
-    _sdpResizeObs = new ResizeObserver(() => _sdpRecomputePaths(vm));
-    _sdpResizeObs.observe(grid);
-    window.addEventListener('scroll', () => _sdpRecomputePaths(vm), { passive: true });
-  }
+  _sdpLoadDiagramEmbeds(object);
 
   // ── Section nav IntersectionObserver
   const navEl = document.getElementById('sdp-section-nav');
@@ -7153,6 +7285,7 @@ function _sdpAttachHandlers(object, vm) {
     navEl.querySelectorAll('[data-sdp-nav]').forEach(btn => {
       btn.addEventListener('click', () => {
         const target = document.getElementById(btn.dataset.sdpNav);
+        navEl.querySelectorAll('[data-sdp-nav]').forEach(b => b.classList.toggle('active', b === btn));
         if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
@@ -7178,12 +7311,6 @@ function _sdpAttachHandlers(object, vm) {
 
   // ── Object links in drawer and service groups
   attachObjectLinkHandlers(root.querySelector('.sdp-detail'));
-
-  // ── Render this SDP's container diagram (mermaid-config.js)
-  if (vm.diagram && window.DraftDiagrams && typeof window.DraftDiagrams.buildMermaid === 'function') {
-    vm.diagram.mermaidSource = window.DraftDiagrams.buildMermaid(vm.diagram);
-    window.DraftDiagrams.renderDiagramsIntoSlots([vm.diagram], vm.diagramRenderId);
-  }
 }
 
 
