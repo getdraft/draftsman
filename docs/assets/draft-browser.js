@@ -394,12 +394,6 @@ function deliveryModelBadge(object) {
   return '<span class="badge">self-managed</span>';
 }
 
-function intentBadge(intent) {
-  const normalized = String(intent || '').toLowerCase();
-  const cls = normalized === 'ha' ? 'intent-ha' : normalized === 'sa' ? 'intent-sa' : '';
-  return `<span class="badge ${cls}">${escapeHtml((intent || '').toUpperCase())}</span>`;
-}
-
 function boolBadge(value, trueLabel = 'true', falseLabel = 'false') {
   const active = value === true;
   const text = active ? trueLabel : falseLabel;
@@ -5490,9 +5484,6 @@ function topologyBadgeMarkup(entry) {
     }
     return '<span class="topology-risk" title="Missing Decision Record reference">?</span>';
   }
-  if (String(entry.intent || '').toLowerCase() === 'sa') {
-    return '<span class="topology-info" title="Explicit architecture decision">ⓘ</span>';
-  }
   return '';
 }
 
@@ -5501,7 +5492,6 @@ function topologyNodeMarkup(entry, options = {}) {
     objectType = 'host',
     overrideLabel = null,
     meta = '',
-    intent = entry.intent || '',
     badgeLabel = '',
     scalingUnit = '',
     substrateObj = null,
@@ -5520,7 +5510,6 @@ function topologyNodeMarkup(entry, options = {}) {
       ${topologyBadgeMarkup(entry)}
       <div class="topology-node-flags">
         ${badgeLabel ? `<span class="ps-corner">${escapeHtml(badgeLabel)}</span>` : '<span></span>'}
-        ${intent ? intentBadge(intent) : '<span></span>'}
       </div>
       <span class="topology-node-icon ${icon.cls}">${icon.icon}</span>
       <div class="topology-node-label">${escapeHtml(overrideLabel || entryLabel(entry))}</div>
@@ -6419,23 +6408,19 @@ function showDetailView(id, pushHistory = true) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// SDP Detail — scrolling layout with topology overlay, section nav, drawer
+// SDP Detail — scrolling layout with section nav and embedded diagrams
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const _SDP_TIER_ORDER  = ['frontend', 'application', 'data'];
-const _SDP_TIER_LABELS = { frontend: 'Frontend', application: 'Application', data: 'Data' };
-
 // Per-render mutable state — reset on each new SDP detail render
-let _sdpActive = null, _sdpHover = null, _sdpDrawer = null;
-let _sdpTierFilter = 'all';
-let _sdpResizeObs = null, _sdpSectionObs = null;
-let _sdpCardRefs = {};
+let _sdpSectionObs = null;
 
 function _sdpTeardown() {
-  if (_sdpResizeObs) { _sdpResizeObs.disconnect(); _sdpResizeObs = null; }
   if (_sdpSectionObs) { _sdpSectionObs.disconnect(); _sdpSectionObs = null; }
-  _sdpActive = null; _sdpHover = null; _sdpDrawer = null;
-  _sdpTierFilter = 'all'; _sdpCardRefs = {};
+  _sdpEmbedToken++;
+  const embedScript = document.getElementById('sdp-diagram-embed-script');
+  if (embedScript) embedScript.remove();
+  const embedStyle = document.getElementById('sdp-diagram-embed-style');
+  if (embedStyle) embedStyle.remove();
 }
 
 // ── View-model builder ────────────────────────────────────────────────────────
@@ -6452,7 +6437,7 @@ function _sdpBuildVM(object) {
       const tier = zoneToTier[zone] || 'application';
       members.push({
         ref: e.ref, tier, zone,
-        intent: e.intent || 'sa', notes: e.notes || '', group: sg.name,
+        notes: e.notes || '', group: sg.name,
         riskRef: e.riskRef || null
       });
     });
@@ -6473,14 +6458,7 @@ function _sdpBuildVM(object) {
     const zt = byZone[z.id]?.tiers || {};
     return Object.values(zt).reduce((s, a) => s + a.length, 0) > 0;
   });
-  // Reuse the catalog-wide Diagrams view's own SDP diagram builder (see
-  // mermaid-config.js) so this section stays in sync with that rendering —
-  // same node/edge rules, same mermaid dialect, same text-size handling.
-  const diagram = (window.DraftDiagrams && typeof window.DraftDiagrams.buildSdpDiagram === 'function')
-    ? window.DraftDiagrams.buildSdpDiagram(object)
-    : null;
-  const diagramRenderId = Date.now();
-  return { members, zones, activeZones, byZone, connections, uidToZone, diagram, diagramRenderId };
+  return { members, zones, activeZones, byZone, connections, uidToZone };
 }
 
 // ── Lifecycle badge (SDP scoped) ──────────────────────────────────────────────
@@ -6513,7 +6491,6 @@ function _sdpHeroMarkup(object) {
       ${_sdpLifecycleBadge(object.lifecycleStatus)}
     </div>
     ${object.description ? `<p class="hero-desc">${escapeHtml(object.description)}</p>` : ''}
-    ${object.diagramPage ? `<p class="hero-diagrams"><a href="${escapeHtml(object.diagramPage)}">Diagrams</a></p>` : ''}
   </div>
   <div class="hero-side">
     ${owner.team    ? `<div class="hero-side-row"><span class="k">Owner</span><span class="v">${escapeHtml(owner.team)}</span></div>` : ''}
@@ -6530,20 +6507,11 @@ function _sdpHeroMarkup(object) {
 function _sdpKpiMarkup(object, vm) {
   const d = object.notes || {};
   const n = vm.members.length;
-  const haCount  = vm.members.filter(m => m.intent === 'ha').length;
-  const saGap    = vm.members.filter(m => m.intent !== 'ha' && !m.riskRef).length;
-  const saAccepted = vm.members.filter(m => m.intent !== 'ha' && m.riskRef).length;
-  let haSub;
-  if (n === 0)           haSub = 'no services';
-  else if (haCount === n) haSub = 'fully covered';
-  else if (saGap === 0)  haSub = `${saAccepted} accepted risk`;
-  else                   haSub = `${saGap} gap${saGap > 1 ? 's' : ''}${saAccepted ? ` · ${saAccepted} accepted` : ''}`;
   const kpis = [
     { label: 'Services',      value: n,                        sub: 'deployable objects' },
     { label: 'Zones',         value: vm.activeZones.length,    sub: 'network zones' },
     { label: 'Connections',   value: vm.connections.length,    sub: 'documented paths' },
-    { label: 'Availability',  value: d.availabilityTarget || '—', sub: d.availabilityTarget ? 'target SLA' : 'not specified' },
-    { label: 'HA Components', value: n > 0 ? `${haCount} / ${n}` : '—', sub: haSub }
+    { label: 'Availability',  value: d.availabilityTarget || '—', sub: d.availabilityTarget ? 'target SLA' : 'not specified' }
   ];
   return `<div class="kpi-strip">${kpis.map(k => `
   <div class="kpi">
@@ -6556,8 +6524,8 @@ function _sdpKpiMarkup(object, vm) {
 // ── Section nav ───────────────────────────────────────────────────────────────
 function _sdpSectionNavMarkup(vm, object) {
   const sections = [
-    { id: 'sdp-s-topology',    label: 'Topology' },
-    { id: 'sdp-s-diagrams',    label: 'Diagrams', skip: !vm.diagram },
+    { id: 'sdp-s-application', label: 'Application' },
+    { id: 'sdp-s-deployment',  label: 'Deployment' },
     { id: 'sdp-s-groups',      label: 'Service Groups' },
     { id: 'sdp-s-decisions',   label: 'Decisions' },
     { id: 'sdp-s-connections', label: 'Connections', skip: !vm.connections.length },
@@ -6569,246 +6537,219 @@ function _sdpSectionNavMarkup(vm, object) {
   ).join('')}</nav>`;
 }
 
-// ── Topology section ──────────────────────────────────────────────────────────
-function _sdpTopologyMarkup(vm) {
-  const usedTiers = new Set(vm.members.map(m => m.tier).filter(Boolean));
-  const tierChips = [{ id: 'all', label: 'All' }, ..._SDP_TIER_ORDER.filter(t => usedTiers.has(t)).map(t => ({ id: t, label: _SDP_TIER_LABELS[t] }))];
-  const zoneColsHtml = vm.zones.map(zone => {
-    const zt = vm.byZone[zone.id]?.tiers || {};
-    const total = Object.values(zt).reduce((a, b) => a + b.length, 0);
-    if (total === 0) return '';
-    const bandsHtml = _SDP_TIER_ORDER.map(tier => {
-      const members = zt[tier] || [];
-      if (!members.length) return '';
-      const cardsHtml = members.map(m => {
-        const svc = objectLookup[m.ref] || { name: m.ref, role: '' };
-        return `<div class="svc-card" data-ref="${escapeHtml(m.ref)}" data-tier="${escapeHtml(m.tier)}">
-          <div class="svc-name"><span>${escapeHtml(svc.name || m.ref)}</span>
-            <span class="intent-dot ${escapeHtml(m.intent)}" title="${m.intent === 'ha' ? 'Highly available' : 'Standalone'}"></span>
-          </div>
-          <div class="svc-role">${escapeHtml(svc.role || svc.type || '')}</div>
-        </div>`;
-      }).join('');
-      return `<div class="tier-band" data-tier="${escapeHtml(tier)}">
-        <div class="tier-band-head">
-          <span>${escapeHtml(_SDP_TIER_LABELS[tier])}</span>
-          <span class="bar"></span>
-          <span>${members.length}</span>
-        </div>
-        <div class="svc-grid${members.length === 1 ? ' single' : ''}">${cardsHtml}</div>
-      </div>`;
-    }).join('');
-    return `<div class="zone-col" data-zone="${escapeHtml(zone.id)}">
-      <div class="zone-header">
-        <div class="zone-eyebrow">
-          <span class="dot"></span>
-          <span>Zone · ${escapeHtml(zone.name)}</span>
-          <span class="count">— ${total} services</span>
-        </div>
-        <div class="zone-name">${escapeHtml(zone.name)}</div>
-        ${zone.description ? `<div class="zone-desc">${escapeHtml(zone.description)}</div>` : ''}
-      </div>
-      ${bandsHtml}
-    </div>`;
-  }).join('');
+// ── Application / Deployment diagram sections ─────────────────────────────────
+// Both sections embed figures from the generated diagram page (object.diagramPage).
+// The page is fetched once per detail render; its figures, <style> and <script>
+// are moved into the browser so hover, pin, keyboard and the connection toggle
+// behave exactly as on the standalone page.
+const _SDP_EMBED_CLASS = 'sdp-diagram-embed';
+const _SDP_EMBED_STYLE_ID = 'sdp-diagram-embed-style';
+let _sdpEmbedToken = 0;
 
-  const legendTiers = _SDP_TIER_ORDER.filter(t => usedTiers.has(t)).map(t =>
-    `<span class="topo-legend-item"><span class="sw" style="background:var(--tier-${t})"></span>${escapeHtml(_SDP_TIER_LABELS[t])}</span>`
-  ).join('');
-  const legendProtos = ['REST', 'AMQP', 'Other'].map((p, i) => {
-    const cls = ['rest', 'amqp', 'other'][i];
-    return `<span class="topo-legend-item"><span class="ln" style="background:var(--proto-${cls})"></span>${p}</span>`;
-  }).join('');
-
+function _sdpDiagramSectionMarkup(sectionId, eyebrow, title, kind, object) {
+  const page = object.diagramPage;
+  const link = page
+    ? `<a class="sdp-open-full" href="${escapeHtml(page)}" target="_blank" rel="noopener">Open full page &#8599;</a>`
+    : '';
+  const body = page
+    ? `<p class="sdp-embed-note">Loading diagram&hellip;</p>`
+    : `<p class="sdp-embed-note">The diagram page is not generated for this pattern.</p>`;
+  const fit = page
+    ? `<button type="button" class="sdp-fit-toggle" data-sdp-fit="${kind}" aria-pressed="true" title="Scale the figure to the page width, or show it at actual size and scroll">Fit width</button>`
+    : '';
   return `
-<div class="sdp-section" id="sdp-s-topology">
+<div class="sdp-section" id="${sectionId}">
   <div class="section-head">
-    <div><span class="eyebrow">01 — Topology</span><h2>Deployment Topology</h2></div>
-    <div class="filter-bar">
-      <span class="filter-label">Tier</span>
-      <div class="chip-group">${tierChips.map(c =>
-        `<button class="chip${c.id === 'all' ? ' active' : ''}" data-tier-filter="${escapeHtml(c.id)}">`
-        + (c.id !== 'all' ? `<span class="swatch" style="background:var(--tier-${c.id})"></span>` : '')
-        + escapeHtml(c.label) + `</button>`
-      ).join('')}</div>
-    </div>
+    <div><span class="eyebrow">${eyebrow}</span><h2>${title}</h2></div>
+    <div class="sdp-head-tools">${fit}${link}</div>
   </div>
-  <div class="topology-wrap">
-    <div class="topology" id="sdp-topology-grid">
-      <svg class="topology-svg" id="sdp-topology-svg" aria-hidden="true"></svg>
-      ${zoneColsHtml}
-    </div>
-    <div class="topo-legend">
-      <div class="topo-legend-group"><span class="topo-legend-label">Tiers</span>${legendTiers}</div>
-      <div class="topo-legend-group"><span class="topo-legend-label">Protocols</span>${legendProtos}</div>
-      <div class="topo-legend-group">
-        <span class="topo-legend-label">Intent</span>
-        <span class="topo-legend-item"><span class="sw" style="background:var(--ok)"></span>HA</span>
-        <span class="topo-legend-item"><span class="sw" style="background:var(--warn)"></span>Single</span>
-      </div>
-    </div>
-  </div>
+  <div class="${_SDP_EMBED_CLASS} fit" data-sdp-embed="${kind}">${body}</div>
 </div>`;
 }
 
-// ── Diagrams section ──────────────────────────────────────────────────────────
-// Reuses the catalog-wide Diagrams view's SDP diagram (mermaid-config.js) so
-// this section renders identically to that view instead of a bespoke one.
-function _sdpDiagramsMarkup(vm) {
-  if (!vm.diagram) return '';
-  if (window.DraftDiagrams && typeof window.DraftDiagrams.ensureStyles === 'function') {
-    window.DraftDiagrams.ensureStyles();
+// Fit width / actual size toggle for the embedded figures (one delegated listener).
+document.addEventListener('click', e => {
+  const btn = e.target.closest && e.target.closest('[data-sdp-fit]');
+  if (!btn) return;
+  const embed = btn.closest('.sdp-section') && btn.closest('.sdp-section').querySelector('[data-sdp-embed]');
+  if (!embed) return;
+  const on = !embed.classList.contains('fit');
+  embed.classList.toggle('fit', on);
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  btn.textContent = on ? 'Fit width' : 'Actual size';
+});
+
+function _sdpApplicationMarkup(object) {
+  return _sdpDiagramSectionMarkup('sdp-s-application', '01 — Application', 'Logical application diagram', 'logical', object);
+}
+function _sdpDeploymentMarkup(object) {
+  return _sdpDiagramSectionMarkup('sdp-s-deployment', '02 — Deployment', 'Deployment pattern diagram', 'deployment', object);
+}
+
+// Prefix every rule of the diagram page's stylesheet with .sdp-diagram-embed so
+// it cannot restyle the rest of the browser. :root rules become the container
+// itself (custom properties), html/body rules are dropped, dark-mode rules are
+// dropped (the browser is light only).
+function _sdpSplitSelectors(list) { // comma split that ignores commas inside () and []
+  const out = [];
+  let depth = 0, cur = '';
+  for (const ch of list) {
+    if (ch === '(' || ch === '[') depth++;
+    else if (ch === ')' || ch === ']') depth--;
+    if (ch === ',' && depth === 0) { out.push(cur); cur = ''; } else cur += ch;
   }
-  const objectBadge = window.DraftDiagrams && window.DraftDiagrams.objectBadge;
-  const pillsHtml = objectBadge ? vm.diagram.nodes.map(objectBadge).join('') : '';
-  return `
-<div class="sdp-section" id="sdp-s-diagrams">
-  <div class="section-head">
-    <div><span class="eyebrow">02 — Diagrams</span><h2>Container Diagram</h2></div>
-  </div>
-  <div id="diagram-slot-${vm.diagramRenderId}-0" class="diagram-slot">
-    <span style="color:#94a3b8;font-size:13px;">Rendering…</span>
-  </div>
-  ${pillsHtml ? `<div class="diagram-object-list">${pillsHtml}</div>` : ''}
-</div>`;
+  out.push(cur);
+  return out;
 }
 
-// ── SVG path overlay ──────────────────────────────────────────────────────────
-function _sdpRecomputePaths(vm) {
-  const grid = document.getElementById('sdp-topology-grid');
-  const svg  = document.getElementById('sdp-topology-svg');
-  if (!grid || !svg) return;
-  const box = grid.getBoundingClientRect();
-  const paths = [];
-  vm.connections.forEach((c, i) => {
-    const aEl = _sdpCardRefs[c.from];
-    const bEl = _sdpCardRefs[c.to];
-    if (!aEl || !bEl) return;
-    const ra = aEl.getBoundingClientRect();
-    const rb = bEl.getBoundingClientRect();
-    const ay = ra.top - box.top + ra.height / 2;
-    const by = rb.top - box.top + rb.height / 2;
-    let sx, ex;
-    const sameCol = Math.abs(ra.left - rb.left) < 4;
-    if (sameCol) {
-      sx = ra.left - box.left + ra.width;
-      ex = rb.left - box.left + rb.width;
-    } else if (ra.left > rb.left) {
-      sx = ra.left - box.left;
-      ex = rb.left - box.left + rb.width;
-    } else {
-      sx = ra.left - box.left + ra.width;
-      ex = rb.left - box.left;
+function _sdpScopeSelector(sel) {
+  const scope = '.' + _SDP_EMBED_CLASS;
+  sel = sel.trim();
+  if (!sel) return null;
+  if (/^:root\[data-theme=["']dark["']\]/.test(sel)) return null;
+  if (/^(html|body)\b/.test(sel)) return null;
+  if (sel.startsWith(':root')) return scope + sel.slice(':root'.length).replace(/^:not\(\[data-theme=["']light["']\]\)/, '');
+  return scope + ' ' + sel;
+}
+
+// At-rule coverage: @keyframes copied, @media and @supports recursed, dark-mode dropped, other at-rules (font-face, layer, container, import) dropped; the CSSStyleSheet path keeps them.
+// Fallback used when CSSStyleSheet or replaceSync is unavailable (Safari before
+// 16.4) or throws: a pure string transform of the stylesheet text. Plain rules
+// get the scope prefix, @keyframes are copied unchanged, @media and @supports are
+// recursed into, @media (prefers-color-scheme: dark) is dropped.
+function _sdpScopeCssByText(cssText) {
+  const text = String(cssText).replace(/\/\*[\s\S]*?\*\//g, '');
+  const matchBrace = start => { // index of the } closing the { at start
+    let depth = 0;
+    for (let i = start; i < text.length; i++) {
+      if (text[i] === '"' || text[i] === "'") { // skip string literals
+        const q = text[i];
+        for (i++; i < text.length && text[i] !== q; i++) if (text[i] === '\\') i++;
+        continue;
+      }
+      if (text[i] === '{') depth++;
+      else if (text[i] === '}' && --depth === 0) return i;
     }
-    const dx = ex - sx;
-    const curve = sameCol ? 0 : Math.min(120, Math.max(40, Math.abs(dx) * 0.45));
-    const path = sameCol
-      ? `M ${sx} ${ay} C ${sx + 64} ${ay}, ${ex + 64} ${by}, ${ex} ${by}`
-      : `M ${sx} ${ay} C ${sx + curve} ${ay}, ${ex - curve} ${by}, ${ex} ${by}`;
-    paths.push({ ...c, path, key: `${c.from}-${c.to}-${i}` });
+    return text.length - 1;
+  };
+  const scopeBlock = (from, to) => {
+    let out = '';
+    let i = from;
+    while (i < to) {
+      const open = text.indexOf('{', i);
+      if (open < 0 || open >= to) break;
+      const prelude = text.slice(i, open).trim();
+      const close = matchBrace(open);
+      const body = text.slice(open + 1, close);
+      if (/^@(-\w+-)?keyframes\b/.test(prelude)) out += `${prelude}{${body}}`;
+      else if (/^@(media|supports)\b/.test(prelude)) {
+        if (!/prefers-color-scheme/.test(prelude)) out += `${prelude}{${scopeBlock(open + 1, close)}}`;
+      } else if (!prelude.startsWith('@')) {
+        const sels = _sdpSplitSelectors(prelude).map(_sdpScopeSelector).filter(Boolean);
+        if (sels.length) out += `${sels.join(',')}{${body}}`;
+      }
+      i = close + 1;
+    }
+    return out;
+  };
+  return scopeBlock(0, text.length);
+}
+
+function _sdpScopeDiagramCss(cssText) {
+  const scope = '.' + _SDP_EMBED_CLASS;
+  const tail = `\n${scope}{color:var(--fg);font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}`
+    + `\n${scope} .sec>p{margin:6px 0 12px}`;
+  if (typeof CSSStyleSheet !== 'undefined') {
+    try {
+      const sheet = new CSSStyleSheet();
+      sheet.replaceSync(cssText);
+      const walk = rules => Array.from(rules).map(rule => {
+        if (rule.type === 1) { // style rule
+          const sels = _sdpSplitSelectors(rule.selectorText).map(_sdpScopeSelector).filter(Boolean);
+          return sels.length ? `${sels.join(',')}{${rule.style.cssText}}` : '';
+        }
+        if (rule.type === 7) return rule.cssText; // @keyframes unchanged
+        if (rule.cssRules) { // @media, @supports and other grouping rules
+          const cond = rule.conditionText || (rule.media && rule.media.mediaText) || '';
+          if (/prefers-color-scheme/.test(cond)) return '';
+          const head = rule.cssText.slice(0, rule.cssText.indexOf('{')).trim();
+          return `${head}{${walk(rule.cssRules)}}`;
+        }
+        return rule.cssText;
+      }).join('\n');
+      return walk(sheet.cssRules) + tail;
+    } catch (e) { /* fall through to the string fallback */ }
+  }
+  return _sdpScopeCssByText(cssText) + tail;
+}
+
+function _sdpExtractFigureParts(doc, sectionId) {
+  const sec = doc.getElementById(sectionId);
+  if (!sec) return null;
+  const wrap = document.createElement('div');
+  wrap.className = 'sec';
+  Array.from(sec.children).forEach(child => {
+    if (/^H[1-6]$/.test(child.tagName)) return; // the browser section supplies the heading
+    wrap.appendChild(document.importNode(child, true));
   });
-
-  const proto = p => (p.protocol || '').toLowerCase();
-  const active = _sdpActive || _sdpHover;
-  svg.innerHTML = paths.map(p => {
-    const isActive = active && (p.from === active || p.to === active);
-    const isDimmed = active && !isActive;
-    const cls = ['conn-path', proto(p), isActive && 'is-active', isDimmed && 'is-dimmed'].filter(Boolean).join(' ');
-    return `<path d="${p.path}" class="${cls}"/>`;
-  }).join('');
+  return wrap;
 }
 
-function _sdpUpdateCardStates(vm) {
-  const active = _sdpActive || _sdpHover;
-  const grid = document.getElementById('sdp-topology-grid');
-  if (!grid) return;
-  if (active) {
-    const related = new Set([active]);
-    vm.connections.forEach(c => {
-      if (c.from === active) related.add(c.to);
-      if (c.to === active)   related.add(c.from);
-    });
-    grid.dataset.active = '1';
-    grid.querySelectorAll('.svc-card').forEach(el => {
-      const ref = el.dataset.ref;
-      el.classList.toggle('is-active',   ref === active);
-      el.classList.toggle('is-related',  related.has(ref) && ref !== active);
-    });
-  } else {
-    delete grid.dataset.active;
-    grid.querySelectorAll('.svc-card').forEach(el => {
-      el.classList.remove('is-active', 'is-related');
-    });
-  }
+function _sdpEmbedFail(root, message) {
+  root.querySelectorAll('[data-sdp-embed]').forEach(slot => {
+    slot.innerHTML = `<p class="sdp-embed-note">${escapeHtml(message)}</p>`;
+  });
 }
 
-// ── Drawer ────────────────────────────────────────────────────────────────────
-function _sdpOpenDrawer(ref, vm) {
-  _sdpDrawer = ref;
-  const drawer = document.getElementById('sdp-drawer');
-  if (!drawer) return;
-  const svc = objectLookup[ref] || { name: ref, id: ref };
-  const m = vm.members.find(x => x.ref === ref) || {};
-  const conns = vm.connections.filter(c => c.from === ref || c.to === ref);
-  const connRows = conns.map(c => {
-    const isOut = c.from === ref;
-    const otherId = isOut ? c.to : c.from;
-    const other = objectLookup[otherId] || { name: otherId };
-    const proto = (c.protocol || '').toLowerCase();
-    const arrow = isOut ? '→' : '←';
-    return `<div class="drawer-conn" data-object-link="${escapeHtml(otherId)}">
-      <span class="pill ${proto}">${escapeHtml(c.protocol || '')}</span>
-      <div class="target-row">
-        <span class="arrow">${arrow}</span>
-        <span class="target">${escapeHtml(other.name || otherId)}</span>
-      </div>
-      ${c.label ? `<div class="note">${escapeHtml(c.label)}</div>` : ''}
-    </div>`;
-  }).join('');
-  const intentLabel = m.intent === 'ha' ? 'Highly Available'
-    : m.intent === 'sa' && m.riskRef  ? 'Standalone — accepted risk'
-    : m.intent === 'sa'               ? 'Standalone — no HA decision recorded'
-    : (m.intent || '—');
-  const intent = intentLabel;
-  const zone = vm.zones.find(z => z.id === m.zone);
-  drawer.querySelector('.drawer-eyebrow').innerHTML =
-    `<span class="dot" style="background:var(--tier-${escapeHtml(m.tier || 'application')})"></span>
-     ${escapeHtml(_SDP_TIER_LABELS[m.tier] || m.tier || '')} · ${escapeHtml(m.group || '')}`;
-  drawer.querySelector('#sdp-drawer-title').textContent = svc.name || ref;
-  drawer.querySelector('.drawer-uid').textContent = ref;
-  drawer.querySelector('.drawer-body').innerHTML = `
-    ${svc.description ? `<div class="drawer-row"><div class="k">Description</div><div class="v">${escapeHtml(svc.description)}</div></div>` : ''}
-    <div class="drawer-row"><div class="k">Zone</div><div class="v">${escapeHtml(zone?.name || m.zone || '—')}</div></div>
-    <div class="drawer-row"><div class="k">Intent</div><div class="v">${escapeHtml(intent)}</div></div>
-    ${m.riskRef ? `<div class="drawer-row"><div class="k">HA Decision</div><div class="v"><span class="drawer-risk-ref" data-object-link="${escapeHtml(m.riskRef)}">${escapeHtml(objectLookup[m.riskRef]?.name || m.riskRef)}</span></div></div>` : ''}
-    ${m.notes ? `<div class="drawer-row"><div class="k">Notes</div><div class="v">${escapeHtml(m.notes)}</div></div>` : ''}
-    ${conns.length ? `<div class="drawer-row"><div class="k">Connections</div><div class="drawer-list">${connRows}</div></div>` : ''}
-  `;
-  const canNavigate = !!objectLookup[ref];
-  function navigateToRef() {
-    _sdpCloseDrawer();
-    currentDetailId = ref;
-    navHistory.length = 0;
-    renderDetailView();
-    syncHashForDetailView(ref);
-  }
-  const openBtn = drawer.querySelector('#sdp-drawer-open');
-  if (openBtn) {
-    openBtn.hidden = !canNavigate;
-    openBtn.onclick = canNavigate ? navigateToRef : null;
-  }
-  const titleEl = drawer.querySelector('#sdp-drawer-title');
-  if (titleEl) {
-    titleEl.classList.toggle('drawer-title-link', canNavigate);
-    titleEl.onclick = canNavigate ? navigateToRef : null;
-  }
-  drawer.classList.add('open');
-}
-
-function _sdpCloseDrawer() {
-  _sdpDrawer = null;
-  const drawer = document.getElementById('sdp-drawer');
-  if (drawer) drawer.classList.remove('open');
+function _sdpLoadDiagramEmbeds(object) {
+  const root = pageRoot;
+  const slots = root.querySelectorAll('[data-sdp-embed]');
+  if (!slots.length || !object.diagramPage) return;
+  const token = ++_sdpEmbedToken;
+  const missing = 'The diagram page is not generated for this pattern.';
+  fetch(object.diagramPage)
+    .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.text(); })
+    .then(html => {
+      if (token !== _sdpEmbedToken || !document.body.contains(slots[0])) return; // navigated away
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const parts = { logical: _sdpExtractFigureParts(doc, 'logical'), deployment: _sdpExtractFigureParts(doc, 'deployment') };
+      if (!parts.logical && !parts.deployment) { _sdpEmbedFail(root, missing); return; }
+      // Style: previous copy removed, then injected once, scoped to the embed container.
+      const oldStyle = document.getElementById(_SDP_EMBED_STYLE_ID);
+      if (oldStyle) oldStyle.remove();
+      const css = Array.from(doc.querySelectorAll('style')).map(s => s.textContent).join('\n');
+      const style = document.createElement('style');
+      style.id = _SDP_EMBED_STYLE_ID;
+      style.textContent = _sdpScopeDiagramCss(css);
+      document.head.appendChild(style);
+      // Markup first, so the script finds both figures and toggles.
+      slots.forEach(slot => {
+        const part = parts[slot.dataset.sdpEmbed];
+        slot.innerHTML = '';
+        if (part) slot.appendChild(part);
+        else slot.innerHTML = `<p class="sdp-embed-note">${escapeHtml(missing)}</p>`;
+      });
+      // Script: run after insertion through a fresh <script> element (scripts
+      // parsed by DOMParser never execute). The page script is an IIFE that looks
+      // figures up by id and does not wait for DOMContentLoaded; if a later
+      // version waits for it, the readyState is already "complete" here so we
+      // wrap the listener to fire immediately.
+      const code = Array.from(doc.querySelectorAll('script'))
+        .filter(s => !s.type || /javascript|module/.test(s.type))
+        .map(s => s.textContent).join('\n;\n');
+      if (!code.trim()) return;
+      const old = document.getElementById('sdp-diagram-embed-script');
+      if (old) old.remove();
+      const script = document.createElement('script');
+      script.id = 'sdp-diagram-embed-script';
+      script.textContent = `(function(){var __dcl=document.addEventListener;`
+        + `document.addEventListener=function(t,f,o){if(t==='DOMContentLoaded'){try{f.call(document)}catch(e){console.error(e)}return}return __dcl.call(document,t,f,o)};`
+        + `try{${code}\n}catch(e){console.error('Diagram embed script failed',e)}finally{document.addEventListener=__dcl}})();`;
+      document.body.appendChild(script);
+    })
+    .catch(() => {
+      if (token === _sdpEmbedToken) _sdpEmbedFail(root, missing);
+    });
 }
 
 // ── Service Groups section ────────────────────────────────────────────────────
@@ -6855,14 +6796,13 @@ function _sdpGroupsMarkup(object, vm) {
     const rowsHtml = entries.map(e => {
       const svc = objectLookup[e.ref] || { name: e.ref };
       const zone = vm.zones.find(z => z.id === e.networkZone) || { id: e.networkZone || '', name: e.networkZone || '' };
-      const intent = e.intent || 'sa';
       return `<div class="group-row">
         <div class="svc">
           <span class="svc-link" data-object-link="${escapeHtml(e.ref)}">${escapeHtml(svc.name || e.ref)}</span>
+          ${e.riskRef ? topologyBadgeMarkup(e) : ''}
           <span class="svc-uid">${escapeHtml(e.ref)}</span>
         </div>
         <span class="zone-tag" data-zone="${escapeHtml(zone.id)}"><span class="dot"></span>${escapeHtml(zone.name || zone.id)}</span>
-        <span class="intent-tag ${intent}"><span class="dot"></span>${intent.toUpperCase()}</span>
         <span class="notes">${escapeHtml(e.notes || '')}</span>
       </div>`;
     }).join('');
@@ -7060,22 +7000,6 @@ function _sdpMetadataMarkup(object) {
   </div>`;
 }
 
-// ── Drawer markup ─────────────────────────────────────────────────────────────
-function _sdpDrawerMarkup() {
-  return `<div class="sdp-drawer" id="sdp-drawer">
-    <div class="drawer-head">
-      <div class="drawer-head-actions">
-        <button class="drawer-open-btn" id="sdp-drawer-open" title="Open full detail page" hidden>Open ↗</button>
-        <button class="drawer-close" id="sdp-drawer-close" aria-label="Close">✕</button>
-      </div>
-      <div class="drawer-eyebrow"></div>
-      <h3 class="drawer-title" id="sdp-drawer-title"></h3>
-      <div class="drawer-uid"></div>
-    </div>
-    <div class="drawer-body"></div>
-  </div>`;
-}
-
 // ── Full SDP markup ───────────────────────────────────────────────────────────
 function _sdpDetailMarkup(object) {
   const vm = _sdpBuildVM(object);
@@ -7083,15 +7007,16 @@ function _sdpDetailMarkup(object) {
     html: `<div class="sdp-detail">
       ${_sdpHeroMarkup(object)}
       ${_sdpKpiMarkup(object, vm)}
-      ${_sdpSectionNavMarkup(vm, object)}
-      ${_sdpTopologyMarkup(vm)}
-      ${_sdpDiagramsMarkup(vm)}
-      ${_sdpGroupsMarkup(object, vm)}
-      ${_sdpDecisionsMarkup(object)}
-      ${_sdpConnectionsTableMarkup(vm)}
-      ${_sdpTierVariantsMarkup(object)}
-      ${_sdpMetadataMarkup(object)}
-      ${_sdpDrawerMarkup()}
+      <div class="sdp-sections">
+        ${_sdpSectionNavMarkup(vm, object)}
+        ${_sdpApplicationMarkup(object)}
+        ${_sdpDeploymentMarkup(object)}
+        ${_sdpGroupsMarkup(object, vm)}
+        ${_sdpDecisionsMarkup(object)}
+        ${_sdpConnectionsTableMarkup(vm)}
+        ${_sdpTierVariantsMarkup(object)}
+        ${_sdpMetadataMarkup(object)}
+      </div>
     </div>`,
     vm
   };
@@ -7101,72 +7026,7 @@ function _sdpDetailMarkup(object) {
 function _sdpAttachHandlers(object, vm) {
   const root = pageRoot;
 
-  // ── Collect card refs for SVG overlay
-  _sdpCardRefs = {};
-  root.querySelectorAll('.svc-card[data-ref]').forEach(el => {
-    _sdpCardRefs[el.dataset.ref] = el;
-  });
-
-  // ── Tier filter chips
-  root.querySelectorAll('[data-tier-filter]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      _sdpTierFilter = btn.dataset.tierFilter;
-      root.querySelectorAll('[data-tier-filter]').forEach(b =>
-        b.classList.toggle('active', b.dataset.tierFilter === _sdpTierFilter)
-      );
-      // Show/hide tier bands
-      root.querySelectorAll('.tier-band').forEach(band => {
-        band.hidden = _sdpTierFilter !== 'all' && band.dataset.tier !== _sdpTierFilter;
-      });
-      // Re-collect card refs (some may have moved off screen)
-      _sdpCardRefs = {};
-      root.querySelectorAll('.svc-card[data-ref]').forEach(el => {
-        _sdpCardRefs[el.dataset.ref] = el;
-      });
-      requestAnimationFrame(() => _sdpRecomputePaths(vm));
-    });
-  });
-
-  // ── Service card hover + click
-  root.querySelectorAll('.svc-card[data-ref]').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      _sdpHover = el.dataset.ref;
-      _sdpUpdateCardStates(vm);
-      _sdpRecomputePaths(vm);
-    });
-    el.addEventListener('mouseleave', () => {
-      _sdpHover = null;
-      _sdpUpdateCardStates(vm);
-      _sdpRecomputePaths(vm);
-    });
-    el.addEventListener('click', () => {
-      _sdpActive = _sdpActive === el.dataset.ref ? null : el.dataset.ref;
-      _sdpUpdateCardStates(vm);
-      _sdpRecomputePaths(vm);
-      if (_sdpActive) _sdpOpenDrawer(_sdpActive, vm);
-      else _sdpCloseDrawer();
-    });
-  });
-
-  // ── Drawer close
-  const drawerClose = document.getElementById('sdp-drawer-close');
-  if (drawerClose) {
-    drawerClose.addEventListener('click', () => {
-      _sdpActive = null;
-      _sdpUpdateCardStates(vm);
-      _sdpRecomputePaths(vm);
-      _sdpCloseDrawer();
-    });
-  }
-
-  // ── ResizeObserver for SVG paths
-  const grid = document.getElementById('sdp-topology-grid');
-  if (grid) {
-    _sdpRecomputePaths(vm);
-    _sdpResizeObs = new ResizeObserver(() => _sdpRecomputePaths(vm));
-    _sdpResizeObs.observe(grid);
-    window.addEventListener('scroll', () => _sdpRecomputePaths(vm), { passive: true });
-  }
+  _sdpLoadDiagramEmbeds(object);
 
   // ── Section nav IntersectionObserver
   const navEl = document.getElementById('sdp-section-nav');
@@ -7187,6 +7047,7 @@ function _sdpAttachHandlers(object, vm) {
     navEl.querySelectorAll('[data-sdp-nav]').forEach(btn => {
       btn.addEventListener('click', () => {
         const target = document.getElementById(btn.dataset.sdpNav);
+        navEl.querySelectorAll('[data-sdp-nav]').forEach(b => b.classList.toggle('active', b === btn));
         if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
@@ -7210,14 +7071,8 @@ function _sdpAttachHandlers(object, vm) {
     });
   });
 
-  // ── Object links in drawer and service groups
+  // ── Object links in service groups
   attachObjectLinkHandlers(root.querySelector('.sdp-detail'));
-
-  // ── Render this SDP's container diagram (mermaid-config.js)
-  if (vm.diagram && window.DraftDiagrams && typeof window.DraftDiagrams.buildMermaid === 'function') {
-    vm.diagram.mermaidSource = window.DraftDiagrams.buildMermaid(vm.diagram);
-    window.DraftDiagrams.renderDiagramsIntoSlots([vm.diagram], vm.diagramRenderId);
-  }
 }
 
 
