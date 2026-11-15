@@ -127,7 +127,11 @@ For each resolved catalog object:
    - ProductComponent → infer from component role (API = application, UI =
      presentation, worker = application)
    - DataComponent → data
-   - Ask the user to confirm or correct the inferred tier.
+   - Ask the user to confirm or correct the inferred tier. `diagramTier` is the
+     band the component sits in on the generated diagrams; the pattern's detail
+     page shows them as its Application and Deployment sections, with all
+     connections shown, a hovered box's connections brought forward, a Fit width
+     / Actual size toggle and an Open full page link.
 2. If the catalog object has no entry yet, note that you will draft it and
    continue.
 

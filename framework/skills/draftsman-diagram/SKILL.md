@@ -11,22 +11,22 @@ Nothing here requires an AI session to produce a diagram. The published site alr
 
 ## Send people to the published page first
 
-The browser generator (`generate_browser.py`) renders one diagram page per deployment pattern into `docs/diagrams/` beside the browser. Each pattern's entry in the browser has a `Diagrams` link, and each page links back to the browser. Give the user that page, not a fresh render and not a drawing. Run the standalone generator only for an unpublished draft or a pattern not yet in the published catalog.
+The browser generator (`generate_browser.py`) renders one diagram page per deployment pattern into `docs/diagrams/` beside the browser. The pattern's detail page in the browser embeds the two figures as its Application and Deployment sections, each with a Fit width / Actual size toggle and an `Open full page` link to the standalone diagram page; each standalone page links back to the browser. Give the user the detail page or the standalone page, not a fresh render and not a drawing. Run the standalone generator only for an unpublished draft or a pattern not yet in the published catalog.
 
 The generator is the only path for the two views (`framework/tools/generate_diagram.py`, the same code the browser generator runs). Hand-drawn SVG is forbidden for the logical or deployment view, including quick sketches and edits to a generated file; hand layouts differ between runs and cannot be tested.
 
 ## How to read the page
 
-- **Connections are hidden** until a box is hovered, focused or pinned (click a box; the same uid is highlighted in both figures). Then only that box's connections show.
+- **All connections are shown** by default. Hovering, focusing or pinning a box (click a box; the same uid is highlighted in both figures) brings that box's connections forward and fades the others.
 - **Colours.** Purple lines are calls the box makes (outbound); orange lines are calls it receives (inbound). Small dots move along each line toward the arrowhead (off under reduced motion). Dashed lines are asynchronous, dotted are event flows.
-- **Show all connections.** A checkbox under each figure restores the full drawing.
-- **Labels** show with their line, at the end farthest from the selected box, inside that box's width. Each is two lines (the label, then its technology) when a technology is recorded, otherwise one, and each line is clipped to the box width. Labels appear only for the edges of the hovered, focused or pinned box; the `Show all connections` toggle does not add them. The full text is in the tooltip and in the callout shown when a single line is hovered.
+- **Show all connections.** A checkbox under each figure is checked by default; unchecking it hides the connections until a box is hovered, focused or pinned.
+- **Labels** show with their line, at the end farthest from the selected box, inside that box's width. Each is two lines (the label, then its technology) when a technology is recorded, otherwise one, and each line is clipped to the box width. Labels appear only for the edges of the hovered, focused or pinned box; the `Show all connections` checkbox does not add them. The full text is in the tooltip and in the callout shown when a single line is hovered.
 - **Logical application diagram.** Components and data components in bands: presentation, application, data, utility. Placed infrastructure is not drawn in the logical view; unplaced infrastructure a component depends on still appears in the External interactions lane.
 - **Deployment pattern diagram.** Deployment target, then service group container (captioned by its substrate), then network-zone lane, then component box. Placed infrastructure (network, runtime, host, AI gateway, data store services) appears only here. Each data component sits inside a container named for the data store service in its `runsOn`; that store has no box of its own unless it hosts no data component. `data store not recorded` means `runsOn` is absent or unresolved.
 - **External interactions lane.** The right-hand lane holds dependencies of the pattern that it does not place, captioned with the pattern that places them, `placed in N other patterns`, `not placed in any pattern`, or `external` for an `externalTarget` string. It shows dependencies only: consumers that merely call into the pattern are not drawn, and neither is any line between two outside objects.
 - **Dashed borders.** A dashed border marks one of three things: a box with a derived tier (no recorded `diagramTier`), a retired or deprecated object, and a `data store not recorded` container. A dashed service group container has an inferred substrate. Say which applies; derived values are not recorded.
 - **Recorded conflicts section** appears only when a placed component's `runsOn` names something other than its group's substrate. Both values are shown and nothing is resolved. Quote both and ask which is right.
-- **Diagrams link.** The pattern view in the browser shows `Diagrams` only after the shell is refreshed on an existing install (`generate_browser.py --refresh-shell`); if it is missing, say so and give the page path instead.
+- **Embedded sections.** The pattern detail page shows the Application and Deployment sections only after the shell is refreshed on an existing install (`generate_browser.py --refresh-shell`); if they are missing, say so and give the standalone page path instead. A pattern with no generated diagram page shows a one-sentence note in each section.
 - **Relationships table.** `Source` reads `relationship object` or `inline dependency`. Placement (`runsOn`, `host`) is never an edge.
 
 ## Model rules behind the picture
@@ -86,4 +86,4 @@ The generator prints `N warnings`, then each distinct warning once. Repeat the o
 
 ## Mermaid and C4 text
 
-For a conversational answer, embeddable text, or a sequence or component view of one object, write text from `references/mermaid.md`. It is outside the determinism guarantee and is never a diagram of record.
+For a conversational answer, embeddable text, or a sequence or component view of one object, write text from `references/mermaid.md`. It is outside the determinism guarantee and is never a diagram of record. The detail page does not show Mermaid; its Application and Deployment sections carry the generated figures.
