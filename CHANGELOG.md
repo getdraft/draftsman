@@ -3,6 +3,7 @@
 ### Compatibility Impact
 
 - Figure output of `framework/tools/generate_diagram.py` changes for existing patterns: the logical view draws five columns per band and the deployment view four per zone lane, an edge between two boxes in the same zone lane or tier band now routes inside that container, and a figure never draws narrower than its natural width. The golden images are regenerated. No catalog file changes.
+- The pattern detail view's Topology and Mermaid Diagrams sections are replaced by Application and Deployment sections that embed the generated figures. Adopters refresh the browser shell with `generate_browser.py --refresh-shell` to get them.
 
 ### Added
 
@@ -13,14 +14,17 @@
 - Diagram pages show all connections by default (the toolbar checkbox is checked); hovering, focusing or pinning a box dims the other connections to opacity .15 and brings its own forward.
 - Edges between boxes in the same zone lane (deployment view) or tier band (logical view) route inside that container.
 - The logical view draws five columns per band and the deployment view four per zone lane; the figure wrapper scrolls horizontally instead of shrinking the figure.
+- The pattern detail view has Application and Deployment sections that embed the logical and deployment figures from the pattern's diagram page, each with a Fit width / Actual size toggle (fit by default) and an Open full page link, and no longer shows the Topology section, the Mermaid Diagrams section, the tier filter chips or the hero Diagrams link. A pattern without a generated diagram page shows a one-sentence note per section.
+- The detail view's section nav is Application, Deployment, Service Groups, Decisions, Connections, Tier Variants, Metadata.
 
 ### Fixed
 
 - Same-lane and same-band edges no longer leave their container through the channel or band gap.
+- The detail view's section nav now sticks flush at the top of the content while the sections scroll and releases after the last one, and section anchors scroll to just below it.
 
 ### Migration Notes
 
-- None for workspaces; nothing to do.
+- None for workspaces. Adopters refresh the browser shell with `generate_browser.py --refresh-shell` to get the new detail view; no catalog change.
 
 ## 1.5.4 - 2026-11-14
 
