@@ -19,6 +19,13 @@ BACK_LINK = ' <a href="../index.html">Back to catalog</a>'
 FOOTER_END = "the same catalog always produces the same page."
 
 
+def function_source(js: str, name: str) -> str:
+    """Source of one top-level function in the shipped JS, up to the next top-level function."""
+    start = js.index(f"function {name}(")
+    end = js.index("\nfunction ", start + 1)
+    return js[start:end]
+
+
 def run_browser(workspace: Path, out_dir: Path, *extra: str) -> subprocess.CompletedProcess:
     return subprocess.run(
         [sys.executable, str(BROWSER_TOOL), "--workspace", str(workspace), "--output", str(out_dir / "index.html"),
@@ -83,9 +90,10 @@ class DiagramPagesInBrowserTests(unittest.TestCase):
             if entry["type"] != "software_deployment_pattern":
                 self.assertNotIn("diagramPage", entry)
         js = BROWSER_JS.read_text(encoding="utf-8")
-        self.assertIn("object.diagramPage ?", js)
-        self.assertIn(">Diagrams</a>", js)
-        self.assertIn(": ''}", js[js.index("object.diagramPage ?"):][:200])
+        self.assertIn("object.diagramPage", js)
+        self.assertIn("Open full page", js)  # the hero Diagrams link became the section links (S2)
+        self.assertIn("'sdp-s-application'", js)
+        self.assertIn("'sdp-s-deployment'", js)
 
     def test_skip_diagrams(self) -> None:
         out = self.tmp / "site"
@@ -180,9 +188,7 @@ class IntentRemovedFromBrowserTests(unittest.TestCase):
         cls.js = BROWSER_JS.read_text(encoding="utf-8")
 
     def _function_source(self, name: str) -> str:
-        start = self.js.index(f"function {name}(")
-        end = self.js.index("\nfunction ", start + 1)
-        return self.js[start:end]
+        return function_source(self.js, name)
 
     def test_no_intent_field_or_helper_in_browser_js(self) -> None:
         # Targets the field and helper identifiers; prose such as "intentionally" is not matched.
@@ -204,8 +210,10 @@ class IntentRemovedFromBrowserTests(unittest.TestCase):
 
     def test_legend_has_no_intent_group(self) -> None:
         self.assertNotIn(">Intent<", self.js)
-        self.assertIn(">Tiers<", self.js)
-        self.assertIn(">Protocols<", self.js)
+        self.assertNotIn(">Tiers<", self.js)  # the detail-view topology legend is gone
+        self.assertNotIn("data-tier-filter", self.js)
+        self.assertNotIn('class="chip', self.js)
+        self.assertNotIn('class="chip-group', self.js)
 
     def test_topology_node_flags_have_no_intent_slot(self) -> None:
         node = self._function_source("topologyNodeMarkup")
@@ -220,8 +228,30 @@ class IntentRemovedFromBrowserTests(unittest.TestCase):
         badge = self._function_source("topologyBadgeMarkup")
         self.assertIn("entry.riskRef", badge)
         self.assertIn("topology-risk", badge)
-        self.assertIn("m.riskRef", self.js)
-        self.assertIn("drawer-risk-ref", self.js)
+        self.assertNotIn("drawer-risk-ref", self.js)
+        self.assertIn("topologyBadgeMarkup(", self._function_source("_sdpGroupsMarkup"))
+
+    def test_risk_badge_rendered_in_service_group_row(self) -> None:
+        if shutil.which("node") is None:
+            self.skipTest("node is not on PATH; cannot render the Service Groups row")
+        src = "\n".join(self._function_source(n) for n in ("topologyBadgeMarkup", "serviceGroupDomId", "_sdpGroupsMarkup"))
+        script = ("const escapeHtml=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\"/g,'&quot;');"
+                  "const objectLookup={svc:{name:'Svc'},'ard-ok':{id:'ard-ok',name:'Ok',ardCategory:'decision',status:'accepted'},"
+                  "'ard-risk':{id:'ard-risk',name:'Risk',ardCategory:'risk',status:'proposed'}};"
+                  + src + """
+const vm={zones:[]};
+const mk=r=>({serviceGroups:[{name:'G',deployableObjects:[{ref:'svc',networkZone:'z',riskRef:r}]}]});
+const out={};
+for (const [k,r] of [['ok','ard-ok'],['risk','ard-risk'],['missing','nope'],['none',null]]) out[k]=_sdpGroupsMarkup(mk(r),vm);
+process.stdout.write(JSON.stringify(out));""")
+        result = subprocess.run(["node", "-e", script], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        out = json.loads(result.stdout)
+        self.assertIn('class="topology-info" data-object-link="ard-ok"', out["ok"])
+        self.assertIn('class="topology-risk" data-object-link="ard-risk"', out["risk"])
+        self.assertIn('class="topology-risk"', out["missing"])
+        self.assertNotIn("topology-info", out["none"])
+        self.assertNotIn("topology-risk", out["none"])
 
     def test_standalone_without_risk_ref_has_no_decision_icon(self) -> None:
         self.assertNotIn("Explicit architecture decision", self.js)
@@ -292,6 +322,173 @@ class IntentRemovedFromBrowserCssTests(unittest.TestCase):
         start = self.sdp.index("@media (max-width: 760px) {")
         media = self.sdp[start:self.sdp.index("\n}", start)]
         self.assertRegex(media, r"\.kpi-strip\s*\{ grid-template-columns: repeat\(2, 1fr\); \}")
+
+
+class DetailDiagramSectionsTests(unittest.TestCase):
+    """Source-level proxies for the Application and Deployment sections, fit toggle and sticky nav.
+    These assert on the source of the new functions, plus the dead-code removal checks."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.js = BROWSER_JS.read_text(encoding="utf-8")
+        cls.sdp = (REPO_ROOT / "framework" / "browser" / "draft-browser-sdp.css").read_text(encoding="utf-8")
+
+    def fn(self, name: str) -> str:
+        return function_source(self.js, name)
+
+    def test_detail_sections_application_and_deployment(self) -> None:
+        nav = self.fn("_sdpSectionNavMarkup")
+        order = ["sdp-s-application", "sdp-s-deployment", "sdp-s-groups", "sdp-s-decisions",
+                 "sdp-s-connections", "sdp-s-tiers", "sdp-s-metadata"]
+        positions = [nav.find(f"'{i}'") for i in order]
+        self.assertTrue(all(p >= 0 for p in positions), nav)
+        self.assertEqual(positions, sorted(positions))
+        for label in ("Application", "Deployment", "Service Groups", "Decisions", "Connections", "Tier Variants", "Metadata"):
+            self.assertIn(f"label: '{label}'", nav)
+        labels = re.findall(r"label: '([^']+)'", nav)
+        self.assertEqual(labels, ["Application", "Deployment", "Service Groups", "Decisions", "Connections", "Tier Variants", "Metadata"])
+        detail = self.fn("_sdpDetailMarkup")
+        app = self.fn("_sdpApplicationMarkup")
+        dep = self.fn("_sdpDeploymentMarkup")
+        section = self.fn("_sdpDiagramSectionMarkup")
+        self.assertIn("'sdp-s-application', '01 \u2014 Application', 'Logical application diagram'", app.replace("\u2014", "\u2014"))
+        self.assertIn("'sdp-s-deployment', '02 \u2014 Deployment', 'Deployment pattern diagram'", dep)
+        self.assertIn("Open full page", section)
+        self.assertIn('aria-pressed="true"', section)
+        self.assertIn("Fit width", section)
+        self.assertIn("The diagram page is not generated for this pattern.", section)
+        self.assertIn("object.diagramPage", section)
+        self.assertLess(detail.index("_sdpApplicationMarkup"), detail.index("_sdpDeploymentMarkup"))
+        self.assertLess(detail.index("_sdpDeploymentMarkup"), detail.index("_sdpGroupsMarkup"))
+        for name in ("_sdpSectionNavMarkup", "_sdpDetailMarkup", "_sdpHeroMarkup", "_sdpDiagramSectionMarkup"):
+            src = self.fn(name)
+            for gone in ("sdp-s-topology", "sdp-s-diagrams", "data-tier-filter", "hero-diagrams", "_sdpTopologyMarkup", "_sdpDiagramsMarkup"):
+                self.assertNotIn(gone, src, f"{gone} in {name}")
+
+    def test_embed_static_contract(self) -> None:
+        load = self.fn("_sdpLoadDiagramEmbeds")
+        self.assertEqual(load.count("fetch("), 1)
+        self.assertIn("_sdpExtractFigureParts", load)
+        self.assertIn("_sdpScopeDiagramCss", load)
+        self.assertIn("createElement('script')", load)
+        self.assertLess(load.index("slot.appendChild(part)"), load.index("createElement('script')"))
+        self.assertIn("_sdpEmbedFail(root, missing)", load)
+        self.assertIn("The diagram page is not generated for this pattern.", load)
+        self.assertEqual(self.js.count("_sdpLoadDiagramEmbeds("), 2)  # definition and the single call site
+        scope = self.fn("_sdpScopeDiagramCss")
+        self.assertIn("replaceSync", scope)
+        self.assertRegex(scope, r"try \{[^}]*replaceSync")
+        self.assertIn("_sdpScopeCssByText", scope)
+
+    def test_embed_render_token_and_ids(self) -> None:
+        load = self.fn("_sdpLoadDiagramEmbeds")
+        self.assertIn("const token = ++_sdpEmbedToken", load)
+        self.assertIn("token !== _sdpEmbedToken", load)
+        self.assertLess(load.index("token !== _sdpEmbedToken"), load.index("document.head.appendChild(style)"))
+        self.assertIn("getElementById(_SDP_EMBED_STYLE_ID)", load)
+        self.assertIn("getElementById('sdp-diagram-embed-script')", load)
+        self.assertIn("const _SDP_EMBED_STYLE_ID = 'sdp-diagram-embed-style'", self.js)
+        self.assertLess(load.index("oldStyle.remove()"), load.index("document.head.appendChild(style)"))
+        self.assertLess(load.index("old.remove()"), load.index("document.body.appendChild(script)"))
+        self.assertIn("sdp-diagram-embed-script", self.fn("_sdpTeardown"))
+
+    def test_browser_js_passes_node_check(self) -> None:
+        if shutil.which("node") is None:
+            self.skipTest("node is not on PATH; cannot run node --check")
+        result = subprocess.run(["node", "--check", str(BROWSER_JS)], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_scope_css_fallback_pure_function(self) -> None:
+        if shutil.which("node") is None:
+            self.skipTest("node is not on PATH; cannot run the CSS scoping fallback")
+        src = "\n".join(self.fn(n) for n in ("_sdpSplitSelectors", "_sdpScopeSelector", "_sdpScopeCssByText"))
+        css = (":root{--a:1}html,body{margin:0}.x,.y>b{color:red}.x:not(.a,.b){}.z{content:\"}\"}"
+               "@keyframes spin{from{opacity:0}to{opacity:1}}"
+               "@media (prefers-reduced-motion:reduce){.x{animation:none}}"
+               "@media (prefers-color-scheme:dark){.x{color:white}}")
+        script = ("const _SDP_EMBED_CLASS='sdp-diagram-embed';" + src
+                  + f"\nprocess.stdout.write(_sdpScopeCssByText({json.dumps(css)}));")
+        result = subprocess.run(["node", "-e", script], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(
+            result.stdout,
+            ".sdp-diagram-embed{--a:1}"
+            ".sdp-diagram-embed .x,.sdp-diagram-embed .y>b{color:red}"
+            ".sdp-diagram-embed .x:not(.a,.b){}"
+            ".sdp-diagram-embed .z{content:\"}\"}"
+            "@keyframes spin{from{opacity:0}to{opacity:1}}"
+            "@media (prefers-reduced-motion:reduce){.sdp-diagram-embed .x{animation:none}}",
+        )
+
+    def test_rendered_section_markup(self) -> None:
+        if shutil.which("node") is None:
+            self.skipTest("node is not on PATH; cannot render the section markup")
+        src = "\n".join(self.fn(n) for n in ("_sdpDiagramSectionMarkup", "_sdpApplicationMarkup",
+                                           "_sdpDeploymentMarkup", "_sdpSectionNavMarkup"))
+        script = ("const document={addEventListener(){}};const escapeHtml=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\"/g,'&quot;');"
+                  + src + """
+const vm={connections:[]};
+const out={};
+for (const [k,o] of [['with',{diagramPage:'diagrams/p.html',tierVariants:[]}],['without',{tierVariants:[]}]])
+  out[k]=_sdpSectionNavMarkup(vm,o)+_sdpApplicationMarkup(o)+_sdpDeploymentMarkup(o);
+process.stdout.write(JSON.stringify(out));""")
+        result = subprocess.run(["node", "-e", script], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        out = json.loads(result.stdout)
+        for key in ("with", "without"):
+            html = out[key]
+            self.assertIn('id="sdp-s-application"', html)
+            self.assertIn('id="sdp-s-deployment"', html)
+            self.assertNotIn("sdp-s-topology", html)
+            self.assertNotIn("sdp-s-diagrams", html)
+        self.assertEqual(out["with"].count('href="diagrams/p.html"'), 2)
+        self.assertEqual(out["with"].count("Open full page"), 2)
+        self.assertEqual(out["with"].count('aria-pressed="true"'), 2)
+        self.assertEqual(out["without"].count("The diagram page is not generated for this pattern."), 2)
+        self.assertNotIn("Open full page", out["without"])
+
+    def test_detail_dead_code_removed(self) -> None:
+        for gone in ("_sdpTopologyMarkup", "_sdpDiagramsMarkup", "_sdpRecomputePaths", "_sdpUpdateCardStates",
+                     "_sdpOpenDrawer", "_sdpCloseDrawer", "_sdpDrawerMarkup", "_sdpCardRefs", "_sdpResizeObs",
+                     "_sdpTierFilter", "_SDP_TIER_ORDER", "_SDP_TIER_LABELS", "diagramRenderId", "sdp-drawer",
+                     "sdp-topology-grid", "data-tier-filter", "svc-card", "vm.diagram"):
+            self.assertNotIn(gone, self.js, gone)
+        for kept in ("function renderDiagramsView(", "function topologyBadgeMarkup(", "function topologyNodeMarkup("):
+            self.assertIn(kept, self.js, kept)
+
+    def test_detail_css_dead_rules_removed(self) -> None:
+        selectors = re.findall(r"(?m)^\s*([^\s{}/@][^{}]*?)\s*\{", self.sdp)
+        parts = [part.strip() for sel in selectors for part in sel.split(",")]
+        prefixes = (".sdp-drawer", ".drawer-", ".sdp-detail .chip", ".topology-wrap", ".topology-grid", ".topo-legend")
+        for part in parts:
+            bare = part.replace(".sdp-detail ", "", 1) if not part.startswith(".sdp-detail .chip") else part
+            self.assertFalse(bare.startswith(prefixes) or part.startswith(prefixes), part)
+            self.assertNotIn("sdp-topology-grid", part)
+        main = (REPO_ROOT / "framework" / "browser" / "draft-browser.css").read_text(encoding="utf-8")
+        self.assertIn(".topology-info", main)
+        self.assertIn(".topology-risk", main)
+
+    def test_fit_css_rules(self) -> None:
+        fit = re.search(r"\.sdp-diagram-embed\.fit svg \{([^}]*)\}", self.sdp)
+        self.assertIsNotNone(fit)
+        for decl in ("width: 100%", "height: auto", "min-width: 0"):
+            self.assertIn(decl, fit.group(1))
+        self.assertRegex(self.sdp, r"\.sdp-diagram-embed\.fit \.scroll \{ overflow-x: hidden; \}")
+        self.assertRegex(self.sdp, r"\.sdp-diagram-embed \.scroll \{[^}]*overflow-x: auto")
+        self.assertRegex(self.sdp, r"\.detail-layout > \* \{ min-width: 0; \}")
+
+    def test_sticky_nav_css(self) -> None:
+        nav = re.search(r"\.sdp-detail \.section-nav \{([^}]*)\}", self.sdp).group(1)
+        self.assertIn("position: sticky", nav)
+        self.assertIn("top: var(--sdp-header-offset)", nav)
+        self.assertIn("background: var(--page)", nav)
+        self.assertIn("border-bottom: 1px solid", nav)
+        self.assertIn("--sdp-header-offset: 0px", self.sdp)
+        self.assertRegex(self.sdp, r"scroll-margin-top: calc\(var\(--sdp-header-offset\) \+ var\(--sdp-nav-height\) \+ 8px\)")
+        detail = self.fn("_sdpDetailMarkup")
+        self.assertIn('<div class="sdp-sections">', detail)
+        self.assertLess(detail.index("_sdpKpiMarkup"), detail.index('class="sdp-sections"'))
+        self.assertLess(detail.index('class="sdp-sections"'), detail.index("_sdpSectionNavMarkup"))
 
 
 class LegacyIntentTests(unittest.TestCase):
