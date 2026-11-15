@@ -1,3 +1,27 @@
+## Unreleased
+
+### Compatibility Impact
+
+- Figure output of `framework/tools/generate_diagram.py` changes for existing patterns: the logical view draws five columns per band and the deployment view four per zone lane, an edge between two boxes in the same zone lane or tier band now routes inside that container, and a figure never draws narrower than its natural width. The golden images are regenerated. No catalog file changes.
+
+### Added
+
+- Tests for same-container routing, the show-all default, the column counts and natural width, and byte-identical output for the examples workspace.
+
+### Changed
+
+- Diagram pages show all connections by default (the toolbar checkbox is checked); hovering, focusing or pinning a box dims the other connections to opacity .15 and brings its own forward.
+- Edges between boxes in the same zone lane (deployment view) or tier band (logical view) route inside that container.
+- The logical view draws five columns per band and the deployment view four per zone lane; the figure wrapper scrolls horizontally instead of shrinking the figure.
+
+### Fixed
+
+- Same-lane and same-band edges no longer leave their container through the channel or band gap.
+
+### Migration Notes
+
+- None for workspaces; nothing to do.
+
 ## 1.5.4 - 2026-11-14
 
 ### Compatibility Impact
