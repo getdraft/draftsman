@@ -79,9 +79,14 @@ class WebTests(unittest.TestCase):
         )
 
     def test_sdp_detail_page_embeds_scoped_diagram(self) -> None:
-        self.assertIn("function _sdpDiagramsMarkup(vm)", BROWSER_JS)
-        self.assertIn("window.DraftDiagrams.buildSdpDiagram(object)", BROWSER_JS)
-        # S2: the detail nav entry and the render call are gone; S3 rewrites this test.
+        # The detail view embeds the generated diagram page's two figures (S2);
+        # the old Mermaid-based section and its builder call are gone (S3).
+        self.assertIn("function _sdpApplicationMarkup(", BROWSER_JS)
+        self.assertIn("function _sdpDeploymentMarkup(", BROWSER_JS)
+        self.assertIn("function _sdpLoadDiagramEmbeds(", BROWSER_JS)
+        self.assertIn("object.diagramPage", BROWSER_JS)
+        self.assertNotIn("function _sdpDiagramsMarkup", BROWSER_JS)
+        self.assertNotIn("window.DraftDiagrams.buildSdpDiagram(object)", BROWSER_JS)
 
     def test_sdp_diagram_initial_render_waits_for_dom_content_loaded(self) -> None:
         # Regression: draft-browser.js called applyRouteFromHash() (the initial
