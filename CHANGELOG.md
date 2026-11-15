@@ -2,22 +2,25 @@
 
 ### Compatibility Impact
 
-- Figure output of `framework/tools/generate_diagram.py` changes for existing patterns: the logical view draws five columns per band and the deployment view four per zone lane, an edge between two boxes in the same zone lane or tier band now routes inside that container, and a figure never draws narrower than its natural width. The golden images are regenerated. No catalog file changes.
 - The pattern detail view's Topology and Mermaid Diagrams sections are replaced by Application and Deployment sections that embed the generated figures. Adopters refresh the browser shell with `generate_browser.py --refresh-shell` to get them.
+- Diagram figures default to all connections shown instead of hidden until a box is hovered, focused or pinned.
+- Figure output of `framework/tools/generate_diagram.py` changes for existing patterns: the logical view draws five columns per band and the deployment view four per zone lane, and a figure never draws narrower than its natural width. The golden images are regenerated.
+- An edge between two boxes in the same zone lane or tier band now routes inside that container, which changes existing edge paths.
+- No catalog file changes.
 
 ### Added
 
+- The pattern detail view has Application and Deployment sections that embed the logical and deployment figures from the pattern's diagram page, each with a Fit width / Actual size toggle (fit by default) and an Open full page link. A pattern without a generated diagram page shows a one-sentence note per section.
+- Each deployable-object row in the detail view's Service Groups section shows its `riskRef` as the decision badge (accepted decision, risk, or missing record) beside the object's name, linking to the decision record; this replaces the HA Decision row of the removed service drawer.
 - Tests for same-container routing, the show-all default, the column counts and natural width, and byte-identical output for the examples workspace.
 
 ### Changed
 
 - Diagram pages show all connections by default (the toolbar checkbox is checked); hovering, focusing or pinning a box dims the other connections to opacity .15 and brings its own forward.
-- Edges between boxes in the same zone lane (deployment view) or tier band (logical view) route inside that container.
-- The logical view draws five columns per band and the deployment view four per zone lane; the figure wrapper scrolls horizontally instead of shrinking the figure.
-- The pattern detail view has Application and Deployment sections that embed the logical and deployment figures from the pattern's diagram page, each with a Fit width / Actual size toggle (fit by default) and an Open full page link, and no longer shows the Topology section, the Mermaid Diagrams section, the tier filter chips or the hero Diagrams link. A pattern without a generated diagram page shows a one-sentence note per section.
+- The logical view draws five columns per band and the deployment view four per zone lane; the figure wrapper scrolls horizontally instead of shrinking the figure. Edges between boxes in the same zone lane (deployment view) or tier band (logical view) route inside that container.
 - The detail view's section nav is Application, Deployment, Service Groups, Decisions, Connections, Tier Variants, Metadata.
-- Each deployable-object row in the detail view's Service Groups section shows its `riskRef` as the decision badge (accepted decision, risk, or missing record) beside the object's name, linking to the decision record; this replaces the HA Decision row of the removed service drawer.
-- The detail view's topology grid, tier filter chips and service drawer are removed along with their code and styles; the sidebar Topology tool and the catalog Diagrams tool are unchanged.
+- The detail view no longer shows the Topology section, the Mermaid Diagrams section, the tier filter chips or the hero Diagrams link. The topology grid, tier filter chips and service drawer are removed along with their code and styles; the sidebar Topology tool and the catalog Diagrams tool are unchanged.
+- `software-deployment-patterns.md`, `sdp-completion-interview.md` and the `draftsman-diagram` skill (SKILL.md and `references/mermaid.md`) describe the Application and Deployment sections, the fit toggle, the Open full page link and `diagramTier` as the band a component sits in.
 
 ### Fixed
 
@@ -26,7 +29,7 @@
 
 ### Migration Notes
 
-- None for workspaces. Adopters refresh the browser shell with `generate_browser.py --refresh-shell` to get the new detail view; no catalog change.
+- None for workspaces. Adopters run `generate_browser.py --refresh-shell` to get the new detail view; no catalog change.
 
 ## 1.5.4 - 2026-11-14
 

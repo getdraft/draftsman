@@ -44,9 +44,9 @@ Each of those entries must declare `diagramTier` as one of:
 - `data`
 - `utility`
 
-That field is what drives column placement in the topology view. The renderer
-should not guess service placement from names or references when the manifest
-can state the intended architecture directly.
+`diagramTier` is the band a component sits in on the generated diagrams. The
+renderer should not guess service placement from names or references when the
+manifest can state the intended architecture directly.
 
 `scalingUnits` is optional. Use it only when a set of service groups truly
 shares a scaling boundary. If a service group does not participate in a scaling
@@ -210,7 +210,7 @@ non-standard values produce warnings; in `gated` mode, they produce failures.
 deployment targets, and `drafting-interview-required` can be used as the
 general interview-required sentinel.
 
-`diagramTier` places deployed objects into one of four columns:
+`diagramTier` places deployed objects into one of four bands:
 
 - `presentation`
 - `application`
@@ -233,25 +233,37 @@ Inter-service dependencies are modeled as relationship objects in
 `catalog/relationships/`, not as inline fields inside the SDP. A relationship
 object carries a `source` UID, a `target` UID (or `externalTarget` for systems
 with no catalog object), a `label`, `technology`, and optional `capabilities`
-that the validator uses as requirement evidence. The browser renders relationship
-objects whose both endpoints are deployed in the same SDP as connection edges in
-the topology view.
+that the validator uses as requirement evidence. The generated diagrams draw
+relationship objects whose both endpoints are deployed in the same SDP as
+connection edges, and the pattern detail page shows them in its Connections
+section.
 
-## How The Topology Should Read
+## How The Detail Page Should Read
 
-The SoftwareDeploymentPattern topology is a service-first placement view.
+The pattern detail page opens with an Application section and a Deployment
+section, each carrying a generated figure from the pattern's diagram page. The
+Application figure is the logical view: components and data components in
+`presentation`, `application`, `data` and `utility` bands. The Deployment figure
+is the deployment view: service groups and network-zone lanes under their
+deployment targets. Both show all connections by default; hovering, focusing or
+pinning a box brings its connections forward while the others fade. Each section
+has a Fit width / Actual size toggle (fit by default, actual size scrolls) and an
+Open full page link to the standalone diagram page. A pattern with no generated
+diagram page shows a one-sentence note instead. The sections below them (Service
+Groups, Decisions, Connections, Tier Variants, Metadata) carry the recorded
+detail. The figures are service-first placement views.
 
 - `serviceGroup` is the primary container because it answers what a set of
   deployed components does.
 - `deploymentTarget` stays visible as metadata on that group.
 - `diagramTier` places deployed objects into the
-  `presentation`, `application`, `data`, or `utility` column.
+  `presentation`, `application`, `data`, or `utility` band.
 - `scalingUnit` is secondary and optional. It should be treated as an overlay
   or highlight concept that answers which services scale together, not as the
   primary layout primitive.
 
 That means one deployment target can host multiple service groups, and each
-group can still place its runtime components into different tiers. Scaling
+group can still place its runtime components into different bands. Scaling
 units can be highlighted across multiple groups without taking over the base
 layout.
 
