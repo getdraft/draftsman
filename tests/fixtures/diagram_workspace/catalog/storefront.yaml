@@ -143,7 +143,7 @@ runtimeSpec:
     name: http
     direction: inbound
   - number: 8092
-    protocol: gRPC
+    protocol: HTTP/2
     name: grpc
     direction: bidirectional
   - number: 5672
@@ -431,5 +431,17 @@ source: FXPRD00004-0001
 target: FXDCP00008-0001
 label: archives carts
 technology: SQL
+direction: synchronous
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00024-0001
+type: relationship
+name: FX Legacy Cart replays legacy orders
+source: FXPRD00004-0001
+target: FXPRD00002-0001
+label: replays legacy orders
+targetInterface: order-admin
+technology: gRPC
 direction: synchronous
 catalogStatus: complete

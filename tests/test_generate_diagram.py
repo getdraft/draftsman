@@ -2808,6 +2808,18 @@ class LaterStoryTests(unittest.TestCase):
         for el in labels:
             if el["loop"]:
                 loops_of[el["source"]] = loops_of.get(el["source"], 0) + 1
+        # AC9: with every label shown, the target-end labels entering one box from different sources through
+        # different entrances are pairwise disjoint (each entrance has its own block of rows, stacked from the box
+        # upward in entrance order). Labels through one entrance share its rows by D37 and show one box at a time.
+        into = [el for el in labels if not el["loop"] and el["kind"] == "t"]
+        for i, a in enumerate(into):
+            for b in into[i + 1 :]:
+                if a["target"] == b["target"] and a["source"] != b["source"] and a["pts"][-1][0] != b["pts"][-1][0]:
+                    self.assertEqual(generate_diagram._overlap(a["box"], b["box"]), 0, ("into one box", a["target"], a["text"], b["text"]))
+        blocks: dict = {}  # (target, entrance x) -> rows of that entrance's block
+        for el in into:
+            key = (el["target"], el["pts"][-1][0])
+            blocks[key] = max(blocks.get(key, 0), pair_count.get((el["source"], el["target"]), 1))
         for el in labels:
             if el["loop"]:
                 continue
@@ -2817,6 +2829,8 @@ class LaterStoryTests(unittest.TestCase):
                 for o in labels
             )
             allowed = generate_diagram._pitch(two_line) * pair_count[(el["source"], el["target"])]
+            if el["kind"] == "t":  # AC9: past the blocks of the box's lower entrances
+                allowed += generate_diagram._pitch(two_line) * sum(n for (t, x), n in blocks.items() if t == el["target"] and x < end[0])
             if el["kind"] == "t" and loops_of.get(el["target"]):
                 allowed += generate_diagram.LOOP_RISE + generate_diagram.LOOP_STEP * (loops_of[el["target"]] - 1)
                 allowed += generate_diagram.LABEL_H * sum(1 for o in labels if o["loop"] and o["source"] == el["target"] and len(o["lines"]) == 2)
@@ -3931,6 +3945,30 @@ class PortResolutionTests(unittest.TestCase):
         self.assertEqual(text({"name": "", "protocol": "HTTPS", "port": 443}), "https 443")
         self.assertEqual(text({"name": "sql", "protocol": "SQL", "port": 5432}), "SQL 5432")
         self.assertEqual(text({"name": "g", "protocol": "HTTP/2", "port": 8092}), "HTTP/2 8092")
+        self.assertEqual(text({"name": "g", "protocol": "HTTP/2", "port": 8092}, "gRPC"), "gRPC 8092")
+        self.assertEqual(text({"name": "http", "protocol": "HTTP", "port": 8080}, "gRPC"), "http 8080")  # web keeps its name
+
+    def test_family_matched_port_prints_the_interface_protocol(self) -> None:  # amendment A2
+        own = plain(
+            "TGT", "product_component", "Target",
+            interfaces=[{"name": "admin", "protocol": "gRPC"}],
+            runtimeSpec={"ports": [{"number": 8092, "protocol": "HTTP/2", "name": "h2", "direction": "inbound"}]},
+        )
+        rel = self.rel("R1", "SRC", "TGT", targetInterface="admin", technology="gRPC")
+        self.assertEqual(self.one_edge(own, rel=rel), "gRPC 8092")  # not gRPC · HTTP/2 8092
+        # a substrate listener matched by family prints the interface's word too
+        target = plain("TGT", "product_component", "Target", interfaces=[{"name": "admin", "protocol": "gRPC"}])
+        rt = plain("RT", "runtime_service", "Runtime", listeners=[
+            {"name": "web", "protocol": "REST", "port": 8080}, {"name": "h2", "protocol": "HTTP/2", "port": 8092}])
+        groups = [self.group("G", ["SRC", "TGT"], substrate="RT")]
+        self.assertEqual(self.one_edge(target, [rt], rel, groups), "gRPC 8092")
+        # an unmatched single-listener fallback prints as recorded
+        lone = plain("RT", "runtime_service", "Runtime", listeners=[{"name": "t", "protocol": "Thrift", "port": 9090}])
+        self.assertEqual(self.one_edge(target, [lone], rel, groups), "gRPC · Thrift 9090")
+        # the web family keeps the lower-cased-name rule: a REST interface on a REST port reads by its name
+        web = plain("TGT", "product_component", "Target", interfaces=[{"name": "api", "protocol": "REST"}],
+                    runtimeSpec={"ports": [{"number": 8082, "protocol": "REST", "name": "rest"}]})
+        self.assertEqual(self.one_edge(web, rel=self.rel("R1", "SRC", "TGT", targetInterface="api")), "rest 8082")
 
     def test_deployment_labels_on_fixture_edges_and_the_application_view_has_no_ports(self) -> None:
         catalog = load_catalog(FIXTURE)
@@ -3950,6 +3988,8 @@ class PortResolutionTests(unittest.TestCase):
         self.assertEqual(far_lines(deployment, "FXPRD00006-0001", "FXPRD00002-0001"), ["administers orders", "gRPC 8443 → gRPC 8092 via FX Public Load Balancer"])
         self.assertEqual(far_lines(deployment, "FXPRD00002-0001", "FXDST00001-0001"), ["reads and writes orders", "SQL 5432"])
         self.assertEqual(far_lines(deployment, "FXPRD00004-0001", "FXDST00001-0001"), ["reads historic carts", "PostgreSQL wire protocol · SQL 5432"])
+        # A2: FX Order API's port 8092 is recorded as HTTP/2 and matched to the gRPC interface by family: it reads gRPC 8092
+        self.assertEqual(far_lines(deployment, "FXPRD00004-0001", "FXPRD00002-0001"), ["replays legacy orders", "gRPC 8092"])
         self.assertEqual(far_lines(logical, "FXPRD00003-0001", "FXPRD00002-0001"), ["consumes order messages", "AMQP"])
         self.assertEqual(far_lines(logical, "FXPRD00001-0001", "FXPRD00002-0001"), ["places orders", "HTTPS JSON"])
         reg_deployment = deployment_svg(catalog, "FXSDP00002-0001")
@@ -4242,6 +4282,108 @@ class EdgeDeviceChainTests(unittest.TestCase):
         self.assertEqual(deployment_svg(catalog, FIXTURE_SDP), deployment_svg(catalog, FIXTURE_SDP))
         code, _out, err = run_cli(["--workspace", str(FIXTURE), "--sdp", FIXTURE_SDP, "--editable", "--output", os.devnull])
         self.assertEqual(code, 0, err)
+
+
+# AC9: the SVG digests of every examples pattern as the run's base (70c4622, before interfaces-exposure) drew them.
+# A pattern holding a component that declares two or more interfaces may differ (its entrances move under AC5) and is
+# named in EXAMPLES_MULTI_INTERFACE_PATTERNS; every other pattern must render byte for byte as it did at the base.
+EXAMPLES_BASE_SVG_SHA256 = {
+    ("STCK000001-SDP1", "logical"): "69525c1f5b165f0034fcc651deb6b5ac85a60c047a904b239e9f2a3f6b2d9112",
+    ("STCK000001-SDP1", "deployment"): "8ff58f41a5cff57a249e9cbe38c8e4a4f43cbd8549e3ba1c89c2f07f2587b1c2",
+}
+# The examples' only multi-interface component, the OpenStack Ops Console (01KSE5V73Z-Q0A0), is drawn by no examples
+# pattern today, so no pattern is exempt; the test fails if one starts drawing it without being named here.
+EXAMPLES_MULTI_INTERFACE_PATTERNS: tuple = ()
+
+
+class LayoutHardeningTests(unittest.TestCase):
+    """AC9: no edge crosses a box it does not connect to, labels entering one box through different entrances never
+    overlap, byte-identical renders, --editable renders, and examples unchanged from the base."""
+
+    def test_no_edge_crosses_a_foreign_box_in_any_golden(self) -> None:
+        goldens = sorted(harness.GOLDEN_DIR.glob("*.svg"))
+        self.assertEqual(len(goldens), 2 * len(generate_diagram.sdps(load_catalog(FIXTURE))))  # every pattern, both views
+        for path in goldens:
+            with self.subTest(golden=path.name):
+                svg = path.read_text(encoding="utf-8")
+                self.assertGreater(len(edge_polylines(svg)), 0)
+                self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+                self.assertEqual(covisible_track_clashes(svg), [])
+
+    def test_third_interface_caller_from_the_left_enters_from_the_right(self) -> None:
+        # S4's report: FX Legacy Cart (left of FX Order API) calls its third interface while FX Order Worker (right of
+        # it) calls the second; arriving from the left at the third entrance crossed the second entrance's stub.
+        catalog = load_catalog(FIXTURE)
+        svg = logical_svg(catalog, FIXTURE_SDP)
+        rects = node_rects(svg)
+        legacy = edge_pieces(svg)[("FXPRD00004-0001", "FXPRD00002-0001")][-1][2]
+        api_left = rects["FXPRD00002-0001"][0]
+        self.assertEqual(legacy[-1][0], api_left + 90)  # the third of three entrances
+        self.assertLess(rects["FXPRD00004-0001"][0], api_left)
+        self.assertGreater(legacy[-3][0], legacy[-1][0])  # its in-run comes from the right
+        self.assertEqual(covisible_stub_crossings(svg, logical_free_x(catalog, FIXTURE_SDP)), [])
+        self.assertEqual(side_violations(svg), [])
+
+    def test_entrance_rows_stack_one_block_per_entrance(self) -> None:
+        edges = [
+            (0, generate_diagram.DiagramEdge("A", "T", label="a", target_interface="x")),
+            (1, generate_diagram.DiagramEdge("B", "T", label="b", target_interface="y")),
+            (2, generate_diagram.DiagramEdge("B", "T", label="b2", target_interface="y")),
+            (3, generate_diagram.DiagramEdge("C", "T", label="c", target_interface="z")),
+            (4, generate_diagram.DiagramEdge("D", "U", label="d")),
+            (5, generate_diagram.DiagramEdge("E", "U", label="e")),
+        ]
+        offset, needs = generate_diagram._entrance_rows(edges, {"T": ["x", "y", "z"], "U": []})
+        self.assertEqual([offset[n] for n in range(6)], [0, 1, 1, 3, 0, 0])
+        self.assertEqual(needs, {"T": 4, "U": 1})  # one entrance: the largest pair multiplicity, as before
+
+    def test_render_twice_identical(self) -> None:
+        for root in (FIXTURE, EXAMPLES):
+            catalog = load_catalog(root)
+            for sdp in generate_diagram.sdps(catalog):
+                for render in (logical_svg, deployment_svg):
+                    with self.subTest(root=root.name, sdp=sdp["uid"], view=render.__name__):
+                        self.assertEqual(render(catalog, sdp["uid"]), render(catalog, sdp["uid"]))
+        outputs = {}
+        for seed in ("1", "2"):
+            with tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                for name, workspace in (("fixture", FIXTURE), ("examples", EXAMPLES)):
+                    subprocess.run(
+                        [sys.executable, "-m", "framework.tools.generate_diagram", "--workspace", str(workspace), "--all",
+                         "--output-dir", str(root / name / "html"), "--svg-dir", str(root / name / "svg")],
+                        cwd=str(REPO_ROOT), env=dict(os.environ, PYTHONHASHSEED=seed), check=True, capture_output=True,
+                    )
+                outputs[seed] = {str(p.relative_to(root)): p.read_bytes() for p in sorted(root.rglob("*")) if p.is_file()}
+        self.assertTrue(any(k.endswith(".svg") for k in outputs["1"]))
+        self.assertEqual(outputs["1"], outputs["2"], "PYTHONHASHSEED changed the bytes")
+
+    def test_editable_renders(self) -> None:
+        for root in (FIXTURE, EXAMPLES):
+            for sdp in generate_diagram.sdps(load_catalog(root)):
+                with self.subTest(root=root.name, sdp=sdp["uid"]):
+                    page = generate_diagram.build(root, sdp["uid"], editable=True)[0]
+                    self.assertIn('id="edit-panel"', page)
+                    self.assertEqual(strip_editable(page), generate_diagram.build(root, sdp["uid"])[0])
+
+    def test_examples_identical_except_multi_interface(self) -> None:
+        catalog = load_catalog(EXAMPLES)
+        multi = {uid for uid, obj in catalog.items() if isinstance(obj.get("interfaces"), list) and len(obj["interfaces"]) >= 2}
+        drawing: set = set()
+        for sdp in generate_diagram.sdps(catalog):
+            model = generate_diagram.build_diagram_model(catalog, sdp, False)
+            if any(n.uid in multi for n in model.nodes + model.deployment_nodes):
+                drawing.add(sdp["uid"])
+        self.assertEqual(drawing, set(EXAMPLES_MULTI_INTERFACE_PATTERNS), "name every examples pattern that draws a multi-interface component")
+        self.assertEqual(sorted({uid for uid, _view in EXAMPLES_BASE_SVG_SHA256}), sorted(s["uid"] for s in generate_diagram.sdps(catalog)))
+        for sdp in generate_diagram.sdps(catalog):
+            if sdp["uid"] in EXAMPLES_MULTI_INTERFACE_PATTERNS:
+                continue
+            model = generate_diagram.build_diagram_model(catalog, sdp, False)
+            for view, render in (("logical", generate_diagram.render_logical_svg), ("deployment", generate_diagram.render_deployment_svg)):
+                with self.subTest(sdp=sdp["uid"], view=view):
+                    digest = hashlib.sha256(render(model).encode("utf-8")).hexdigest()
+                    self.assertEqual(digest, EXAMPLES_BASE_SVG_SHA256[(sdp["uid"], view)])
 
 
 class DiagramSkillTests(unittest.TestCase):

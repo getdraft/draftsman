@@ -27,10 +27,12 @@
 - `validate.py` imports the shared protocol-family helper; its output does not change.
 - Both diagram views draw one entrance per declared interface on a box's top edge (data components with `interfaces` too). An edge enters through the interface its `targetInterface` names, or a derived dependency's `interface` when it names one, else through the first entrance; labels keep clear of the extra entrances.
 - `generate_diagram.py` imports the same helper to match listeners to interfaces; the Application view never shows a port.
+- A component port or listener matched to the target interface by protocol family prints the interface's protocol, not the recorded one: a gRPC interface served by a port recorded as `HTTP/2` reads `gRPC 8092`, not `gRPC · HTTP/2 8092`. Web listeners keep their lower-cased name (`http 8080`, `rest 8082`), and a single-listener fallback of another family prints as recorded.
+- At a box with several entrances in use, the far-end labels of each entrance take their own block of label rows, stacked upward from the box in entrance order, so labels entering one box from different sources through different entrances never overlap when all are shown; the label band above such a box grows by those rows. Boxes with one entrance are unchanged.
 
 ### Fixed
 
-- No fixes in this change.
+- Application view: when a caller left of a multi-interface box called a higher entrance than a caller right of it, the two in-runs crossed each other's stubs. The gutter edges into such a box now arrive from the left for the lower entrances and from the right for the higher ones; the box moves the fewest edges to the other side, and nothing moves for a box already in order.
 
 ### Migration Notes
 
