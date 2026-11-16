@@ -60,6 +60,9 @@ serviceGroups:
   - ref: FXPRD00003-0001
     networkZone: fx-app
     diagramTier: application
+  - ref: FXPRD00006-0001
+    networkZone: fx-app
+    diagramTier: application
 - name: Reserved
   deploymentTarget: fx-dc-west
   deployableObjects: []
@@ -95,10 +98,18 @@ type: product_component
 name: FX Order API
 language: Go
 runsOn: FXRTC00001-0001
+interfaces:
+- name: orders-api
+  protocol: REST
+- name: order-events
+  protocol: AMQP
+- name: order-admin
+  protocol: REST
 runtimeSpec:
   dependencies:
   - ref: FXDCP00001-0001
     purpose: reads cached sessions
+    interface: session-read
 catalogStatus: complete
 lifecycleStatus: preferred
 ---
@@ -117,6 +128,14 @@ name: FX Legacy Cart
 language: Java
 catalogStatus: complete
 lifecycleStatus: retired
+---
+schemaVersion: '1.0'
+uid: FXPRD00006-0001
+type: product_component
+name: FX Order Auditor
+language: Python
+catalogStatus: complete
+lifecycleStatus: preferred
 ---
 schemaVersion: '1.0'
 uid: FXPRD00005-0001
@@ -140,6 +159,11 @@ uid: FXDCP00001-0001
 type: data_component
 name: FX Session Cache
 targetEngine: FX KeyValue
+interfaces:
+- name: session-write
+  protocol: Redis
+- name: session-read
+  protocol: Redis
 catalogStatus: complete
 lifecycleStatus: preferred
 ---
@@ -165,6 +189,7 @@ name: FX Web Shop to FX Order API
 source: FXPRD00001-0001
 target: FXPRD00002-0001
 label: places orders
+targetInterface: orders-api
 technology: HTTPS JSON
 direction: synchronous
 flow: outbound
@@ -188,6 +213,7 @@ name: FX Order Worker consumes orders
 source: FXPRD00003-0001
 target: FXPRD00002-0001
 label: consumes order messages
+targetInterface: order-events
 direction: asynchronous
 catalogStatus: complete
 ---
@@ -208,6 +234,7 @@ name: FX Web Shop shares session state
 source: FXPRD00001-0001
 target: FXDCP00001-0001
 label: shares session state
+targetInterface: session-write
 direction: synchronous
 flow: bidirectional
 catalogStatus: complete
@@ -269,5 +296,16 @@ name: FX Legacy Cart reads orders
 source: FXPRD00004-0001
 target: FXDST00001-0001
 label: reads historic carts
+direction: synchronous
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00020-0001
+type: relationship
+name: FX Order Auditor administers orders
+source: FXPRD00006-0001
+target: FXPRD00002-0001
+label: administers orders
+targetInterface: order-admin
 direction: synchronous
 catalogStatus: complete
