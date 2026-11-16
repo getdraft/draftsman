@@ -29,6 +29,7 @@
 - `generate_diagram.py` imports the same helper to match listeners to interfaces; the Application view never shows a port.
 - A component port or listener matched to the target interface by protocol family prints the interface's protocol, not the recorded one: a gRPC interface served by a port recorded as `HTTP/2` reads `gRPC 8092`, not `gRPC · HTTP/2 8092`. Web listeners keep their lower-cased name (`http 8080`, `rest 8082`), and a single-listener fallback of another family prints as recorded.
 - At a box with several entrances in use, the far-end labels of each entrance take their own block of label rows, stacked upward from the box in entrance order, so labels entering one box from different sources through different entrances never overlap when all are shown; the label band above such a box grows by those rows. Boxes with one entrance are unchanged.
+- Docs and the `draftsman-diagram` skill describe the split by owner (product teams record `interfaces` and `targetInterface`; the infrastructure team records `listeners` and fills edge slots; `exposedThrough` is the exception), the Application view that never shows ports, the Deployment view's port chain, and the edge device chain drawn because the group is exposed and its protection, availability, performance and routing requirements apply (no caller is drawn).
 
 ### Fixed
 

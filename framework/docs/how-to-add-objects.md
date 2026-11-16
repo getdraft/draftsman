@@ -161,6 +161,20 @@ A ReferenceArchitecture should be generic enough to guide many products, not jus
 7. Set `diagramTier` on every deployable object entry (ProductComponents and DataComponents only) using one of `presentation`, `application`, `data`, or `utility`.
 8. Add product-level `notes`, including availability requirement and data classification, so the SoftwareDeploymentPattern satisfies the SoftwareDeploymentPattern RequirementGroup.
 
+## Record Interfaces, Listeners And Edge Slots
+
+- Product team: on a ProductComponent add `interfaces` (name and protocol), and
+  on each relationship that targets a product component set `targetInterface` to
+  the name of an interface it uses (ratcheted rule `relationship-target-interface`;
+  data components and external targets are exempt).
+- Infrastructure team: add `listeners` (name, protocol, port) to the RuntimeService,
+  DataStoreService, NetworkService or Host. On a ReferenceArchitecture, add
+  `fills: <network_service uid>` to the deployable object entry whose `slot` is
+  `firewall`, `web-application-firewall`, `load-balancer`, `api-gateway` or `ingress`.
+- A SoftwareDeploymentPattern service group sets `exposedThrough` only when its
+  chain differs from the reference architecture's (a list of NetworkService uids, or `none`).
+- Do not record hostnames, IPs, endpoints, security-group rules, certificates or health checks.
+
 ## Add A DraftingSession
 
 1. Create the file under `catalog/governance/sessions/`.
