@@ -234,7 +234,7 @@ class IntentRemovedFromBrowserTests(unittest.TestCase):
     def test_risk_badge_rendered_in_service_group_row(self) -> None:
         if shutil.which("node") is None:
             self.skipTest("node is not on PATH; cannot render the Service Groups row")
-        src = "\n".join(self._function_source(n) for n in ("topologyBadgeMarkup", "serviceGroupDomId", "_sdpGroupsMarkup"))
+        src = "\n".join(self._function_source(n) for n in ("topologyBadgeMarkup", "serviceGroupDomId", "_sdpExposureMarkup", "_sdpGroupsMarkup"))
         script = ("const escapeHtml=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\"/g,'&quot;');"
                   "const objectLookup={svc:{name:'Svc'},'ard-ok':{id:'ard-ok',name:'Ok',ardCategory:'decision',status:'accepted'},"
                   "'ard-risk':{id:'ard-risk',name:'Risk',ardCategory:'risk',status:'proposed'}};"
@@ -526,6 +526,112 @@ class LegacyIntentTests(unittest.TestCase):
                     self.assertNotIn("intent", group)
                     for deployed in group.get("deployableObjects", []):
                         self.assertNotIn("intent", deployed)
+
+
+
+class InterfacesExposureBrowserTests(unittest.TestCase):
+    """AC10: exposure on Service Groups rows, the Interface column, interfaces and listeners in object detail."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.js = BROWSER_JS.read_text(encoding="utf-8")
+
+    def test_markup_function_sources(self) -> None:
+        groups = function_source(self.js, "_sdpGroupsMarkup")
+        self.assertIn("_sdpExposureMarkup(", groups)
+        self.assertIn("groupExposure", groups)
+        exposure = function_source(self.js, "_sdpExposureMarkup")
+        self.assertIn("not exposed", exposure)
+        self.assertIn("escapeHtml", exposure)
+        table = function_source(self.js, "_sdpConnectionsTableMarkup")
+        self.assertIn("<th>Interface</th>", table)
+        self.assertIn("escapeHtml(c.targetInterface || '')", table)
+        detail = function_source(self.js, "interfacesListenersMarkup")
+        for text in ("raw.interfaces", "raw.listeners", "<th>Path</th>", "<th>Port</th>", "escapeHtml("):
+            self.assertIn(text, detail)
+
+    def test_node_check_passes(self) -> None:
+        if shutil.which("node") is None:
+            self.skipTest("node is not on PATH; cannot run node --check")
+        result = subprocess.run(["node", "--check", str(BROWSER_JS)], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_rendered_rows_with_and_without_new_fields(self) -> None:
+        if shutil.which("node") is None:
+            self.skipTest("node is not on PATH; cannot render the rows")
+        names = ("topologyBadgeMarkup", "serviceGroupDomId", "_sdpExposureMarkup", "_sdpGroupsMarkup",
+                 "_sdpConnectionsTableMarkup", "interfacesListenersMarkup")
+        src = "\n".join(function_source(self.js, n) for n in names)
+        script = ("const escapeHtml=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\"/g,'&quot;');"
+                  "const objectLookup={a:{name:'A'},b:{name:'B'}};"
+                  "const rawDetailObject=o=>JSON.parse(o.detail||'{}');"
+                  "const serviceGroupInteractionMarkup=()=>'';"
+                  + src + """
+const vm={zones:[],uidToZone:{},connections:[{from:'a',to:'b',protocol:'REST',label:'l',targetInterface:'<api>'},{from:'b',to:'a',protocol:'SQL',label:'m'}]};
+const sg=[{name:'G',deployableObjects:[{ref:'a',networkZone:'z'}]}];
+const out={
+  chain:_sdpGroupsMarkup({serviceGroups:sg,groupExposure:[{state:'devices',devices:['FW','LB<x>']}]},vm),
+  none:_sdpGroupsMarkup({serviceGroups:sg,groupExposure:[{state:'none',devices:[]}]},vm),
+  undetermined:_sdpGroupsMarkup({serviceGroups:sg,groupExposure:[{state:'',devices:[]}]},vm),
+  missing:_sdpGroupsMarkup({serviceGroups:sg},vm),
+  conn:_sdpConnectionsTableMarkup(vm),
+  withDetail:interfacesListenersMarkup({detail:JSON.stringify({interfaces:[{name:'api',protocol:'REST',path:'/v1'}],listeners:[{name:'https',protocol:'HTTPS',port:443}]})}),
+  withoutDetail:interfacesListenersMarkup({detail:'{}'}),
+};
+process.stdout.write(JSON.stringify(out));""")
+        result = subprocess.run(["node", "-e", script], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        out = json.loads(result.stdout)
+        self.assertIn("Exposed through:</strong> FW → LB&lt;x>", out["chain"])
+        self.assertIn("not exposed", out["none"])
+        for key in ("undetermined", "missing"):
+            self.assertNotIn("group-exposure", out[key])
+            self.assertNotIn("exposed", out[key].lower())
+        self.assertIn("<th>Interface</th>", out["conn"])
+        self.assertIn('<td class="iface-cell">&lt;api></td>', out["conn"])
+        self.assertIn('<td class="iface-cell"></td>', out["conn"])
+        for text in ("<td>api</td>", "<td>REST</td>", "<td>/v1</td>", "<td>443</td>", "<td>HTTPS</td>"):
+            self.assertIn(text, out["withDetail"])
+        self.assertEqual(out["withoutDetail"], "")
+
+    def test_browser_data_carries_exposure_and_interface(self) -> None:
+        sys.path.insert(0, str(REPO_ROOT / "framework" / "tools"))
+        import generate_browser as gb
+
+        dep = {"type": "relationship", "_derived": True, "_source": "derived from x [inline dependency]"}
+        comp = {"uid": "t", "type": "product_component", "interfaces": [{"name": "api"}]}
+        plain_data = {"uid": "d", "type": "data_component"}
+        declared_data = {"uid": "d2", "type": "data_component", "interfaces": [{"name": "sql"}]}
+        self.assertEqual(gb.connection_interface({**dep, "_interface": "api"}, comp), "api")
+        self.assertEqual(gb.connection_interface({**dep, "_interface": "SQL"}, comp), "")
+        self.assertEqual(gb.connection_interface({"targetInterface": "x", "_interface": "api"}, comp), "x")
+        self.assertEqual(gb.connection_interface({**dep, "_interface": "data"}, plain_data), "data")
+        self.assertEqual(gb.connection_interface({**dep, "_interface": "data"}, declared_data), "")
+        self.assertEqual(gb.connection_interface({**dep, "_interface": "sql"}, declared_data), "sql")
+        self.assertEqual(gb.connection_interface({"_interface": "api"}, comp), "")  # not derived
+        self.assertEqual(gb.connection_interface({**dep, "_source": "derived from x [runsOn]", "_interface": "api"}, comp), "")
+        self.assertEqual(gb.connection_interface({**dep, "_interface": "api"}, {"type": "runtime_service", "interfaces": [{"name": "api"}]}), "")
+        self.assertEqual(gb.connection_interface({}, None), "")
+
+    def test_build_group_exposure_states_and_alignment(self) -> None:
+        sys.path.insert(0, str(REPO_ROOT / "framework" / "tools"))
+        import generate_browser as gb
+
+        fw = {"uid": "fw", "type": "network_service", "name": "Firewall"}
+        lb = {"uid": "lb", "type": "network_service", "name": "Balancer"}
+        app = {"uid": "app", "type": "product_component", "name": "App"}
+        pattern = {"uid": "p", "type": "software_deployment_pattern", "name": "P", "serviceGroups": [
+            {"name": "Empty"},
+            "not a group",
+            {"name": "Web", "exposedThrough": ["fw", "lb"], "deployableObjects": [{"ref": "app", "networkZone": "z"}]},
+            {"name": "Hidden", "exposedThrough": "none", "deployableObjects": [{"ref": "app", "networkZone": "z"}]},
+        ]}
+        catalog = {o["uid"]: o for o in (fw, lb, app, pattern)}
+        got = gb.build_group_exposure(pattern, catalog)
+        self.assertEqual([g["name"] for g in got], ["Empty", "Web", "Hidden"])
+        self.assertEqual(got[0]["state"], "")
+        self.assertEqual((got[1]["state"], got[1]["devices"]), ("devices", ["Firewall", "Balancer"]))
+        self.assertEqual(got[2]["state"], "none")
 
 
 if __name__ == "__main__":

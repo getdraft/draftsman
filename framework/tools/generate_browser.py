@@ -794,6 +794,7 @@ def build_sdp_connections(obj: dict[str, Any], all_objects: list[dict[str, Any]]
             if isinstance(deployed, dict) and deployed.get("ref"):
                 deployed_uids.add(str(deployed["ref"]))
 
+    by_uid = {str(o.get("uid", "")): o for o in all_objects}
     for rel in all_objects:
         if rel.get("type") != "relationship":
             continue
@@ -810,9 +811,59 @@ def build_sdp_connections(obj: dict[str, Any], all_objects: list[dict[str, Any]]
                 "port": "",
                 "label": str(rel.get("label", "")).strip(),
                 "serviceGroup": "",
+                "targetInterface": connection_interface(rel, by_uid.get(tgt)),
             })
 
     return connections
+
+
+def connection_interface(rel: dict[str, Any], target: dict[str, Any] | None) -> str:
+    """The interface a connection enters its target through, or "" when none is recorded.
+
+    A relationship's `targetInterface` is used as written. A derived dependency (not a runsOn or host placement
+    fact) cannot carry one; its raw `_interface` counts only when it names a surface the renderer knows on a
+    product or data component (generate_diagram.declared_interface_names: the implicit `data` surface exists only
+    for a data component that declares no interfaces)."""
+    named = str(rel.get("targetInterface") or "").strip()
+    if named:
+        return named
+    raw = str(rel.get("_interface") or "").strip()
+    if not raw or not rel.get("_derived") or "[inline dependency]" not in str(rel.get("_source", "")):
+        return ""
+    if not isinstance(target, dict) or target.get("type") not in ("product_component", "data_component"):
+        return ""
+    try:
+        import generate_diagram as gd
+    except ImportError:  # the renderer is unavailable (the diagram step reports it); show no derived interface
+        return ""
+    return raw if raw in gd.declared_interface_names(target) else ""
+
+
+def build_group_exposure(obj: dict[str, Any], registry: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    """Per service group of a pattern, in order: {"name", "state", "devices"}.
+
+    The renderer's own model decides exposure (generate_diagram.build_diagram_model, read only), so the browser
+    never recomputes slot logic. state is "devices" (devices lists the chain's names in order), "none" for
+    `exposedThrough: none`, or "" when exposure is undetermined or the group is not exposed."""
+    groups = [g for g in obj.get("serviceGroups", []) if isinstance(g, dict)]
+    try:
+        import generate_diagram as gd
+
+        containers = gd.build_diagram_model(registry, obj, False).containers
+    except Exception as exc:  # a pattern that cannot be modelled shows no exposure, never breaks the browser
+        print(f"warning: exposure skipped for {obj.get('uid', '')}: {exc}", file=sys.stderr)
+        containers = []
+    result: list[dict[str, Any]] = []
+    for index, group in enumerate(groups):
+        chain = list(containers[index].exposed_through) if len(containers) == len(groups) else []
+        entry: dict[str, Any] = {"name": str(group.get("name", "")), "state": "", "devices": []}
+        if chain:
+            entry["state"] = "devices"
+            entry["devices"] = [str(registry.get(uid, {}).get("name") or uid) for uid in chain]
+        elif str(group.get("exposedThrough", "")).strip().lower() == "none":
+            entry["state"] = "none"
+        result.append(entry)
+    return result
 
 
 def strip_legacy_intent(value: Any) -> Any:
@@ -932,6 +983,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
                 "networkZones": obj.get("networkZones", []),
                 "sdpConnections": build_sdp_connections(obj, objects) if obj.get("type") == "software_deployment_pattern" else [],
                 "serviceGroups": obj.get("serviceGroups", []),
+                "groupExposure": build_group_exposure(obj, registry) if obj.get("type") == "software_deployment_pattern" else [],
                 "tierVariants": obj.get("tierVariants", []),
                 "tierId": obj.get("tierId", ""),
                 "purpose": obj.get("purpose", ""),
