@@ -3730,7 +3730,7 @@ class InterfaceEntranceTests(unittest.TestCase):
         for view, render in (("logical", logical_svg), ("deployment", deployment_svg)):
             svg = render(catalog, FIXTURE_SDP)
             rects = node_rects(svg)
-            routes = {(a, b): pts for a, b, pts in edge_polylines(svg)}
+            routes = {pair: run[-1][2] for pair, run in edge_pieces(svg).items()}  # the last piece enters the target
             for source, target, index, count in cases:
                 with self.subTest(view=view, source=source, target=target):
                     pts = routes[(source, target)]
@@ -3946,7 +3946,8 @@ class PortResolutionTests(unittest.TestCase):
 
         self.assertEqual(far_lines(deployment, "FXPRD00001-0001", "FXPRD00002-0001"), ["places orders", "HTTPS JSON · http 8080"])
         self.assertEqual(far_lines(deployment, "FXPRD00003-0001", "FXPRD00002-0001"), ["consumes order messages", "AMQP 5672"])
-        self.assertEqual(far_lines(deployment, "FXPRD00006-0001", "FXPRD00002-0001"), ["administers orders", "gRPC 8092"])
+        # from fx-dc-west into the exposed Application group: through the load balancer's gRPC listener (AC6, AC7)
+        self.assertEqual(far_lines(deployment, "FXPRD00006-0001", "FXPRD00002-0001"), ["administers orders", "gRPC 8443 → gRPC 8092 via FX Public Load Balancer"])
         self.assertEqual(far_lines(deployment, "FXPRD00002-0001", "FXDST00001-0001"), ["reads and writes orders", "SQL 5432"])
         self.assertEqual(far_lines(deployment, "FXPRD00004-0001", "FXDST00001-0001"), ["reads historic carts", "PostgreSQL wire protocol · SQL 5432"])
         self.assertEqual(far_lines(logical, "FXPRD00003-0001", "FXPRD00002-0001"), ["consumes order messages", "AMQP"])
@@ -4130,6 +4131,118 @@ class EdgeDeviceChainTests(unittest.TestCase):
         model = self.model(objects, [self.group("G", ["WEB"])])
         self.assertIn("LB", [n.uid for n in model.nodes_for_view("deployment") if n.outside])
 
+    # ------------------------------------------------------------------ the fixture (fresh SVG)
+    @staticmethod
+    def lane_boxes(svg: str) -> dict:
+        """(group name, zone id) -> the data-id of every box drawn in that zone lane, in drawn order."""
+        out = {}
+        marks = list(re.finditer(r'<g class="(group|zlane)(?:[^"]*)"(?: data-id="[^"]*")? data-(?:group|zone)="([^"]*)">', svg))
+        marks = [m for m in marks if 'class="group store' not in m.group(0)]
+        group = ""
+        for k, m in enumerate(marks):
+            if m.group(1) == "group":
+                group = m.group(2)
+                continue
+            end = marks[k + 1].start() if k + 1 < len(marks) else len(svg)
+            out[(group, m.group(2))] = re.findall(r'<g class="node[^"]*" data-id="([^"]*)">', svg[m.start() : end])
+        return out
+
+    def test_fixture_device_rows(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        svg = deployment_svg(catalog, FIXTURE_SDP)
+        lanes = self.lane_boxes(svg)
+        devices = {k: [u.split(":")[-1] for u in v if u.startswith("exposure:")] for k, v in lanes.items()}
+        # A3: Web and Application share target and zone, and each draws its own row in its own first lane
+        self.assertEqual(devices[("Web", "fx-app")], ["FXNET00003-0001"])
+        self.assertEqual(devices[("Application", "fx-app")], ["FXNET00003-0001"])
+        self.assertEqual(devices[("Application", "fx-data")], [])  # only the group's first lane
+        self.assertEqual(devices[("Partner", "fx-public")], ["FXNET00004-0001", "FXNET00003-0001"])  # exposedThrough order
+        self.assertEqual(devices[("Data", "fx-data")], [])  # exposedThrough none
+        self.assertEqual(devices[("Archive", "fx-data")], [])  # data-only group under the same reference architecture
+        self.assertEqual(devices[("Edge", "")], ["FXNET00003-0001"])  # also placed there: drawn only in the row
+        self.assertNotIn("FXNET00003-0001", lanes[("Edge", "")])
+        self.assertNotIn(">fronts ", svg)  # one chain per row: no caption
+        rects = node_rects(svg)
+        row = [u for u in lanes[("Partner", "fx-public")] if u.startswith("exposure:")]
+        self.assertEqual(rects[row[0]][1], rects[row[1]][1])
+        self.assertLess(rects[row[0]][0], rects[row[1]][0])
+        self.assertLess(rects[row[0]][1], rects["FXPRD00007-0001"][1])
+        box = re.search(rf'<g class="node[^"]*" data-id="{row[1]}">.*?</g>', svg).group(0)
+        self.assertIn("chip-network", box)
+        self.assertIn(">FX Balancer<", box)
+        self.assertIn(">FX Public Load Balancer<", box)
+        # exposed groups without an inbound edge from another target: the row is drawn, no hop leaves it
+        for group, zone in (("Edge", ""), ("Batch", "fx-app")):
+            (dev,) = [u for u in lanes[(group, zone)] if u.startswith("exposure:")]
+            self.assertNotIn(f'data-via="{dev}"', svg, group)
+            self.assertNotIn(f'data-to="{dev}"', svg, group)
+
+    def test_fixture_hops(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        svg = deployment_svg(catalog, FIXTURE_SDP)
+        pieces = edge_pieces(svg)
+        rects = node_rects(svg)
+
+        def devices(source: str, target: str) -> list:
+            return [b.split(":")[-1] for _s, b, _p in pieces[(source, target)][:-1]]
+
+        self.assertEqual(devices("FXPRD00006-0001", "FXPRD00001-0001"), ["FXNET00003-0001"])  # filled slot, other target
+        self.assertEqual(devices("FXPRD00006-0001", "FXPRD00002-0001"), ["FXNET00003-0001"])
+        self.assertEqual(devices("FXPRD00001-0001", "FXPRD00007-0001"), ["FXNET00004-0001", "FXNET00003-0001"])  # target chain only
+        lanes = self.lane_boxes(svg)
+        app_lb = pieces[("FXPRD00006-0001", "FXPRD00002-0001")][0][1]
+        self.assertIn(app_lb, lanes[("Application", "fx-app")])  # the hop leaves the target group's own row
+        # R4: the pieces of the two-device hop never cross one another
+        segs = [(k, a, b) for k, (_s, _t, pts) in enumerate(pieces[("FXPRD00001-0001", "FXPRD00007-0001")]) for a, b in zip(pts, pts[1:])]
+        for k1, (ax, ay), (bx, by) in segs:
+            for k2, (cx, cy), (dx, dy) in segs:
+                if k1 < k2 and ax == bx and cy == dy:  # a vertical of one piece and a horizontal of another
+                    self.assertFalse(min(cx, dx) < ax < max(cx, dx) and min(ay, by) < cy < max(ay, by), (k1, k2, ax, cy))
+                if k1 < k2 and ay == by and cx == dx:
+                    self.assertFalse(min(ax, bx) < cx < max(ax, bx) and min(cy, dy) < ay < max(cy, dy), (k1, k2, cx, ay))
+        for pair in (("FXPRD00001-0001", "FXPRD00002-0001"), ("FXNET00001-0001", "FXPRD00001-0001"),  # same target
+                     ("FXPRD00002-0001", "FXDST00001-0001"), ("FXPRD00001-0001", "FXDCP00001-0001"),  # exposedThrough none
+                     ("FXPRD00004-0001", "FXDCP00008-0001")):  # data-only group
+            self.assertEqual(devices(*pair), [], pair)
+        # each piece leaves a bottom and enters a top: the first device's top, device to device, the target's top
+        for pair in (("FXPRD00006-0001", "FXPRD00001-0001"), ("FXPRD00001-0001", "FXPRD00007-0001")):
+            run = pieces[pair]
+            for source, target, pts in run:
+                sx, sy, _sw, sh = rects[source]
+                tx, ty, _tw, _th = rects[target]
+                self.assertEqual(pts[0][1], sy + sh, (pair, source))
+                self.assertEqual(pts[-1][1], ty, (pair, target))
+                self.assertGreater(pts[1][1], pts[0][1])
+                self.assertLess(pts[-2][1], pts[-1][1])
+            self.assertEqual(run[-1][2][-1][0], rects[pair[1]][0] + 80)  # the target's single interface attachment
+        self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+        self.assertEqual(side_violations(svg), [])
+
+    def test_fixture_chain_labels(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        svg = deployment_svg(catalog, FIXTURE_SDP)
+
+        def callout(source: str, target: str) -> str:
+            body = re.search(rf'<g class="edge" data-from="{source}" data-to="{target}">(.*?)</g>', svg, re.S).group(1)
+            return xml_unescape(re.sub(r"<[^>]*>", "", re.search(r'<text class="callout"[^>]*>(.*?)</text>', body, re.S).group(1)))
+
+        self.assertEqual(callout("FXPRD00006-0001", "FXPRD00001-0001"), "reviews storefront orders / https 443 → http 8080 via FX Public Load Balancer")
+        self.assertEqual(
+            callout("FXPRD00001-0001", "FXPRD00007-0001"),
+            "forwards partner orders / https 443 → https 443 → http 8080 via FX Web Firewall via FX Public Load Balancer",
+        )
+        self.assertEqual(callout("FXPRD00001-0001", "FXPRD00002-0001"), "places orders / HTTPS JSON · http 8080")  # no hop
+        logical = logical_svg(catalog, FIXTURE_SDP)
+        self.assertNotIn("exposure:", logical)
+        self.assertNotIn(" via ", logical)
+        self.assertNotIn("FXNET00003-0001", logical)
+
+    def test_fixture_renders_twice_identically_and_editable(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        self.assertEqual(deployment_svg(catalog, FIXTURE_SDP), deployment_svg(catalog, FIXTURE_SDP))
+        code, _out, err = run_cli(["--workspace", str(FIXTURE), "--sdp", FIXTURE_SDP, "--editable", "--output", os.devnull])
+        self.assertEqual(code, 0, err)
+
 
 class DiagramSkillTests(unittest.TestCase):
     """The draftsman-diagram skill sends both views to the generator (plan D23, AC11, AC12)."""
@@ -4305,7 +4418,7 @@ class DiagramLayoutTests(unittest.TestCase):
             plain_catalog = fixture_catalog_without_layout()
             dm = generate_diagram.build_diagram_model(plain_catalog, plain_catalog[FIXTURE_SDP], False)
             self.assertEqual(sorted(e["ref"] for e in doc["logical"]), sorted(n.uid for n in dm.nodes))
-            self.assertEqual(len(doc["deployment"]), len(dm.deployment_nodes))
+            self.assertEqual(len(doc["deployment"]), len(dm.deployment_nodes) + len(generate_diagram._deployment_store_uids(dm)))
             self.assertTrue(all(isinstance(e["position"], int) and e["position"] >= 1 for e in doc["logical"] + doc["deployment"]))
             self.assertEqual(min(e["position"] for e in doc["logical"]), 1)
             file_1, page_1 = target.read_bytes(), page.read_bytes()
@@ -4335,9 +4448,10 @@ class DiagramLayoutTests(unittest.TestCase):
             self.assertNotIn("FXGONE00001-0001", logical)
             self.assertEqual(logical["FXPRD00004-0001"], 1)  # kept
             self.assertEqual(logical["FXPRD00001-0001"], 1)
-            # FXPRD00002 and FXPRD00003 have no position in their band; each follows the highest one there
-            self.assertEqual(sorted(logical[u] for u in ("FXPRD00002-0001", "FXPRD00003-0001")), [2, 3])
-            self.assertEqual(len(updated["logical"]), 9)
+            # FXPRD00002 and FXPRD00003 have no position in their band; each follows the highest one there (FXPRD00006
+            # is drawn between them since its interfaces-exposure edge to FXPRD00001)
+            self.assertEqual(sorted(logical[u] for u in ("FXPRD00002-0001", "FXPRD00003-0001", "FXPRD00006-0001")), [2, 3, 4])
+            self.assertEqual(len(updated["logical"]), 11)  # interfaces-exposure fixture: FX Partner Portal and FX Order Archive
             self.assertEqual(len(list((workspace / "catalog").glob("diagram-layout-*.yaml"))), 1)
 
     def test_write_layout_with_placed_only_is_a_usage_error(self) -> None:
