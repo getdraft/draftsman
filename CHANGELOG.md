@@ -1,3 +1,46 @@
+## Unreleased
+
+### Compatibility Impact
+
+- New ratcheted rule `relationship-target-interface`: a relationship whose target is a product component must carry `targetInterface` naming one of its `interfaces`. Existing violations bind again when the relationship changes unless recorded in `.draft/validation-baseline.yaml`, so adopters run `validate.py --write-baseline` once after vendoring this release. Data components, `externalTarget`, instances and derived relationships are exempt.
+- A `targetInterface` naming a surface its target lacks is an error that is never baselined; on a target with no `interfaces` list (that is not a data component) or on an `externalTarget` it is a warning.
+- Deployment-view labels and geometry change for patterns that declare the new fields. Labels change only for connections whose target resolves a port from listeners or component ports. Geometry changes only when the pattern follows a reference architecture with a filled edge slot (`fills` is new) or a group sets `exposedThrough`: exposed zone lanes gain an edge device row and connections from other deployment targets route through it. The Application view never shows a port.
+- A component that already declares two or more `interfaces` gets one entrance per interface on the top edge in both views, so its entrances and the edges into them move (today the examples' ops console). Components with one interface or none, and every data component without `interfaces`, render as before.
+- Nothing else changes for content without the new fields: every new field is optional, and no error reads them beyond the ratcheted rule.
+
+### Added
+
+- Optional `interfaces` on `data_component` (the `product_component` shape), `targetInterface` on `relationship`, `listeners` on `runtime_service`, `data_store_service`, `network_service` and `host`, `fills` on a reference architecture deployable object entry, and `exposedThrough` (a uid, a list of uids, or `none`) on a software deployment pattern service group.
+- The interface protocol enum of `product_component` and `data_component` gains SQL, Redis, Kafka, SQS, SNS, S3 and DynamoDB; a listener's protocol adds HTTP, HTTPS, TCP and UDP.
+- `framework/tools/protocol_families.py` with `family(text)`, the single protocol-family table that `validate.py` and `generate_diagram.py` share. `validate.py` also gains an `interface_names` helper.
+- Ratcheted rule `relationship-target-interface` with the error and warning branches above; the fixture workspace baseline records its existing violations.
+- Three warnings, never errors and never ratcheted: a service group `exposedThrough` that is neither `none` nor one or more `network_service` uids; a reference architecture `fills` whose target is not a `network_service`, whose slot is not an edge slot (firewall, web-application-firewall, load-balancer, api-gateway, ingress), or whose definition does not satisfy the slot's `capability` (an entry with no `capability` is not checked); and a relationship whose `technology` and its target interface's protocol resolve to different known protocol families (the text names both protocols). Derived relationships never produce the family warning.
+- Derived dependency relationships carry the raw `runtimeSpec.dependencies[].interface` string as `_interface`.
+- The deployment view resolves the port a connection reaches its target on and prints it in the technology line of the far-end label and the hover callout: a product component's own inbound `runtimeSpec.ports` entry (by protocol family, then by the interface's name), then the listener of its substrate; a data component's store listener; an instance or other definition's own listener. A port prints as `<protocol> <port>` (`SQL 5432`, `gRPC 8092`); a REST, HTTP or HTTPS listener prints its lower-cased name (`https 443`). The technology line reads the port alone when no technology is recorded or it equals the protocol word, else `technology · port`.
+- The deployment view draws an exposed group's edge device chain. A group is exposed when `exposedThrough` names one or more `network_service` definitions, or, without it, when the pattern follows a reference architecture with a filled edge slot (the chain is then the filled slots in the order firewall, web-application-firewall, load-balancer, api-gateway, ingress); `exposedThrough: none` and a group whose deployable objects are all data components are not exposed by the slot default. Each exposed group draws one row of `network` boxes at the top of its first zone lane, inside its own container, whether or not a connection enters it; groups never share a row. A device also placed in the pattern is drawn only in the row.
+- A connection from another deployment target into an exposed group (a box, a data store container or the group's own container) enters the first device of the target group's chain at its top, passes device to device, and leaves the last device's bottom for the target's entrance; connections within one deployment target, and connections into a device of the chain itself, never take the hop, and the source group's own chain is never used. The port chain lists each device's port (its listener of the connection's protocol family, else its single listener) before the target's (`https 443 → https 443 → http 8080`), and the callout adds `via <device name>` per device. Hop segments carry `data-via`.
+- The browser pattern view shows each service group's exposure on its Service Groups row (`Exposed through: <device names in chain order>`, `not exposed` for `exposedThrough: none`, nothing when undetermined), taken from the diagram renderer's model so the browser never recomputes slot logic. The Connections table gains an Interface column (a relationship's `targetInterface`, or a derived dependency's `_interface` when it names an interface of the target; blank otherwise). Object detail lists a component's or data component's interfaces (name, protocol, path) and a definition's listeners (name, protocol, port).
+- Docs and the `draftsman-diagram` skill describe the split by owner (product teams record `interfaces` and `targetInterface`; the infrastructure team records `listeners` and fills edge slots; `exposedThrough` is the exception), the Application view that never shows ports, the Deployment view's port chain, and the edge device chain drawn because the group is exposed and its protection, availability, performance and routing requirements apply (no caller is drawn).
+
+### Changed
+
+- Both diagram views draw one entrance per declared interface on a box's top edge (data components with `interfaces` too). An edge enters through the interface its `targetInterface` names, or a derived dependency's `interface` when it names one, else through the first entrance; labels keep clear of the extra entrances.
+- At a box with several entrances in use, the far-end labels of each entrance take their own block of label rows, stacked upward from the box in entrance order, so labels entering one box from different sources through different entrances never overlap when all are shown; the label band above such a box grows by those rows. Boxes with one entrance are unchanged.
+- A component port or listener matched to the target interface by protocol family prints the interface's protocol, not the recorded one: a gRPC interface served by a port recorded as `HTTP/2` reads `gRPC 8092`, not `gRPC · HTTP/2 8092`. Web listeners keep their lower-cased name (`http 8080`, `rest 8082`), and a single-listener fallback of another family prints as recorded.
+- `validate.py` and `generate_diagram.py` import the shared protocol-family helper (the diagram renderer uses it to match listeners to interfaces); validation output does not change.
+
+### Fixed
+
+- Application view: when a caller left of a multi-interface box called a higher entrance than a caller right of it, the two in-runs crossed each other's stubs. The gutter edges into such a box now arrive from the left for the lower entrances and from the right for the higher ones; the box moves the fewest edges to the other side, and nothing moves for a box already in order.
+
+### Migration Notes
+
+- Run `validate.py --write-baseline` when vendoring this release to record existing relationships to product components in `.draft/validation-baseline.yaml`.
+- The infrastructure team declares `listeners` on runtime services, data store services, network services and hosts, and fills edge slots (`fills`) in reference architectures.
+- Product teams add `interfaces` to their components and `targetInterface` to relationships as they touch them; that clears the baseline entry.
+- Set `exposedThrough` on a service group only for exceptions the reference architecture's filled slots do not describe.
+- Nothing is required for validation to pass after the baseline. Resolve any new `exposedThrough`, `fills` or protocol-family warning when convenient; none of them fails validation.
+
 ## 1.5.5 - 2026-11-15
 
 ### Compatibility Impact

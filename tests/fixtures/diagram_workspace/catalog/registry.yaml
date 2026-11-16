@@ -54,6 +54,11 @@ uid: FXRTC00003-0001
 type: runtime_service
 name: FX Cluster Gamma
 productName: FX Ledger Runtime
+listeners:
+- name: https
+  protocol: REST
+  port: 8443
+  description: Invented listener of the shared ledger runtime.
 catalogStatus: complete
 lifecycleStatus: preferred
 ---
@@ -72,6 +77,10 @@ type: data_store_service
 name: FX Ledger Store
 productName: FX Ledger DB
 host: FXHST00002-0001
+listeners:
+- name: sql
+  protocol: SQL
+  port: 5432
 catalogStatus: complete
 lifecycleStatus: preferred
 ---
@@ -105,6 +114,13 @@ uid: FXDST00003-0001
 type: data_store_service
 name: FX Audit Store
 productName: FX Audit DB
+listeners:
+- name: sql
+  protocol: SQL
+  port: 5433
+- name: redis
+  protocol: Redis
+  port: 6379
 catalogStatus: complete
 lifecycleStatus: preferred
 ---
@@ -132,6 +148,9 @@ type: data_component
 name: FX Audit Trail
 targetEngine: FX Audit DB
 runsOn: FXDST00003-0001
+interfaces:
+- name: data
+  protocol: Redis
 catalogStatus: complete
 lifecycleStatus: preferred
 ---
@@ -198,6 +217,7 @@ name: FX Shared Ledger writes audit trail
 source: FXPRD00010-0001
 target: FXDCP00004-0001
 label: writes audit trail
+technology: Redis
 direction: synchronous
 catalogStatus: complete
 ---

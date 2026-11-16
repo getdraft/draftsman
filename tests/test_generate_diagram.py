@@ -20,6 +20,7 @@ import yaml
 
 from framework.tools import generate_diagram
 from generate_c4 import load_catalog
+from uid_utils import derive_inline_relationships
 from tests import diagram_harness as harness
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -33,11 +34,39 @@ LARGE_MAX_CROSSINGS = 873
 
 
 def edge_polylines(svg: str) -> list:
-    """(from uid, to uid, [(x, y), ...]) for every routed edge; self-loop curves are skipped."""
+    """(from uid, to uid, [(x, y), ...]) for every routed edge; self-loop curves are skipped. An edge through an edge
+    device chain (AC8: later paths carry data-via, the device box they leave) counts as one polyline per piece:
+    source to the first device, device to device, the last device to the target."""
     found = []
-    for match in re.finditer(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)"><title>[^<]*</title><path class="ln[^"]*" d="(M[-\d. L]+)"[^>]*/>', svg):
-        numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", match.group(3))]
-        found.append((match.group(1).replace("&amp;", "&"), match.group(2).replace("&amp;", "&"), list(zip(numbers[0::2], numbers[1::2]))))
+    for match in re.finditer(
+        r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)"><title>[^<]*</title>((?:<path class="ln[^"]*"(?: data-via="[^"]*")? d="M[-\d. L]+"[^>]*/>)+)',
+        svg,
+    ):
+        ends = [match.group(1).replace("&amp;", "&")]
+        paths = []
+        for via, d in re.findall(r'<path class="ln[^"]*"(?: data-via="([^"]*)")? d="(M[-\d. L]+)"', match.group(3)):
+            if via:
+                ends.append(via)
+            numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", d)]
+            paths.append(list(zip(numbers[0::2], numbers[1::2])))
+        ends.append(match.group(2).replace("&amp;", "&"))
+        found.extend((ends[k], ends[k + 1], pts) for k, pts in enumerate(paths))
+    return found
+
+
+def edge_pieces(svg: str) -> dict:
+    """(from uid, to uid) of each drawn edge -> its pieces [(piece from, piece to, points), ...]; one piece unless the
+    edge passes an edge device chain (AC8). The first edge of a pair wins."""
+    found: dict = {}
+    pieces = edge_polylines(svg)
+    for source, target in re.findall(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)"><title>[^<]*</title><path class="ln', svg):
+        source, target = xml_unescape(source), xml_unescape(target)
+        if source == target:  # a self-loop curve has no polyline
+            continue
+        run = [pieces.pop(0)]
+        while run[-1][1] != target:
+            run.append(pieces.pop(0))
+        found.setdefault((source, target), run)
     return found
 
 
@@ -1309,7 +1338,7 @@ class LaterStoryTests(unittest.TestCase):
     def test_derived_relationships(self) -> None:
         model = fixture_model()
         rows = {row["label"]: row for row in model.relationship_rows}
-        self.assertEqual(rows["reads cached sessions"]["source"], "inline dependency")
+        self.assertEqual(rows["session-read"]["source"], "inline dependency")
         self.assertEqual(rows["places orders"]["source"], "relationship object")
         self.assertNotIn("runs on", rows)
         dependencies = [edge for edge in model.edges if edge.origin == "inline dependency"]
@@ -2671,7 +2700,12 @@ class LaterStoryTests(unittest.TestCase):
         """One dict per label element (lb-s, lb-t, loop) with its box by the _label_mid metrics (6.2 px a character, 14 px tall)."""
         found = []
         for source, target, body in re.findall(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)">(.*?)</g>', svg, re.S):
-            pts = [(float(a), float(b)) for a, b in re.findall(r"[ML]([\d.-]+) ([\d.-]+)", re.search(r'<path class="ln[^"]*" d="([^"]*)"', body).group(1))]
+            # An edge through an edge device chain (AC8) has one path per piece; their points follow each other.
+            pts = [
+                (float(a), float(b))
+                for d in re.findall(r'<path class="ln[^"]*"(?: data-via="[^"]*")? d="([^"]*)"', body)
+                for a, b in re.findall(r"[ML]([\d.-]+) ([\d.-]+)", d)
+            ]
             for kind, x, base, anchor, text in re.findall(r'<text class="lb lb-([st])" x="([\d.]+)" y="([\d.]+)" text-anchor="(start|end)">(.*?)</text>', body):
                 lines = [xml_unescape(t) for t in re.findall(r"<tspan[^>]*>(.*?)</tspan>", text)]
                 w = max(len(t) for t in lines) * 6.2 + 4
@@ -2774,6 +2808,18 @@ class LaterStoryTests(unittest.TestCase):
         for el in labels:
             if el["loop"]:
                 loops_of[el["source"]] = loops_of.get(el["source"], 0) + 1
+        # AC9: with every label shown, the target-end labels entering one box from different sources through
+        # different entrances are pairwise disjoint (each entrance has its own block of rows, stacked from the box
+        # upward in entrance order). Labels through one entrance share its rows by D37 and show one box at a time.
+        into = [el for el in labels if not el["loop"] and el["kind"] == "t"]
+        for i, a in enumerate(into):
+            for b in into[i + 1 :]:
+                if a["target"] == b["target"] and a["source"] != b["source"] and a["pts"][-1][0] != b["pts"][-1][0]:
+                    self.assertEqual(generate_diagram._overlap(a["box"], b["box"]), 0, ("into one box", a["target"], a["text"], b["text"]))
+        blocks: dict = {}  # (target, entrance x) -> rows of that entrance's block
+        for el in into:
+            key = (el["target"], el["pts"][-1][0])
+            blocks[key] = max(blocks.get(key, 0), pair_count.get((el["source"], el["target"]), 1))
         for el in labels:
             if el["loop"]:
                 continue
@@ -2783,6 +2829,8 @@ class LaterStoryTests(unittest.TestCase):
                 for o in labels
             )
             allowed = generate_diagram._pitch(two_line) * pair_count[(el["source"], el["target"])]
+            if el["kind"] == "t":  # AC9: past the blocks of the box's lower entrances
+                allowed += generate_diagram._pitch(two_line) * sum(n for (t, x), n in blocks.items() if t == el["target"] and x < end[0])
             if el["kind"] == "t" and loops_of.get(el["target"]):
                 allowed += generate_diagram.LOOP_RISE + generate_diagram.LOOP_STEP * (loops_of[el["target"]] - 1)
                 allowed += generate_diagram.LABEL_H * sum(1 for o in labels if o["loop"] and o["source"] == el["target"] and len(o["lines"]) == 2)
@@ -3252,7 +3300,7 @@ class LaterStoryTests(unittest.TestCase):
             tools = framework / "tools"
             tools.mkdir(parents=True)
             (framework / "draft-framework.yaml").write_text('version: "9.8.7"\n', encoding="utf-8")
-            for name in ("generate_diagram.py", "generate_c4.py"):
+            for name in ("generate_diagram.py", "generate_c4.py", "protocol_families.py"):
                 (tools / name).write_text((REPO_ROOT / "framework" / "tools" / name).read_text(encoding="utf-8"), encoding="utf-8")
             script = "import sys; sys.path.insert(0, sys.argv[1]); import generate_diagram as g; print(g.framework_version())"
             result = subprocess.run([sys.executable, "-I", "-c", script, str(tools)], capture_output=True, text=True, check=True)
@@ -3650,6 +3698,694 @@ class SameContainerRoutingTests(unittest.TestCase):
             self.assertEqual(runs[0], runs[1])
 
 
+class InterfaceEntranceTests(unittest.TestCase):
+    """AC5: one attachment point per declared interface on a box's top edge, in both views."""
+
+    @staticmethod
+    def expected_x(left: float, count: int, index: int) -> float:
+        """The plan's formula, written out here (not the renderer's helper)."""
+        if count <= 1:
+            return left + 200 / 2 - 20
+        step = max(5, int(60 / (count - 1) / 5 + 0.5) * 5)
+        return left + 30 + index * step
+
+    def test_attachment_points_for_one_two_three_and_fourteen_interfaces(self) -> None:
+        self.assertEqual([self.expected_x(0, 1, 0)], [80])
+        self.assertEqual([self.expected_x(0, 2, i) for i in range(2)], [30, 90])
+        self.assertEqual([self.expected_x(0, 3, i) for i in range(3)], [30, 60, 90])
+        self.assertEqual([self.expected_x(0, 14, i) for i in (0, 13)], [30, 95])
+        for count in (0, 1, 2, 3, 14):
+            for index in range(max(count, 1)):
+                with self.subTest(count=count, index=index):
+                    edge = generate_diagram.DiagramEdge("a", "b")
+                    names = [f"i{k}" for k in range(count)]
+                    edge.target_interface = names[index] if count else ""
+                    got = generate_diagram.attach_in(100, 200, generate_diagram._slot(names, edge))
+                    self.assertEqual(got, self.expected_x(100, count, index))
+                    self.assertEqual(got % 5, 0)
+
+    def test_entrance_selection(self) -> None:
+        names = ["x", "y", "z"]
+        pick = lambda name: generate_diagram._slot(names, generate_diagram.DiagramEdge("a", "b", target_interface=name))
+        self.assertEqual(pick("z"), (2, 3))
+        self.assertEqual(pick(""), (0, 3))
+        self.assertEqual(pick("nope"), (0, 3))  # a derived _interface that names no surface: the first point
+
+    def test_fixture_edges_enter_through_their_interface(self) -> None:
+        # (source, target, interface index, count): the fixture's two-interface component and two-interface data component
+        cases = [
+            ("FXPRD00001-0001", "FXPRD00002-0001", 0, 3),  # targetInterface orders-api
+            ("FXPRD00003-0001", "FXPRD00002-0001", 1, 3),  # targetInterface order-events
+            ("FXPRD00001-0001", "FXDCP00001-0001", 0, 2),  # targetInterface session-write
+            ("FXPRD00002-0001", "FXDCP00001-0001", 1, 2),  # derived dependency, interface session-read
+            ("FXPRD00006-0001", "FXPRD00002-0001", 2, 3),  # targetInterface order-admin: the third of three
+        ]
+        catalog = load_catalog(FIXTURE)
+        for view, render in (("logical", logical_svg), ("deployment", deployment_svg)):
+            svg = render(catalog, FIXTURE_SDP)
+            rects = node_rects(svg)
+            routes = {pair: run[-1][2] for pair, run in edge_pieces(svg).items()}  # the last piece enters the target
+            for source, target, index, count in cases:
+                with self.subTest(view=view, source=source, target=target):
+                    pts = routes[(source, target)]
+                    self.assertEqual(pts[-1][0], self.expected_x(rects[target][0], count, index))
+                    self.assertEqual(pts[-1][1], rects[target][1])
+
+    def test_edges_without_a_named_interface_enter_the_first_point_and_single_surfaces_keep_centre(self) -> None:
+        objects = [
+            component("PC-1", "Caller", runtimeSpec={"dependencies": [{"ref": "PC-2", "interface": "unknown"}, {"ref": "DC-1"}]}),
+            component("PC-2", "Two", interfaces=[{"name": "a", "protocol": "REST"}, {"name": "b", "protocol": "gRPC"}]),
+            {"schemaVersion": "1.0", "uid": "DC-1", "type": "data_component", "name": "Store", "targetEngine": "postgresql"},
+            pattern({"G": ["PC-1", "PC-2", "DC-1"]}),
+        ]
+        for view in ("logical", "deployment"):
+            svg = svg_for(objects, view)
+            rects = node_rects(svg)
+            routes = {(a, b): pts for a, b, pts in edge_polylines(svg)}
+            self.assertEqual(routes[("PC-1", "PC-2")][-1][0], self.expected_x(rects["PC-2"][0], 2, 0), view)
+            self.assertEqual(routes[("PC-1", "DC-1")][-1][0], self.expected_x(rects["DC-1"][0], 1, 0), view)
+
+    def test_examples_and_fixture_render_identically_twice(self) -> None:
+        for root in (FIXTURE, REPO_ROOT / "examples"):
+            catalog = load_catalog(root)
+            for sdp in generate_diagram.sdps(catalog):
+                for render in (logical_svg, deployment_svg):
+                    self.assertEqual(render(catalog, sdp["uid"]), render(catalog, sdp["uid"]))
+
+
+class PortResolutionTests(unittest.TestCase):
+    """Port resolution and the deployment-view port labels (interfaces-exposure, AC6 and AC7 for target ports)."""
+
+    @staticmethod
+    def cat(*objects: dict) -> dict:
+        return {o["uid"]: o for o in objects}
+
+    @staticmethod
+    def rel(uid: str, source: str, target: str, **extra: object) -> dict:
+        return plain(uid, "relationship", uid, source=source, target=target, **extra)
+
+    def model(self, objects: list, groups: list, **sdp_extra: object) -> generate_diagram.Model:
+        sdp = {
+            **plain("SDP-1", "software_deployment_pattern", "Demo Pattern"),
+            "networkZones": [{"id": "z1", "name": "Zone One", "tier": "application"}, {"id": "z2", "name": "Zone Two", "tier": "data"}],
+            "serviceGroups": groups,
+            **sdp_extra,
+        }
+        return generate_diagram.Model(self.cat(*objects, sdp), sdp, False)
+
+    def derived_model(self, objects: list, groups: list) -> generate_diagram.Model:
+        """A model whose catalog also holds the relationships derived from runtimeSpec.dependencies."""
+        sdp = {**plain("SDP-1", "software_deployment_pattern", "Demo Pattern"), "serviceGroups": groups}
+        catalog = self.cat(*objects, sdp)
+        catalog.update(derive_inline_relationships(catalog))
+        return generate_diagram.Model(catalog, sdp, False)
+
+    @staticmethod
+    def group(name: str, refs: list, target: str = "east", **extra: object) -> dict:
+        return {"name": name, "deploymentTarget": target, "deployableObjects": [{"ref": r, "networkZone": "z1"} for r in refs], **extra}
+
+    def far(self, objects: list, groups: list) -> list:
+        """The far-end technology line of every edge of the model, in edge order."""
+        return [e.far_tech for e in self.model(objects, groups).deployment_edges]
+
+    def one_edge(self, target_obj: dict, extra_objects: list = (), rel: dict | None = None, groups: list | None = None) -> str:
+        source = plain("SRC", "product_component", "Source")
+        objects = [source, target_obj, *extra_objects, rel or self.rel("R1", "SRC", target_obj["uid"], technology="")]
+        found = self.far(objects, groups or [self.group("G", ["SRC", target_obj["uid"]])])
+        self.assertEqual(len(found), 1)
+        return found[0]
+
+    def test_own_inbound_port_by_family_http_port_for_rest_interface(self) -> None:
+        target = plain(
+            "TGT", "product_component", "Target",
+            interfaces=[{"name": "api", "protocol": "REST"}],
+            runtimeSpec={"ports": [{"number": 9090, "protocol": "gRPC", "name": "g"}, {"number": 8080, "protocol": "HTTP", "name": "http"}]},
+        )
+        rel = self.rel("R1", "SRC", "TGT", targetInterface="api")
+        self.assertEqual(self.one_edge(target, rel=rel), "http 8080")
+
+    def test_own_port_by_interface_name_when_no_family_matches(self) -> None:
+        target = plain(
+            "TGT", "product_component", "Target",
+            interfaces=[{"name": "events", "protocol": "other"}],
+            runtimeSpec={"ports": [{"number": 7001, "protocol": "Thing", "name": "audit"}, {"number": 7002, "protocol": "Thing", "name": "events"}]},
+        )
+        self.assertEqual(self.one_edge(target, rel=self.rel("R1", "SRC", "TGT", targetInterface="events")), "Thing 7002")
+
+    def test_outbound_ports_never_count(self) -> None:
+        ports = [{"number": 9999, "protocol": "gRPC", "name": "out", "direction": "outbound"}]
+        target = plain("TGT", "product_component", "Target", interfaces=[{"name": "g", "protocol": "gRPC"}], runtimeSpec={"ports": ports})
+        self.assertEqual(self.one_edge(target, rel=self.rel("R1", "SRC", "TGT", targetInterface="g")), "")
+        ports += [{"number": 8092, "protocol": "gRPC", "name": "in", "direction": "bidirectional"}]
+        self.assertEqual(self.one_edge(target, rel=self.rel("R1", "SRC", "TGT", targetInterface="g")), "gRPC 8092")
+        ports[0]["direction"] = "inbound"  # an undirected or inbound port before it wins by order
+        self.assertEqual(self.one_edge(target, rel=self.rel("R1", "SRC", "TGT", targetInterface="g")), "gRPC 9999")
+
+    def test_substrate_listener_by_family_then_single_listener(self) -> None:
+        target = plain("TGT", "product_component", "Target", interfaces=[{"name": "g", "protocol": "gRPC"}])
+        both = plain("RT", "runtime_service", "Runtime", listeners=[
+            {"name": "http", "protocol": "REST", "port": 8080}, {"name": "grpc", "protocol": "gRPC", "port": 8092}])
+        groups = [self.group("G", ["SRC", "TGT"], substrate="RT")]
+        rel = self.rel("R1", "SRC", "TGT", targetInterface="g")
+        self.assertEqual(self.one_edge(target, [both], rel, groups), "gRPC 8092")
+        single = plain("RT", "runtime_service", "Runtime", listeners=[{"name": "https", "protocol": "REST", "port": 8443}])
+        self.assertEqual(self.one_edge(target, [single], rel, groups), "https 8443")  # no family match, one listener
+        none = plain("RT", "runtime_service", "Runtime", listeners=[
+            {"name": "a", "protocol": "REST", "port": 1}, {"name": "b", "protocol": "REST", "port": 2}])
+        self.assertEqual(self.one_edge(target, [none], rel, groups), "")  # no family match, two listeners
+
+    def test_substrate_falls_back_to_runs_on_without_a_group_substrate(self) -> None:
+        target = plain("TGT", "product_component", "Target", runsOn="RT")
+        rt = plain("RT", "runtime_service", "Runtime", listeners=[{"name": "http", "protocol": "HTTP", "port": 80}])
+        self.assertEqual(self.one_edge(target, [rt]), "http 80")
+
+    def test_data_component_uses_its_stores_listener_redis_by_interface(self) -> None:
+        target = plain("TGT", "data_component", "Cache", runsOn="ST", interfaces=[{"name": "data", "protocol": "Redis"}])
+        store = plain("ST", "data_store_service", "Store", listeners=[
+            {"name": "sql", "protocol": "SQL", "port": 5432}, {"name": "redis", "protocol": "Redis", "port": 6379}])
+        self.assertEqual(self.one_edge(target, [store]), "Redis 6379")
+
+    def test_data_component_implicit_surface_from_target_engine(self) -> None:
+        target = plain("TGT", "data_component", "Orders", runsOn="ST", targetEngine="postgresql")
+        store = plain("ST", "data_store_service", "Store", listeners=[
+            {"name": "redis", "protocol": "Redis", "port": 6379}, {"name": "sql", "protocol": "SQL", "port": 5432}])
+        self.assertEqual(self.one_edge(target, [store]), "SQL 5432")
+
+    def test_data_component_engine_family_is_its_own(self) -> None:
+        target = plain("TGT", "data_component", "Docs", runsOn="ST", targetEngine="mongodb")
+        store = plain("ST", "data_store_service", "Store", listeners=[
+            {"name": "web", "protocol": "REST", "port": 8080}, {"name": "m", "protocol": "MongoDB", "port": 27017}])
+        self.assertEqual(self.one_edge(target, [store]), "MongoDB 27017")
+
+    def test_other_interface_matches_only_other_and_ignores_technology(self) -> None:
+        target = plain("TGT", "product_component", "Target", interfaces=[{"name": "ev", "protocol": "other"}])
+        rt = plain("RT", "runtime_service", "Runtime", listeners=[
+            {"name": "https", "protocol": "REST", "port": 443}, {"name": "ev", "protocol": "other", "port": 7000}])
+        rel = self.rel("R1", "SRC", "TGT", targetInterface="ev", technology="HTTPS")
+        self.assertEqual(self.one_edge(target, [rt], rel, [self.group("G", ["SRC", "TGT"], substrate="RT")]), "HTTPS · other 7000")
+
+    def test_port_only_edge_draws_no_source_label_and_a_one_line_row(self) -> None:
+        store = plain("ST", "data_store_service", "Store", listeners=[{"name": "sql", "protocol": "SQL", "port": 5432}])
+        model = self.model(
+            [plain("SRC", "product_component", "Source"), store, plain("R1", "relationship", "R1", source="SRC", target="ST")],
+            [self.group("G", ["SRC"]), self.group("S", ["ST"], target="west")],
+        )
+        svg = generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model))
+        body = re.search(r'<g class="edge" data-from="SRC" data-to="ST">(.*?)</g>', svg, re.S).group(1)
+        self.assertNotIn('class="lb lb-s"', body)
+        self.assertEqual(re.findall(r'<tspan[^>]*>([^<]*)</tspan>', re.search(r'<text class="lb lb-t".*?</text>', body, re.S).group(0)), ["SQL 5432"])
+        self.assertFalse(generate_diagram._has_tech(generate_diagram.DiagramEdge(source="a", target="b", far_tech="SQL 5432")))
+
+    def test_data_component_without_a_store_has_no_port(self) -> None:
+        self.assertEqual(self.one_edge(plain("TGT", "data_component", "Orders", targetEngine="postgresql")), "")
+
+    def test_data_store_target_matches_by_technology_then_single(self) -> None:
+        store = plain("TGT", "data_store_service", "Store", listeners=[
+            {"name": "redis", "protocol": "Redis", "port": 6379}, {"name": "sql", "protocol": "SQL", "port": 5432}])
+        self.assertEqual(self.one_edge(store, rel=self.rel("R1", "SRC", "TGT", technology="PostgreSQL")), "PostgreSQL · SQL 5432")
+        self.assertEqual(self.one_edge(store), "")  # nothing to match on and two listeners
+        single = plain("TGT", "data_store_service", "Store", listeners=[{"name": "sql", "protocol": "SQL", "port": 5432}])
+        self.assertEqual(self.one_edge(single), "SQL 5432")
+
+    def test_external_target_and_self_loop_have_no_port(self) -> None:
+        source = plain("SRC", "product_component", "Source", runsOn="RT", interfaces=[{"name": "a", "protocol": "REST"}])
+        rt = plain("RT", "runtime_service", "Runtime", listeners=[{"name": "http", "protocol": "REST", "port": 80}])
+        rels = [plain("R1", "relationship", "R1", source="SRC", externalTarget="Somewhere"), self.rel("R2", "SRC", "SRC")]
+        model = self.model([source, rt, *rels], [self.group("G", ["SRC"])])
+        self.assertEqual([e.far_tech for e in model.deployment_edges], ["", ""])
+
+    def test_derived_dependency_interface_hint(self) -> None:
+        target = plain("TGT", "product_component", "Target", interfaces=[{"name": "rest", "protocol": "REST"}, {"name": "g", "protocol": "gRPC"}], runsOn="RT")
+        rt = plain("RT", "runtime_service", "Runtime", listeners=[
+            {"name": "http", "protocol": "REST", "port": 8080}, {"name": "grpc", "protocol": "gRPC", "port": 8092}])
+        source = plain("SRC", "product_component", "Source", runtimeSpec={"dependencies": [{"ref": "TGT", "interface": "g"}]})
+        model = self.derived_model([source, target, rt], [self.group("G", ["SRC", "TGT"])])
+        (edge,) = model.deployment_edges
+        self.assertEqual((edge.target_interface, edge.far_tech), ("g", "gRPC 8092"))
+        # a hint that names no interface only picks the family; the edge keeps no targetInterface
+        source["runtimeSpec"]["dependencies"][0]["interface"] = "HTTP/2 stream"
+        (edge,) = self.derived_model([source, target, rt], [self.group("G", ["SRC", "TGT"])]).deployment_edges
+        self.assertEqual((edge.target_interface, edge.interface_hint, edge.far_tech), ("", "HTTP/2 stream", "gRPC 8092"))
+
+    def test_label_technology_rule(self) -> None:
+        far = generate_diagram.far_end_technology
+        self.assertEqual(far("", "SQL 5432"), "SQL 5432")
+        self.assertEqual(far(" sql ", "SQL 5432"), "SQL 5432")  # case-insensitive and trimmed
+        self.assertEqual(far("gRPC", "gRPC 8092"), "gRPC 8092")
+        self.assertEqual(far("PostgreSQL wire protocol", "SQL 5432"), "PostgreSQL wire protocol · SQL 5432")
+        self.assertEqual(far("REST", "gRPC 8092"), "REST · gRPC 8092")
+        self.assertEqual(far("HTTPS JSON", "http 8080"), "HTTPS JSON · http 8080")
+        self.assertEqual(far("SQL", ""), "SQL")  # no port: the recorded technology as is
+        self.assertEqual(generate_diagram.port_chain([], "SQL 5432"), "SQL 5432")
+
+    def test_listener_text_prints_web_listeners_by_name(self) -> None:
+        text = generate_diagram.listener_text
+        self.assertEqual(text({"name": "HTTPS", "protocol": "REST", "port": 443}), "https 443")
+        self.assertEqual(text({"name": "web", "protocol": "HTTP", "port": 80}), "web 80")
+        self.assertEqual(text({"name": "", "protocol": "HTTPS", "port": 443}), "https 443")
+        self.assertEqual(text({"name": "sql", "protocol": "SQL", "port": 5432}), "SQL 5432")
+        self.assertEqual(text({"name": "g", "protocol": "HTTP/2", "port": 8092}), "HTTP/2 8092")
+        self.assertEqual(text({"name": "g", "protocol": "HTTP/2", "port": 8092}, "gRPC"), "gRPC 8092")
+        self.assertEqual(text({"name": "http", "protocol": "HTTP", "port": 8080}, "gRPC"), "http 8080")  # web keeps its name
+
+    def test_family_matched_port_prints_the_interface_protocol(self) -> None:  # amendment A2
+        own = plain(
+            "TGT", "product_component", "Target",
+            interfaces=[{"name": "admin", "protocol": "gRPC"}],
+            runtimeSpec={"ports": [{"number": 8092, "protocol": "HTTP/2", "name": "h2", "direction": "inbound"}]},
+        )
+        rel = self.rel("R1", "SRC", "TGT", targetInterface="admin", technology="gRPC")
+        self.assertEqual(self.one_edge(own, rel=rel), "gRPC 8092")  # not gRPC · HTTP/2 8092
+        # a substrate listener matched by family prints the interface's word too
+        target = plain("TGT", "product_component", "Target", interfaces=[{"name": "admin", "protocol": "gRPC"}])
+        rt = plain("RT", "runtime_service", "Runtime", listeners=[
+            {"name": "web", "protocol": "REST", "port": 8080}, {"name": "h2", "protocol": "HTTP/2", "port": 8092}])
+        groups = [self.group("G", ["SRC", "TGT"], substrate="RT")]
+        self.assertEqual(self.one_edge(target, [rt], rel, groups), "gRPC 8092")
+        # an unmatched single-listener fallback prints as recorded
+        lone = plain("RT", "runtime_service", "Runtime", listeners=[{"name": "t", "protocol": "Thrift", "port": 9090}])
+        self.assertEqual(self.one_edge(target, [lone], rel, groups), "gRPC · Thrift 9090")
+        # the web family keeps the lower-cased-name rule: a REST interface on a REST port reads by its name
+        web = plain("TGT", "product_component", "Target", interfaces=[{"name": "api", "protocol": "REST"}],
+                    runtimeSpec={"ports": [{"number": 8082, "protocol": "REST", "name": "rest"}]})
+        self.assertEqual(self.one_edge(web, rel=self.rel("R1", "SRC", "TGT", targetInterface="api")), "rest 8082")
+
+    def test_deployment_labels_on_fixture_edges_and_the_application_view_has_no_ports(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        deployment = deployment_svg(catalog, FIXTURE_SDP)
+        logical = logical_svg(catalog, FIXTURE_SDP)
+
+        def far_lines(svg: str, source: str, target: str) -> list:
+            """The label phrase and the technology line of an edge, from its callout (the labels clip long text)."""
+            body = re.search(rf'<g class="edge" data-from="{source}" data-to="{target}">(.*?)</g>', svg, re.S).group(1)
+            callout = re.search(r'<text class="callout"[^>]*>(.*?)</text>', body, re.S).group(1)
+            phrase, tech = re.match(r'([^<]*)(?:<tspan class="tech">(?: / )?([^<]*)</tspan>)?', callout).groups()
+            return [xml_unescape(phrase), xml_unescape(tech or "")]
+
+        self.assertEqual(far_lines(deployment, "FXPRD00001-0001", "FXPRD00002-0001"), ["places orders", "HTTPS JSON · http 8080"])
+        self.assertEqual(far_lines(deployment, "FXPRD00003-0001", "FXPRD00002-0001"), ["consumes order messages", "AMQP 5672"])
+        # from fx-dc-west into the exposed Application group: through the load balancer's gRPC listener (AC6, AC7)
+        self.assertEqual(far_lines(deployment, "FXPRD00006-0001", "FXPRD00002-0001"), ["administers orders", "gRPC 8443 → gRPC 8092 via FX Public Load Balancer"])
+        self.assertEqual(far_lines(deployment, "FXPRD00002-0001", "FXDST00001-0001"), ["reads and writes orders", "SQL 5432"])
+        self.assertEqual(far_lines(deployment, "FXPRD00004-0001", "FXDST00001-0001"), ["reads historic carts", "PostgreSQL wire protocol · SQL 5432"])
+        # A2: FX Order API's port 8092 is recorded as HTTP/2 and matched to the gRPC interface by family: it reads gRPC 8092
+        self.assertEqual(far_lines(deployment, "FXPRD00004-0001", "FXPRD00002-0001"), ["replays legacy orders", "gRPC 8092"])
+        self.assertEqual(far_lines(logical, "FXPRD00003-0001", "FXPRD00002-0001"), ["consumes order messages", "AMQP"])
+        self.assertEqual(far_lines(logical, "FXPRD00001-0001", "FXPRD00002-0001"), ["places orders", "HTTPS JSON"])
+        reg_deployment = deployment_svg(catalog, "FXSDP00002-0001")
+        self.assertEqual(far_lines(reg_deployment, "FXPRD00010-0001", "FXDCP00004-0001"), ["writes audit trail", "Redis 6379"])
+        self.assertEqual(far_lines(reg_deployment, "FXNET00002-0001", "FXPRD00010-0001"), ["routes ledger requests", "https 8443"])
+        for port in ("5432", "5433", "6379", "8080", "8092", "8443"):
+            self.assertNotIn(port, logical)
+            self.assertNotIn(port, logical_svg(catalog, "FXSDP00002-0001"))
+
+    def test_generate_diagram_imports_protocol_families(self) -> None:
+        source = (REPO_ROOT / "framework" / "tools" / "generate_diagram.py").read_text(encoding="utf-8")
+        self.assertRegex(source, r"(?m)^from protocol_families import family\b")
+        self.assertNotRegex(source, r"PROTOCOL_FAMILY|ENGINE_PROTOCOL|def family\b")
+        tree = __import__("ast").parse(source)
+        names = {t.id for n in tree.body if isinstance(n, __import__("ast").Assign) for t in n.targets if isinstance(t, __import__("ast").Name)}
+        self.assertEqual([n for n in names if "PROTOCOL" in n.upper()], [])
+
+
+class EdgeDeviceChainTests(unittest.TestCase):
+    """AC8: the exposure model, the edge device row of an exposed zone lane and the hops through it (deployment view)."""
+
+    LB = plain("LB", "network_service", "Balancer", productName="FX Balancer", listeners=[
+        {"name": "https", "protocol": "REST", "port": 443}, {"name": "grpc", "protocol": "gRPC", "port": 8443}])
+    FW = plain("FW", "network_service", "Firewall", listeners=[{"name": "https", "protocol": "REST", "port": 443}])
+    BARE = plain("BARE", "network_service", "Bare")  # no listener: contributes no port
+
+    @staticmethod
+    def ra(*entries: dict) -> dict:
+        return plain("RA-1", "reference_architecture", "Reference", serviceGroups=[{"name": "Edge", "deployableObjects": list(entries)}])
+
+    @staticmethod
+    def group(name: str, refs: list, target: str = "east", zone: str = "z1", **extra: object) -> dict:
+        return {"name": name, "deploymentTarget": target, "deployableObjects": [{"ref": r, "networkZone": zone} for r in refs], **extra}
+
+    def model(self, objects: list, groups: list, follows: str = "RA-1") -> generate_diagram.Model:
+        sdp = {
+            **plain("SDP-1", "software_deployment_pattern", "Demo Pattern"),
+            "networkZones": [{"id": "z1", "name": "Zone One", "tier": "application"}, {"id": "z2", "name": "Zone Two", "tier": "data"}],
+            "serviceGroups": groups,
+        }
+        if follows:
+            sdp["followsReferenceArchitecture"] = follows
+        catalog = {o["uid"]: o for o in [*objects, sdp]}
+        return generate_diagram.Model(catalog, sdp, False)
+
+    def chains(self, model: generate_diagram.Model) -> dict:
+        return {c.group: c.exposed_through for c in model.containers}
+
+    def test_exposure_rules(self) -> None:
+        web = plain("WEB", "product_component", "Web")
+        data = plain("DAT", "data_component", "Data")
+        lb_slot = {"objectType": "network_service", "slot": "load-balancer", "fills": "LB"}
+        objects = [web, data, self.LB, self.FW, self.ra(lb_slot)]
+        model = self.model(objects, [
+            self.group("Default", ["WEB"]),
+            self.group("Off", ["WEB"], exposedThrough="none"),
+            self.group("One", ["WEB"], exposedThrough="FW"),
+            self.group("Two", ["WEB"], exposedThrough=["LB", "FW"]),
+            self.group("DataTier", ["DAT"]),
+            self.group("DataOwn", ["DAT"], exposedThrough="FW"),
+        ])
+        got = self.chains(model)
+        # Off, One, Two and DataOwn list WEB or DAT again (placed first above); they still carry their own chain
+        self.assertEqual(got["Default"], ["LB"])
+        self.assertEqual(got["DataTier"], [])  # a data tier is never exposed by the slot default
+        groups = [self.group("Off", ["WEB"], exposedThrough="none"), self.group("One", ["WEB"], target="w1", exposedThrough="FW"),
+                  self.group("Two", ["WEB"], target="w2", exposedThrough=["LB", "FW"]), self.group("DataOwn", ["DAT"], exposedThrough="FW")]
+        for g in groups:
+            with self.subTest(group=g["name"]):
+                self.assertEqual(self.chains(self.model(objects, [g]))[g["name"]], {"Off": [], "One": ["FW"], "Two": ["LB", "FW"], "DataOwn": ["FW"]}[g["name"]])
+        # no reference architecture, an unfilled slot, a non-edge slot: not exposed
+        self.assertEqual(self.chains(self.model(objects, [self.group("G", ["WEB"])], follows=""))["G"], [])
+        for entry in ({"slot": "load-balancer"}, {"slot": "application-runtime", "fills": "LB"}):
+            objects2 = [web, self.LB, self.ra(entry)]
+            self.assertEqual(self.chains(self.model(objects2, [self.group("G", ["WEB"])]))["G"], [])
+
+    def test_slot_chain_order_is_protection_then_availability_then_routing(self) -> None:
+        ingress = plain("ING", "network_service", "Ingress")
+        entries = [{"slot": "ingress", "fills": "ING"}, {"slot": "load-balancer", "fills": "LB"}, {"slot": "firewall", "fills": "FW"}]
+        model = self.model([plain("WEB", "product_component", "Web"), self.LB, self.FW, ingress, self.ra(*entries)], [self.group("G", ["WEB"])])
+        self.assertEqual(self.chains(model)["G"], ["FW", "LB", "ING"])
+
+    def test_one_row_per_exposed_group_in_its_own_first_lane(self) -> None:
+        # A3: groups never share a row; two groups with the same chain in one target and zone each draw it
+        comps = [plain(u, "product_component", u) for u in ("A", "B", "C", "A2")]
+        objects = [*comps, self.LB, self.FW, self.ra({"slot": "load-balancer", "fills": "LB"})]
+        sdp_groups = [
+            self.group("GA", ["A"]), self.group("GB", ["B"]), self.group("GC", ["C"], exposedThrough=["FW", "LB"]),
+        ]
+        sdp_groups[0]["deployableObjects"].append({"ref": "A2", "networkZone": "z2"})  # a second lane: no row there
+        model = self.model(objects, sdp_groups)
+        lanes = {c.group: c.lanes for c in model.containers}
+        self.assertEqual([(c.definitions, c.groups) for c in lanes["GA"][0].chains], [(["LB"], ["GA"])])
+        self.assertEqual(lanes["GA"][1].chains, [])
+        self.assertEqual([(c.definitions, c.groups) for c in lanes["GB"][0].chains], [(["LB"], ["GB"])])
+        self.assertEqual([c.definitions for c in lanes["GC"][0].chains], [["FW", "LB"]])
+        svg = generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model))
+        rects = node_rects(svg)
+        groups = {g: tuple(int(v) for v in m) for g, *m in re.findall(
+            r'<g class="group[^"]*"(?: data-id="[^"]*")? data-group="([^"]*)"><title>[^<]*</title><rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg)}
+        for name, member in (("GA", "A"), ("GB", "B"), ("GC", "C")):
+            (row,) = lanes[name][0].chains
+            gx, gy, gw, gh = groups[name]
+            for box in row.boxes:  # inside the group's own container, above its first lane's boxes
+                x, y, w, h = rects[box]
+                self.assertTrue(gx <= x and x + w <= gx + gw and gy <= y and y + h <= gy + gh, (name, box))
+                self.assertLess(y, rects[member][1])
+        fw, lb = lanes["GC"][0].chains[0].boxes
+        self.assertEqual(rects[fw][1], rects[lb][1])
+        self.assertLess(rects[fw][0], rects[lb][0])
+        self.assertNotIn(">fronts ", svg)  # one chain per row: no caption
+        self.assertEqual(len(re.findall(r'class="node[^"]*" data-id="exposure:', svg)), 4)
+
+    def test_hops_only_from_another_target_and_only_through_the_target_chain(self) -> None:
+        rel = lambda uid, s, t, **kw: plain(uid, "relationship", uid, source=s, target=t, **kw)
+        objects = [
+            plain("IN", "product_component", "Inside", interfaces=[{"name": "api", "protocol": "REST"}],
+                  runtimeSpec={"ports": [{"number": 8080, "protocol": "HTTP", "name": "http"}]}),
+            plain("SAME", "product_component", "Same"), plain("FAR", "product_component", "Far"), plain("OFF", "product_component", "Off"),
+            self.LB, self.FW, self.BARE, self.ra({"slot": "load-balancer", "fills": "LB"}),
+            rel("R1", "FAR", "IN", targetInterface="api", technology="HTTPS"),  # other target: hop
+            rel("R2", "SAME", "IN", targetInterface="api"),  # same target, other group: no hop
+            rel("R3", "IN", "FAR"),  # into the far group, whose own chain is [FW, BARE]; the source's chain is not used
+            rel("R4", "IN", "OFF"),  # into a group with exposedThrough none
+            rel("R5", "FAR", "LB"),  # into the placed device of the chain itself: no hop (it would loop through itself)
+            rel("R6", "FAR", "RT"),  # into the exposed group's substrate container: through its chain
+            plain("RT", "runtime_service", "Runtime"),
+        ]
+        model = self.model(objects, [
+            self.group("Front", ["IN", "LB"], substrate="RT"), self.group("Side", ["SAME"]),
+            self.group("Far", ["FAR"], target="west", exposedThrough=["FW", "BARE"]), self.group("Off", ["OFF"], target="west", exposedThrough="none"),
+        ])
+        edges = {e.uid: e for e in model.deployment_edges}
+        self.assertEqual([model.device_ref[b] for b in edges["R1"].hops], ["LB"])
+        self.assertEqual(edges["R1"].far_tech, "https 443 → http 8080")
+        self.assertEqual(edges["R1"].hop_names, ["Balancer"])
+        self.assertEqual((edges["R2"].hops, edges["R4"].hops, edges["R5"].hops), ([], [], []))
+        self.assertEqual([model.device_ref[b] for b in edges["R6"].hops], ["LB"])
+        svg = generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model))
+        pieces = edge_pieces(svg)
+        (box,) = model.hop_of["IN"]  # the Front group's row: its load balancer
+        self.assertEqual([(a, b) for a, b, _p in pieces[("FAR", box)]], [("FAR", box)])  # R5: one piece, into the box
+        self.assertEqual([(a, b) for a, b, _p in pieces[("FAR", "RT")]], [("FAR", box), (box, "RT")])
+        self.assertEqual([model.device_ref[b] for b in edges["R3"].hops], ["FW", "BARE"])
+        self.assertEqual(edges["R3"].far_tech, "https 443")  # FW's single listener; BARE has none and adds nothing
+        self.assertEqual(generate_diagram._callout_tech(edges["R3"]), "https 443 via Firewall via Bare")
+        self.assertEqual(generate_diagram._callout_tech(model.edges[0]), "HTTPS")  # the Application view's edges carry no hop
+
+    def test_placed_device_outside_its_groups_chain_keeps_its_box_and_its_edges_hop(self) -> None:
+        # round 2: LB is placed in Edge (exposedThrough none); App's slot-default chain holds LB; Far is fronted by FW
+        objects = [plain("APP", "product_component", "App"), plain("FAR", "product_component", "Far"), self.LB, self.FW,
+                   self.ra({"slot": "load-balancer", "fills": "LB"}), plain("R1", "relationship", "R1", source="LB", target="FAR")]
+        model = self.model(objects, [
+            self.group("Edge", ["LB"], exposedThrough="none"), self.group("App", ["APP"]),
+            self.group("Far", ["FAR"], target="west", exposedThrough="FW"),
+        ])
+        self.assertEqual(model.row_devices, {})
+        self.assertIn("LB", [n.uid for n in model.nodes_for_view("deployment")])
+        lanes = {c.group: c.lanes for c in model.containers}
+        self.assertEqual(lanes["Edge"][0].members, ["LB"])  # its placed box stays in its own container
+        self.assertEqual([c.definitions for c in lanes["App"][0].chains], [["LB"]])  # App draws its own copy
+        (edge,) = model.deployment_edges
+        self.assertEqual([model.device_ref[b] for b in edge.hops], ["FW"])  # a placed device's edge hops like any other
+        svg = generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model))
+        self.assertIn('data-id="LB"', svg)
+        self.assertEqual([(a, b) for a, b, _p in edge_pieces(svg)[("LB", "FAR")]], [("LB", edge.hops[0]), (edge.hops[0], "FAR")])
+
+    def test_device_also_placed_is_drawn_only_in_the_row_and_keeps_its_edges(self) -> None:
+        objects = [plain("WEB", "product_component", "Web"), self.LB, self.ra({"slot": "load-balancer", "fills": "LB"}),
+                   plain("R1", "relationship", "R1", source="LB", target="WEB", label="routes")]
+        model = self.model(objects, [self.group("G", ["WEB", "LB"])])
+        self.assertNotIn("LB", [n.uid for n in model.nodes_for_view("deployment")])
+        svg = generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model))
+        self.assertNotIn('data-id="LB"', svg)
+        (box,) = model.devices
+        self.assertIn(f'<g class="edge" data-from="{box}" data-to="WEB">', svg)
+        # an unplaced device that a placed object reaches stays in the outside lane as well
+        objects[-1] = plain("R1", "relationship", "R1", source="WEB", target="LB", label="checks")
+        model = self.model(objects, [self.group("G", ["WEB"])])
+        self.assertIn("LB", [n.uid for n in model.nodes_for_view("deployment") if n.outside])
+
+    # ------------------------------------------------------------------ the fixture (fresh SVG)
+    @staticmethod
+    def lane_boxes(svg: str) -> dict:
+        """(group name, zone id) -> the data-id of every box drawn in that zone lane, in drawn order."""
+        out = {}
+        marks = list(re.finditer(r'<g class="(group|zlane)(?:[^"]*)"(?: data-id="[^"]*")? data-(?:group|zone)="([^"]*)">', svg))
+        marks = [m for m in marks if 'class="group store' not in m.group(0)]
+        group = ""
+        for k, m in enumerate(marks):
+            if m.group(1) == "group":
+                group = m.group(2)
+                continue
+            end = marks[k + 1].start() if k + 1 < len(marks) else len(svg)
+            out[(group, m.group(2))] = re.findall(r'<g class="node[^"]*" data-id="([^"]*)">', svg[m.start() : end])
+        return out
+
+    def test_fixture_device_rows(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        svg = deployment_svg(catalog, FIXTURE_SDP)
+        lanes = self.lane_boxes(svg)
+        devices = {k: [u.split(":")[-1] for u in v if u.startswith("exposure:")] for k, v in lanes.items()}
+        # A3: Web and Application share target and zone, and each draws its own row in its own first lane
+        self.assertEqual(devices[("Web", "fx-app")], ["FXNET00003-0001"])
+        self.assertEqual(devices[("Application", "fx-app")], ["FXNET00003-0001"])
+        self.assertEqual(devices[("Application", "fx-data")], [])  # only the group's first lane
+        self.assertEqual(devices[("Partner", "fx-public")], ["FXNET00004-0001", "FXNET00003-0001"])  # exposedThrough order
+        self.assertEqual(devices[("Data", "fx-data")], [])  # exposedThrough none
+        self.assertEqual(devices[("Archive", "fx-data")], [])  # data-only group under the same reference architecture
+        self.assertEqual(devices[("Edge", "")], ["FXNET00003-0001"])  # also placed there: drawn only in the row
+        self.assertNotIn("FXNET00003-0001", lanes[("Edge", "")])
+        self.assertNotIn(">fronts ", svg)  # one chain per row: no caption
+        rects = node_rects(svg)
+        row = [u for u in lanes[("Partner", "fx-public")] if u.startswith("exposure:")]
+        self.assertEqual(rects[row[0]][1], rects[row[1]][1])
+        self.assertLess(rects[row[0]][0], rects[row[1]][0])
+        self.assertLess(rects[row[0]][1], rects["FXPRD00007-0001"][1])
+        box = re.search(rf'<g class="node[^"]*" data-id="{row[1]}">.*?</g>', svg).group(0)
+        self.assertIn("chip-network", box)
+        self.assertIn(">FX Balancer<", box)
+        self.assertIn(">FX Public Load Balancer<", box)
+        # exposed groups without an inbound edge from another target: the row is drawn, no hop leaves it
+        for group, zone in (("Edge", ""), ("Batch", "fx-app")):
+            (dev,) = [u for u in lanes[(group, zone)] if u.startswith("exposure:")]
+            self.assertNotIn(f'data-via="{dev}"', svg, group)
+            self.assertNotIn(f'data-to="{dev}"', svg, group)
+
+    def test_fixture_hops(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        svg = deployment_svg(catalog, FIXTURE_SDP)
+        pieces = edge_pieces(svg)
+        rects = node_rects(svg)
+
+        def devices(source: str, target: str) -> list:
+            return [b.split(":")[-1] for _s, b, _p in pieces[(source, target)][:-1]]
+
+        self.assertEqual(devices("FXPRD00006-0001", "FXPRD00001-0001"), ["FXNET00003-0001"])  # filled slot, other target
+        self.assertEqual(devices("FXPRD00006-0001", "FXPRD00002-0001"), ["FXNET00003-0001"])
+        self.assertEqual(devices("FXPRD00001-0001", "FXPRD00007-0001"), ["FXNET00004-0001", "FXNET00003-0001"])  # target chain only
+        lanes = self.lane_boxes(svg)
+        app_lb = pieces[("FXPRD00006-0001", "FXPRD00002-0001")][0][1]
+        self.assertIn(app_lb, lanes[("Application", "fx-app")])  # the hop leaves the target group's own row
+        # R4: the pieces of the two-device hop never cross one another
+        segs = [(k, a, b) for k, (_s, _t, pts) in enumerate(pieces[("FXPRD00001-0001", "FXPRD00007-0001")]) for a, b in zip(pts, pts[1:])]
+        for k1, (ax, ay), (bx, by) in segs:
+            for k2, (cx, cy), (dx, dy) in segs:
+                if k1 < k2 and ax == bx and cy == dy:  # a vertical of one piece and a horizontal of another
+                    self.assertFalse(min(cx, dx) < ax < max(cx, dx) and min(ay, by) < cy < max(ay, by), (k1, k2, ax, cy))
+                if k1 < k2 and ay == by and cx == dx:
+                    self.assertFalse(min(ax, bx) < cx < max(ax, bx) and min(cy, dy) < ay < max(cy, dy), (k1, k2, cx, ay))
+        for pair in (("FXPRD00001-0001", "FXPRD00002-0001"), ("FXNET00001-0001", "FXPRD00001-0001"),  # same target
+                     ("FXPRD00002-0001", "FXDST00001-0001"), ("FXPRD00001-0001", "FXDCP00001-0001"),  # exposedThrough none
+                     ("FXPRD00004-0001", "FXDCP00008-0001")):  # data-only group
+            self.assertEqual(devices(*pair), [], pair)
+        # each piece leaves a bottom and enters a top: the first device's top, device to device, the target's top
+        for pair in (("FXPRD00006-0001", "FXPRD00001-0001"), ("FXPRD00001-0001", "FXPRD00007-0001")):
+            run = pieces[pair]
+            for source, target, pts in run:
+                sx, sy, _sw, sh = rects[source]
+                tx, ty, _tw, _th = rects[target]
+                self.assertEqual(pts[0][1], sy + sh, (pair, source))
+                self.assertEqual(pts[-1][1], ty, (pair, target))
+                self.assertGreater(pts[1][1], pts[0][1])
+                self.assertLess(pts[-2][1], pts[-1][1])
+            self.assertEqual(run[-1][2][-1][0], rects[pair[1]][0] + 80)  # the target's single interface attachment
+        self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+        self.assertEqual(side_violations(svg), [])
+
+    def test_fixture_chain_labels(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        svg = deployment_svg(catalog, FIXTURE_SDP)
+
+        def callout(source: str, target: str) -> str:
+            body = re.search(rf'<g class="edge" data-from="{source}" data-to="{target}">(.*?)</g>', svg, re.S).group(1)
+            return xml_unescape(re.sub(r"<[^>]*>", "", re.search(r'<text class="callout"[^>]*>(.*?)</text>', body, re.S).group(1)))
+
+        self.assertEqual(callout("FXPRD00006-0001", "FXPRD00001-0001"), "reviews storefront orders / https 443 → http 8080 via FX Public Load Balancer")
+        self.assertEqual(
+            callout("FXPRD00001-0001", "FXPRD00007-0001"),
+            "forwards partner orders / https 443 → https 443 → http 8080 via FX Web Firewall via FX Public Load Balancer",
+        )
+        self.assertEqual(callout("FXPRD00001-0001", "FXPRD00002-0001"), "places orders / HTTPS JSON · http 8080")  # no hop
+        logical = logical_svg(catalog, FIXTURE_SDP)
+        self.assertNotIn("exposure:", logical)
+        self.assertNotIn(" via ", logical)
+        self.assertNotIn("FXNET00003-0001", logical)
+
+    def test_fixture_renders_twice_identically_and_editable(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        self.assertEqual(deployment_svg(catalog, FIXTURE_SDP), deployment_svg(catalog, FIXTURE_SDP))
+        code, _out, err = run_cli(["--workspace", str(FIXTURE), "--sdp", FIXTURE_SDP, "--editable", "--output", os.devnull])
+        self.assertEqual(code, 0, err)
+
+
+# AC9: the SVG digests of every examples pattern as the run's base (70c4622, before interfaces-exposure) drew them.
+# A pattern holding a component that declares two or more interfaces may differ (its entrances move under AC5) and is
+# named in EXAMPLES_MULTI_INTERFACE_PATTERNS; every other pattern must render byte for byte as it did at the base.
+EXAMPLES_BASE_SVG_SHA256 = {
+    ("STCK000001-SDP1", "logical"): "69525c1f5b165f0034fcc651deb6b5ac85a60c047a904b239e9f2a3f6b2d9112",
+    ("STCK000001-SDP1", "deployment"): "8ff58f41a5cff57a249e9cbe38c8e4a4f43cbd8549e3ba1c89c2f07f2587b1c2",
+}
+# The examples' only multi-interface component, the OpenStack Ops Console (01KSE5V73Z-Q0A0), is drawn by no examples
+# pattern today, so no pattern is exempt; the test fails if one starts drawing it without being named here.
+EXAMPLES_MULTI_INTERFACE_PATTERNS: tuple = ()
+
+
+class LayoutHardeningTests(unittest.TestCase):
+    """AC9: no edge crosses a box it does not connect to, labels entering one box through different entrances never
+    overlap, byte-identical renders, --editable renders, and examples unchanged from the base."""
+
+    def test_no_edge_crosses_a_foreign_box_in_any_golden(self) -> None:
+        goldens = sorted(harness.GOLDEN_DIR.glob("*.svg"))
+        self.assertEqual(len(goldens), 2 * len(generate_diagram.sdps(load_catalog(FIXTURE))))  # every pattern, both views
+        for path in goldens:
+            with self.subTest(golden=path.name):
+                svg = path.read_text(encoding="utf-8")
+                self.assertGreater(len(edge_polylines(svg)), 0)
+                self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+                self.assertEqual(covisible_track_clashes(svg), [])
+
+    def test_third_interface_caller_from_the_left_enters_from_the_right(self) -> None:
+        # S4's report: FX Legacy Cart (left of FX Order API) calls its third interface while FX Order Worker (right of
+        # it) calls the second; arriving from the left at the third entrance crossed the second entrance's stub.
+        catalog = load_catalog(FIXTURE)
+        svg = logical_svg(catalog, FIXTURE_SDP)
+        rects = node_rects(svg)
+        legacy = edge_pieces(svg)[("FXPRD00004-0001", "FXPRD00002-0001")][-1][2]
+        api_left = rects["FXPRD00002-0001"][0]
+        self.assertEqual(legacy[-1][0], api_left + 90)  # the third of three entrances
+        self.assertLess(rects["FXPRD00004-0001"][0], api_left)
+        self.assertGreater(legacy[-3][0], legacy[-1][0])  # its in-run comes from the right
+        self.assertEqual(covisible_stub_crossings(svg, logical_free_x(catalog, FIXTURE_SDP)), [])
+        self.assertEqual(side_violations(svg), [])
+
+    def test_entrance_rows_stack_one_block_per_entrance(self) -> None:
+        edges = [
+            (0, generate_diagram.DiagramEdge("A", "T", label="a", target_interface="x")),
+            (1, generate_diagram.DiagramEdge("B", "T", label="b", target_interface="y")),
+            (2, generate_diagram.DiagramEdge("B", "T", label="b2", target_interface="y")),
+            (3, generate_diagram.DiagramEdge("C", "T", label="c", target_interface="z")),
+            (4, generate_diagram.DiagramEdge("D", "U", label="d")),
+            (5, generate_diagram.DiagramEdge("E", "U", label="e")),
+        ]
+        offset, needs = generate_diagram._entrance_rows(edges, {"T": ["x", "y", "z"], "U": []})
+        self.assertEqual([offset[n] for n in range(6)], [0, 1, 1, 3, 0, 0])
+        self.assertEqual(needs, {"T": 4, "U": 1})  # one entrance: the largest pair multiplicity, as before
+
+    def test_render_twice_identical(self) -> None:
+        for root in (FIXTURE, EXAMPLES):
+            catalog = load_catalog(root)
+            for sdp in generate_diagram.sdps(catalog):
+                for render in (logical_svg, deployment_svg):
+                    with self.subTest(root=root.name, sdp=sdp["uid"], view=render.__name__):
+                        self.assertEqual(render(catalog, sdp["uid"]), render(catalog, sdp["uid"]))
+        outputs = {}
+        for seed in ("1", "2"):
+            with tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                for name, workspace in (("fixture", FIXTURE), ("examples", EXAMPLES)):
+                    subprocess.run(
+                        [sys.executable, "-m", "framework.tools.generate_diagram", "--workspace", str(workspace), "--all",
+                         "--output-dir", str(root / name / "html"), "--svg-dir", str(root / name / "svg")],
+                        cwd=str(REPO_ROOT), env=dict(os.environ, PYTHONHASHSEED=seed), check=True, capture_output=True,
+                    )
+                outputs[seed] = {str(p.relative_to(root)): p.read_bytes() for p in sorted(root.rglob("*")) if p.is_file()}
+        self.assertTrue(any(k.endswith(".svg") for k in outputs["1"]))
+        self.assertEqual(outputs["1"], outputs["2"], "PYTHONHASHSEED changed the bytes")
+
+    def test_editable_renders(self) -> None:
+        for root in (FIXTURE, EXAMPLES):
+            for sdp in generate_diagram.sdps(load_catalog(root)):
+                with self.subTest(root=root.name, sdp=sdp["uid"]):
+                    page = generate_diagram.build(root, sdp["uid"], editable=True)[0]
+                    self.assertIn('id="edit-panel"', page)
+                    self.assertEqual(strip_editable(page), generate_diagram.build(root, sdp["uid"])[0])
+
+    def test_examples_identical_except_multi_interface(self) -> None:
+        catalog = load_catalog(EXAMPLES)
+        multi = {uid for uid, obj in catalog.items() if isinstance(obj.get("interfaces"), list) and len(obj["interfaces"]) >= 2}
+        drawing: set = set()
+        for sdp in generate_diagram.sdps(catalog):
+            model = generate_diagram.build_diagram_model(catalog, sdp, False)
+            if any(n.uid in multi for n in model.nodes + model.deployment_nodes):
+                drawing.add(sdp["uid"])
+        self.assertEqual(drawing, set(EXAMPLES_MULTI_INTERFACE_PATTERNS), "name every examples pattern that draws a multi-interface component")
+        self.assertEqual(sorted({uid for uid, _view in EXAMPLES_BASE_SVG_SHA256}), sorted(s["uid"] for s in generate_diagram.sdps(catalog)))
+        for sdp in generate_diagram.sdps(catalog):
+            if sdp["uid"] in EXAMPLES_MULTI_INTERFACE_PATTERNS:
+                continue
+            model = generate_diagram.build_diagram_model(catalog, sdp, False)
+            for view, render in (("logical", generate_diagram.render_logical_svg), ("deployment", generate_diagram.render_deployment_svg)):
+                with self.subTest(sdp=sdp["uid"], view=view):
+                    digest = hashlib.sha256(render(model).encode("utf-8")).hexdigest()
+                    self.assertEqual(digest, EXAMPLES_BASE_SVG_SHA256[(sdp["uid"], view)])
+
+
 class DiagramSkillTests(unittest.TestCase):
     """The draftsman-diagram skill sends both views to the generator (plan D23, AC11, AC12)."""
 
@@ -3824,7 +4560,7 @@ class DiagramLayoutTests(unittest.TestCase):
             plain_catalog = fixture_catalog_without_layout()
             dm = generate_diagram.build_diagram_model(plain_catalog, plain_catalog[FIXTURE_SDP], False)
             self.assertEqual(sorted(e["ref"] for e in doc["logical"]), sorted(n.uid for n in dm.nodes))
-            self.assertEqual(len(doc["deployment"]), len(dm.deployment_nodes))
+            self.assertEqual(len(doc["deployment"]), len(dm.deployment_nodes) + len(generate_diagram._deployment_store_uids(dm)))
             self.assertTrue(all(isinstance(e["position"], int) and e["position"] >= 1 for e in doc["logical"] + doc["deployment"]))
             self.assertEqual(min(e["position"] for e in doc["logical"]), 1)
             file_1, page_1 = target.read_bytes(), page.read_bytes()
@@ -3854,9 +4590,10 @@ class DiagramLayoutTests(unittest.TestCase):
             self.assertNotIn("FXGONE00001-0001", logical)
             self.assertEqual(logical["FXPRD00004-0001"], 1)  # kept
             self.assertEqual(logical["FXPRD00001-0001"], 1)
-            # FXPRD00002 and FXPRD00003 have no position in their band; each follows the highest one there
-            self.assertEqual(sorted(logical[u] for u in ("FXPRD00002-0001", "FXPRD00003-0001")), [2, 3])
-            self.assertEqual(len(updated["logical"]), 8)
+            # FXPRD00002 and FXPRD00003 have no position in their band; each follows the highest one there (FXPRD00006
+            # is drawn between them since its interfaces-exposure edge to FXPRD00001)
+            self.assertEqual(sorted(logical[u] for u in ("FXPRD00002-0001", "FXPRD00003-0001", "FXPRD00006-0001")), [2, 3, 4])
+            self.assertEqual(len(updated["logical"]), 11)  # interfaces-exposure fixture: FX Partner Portal and FX Order Archive
             self.assertEqual(len(list((workspace / "catalog").glob("diagram-layout-*.yaml"))), 1)
 
     def test_write_layout_with_placed_only_is_a_usage_error(self) -> None:

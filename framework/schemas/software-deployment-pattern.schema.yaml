@@ -154,10 +154,12 @@ serviceGroup:
   - deploymentTarget
   optionalFields:
   - substrate
+  - exposedThrough
   - scalingUnit
   - deployableObjects
   fieldTypes:
     substrate: str
+    exposedThrough: str
     deployableObjects: list
   collectionSchemas:
     deployableObjects: deployableObjectEntry
@@ -170,6 +172,11 @@ serviceGroup:
       deployableObjects. Validation rule sdp-placement-types (ratcheted, enforced)
       reports a deployableObjects ref that is not a ProductComponent or
       DataComponent and names this field as the place for it.
+    exposedThrough: >
+      Optional. A network_service definition uid, or a list of such uids in chain order, that
+      fronts this group's traffic from outside its zone; or the literal none for a group that
+      receives no such traffic.
+      Overrides the filled edge slot of the reference architecture the pattern follows.
     deploymentTarget: >
       Workspace vocabulary value identifying the physical or logical deployment
       target for this service group (e.g. aws-us-east-1, openstack-controller).

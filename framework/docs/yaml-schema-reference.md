@@ -42,6 +42,20 @@ The framework uses two sources of truth for YAML validation:
 PaaS, SaaS, appliance, and self-managed are `deliveryModel` values on RuntimeService, DataStoreService, and NetworkService objects. They are not
 separate object types.
 
+## Relationships
+
+A `relationship` object (`catalog/relationships/`) carries `source`, `target`
+(or `externalTarget`), `label`, `technology`, `direction` and `flow`. Its optional
+`targetInterface` is the name of the interface it uses on the target: an entry of
+a product component's `interfaces`, or `data` for a data component's implicit
+surface. Product teams record it; the ratcheted rule `relationship-target-interface`
+requires it when the target is a product component (baselined for existing
+content; data components and external targets are exempt). Derived inline
+dependencies use their `interface` string instead. Ports are not recorded on
+relationships: the Deployment view resolves them from the target's `runtimeSpec.ports`
+and from `listeners` that the infrastructure team records on definitions. See
+[software-deployment-patterns.md](software-deployment-patterns.md).
+
 ## Requirement And Capability Flow
 
 When a requirement names `relatedCapability`, resolve:

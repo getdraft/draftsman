@@ -18,6 +18,7 @@ if str(TOOLS_ROOT) not in sys.path:
     sys.path.insert(0, str(TOOLS_ROOT))
 
 from uid_utils import UID_PATTERN_TEXT, generate_uid
+from protocol_families import family
 
 
 FRAMEWORK_ROOT = Path(__file__).resolve().parent.parent
@@ -401,6 +402,39 @@ def _check_relationship_definition_endpoint(obj: dict, catalog_by_id: dict, cont
 
 register_ratchet_rule("sdp-placement-types", _check_sdp_placement_types)
 register_ratchet_rule("relationship-definition-endpoint", _check_relationship_definition_endpoint)
+
+
+def interface_names(obj: dict[str, Any]) -> list[str]:
+    """Names of the surfaces a relationship can enter through: the declared interfaces, or the implicit
+    `data` surface of a data component that declares none."""
+    names = [
+        str(item.get("name")).strip()
+        for item in obj.get("interfaces") or []
+        if isinstance(item, dict) and is_non_empty(item.get("name"))
+    ]
+    if not names and obj.get("type") == "data_component" and not obj.get("interfaces"):
+        return ["data"]
+    return names
+
+
+def _check_relationship_target_interface(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
+    # Ratcheted half of relationship-target-interface: a relationship to a product component must name one
+    # of its interfaces. A targetInterface naming a surface the target lacks is never ratcheted; see
+    # validate_target_interface. Data components, externalTarget, instances and derived relationships are exempt.
+    if obj.get("type") != "relationship" or obj.get("_derived"):
+        return []
+    ref = obj.get("target")
+    target = catalog_by_id.get(ref) if isinstance(ref, str) else None
+    if not isinstance(target, dict) or target.get("type") != "product_component" or is_non_empty(obj.get("targetInterface")):
+        return []
+    names = interface_names(target)
+    return [
+        f"relationship '{obj.get('name') or obj.get('uid')}' targets {_describe(target, ref)} without a targetInterface: "
+        f"name one of its interfaces ({', '.join(names) or 'none declared; add interfaces to the component'})"
+    ]
+
+
+register_ratchet_rule("relationship-target-interface", _check_relationship_target_interface)
 
 
 def object_hash(obj: dict[str, Any]) -> str:
@@ -4562,6 +4596,134 @@ def validate_relationship(
             "add the referenced object to the catalog or correct the UID"
         )
 
+def validate_target_interface(
+    obj: dict[str, Any],
+    path: Path,
+    catalog_by_id: dict[str, dict[str, Any]],
+    failures: list[str],
+    warnings: list[str],
+) -> None:
+    """Unratcheted half of relationship-target-interface: a targetInterface must name a surface its target has
+    (error), or be uncheckable (warning)."""
+    if obj.get("_derived") or not is_non_empty(obj.get("targetInterface")):
+        return
+    named = str(obj["targetInterface"]).strip()
+    rel = obj.get("name") or obj.get("uid")
+    if is_non_empty(obj.get("externalTarget")) and not is_non_empty(obj.get("target")):
+        warnings.append(
+            f"{path}: relationship-target-interface: relationship '{rel}' names targetInterface '{named}' "
+            f"but its target '{obj.get('externalTarget')}' is external, so the interface cannot be checked"
+        )
+        return
+    target = catalog_by_id.get(obj.get("target")) if is_non_empty(obj.get("target")) else None
+    if not isinstance(target, dict):
+        return
+    label = target.get("name") or obj.get("target")
+    names = interface_names(target)
+    if names or target.get("type") in ("product_component", "data_component"):
+        if named not in names:
+            failures.append(
+                f"{path}: relationship-target-interface: relationship '{rel}' names targetInterface '{named}', "
+                f"which is not an interface of target {label} ({', '.join(names) or 'none declared'})"
+            )
+    else:
+        warnings.append(
+            f"{path}: relationship-target-interface: relationship '{rel}' names targetInterface '{named}' "
+            f"but target {label} declares no interfaces, so the interface cannot be checked"
+        )
+
+
+EDGE_SLOTS = ("firewall", "web-application-firewall", "load-balancer", "api-gateway", "ingress")
+
+
+def _surface_protocol(target: dict[str, Any], name: str) -> tuple[str | None, str | None]:
+    """Protocol text and family of the named surface of a target: a declared interface, or a data component's
+    implicit surface, whose family is the family of its targetEngine (other or unknown gives None)."""
+    for item in target.get("interfaces") or []:
+        if isinstance(item, dict) and str(item.get("name") or "").strip() == name and is_non_empty(item.get("protocol")):
+            protocol = str(item["protocol"]).strip()
+            return protocol, family(protocol)
+    if name == "data" and target.get("type") == "data_component" and not target.get("interfaces"):
+        engine = str(target.get("targetEngine") or "").strip()
+        engine_family = family(engine) if engine else None
+        if engine_family == "other":
+            engine_family = None
+        return (f"{engine} (implicit data surface)" if engine_family else None), engine_family
+    return None, None
+
+
+def validate_protocol_family(
+    obj: dict[str, Any],
+    path: Path,
+    catalog_by_id: dict[str, dict[str, Any]],
+    warnings: list[str],
+) -> None:
+    """Warn when a relationship's technology and its target interface's protocol are in different known families."""
+    if obj.get("_derived") or not is_non_empty(obj.get("technology")) or not is_non_empty(obj.get("targetInterface")):
+        return
+    target = catalog_by_id.get(obj.get("target")) if is_non_empty(obj.get("target")) else None
+    if not isinstance(target, dict):
+        return
+    named = str(obj["targetInterface"]).strip()
+    protocol, iface_family = _surface_protocol(target, named)
+    technology = str(obj["technology"]).strip()
+    tech_family = family(technology)
+    if tech_family and iface_family and tech_family != iface_family:
+        warnings.append(
+            f"{path}: relationship '{obj.get('name') or obj.get('uid')}' technology '{technology}' (family {tech_family}) "
+            f"does not match interface '{named}' of {target.get('name') or obj.get('target')} "
+            f"with protocol '{protocol}' (family {iface_family})"
+        )
+
+
+def validate_exposure_refs(
+    obj: dict[str, Any],
+    path: Path,
+    catalog_by_id: dict[str, dict[str, Any]],
+    warnings: list[str],
+) -> None:
+    """Warn on serviceGroups[].exposedThrough and reference architecture fills that do not name a network_service."""
+    for index, group in enumerate(obj.get("serviceGroups") or []):
+        if not isinstance(group, dict):
+            continue
+        if obj.get("type") == "software_deployment_pattern" and "exposedThrough" in group:
+            raw = group.get("exposedThrough")
+            values = raw if isinstance(raw, list) else [raw]
+            where = f"serviceGroups[{index}].exposedThrough"
+            if isinstance(raw, list) and not raw:
+                warnings.append(f"{path}: {where} is an empty list; use none or one or more network_service uids")
+            for value in values:
+                ref = catalog_by_id.get(value) if isinstance(value, str) else None
+                if value == "none" and not isinstance(raw, list):
+                    continue
+                if value == "none":
+                    warnings.append(f"{path}: {where} lists 'none'; none is only valid on its own, not inside a list")
+                elif not (isinstance(ref, dict) and ref.get("type") == "network_service"):
+                    warnings.append(f"{path}: {where} value '{value}' must be none or the uid of a network_service definition")
+        if obj.get("type") != "reference_architecture":
+            continue
+        for entry_index, entry in enumerate(group.get("deployableObjects") or []):
+            if not isinstance(entry, dict) or "fills" not in entry:
+                continue
+            value = entry.get("fills")
+            ref = catalog_by_id.get(value) if isinstance(value, str) else None
+            where = f"serviceGroups[{index}].deployableObjects[{entry_index}]"
+            if not (isinstance(ref, dict) and ref.get("type") == "network_service"):
+                warnings.append(f"{path}: {where}.fills '{value}' must be the uid of a network_service definition")
+            if entry.get("slot") not in EDGE_SLOTS:
+                warnings.append(
+                    f"{path}: {where}.fills is set on slot '{entry.get('slot')}'; only the edge slots {', '.join(EDGE_SLOTS)} are filled"
+                )
+            cap_uid = entry.get("capability")
+            if is_non_empty(cap_uid) and isinstance(ref, dict) and not _target_satisfies_capability(
+                str(value), ref, str(cap_uid), catalog_by_id
+            ):
+                warnings.append(
+                    f"{path}: {where}.fills '{value}' ({ref.get('name') or value}) does not satisfy capability "
+                    f"'{cap_uid}' of slot '{entry.get('slot')}'"
+                )
+
+
 def validate_diagram_layout(
     obj: dict[str, Any],
     path: Path,
@@ -4742,6 +4904,10 @@ def main(argv: list[str] | None = None) -> int:
             )
         if obj.get("type") == "relationship":
             validate_relationship(obj, path, catalog_by_id, failures)
+            validate_target_interface(obj, path, catalog_by_id, failures, warnings)
+            validate_protocol_family(obj, path, catalog_by_id, warnings)
+        if obj.get("type") in ("software_deployment_pattern", "reference_architecture"):
+            validate_exposure_refs(obj, path, catalog_by_id, warnings)
         if obj.get("type") == "diagram_layout":
             validate_diagram_layout(obj, path, catalog_by_id, failures, warnings)
         if obj.get("type") == "system":

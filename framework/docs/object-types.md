@@ -38,6 +38,13 @@ by the engineering team and deployed inside or on top of Shared Services Objects
 | SoftwareDeploymentPattern | `software_deployment_pattern` | The intended assembly of deployable objects for a product or product capability. | Defines the deployable package shape that automation can target. |
 | ProductRegistration | `product_registration` | Advertises the formal registration contract linking a product engineering repository to the central `drafting-table` catalog. | Points to the product source repo URL and its decentralized `.draft/sdp.yaml` manifest. |
 
+Interfaces and listeners are recorded by different owners. Product teams record
+`interfaces` on a ProductComponent (and optionally on a DataComponent, which
+otherwise has one implicit `data` surface) and `targetInterface` on the
+relationships that use them. The infrastructure team records `listeners`
+(name, protocol, port) on RuntimeService, DataStoreService, NetworkService and
+Host definitions. See [software-deployment-patterns.md](software-deployment-patterns.md).
+
 ## Shared Services Objects
 
 Shared Services Objects are service definitions: reusable infrastructure

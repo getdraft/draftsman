@@ -11,6 +11,8 @@ import re
 import unittest
 from pathlib import Path
 
+import yaml
+
 from framework.tools import validate_skills
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -40,7 +42,8 @@ def scope_failures(paths: list[Path], numeric: bool) -> list[str]:
         for line_no, line in enumerate(text.splitlines(), start=1):
             where = f"{rel}:{line_no}"
             if numeric:
-                if TWELVE_DIGITS.search(line):
+                # A baseline entry's sha256 content hash can hold any digit run; it is not data.
+                if TWELVE_DIGITS.search(line) and not line.lstrip().startswith("hash:"):
                     failures.append(f"12-digit number at {where}")
                 if IPV4.search(line):
                     failures.append(f"IPv4 address at {where}")
@@ -62,6 +65,28 @@ class FixtureHygieneTests(unittest.TestCase):
         paths = fixture_yaml_and_script()
         self.assertGreaterEqual(len(paths), 4, "scan set unexpectedly small")
         self.assertEqual([], scope_failures(paths, numeric=True))
+
+    def test_fixture_yaml_has_no_duplicate_mapping_keys(self) -> None:
+        class Strict(yaml.SafeLoader):
+            pass
+
+        def mapping(loader: yaml.SafeLoader, node: yaml.MappingNode, deep: bool = False) -> dict:
+            seen: set = set()
+            for key_node, _value in node.value:
+                key = loader.construct_object(key_node, deep=True)
+                if key in seen:
+                    raise yaml.constructor.ConstructorError(None, None, f"duplicate key {key!r}", key_node.start_mark)
+                seen.add(key)
+            return yaml.SafeLoader.construct_mapping(loader, node, deep)
+
+        Strict.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, mapping)
+        failures = []
+        for path in sorted(FIXTURE_ROOT.rglob("*.yaml")):
+            try:
+                list(yaml.load_all(path.read_text(encoding="utf-8"), Loader=Strict))
+            except yaml.YAMLError as exc:
+                failures.append(f"{path.relative_to(REPO_ROOT)}: {exc}")
+        self.assertEqual([], failures)
 
     def test_goldens_are_clean_when_present(self) -> None:
         # Goldens are optional until S2 commits them; scan whatever exists.
