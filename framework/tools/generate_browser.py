@@ -820,18 +820,23 @@ def build_sdp_connections(obj: dict[str, Any], all_objects: list[dict[str, Any]]
 def connection_interface(rel: dict[str, Any], target: dict[str, Any] | None) -> str:
     """The interface a connection enters its target through, or "" when none is recorded.
 
-    A relationship's `targetInterface` is used as written. A derived dependency cannot carry one; its raw
-    `_interface` counts only when it names an interface of the target (or `data` for a data component)."""
+    A relationship's `targetInterface` is used as written. A derived dependency (not a runsOn or host placement
+    fact) cannot carry one; its raw `_interface` counts only when it names a surface the renderer knows on a
+    product or data component (generate_diagram.declared_interface_names: the implicit `data` surface exists only
+    for a data component that declares no interfaces)."""
     named = str(rel.get("targetInterface") or "").strip()
     if named:
         return named
     raw = str(rel.get("_interface") or "").strip()
-    if not raw or not isinstance(target, dict):
+    if not raw or not rel.get("_derived") or "[inline dependency]" not in str(rel.get("_source", "")):
         return ""
-    names = {str(i.get("name", "")).strip() for i in target.get("interfaces") or [] if isinstance(i, dict)}
-    if target.get("type") == "data_component":
-        names.add("data")
-    return raw if raw in names else ""
+    if not isinstance(target, dict) or target.get("type") not in ("product_component", "data_component"):
+        return ""
+    try:
+        import generate_diagram as gd
+    except ImportError:  # the renderer is unavailable (the diagram step reports it); show no derived interface
+        return ""
+    return raw if raw in gd.declared_interface_names(target) else ""
 
 
 def build_group_exposure(obj: dict[str, Any], registry: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:

@@ -528,9 +528,6 @@ class LegacyIntentTests(unittest.TestCase):
                         self.assertNotIn("intent", deployed)
 
 
-if __name__ == "__main__":
-    unittest.main()
-
 
 class InterfacesExposureBrowserTests(unittest.TestCase):
     """AC10: exposure on Service Groups rows, the Interface column, interfaces and listeners in object detail."""
@@ -601,13 +598,41 @@ process.stdout.write(JSON.stringify(out));""")
         sys.path.insert(0, str(REPO_ROOT / "framework" / "tools"))
         import generate_browser as gb
 
-        target = {"uid": "t", "type": "product_component", "interfaces": [{"name": "api"}]}
-        rel = {"type": "relationship", "_interface": "api"}
-        self.assertEqual(gb.connection_interface(rel, target), "api")
-        self.assertEqual(gb.connection_interface({"_interface": "SQL"}, target), "")
-        self.assertEqual(gb.connection_interface({"targetInterface": "x", "_interface": "api"}, target), "x")
-        self.assertEqual(gb.connection_interface({"_interface": "data"}, {"type": "data_component"}), "data")
+        dep = {"type": "relationship", "_derived": True, "_source": "derived from x [inline dependency]"}
+        comp = {"uid": "t", "type": "product_component", "interfaces": [{"name": "api"}]}
+        plain_data = {"uid": "d", "type": "data_component"}
+        declared_data = {"uid": "d2", "type": "data_component", "interfaces": [{"name": "sql"}]}
+        self.assertEqual(gb.connection_interface({**dep, "_interface": "api"}, comp), "api")
+        self.assertEqual(gb.connection_interface({**dep, "_interface": "SQL"}, comp), "")
+        self.assertEqual(gb.connection_interface({"targetInterface": "x", "_interface": "api"}, comp), "x")
+        self.assertEqual(gb.connection_interface({**dep, "_interface": "data"}, plain_data), "data")
+        self.assertEqual(gb.connection_interface({**dep, "_interface": "data"}, declared_data), "")
+        self.assertEqual(gb.connection_interface({**dep, "_interface": "sql"}, declared_data), "sql")
+        self.assertEqual(gb.connection_interface({"_interface": "api"}, comp), "")  # not derived
+        self.assertEqual(gb.connection_interface({**dep, "_source": "derived from x [runsOn]", "_interface": "api"}, comp), "")
+        self.assertEqual(gb.connection_interface({**dep, "_interface": "api"}, {"type": "runtime_service", "interfaces": [{"name": "api"}]}), "")
         self.assertEqual(gb.connection_interface({}, None), "")
-        none_group = {"uid": "p", "type": "software_deployment_pattern", "serviceGroups": [{"name": "G", "exposedThrough": "none"}, {"name": "H"}]}
-        got = gb.build_group_exposure(none_group, {"p": none_group})
-        self.assertEqual([g["state"] for g in got], ["none", ""])
+
+    def test_build_group_exposure_states_and_alignment(self) -> None:
+        sys.path.insert(0, str(REPO_ROOT / "framework" / "tools"))
+        import generate_browser as gb
+
+        fw = {"uid": "fw", "type": "network_service", "name": "Firewall"}
+        lb = {"uid": "lb", "type": "network_service", "name": "Balancer"}
+        app = {"uid": "app", "type": "product_component", "name": "App"}
+        pattern = {"uid": "p", "type": "software_deployment_pattern", "name": "P", "serviceGroups": [
+            {"name": "Empty"},
+            "not a group",
+            {"name": "Web", "exposedThrough": ["fw", "lb"], "deployableObjects": [{"ref": "app", "networkZone": "z"}]},
+            {"name": "Hidden", "exposedThrough": "none", "deployableObjects": [{"ref": "app", "networkZone": "z"}]},
+        ]}
+        catalog = {o["uid"]: o for o in (fw, lb, app, pattern)}
+        got = gb.build_group_exposure(pattern, catalog)
+        self.assertEqual([g["name"] for g in got], ["Empty", "Web", "Hidden"])
+        self.assertEqual(got[0]["state"], "")
+        self.assertEqual((got[1]["state"], got[1]["devices"]), ("devices", ["Firewall", "Balancer"]))
+        self.assertEqual(got[2]["state"], "none")
+
+
+if __name__ == "__main__":
+    unittest.main()
