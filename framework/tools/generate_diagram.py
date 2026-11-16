@@ -41,7 +41,7 @@ import itertools
 import math
 import re
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
@@ -53,6 +53,7 @@ if str(TOOLS_ROOT) not in sys.path:
     sys.path.insert(0, str(TOOLS_ROOT))
 
 from generate_c4 import DEFAULT_WORKSPACE_ROOT, load_catalog  # noqa: E402
+from protocol_families import family  # noqa: E402
 
 E = html.escape
 
@@ -131,7 +132,9 @@ class DiagramEdge:
     direction: str = ""
     flow: str = ""
     technology: str = ""
-    target_interface: str = ""  # the interface name that picks the attachment point on the target's top (targetInterface, or a derived _interface)
+    target_interface: str = ""  # the interface of the target the edge uses (a derived edge: its _interface when it names one)
+    interface_hint: str = ""  # a derived edge's raw _interface string, a protocol hint for port resolution
+    far_tech: str = ""  # deployment view only: the technology line of the far-end label with the resolved port chain
 
 
 @dataclass
@@ -194,6 +197,7 @@ class DiagramModel:
     deployment_nodes: list[DiagramNode] = field(default_factory=list)  # D29: nodes minus drawn containers
     logical_positions: dict[str, int] = field(default_factory=dict)  # D38/D39: diagram_layout positions, logical view
     deployment_positions: dict[str, int] = field(default_factory=dict)  # D38/D39: diagram_layout positions, deployment view
+    deployment_edges: list[DiagramEdge] = field(default_factory=list)  # one per entry of edges, with ports and hops
 
 
 # D2: object types that may appear one hop away from a placed object.
@@ -305,6 +309,89 @@ def technology_line(catalog: dict[str, dict[str, Any]], obj: dict[str, Any]) -> 
     return ""
 
 
+def declared_interfaces(obj: dict[str, Any]) -> list[tuple[str, str]]:
+    """(name, protocol) of each surface of a target: its interfaces in declared order, or the implicit ``data`` surface
+    of a data component that declares none. Other objects have none."""
+    found = [
+        (clean(item.get("name")), clean(item.get("protocol")))
+        for item in obj.get("interfaces") or []
+        if isinstance(item, dict) and clean(item.get("name"))
+    ]
+    if not found and obj.get("type") == "data_component":
+        engine = clean(obj.get("targetEngine"))  # its family is the engine's own; ``other`` and unknown engines have none
+        return [("data", "" if family(engine) in (None, "other") else engine)]
+    return found
+
+
+def listeners_of(obj: Any) -> list[dict[str, Any]]:
+    """The listeners of a definition that name a protocol and an integer port."""
+    if not isinstance(obj, dict):
+        return []
+    return [
+        item
+        for item in obj.get("listeners") or []
+        if isinstance(item, dict) and clean(item.get("protocol")) and isinstance(item.get("port"), int) and not isinstance(item.get("port"), bool)
+    ]
+
+
+def component_ports(obj: dict[str, Any]) -> list[dict[str, Any]]:
+    """A component's own runtimeSpec.ports as listeners (name, protocol, port): inbound, bidirectional or undirected
+    ones only; an outbound port never receives a connection."""
+    spec = obj.get("runtimeSpec") if isinstance(obj.get("runtimeSpec"), dict) else {}
+    return [
+        {"name": clean(p.get("name")), "protocol": clean(p.get("protocol")), "port": p.get("number")}
+        for p in spec.get("ports") or []
+        if isinstance(p, dict) and clean(p.get("protocol")) and isinstance(p.get("number"), int) and not isinstance(p.get("number"), bool)
+        and clean(p.get("direction")) in ("", "inbound", "bidirectional")
+    ]
+
+
+def pick_listener(listeners: list[dict[str, Any]], fam: str | None) -> dict[str, Any] | None:
+    """The first listener whose protocol is of family ``fam``; else the only listener; else none."""
+    if fam:
+        for item in listeners:
+            if family(clean(item.get("protocol"))) == fam:
+                return item
+    return listeners[0] if len(listeners) == 1 else None
+
+
+def match_port(ports: list[dict[str, Any]], fam: str | None, name: str) -> dict[str, Any] | None:
+    """A component's own port for a surface: the first of family ``fam``, then the one named ``name``."""
+    if fam:
+        for item in ports:
+            if family(item.get("protocol", "")) == fam:
+                return item
+    if name:
+        for item in ports:
+            if item.get("name") == name:
+                return item
+    return None
+
+
+def listener_text(item: dict[str, Any]) -> str:
+    """'protocol port'. A REST, HTTP or HTTPS listener prints its lower-cased name instead of its protocol (https 443,
+    http 8080), since those protocols do not tell the wire protocol; any other protocol prints as recorded."""
+    protocol, name = clean(item.get("protocol")), clean(item.get("name"))
+    word = (name or protocol).lower() if protocol.lower() in ("rest", "http", "https") else protocol
+    return f"{word} {item.get('port')}"
+
+
+def port_chain(hop_ports: list[str], target_port: str) -> str:
+    """The port chain of an edge: the listener text of each device in chain order, then the target's, joined by ' → '."""
+    return " → ".join([text for text in [*hop_ports, target_port] if text])
+
+
+def far_end_technology(technology: str, chain: str) -> str:
+    """The far-end technology line: the port chain alone when no technology is recorded or it equals the chain's first
+    protocol word (case-insensitive, trimmed), else 'technology · chain'."""
+    technology = clean(technology)
+    if not chain:
+        return technology
+    if not technology or technology.lower() == chain.split()[0].lower():
+        return chain
+    return f"{technology} · {chain}"
+
+
 class Model:
     """Everything the page shows, resolved from the catalog.
 
@@ -331,6 +418,7 @@ class Model:
         self._other_patterns = _other_pattern_names(catalog, sdp)
         self._build_nodes_and_edges()
         self._build_containers()
+        self._build_ports()
         self.layout_uid = ""  # uid of the honoured diagram_layout; "" when none
         self.layout_positions: dict[str, dict[str, int]] = {"logical": {}, "deployment": {}}
         self._read_layout()
@@ -551,6 +639,11 @@ class Model:
             if source in infra and end not in placed and end in self._other_patterns:  # D44: no borrowed flows, so not drawn and not tabled
                 continue
             dependency = is_dependency(rel)
+            target_interface, hint = clean(rel.get("targetInterface")), ""
+            if dependency:  # a derived edge cannot name a targetInterface; its _interface counts when it names one
+                hint = clean(rel.get("_interface"))
+                if hint and any(name == hint for name, _p in declared_interfaces(catalog.get(end) or {})):
+                    target_interface = hint
             edge = DiagramEdge(
                 source=source,
                 target=end,
@@ -561,8 +654,8 @@ class Model:
                 direction=str(rel.get("direction") or ""),
                 flow=flow,
                 technology=clean(rel.get("technology")),
-                # a derived relationship carries no targetInterface: its _interface counts only when it names a surface of the target
-                target_interface=clean(rel.get("_interface") if dependency else rel.get("targetInterface")),
+                target_interface=target_interface,
+                interface_hint=hint,
             )
             self.edges.append(edge)
             drawn.add(id(rel))
@@ -795,6 +888,64 @@ class Model:
                     life=lifecycle(catalog[container_uid]) if container_uid else "",
                 )
             )
+
+    def _relationship_family(self, edge: DiagramEdge) -> tuple[str | None, str, str]:
+        """(protocol family, surface protocol, surface name) an edge speaks to its target.
+
+        The family comes from the target interface the edge names; else from a derived edge's _interface hint, the
+        target's first surface and the technology in that order; ``other`` matches only itself."""
+        surfaces = declared_interfaces(self.catalog.get(edge.target) or {})
+        named = [(n, p) for n, p in surfaces if n == edge.target_interface]
+        name, protocol = (named or surfaces[:1] or [("", "")])[0]
+        # an interface the edge names decides alone; otherwise a derived edge's hint, then the first surface, then technology
+        if named:
+            return (family(protocol) if protocol else None), protocol, name
+        for text in (edge.interface_hint, protocol, edge.technology):
+            fam = family(text) if text else None
+            if fam:
+                return fam, protocol, name
+        return None, protocol, name
+
+    def _target_listener(self, edge: DiagramEdge) -> dict[str, Any] | None:
+        """The port the target of an edge receives it on, as a listener-like dict, or None.
+
+        A product component: its own inbound port by family, then by the interface's name; then the listener of its
+        group's substrate (else its runsOn) by family, then that definition's single listener. A data component: the
+        listener of the store it runs on, by family then single. Any other catalog target: its own listeners. An
+        external target and a self-loop have none."""
+        obj = self.catalog.get(edge.target)
+        if edge.source == edge.target or not isinstance(obj, dict):
+            return None
+        fam, _protocol, name = self._relationship_family(edge)
+        kind = obj.get("type")
+        if kind == "product_component":
+            own = match_port(component_ports(obj), fam, name)
+            if own:
+                return own
+            host = None
+            place = self.placement.get(edge.target)
+            if place:
+                for container in self.containers:
+                    if container.group == place["group"] and container.uid:
+                        host = self.catalog.get(container.uid)
+                        break
+            if host is None:
+                host = self.catalog.get(clean(obj.get("runsOn")))
+        elif kind == "data_component":
+            host = self.catalog.get(clean(obj.get("runsOn")))
+        else:
+            host = obj
+        return pick_listener(listeners_of(host), fam)
+
+    def _build_ports(self) -> None:
+        """Ports on the far-end labels of the deployment view: deployment_edges holds every edge with its resolved
+        target port. The exposure data and the hop ports of the edge devices are built with the hops themselves."""
+        self.deployment_edges: list[DiagramEdge] = []
+        for edge in self.edges:
+            listener = self._target_listener(edge)
+            target_port = listener_text(listener) if listener else ""
+            far = far_end_technology(edge.technology, port_chain([], target_port)) if target_port else ""
+            self.deployment_edges.append(replace(edge, far_tech=far))
 
     def _store_of(self, uid: str, substrate: str) -> str | None:
         """D45: the object a placed data component runs on; "" when runsOn is absent or unresolved; None for other objects.
@@ -1428,6 +1579,7 @@ def diagram_of(model: Model) -> DiagramModel:
         warnings=list(model.warnings),
         logical_positions=dict(model.layout_positions["logical"]),
         deployment_positions=dict(model.layout_positions["deployment"]),
+        deployment_edges=list(model.deployment_edges),
     )
 
 
@@ -2280,7 +2432,22 @@ def _pitch(tech: bool) -> int:
 
 
 def _has_label(edge: DiagramEdge) -> bool:
-    return bool(clean(edge.label) or clean(edge.technology))
+    return bool(clean(edge.label) or clean(edge.technology) or clean(edge.far_tech))
+
+
+def _has_tech(edge: DiagramEdge) -> bool:
+    """A label with a technology line at either end is two lines tall; a port-only label (no phrase) is one line."""
+    return bool(clean(edge.technology) or (clean(edge.far_tech) and clean(edge.label)))
+
+
+def _callout_tech(edge: DiagramEdge) -> str:
+    """The technology part of the callout: the far-end line (with its port chain) when there is one."""
+    return clean(edge.far_tech) or clean(edge.technology)
+
+
+def _callout_len(edge: DiagramEdge) -> int:
+    tech = _callout_tech(edge)
+    return len(clean(edge.label)) + (len(tech) + 3 if tech else 0)
 
 
 def _max_chars(width: float) -> int:
@@ -2291,7 +2458,7 @@ def _max_chars(width: float) -> int:
 def _label_parts(edge: DiagramEdge, limit: Any = None) -> tuple:
     """The label and the technology part (with its separator) as drawn; clipped with an ellipsis to ``limit``
     characters when one is given."""
-    label, tech = clean(edge.label), clean(edge.technology)
+    label, tech = clean(edge.label), _callout_tech(edge)
     tech_part = ((" / " if label else "") + tech) if tech else ""
     if limit is not None and len(label) + len(tech_part) > limit:
         whole = (label + tech_part)[: limit - 3] + "..."
@@ -2303,23 +2470,24 @@ def _clip(text: str, limit: int) -> str:
     return text if len(text) <= limit else text[: limit - 3] + "..."
 
 
-def _label_lines(edge: DiagramEdge, limit: int) -> list:
+def _label_lines(edge: DiagramEdge, limit: int, far: bool = False) -> list:
     """D37: the lines of a label as drawn, each clipped independently with an ellipsis to ``limit`` characters:
-    the label phrase, then the recorded technology (each omitted when empty). Returns (text, is technology) pairs."""
-    label, tech = clean(edge.label), clean(edge.technology)
+    the label phrase, then the recorded technology (each omitted when empty). The far-end label (``far``) of a
+    deployment edge shows the technology with its resolved port chain instead. Returns (text, is technology) pairs."""
+    label, tech = clean(edge.label), (clean(edge.far_tech) if far and clean(edge.far_tech) else clean(edge.technology))
     return ([(_clip(label, limit), False)] if label else []) + ([(_clip(tech, limit), True)] if tech else [])
 
 
-def _label_len(edge: DiagramEdge, limit: int) -> int:
+def _label_len(edge: DiagramEdge, limit: int, far: bool = False) -> int:
     """Characters of the longest line of an edge label as drawn."""
-    return max(len(text) for text, _t in _label_lines(edge, limit))
+    return max([len(text) for text, _t in _label_lines(edge, limit, far)] or [0])
 
 
-def _label_box_at(x: float, top: float, edge: DiagramEdge, limit: Any, anchor: str = "start", height: Any = None) -> tuple:
+def _label_box_at(x: float, top: float, edge: DiagramEdge, limit: Any, anchor: str = "start", height: Any = None, far: bool = False) -> tuple:
     """(x, y, w, h) of a label whose text starts (or, anchored at the end, ends) at x and whose box starts at top;
     ``height`` is the row height in effect (one line, or two when the edge records a technology)."""
-    w = _label_len(edge, limit) * LABEL_CHAR_W + 4
-    return (x - 2 if anchor == "start" else x - w + 2, top, w, _row_h(bool(clean(edge.technology))) if height is None else height)
+    w = _label_len(edge, limit, far) * LABEL_CHAR_W + 4
+    return (x - 2 if anchor == "start" else x - w + 2, top, w, _row_h(_has_tech(edge)) if height is None else height)
 
 
 def _stub_side(left: float, width: float, stub: float, others: tuple = ()) -> tuple:
@@ -2360,7 +2528,7 @@ def _longest_segments(pts: list) -> list:
 def _callout_at(pts: list, edge: DiagramEdge, obstacles: list) -> tuple:
     """D37: where the hover callout goes: the midpoint of the longest segment, moved along the segments (50%, 25%,
     75%, longest first) to the first spot clear of every obstacle (boxes and captions); least overlap otherwise."""
-    width = (len(clean(edge.label)) + (len(clean(edge.technology)) + 3 if clean(edge.technology) else 0)) * CALLOUT_CHAR_W + 6
+    width = _callout_len(edge) * CALLOUT_CHAR_W + 6
     best: tuple = ()
     for (ax, ay), (bx, by) in _longest_segments(pts):
         for fraction in (0.5, 0.25, 0.75):
@@ -2377,7 +2545,7 @@ def _callout_at(pts: list, edge: DiagramEdge, obstacles: list) -> tuple:
 def _loop_callout(at: tuple, edge: DiagramEdge, obstacles: list) -> tuple:
     """The callout of a self-loop: one row above the loop's label, moved up while it overlaps an obstacle (node
     boxes, captions and every label visible while the box is selected). ``at`` is (x, baseline, limit)."""
-    width = (len(clean(edge.label)) + (len(clean(edge.technology)) + 3 if clean(edge.technology) else 0)) * CALLOUT_CHAR_W + 6
+    width = _callout_len(edge) * CALLOUT_CHAR_W + 6
     cx = at[0] - 2 + (_label_len(edge, at[2]) * LABEL_CHAR_W + 4) / 2  # centred over its label
     base = at[1] - LABEL_BAND
     for _ in range(12):
@@ -2403,7 +2571,7 @@ def _place_loop_label(base: tuple, edge: DiagramEdge, avoid: list) -> tuple:
 
 
 def _loop_box(at: tuple, edge: DiagramEdge) -> tuple:
-    return (at[0] - 2, at[1] - 10, _label_len(edge, at[2]) * LABEL_CHAR_W + 4, _row_h(bool(clean(edge.technology))))
+    return (at[0] - 2, at[1] - 10, _label_len(edge, at[2]) * LABEL_CHAR_W + 4, _row_h(_has_tech(edge)))
 
 
 def _edge_label(edge: DiagramEdge, ends: tuple, loop: Any, callout: tuple) -> str:
@@ -2421,9 +2589,11 @@ def _edge_label(edge: DiagramEdge, ends: tuple, loop: Any, callout: tuple) -> st
     out = ""
     placed = [("lb-t", loop + ("start",))] if loop is not None else [("lb-s", ends[0]), ("lb-t", ends[1])]
     for cls, (x, y, limit, anchor) in placed:
+        if not _label_lines(edge, limit, cls == "lb-t" and loop is None):
+            continue  # a port-only label has nothing at the source end
         lines = "".join(
             f'<tspan class="tech" x="{x:.1f}" dy="{LABEL_H * k}">{xml_text(t)}</tspan>' if tech else f'<tspan x="{x:.1f}" dy="{LABEL_H * k}">{xml_text(t)}</tspan>'
-            for k, (t, tech) in enumerate(_label_lines(edge, limit))
+            for k, (t, tech) in enumerate(_label_lines(edge, limit, cls == "lb-t" and loop is None))
         )
         out += f'<text class="lb {cls}" x="{x:.1f}" y="{y:.1f}" text-anchor="{anchor}">{lines}</text>'
     out += f'<text class="callout" x="{callout[0]:.1f}" y="{callout[1]:.1f}" text-anchor="middle">{body(full_label, full_tech)}</text>'
@@ -2458,7 +2628,10 @@ def _edge_label_svgs(edges: list, routes: dict, tops: dict, loops: dict, obstacl
                 x, anchor, limit = _stub_side(left, width, stub, tuple(others[0]) if others else ())
                 ends.append((x, top, limit, anchor))
                 heights.append(row[0] if row else None)
-            boxes[number] = [_label_box_at(x, top, edge, limit, anchor, h) for (x, top, limit, anchor), h in zip(ends, heights)]
+            boxes[number] = [
+                _label_box_at(x, top, edge, limit, anchor, h, far=end == 1)
+                for end, ((x, top, limit, anchor), h) in enumerate(zip(ends, heights))
+            ]
             texts[number] = tuple((x, top + 10, limit, anchor) for x, top, limit, anchor in ends)
     out: dict[int, str] = {}
     loop_at: dict[int, tuple] = {}
@@ -2703,7 +2876,7 @@ def _band_label_rows(drawn: list, pools: dict, bands: list) -> list:
     _rows, mult = _label_pairs(drawn)
     rows = [[0, 0] for _ in bands]
     techs = [False] * len(bands)  # D37: a band holding a labelled edge with a technology has two-line rows
-    tech_pairs = {(e.source, e.target) for _n, e in drawn if e.source != e.target and _has_label(e) and clean(e.technology)}
+    tech_pairs = {(e.source, e.target) for _n, e in drawn if e.source != e.target and _has_label(e) and _has_tech(e)}
     for (source, target), n in sorted(mult.items()):
         for uid, slot, pool in ((source, 0, "bottom"), (target, 1, "top")):
             band = pools.get(uid, {}).get(pool)
@@ -2885,10 +3058,11 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     by_uid = {n.uid: n for n in model.deployment_nodes}
     faces = {n.uid: n.interfaces for n in model.deployment_nodes}
     outline = _deployment_outline(model)
+    all_edges = model.deployment_edges if len(model.deployment_edges) == len(model.edges) else model.edges  # with port chains
     containers = {g.uid for _t, groups in outline for g in groups if g.uid}
     containers |= {st.uid for _t, groups in outline for g in groups for lane in g.lanes for st in lane.stores if st.uid}  # D45
     drawable = set(by_uid) | containers
-    drawn = [(i, e) for i, e in enumerate(model.edges) if e.source != e.target and e.source in drawable and e.target in drawable]
+    drawn = [(i, e) for i, e in enumerate(all_edges) if e.source != e.target and e.source in drawable and e.target in drawable]
     loops: dict[str, int] = {}
     loop_techs: dict[str, list] = {}  # per box or container, whether each loop records a technology (two-line label)
     for e in model.edges:
@@ -3218,7 +3392,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     deploy_obstacles = [rects[u] for u in by_uid if u in rects] + captions  # D37: boxes and every caption, then the lane caption
     if outer:
         deploy_obstacles.append((lane_x, lane_top + 15, len("External interactions") * 7 + 4, 12))
-    shown = [(n, e) for n, e in enumerate(model.edges) if e.source in rects and e.target in rects]
+    shown = [(n, e) for n, e in enumerate(all_edges) if e.source in rects and e.target in rects]
     label_rows, _mult = _label_pairs([(n, e) for n, e in shown if e.source != e.target])
     in_stubs = _in_stubs(shown, routes)
     tops: dict[int, tuple] = {}
