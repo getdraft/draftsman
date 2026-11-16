@@ -5193,6 +5193,28 @@ function deploymentConfigurationsMarkup(object) {
   `;
 }
 
+function interfacesListenersMarkup(object) {
+  const raw = rawDetailObject(object);
+  const interfaces = Array.isArray(raw.interfaces) ? raw.interfaces.filter(i => i && typeof i === 'object') : [];
+  const listeners = Array.isArray(raw.listeners) ? raw.listeners.filter(l => l && typeof l === 'object') : [];
+  if (!interfaces.length && !listeners.length) return '';
+  const row = cells => `<tr>${cells.map(c => `<td>${escapeHtml(c === undefined || c === null ? '' : c)}</td>`).join('')}</tr>`;
+  const interfaceTable = interfaces.length ? `
+      <h4>Interfaces</h4>
+      <table class="conn-table"><thead><tr><th>Name</th><th>Protocol</th><th>Path</th></tr></thead>
+        <tbody>${interfaces.map(i => row([i.name, i.protocol, i.path])).join('')}</tbody></table>` : '';
+  const listenerTable = listeners.length ? `
+      <h4>Listeners</h4>
+      <table class="conn-table"><thead><tr><th>Name</th><th>Protocol</th><th>Port</th></tr></thead>
+        <tbody>${listeners.map(l => row([l.name, l.protocol, l.port])).join('')}</tbody></table>` : '';
+  return `
+    <section class="section-card">
+      <h3>Interfaces and Listeners</h3>
+      <div class="section-stack">${interfaceTable}${listenerTable}</div>
+    </section>
+  `;
+}
+
 function deliveryModelDetailMarkup(object) {
   if (!SERVICE_OBJECT_TYPES.includes(object.type)) {
     return '';
@@ -6785,6 +6807,14 @@ function serviceGroupInteractionMarkup(object, interaction) {
   </div>`;
 }
 
+function _sdpExposureMarkup(exposure) {
+  if (!exposure) return '';
+  if (exposure.state === 'none') return `<div class="group-exposure"><strong>Exposure:</strong> not exposed</div>`;
+  const devices = (exposure.devices || []).filter(Boolean);
+  if (exposure.state !== 'devices' || !devices.length) return '';
+  return `<div class="group-exposure"><strong>Exposed through:</strong> ${devices.map(escapeHtml).join(' → ')}</div>`;
+}
+
 function _sdpGroupsMarkup(object, vm) {
   const groups = object.serviceGroups || [];
   if (!groups.length) return `<div class="sdp-section" id="sdp-s-groups">
@@ -6819,6 +6849,7 @@ function _sdpGroupsMarkup(object, vm) {
         <span class="group-toggle">▶</span>
       </div>
       <div class="group-body">
+        ${_sdpExposureMarkup((object.groupExposure || [])[gi])}
         ${entries.length ? `<div class="group-table">${rowsHtml}</div>` : ''}
         ${interactionRowsHtml}
       </div>
@@ -6894,6 +6925,7 @@ function _sdpConnectionsTableMarkup(vm) {
         ${escapeHtml(toSvc.name || c.to)}
       </span></td>
       <td><span class="proto ${proto}">${escapeHtml(c.protocol || '')}</span></td>
+      <td class="iface-cell">${escapeHtml(c.targetInterface || '')}</td>
       <td class="label-cell">${escapeHtml(c.label || '')}</td>
     </tr>`;
   }).join('');
@@ -6905,7 +6937,7 @@ function _sdpConnectionsTableMarkup(vm) {
     <div class="conn-table-wrap">
       <table class="conn-table">
         <thead><tr>
-          <th>From</th><th>To</th><th>Protocol</th><th>Label</th>
+          <th>From</th><th>To</th><th>Protocol</th><th>Interface</th><th>Label</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
@@ -7162,6 +7194,7 @@ function renderDetailView() {
       )}
       ${secondaryDetailMarkup([
         { title: 'ProductComponent Classification', body: productServiceDetailMarkup(object) },
+        { title: 'Interfaces and Listeners', body: interfacesListenersMarkup(object) },
         { title: 'Requirement Evidence', body: requirementEvidenceMarkup(object) },
         { title: 'References', body: usedByMarkup(object) }
       ])}
@@ -7207,6 +7240,7 @@ function renderDetailView() {
       ${architectureDetailMarkup(object, object, object)}
       ${secondaryDetailMarkup([
         { title: 'Delivery Details', body: deliveryModelDetailMarkup(object) },
+        { title: 'Interfaces and Listeners', body: interfacesListenersMarkup(object) },
         { title: 'Requirement Evidence', body: requirementEvidenceMarkup(object) },
         { title: 'Deployment Configurations', body: deploymentConfigurationsMarkup(object) },
         { title: 'References', body: usedByMarkup(object) }
