@@ -999,51 +999,45 @@ class Model:
         return list(slot_chain)
 
     def _build_exposure(self) -> None:
-        """The edge device chains of the deployment view (interfaces-exposure, AC8).
+        """The edge device chains of the deployment view (interfaces-exposure, AC8, amended A3).
 
-        Each drawn group gets its chain (``exposed_through``). Chains are drawn once per zone lane: the lanes of one
-        deployment target and zone are one lane here, so groups that share a target and a zone share one device row,
-        drawn at the top of the first such lane of an exposed group (group order). Identical chains collapse to one;
-        distinct chains sit side by side in group order, each naming the groups it fronts. A device that is also
-        placed in the pattern is drawn only in the row: its placed box is dropped from its lane. ``hop_of`` maps each
-        drawn object of an exposed lane to the device boxes of its group's chain."""
+        Each drawn group gets its chain (``exposed_through``). An exposed group draws one device row, at the top of
+        its first zone lane, inside its own container; groups never share a row, so two exposed groups with the same
+        chain each draw it. A device that is also placed in the pattern is drawn only in a row: its placed box is
+        dropped from its lane. ``hop_of`` maps every object drawn in an exposed group (lane boxes, data store
+        containers and their members, the group's own container) to that group's device boxes."""
         slot_chain = self._slot_chain()
         self.devices: dict[str, DiagramNode] = {}
         self.device_ref: dict[str, str] = {}  # device box uid -> its network_service definition uid
-        self.hop_of: dict[str, list[str]] = {}  # placed uid -> device box uids of the chain that fronts it
-        rows: dict[tuple[str, str], DiagramLane] = {}  # (deployment target, zone) -> the lane that draws the row
-        row_number: dict[tuple[str, str], int] = {}
-        for group, container in zip(self.groups, self.containers):
+        self.hop_of: dict[str, list[str]] = {}  # drawn uid -> device box uids of the chain that fronts it
+        rows: list[DiagramChain] = []
+        for index, (group, container) in enumerate(zip(self.groups, self.containers)):
             container.exposed_through = self._group_chain(group, slot_chain) if container.drawn else []
             chain = container.exposed_through
-            for lane in container.lanes if chain else []:
-                key = (container.target, lane.zone)
-                if key not in rows:
-                    rows[key], row_number[key] = lane, len(rows)
-                found = next((c for c in rows[key].chains if c.definitions == chain), None)
-                if found is None:
-                    number = len(rows[key].chains)
-                    boxes = [f"exposure:{row_number[key]}:{number}:{uid}" for uid in chain]
-                    found = DiagramChain(boxes=boxes, definitions=list(chain))
-                    rows[key].chains.append(found)
-                    for box, uid in zip(boxes, chain):
-                        obj = self.catalog[uid]
-                        self.device_ref[box] = uid
-                        self.devices[box] = DiagramNode(
-                            uid=box, name=self.name(uid), node_type="network_service", life=lifecycle(obj), tech=technology_line(self.catalog, obj)
-                        )
-                if group["name"] not in found.groups:
-                    found.groups.append(group["name"])
+            if not chain or not container.lanes:
+                continue
+            boxes = [f"exposure:{index}:0:{uid}" for uid in chain]
+            row = DiagramChain(boxes=boxes, definitions=list(chain), groups=[group["name"]])
+            container.lanes[0].chains.append(row)
+            rows.append(row)
+            for box, uid in zip(boxes, chain):
+                obj = self.catalog[uid]
+                self.device_ref[box] = uid
+                self.devices[box] = DiagramNode(
+                    uid=box, name=self.name(uid), node_type="network_service", life=lifecycle(obj), tech=technology_line(self.catalog, obj)
+                )
+            for lane in container.lanes:
                 for uid in lane.members + [st.uid for st in lane.stores if st.uid] + [m for st in lane.stores for m in st.members]:
-                    self.hop_of.setdefault(uid, found.boxes)
+                    self.hop_of.setdefault(uid, boxes)
+            if container.uid:
+                self.hop_of.setdefault(container.uid, boxes)
         # A device placed in the pattern is drawn once, in its row (placing a network service is already a ratcheted
         # sdp-placement-types violation); its edges start at its first box. An unplaced device keeps its outside box.
         self.row_devices: dict[str, str] = {}  # placed definition uid -> its first device box
-        for lane in rows.values():
-            for chain in lane.chains:
-                for box, uid in zip(chain.boxes, chain.definitions):
-                    if uid in self.placement:
-                        self.row_devices.setdefault(uid, box)
+        for row in rows:
+            for box, uid in zip(row.boxes, row.definitions):
+                if uid in self.placement:
+                    self.row_devices.setdefault(uid, box)
         for container in self.containers:
             container.members = [uid for uid in container.members if uid not in self.row_devices]
             for lane in container.lanes:
@@ -1074,6 +1068,8 @@ class Model:
             where = self._where(edge.target)
             if not boxes or where is None or self._where(edge.source) == where or edge.source in self.row_devices:
                 boxes = []
+            if edge.target in self.row_devices or any(self.device_ref[b] == edge.target for b in boxes):
+                boxes = []  # an edge into a device of the chain never passes the chain (it would loop through itself)
             fam = self._relationship_family(edge)[0]
             hop_ports = []
             for box in boxes:
@@ -3038,6 +3034,7 @@ def _route_deployment_edges(
     gutters: dict | None = None,
     enter_x: Any = None,
     direct: set | None = None,
+    steps: set | None = None,
 ) -> tuple[dict, int, int]:
     """Comb routing (D15, D35, D36, deterministic): an edge between two boxes of one zone lane stays inside that lane;
     every other edge runs out of the stack to a vertical channel on its right.
@@ -3066,7 +3063,10 @@ def _route_deployment_edges(
     edges that share no endpoint may share a track (D35).
 
     An edge in ``direct`` (an edge device to a target in the row right below it, AC8) runs from the device's out-run
-    straight to the target's attachment, with no in-run, gutter or channel.
+    straight to the target's attachment, with no in-run, gutter or channel. An edge in ``steps`` (one device of a
+    chain to the next, in the next column to its right) takes the gutter right of its source's column instead of the
+    one right of both ends, so the last device's piece onward, which leaves through the gutter right of its column,
+    never crosses it.
 
     Returns the polyline per edge index, the number of channel tracks, the largest track count of a gutter between
     columns and that of a last-column gutter; each band's ``need`` holds its tracks.
@@ -3074,6 +3074,7 @@ def _route_deployment_edges(
     lane_of = lane_of or {}
     gutters = gutters or {}
     direct = direct or set()
+    steps = steps or set()
 
     def attach(uid: str, out: bool) -> int:
         x, _y, w, _h = rects[uid]
@@ -3089,7 +3090,7 @@ def _route_deployment_edges(
             continue
         (lane, col_s), (lane_t, col_t) = lane_of.get(e.source, (None, 0)), lane_of.get(e.target, (None, 0))
         if lane is not None and lane == lane_t:
-            in_lane[i] = (lane, max(col_s, col_t))
+            in_lane[i] = (lane, min(col_s, col_t) if i in steps else max(col_s, col_t))
     chan_runs: dict[str, _Run] = {}
     for i, e in drawn:
         if i in in_lane or i in direct:
@@ -3388,17 +3389,18 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
                         last_left = lx + DEPLOY_PAD + (n_cols - 1) * step_x + LOGICAL_BOX_W + loop_ext
                         lane_gutters[lane_id].append((last_left, max(0, lx + lane_w - DEPLOY_BORDER_CLEAR - last_left)))
                     if device_row:
-                        # AC8: the edge device row at the top of the lane, one box per device, chains side by side in
-                        # group order; a caption line above each chain names the groups it fronts.
+                        # AC8 (A3): the group's edge device row at the top of its first lane, one box per device. A
+                        # caption line naming the groups each chain fronts is drawn only when the row holds more than
+                        # one chain; a group's own row holds one, so it has none.
                         col = 0
-                        for chain in lane.chains:
+                        for chain in lane.chains if len(lane.chains) > 1 else []:
                             span = len(chain.boxes) * LOGICAL_BOX_W + (len(chain.boxes) - 1) * col_gap
                             text = _clip("fronts " + ", ".join(chain.groups), max(8, span // DEPLOY_CHAR_W))
                             cx_ = lx + DEPLOY_PAD + col * step_x
                             captions.append((cx_, cursor2 + 10 - 11, len(text) * DEPLOY_CHAR_W + 4, 12))
                             node_svgs.append(f'<text class="cap" x="{cx_}" y="{cursor2 + 10}">{xml_text(text)}</text>')
                             col += len(chain.boxes)
-                        cursor2 += DEPLOY_LINE_H
+                        cursor2 += DEPLOY_LINE_H if len(lane.chains) > 1 else 0
                         cursor2, prev_row = lay_rows([device_row], lx + DEPLOY_PAD, cursor2, prev_row, lane_id)
                     cursor2, prev_row = lay_rows(rows, lx + DEPLOY_PAD, cursor2, prev_row, lane_id)
                     for store in _ordered_stores(lane.stores, model.deployment_positions):  # D45
@@ -3567,8 +3569,9 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
             n for n, e in pieces
             if n >= hop_base and rects[e.source][0] == rects[e.target][0] and pools[e.source].get("bottom") is pools[e.target].get("top")
         }
+        steps = {n for n, e in pieces if e.source in model.devices and e.target in model.devices}
         routes, used, gutter_need, last_need = _route_deployment_edges(
-            pieces, rects, pools, bands, stack_right, chan_pad, lane_of, lane_gutters, enter, direct
+            pieces, rects, pools, bands, stack_right, chan_pad, lane_of, lane_gutters, enter, direct, steps
         )
         grown = [max(band.tracks, band.need) for band in bands]
         lab_now = _band_label_rows(drawn, pools, bands)
