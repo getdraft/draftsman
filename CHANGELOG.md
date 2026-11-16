@@ -6,7 +6,6 @@
 - A `targetInterface` naming a surface its target lacks is an error that is never baselined; on a target with no `interfaces` list (that is not a data component) or on an `externalTarget` it is a warning.
 - Deployment-view labels and geometry change for patterns that declare the new fields. Labels change only for connections whose target resolves a port from listeners or component ports. Geometry changes only when the pattern follows a reference architecture with a filled edge slot (`fills` is new) or a group sets `exposedThrough`: exposed zone lanes gain an edge device row and connections from other deployment targets route through it. The Application view never shows a port.
 - A component that already declares two or more `interfaces` gets one entrance per interface on the top edge in both views, so its entrances and the edges into them move (today the examples' ops console). Components with one interface or none, and every data component without `interfaces`, render as before.
-- Routing between boxes in the same container is unchanged. The golden images are regenerated.
 - Nothing else changes for content without the new fields: every new field is optional, and no error reads them beyond the ratcheted rule.
 
 ### Added
