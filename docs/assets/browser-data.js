@@ -61,6 +61,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -225,6 +226,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -360,6 +362,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -500,6 +503,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -640,6 +644,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -780,6 +785,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -924,6 +930,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -1064,6 +1071,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -1224,6 +1232,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -1364,6 +1373,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -1504,6 +1514,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -1644,6 +1655,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -1793,6 +1805,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -1949,6 +1962,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -2089,6 +2103,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -2229,6 +2244,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -2369,6 +2385,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -2513,6 +2530,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -2673,6 +2691,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -2813,6 +2832,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -2953,6 +2973,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -3105,6 +3126,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -3245,6 +3267,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -3385,6 +3408,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -3555,6 +3579,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -3723,6 +3748,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -3863,6 +3889,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -3998,6 +4025,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -4133,6 +4161,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -4268,6 +4297,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -4417,6 +4447,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -4565,6 +4596,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -4725,6 +4757,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -4865,6 +4898,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -5005,6 +5039,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -5145,6 +5180,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -5310,6 +5346,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -5478,6 +5515,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -5618,6 +5656,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -5758,6 +5797,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -5898,6 +5938,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -6038,6 +6079,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -6178,6 +6220,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -6318,6 +6361,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -6452,6 +6496,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -6576,6 +6621,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -6707,6 +6753,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -6862,6 +6909,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -6998,6 +7046,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -7123,6 +7172,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -7257,6 +7307,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -7406,6 +7457,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -7535,6 +7587,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -7664,6 +7717,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -7794,6 +7848,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -8053,6 +8108,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -8445,6 +8501,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -8692,6 +8749,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -8996,6 +9054,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -9616,6 +9675,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -10379,6 +10439,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -11051,6 +11112,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -11802,6 +11864,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -12087,6 +12150,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -12354,6 +12418,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -12554,6 +12619,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -12969,6 +13035,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -13257,6 +13324,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -13506,6 +13574,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -13741,6 +13810,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -13972,6 +14042,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -14432,6 +14503,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -14792,6 +14864,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -16092,6 +16165,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -16421,6 +16495,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -16815,6 +16890,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -16961,6 +17037,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -17058,6 +17135,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -17199,6 +17277,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -17409,6 +17488,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -17607,6 +17687,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -17810,6 +17891,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -18018,6 +18100,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -18209,6 +18292,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -18412,6 +18496,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -18610,6 +18695,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -18797,6 +18883,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -18975,6 +19062,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -19121,6 +19209,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -19261,6 +19350,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -19401,6 +19491,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -19541,6 +19632,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -19689,6 +19781,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -19745,6 +19838,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "version",
           "tags",
+          "interfaces",
           "tables",
           "storedProcedures",
           "scheduledJobs",
@@ -19758,6 +19852,7 @@ window.DRAFT_BROWSER_DATA = {
           "owner": "dict",
           "runsOn": "str",
           "tags": "list",
+          "interfaces": "list",
           "tables": "list",
           "storedProcedures": "list",
           "scheduledJobs": "list",
@@ -19801,6 +19896,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "interfaces": "interface",
           "tables": "tableDefinition",
           "storedProcedures": "storedProcedure",
           "scheduledJobs": "scheduledJob",
@@ -19892,6 +19988,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -20148,7 +20245,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "proxies authentication requests",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "01KSF29JTP-9HYA",
@@ -20157,7 +20255,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "proxies networking API requests",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "01KSF29JTP-9HYA",
@@ -20166,7 +20265,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "proxies compute API requests",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000008-RS08",
@@ -20175,7 +20275,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000008-RS08",
@@ -20184,7 +20285,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "sends events to",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000005-RS05",
@@ -20193,7 +20295,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "validates tokens",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000005-RS05",
@@ -20202,7 +20305,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "asynchronous",
           "port": "",
           "label": "publishes and consumes RPC messages",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000005-RS05",
@@ -20211,7 +20315,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "persists volume state",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000003-RS03",
@@ -20220,7 +20325,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000003-RS03",
@@ -20229,7 +20335,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000003-RS03",
@@ -20238,7 +20345,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000007-RS07",
@@ -20247,7 +20355,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000007-RS07",
@@ -20256,7 +20365,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000007-RS07",
@@ -20265,7 +20375,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -20274,7 +20385,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -20283,7 +20395,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -20292,7 +20405,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -20301,7 +20415,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -20310,7 +20425,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -20319,7 +20435,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -20328,7 +20445,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -20337,7 +20455,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -20346,7 +20465,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -20355,7 +20475,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000002-RS02",
@@ -20364,7 +20485,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "persists identity data",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000004-RS04",
@@ -20373,7 +20495,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "validates tokens",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000004-RS04",
@@ -20382,7 +20505,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "asynchronous",
           "port": "",
           "label": "publishes and consumes agent RPC messages",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000004-RS04",
@@ -20391,7 +20515,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "persists network state",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -20400,7 +20525,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "attaches block volumes",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -20409,7 +20535,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "validates tokens",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -20418,7 +20545,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "asynchronous",
           "port": "",
           "label": "publishes and consumes RPC messages",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -20427,7 +20555,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -20436,7 +20565,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "provisions network ports",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -20445,7 +20575,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "reads from / writes to",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000D-RS0D",
@@ -20454,7 +20585,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000B-RS0B",
@@ -20463,7 +20595,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000B-RS0B",
@@ -20472,7 +20605,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000C-RS0C",
@@ -20481,7 +20615,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000C-RS0C",
@@ -20490,7 +20625,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000A-RS0A",
@@ -20499,7 +20635,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000A-RS0A",
@@ -20508,7 +20645,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000A-RS0A",
@@ -20517,7 +20655,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         }
       ],
       "serviceGroups": [
@@ -20658,6 +20797,18 @@ window.DRAFT_BROWSER_DATA = {
               "notes": "RabbitMQ 3-node cluster providing shared AMQP message transport for all OpenStack services. Quorum queues ensure message durability."
             }
           ]
+        }
+      ],
+      "groupExposure": [
+        {
+          "name": "Presentation & API Layer",
+          "state": "",
+          "devices": []
+        },
+        {
+          "name": "Data Infrastructure",
+          "state": "",
+          "devices": []
         }
       ],
       "tierVariants": [],
@@ -21018,6 +21169,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -21191,6 +21343,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -21376,6 +21529,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -21553,6 +21707,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -21726,6 +21881,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -21911,6 +22067,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -22084,6 +22241,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -22269,6 +22427,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -22446,6 +22605,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -22619,6 +22779,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -22804,6 +22965,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -22977,6 +23139,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -23162,6 +23325,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -23339,6 +23503,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -23512,6 +23677,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -23697,6 +23863,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -23870,6 +24037,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -24055,6 +24223,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -24232,6 +24401,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -24405,6 +24575,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -24590,6 +24761,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -24763,6 +24935,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -24948,6 +25121,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -25125,6 +25299,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -25298,6 +25473,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -25483,6 +25659,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -25656,6 +25833,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -25841,6 +26019,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -26018,6 +26197,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -26191,6 +26371,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -26376,6 +26557,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -26549,6 +26731,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -26734,6 +26917,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -26911,6 +27095,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -27084,6 +27269,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -27270,6 +27456,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -27445,6 +27632,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -27626,6 +27814,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -27811,6 +28000,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -27980,6 +28170,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -28153,6 +28344,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -28322,6 +28514,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -28504,6 +28697,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -28678,6 +28872,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -28847,6 +29042,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -29016,6 +29212,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -29185,6 +29382,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -29354,6 +29552,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -29527,6 +29726,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -29696,6 +29896,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -29869,6 +30070,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -30042,6 +30244,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -30223,6 +30426,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -30392,6 +30596,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -30565,6 +30770,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -30738,6 +30944,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -30919,6 +31126,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -31088,6 +31296,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -31261,6 +31470,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -31434,6 +31644,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -31615,6 +31826,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -31784,6 +31996,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -31957,6 +32170,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -32130,6 +32344,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -32311,6 +32526,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -32480,6 +32696,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -32653,6 +32870,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -32826,6 +33044,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -33007,6 +33226,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -33176,6 +33396,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -33349,6 +33570,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -33522,6 +33744,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -33703,6 +33926,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -33872,6 +34096,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -34045,6 +34270,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -34218,6 +34444,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -34399,6 +34626,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -34568,6 +34796,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -34741,6 +34970,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -34914,6 +35144,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -35095,6 +35326,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -35264,6 +35496,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -35437,6 +35670,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -35610,6 +35844,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -35791,6 +36026,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -35960,6 +36196,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -36133,6 +36370,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -36306,6 +36544,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -36487,6 +36726,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -36656,6 +36896,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -36829,6 +37070,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -37002,6 +37244,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -37183,6 +37426,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -37352,6 +37596,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -37525,6 +37770,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -37698,6 +37944,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -37879,6 +38126,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -38048,6 +38296,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -38221,6 +38470,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -38394,6 +38644,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -38575,6 +38826,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -38752,6 +39004,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -38921,6 +39174,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -39094,6 +39348,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -39267,6 +39522,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -39433,6 +39689,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -39482,6 +39739,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -39490,6 +39748,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -39576,6 +39835,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -39625,6 +39885,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -39633,6 +39894,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -39719,6 +39981,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -39768,6 +40031,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -39776,6 +40040,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -39862,6 +40127,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -39907,6 +40173,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -39915,6 +40182,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40001,6 +40269,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -40046,6 +40315,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -40054,6 +40324,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40140,6 +40411,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -40185,6 +40457,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -40193,6 +40466,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40279,6 +40553,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -40324,6 +40599,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -40332,6 +40608,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40418,6 +40695,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -40467,6 +40745,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -40475,6 +40754,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40561,6 +40841,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -40610,6 +40891,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -40618,6 +40900,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40704,6 +40987,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -40753,6 +41037,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -40761,6 +41046,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40847,6 +41133,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -40896,6 +41183,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -40904,6 +41192,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40990,6 +41279,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -41035,6 +41325,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -41043,6 +41334,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -41129,6 +41421,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -41178,6 +41471,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -41186,6 +41480,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -41272,6 +41567,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -41317,6 +41613,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -41325,6 +41622,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -41411,6 +41709,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -41460,6 +41759,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -41468,6 +41768,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -41554,6 +41855,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -41603,6 +41905,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -41611,6 +41914,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -41697,6 +42001,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -41746,6 +42051,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -41754,6 +42060,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -41840,6 +42147,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -41889,6 +42197,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -41897,6 +42206,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -41983,6 +42293,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -42032,6 +42343,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -42040,6 +42352,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -42126,6 +42439,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -42175,6 +42489,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -42183,6 +42498,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -42269,6 +42585,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -42318,6 +42635,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -42326,6 +42644,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -42412,6 +42731,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -42461,6 +42781,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -42469,6 +42790,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -42555,6 +42877,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -42604,6 +42927,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -42612,6 +42936,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -42698,6 +43023,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -42747,6 +43073,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -42755,6 +43082,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -42841,6 +43169,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -42890,6 +43219,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -42898,6 +43228,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -42984,6 +43315,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -43033,6 +43365,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -43041,6 +43374,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -43127,6 +43461,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -43176,6 +43511,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -43184,6 +43520,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -43270,6 +43607,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -43319,6 +43657,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -43327,6 +43666,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -43413,6 +43753,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -43462,6 +43803,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -43470,6 +43812,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -43556,6 +43899,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -43605,6 +43949,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -43613,6 +43958,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -43699,6 +44045,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -43744,6 +44091,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -43752,6 +44100,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -43838,6 +44187,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -43883,6 +44233,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -43891,6 +44242,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -43977,6 +44329,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -44026,6 +44379,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -44034,6 +44388,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -44120,6 +44475,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -44169,6 +44525,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -44177,6 +44534,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -44263,6 +44621,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -44312,6 +44671,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -44320,6 +44680,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -44406,6 +44767,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -44451,6 +44813,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -44459,6 +44822,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -44545,6 +44909,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -44594,6 +44959,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -44602,6 +44968,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -44688,6 +45055,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -44737,6 +45105,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -44745,6 +45114,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -44831,6 +45201,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -44880,6 +45251,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -44888,6 +45260,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -44974,6 +45347,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -45023,6 +45397,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -45031,6 +45406,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -45117,6 +45493,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -45166,6 +45543,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -45174,6 +45552,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -45260,6 +45639,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -45305,6 +45685,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -45313,6 +45694,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -45399,6 +45781,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -45448,6 +45831,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -45456,6 +45840,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -45542,6 +45927,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -45591,6 +45977,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -45599,6 +45986,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -45685,6 +46073,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -45730,6 +46119,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -45738,6 +46128,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -45824,6 +46215,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -45873,6 +46265,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -45881,6 +46274,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -45967,6 +46361,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -46016,6 +46411,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -46024,6 +46420,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -46110,6 +46507,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -46159,6 +46557,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -46167,6 +46566,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -46253,6 +46653,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -46302,6 +46703,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -46310,6 +46712,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -46396,6 +46799,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -46445,6 +46849,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -46453,6 +46858,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -46539,6 +46945,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -46584,6 +46991,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -46592,6 +47000,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -46678,6 +47087,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -46727,6 +47137,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -46735,6 +47146,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -46821,6 +47233,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -46870,6 +47283,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -46878,6 +47292,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -46964,6 +47379,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -47013,6 +47429,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -47021,6 +47438,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -47116,6 +47534,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -47338,6 +47757,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -47556,6 +47976,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -47782,6 +48203,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -48010,6 +48432,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -48036,6 +48459,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -48098,6 +48522,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -48255,6 +48680,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -48479,6 +48905,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -48505,6 +48932,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -48567,6 +48995,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -48724,6 +49153,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -48952,6 +49382,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -48978,6 +49409,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -49040,6 +49472,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -49197,6 +49630,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -49425,6 +49859,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -49451,6 +49886,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -49513,6 +49949,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -49669,6 +50106,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -49897,6 +50335,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -49923,6 +50362,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -49985,6 +50425,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -50145,6 +50586,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -50389,6 +50831,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -50415,6 +50858,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -50477,6 +50921,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -50680,6 +51125,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -50908,6 +51354,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -50934,6 +51381,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -50996,6 +51444,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -51138,6 +51587,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -51389,6 +51839,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -51406,6 +51857,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -51439,7 +51891,9 @@ window.DRAFT_BROWSER_DATA = {
           ]
         },
         "enumListFields": {},
-        "collectionSchemas": {},
+        "collectionSchemas": {
+          "listeners": "listener"
+        },
         "schemaPath": "framework/schemas/host.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK00000F-HS0F\",\n  \"type\": \"host\",\n  \"name\": \"OpenStack Linux Service Host\",\n  \"description\": \"General-purpose self-managed Linux host standard for the OpenStack example control-plane, data, and utility services. This models the reusable substrate pattern, not a single node role.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"host\",\n    \"openstack\",\n    \"linux\"\n  ],\n  \"operatingSystemComponent\": \"01KQQ4Q025-3HXA\",\n  \"computePlatformComponent\": \"STCK00000F-TC0F\",\n  \"notes\": {\n    \"authentication\": \"Centralized authentication via enterprise LDAP/Active Directory integrated with PAM. SSH key-based access only for service accounts; password auth disabled. Sudo access restricted to named platform-engineering team members via sudoers managed by Ansible.\",\n    \"health_welfare_monitoring\": \"Host health monitored via Prometheus node_exporter. CPU, memory, disk, and network metrics collected and forwarded to the centralised monitoring platform. Alerting configured for resource exhaustion and node unreachability.\",\n    \"security_monitoring\": \"CrowdStrike Falcon agent deployed on all OpenStack Linux hosts for EDR and security event collection. Events forwarded to SIEM.\",\n    \"patch_management\": \"OS and package patching managed by Ansible playbooks on a monthly cadence for routine patches. Emergency patches applied within 72 hours of critical CVE disclosure. Patch execution requires platform-engineering approval and is performed during maintenance windows.\",\n    \"log_management\": \"System logs (syslog, auth.log, kernel) and OpenStack service logs forwarded to the centralised log aggregation platform via Fluentd.\"\n  },\n  \"decisionRecords\": [\n    {\n      \"ref\": \"01KT1340H3-0YCF\",\n      \"key\": \"authentication\"\n    },\n    {\n      \"ref\": \"01KT1340H3-0YCF\",\n      \"key\": \"health_welfare_monitoring\"\n    },\n    {\n      \"ref\": \"01KT1340H3-0YCF\",\n      \"key\": \"patch_management\"\n    },\n    {\n      \"ref\": \"01KT1340H3-0YCF\",\n      \"key\": \"security_monitoring\"\n    }\n  ],\n  \"provisioningModel\": \"deployable\",\n  \"deployablePackage\": {\n    \"registry\": \"github\",\n    \"source\": \"company-infrastructure/terraform-STCK00000F-HS0F\",\n    \"version\": \"v1.0.0\"\n  },\n  \"_source\": \"examples/catalog/shared-services/hosts/host-openstack-linux-service-host.yaml\"\n}",
@@ -51786,6 +52240,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -51877,6 +52332,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -51894,6 +52350,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -51927,7 +52384,9 @@ window.DRAFT_BROWSER_DATA = {
           ]
         },
         "enumListFields": {},
-        "collectionSchemas": {},
+        "collectionSchemas": {
+          "listeners": "listener"
+        },
         "schemaPath": "framework/schemas/host.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q025-1XDE\",\n  \"type\": \"host\",\n  \"category\": \"host\",\n  \"subtype\": \"host\",\n  \"name\": \"AWS Lambda Serverless Host\",\n  \"description\": \"Serverless execution environment provided by AWS Lambda. The host is entirely AWS-managed and blackbox to the organization. Function code is deployed as a ProductComponent. No OS management, no agent installation, and no patching responsibility exist at this layer.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"tags\": [\n    \"lambda\",\n    \"serverless\"\n  ],\n  \"notes\": {\n    \"authenticationApproach\": \"IAM-based invocation and execution roles managed by AWS\",\n    \"loggingApproach\": \"Function and platform logs emitted to CloudWatch Logs\",\n    \"securityMonitoringApproach\": \"AWS-native monitoring and audit integration for the managed runtime\",\n    \"patchManagementApproach\": \"Runtime patching is handled by AWS as part of the managed platform\",\n    \"authentication\": \"IAM-based invocation and execution roles managed by AWS. No SSH or interactive login; access to the execution environment is not possible. Administrative access to the Lambda configuration is governed by AWS IAM policies.\",\n    \"log_management\": \"Function logs and platform runtime logs are emitted to Amazon CloudWatch Logs. Log retention and export are configured per function.\",\n    \"health_welfare_monitoring\": \"AWS Lambda provides built-in invocation metrics (duration, errors, throttles, concurrency) via Amazon CloudWatch Metrics. No agent installation is possible; observability is entirely provider-managed.\",\n    \"security_monitoring\": \"AWS CloudTrail captures all Lambda API calls for audit. AWS-native security event collection covers the managed runtime boundary.\",\n    \"patch_management\": \"Runtime patching is fully managed by AWS as part of the Lambda managed platform. Organization has no patching responsibility at this layer; runtime version selection is the only control available.\",\n    \"internalComponentRationales\": {\n      \"01KQQ4Q025-T7B7\": \"The AWS Lambda Runtime is modeled as the managed execution component that makes the serverless host understandable even though standard host requirements do not apply.\"\n    },\n    \"relationshipRationales\": {\n      \"AWS Lambda Service\": \"The AWS Lambda control plane is modeled to show the managed service boundary for the blackbox serverless host.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"01KQQ4Q025-T7B7\",\n      \"role\": \"managed-runtime\",\n      \"notes\": \"AWS-managed serverless execution environment. Blackbox host.\"\n    }\n  ],\n  \"decisionRecords\": [\n    {\n      \"ref\": \"01KT1340H6-X3T5\",\n      \"key\": \"authentication\"\n    },\n    {\n      \"ref\": \"01KT1340H6-X3T5\",\n      \"key\": \"health_welfare_monitoring\"\n    },\n    {\n      \"ref\": \"01KT1340H6-X3T5\",\n      \"key\": \"log_management\"\n    },\n    {\n      \"ref\": \"01KT1340H6-X3T5\",\n      \"key\": \"patch_management\"\n    },\n    {\n      \"ref\": \"01KT1340H6-X3T5\",\n      \"key\": \"security_monitoring\"\n    }\n  ],\n  \"provisioningModel\": \"deployable\",\n  \"deployablePackage\": {\n    \"registry\": \"github\",\n    \"source\": \"company-infrastructure/terraform-01KQQ4Q025-1XDE\",\n    \"version\": \"v1.0.0\"\n  },\n  \"_source\": \"examples/catalog/shared-services/hosts/host-serverless-lambda.yaml\"\n}",
@@ -52034,6 +52493,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -52209,6 +52669,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -52237,6 +52698,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -52295,6 +52757,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -52425,6 +52888,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -52529,6 +52993,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -52555,6 +53020,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -52617,6 +53083,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -52755,6 +53222,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -52911,6 +53379,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -52937,6 +53406,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -52999,6 +53469,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -53137,6 +53608,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -53309,6 +53781,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -53335,6 +53808,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -53397,6 +53871,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -53570,6 +54045,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -53738,6 +54214,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -53764,6 +54241,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -53826,6 +54304,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -53999,6 +54478,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -54163,6 +54643,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -54189,6 +54670,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -54251,6 +54733,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -54416,6 +54899,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -54596,6 +55080,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -54622,6 +55107,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -54684,6 +55170,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -54876,6 +55363,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -55040,6 +55528,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -55066,6 +55555,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -55128,6 +55618,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -55287,6 +55778,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -55499,6 +55991,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -55525,6 +56018,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -55587,6 +56081,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -55883,6 +56378,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -56059,6 +56555,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -56085,6 +56582,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -56147,6 +56645,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -56335,6 +56834,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -56531,6 +57031,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -56557,6 +57058,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -56619,6 +57121,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -56833,6 +57336,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -57017,6 +57521,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -57043,6 +57548,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -57105,6 +57611,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -57318,6 +57825,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -57474,6 +57982,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -57500,6 +58009,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -57562,6 +58072,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -57700,6 +58211,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -57856,6 +58368,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -57882,6 +58395,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -57944,6 +58458,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -58082,6 +58597,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -58242,6 +58758,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -58268,6 +58785,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -58330,6 +58848,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -58449,6 +58968,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -58615,6 +59135,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -58778,6 +59299,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -58940,6 +59462,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -59115,6 +59638,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -59325,6 +59849,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -59488,6 +60013,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -59651,6 +60177,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -59815,6 +60342,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -59979,6 +60507,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -60143,6 +60672,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -60307,6 +60837,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -60471,6 +61002,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -60636,6 +61168,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -60805,6 +61338,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -60968,6 +61502,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -61140,6 +61675,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -61310,6 +61846,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -61491,6 +62028,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -61652,6 +62190,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -61798,6 +62337,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -61847,6 +62387,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -61855,6 +62396,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -61941,6 +62483,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -61990,6 +62533,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -61998,6 +62542,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -62084,6 +62629,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -62133,6 +62679,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -62141,6 +62688,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -62227,6 +62775,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -62276,6 +62825,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -62284,6 +62834,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -62370,6 +62921,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -62419,6 +62971,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -62427,6 +62980,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -62513,6 +63067,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -62562,6 +63117,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -62570,6 +63126,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -62656,6 +63213,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -62705,6 +63263,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -62713,6 +63272,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -62799,6 +63359,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -62848,6 +63409,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -62856,6 +63418,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -62942,6 +63505,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -62991,6 +63555,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -62999,6 +63564,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -63085,6 +63651,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -63134,6 +63701,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -63142,6 +63710,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -63228,6 +63797,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -63277,6 +63847,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -63285,6 +63856,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -63371,6 +63943,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -63420,6 +63993,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -63428,6 +64002,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -63514,6 +64089,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -63563,6 +64139,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -63571,6 +64148,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -63657,6 +64235,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -63706,6 +64285,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -63714,6 +64294,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -63800,6 +64381,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -63849,6 +64431,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -63857,6 +64440,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -63943,6 +64527,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -63992,6 +64577,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -64000,6 +64586,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -64086,6 +64673,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -64135,6 +64723,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -64143,6 +64732,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -64229,6 +64819,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -64278,6 +64869,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -64286,6 +64878,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -64372,6 +64965,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -64421,6 +65015,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -64429,6 +65024,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -64515,6 +65111,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -64564,6 +65161,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -64572,6 +65170,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -64658,6 +65257,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -64707,6 +65307,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -64715,6 +65316,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -64801,6 +65403,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -64850,6 +65453,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -64858,6 +65462,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -64944,6 +65549,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -64993,6 +65599,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -65001,6 +65608,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -65093,6 +65701,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -65257,6 +65866,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -65392,6 +66002,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -65532,6 +66143,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -65672,6 +66284,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -65812,6 +66425,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -65956,6 +66570,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -66096,6 +66711,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -66256,6 +66872,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -66396,6 +67013,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -66536,6 +67154,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -66676,6 +67295,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -66825,6 +67445,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -66981,6 +67602,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -67121,6 +67743,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -67261,6 +67884,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -67401,6 +68025,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -67545,6 +68170,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -67705,6 +68331,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -67845,6 +68472,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -67985,6 +68613,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -68137,6 +68766,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -68277,6 +68907,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -68417,6 +69048,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -68587,6 +69219,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -68755,6 +69388,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -68895,6 +69529,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -69030,6 +69665,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -69165,6 +69801,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -69300,6 +69937,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -69449,6 +70087,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -69597,6 +70236,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -69757,6 +70397,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -69897,6 +70538,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -70037,6 +70679,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -70177,6 +70820,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -70342,6 +70986,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -70510,6 +71155,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -70650,6 +71296,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -70790,6 +71437,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -70930,6 +71578,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -71070,6 +71719,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -71210,6 +71860,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -71350,6 +72001,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -71484,6 +72136,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -71608,6 +72261,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -71739,6 +72393,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -71894,6 +72549,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -72030,6 +72686,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -72155,6 +72812,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -72289,6 +72947,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -72438,6 +73097,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -72567,6 +73227,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -72696,6 +73357,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -72826,6 +73488,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -73085,6 +73748,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -73477,6 +74141,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -73724,6 +74389,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -74028,6 +74694,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -74648,6 +75315,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -75411,6 +76079,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -76083,6 +76752,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -76834,6 +77504,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -77119,6 +77790,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -77386,6 +78058,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -77586,6 +78259,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -78001,6 +78675,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -78289,6 +78964,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -78538,6 +79214,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -78773,6 +79450,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -79004,6 +79682,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -79464,6 +80143,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -79824,6 +80504,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -81124,6 +81805,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -81453,6 +82135,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -81847,6 +82530,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -81993,6 +82677,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -82090,6 +82775,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -82231,6 +82917,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -82441,6 +83128,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -82639,6 +83327,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -82842,6 +83531,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -83050,6 +83740,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -83241,6 +83932,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -83444,6 +84136,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -83642,6 +84335,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -83829,6 +84523,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -84007,6 +84702,7 @@ window.DRAFT_BROWSER_DATA = {
           ]
         }
       ],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -84153,6 +84849,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -84293,6 +84990,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -84433,6 +85131,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -84573,6 +85272,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -84721,6 +85421,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -84777,6 +85478,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "version",
           "tags",
+          "interfaces",
           "tables",
           "storedProcedures",
           "scheduledJobs",
@@ -84790,6 +85492,7 @@ window.DRAFT_BROWSER_DATA = {
           "owner": "dict",
           "runsOn": "str",
           "tags": "list",
+          "interfaces": "list",
           "tables": "list",
           "storedProcedures": "list",
           "scheduledJobs": "list",
@@ -84833,6 +85536,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "interfaces": "interface",
           "tables": "tableDefinition",
           "storedProcedures": "storedProcedure",
           "scheduledJobs": "scheduledJob",
@@ -84924,6 +85628,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -85180,7 +85885,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "proxies authentication requests",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "01KSF29JTP-9HYA",
@@ -85189,7 +85895,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "proxies networking API requests",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "01KSF29JTP-9HYA",
@@ -85198,7 +85905,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "proxies compute API requests",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000008-RS08",
@@ -85207,7 +85915,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000008-RS08",
@@ -85216,7 +85925,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "sends events to",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000005-RS05",
@@ -85225,7 +85935,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "validates tokens",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000005-RS05",
@@ -85234,7 +85945,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "asynchronous",
           "port": "",
           "label": "publishes and consumes RPC messages",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000005-RS05",
@@ -85243,7 +85955,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "persists volume state",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000003-RS03",
@@ -85252,7 +85965,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000003-RS03",
@@ -85261,7 +85975,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000003-RS03",
@@ -85270,7 +85985,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000007-RS07",
@@ -85279,7 +85995,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000007-RS07",
@@ -85288,7 +86005,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000007-RS07",
@@ -85297,7 +86015,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -85306,7 +86025,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -85315,7 +86035,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -85324,7 +86045,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -85333,7 +86055,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -85342,7 +86065,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -85351,7 +86075,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -85360,7 +86085,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -85369,7 +86095,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -85378,7 +86105,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -85387,7 +86115,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000002-RS02",
@@ -85396,7 +86125,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "persists identity data",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000004-RS04",
@@ -85405,7 +86135,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "validates tokens",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000004-RS04",
@@ -85414,7 +86145,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "asynchronous",
           "port": "",
           "label": "publishes and consumes agent RPC messages",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000004-RS04",
@@ -85423,7 +86155,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "persists network state",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -85432,7 +86165,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "attaches block volumes",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -85441,7 +86175,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "validates tokens",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -85450,7 +86185,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "asynchronous",
           "port": "",
           "label": "publishes and consumes RPC messages",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -85459,7 +86195,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -85468,7 +86205,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "provisions network ports",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -85477,7 +86215,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "synchronous",
           "port": "",
           "label": "reads from / writes to",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000D-RS0D",
@@ -85486,7 +86225,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000B-RS0B",
@@ -85495,7 +86235,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000B-RS0B",
@@ -85504,7 +86245,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000C-RS0C",
@@ -85513,7 +86255,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000C-RS0C",
@@ -85522,7 +86265,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000A-RS0A",
@@ -85531,7 +86275,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000A-RS0A",
@@ -85540,7 +86285,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         },
         {
           "from": "STCK00000A-RS0A",
@@ -85549,7 +86295,8 @@ window.DRAFT_BROWSER_DATA = {
           "direction": "outbound",
           "port": "",
           "label": "calls",
-          "serviceGroup": ""
+          "serviceGroup": "",
+          "targetInterface": ""
         }
       ],
       "serviceGroups": [
@@ -85690,6 +86437,18 @@ window.DRAFT_BROWSER_DATA = {
               "notes": "RabbitMQ 3-node cluster providing shared AMQP message transport for all OpenStack services. Quorum queues ensure message durability."
             }
           ]
+        }
+      ],
+      "groupExposure": [
+        {
+          "name": "Presentation & API Layer",
+          "state": "",
+          "devices": []
+        },
+        {
+          "name": "Data Infrastructure",
+          "state": "",
+          "devices": []
         }
       ],
       "tierVariants": [],
@@ -86050,6 +86809,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -86223,6 +86983,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -86408,6 +87169,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -86585,6 +87347,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -86758,6 +87521,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -86943,6 +87707,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -87116,6 +87881,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -87301,6 +88067,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -87478,6 +88245,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -87651,6 +88419,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -87836,6 +88605,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -88009,6 +88779,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -88194,6 +88965,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -88371,6 +89143,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -88544,6 +89317,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -88729,6 +89503,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -88902,6 +89677,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -89087,6 +89863,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -89264,6 +90041,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -89437,6 +90215,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -89622,6 +90401,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -89795,6 +90575,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -89980,6 +90761,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -90157,6 +90939,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -90330,6 +91113,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -90515,6 +91299,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -90688,6 +91473,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -90873,6 +91659,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -91050,6 +91837,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -91223,6 +92011,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -91408,6 +92197,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -91581,6 +92371,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -91766,6 +92557,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -91943,6 +92735,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -92116,6 +92909,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -92302,6 +93096,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -92477,6 +93272,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -92658,6 +93454,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -92843,6 +93640,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -93012,6 +93810,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -93185,6 +93984,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -93354,6 +94154,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -93536,6 +94337,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -93710,6 +94512,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -93879,6 +94682,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -94048,6 +94852,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -94217,6 +95022,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -94386,6 +95192,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -94559,6 +95366,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -94728,6 +95536,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -94901,6 +95710,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -95074,6 +95884,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -95255,6 +96066,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -95424,6 +96236,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -95597,6 +96410,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -95770,6 +96584,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -95951,6 +96766,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -96120,6 +96936,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -96293,6 +97110,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -96466,6 +97284,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -96647,6 +97466,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -96816,6 +97636,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -96989,6 +97810,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -97162,6 +97984,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -97343,6 +98166,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -97512,6 +98336,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -97685,6 +98510,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -97858,6 +98684,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -98039,6 +98866,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -98208,6 +99036,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -98381,6 +99210,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -98554,6 +99384,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -98735,6 +99566,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -98904,6 +99736,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -99077,6 +99910,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -99250,6 +100084,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -99431,6 +100266,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -99600,6 +100436,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -99773,6 +100610,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -99946,6 +100784,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -100127,6 +100966,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -100296,6 +101136,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -100469,6 +101310,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -100642,6 +101484,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -100823,6 +101666,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -100992,6 +101836,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -101165,6 +102010,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -101338,6 +102184,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -101519,6 +102366,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -101688,6 +102536,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -101861,6 +102710,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -102034,6 +102884,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -102215,6 +103066,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -102384,6 +103236,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -102557,6 +103410,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -102730,6 +103584,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -102911,6 +103766,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -103080,6 +103936,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -103253,6 +104110,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -103426,6 +104284,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -103607,6 +104466,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -103784,6 +104644,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -103953,6 +104814,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -104126,6 +104988,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -104299,6 +105162,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -104465,6 +105329,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -104514,6 +105379,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -104522,6 +105388,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -104608,6 +105475,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -104657,6 +105525,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -104665,6 +105534,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -104751,6 +105621,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -104800,6 +105671,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -104808,6 +105680,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -104894,6 +105767,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -104939,6 +105813,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -104947,6 +105822,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -105033,6 +105909,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -105078,6 +105955,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -105086,6 +105964,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -105172,6 +106051,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -105217,6 +106097,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -105225,6 +106106,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -105311,6 +106193,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -105356,6 +106239,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -105364,6 +106248,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -105450,6 +106335,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -105499,6 +106385,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -105507,6 +106394,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -105593,6 +106481,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -105642,6 +106531,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -105650,6 +106540,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -105736,6 +106627,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -105785,6 +106677,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -105793,6 +106686,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -105879,6 +106773,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -105928,6 +106823,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -105936,6 +106832,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -106022,6 +106919,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -106067,6 +106965,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -106075,6 +106974,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -106161,6 +107061,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -106210,6 +107111,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -106218,6 +107120,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -106304,6 +107207,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -106349,6 +107253,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -106357,6 +107262,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -106443,6 +107349,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -106492,6 +107399,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -106500,6 +107408,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -106586,6 +107495,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -106635,6 +107545,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -106643,6 +107554,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -106729,6 +107641,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -106778,6 +107691,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -106786,6 +107700,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -106872,6 +107787,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -106921,6 +107837,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -106929,6 +107846,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -107015,6 +107933,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -107064,6 +107983,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -107072,6 +107992,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -107158,6 +108079,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -107207,6 +108129,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -107215,6 +108138,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -107301,6 +108225,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -107350,6 +108275,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -107358,6 +108284,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -107444,6 +108371,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -107493,6 +108421,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -107501,6 +108430,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -107587,6 +108517,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -107636,6 +108567,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -107644,6 +108576,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -107730,6 +108663,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -107779,6 +108713,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -107787,6 +108722,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -107873,6 +108809,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -107922,6 +108859,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -107930,6 +108868,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -108016,6 +108955,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -108065,6 +109005,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -108073,6 +109014,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -108159,6 +109101,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -108208,6 +109151,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -108216,6 +109160,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -108302,6 +109247,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -108351,6 +109297,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -108359,6 +109306,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -108445,6 +109393,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -108494,6 +109443,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -108502,6 +109452,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -108588,6 +109539,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -108637,6 +109589,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -108645,6 +109598,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -108731,6 +109685,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -108776,6 +109731,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -108784,6 +109740,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -108870,6 +109827,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -108915,6 +109873,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -108923,6 +109882,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -109009,6 +109969,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -109058,6 +110019,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -109066,6 +110028,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -109152,6 +110115,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -109201,6 +110165,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -109209,6 +110174,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -109295,6 +110261,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -109344,6 +110311,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -109352,6 +110320,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -109438,6 +110407,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -109483,6 +110453,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -109491,6 +110462,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -109577,6 +110549,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -109626,6 +110599,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -109634,6 +110608,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -109720,6 +110695,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -109769,6 +110745,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -109777,6 +110754,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -109863,6 +110841,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -109912,6 +110891,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -109920,6 +110900,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110006,6 +110987,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -110055,6 +111037,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -110063,6 +111046,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110149,6 +111133,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -110198,6 +111183,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -110206,6 +111192,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110292,6 +111279,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -110337,6 +111325,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -110345,6 +111334,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110431,6 +111421,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -110480,6 +111471,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -110488,6 +111480,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110574,6 +111567,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -110623,6 +111617,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -110631,6 +111626,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110717,6 +111713,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -110762,6 +111759,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -110770,6 +111768,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110856,6 +111855,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -110905,6 +111905,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -110913,6 +111914,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110999,6 +112001,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -111048,6 +112051,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -111056,6 +112060,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -111142,6 +112147,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -111191,6 +112197,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -111199,6 +112206,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -111285,6 +112293,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -111334,6 +112343,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -111342,6 +112352,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -111428,6 +112439,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -111477,6 +112489,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -111485,6 +112498,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -111571,6 +112585,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -111616,6 +112631,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -111624,6 +112640,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -111710,6 +112727,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -111759,6 +112777,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -111767,6 +112786,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -111853,6 +112873,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -111902,6 +112923,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -111910,6 +112932,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -111996,6 +113019,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -112045,6 +113069,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -112053,6 +113078,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -112148,6 +113174,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -112370,6 +113397,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -112588,6 +113616,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -112814,6 +113843,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -113042,6 +114072,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -113068,6 +114099,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -113130,6 +114162,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -113287,6 +114320,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -113511,6 +114545,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -113537,6 +114572,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -113599,6 +114635,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -113756,6 +114793,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -113984,6 +115022,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -114010,6 +115049,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -114072,6 +115112,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -114229,6 +115270,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -114457,6 +115499,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -114483,6 +115526,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -114545,6 +115589,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -114701,6 +115746,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -114929,6 +115975,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -114955,6 +116002,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -115017,6 +116065,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -115177,6 +116226,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -115421,6 +116471,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -115447,6 +116498,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -115509,6 +116561,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -115712,6 +116765,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -115940,6 +116994,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -115966,6 +117021,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -116028,6 +117084,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -116170,6 +117227,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -116421,6 +117479,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -116438,6 +117497,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -116471,7 +117531,9 @@ window.DRAFT_BROWSER_DATA = {
           ]
         },
         "enumListFields": {},
-        "collectionSchemas": {},
+        "collectionSchemas": {
+          "listeners": "listener"
+        },
         "schemaPath": "framework/schemas/host.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"STCK00000F-HS0F\",\n  \"type\": \"host\",\n  \"name\": \"OpenStack Linux Service Host\",\n  \"description\": \"General-purpose self-managed Linux host standard for the OpenStack example control-plane, data, and utility services. This models the reusable substrate pattern, not a single node role.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"lifecycleStatus\": \"existing-only\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"host\",\n    \"openstack\",\n    \"linux\"\n  ],\n  \"operatingSystemComponent\": \"01KQQ4Q025-3HXA\",\n  \"computePlatformComponent\": \"STCK00000F-TC0F\",\n  \"notes\": {\n    \"authentication\": \"Centralized authentication via enterprise LDAP/Active Directory integrated with PAM. SSH key-based access only for service accounts; password auth disabled. Sudo access restricted to named platform-engineering team members via sudoers managed by Ansible.\",\n    \"health_welfare_monitoring\": \"Host health monitored via Prometheus node_exporter. CPU, memory, disk, and network metrics collected and forwarded to the centralised monitoring platform. Alerting configured for resource exhaustion and node unreachability.\",\n    \"security_monitoring\": \"CrowdStrike Falcon agent deployed on all OpenStack Linux hosts for EDR and security event collection. Events forwarded to SIEM.\",\n    \"patch_management\": \"OS and package patching managed by Ansible playbooks on a monthly cadence for routine patches. Emergency patches applied within 72 hours of critical CVE disclosure. Patch execution requires platform-engineering approval and is performed during maintenance windows.\",\n    \"log_management\": \"System logs (syslog, auth.log, kernel) and OpenStack service logs forwarded to the centralised log aggregation platform via Fluentd.\"\n  },\n  \"decisionRecords\": [\n    {\n      \"ref\": \"01KT1340H3-0YCF\",\n      \"key\": \"authentication\"\n    },\n    {\n      \"ref\": \"01KT1340H3-0YCF\",\n      \"key\": \"health_welfare_monitoring\"\n    },\n    {\n      \"ref\": \"01KT1340H3-0YCF\",\n      \"key\": \"patch_management\"\n    },\n    {\n      \"ref\": \"01KT1340H3-0YCF\",\n      \"key\": \"security_monitoring\"\n    }\n  ],\n  \"provisioningModel\": \"deployable\",\n  \"deployablePackage\": {\n    \"registry\": \"github\",\n    \"source\": \"company-infrastructure/terraform-STCK00000F-HS0F\",\n    \"version\": \"v1.0.0\"\n  },\n  \"_source\": \"examples/catalog/shared-services/hosts/host-openstack-linux-service-host.yaml\"\n}",
@@ -116818,6 +117880,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -116909,6 +117972,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -116926,6 +117990,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -116959,7 +118024,9 @@ window.DRAFT_BROWSER_DATA = {
           ]
         },
         "enumListFields": {},
-        "collectionSchemas": {},
+        "collectionSchemas": {
+          "listeners": "listener"
+        },
         "schemaPath": "framework/schemas/host.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q025-1XDE\",\n  \"type\": \"host\",\n  \"category\": \"host\",\n  \"subtype\": \"host\",\n  \"name\": \"AWS Lambda Serverless Host\",\n  \"description\": \"Serverless execution environment provided by AWS Lambda. The host is entirely AWS-managed and blackbox to the organization. Function code is deployed as a ProductComponent. No OS management, no agent installation, and no patching responsibility exist at this layer.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"incomplete\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"tags\": [\n    \"lambda\",\n    \"serverless\"\n  ],\n  \"notes\": {\n    \"authenticationApproach\": \"IAM-based invocation and execution roles managed by AWS\",\n    \"loggingApproach\": \"Function and platform logs emitted to CloudWatch Logs\",\n    \"securityMonitoringApproach\": \"AWS-native monitoring and audit integration for the managed runtime\",\n    \"patchManagementApproach\": \"Runtime patching is handled by AWS as part of the managed platform\",\n    \"authentication\": \"IAM-based invocation and execution roles managed by AWS. No SSH or interactive login; access to the execution environment is not possible. Administrative access to the Lambda configuration is governed by AWS IAM policies.\",\n    \"log_management\": \"Function logs and platform runtime logs are emitted to Amazon CloudWatch Logs. Log retention and export are configured per function.\",\n    \"health_welfare_monitoring\": \"AWS Lambda provides built-in invocation metrics (duration, errors, throttles, concurrency) via Amazon CloudWatch Metrics. No agent installation is possible; observability is entirely provider-managed.\",\n    \"security_monitoring\": \"AWS CloudTrail captures all Lambda API calls for audit. AWS-native security event collection covers the managed runtime boundary.\",\n    \"patch_management\": \"Runtime patching is fully managed by AWS as part of the Lambda managed platform. Organization has no patching responsibility at this layer; runtime version selection is the only control available.\",\n    \"internalComponentRationales\": {\n      \"01KQQ4Q025-T7B7\": \"The AWS Lambda Runtime is modeled as the managed execution component that makes the serverless host understandable even though standard host requirements do not apply.\"\n    },\n    \"relationshipRationales\": {\n      \"AWS Lambda Service\": \"The AWS Lambda control plane is modeled to show the managed service boundary for the blackbox serverless host.\"\n    }\n  },\n  \"internalComponents\": [\n    {\n      \"ref\": \"01KQQ4Q025-T7B7\",\n      \"role\": \"managed-runtime\",\n      \"notes\": \"AWS-managed serverless execution environment. Blackbox host.\"\n    }\n  ],\n  \"decisionRecords\": [\n    {\n      \"ref\": \"01KT1340H6-X3T5\",\n      \"key\": \"authentication\"\n    },\n    {\n      \"ref\": \"01KT1340H6-X3T5\",\n      \"key\": \"health_welfare_monitoring\"\n    },\n    {\n      \"ref\": \"01KT1340H6-X3T5\",\n      \"key\": \"log_management\"\n    },\n    {\n      \"ref\": \"01KT1340H6-X3T5\",\n      \"key\": \"patch_management\"\n    },\n    {\n      \"ref\": \"01KT1340H6-X3T5\",\n      \"key\": \"security_monitoring\"\n    }\n  ],\n  \"provisioningModel\": \"deployable\",\n  \"deployablePackage\": {\n    \"registry\": \"github\",\n    \"source\": \"company-infrastructure/terraform-01KQQ4Q025-1XDE\",\n    \"version\": \"v1.0.0\"\n  },\n  \"_source\": \"examples/catalog/shared-services/hosts/host-serverless-lambda.yaml\"\n}",
@@ -117066,6 +118133,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -117241,6 +118309,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -117269,6 +118338,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -117327,6 +118397,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -117457,6 +118528,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -117561,6 +118633,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -117587,6 +118660,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -117649,6 +118723,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -117787,6 +118862,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -117943,6 +119019,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -117969,6 +119046,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -118031,6 +119109,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -118169,6 +119248,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -118341,6 +119421,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -118367,6 +119448,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -118429,6 +119511,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -118602,6 +119685,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -118770,6 +119854,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -118796,6 +119881,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -118858,6 +119944,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -119031,6 +120118,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -119195,6 +120283,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -119221,6 +120310,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -119283,6 +120373,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -119448,6 +120539,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -119628,6 +120720,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -119654,6 +120747,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -119716,6 +120810,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -119908,6 +121003,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -120072,6 +121168,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -120098,6 +121195,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -120160,6 +121258,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -120319,6 +121418,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -120531,6 +121631,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -120557,6 +121658,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -120619,6 +121721,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -120915,6 +122018,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -121091,6 +122195,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -121117,6 +122222,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -121179,6 +122285,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -121367,6 +122474,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -121563,6 +122671,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -121589,6 +122698,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -121651,6 +122761,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -121865,6 +122976,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -122049,6 +123161,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -122075,6 +123188,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -122137,6 +123251,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -122350,6 +123465,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -122506,6 +123622,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -122532,6 +123649,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -122594,6 +123712,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -122732,6 +123851,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -122888,6 +124008,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -122914,6 +124035,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -122976,6 +124098,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -123114,6 +124237,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -123274,6 +124398,7 @@ window.DRAFT_BROWSER_DATA = {
           "lifecycleStatus"
         ],
         "optionalFields": [
+          "listeners",
           "aliases",
           "description",
           "version",
@@ -123300,6 +124425,7 @@ window.DRAFT_BROWSER_DATA = {
           "requirementImplementations"
         ],
         "fieldTypes": {
+          "listeners": "list",
           "aliases": "list",
           "owner": "dict",
           "tags": "list",
@@ -123362,6 +124488,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "enumListFields": {},
         "collectionSchemas": {
+          "listeners": "listener",
           "internalComponents": "internalComponent",
           "deploymentConfigurations": "deploymentConfiguration",
           "configurations": "configuration",
@@ -123481,6 +124608,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -123647,6 +124775,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -123810,6 +124939,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -123972,6 +125102,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -124147,6 +125278,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -124357,6 +125489,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -124520,6 +125653,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -124683,6 +125817,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -124847,6 +125982,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -125011,6 +126147,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -125175,6 +126312,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -125339,6 +126477,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -125503,6 +126642,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -125668,6 +126808,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -125837,6 +126978,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -126000,6 +127142,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -126172,6 +127315,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -126342,6 +127486,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -126523,6 +127668,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -126684,6 +127830,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -126830,6 +127977,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -126879,6 +128027,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -126887,6 +128036,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -126973,6 +128123,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -127022,6 +128173,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -127030,6 +128182,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -127116,6 +128269,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -127165,6 +128319,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -127173,6 +128328,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -127259,6 +128415,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -127308,6 +128465,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -127316,6 +128474,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -127402,6 +128561,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -127451,6 +128611,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -127459,6 +128620,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -127545,6 +128707,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -127594,6 +128757,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -127602,6 +128766,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -127688,6 +128853,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -127737,6 +128903,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -127745,6 +128912,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -127831,6 +128999,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -127880,6 +129049,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -127888,6 +129058,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -127974,6 +129145,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -128023,6 +129195,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -128031,6 +129204,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -128117,6 +129291,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -128166,6 +129341,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -128174,6 +129350,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -128260,6 +129437,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -128309,6 +129487,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -128317,6 +129496,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -128403,6 +129583,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -128452,6 +129633,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -128460,6 +129642,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -128546,6 +129729,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -128595,6 +129779,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -128603,6 +129788,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -128689,6 +129875,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -128738,6 +129925,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -128746,6 +129934,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -128832,6 +130021,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -128881,6 +130071,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -128889,6 +130080,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -128975,6 +130167,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -129024,6 +130217,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -129032,6 +130226,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -129118,6 +130313,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -129167,6 +130363,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -129175,6 +130372,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -129261,6 +130459,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -129310,6 +130509,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -129318,6 +130518,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -129404,6 +130605,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -129453,6 +130655,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -129461,6 +130664,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -129547,6 +130751,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -129596,6 +130801,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -129604,6 +130810,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -129690,6 +130897,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -129739,6 +130947,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -129747,6 +130956,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -129833,6 +131043,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -129882,6 +131093,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -129890,6 +131102,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -129976,6 +131189,7 @@ window.DRAFT_BROWSER_DATA = {
       "networkZones": [],
       "sdpConnections": [],
       "serviceGroups": [],
+      "groupExposure": [],
       "tierVariants": [],
       "tierId": "",
       "purpose": "",
@@ -130025,6 +131239,7 @@ window.DRAFT_BROWSER_DATA = {
           "description",
           "target",
           "externalTarget",
+          "targetInterface",
           "technology",
           "direction",
           "flow",
@@ -130033,6 +131248,7 @@ window.DRAFT_BROWSER_DATA = {
           "tags"
         ],
         "fieldTypes": {
+          "targetInterface": "str",
           "tags": "list",
           "capabilities": "list"
         },
