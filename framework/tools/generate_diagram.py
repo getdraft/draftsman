@@ -388,11 +388,16 @@ def match_port(ports: list[dict[str, Any]], fam: str | None, name: str) -> dict[
     return None
 
 
-def listener_text(item: dict[str, Any]) -> str:
+def listener_text(item: dict[str, Any], interface_protocol: str = "") -> str:
     """'protocol port'. A REST, HTTP or HTTPS listener prints its lower-cased name instead of its protocol (https 443,
-    http 8080), since those protocols do not tell the wire protocol; any other protocol prints as recorded."""
+    http 8080), since those protocols do not tell the wire protocol. A port or listener matched by protocol family to
+    the target interface whose protocol is ``interface_protocol`` prints that protocol (amendment A2: gRPC 8092 for a
+    port recorded as HTTP/2 behind a gRPC interface). Any other protocol prints as recorded."""
     protocol, name = clean(item.get("protocol")), clean(item.get("name"))
-    word = (name or protocol).lower() if protocol.lower() in ("rest", "http", "https") else protocol
+    if protocol.lower() in ("rest", "http", "https"):
+        word = (name or protocol).lower()
+    else:
+        word = clean(interface_protocol) or protocol
     return f"{word} {item.get('port')}"
 
 
@@ -960,6 +965,20 @@ class Model:
             host = obj
         return pick_listener(listeners_of(host), fam)
 
+    def _matched_word(self, edge: DiagramEdge, listener: dict[str, Any]) -> str:
+        """The interface protocol a target port prints instead of its recorded protocol (amendment A2), or "".
+
+        Only when the target declares the interface the edge speaks to, the port was matched to it by protocol family
+        and that family is not web (web listeners keep their lower-cased name). A data component's implicit ``data``
+        surface is not a declared interface, and a single-listener fallback of another family prints as recorded."""
+        fam, protocol, name = self._relationship_family(edge)
+        declared = (self.catalog.get(edge.target) or {}).get("interfaces")
+        if not fam or fam == "web" or not protocol or family(protocol) != fam:
+            return ""
+        if not isinstance(declared, list) or not any(isinstance(i, dict) and clean(i.get("name")) == name for i in declared):
+            return ""
+        return protocol if family(clean(listener.get("protocol"))) == fam else ""
+
     def _slot_chain(self) -> list[str]:
         """The filled edge slots of the reference architecture the pattern follows, as a device chain: every entry
         whose slot is an edge slot and which fills a network_service, in EDGE_SLOTS order (document order within a
@@ -1066,7 +1085,7 @@ class Model:
         self.deployment_edges: list[DiagramEdge] = []
         for edge in self.edges:
             listener = self._target_listener(edge)
-            target_port = listener_text(listener) if listener else ""
+            target_port = listener_text(listener, self._matched_word(edge, listener)) if listener else ""
             boxes = self.hop_of.get(edge.target, []) if edge.source != edge.target else []
             where = self._where(edge.target)
             if not boxes or where is None or self._where(edge.source) == where:
@@ -1905,6 +1924,7 @@ class LogicalLayout:
     runs: dict[tuple, _Run] = field(default_factory=dict)  # bundle runs by key; see _plan_logical_tracks
     gap_bands: dict[tuple[str, int], tuple[int, int, int]] = field(default_factory=dict)  # D37: px of lb-s band, lb-t band, loop rise
     label_rows: dict[int, int] = field(default_factory=dict)  # edge index -> index among its same-ordered-pair siblings
+    entrance_rows: dict[int, int] = field(default_factory=dict)  # AC9: edge index -> target-end rows below its entrance's block
     gap_tech: set = field(default_factory=set)  # D37: gaps where a labelled edge records a technology (two-line label rows)
     band_starts: set = field(default_factory=set)  # main row index of the first row of every band after the first
 
@@ -2104,6 +2124,7 @@ def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool
             space = lane_space
         centre = space[0] + space[1] // 2
         targets[i] = (ax, centre, bx, centre)
+    _sort_entrance_sides(layout, drawn, targets, slot_of, out_x, in_x)
 
     def collect(split: set) -> dict:
         """Row-gap runs. A box's edges share its stub (D36); in a gap listed in ``split`` its edges leaving to the
@@ -2184,11 +2205,74 @@ def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool
     layout.runs = runs
 
 
+def _sort_entrance_sides(layout: LogicalLayout, drawn: list, targets: dict, slot_of: Any, out_x: Any, in_x: Any) -> None:
+    """AC9: the gutter edges into a box with several entrances arrive from the left for the lower entrances and
+    from the right for the higher ones. An in-run from the left to an entrance passes over every entrance left of
+    it, and one from the right over every entrance right of it, so a left arrival at a higher entrance than a right
+    arrival makes the two in-runs cross each other's stubs whatever their tracks. When the nearest gutters give such
+    a pair, the box picks the pivot entrance p (edges below p from the left, above p from the right, at p as they
+    are) that moves the fewest edges, then the lowest p (the higher entrances are reached from the right), then
+    the least added route length; a moved edge takes the
+    nearest main gutter on its new side. Lane edges arrive from the right and never move. Nothing changes for a
+    box whose arrivals are already in order, so single-entrance boxes are untouched."""
+    plan = layout.plan
+    by_target: dict[str, list[int]] = {}
+    for i, e in drawn:
+        if plan[i][0] != "direct" and slot_of(e)[1] >= 2:
+            by_target.setdefault(e.target, []).append(i)
+    edges = dict(drawn)
+    for uid in sorted(by_target):
+        items = by_target[uid]
+
+        def side(i: int) -> int:
+            return -1 if targets[i][1] < targets[i][2] else 1
+
+        left = [slot_of(edges[i])[0] for i in items if side(i) < 0]
+        right = [slot_of(edges[i])[0] for i in items if side(i) > 0]
+        if not left or not right or max(left) <= min(right):
+            continue
+        count = slot_of(edges[items[0]])[1]
+
+        def best_gutter(i: int, want: int) -> tuple[int, int] | None:
+            """(cost, gutter) of the nearest main gutter on side ``want`` of the edge's entrance, or None."""
+            ax, bx = out_x(edges[i].source), in_x(uid, slot_of(edges[i]))
+            found = [
+                (abs(ax - g) + abs(bx - g), j) for j, g in enumerate(layout.gutters) if (g < bx) == (want < 0)
+            ]
+            return min(found) if found else None
+
+        options = []
+        for p in range(count):
+            moves: dict[int, int] = {}
+            extra, ok = 0, True
+            for i in items:
+                k = slot_of(edges[i])[0]
+                want = -1 if k < p else 1 if k > p else side(i)
+                if want == side(i):
+                    continue
+                pick = best_gutter(i, want) if plan[i][0] == "gutter" else None
+                if pick is None:
+                    ok = False
+                    break
+                ax, bx = out_x(edges[i].source), in_x(uid, slot_of(edges[i]))
+                extra += pick[0] - (abs(ax - targets[i][1]) + abs(bx - targets[i][1]))
+                moves[i] = pick[1]
+            if ok:
+                options.append((len(moves), extra, p, moves))
+        if not options:
+            continue
+        for i, j in sorted(min(options, key=lambda o: (o[0], o[2], o[1]))[3].items()):
+            plan[i] = ("gutter", j)
+            centre = layout.spaces[j][0] + layout.spaces[j][1] // 2
+            targets[i] = (targets[i][0], centre, targets[i][2], centre)
+
+
 def _plan_label_bands(model: DiagramModel, layout: LogicalLayout, drawn: list) -> None:
     """D37: each row gap reserves a label band of LABEL_BAND px times the largest same-ordered-pair multiplicity at
     its top (labels of edges leaving the row above) and at its bottom (labels of edges entering the row below), and
     the rise of the self-loops of the row below under the bottom band; tracks run between the bands."""
     layout.label_rows, mult = _label_pairs(drawn)
+    layout.entrance_rows, needs = _entrance_rows(drawn, {n.uid: n.interfaces for n in model.nodes})
     rows_s: dict[tuple, int] = {}
     rows_t: dict[tuple, int] = {}
     layout.gap_tech = set()
@@ -2199,7 +2283,7 @@ def _plan_label_bands(model: DiagramModel, layout: LogicalLayout, drawn: list) -
             if clean(e.technology):
                 layout.gap_tech.update((gs, gt))
             rows_s[gs] = max(rows_s.get(gs, 0), n)
-            rows_t[gt] = max(rows_t.get(gt, 0), n)
+            rows_t[gt] = max(rows_t.get(gt, 0), needs[e.target])  # AC9: one block of rows per entrance in use
     loops: dict[str, list] = {}
     for e in model.edges:
         if e.source == e.target and e.source in layout.pos:
@@ -2659,6 +2743,27 @@ def _label_pairs(drawn: list) -> tuple:
     return index, mult
 
 
+def _entrance_rows(drawn: list, faces: dict) -> tuple[dict[int, int], dict[str, int]]:
+    """AC9: the target-end labels of a box with several entrances in use take one block of rows per entrance, so
+    labels entering one box from different sources through different entrances never overlap when all are shown.
+    Each entrance's block is as tall as the largest same-ordered-pair multiplicity entering through it; blocks
+    stack from the box upward in entrance order. Returns (edge number -> rows below its block, target uid -> rows
+    its top needs). A box with one entrance in use has one block: offset 0 and the largest multiplicity, as before."""
+    _index, mult = _label_pairs(drawn)
+    blocks: dict[str, dict[int, int]] = {}
+    for _number, edge in drawn:
+        if edge.source != edge.target and _has_label(edge):
+            k = _slot(faces.get(edge.target, []), edge)[0]
+            per = blocks.setdefault(edge.target, {})
+            per[k] = max(per.get(k, 0), mult[(edge.source, edge.target)])
+    offset: dict[int, int] = {}
+    for number, edge in drawn:
+        if edge.target in blocks and edge.source != edge.target:
+            k = _slot(faces.get(edge.target, []), edge)[0]
+            offset[number] = sum(n for s, n in blocks[edge.target].items() if s < k)
+    return offset, {uid: sum(per.values()) for uid, per in blocks.items()}
+
+
 def _longest_segments(pts: list) -> list:
     """Segments of a route, longest first (first wins a tie)."""
     segs = [(abs(bx - ax) + abs(by - ay), i, (ax, ay), (bx, by)) for i, ((ax, ay), (bx, by)) in enumerate(zip(pts, pts[1:]))]
@@ -2897,7 +3002,7 @@ def render_logical_svg(model: DiagramModel) -> str:
             bottom_t = gtop + gsize - own_rise  # a target's own loops rise under its label
             tops[number] = (
                 ((layout.pos[edge.source][0], LOGICAL_BOX_W, routes[number][0][0]), top_s, _row_h(gs in layout.gap_tech)),
-                ((layout.pos[edge.target][0], LOGICAL_BOX_W, routes[number][-1][0], in_stubs.get(edge.target, ())), bottom_t - pt * (k + 1) + LABEL_PAD, _row_h(gt in layout.gap_tech)),
+                ((layout.pos[edge.target][0], LOGICAL_BOX_W, routes[number][-1][0], in_stubs.get(edge.target, ())), bottom_t - pt * (k + 1 + layout.entrance_rows.get(number, 0)) + LABEL_PAD, _row_h(gt in layout.gap_tech)),
             )
     labels = _edge_label_svgs(shown, routes, tops, loop_base, obstacles)
     loops = {}
@@ -3009,11 +3114,13 @@ def _band_height(tracks: int, rise: int, bs: int = 0, bt: int = 0) -> int:
     return max(DEPLOY_MIN_BAND, DEPLOY_LEVEL * tracks + 2 * DEPLOY_TRACK_PAD) + rise + bs + bt
 
 
-def _band_label_rows(drawn: list, pools: dict, bands: list) -> list:
+def _band_label_rows(drawn: list, pools: dict, bands: list, faces: dict) -> list:
     """D37: per band, the label rows it reserves at its top (edges leaving the element above) and bottom (edges
-    entering the element below): the largest same-ordered-pair multiplicity there, zero where no label ends."""
+    entering the element below): the largest same-ordered-pair multiplicity there, zero where no label ends. At a
+    target with several entrances in use the bottom rows are one block per entrance (AC9, _entrance_rows)."""
     index = {id(band): k for k, band in enumerate(bands)}
     _rows, mult = _label_pairs(drawn)
+    _offset, needs = _entrance_rows(drawn, faces)
     rows = [[0, 0] for _ in bands]
     techs = [False] * len(bands)  # D37: a band holding a labelled edge with a technology has two-line rows
     tech_pairs = {(e.source, e.target) for _n, e in drawn if e.source != e.target and _has_label(e) and _has_tech(e)}
@@ -3022,7 +3129,7 @@ def _band_label_rows(drawn: list, pools: dict, bands: list) -> list:
             band = pools.get(uid, {}).get(pool)
             if band is not None:
                 k = index[id(band)]
-                rows[k][slot] = max(rows[k][slot], n)
+                rows[k][slot] = max(rows[k][slot], n if slot == 0 else needs.get(target, n))
                 techs[k] = techs[k] or (source, target) in tech_pairs
     return [(a, b, t, t) for (a, b), t in zip(rows, techs)]
 
@@ -3576,7 +3683,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
             pieces, rects, pools, bands, stack_right, chan_pad, lane_of, lane_gutters, enter, direct, steps
         )
         grown = [max(band.tracks, band.need) for band in bands]
-        lab_now = _band_label_rows(drawn, pools, bands)
+        lab_now = _band_label_rows(drawn, pools, bands, faces)
         gutter_now, last_now = max(n_gutter, gutter_need), max(n_last, last_need)
         if used == n_channels and grown == [band.tracks for band in bands] and lab_now == lab and (gutter_now, last_now) == (n_gutter, n_last):
             break
@@ -3611,6 +3718,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
         deploy_obstacles.append((lane_x, lane_top + 15, len("External interactions") * 7 + 4, 12))
     shown = [(n, e) for n, e in enumerate(all_edges) if e.source in rects and e.target in rects]
     label_rows, _mult = _label_pairs([(n, e) for n, e in shown if e.source != e.target])
+    entrance_rows, _needs = _entrance_rows([(n, e) for n, e in shown if e.source != e.target], faces)
     in_stubs = _in_stubs(shown, routes)
     tops: dict[int, tuple] = {}
     loop_base: dict[int, tuple] = {}
@@ -3629,7 +3737,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
             bottom_t = band_t.hi - rise([edge.target])  # a target's own loops rise under its label
             tops[number] = (
                 ((rects[edge.source][0], rects[edge.source][2], routes[number][0][0]), top_s, _row_h(band_s.tech)),
-                ((rects[edge.target][0], rects[edge.target][2], routes[number][-1][0], in_stubs.get(edge.target, ())), bottom_t - pt * (k + 1) + LABEL_PAD, _row_h(band_t.tech)),
+                ((rects[edge.target][0], rects[edge.target][2], routes[number][-1][0], in_stubs.get(edge.target, ())), bottom_t - pt * (k + 1 + entrance_rows.get(number, 0)) + LABEL_PAD, _row_h(band_t.tech)),
             )
     labels = _edge_label_svgs(shown, callout_routes, tops, loop_base, deploy_obstacles)
     loop_count = {}
