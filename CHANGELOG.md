@@ -1,3 +1,28 @@
+## Unreleased
+
+### Compatibility Impact
+
+- Nothing changes for existing content: every new field is optional and no validation rule, warning or rendering reads them yet. Later stories in this release add a ratcheted rule that requires a relationship to a product component to name a target interface.
+
+### Added
+
+- Optional `interfaces` on `data_component`, `targetInterface` on `relationship`, `listeners` on `runtime_service`, `data_store_service`, `network_service` and `host`, `fills` on a reference architecture deployable object entry, and `exposedThrough` (a uid, a list of uids, or `none`) on a software deployment pattern service group.
+- The interface protocol enum of `product_component` and `data_component` gains SQL, Redis, Kafka, SQS, SNS, S3 and DynamoDB; a listener's protocol adds HTTP, HTTPS, TCP and UDP.
+- `framework/tools/protocol_families.py` with `family(text)`, the single protocol-family table that the validator and the diagram renderer will share.
+- Derived dependency relationships carry the raw `runtimeSpec.dependencies[].interface` string as `_interface`.
+
+### Changed
+
+- `validate.py` imports the shared protocol-family helper; its output does not change.
+
+### Fixed
+
+- No fixes in this change.
+
+### Migration Notes
+
+- Nothing to do yet; the ratcheted `relationship-target-interface` rule and its baseline step arrive with later changes in this release.
+
 ## 1.5.5 - 2026-11-15
 
 ### Compatibility Impact

@@ -132,6 +132,13 @@ interface:
     - WebSocket
     - AMQP
     - SMTP
+    - SQL
+    - Redis
+    - Kafka
+    - SQS
+    - SNS
+    - S3
+    - DynamoDB
     - other
     authenticationModel:
     - iam
@@ -149,7 +156,7 @@ interface:
   fieldDescriptions:
     name: Name the interface or API surface exposed by this component.
     path: Record the route, topic, queue, or address when one exists.
-    protocol: Use REST, gRPC, GraphQL, WebSocket, AMQP, SMTP, or other.
+    protocol: Use REST, gRPC, GraphQL, WebSocket, AMQP, SMTP, SQL, Redis, Kafka, SQS, SNS, S3, DynamoDB, or other.
     authenticationModel: Use the authentication model that applies to this interface.
     description: Describe the purpose or consumer-facing behavior of this interface.
 networkBinding:

@@ -4174,6 +4174,168 @@ requirementGroups:
             self.assertNotIn("No active capability-ownership object patches found", result.stdout)
 
 
+class InterfaceExposureFieldTests(unittest.TestCase):
+    """AC1 (S1): the new optional fields validate and reject wrong types."""
+
+    EXAMPLES = REPO_ROOT / "examples"
+
+    def _copy_examples(self) -> Path:
+        directory = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, directory, True)
+        workspace = directory / "ws"
+        shutil.copytree(self.EXAMPLES, workspace)
+        return workspace
+
+    @staticmethod
+    def _edit(workspace: Path, pattern: str, mutate) -> None:
+        import yaml
+
+        matches = sorted(workspace.glob(pattern))
+        assert matches, pattern
+        path = matches[0]
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        mutate(data)
+        path.write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
+
+    def _add_every_field(self, workspace: Path, bad: bool = False) -> None:
+        port = "5432" if bad else 5432
+        listener = lambda proto: [{"name": "l", "protocol": proto, "port": port, "description": "d"}]
+        for pattern, proto in (
+            ("catalog/shared-services/runtime-services/runtime-service-cinder.yaml", "HTTPS"),
+            ("catalog/shared-services/data-store-services/*.yaml", "SQL"),
+            ("catalog/shared-services/network-services/network-service-openstack-api-lb.yaml", "TCP"),
+            ("catalog/shared-services/hosts/host-serverless-lambda.yaml", "UDP"),
+        ):
+            self._edit(workspace, pattern, lambda d, proto=proto: d.__setitem__("listeners", listener(proto)))
+        self._edit(
+            workspace,
+            "catalog/engineering/data-components/*.yaml",
+            lambda d: d.__setitem__("interfaces", [{"name": "data", "protocol": "SQL", "path": "audit", "authenticationModel": "iam", "description": "d"}]),
+        )
+        self._edit(
+            workspace,
+            "catalog/governance/relationships/relationship-horizon-dashboard-calls-cinder-block-storage.yaml",
+            lambda d: d.__setitem__("targetInterface", "api"),
+        )
+
+        def groups(d):
+            g = d["serviceGroups"]
+            g[0]["exposedThrough"] = "01KSF29JTP-9HYA"
+            if len(g) > 1:
+                g[1]["exposedThrough"] = ["01KSF29JTP-9HYA", "01KSF29JTP-9HYA"]
+            if len(g) > 2:
+                g[2]["exposedThrough"] = "none"
+
+        self._edit(workspace, "catalog/engineering/software-deployment-patterns/*.yaml", groups)
+
+    def test_every_new_field_passes(self) -> None:
+        workspace = self._copy_examples()
+        self._add_every_field(workspace)
+        grandfather_ratcheted_violations(workspace)  # edited groups change the baselined hashes
+        result = validate_workspace(workspace)
+        self.assertTrue(result.ok, result.stdout)
+        for field in ("listeners", "interfaces", "targetInterface", "exposedThrough"):
+            self.assertNotIn(f"'{field}'", result.stdout.replace("[warning]", ""), result.stdout)
+        self.assertNotIn("to type", result.stdout)
+
+    def test_listener_port_string_fails_with_type_error(self) -> None:
+        workspace = self._copy_examples()
+        self._add_every_field(workspace, bad=True)
+        grandfather_ratcheted_violations(workspace)
+        result = validate_workspace(workspace)
+        self.assertFalse(result.ok, result.stdout)
+        self.assertIn("Change field 'port' to type int", result.stdout)
+
+    def _section_failures(self, schema_file: str, section: str | None, node: dict) -> list[str]:
+        import sys
+        import yaml
+
+        sys.path.insert(0, str(REPO_ROOT / "framework" / "tools"))
+        import validate as validate_module
+
+        root = yaml.safe_load((REPO_ROOT / "framework" / "schemas" / schema_file).read_text(encoding="utf-8"))
+        schema = root[section] if section else root
+        failures: list[str] = []
+        validate_module.validate_schema_section(node, schema, "ctx", failures, root, [])
+        return failures
+
+    def test_listener_in_all_four_definition_schemas(self) -> None:
+        for schema_file in ("runtime-service", "data-store-service", "network-service", "host"):
+            good = {"name": "sql", "protocol": "SQL", "port": 5432}
+            self.assertEqual(self._section_failures(f"{schema_file}.schema.yaml", "listener", good), [], schema_file)
+            for protocol in ("HTTP", "HTTPS", "TCP", "UDP", "Kafka"):
+                self.assertEqual(self._section_failures(f"{schema_file}.schema.yaml", "listener", {**good, "protocol": protocol}), [])
+            bad = self._section_failures(f"{schema_file}.schema.yaml", "listener", {**good, "port": "5432"})
+            self.assertTrue(any("Change field 'port' to type int" in f for f in bad), bad)
+            self.assertTrue(self._section_failures(f"{schema_file}.schema.yaml", "listener", {**good, "protocol": "FTP"}))
+
+    def test_interface_protocol_enum_in_both_component_schemas(self) -> None:
+        for schema_file in ("product-component", "data-component"):
+            for protocol in ("REST", "SQL", "Redis", "Kafka", "SQS", "SNS", "S3", "DynamoDB", "other"):
+                node = {"name": "n", "protocol": protocol}
+                self.assertEqual(self._section_failures(f"{schema_file}.schema.yaml", "interface", node), [], (schema_file, protocol))
+            self.assertTrue(self._section_failures(f"{schema_file}.schema.yaml", "interface", {"name": "n", "protocol": "FTP"}))
+
+    def test_fills_type(self) -> None:
+        self.assertEqual(self._section_failures("reference-architecture.schema.yaml", "deployableObjectEntry", {"slot": "ingress", "fills": "01KSF29JTP-9HYA"}), [])
+        bad = self._section_failures("reference-architecture.schema.yaml", "deployableObjectEntry", {"slot": "ingress", "fills": 3})
+        self.assertTrue(any("Change field 'fills' to type str" in f for f in bad), bad)
+
+    def test_exposed_through_shapes(self) -> None:
+        base = {"name": "g", "deploymentTarget": "t"}
+        for value in ("01KSF29JTP-9HYA", ["01KSF29JTP-9HYA", "01KSF29JTP-9HYB"], "none"):
+            self.assertEqual(self._section_failures("software-deployment-pattern.schema.yaml", "serviceGroup", {**base, "exposedThrough": value}), [], value)
+        self.assertTrue(self._section_failures("software-deployment-pattern.schema.yaml", "serviceGroup", {**base, "exposedThrough": 3}))
+
+    def test_target_interface_type(self) -> None:
+        self.assertEqual(self._section_failures("relationship.schema.yaml", None, {"uid": "01KSF29JTP-9HYA", "type": "relationship", "name": "r", "source": "01KSF29JTP-9HYA", "target": "01KSF29JTP-9HYB", "targetInterface": "api", "label": "calls", "catalogStatus": "complete", "schemaVersion": "1.0"}), [])
+        bad = self._section_failures("relationship.schema.yaml", None, {"targetInterface": 3})
+        self.assertTrue(any("Change field 'targetInterface' to type str" in f for f in bad), bad)
+
+
+class ProtocolFamiliesTests(unittest.TestCase):
+    def test_protocol_families_table(self) -> None:
+        import sys
+
+        sys.path.insert(0, str(REPO_ROOT / "framework" / "tools"))
+        from protocol_families import family
+
+        expected = {
+            "web": ["HTTP", "REST", "HTTPS", "GraphQL", "WebSocket"],
+            "grpc": ["gRPC", "HTTP/2"],
+            "sql": ["SQL", "PostgreSQL", "MySQL", "MSSQL", "TDS", "Oracle", "SQLite", "MariaDB"],
+            "redis": ["Redis"],
+            "amqp": ["AMQP"],
+            "kafka": ["Kafka"],
+            "sqs": ["SQS"],
+            "sns": ["SNS"],
+            "dynamodb": ["DynamoDB"],
+            "s3": ["S3"],
+            "snowflake": ["Snowflake"],
+            "bigquery": ["BigQuery"],
+            "mongodb": ["MongoDB"],
+            "other": ["other"],
+        }
+        for fam, names in expected.items():
+            for name in names:
+                self.assertEqual(family(name), fam, name)
+                self.assertEqual(family(name.upper()), fam, name)
+        self.assertEqual(family("PostgreSQL wire protocol"), "sql")
+        self.assertEqual(family("HTTPS/REST"), "web")
+        self.assertEqual(family("HTTP/2"), "grpc")
+        self.assertIsNone(family("AWS SDK (GetSecretValue)"))
+        self.assertNotEqual(family("Kafka"), family("AMQP"))
+        self.assertEqual(family("HTTP"), family("REST"))
+        self.assertEqual(family("HTTP"), family("HTTPS"))
+        self.assertIsNone(family(""))
+
+    def test_validate_imports_protocol_families(self) -> None:
+        source = (REPO_ROOT / "framework" / "tools" / "validate.py").read_text(encoding="utf-8")
+        self.assertRegex(source, r"(?m)^from protocol_families import family\b")
+        self.assertNotRegex(source, r"(?m)^[A-Z_]*PROTOCOL[A-Z_]*\s*(:[^=]+)?=")
+        self.assertNotIn('"postgresql"', source)
+
+
 class IntentRemovalDocsTests(unittest.TestCase):
     """Templates, docs, example and changelog no longer mention the intent field."""
 

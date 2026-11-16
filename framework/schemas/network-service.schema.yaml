@@ -10,6 +10,7 @@ requiredFields:
 - lifecycleStatus
 defaultOwnerRole: shared-services
 optionalFields:
+- listeners
 - aliases
 - description
 - version
@@ -86,6 +87,7 @@ enumFields:
   - other
   - TBD
 fieldTypes:
+  listeners: list
   aliases: list
   owner: dict
   tags: list
@@ -100,6 +102,7 @@ fieldTypes:
   notes: dict
   configurations: list
 collectionSchemas:
+  listeners: listener
   internalComponents: internalComponent
   deploymentConfigurations: deploymentConfiguration
   configurations: configuration
@@ -240,6 +243,43 @@ aiHint: >
   exposure, tenant boundary, and other placement obligations are contextual RequirementGroup and
   ReferenceArchitecture concerns expressed through SDP network zones, service groups, relationships,
   capabilities, and DecisionRecords.
+listener:
+  requiredFields:
+  - name
+  - protocol
+  - port
+  optionalFields:
+  - description
+  enumFields:
+    protocol:
+    - REST
+    - gRPC
+    - GraphQL
+    - WebSocket
+    - AMQP
+    - SMTP
+    - SQL
+    - Redis
+    - Kafka
+    - SQS
+    - SNS
+    - S3
+    - DynamoDB
+    - HTTP
+    - HTTPS
+    - TCP
+    - UDP
+    - other
+  fieldTypes:
+    name: str
+    protocol: str
+    port: int
+    description: str
+  fieldDescriptions:
+    name: Name the listener, such as sql, http, https or grpc.
+    protocol: Record the protocol the listener serves, one of the interface protocols or HTTP, HTTPS, TCP, UDP.
+    port: Record the port number every instance of this definition listens on.
+    description: Explain what the listener serves. Hostnames, IPs and environment endpoints do not belong here.
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
 decisionRecordRef:
   requiredFields:

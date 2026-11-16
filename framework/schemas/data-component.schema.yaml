@@ -19,6 +19,7 @@ optionalFields:
 - description
 - version
 - tags
+- interfaces
 - tables
 - storedProcedures
 - scheduledJobs
@@ -58,6 +59,7 @@ fieldTypes:
   owner: dict
   runsOn: str
   tags: list
+  interfaces: list
   tables: list
   storedProcedures: list
   scheduledJobs: list
@@ -67,11 +69,55 @@ fieldTypes:
   decisionRecords: list
   requirementImplementations: list
 collectionSchemas:
+  interfaces: interface
   tables: tableDefinition
   storedProcedures: storedProcedure
   scheduledJobs: scheduledJob
   decisionRecords: decisionRecordRef
   requirementImplementations: requirementImplementation
+interface:
+  requiredFields:
+  - name
+  - protocol
+  optionalFields:
+  - path
+  - authenticationModel
+  - description
+  enumFields:
+    protocol:
+    - REST
+    - gRPC
+    - GraphQL
+    - WebSocket
+    - AMQP
+    - SMTP
+    - SQL
+    - Redis
+    - Kafka
+    - SQS
+    - SNS
+    - S3
+    - DynamoDB
+    - other
+    authenticationModel:
+    - iam
+    - api-key
+    - oauth
+    - saml
+    - other
+    - TBD
+  fieldTypes:
+    name: str
+    path: str
+    protocol: str
+    authenticationModel: str
+    description: str
+  fieldDescriptions:
+    name: Name the data surface, such as data, reporting, or change-stream. A relationship names it in targetInterface.
+    path: Record the schema, database, topic, queue or bucket name when one exists.
+    protocol: Use SQL, Redis, Kafka, SQS, SNS, S3, DynamoDB, REST, gRPC, GraphQL, WebSocket, AMQP, SMTP, or other.
+    authenticationModel: Use the authentication model that applies to this surface.
+    description: Describe what consumers reach through this surface.
 tableDefinition:
   requiredFields:
   - name
@@ -152,6 +198,9 @@ fieldDescriptions:
   targetEngine: Declare the database engine this component targets.
   dataClassification: Declare the sensitivity classification of the data this component contains.
   containsPII: Set true when this component contains or processes personally identifiable information.
+  interfaces: >
+    Optional. List the surfaces consumers reach this data component through. When absent the data component
+    has one implicit surface named data whose protocol follows targetEngine (postgresql to SQL, dynamodb to DynamoDB).
   tables: List the tables, collections, or data structures defined by this component.
   storedProcedures: List stored procedures or database functions defined by this component.
   scheduledJobs: List scheduled jobs defined by this component such as SQL Agent jobs or pg_cron entries.
