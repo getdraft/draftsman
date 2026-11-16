@@ -404,6 +404,39 @@ register_ratchet_rule("sdp-placement-types", _check_sdp_placement_types)
 register_ratchet_rule("relationship-definition-endpoint", _check_relationship_definition_endpoint)
 
 
+def interface_names(obj: dict[str, Any]) -> list[str]:
+    """Names of the surfaces a relationship can enter through: the declared interfaces, or the implicit
+    `data` surface of a data component that declares none."""
+    names = [
+        str(item.get("name")).strip()
+        for item in obj.get("interfaces") or []
+        if isinstance(item, dict) and is_non_empty(item.get("name"))
+    ]
+    if not names and obj.get("type") == "data_component" and not obj.get("interfaces"):
+        return ["data"]
+    return names
+
+
+def _check_relationship_target_interface(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
+    # Ratcheted half of relationship-target-interface: a relationship to a product component must name one
+    # of its interfaces. A targetInterface naming a surface the target lacks is never ratcheted; see
+    # validate_target_interface. Data components, externalTarget, instances and derived relationships are exempt.
+    if obj.get("type") != "relationship" or obj.get("_derived"):
+        return []
+    ref = obj.get("target")
+    target = catalog_by_id.get(ref) if isinstance(ref, str) else None
+    if not isinstance(target, dict) or target.get("type") != "product_component" or is_non_empty(obj.get("targetInterface")):
+        return []
+    names = interface_names(target)
+    return [
+        f"relationship '{obj.get('name') or obj.get('uid')}' targets {_describe(target, ref)} without a targetInterface: "
+        f"name one of its interfaces ({', '.join(names) or 'none declared; add interfaces to the component'})"
+    ]
+
+
+register_ratchet_rule("relationship-target-interface", _check_relationship_target_interface)
+
+
 def object_hash(obj: dict[str, Any]) -> str:
     dumped = yaml.safe_dump(obj, sort_keys=True, allow_unicode=True)
     return hashlib.sha256(dumped.encode("utf-8")).hexdigest()
@@ -4563,6 +4596,43 @@ def validate_relationship(
             "add the referenced object to the catalog or correct the UID"
         )
 
+def validate_target_interface(
+    obj: dict[str, Any],
+    path: Path,
+    catalog_by_id: dict[str, dict[str, Any]],
+    failures: list[str],
+    warnings: list[str],
+) -> None:
+    """Unratcheted half of relationship-target-interface: a targetInterface must name a surface its target has
+    (error), or be uncheckable (warning)."""
+    if obj.get("_derived") or not is_non_empty(obj.get("targetInterface")):
+        return
+    named = str(obj["targetInterface"]).strip()
+    rel = obj.get("name") or obj.get("uid")
+    if is_non_empty(obj.get("externalTarget")) and not is_non_empty(obj.get("target")):
+        warnings.append(
+            f"{path}: relationship-target-interface: relationship '{rel}' names targetInterface '{named}' "
+            f"but its target '{obj.get('externalTarget')}' is external, so the interface cannot be checked"
+        )
+        return
+    target = catalog_by_id.get(obj.get("target")) if is_non_empty(obj.get("target")) else None
+    if not isinstance(target, dict):
+        return
+    label = target.get("name") or obj.get("target")
+    names = interface_names(target)
+    if names or target.get("type") in ("product_component", "data_component"):
+        if named not in names:
+            failures.append(
+                f"{path}: relationship-target-interface: relationship '{rel}' names targetInterface '{named}', "
+                f"which is not an interface of target {label} ({', '.join(names) or 'none declared'})"
+            )
+    else:
+        warnings.append(
+            f"{path}: relationship-target-interface: relationship '{rel}' names targetInterface '{named}' "
+            f"but target {label} declares no interfaces, so the interface cannot be checked"
+        )
+
+
 def validate_diagram_layout(
     obj: dict[str, Any],
     path: Path,
@@ -4743,6 +4813,7 @@ def main(argv: list[str] | None = None) -> int:
             )
         if obj.get("type") == "relationship":
             validate_relationship(obj, path, catalog_by_id, failures)
+            validate_target_interface(obj, path, catalog_by_id, failures, warnings)
         if obj.get("type") == "diagram_layout":
             validate_diagram_layout(obj, path, catalog_by_id, failures, warnings)
         if obj.get("type") == "system":

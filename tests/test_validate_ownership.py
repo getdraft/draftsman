@@ -211,6 +211,200 @@ class OwnershipRuleTests(unittest.TestCase):
         self.assertTrue(self.baseline_lines(out, DEFINITION), out)
 
 
+TI = "relationship-target-interface"
+COMP2 = "01M7C497N2-MSDX"
+RUNTIME_I = "01M7C497N3-MSDY"
+
+
+class TargetInterfaceRuleTests(unittest.TestCase):
+    """AC2: relationship-target-interface, one case per branch."""
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.ws = Path(self._tmp.name)
+        (self.ws / "catalog" / "engineering").mkdir(parents=True)
+
+    def put(self, obj: Dict[str, Any]) -> None:
+        (self.ws / "catalog" / "engineering" / (str(obj["uid"]) + ".yaml")).write_text(
+            yaml.safe_dump(obj, sort_keys=True), encoding="utf-8"
+        )
+
+    def target(self, typ: str, uid: str = COMP2, **extra: Any) -> None:
+        self.put(_obj(COMP, "product_component", "Fx Caller"))
+        self.put(_obj(uid, typ, "Fx Target", **extra))
+
+    def rel(self, target: Optional[str] = COMP2, **extra: Any) -> None:
+        fields: Dict[str, Any] = {"source": COMP, "label": "calls", "catalogStatus": "stub"}
+        if target:
+            fields["target"] = target
+        fields.update(extra)
+        self.put(_obj(REL, "relationship", "Fx Flow", **fields))
+
+    def run_validate(self, *flags: str) -> Tuple[int, str]:
+        proc = subprocess.run(
+            [sys.executable, str(VALIDATE), "--workspace", str(self.ws), *flags],
+            capture_output=True, text=True, check=False,
+        )
+        return proc.returncode, proc.stdout + proc.stderr
+
+    @staticmethod
+    def lines(out: str) -> Dict[str, List[str]]:
+        """Rule lines split into errors, warnings and baselined warnings."""
+        result: Dict[str, List[str]] = {"error": [], "warning": [], "baseline": []}
+        section = ""
+        for line in out.splitlines():
+            if line.startswith("Validation failures"):
+                section = "error"
+            elif line.startswith("Validation warnings"):
+                section = "warning"
+            elif line.startswith("- ") and TI in line:
+                key = "baseline" if line.startswith("- baseline:") else section
+                result[key].append(line)
+        return result
+
+    IFACES = [{"name": "api", "protocol": "REST"}, {"name": "admin", "protocol": "REST"}]
+
+    # ratcheted branch
+    def test_product_component_without_target_interface_is_a_ratcheted_error(self) -> None:
+        self.target("product_component", interfaces=self.IFACES)
+        self.rel()
+        code, out = self.run_validate()
+        found = self.lines(out)["error"]
+        self.assertEqual(1, len(found), out)
+        for text in ("Fx Flow", "Fx Target", "without a targetInterface", "api, admin", f"[{TI}]"):
+            self.assertIn(text, found[0])
+        self.assertEqual(1, code)
+
+    def test_product_component_with_named_interface_is_clean(self) -> None:
+        self.target("product_component", interfaces=self.IFACES)
+        self.rel(targetInterface="admin")
+        _, out = self.run_validate()
+        self.assertEqual({"error": [], "warning": [], "baseline": []}, self.lines(out), out)
+
+    def test_ratcheted_error_is_baselined_then_binds_again_when_touched(self) -> None:
+        self.target("product_component", interfaces=self.IFACES)
+        self.rel()
+        self.run_validate("--write-baseline")
+        entries = yaml.safe_load((self.ws / ".draft" / "validation-baseline.yaml").read_text())["entries"]
+        self.assertEqual([(TI, REL)], [(e["rule"], e["uid"]) for e in entries])
+        _, out = self.run_validate()
+        found = self.lines(out)
+        self.assertEqual([], found["error"], out)
+        self.assertEqual(1, len(found["baseline"]), out)
+        self.rel(notes="touched")
+        code, out = self.run_validate()
+        self.assertEqual(1, len(self.lines(out)["error"]), out)
+        self.assertEqual(1, code)
+        # Fixing the relationship leaves a stale baseline entry as a warning.
+        self.rel(targetInterface="api")
+        _, out = self.run_validate()
+        self.assertIn("stale baseline entry", out)
+        self.assertEqual([], self.lines(out)["error"], out)
+
+    def test_no_baseline_flag_makes_it_an_error_again(self) -> None:
+        self.target("product_component", interfaces=self.IFACES)
+        self.rel()
+        self.run_validate("--write-baseline")
+        code, out = self.run_validate("--no-baseline")
+        self.assertEqual(1, len(self.lines(out)["error"]), out)
+        self.assertEqual(1, code)
+
+    # exemptions
+    def test_data_component_target_needs_no_target_interface(self) -> None:
+        self.target("data_component")
+        self.rel()
+        _, out = self.run_validate()
+        self.assertEqual({"error": [], "warning": [], "baseline": []}, self.lines(out), out)
+
+    def test_external_target_and_instance_target_need_no_target_interface(self) -> None:
+        self.target("runtime_service", uid=RUNTIME_I)
+        self.rel(target=RUNTIME_I)
+        _, out = self.run_validate()
+        self.assertEqual({"error": [], "warning": [], "baseline": []}, self.lines(out), out)
+        self.rel(target=None, externalTarget="Fx External")
+        _, out = self.run_validate()
+        self.assertEqual({"error": [], "warning": [], "baseline": []}, self.lines(out), out)
+
+    def test_derived_relationship_is_exempt(self) -> None:
+        self.put(_obj(COMP, "product_component", "Fx Caller", runtimeSpec={"dependencies": [{"ref": COMP2, "interface": "api"}]}))
+        self.put(_obj(COMP2, "product_component", "Fx Target", interfaces=self.IFACES))
+        _, out = self.run_validate()
+        self.assertEqual({"error": [], "warning": [], "baseline": []}, self.lines(out), out)
+        sys.path.insert(0, str(VALIDATE.parent))
+        try:
+            import validate as v  # noqa: PLC0415
+        finally:
+            sys.path.pop(0)
+        catalog = {COMP2: _obj(COMP2, "product_component", "Fx Target", interfaces=self.IFACES)}
+        derived = _obj(REL, "relationship", "d", source=COMP, target=COMP2, _derived=True, targetInterface="nope")
+        self.assertEqual([], list(v._check_relationship_target_interface(derived, catalog, {})))
+        failures: List[str] = []
+        warnings: List[str] = []
+        v.validate_target_interface(derived, Path("x.yaml"), catalog, failures, warnings)
+        self.assertEqual(([], []), (failures, warnings))
+
+    # unratcheted errors
+    def assert_missing_surface_error(self, out: str, code: int, shown: str) -> None:
+        found = self.lines(out)
+        self.assertEqual(1, len(found["error"]), out)
+        for text in ("Fx Flow", "Fx Target", "'ghost'", shown):
+            self.assertIn(text, found["error"][0])
+        self.assertNotIn(f"[{TI}]", found["error"][0])
+        self.assertEqual(1, code)
+
+    def test_missing_name_on_product_component_is_an_unratcheted_error(self) -> None:
+        self.target("product_component", interfaces=self.IFACES)
+        self.rel(targetInterface="ghost")
+        code, out = self.run_validate()
+        self.assert_missing_surface_error(out, code, "api, admin")
+        self.run_validate("--write-baseline")
+        code, out = self.run_validate()
+        self.assertEqual(1, len(self.lines(out)["error"]), out)
+
+    def test_missing_name_on_data_component_with_interfaces_is_an_error(self) -> None:
+        self.target("data_component", interfaces=[{"name": "sql", "protocol": "SQL"}])
+        self.rel(targetInterface="ghost")
+        code, out = self.run_validate()
+        self.assert_missing_surface_error(out, code, "sql")
+
+    def test_data_component_without_interfaces_accepts_only_data(self) -> None:
+        self.target("data_component")
+        self.rel(targetInterface="data")
+        _, out = self.run_validate()
+        self.assertEqual({"error": [], "warning": [], "baseline": []}, self.lines(out), out)
+        self.rel(targetInterface="ghost")
+        code, out = self.run_validate()
+        self.assert_missing_surface_error(out, code, "data")
+
+    def test_other_target_with_interfaces_lacking_the_name_is_an_error(self) -> None:
+        self.target("runtime_service", uid=RUNTIME_I, interfaces=[{"name": "http", "protocol": "HTTP"}])
+        self.rel(target=RUNTIME_I, targetInterface="ghost")
+        code, out = self.run_validate()
+        self.assert_missing_surface_error(out, code, "http")
+
+    # warnings
+    def test_target_interface_on_target_without_interfaces_list_is_a_warning(self) -> None:
+        self.target("runtime_service", uid=RUNTIME_I)
+        self.rel(target=RUNTIME_I, targetInterface="http")
+        _, out = self.run_validate()
+        found = self.lines(out)
+        self.assertEqual([], found["error"], out)
+        self.assertEqual(1, len(found["warning"]), out)
+        for text in ("Fx Flow", "Fx Target", "'http'"):
+            self.assertIn(text, found["warning"][0])
+
+    def test_target_interface_on_external_target_is_a_warning(self) -> None:
+        self.put(_obj(COMP, "product_component", "Fx Caller"))
+        self.rel(target=None, externalTarget="Fx External", targetInterface="api")
+        _, out = self.run_validate()
+        found = self.lines(out)
+        self.assertEqual([], found["error"], out)
+        self.assertEqual(1, len(found["warning"]), out)
+        for text in ("Fx Flow", "Fx External", "'api'"):
+            self.assertIn(text, found["warning"][0])
+
+
 class FixtureBaselineTests(unittest.TestCase):
     def run_ws(self, workspace: Path, *flags: str) -> Tuple[int, str]:
         proc = subprocess.run(
@@ -229,10 +423,31 @@ class FixtureBaselineTests(unittest.TestCase):
         self.assertTrue([l for l in out.splitlines() if l.startswith("- baseline:") and "[sdp-placement-types]" in l])
         for rule in ("sdp-placement-types", "relationship-definition-endpoint"):
             self.assertTrue([l for l in out.splitlines() if l.startswith("- baseline:") and f"[{rule}]" in l], rule)
+        self.assertTrue([l for l in out.splitlines() if l.startswith("- baseline:") and "[relationship-target-interface]" in l])
+        self.assertFalse([l for l in errors if "[relationship-target-interface]" in l])
         self.assertNotIn("stale baseline entry", out)
         # The fixture deliberately leaves gaps (a placed entry without diagramTier, data components
         # without runsOn) that the diagram tests rely on, so the run exits 1 for those reasons only.
         self.assertEqual(1, code)
+
+    def test_write_baseline_round_trip_records_fixture_target_interface_violations(self) -> None:
+        import shutil
+
+        with tempfile.TemporaryDirectory() as tmp:
+            copy = Path(tmp) / "ws"
+            shutil.copytree(REPO_ROOT / "tests" / "fixtures" / "diagram_workspace", copy)
+            (copy / ".draft" / "validation-baseline.yaml").unlink()
+            _, out = self.run_ws(copy, "--no-baseline")
+            before = [l for l in out.splitlines() if l.startswith("- ") and "[relationship-target-interface]" in l]
+            self.assertTrue(before)
+            self.run_ws(copy, "--write-baseline")
+            entries = yaml.safe_load((copy / ".draft" / "validation-baseline.yaml").read_text())["entries"]
+            recorded = [e for e in entries if e["rule"] == "relationship-target-interface"]
+            self.assertEqual(len(before), len(recorded))
+            _, out = self.run_ws(copy)
+            self.assertFalse(
+                [l for l in out.splitlines() if l.startswith("- ") and not l.startswith("- baseline:") and "[relationship-target-interface]" in l]
+            )
 
     def test_examples_workspace_exits_zero(self) -> None:
         code, out = self.run_ws(REPO_ROOT / "examples", "-q")

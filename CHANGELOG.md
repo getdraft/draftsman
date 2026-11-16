@@ -3,12 +3,15 @@
 ### Compatibility Impact
 
 - Nothing changes for existing content: every new field is optional and no validation rule, warning or rendering reads them yet. Later stories in this release add a ratcheted rule that requires a relationship to a product component to name a target interface.
+- New ratcheted rule `relationship-target-interface`: a relationship whose target is a product component must carry `targetInterface` naming one of its `interfaces`. Existing violations bind again when the relationship changes unless recorded in `.draft/validation-baseline.yaml`, so adopters run `validate.py --write-baseline` once after vendoring this release. Data components, `externalTarget`, instances and derived relationships are exempt.
+- A `targetInterface` naming a surface its target lacks is an error that is never baselined; on a target with no `interfaces` list (that is not a data component) or on an `externalTarget` it is a warning.
 
 ### Added
 
 - Optional `interfaces` on `data_component`, `targetInterface` on `relationship`, `listeners` on `runtime_service`, `data_store_service`, `network_service` and `host`, `fills` on a reference architecture deployable object entry, and `exposedThrough` (a uid, a list of uids, or `none`) on a software deployment pattern service group.
 - The interface protocol enum of `product_component` and `data_component` gains SQL, Redis, Kafka, SQS, SNS, S3 and DynamoDB; a listener's protocol adds HTTP, HTTPS, TCP and UDP.
 - `framework/tools/protocol_families.py` with `family(text)`, the single protocol-family table that the validator and the diagram renderer will share.
+- Ratcheted rule `relationship-target-interface` with the error and warning branches above, and the `interface_names` helper in `validate.py`; the fixture workspace baseline records its existing violations.
 - Derived dependency relationships carry the raw `runtimeSpec.dependencies[].interface` string as `_interface`.
 
 ### Changed
@@ -21,7 +24,8 @@
 
 ### Migration Notes
 
-- Nothing to do yet; the ratcheted `relationship-target-interface` rule and its baseline step arrive with later changes in this release.
+- Run `validate.py --write-baseline` when vendoring this release to record existing relationships to product components in `.draft/validation-baseline.yaml`.
+- Product teams add `interfaces` to their components and `targetInterface` to relationships as they touch them; that clears the baseline entry.
 
 ## 1.5.5 - 2026-11-15
 
