@@ -212,6 +212,7 @@ class DiagramModel:
     deployment_positions: dict[str, int] = field(default_factory=dict)  # D38/D39: diagram_layout positions, deployment view
     deployment_edges: list[DiagramEdge] = field(default_factory=list)  # one per entry of edges, with ports and hops
     devices: dict[str, DiagramNode] = field(default_factory=dict)  # edge device box uid -> its node (deployment view)
+    row_devices: dict[str, str] = field(default_factory=dict)  # placed device drawn only in a row -> that box
 
 
 # D2: object types that may appear one hop away from a placed object.
@@ -1031,12 +1032,14 @@ class Model:
                     self.hop_of.setdefault(uid, boxes)
             if container.uid:
                 self.hop_of.setdefault(container.uid, boxes)
-        # A device placed in the pattern is drawn once, in its row (placing a network service is already a ratcheted
-        # sdp-placement-types violation); its edges start at its first box. An unplaced device keeps its outside box.
-        self.row_devices: dict[str, str] = {}  # placed definition uid -> its first device box
+        # A device placed in the pattern is drawn once, in the row of the group that places it when that group's chain
+        # holds it (placing a network service is already a ratcheted sdp-placement-types violation); its edges then
+        # start and end at that box. Otherwise it keeps its placed box, and other groups' rows draw their own copies.
+        # An unplaced device keeps its outside box.
+        self.row_devices: dict[str, str] = {}  # placed definition uid -> the box of its placing group's row
         for row in rows:
             for box, uid in zip(row.boxes, row.definitions):
-                if uid in self.placement:
+                if uid in self.placement and self.placement[uid]["group"] == row.groups[0]:
                     self.row_devices.setdefault(uid, box)
         for container in self.containers:
             container.members = [uid for uid in container.members if uid not in self.row_devices]
@@ -1066,10 +1069,10 @@ class Model:
             target_port = listener_text(listener) if listener else ""
             boxes = self.hop_of.get(edge.target, []) if edge.source != edge.target else []
             where = self._where(edge.target)
-            if not boxes or where is None or self._where(edge.source) == where or edge.source in self.row_devices:
+            if not boxes or where is None or self._where(edge.source) == where:
                 boxes = []
-            if edge.target in self.row_devices or any(self.device_ref[b] == edge.target for b in boxes):
-                boxes = []  # an edge into a device of the chain never passes the chain (it would loop through itself)
+            if edge.target in self.row_devices or any(self.device_ref[b] == edge.target for b in boxes) or self.row_devices.get(edge.source) in boxes:
+                boxes = []  # an edge into a device of the chain, or out of one of its boxes, never passes it (no self-loop)
             fam = self._relationship_family(edge)[0]
             hop_ports = []
             for box in boxes:
@@ -1714,6 +1717,7 @@ def diagram_of(model: Model) -> DiagramModel:
         deployment_positions=dict(model.layout_positions["deployment"]),
         deployment_edges=list(model.deployment_edges),
         devices=dict(model.devices),
+        row_devices=dict(model.row_devices),
     )
 
 
@@ -3218,18 +3222,16 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     all_edges = model.deployment_edges if len(model.deployment_edges) == len(model.edges) else model.edges  # with port chains
     containers = {g.uid for _t, groups in outline for g in groups if g.uid}
     containers |= {st.uid for _t, groups in outline for g in groups for lane in g.lanes for st in lane.stores if st.uid}  # D45
-    # AC8: the edge device boxes of every drawn lane's device row. A device also placed in the pattern has no box of
-    # its own; its edges start or end at its first box in the rows.
-    alias: dict[str, str] = {}
+    # AC8: the edge device boxes of every drawn lane's device row. A device drawn only in its placing group's row has
+    # no box of its own; its edges start or end at that row's box.
     for _t, groups in outline:
         for g in groups:
             for lane in g.lanes:
                 for chain in lane.chains:
-                    for box, ref in zip(chain.boxes, chain.definitions):
+                    for box in chain.boxes:
                         if box in model.devices:
                             by_uid[box] = model.devices[box]
-                            if ref not in by_uid and ref not in containers:
-                                alias.setdefault(ref, box)
+    alias = {ref: box for ref, box in model.row_devices.items() if box in by_uid and ref not in by_uid and ref not in containers}
     if alias:
         all_edges = [replace(e, source=alias.get(e.source, e.source), target=alias.get(e.target, e.target)) for e in all_edges]
     drawable = set(by_uid) | containers

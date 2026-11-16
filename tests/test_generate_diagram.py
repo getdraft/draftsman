@@ -4097,6 +4097,25 @@ class EdgeDeviceChainTests(unittest.TestCase):
         self.assertEqual(generate_diagram._callout_tech(edges["R3"]), "https 443 via Firewall via Bare")
         self.assertEqual(generate_diagram._callout_tech(model.edges[0]), "HTTPS")  # the Application view's edges carry no hop
 
+    def test_placed_device_outside_its_groups_chain_keeps_its_box_and_its_edges_hop(self) -> None:
+        # round 2: LB is placed in Edge (exposedThrough none); App's slot-default chain holds LB; Far is fronted by FW
+        objects = [plain("APP", "product_component", "App"), plain("FAR", "product_component", "Far"), self.LB, self.FW,
+                   self.ra({"slot": "load-balancer", "fills": "LB"}), plain("R1", "relationship", "R1", source="LB", target="FAR")]
+        model = self.model(objects, [
+            self.group("Edge", ["LB"], exposedThrough="none"), self.group("App", ["APP"]),
+            self.group("Far", ["FAR"], target="west", exposedThrough="FW"),
+        ])
+        self.assertEqual(model.row_devices, {})
+        self.assertIn("LB", [n.uid for n in model.nodes_for_view("deployment")])
+        lanes = {c.group: c.lanes for c in model.containers}
+        self.assertEqual(lanes["Edge"][0].members, ["LB"])  # its placed box stays in its own container
+        self.assertEqual([c.definitions for c in lanes["App"][0].chains], [["LB"]])  # App draws its own copy
+        (edge,) = model.deployment_edges
+        self.assertEqual([model.device_ref[b] for b in edge.hops], ["FW"])  # a placed device's edge hops like any other
+        svg = generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model))
+        self.assertIn('data-id="LB"', svg)
+        self.assertEqual([(a, b) for a, b, _p in edge_pieces(svg)[("LB", "FAR")]], [("LB", edge.hops[0]), (edge.hops[0], "FAR")])
+
     def test_device_also_placed_is_drawn_only_in_the_row_and_keeps_its_edges(self) -> None:
         objects = [plain("WEB", "product_component", "Web"), self.LB, self.ra({"slot": "load-balancer", "fills": "LB"}),
                    plain("R1", "relationship", "R1", source="LB", target="WEB", label="routes")]
