@@ -13,6 +13,7 @@ optionalFields:
 - description
 - target
 - externalTarget
+- targetInterface
 - technology
 - direction
 - flow
@@ -38,6 +39,7 @@ enumFields:
   - inbound
   - bidirectional
 fieldTypes:
+  targetInterface: str
   tags: list
   capabilities: list
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
@@ -55,6 +57,10 @@ fieldDescriptions:
   source: UID of the catalog object initiating the relationship (the caller or producer).
   target: UID of the catalog object receiving the relationship (the callee or consumer). Required when externalTarget is not set.
   externalTarget: Name of an external system or service not represented as a catalog object (e.g. "LDAP Directory", "Stripe Payment API"). Use when the dependency target has no catalog UID.
+  targetInterface: >
+    Name of the target's interface this relationship enters through: an entry of the target's interfaces, or data
+    for a data component without an interfaces list. Rule relationship-target-interface warns when the target is a
+    product_component and this is missing or names no interface of the target. Never a port or host.
   label: Short verb phrase describing the interaction — e.g. "calls", "reads from", "writes to", "sends events to".
   technology: Protocol or technology used — e.g. "HTTPS", "gRPC", "AMQP", "PostgreSQL wire protocol".
   direction: Communication pattern — synchronous for request/response, asynchronous for fire-and-forget, event for event-driven.

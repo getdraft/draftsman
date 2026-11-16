@@ -18,6 +18,7 @@ if str(TOOLS_ROOT) not in sys.path:
     sys.path.insert(0, str(TOOLS_ROOT))
 
 from uid_utils import UID_PATTERN_TEXT, generate_uid
+from protocol_families import family as protocol_family  # noqa: F401  (rules added by later stories)
 
 
 FRAMEWORK_ROOT = Path(__file__).resolve().parent.parent

@@ -77,6 +77,7 @@ deployableObjectEntry:
   - objectType
   - capability
   - slot
+  - fills
   - diagramTier
   - instance
   - riskRef
@@ -95,7 +96,13 @@ deployableObjectEntry:
     - application
     - data
     - utility
+  fieldTypes:
+    fills: str
   fieldDescriptions:
+    fills: Optional on an edge slot (load-balancer, ingress, web-application-firewall,
+      api-gateway). The catalog uid of the network_service definition that fills
+      the slot, so every pattern that follows this reference architecture inherits
+      which definition fronts its exposed service groups.
     ref: Reference a specific catalog object UID when this entry represents a known
       deployable object. Used in company SDPs and RAs that reference catalog-specific
       objects.
