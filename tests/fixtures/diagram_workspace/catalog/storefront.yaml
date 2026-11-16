@@ -60,6 +60,9 @@ serviceGroups:
   - ref: FXPRD00003-0001
     networkZone: fx-app
     diagramTier: application
+  - ref: FXPRD00006-0001
+    networkZone: fx-app
+    diagramTier: application
 - name: Reserved
   deploymentTarget: fx-dc-west
   deployableObjects: []
@@ -125,6 +128,14 @@ name: FX Legacy Cart
 language: Java
 catalogStatus: complete
 lifecycleStatus: retired
+---
+schemaVersion: '1.0'
+uid: FXPRD00006-0001
+type: product_component
+name: FX Order Auditor
+language: Python
+catalogStatus: complete
+lifecycleStatus: preferred
 ---
 schemaVersion: '1.0'
 uid: FXPRD00005-0001
@@ -289,10 +300,10 @@ direction: synchronous
 catalogStatus: complete
 ---
 schemaVersion: '1.0'
-uid: FXEDG00012-0001
+uid: FXEDG00020-0001
 type: relationship
-name: FX Legacy Cart administers orders
-source: FXPRD00004-0001
+name: FX Order Auditor administers orders
+source: FXPRD00006-0001
 target: FXPRD00002-0001
 label: administers orders
 targetInterface: order-admin

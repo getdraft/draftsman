@@ -3690,7 +3690,7 @@ class InterfaceEntranceTests(unittest.TestCase):
             ("FXPRD00003-0001", "FXPRD00002-0001", 1, 3),  # targetInterface order-events
             ("FXPRD00001-0001", "FXDCP00001-0001", 0, 2),  # targetInterface session-write
             ("FXPRD00002-0001", "FXDCP00001-0001", 1, 2),  # derived dependency, interface session-read
-            ("FXPRD00004-0001", "FXPRD00002-0001", 2, 3),  # targetInterface order-admin: the third of three
+            ("FXPRD00006-0001", "FXPRD00002-0001", 2, 3),  # targetInterface order-admin: the third of three
         ]
         catalog = load_catalog(FIXTURE)
         for view, render in (("logical", logical_svg), ("deployment", deployment_svg)):
@@ -3931,7 +3931,7 @@ class DiagramLayoutTests(unittest.TestCase):
             self.assertEqual(logical["FXPRD00001-0001"], 1)
             # FXPRD00002 and FXPRD00003 have no position in their band; each follows the highest one there
             self.assertEqual(sorted(logical[u] for u in ("FXPRD00002-0001", "FXPRD00003-0001")), [2, 3])
-            self.assertEqual(len(updated["logical"]), 8)
+            self.assertEqual(len(updated["logical"]), 9)
             self.assertEqual(len(list((workspace / "catalog").glob("diagram-layout-*.yaml"))), 1)
 
     def test_write_layout_with_placed_only_is_a_usage_error(self) -> None:
