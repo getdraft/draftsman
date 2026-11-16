@@ -18,7 +18,7 @@ if str(TOOLS_ROOT) not in sys.path:
     sys.path.insert(0, str(TOOLS_ROOT))
 
 from uid_utils import UID_PATTERN_TEXT, generate_uid
-from protocol_families import family as protocol_family
+from protocol_families import family
 
 
 FRAMEWORK_ROOT = Path(__file__).resolve().parent.parent
@@ -4634,20 +4634,22 @@ def validate_target_interface(
 
 
 EDGE_SLOTS = ("firewall", "web-application-firewall", "load-balancer", "api-gateway", "ingress")
-DATA_ENGINE_PROTOCOLS = {
-    "postgresql": "SQL", "mysql": "SQL", "mssql": "SQL", "oracle": "SQL", "sqlite": "SQL", "dynamodb": "DynamoDB",
-    "mongodb": "other", "bigquery": "other", "snowflake": "other", "other": "other",
-}
 
 
-def _surface_protocol(target: dict[str, Any], name: str) -> str | None:
-    """Protocol of the named surface of a target: a declared interface, or a data component's implicit surface."""
+def _surface_protocol(target: dict[str, Any], name: str) -> tuple[str | None, str | None]:
+    """Protocol text and family of the named surface of a target: a declared interface, or a data component's
+    implicit surface, whose protocol derives from targetEngine (engines with no protocol of their own count as other)."""
     for item in target.get("interfaces") or []:
         if isinstance(item, dict) and str(item.get("name") or "").strip() == name and is_non_empty(item.get("protocol")):
-            return str(item["protocol"]).strip()
+            protocol = str(item["protocol"]).strip()
+            return protocol, family(protocol)
     if name == "data" and target.get("type") == "data_component" and not target.get("interfaces"):
-        return DATA_ENGINE_PROTOCOLS.get(str(target.get("targetEngine") or "").strip().lower())
-    return None
+        engine = str(target.get("targetEngine") or "").strip()
+        engine_family = family(engine) if engine else None
+        if engine_family in ("mongodb", "bigquery", "snowflake"):
+            engine_family = "other"
+        return (f"{engine} (implicit data surface)" if engine_family else None), engine_family
+    return None, None
 
 
 def validate_protocol_family(
@@ -4663,10 +4665,9 @@ def validate_protocol_family(
     if not isinstance(target, dict):
         return
     named = str(obj["targetInterface"]).strip()
-    protocol = _surface_protocol(target, named)
+    protocol, iface_family = _surface_protocol(target, named)
     technology = str(obj["technology"]).strip()
-    tech_family = protocol_family(technology)
-    iface_family = protocol_family(protocol) if protocol else None
+    tech_family = family(technology)
     if tech_family and iface_family and tech_family != iface_family:
         warnings.append(
             f"{path}: relationship '{obj.get('name') or obj.get('uid')}' technology '{technology}' (family {tech_family}) "

@@ -519,7 +519,7 @@ class ExposureWarningTests(unittest.TestCase):
         out: List[str] = []
         self.v.validate_protocol_family(rel, Path("x.yaml"), catalog, out)
         self.assertEqual(1, len(out), out)
-        self.assertIn("'SQL'", out[0])
+        self.assertIn("postgresql", out[0])
 
     def test_end_to_end_workspace_reports_warnings_and_exits_zero(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
