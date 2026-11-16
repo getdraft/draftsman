@@ -238,6 +238,78 @@ relationship objects whose both endpoints are deployed in the same SDP as
 connection edges, and the pattern detail page shows them in its Connections
 section.
 
+## Interfaces, Listeners And The Edge Device Chain
+
+Who a component talks to is recorded by the team that owns the thing being
+described. The split is by altitude and by owner.
+
+| Owner | Records | Where |
+|---|---|---|
+| Product team | `interfaces` (name, protocol, optional path, authentication model) | On a `product_component`, and optionally on a `data_component` |
+| Product team | `targetInterface` | On a `relationship`: the interface of the target it uses |
+| Infrastructure team | `listeners` (name, protocol, port) | On `runtime_service`, `data_store_service`, `network_service` and `host` definitions |
+| Infrastructure team | `fills` | On a reference architecture deployable object entry whose `slot` is an edge slot: the `network_service` that fills it |
+| Product team (exception) | `exposedThrough` | On a service group: a different device chain, a list of `network_service` uids in order, or `none` |
+
+The ratcheted rule `relationship-target-interface` requires a relationship whose
+target is a product component to carry a `targetInterface` that names one of its
+`interfaces`. Existing relationships are baselined in
+`.draft/validation-baseline.yaml`; one you change must be fixed. Data component
+targets and `externalTarget` are exempt. A data component without `interfaces`
+has one implicit surface named `data`. A relationship derived from a
+`runtimeSpec.dependencies[]` entry cannot carry `targetInterface`; its
+`interface` string is used when it equals an interface name of the target, and
+otherwise only as a protocol hint. A `targetInterface` that names a surface the
+target does not have is an error and is never baselined. Where the target has no
+`interfaces` list to check against (a definition, or an `externalTarget`) it is
+a warning.
+
+### What each view shows
+
+- **Application view.** One entrance on the top edge of a box per declared
+  interface, in declared order; an edge enters through the interface its
+  `targetInterface` names, else the first. It never shows a port and never shows
+  a device.
+- **Deployment view.** Each connection is labelled with the resolved port chain.
+  The target's port comes from the component's own inbound `runtimeSpec.ports`
+  entry, then the listener of its substrate (a data component uses the listener
+  of the store it `runsOn`), matched to the interface's protocol family. Examples:
+  `SQL 5432`, `gRPC 8092`, `https 443 → http 8080`. When a recorded technology
+  differs from the chain's protocol word the line reads `technology · chain`.
+  A relationship whose `technology` and target interface protocol are in
+  different families is a warning.
+
+### The edge device chain
+
+A group is exposed when it sets `exposedThrough`, or when it has no override and
+the pattern follows a reference architecture that fills edge slots. The edge
+slots are `firewall`, `web-application-firewall`, `load-balancer`, `api-gateway`
+and `ingress`, drawn in that order. They are not all protective: a firewall or
+web application firewall meets a protection requirement, a load balancer an
+availability or performance requirement, an ingress or gateway a routing
+requirement. They appear in the deployment view, never the application view,
+because the group has a north door and those requirements apply to it.
+
+- The chain is drawn at the top of the exposed group's own container, whether or
+  not any drawn connection enters it. No caller or arrow is drawn for it; the
+  device is there because the group is exposed.
+- A connection whose source is outside the deployment target (unplaced, in the
+  outside lane, or in another target) enters through the target group's chain;
+  the label lists each hop's port and the callout adds `via <device>`.
+- Same-deployment-target traffic never takes the hop.
+- A data tier (all data components) is not exposed by the slot default;
+  `exposedThrough: none` draws nothing.
+
+To fix a deployment page that lacks a port or a device: declare `listeners` on
+the definition; fill the slot with `fills` on the reference architecture entry
+(or set `exposedThrough`); and name the target interface on the relationship.
+
+### Deliberately not recorded
+
+Hostnames, IP addresses, environment endpoints, security-group rules,
+certificates and health checks are runbook and infrastructure-code material.
+DRAFT has no field for them.
+
 ## How The Detail Page Should Read
 
 The pattern detail page opens with an Application section and a Deployment

@@ -38,6 +38,16 @@ A pattern owns application components and data components. Service definitions (
 3. **Report conflicts, do not resolve them.** Quote both recorded values and let the user choose.
 4. **Use the user's scope.** With several patterns and none named, run `--list` and ask.
 
+## Ports and the edge device chain
+
+- **Application view:** one entrance per declared `interface` of a box; never a port, never a device.
+- **Port chain (Deployment view only).** A connection's label ends in the resolved port: `SQL 5432`, `gRPC 8092`, `https 443 → http 8080`. Each device in the chain adds its own listener port before the target's. The callout adds `via <device>`.
+- **Device chain.** An exposed group draws its edge devices (firewall, web-application-firewall, load-balancer, api-gateway, ingress, in that order) as a row at the top of its own container. They appear because the group has a north door and protection (firewall, WAF), availability or performance (load balancer) and routing (ingress, gateway) requirements apply; no caller is drawn. Connections from outside the deployment target route through the chain; same-target traffic never does. `exposedThrough: none` draws nothing; a group of only data components is not exposed by default.
+- **Page lacks a port:** the infrastructure team declares `listeners` on the definition (runtime, data store, network service or host), or the component records an inbound `runtimeSpec.ports` entry. Do not invent a port.
+- **Page lacks a device:** fill the edge slot with `fills` on the reference architecture entry, or set `exposedThrough` on the service group.
+- **Edge enters the wrong entrance:** name the target interface in the relationship's `targetInterface` (required when the target is a product component; ratcheted rule `relationship-target-interface`).
+- Hostnames, IPs, endpoints, security-group rules, certificates and health checks are not recorded in DRAFT.
+
 ## Fixing the objects behind a picture
 
 When a diagram looks wrong, the fix is a catalog change, then a pull request, never an edit to the page.
