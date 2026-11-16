@@ -20,6 +20,7 @@ import yaml
 
 from framework.tools import generate_diagram
 from generate_c4 import load_catalog
+from uid_utils import derive_inline_relationships
 from tests import diagram_harness as harness
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -3252,7 +3253,7 @@ class LaterStoryTests(unittest.TestCase):
             tools = framework / "tools"
             tools.mkdir(parents=True)
             (framework / "draft-framework.yaml").write_text('version: "9.8.7"\n', encoding="utf-8")
-            for name in ("generate_diagram.py", "generate_c4.py"):
+            for name in ("generate_diagram.py", "generate_c4.py", "protocol_families.py"):
                 (tools / name).write_text((REPO_ROOT / "framework" / "tools" / name).read_text(encoding="utf-8"), encoding="utf-8")
             script = "import sys; sys.path.insert(0, sys.argv[1]); import generate_diagram as g; print(g.framework_version())"
             result = subprocess.run([sys.executable, "-I", "-c", script, str(tools)], capture_output=True, text=True, check=True)
@@ -3723,6 +3724,214 @@ class InterfaceEntranceTests(unittest.TestCase):
             for sdp in generate_diagram.sdps(catalog):
                 for render in (logical_svg, deployment_svg):
                     self.assertEqual(render(catalog, sdp["uid"]), render(catalog, sdp["uid"]))
+
+
+class PortResolutionTests(unittest.TestCase):
+    """Port resolution and the deployment-view port labels (interfaces-exposure, AC6 and AC7 for target ports)."""
+
+    @staticmethod
+    def cat(*objects: dict) -> dict:
+        return {o["uid"]: o for o in objects}
+
+    @staticmethod
+    def rel(uid: str, source: str, target: str, **extra: object) -> dict:
+        return plain(uid, "relationship", uid, source=source, target=target, **extra)
+
+    def model(self, objects: list, groups: list, **sdp_extra: object) -> generate_diagram.Model:
+        sdp = {
+            **plain("SDP-1", "software_deployment_pattern", "Demo Pattern"),
+            "networkZones": [{"id": "z1", "name": "Zone One", "tier": "application"}, {"id": "z2", "name": "Zone Two", "tier": "data"}],
+            "serviceGroups": groups,
+            **sdp_extra,
+        }
+        return generate_diagram.Model(self.cat(*objects, sdp), sdp, False)
+
+    def derived_model(self, objects: list, groups: list) -> generate_diagram.Model:
+        """A model whose catalog also holds the relationships derived from runtimeSpec.dependencies."""
+        sdp = {**plain("SDP-1", "software_deployment_pattern", "Demo Pattern"), "serviceGroups": groups}
+        catalog = self.cat(*objects, sdp)
+        catalog.update(derive_inline_relationships(catalog))
+        return generate_diagram.Model(catalog, sdp, False)
+
+    @staticmethod
+    def group(name: str, refs: list, target: str = "east", **extra: object) -> dict:
+        return {"name": name, "deploymentTarget": target, "deployableObjects": [{"ref": r, "networkZone": "z1"} for r in refs], **extra}
+
+    def far(self, objects: list, groups: list) -> list:
+        """The far-end technology line of every edge of the model, in edge order."""
+        return [e.far_tech for e in self.model(objects, groups).deployment_edges]
+
+    def one_edge(self, target_obj: dict, extra_objects: list = (), rel: dict | None = None, groups: list | None = None) -> str:
+        source = plain("SRC", "product_component", "Source")
+        objects = [source, target_obj, *extra_objects, rel or self.rel("R1", "SRC", target_obj["uid"], technology="")]
+        found = self.far(objects, groups or [self.group("G", ["SRC", target_obj["uid"]])])
+        self.assertEqual(len(found), 1)
+        return found[0]
+
+    def test_own_inbound_port_by_family_http_port_for_rest_interface(self) -> None:
+        target = plain(
+            "TGT", "product_component", "Target",
+            interfaces=[{"name": "api", "protocol": "REST"}],
+            runtimeSpec={"ports": [{"number": 9090, "protocol": "gRPC", "name": "g"}, {"number": 8080, "protocol": "HTTP", "name": "http"}]},
+        )
+        rel = self.rel("R1", "SRC", "TGT", targetInterface="api")
+        self.assertEqual(self.one_edge(target, rel=rel), "http 8080")
+
+    def test_own_port_by_interface_name_when_no_family_matches(self) -> None:
+        target = plain(
+            "TGT", "product_component", "Target",
+            interfaces=[{"name": "events", "protocol": "other"}],
+            runtimeSpec={"ports": [{"number": 7001, "protocol": "Thing", "name": "audit"}, {"number": 7002, "protocol": "Thing", "name": "events"}]},
+        )
+        self.assertEqual(self.one_edge(target, rel=self.rel("R1", "SRC", "TGT", targetInterface="events")), "Thing 7002")
+
+    def test_outbound_ports_never_count(self) -> None:
+        ports = [{"number": 9999, "protocol": "gRPC", "name": "out", "direction": "outbound"}]
+        target = plain("TGT", "product_component", "Target", interfaces=[{"name": "g", "protocol": "gRPC"}], runtimeSpec={"ports": ports})
+        self.assertEqual(self.one_edge(target, rel=self.rel("R1", "SRC", "TGT", targetInterface="g")), "")
+        ports += [{"number": 8092, "protocol": "gRPC", "name": "in", "direction": "bidirectional"}]
+        self.assertEqual(self.one_edge(target, rel=self.rel("R1", "SRC", "TGT", targetInterface="g")), "gRPC 8092")
+        ports[0]["direction"] = "inbound"  # an undirected or inbound port before it wins by order
+        self.assertEqual(self.one_edge(target, rel=self.rel("R1", "SRC", "TGT", targetInterface="g")), "gRPC 9999")
+
+    def test_substrate_listener_by_family_then_single_listener(self) -> None:
+        target = plain("TGT", "product_component", "Target", interfaces=[{"name": "g", "protocol": "gRPC"}])
+        both = plain("RT", "runtime_service", "Runtime", listeners=[
+            {"name": "http", "protocol": "REST", "port": 8080}, {"name": "grpc", "protocol": "gRPC", "port": 8092}])
+        groups = [self.group("G", ["SRC", "TGT"], substrate="RT")]
+        rel = self.rel("R1", "SRC", "TGT", targetInterface="g")
+        self.assertEqual(self.one_edge(target, [both], rel, groups), "gRPC 8092")
+        single = plain("RT", "runtime_service", "Runtime", listeners=[{"name": "https", "protocol": "REST", "port": 8443}])
+        self.assertEqual(self.one_edge(target, [single], rel, groups), "https 8443")  # no family match, one listener
+        none = plain("RT", "runtime_service", "Runtime", listeners=[
+            {"name": "a", "protocol": "REST", "port": 1}, {"name": "b", "protocol": "REST", "port": 2}])
+        self.assertEqual(self.one_edge(target, [none], rel, groups), "")  # no family match, two listeners
+
+    def test_substrate_falls_back_to_runs_on_without_a_group_substrate(self) -> None:
+        target = plain("TGT", "product_component", "Target", runsOn="RT")
+        rt = plain("RT", "runtime_service", "Runtime", listeners=[{"name": "http", "protocol": "HTTP", "port": 80}])
+        self.assertEqual(self.one_edge(target, [rt]), "http 80")
+
+    def test_data_component_uses_its_stores_listener_redis_by_interface(self) -> None:
+        target = plain("TGT", "data_component", "Cache", runsOn="ST", interfaces=[{"name": "data", "protocol": "Redis"}])
+        store = plain("ST", "data_store_service", "Store", listeners=[
+            {"name": "sql", "protocol": "SQL", "port": 5432}, {"name": "redis", "protocol": "Redis", "port": 6379}])
+        self.assertEqual(self.one_edge(target, [store]), "Redis 6379")
+
+    def test_data_component_implicit_surface_from_target_engine(self) -> None:
+        target = plain("TGT", "data_component", "Orders", runsOn="ST", targetEngine="postgresql")
+        store = plain("ST", "data_store_service", "Store", listeners=[
+            {"name": "redis", "protocol": "Redis", "port": 6379}, {"name": "sql", "protocol": "SQL", "port": 5432}])
+        self.assertEqual(self.one_edge(target, [store]), "SQL 5432")
+
+    def test_data_component_engine_family_is_its_own(self) -> None:
+        target = plain("TGT", "data_component", "Docs", runsOn="ST", targetEngine="mongodb")
+        store = plain("ST", "data_store_service", "Store", listeners=[
+            {"name": "web", "protocol": "REST", "port": 8080}, {"name": "m", "protocol": "MongoDB", "port": 27017}])
+        self.assertEqual(self.one_edge(target, [store]), "MongoDB 27017")
+
+    def test_other_interface_matches_only_other_and_ignores_technology(self) -> None:
+        target = plain("TGT", "product_component", "Target", interfaces=[{"name": "ev", "protocol": "other"}])
+        rt = plain("RT", "runtime_service", "Runtime", listeners=[
+            {"name": "https", "protocol": "REST", "port": 443}, {"name": "ev", "protocol": "other", "port": 7000}])
+        rel = self.rel("R1", "SRC", "TGT", targetInterface="ev", technology="HTTPS")
+        self.assertEqual(self.one_edge(target, [rt], rel, [self.group("G", ["SRC", "TGT"], substrate="RT")]), "HTTPS · other 7000")
+
+    def test_port_only_edge_draws_no_source_label_and_a_one_line_row(self) -> None:
+        store = plain("ST", "data_store_service", "Store", listeners=[{"name": "sql", "protocol": "SQL", "port": 5432}])
+        model = self.model(
+            [plain("SRC", "product_component", "Source"), store, plain("R1", "relationship", "R1", source="SRC", target="ST")],
+            [self.group("G", ["SRC"]), self.group("S", ["ST"], target="west")],
+        )
+        svg = generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model))
+        body = re.search(r'<g class="edge" data-from="SRC" data-to="ST">(.*?)</g>', svg, re.S).group(1)
+        self.assertNotIn('class="lb lb-s"', body)
+        self.assertEqual(re.findall(r'<tspan[^>]*>([^<]*)</tspan>', re.search(r'<text class="lb lb-t".*?</text>', body, re.S).group(0)), ["SQL 5432"])
+        self.assertFalse(generate_diagram._has_tech(generate_diagram.DiagramEdge(source="a", target="b", far_tech="SQL 5432")))
+
+    def test_data_component_without_a_store_has_no_port(self) -> None:
+        self.assertEqual(self.one_edge(plain("TGT", "data_component", "Orders", targetEngine="postgresql")), "")
+
+    def test_data_store_target_matches_by_technology_then_single(self) -> None:
+        store = plain("TGT", "data_store_service", "Store", listeners=[
+            {"name": "redis", "protocol": "Redis", "port": 6379}, {"name": "sql", "protocol": "SQL", "port": 5432}])
+        self.assertEqual(self.one_edge(store, rel=self.rel("R1", "SRC", "TGT", technology="PostgreSQL")), "PostgreSQL · SQL 5432")
+        self.assertEqual(self.one_edge(store), "")  # nothing to match on and two listeners
+        single = plain("TGT", "data_store_service", "Store", listeners=[{"name": "sql", "protocol": "SQL", "port": 5432}])
+        self.assertEqual(self.one_edge(single), "SQL 5432")
+
+    def test_external_target_and_self_loop_have_no_port(self) -> None:
+        source = plain("SRC", "product_component", "Source", runsOn="RT", interfaces=[{"name": "a", "protocol": "REST"}])
+        rt = plain("RT", "runtime_service", "Runtime", listeners=[{"name": "http", "protocol": "REST", "port": 80}])
+        rels = [plain("R1", "relationship", "R1", source="SRC", externalTarget="Somewhere"), self.rel("R2", "SRC", "SRC")]
+        model = self.model([source, rt, *rels], [self.group("G", ["SRC"])])
+        self.assertEqual([e.far_tech for e in model.deployment_edges], ["", ""])
+
+    def test_derived_dependency_interface_hint(self) -> None:
+        target = plain("TGT", "product_component", "Target", interfaces=[{"name": "rest", "protocol": "REST"}, {"name": "g", "protocol": "gRPC"}], runsOn="RT")
+        rt = plain("RT", "runtime_service", "Runtime", listeners=[
+            {"name": "http", "protocol": "REST", "port": 8080}, {"name": "grpc", "protocol": "gRPC", "port": 8092}])
+        source = plain("SRC", "product_component", "Source", runtimeSpec={"dependencies": [{"ref": "TGT", "interface": "g"}]})
+        model = self.derived_model([source, target, rt], [self.group("G", ["SRC", "TGT"])])
+        (edge,) = model.deployment_edges
+        self.assertEqual((edge.target_interface, edge.far_tech), ("g", "gRPC 8092"))
+        # a hint that names no interface only picks the family; the edge keeps no targetInterface
+        source["runtimeSpec"]["dependencies"][0]["interface"] = "HTTP/2 stream"
+        (edge,) = self.derived_model([source, target, rt], [self.group("G", ["SRC", "TGT"])]).deployment_edges
+        self.assertEqual((edge.target_interface, edge.interface_hint, edge.far_tech), ("", "HTTP/2 stream", "gRPC 8092"))
+
+    def test_label_technology_rule(self) -> None:
+        far = generate_diagram.far_end_technology
+        self.assertEqual(far("", "SQL 5432"), "SQL 5432")
+        self.assertEqual(far(" sql ", "SQL 5432"), "SQL 5432")  # case-insensitive and trimmed
+        self.assertEqual(far("gRPC", "gRPC 8092"), "gRPC 8092")
+        self.assertEqual(far("PostgreSQL wire protocol", "SQL 5432"), "PostgreSQL wire protocol · SQL 5432")
+        self.assertEqual(far("REST", "gRPC 8092"), "REST · gRPC 8092")
+        self.assertEqual(far("HTTPS JSON", "http 8080"), "HTTPS JSON · http 8080")
+        self.assertEqual(far("SQL", ""), "SQL")  # no port: the recorded technology as is
+        self.assertEqual(generate_diagram.port_chain([], "SQL 5432"), "SQL 5432")
+
+    def test_listener_text_prints_web_listeners_by_name(self) -> None:
+        text = generate_diagram.listener_text
+        self.assertEqual(text({"name": "HTTPS", "protocol": "REST", "port": 443}), "https 443")
+        self.assertEqual(text({"name": "web", "protocol": "HTTP", "port": 80}), "web 80")
+        self.assertEqual(text({"name": "", "protocol": "HTTPS", "port": 443}), "https 443")
+        self.assertEqual(text({"name": "sql", "protocol": "SQL", "port": 5432}), "SQL 5432")
+        self.assertEqual(text({"name": "g", "protocol": "HTTP/2", "port": 8092}), "HTTP/2 8092")
+
+    def test_deployment_labels_on_fixture_edges_and_the_application_view_has_no_ports(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        deployment = deployment_svg(catalog, FIXTURE_SDP)
+        logical = logical_svg(catalog, FIXTURE_SDP)
+
+        def far_lines(svg: str, source: str, target: str) -> list:
+            """The label phrase and the technology line of an edge, from its callout (the labels clip long text)."""
+            body = re.search(rf'<g class="edge" data-from="{source}" data-to="{target}">(.*?)</g>', svg, re.S).group(1)
+            callout = re.search(r'<text class="callout"[^>]*>(.*?)</text>', body, re.S).group(1)
+            phrase, tech = re.match(r'([^<]*)(?:<tspan class="tech">(?: / )?([^<]*)</tspan>)?', callout).groups()
+            return [xml_unescape(phrase), xml_unescape(tech or "")]
+
+        self.assertEqual(far_lines(deployment, "FXPRD00001-0001", "FXPRD00002-0001"), ["places orders", "HTTPS JSON · http 8080"])
+        self.assertEqual(far_lines(deployment, "FXPRD00003-0001", "FXPRD00002-0001"), ["consumes order messages", "AMQP 5672"])
+        self.assertEqual(far_lines(deployment, "FXPRD00006-0001", "FXPRD00002-0001"), ["administers orders", "gRPC 8092"])
+        self.assertEqual(far_lines(deployment, "FXPRD00002-0001", "FXDST00001-0001"), ["reads and writes orders", "SQL 5432"])
+        self.assertEqual(far_lines(deployment, "FXPRD00004-0001", "FXDST00001-0001"), ["reads historic carts", "PostgreSQL wire protocol · SQL 5432"])
+        self.assertEqual(far_lines(logical, "FXPRD00003-0001", "FXPRD00002-0001"), ["consumes order messages", "AMQP"])
+        self.assertEqual(far_lines(logical, "FXPRD00001-0001", "FXPRD00002-0001"), ["places orders", "HTTPS JSON"])
+        reg_deployment = deployment_svg(catalog, "FXSDP00002-0001")
+        self.assertEqual(far_lines(reg_deployment, "FXPRD00010-0001", "FXDCP00004-0001"), ["writes audit trail", "Redis 6379"])
+        self.assertEqual(far_lines(reg_deployment, "FXNET00002-0001", "FXPRD00010-0001"), ["routes ledger requests", "https 8443"])
+        for port in ("5432", "5433", "6379", "8080", "8092", "8443"):
+            self.assertNotIn(port, logical)
+            self.assertNotIn(port, logical_svg(catalog, "FXSDP00002-0001"))
+
+    def test_generate_diagram_imports_protocol_families(self) -> None:
+        source = (REPO_ROOT / "framework" / "tools" / "generate_diagram.py").read_text(encoding="utf-8")
+        self.assertRegex(source, r"(?m)^from protocol_families import family\b")
+        self.assertNotRegex(source, r"PROTOCOL_FAMILY|ENGINE_PROTOCOL|def family\b")
+        tree = __import__("ast").parse(source)
+        names = {t.id for n in tree.body if isinstance(n, __import__("ast").Assign) for t in n.targets if isinstance(t, __import__("ast").Name)}
+        self.assertEqual([n for n in names if "PROTOCOL" in n.upper()], [])
 
 
 class DiagramSkillTests(unittest.TestCase):

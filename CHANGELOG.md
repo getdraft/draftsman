@@ -2,10 +2,11 @@
 
 ### Compatibility Impact
 
-- Nothing changes for existing content: every new field is optional and no validation rule, warning or rendering reads them yet. Later stories in this release add a ratcheted rule that requires a relationship to a product component to name a target interface.
+- Nothing changes for existing content: every new field is optional and only the warnings listed under Added read them (no error reads them beyond the ratcheted rule); the renderer reads `interfaces`, `targetInterface`, the derived `_interface`, `listeners` and component ports. Later stories in this release add a ratcheted rule that requires a relationship to a product component to name a target interface.
 - New ratcheted rule `relationship-target-interface`: a relationship whose target is a product component must carry `targetInterface` naming one of its `interfaces`. Existing violations bind again when the relationship changes unless recorded in `.draft/validation-baseline.yaml`, so adopters run `validate.py --write-baseline` once after vendoring this release. Data components, `externalTarget`, instances and derived relationships are exempt.
 - A `targetInterface` naming a surface its target lacks is an error that is never baselined; on a target with no `interfaces` list (that is not a data component) or on an `externalTarget` it is a warning.
 - Components that already declare two or more `interfaces` get one entrance per interface on the top edge in both views, so their entrances and the edges into them move (today the examples' ops console). Components with one interface or none, and every data component without `interfaces`, render as before.
+- Deployment-view labels change only for connections whose target resolves a port from listeners or component ports; the Application view is unchanged.
 
 ### Added
 
@@ -15,11 +16,13 @@
 - Ratcheted rule `relationship-target-interface` with the error and warning branches above, and the `interface_names` helper in `validate.py`; the fixture workspace baseline records its existing violations.
 - Derived dependency relationships carry the raw `runtimeSpec.dependencies[].interface` string as `_interface`.
 - Three warnings, never errors and never ratcheted: a service group `exposedThrough` that is neither `none` nor one or more `network_service` uids; a reference architecture `fills` whose target is not a `network_service`, whose slot is not an edge slot (firewall, web-application-firewall, load-balancer, api-gateway, ingress), or whose definition does not satisfy the slot's `capability` (an entry with no `capability` is not checked); and a relationship whose `technology` and its target interface's protocol resolve to different known protocol families (the text names both protocols). Derived relationships never produce the family warning.
+- The deployment view resolves the port a connection reaches its target on and prints it in the technology line of the far-end label and the hover callout: a product component's own inbound `runtimeSpec.ports` entry (by protocol family, then by the interface's name), then the listener of its substrate; a data component's store listener; an instance or other definition's own listener. A port prints as `<protocol> <port>` (`SQL 5432`, `gRPC 8092`); a REST, HTTP or HTTPS listener prints its lower-cased name (`https 443`). The technology line reads the port alone when no technology is recorded or it equals the protocol word, else `technology · port`.
 
 ### Changed
 
 - `validate.py` imports the shared protocol-family helper; its output does not change.
 - Both diagram views draw one entrance per declared interface on a box's top edge (data components with `interfaces` too). An edge enters through the interface its `targetInterface` names, or a derived dependency's `interface` when it names one, else through the first entrance; labels keep clear of the extra entrances.
+- `generate_diagram.py` imports the same helper to match listeners to interfaces; the Application view never shows a port.
 
 ### Fixed
 

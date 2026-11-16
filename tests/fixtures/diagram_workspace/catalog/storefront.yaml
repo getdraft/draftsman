@@ -72,6 +72,11 @@ uid: FXRTC00001-0001
 type: runtime_service
 name: FX Cluster Alpha
 productName: FX Orchestrator
+listeners:
+- name: http
+  protocol: REST
+  port: 8080
+  description: Invented application listener of the cluster.
 catalogStatus: complete
 lifecycleStatus: preferred
 ---
@@ -104,8 +109,25 @@ interfaces:
 - name: order-events
   protocol: AMQP
 - name: order-admin
-  protocol: REST
+  protocol: gRPC
 runtimeSpec:
+  ports:
+  - number: 9999
+    protocol: gRPC
+    name: grpc-out
+    direction: outbound
+  - number: 8080
+    protocol: HTTP
+    name: http
+    direction: inbound
+  - number: 8092
+    protocol: gRPC
+    name: grpc
+    direction: bidirectional
+  - number: 5672
+    protocol: AMQP
+    name: order-events
+    direction: inbound
   dependencies:
   - ref: FXDCP00001-0001
     purpose: reads cached sessions
@@ -151,6 +173,10 @@ type: data_store_service
 name: FX Orders Database
 productName: FX SQL Store
 host: FXHST00001-0001
+listeners:
+- name: sql
+  protocol: SQL
+  port: 5432
 catalogStatus: complete
 lifecycleStatus: preferred
 ---
@@ -214,6 +240,7 @@ source: FXPRD00003-0001
 target: FXPRD00002-0001
 label: consumes order messages
 targetInterface: order-events
+technology: AMQP
 direction: asynchronous
 catalogStatus: complete
 ---
@@ -296,6 +323,7 @@ name: FX Legacy Cart reads orders
 source: FXPRD00004-0001
 target: FXDST00001-0001
 label: reads historic carts
+technology: PostgreSQL wire protocol
 direction: synchronous
 catalogStatus: complete
 ---
@@ -307,5 +335,6 @@ source: FXPRD00006-0001
 target: FXPRD00002-0001
 label: administers orders
 targetInterface: order-admin
+technology: gRPC
 direction: synchronous
 catalogStatus: complete
