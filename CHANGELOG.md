@@ -5,6 +5,7 @@
 - Nothing changes for existing content: every new field is optional and no validation rule, warning or rendering reads them yet. Later stories in this release add a ratcheted rule that requires a relationship to a product component to name a target interface.
 - New ratcheted rule `relationship-target-interface`: a relationship whose target is a product component must carry `targetInterface` naming one of its `interfaces`. Existing violations bind again when the relationship changes unless recorded in `.draft/validation-baseline.yaml`, so adopters run `validate.py --write-baseline` once after vendoring this release. Data components, `externalTarget`, instances and derived relationships are exempt.
 - A `targetInterface` naming a surface its target lacks is an error that is never baselined; on a target with no `interfaces` list (that is not a data component) or on an `externalTarget` it is a warning.
+- Components that already declare two or more `interfaces` get one entrance per interface on the top edge in both views, so their entrances and the edges into them move (today the examples' ops console). Components with one interface or none, and every data component without `interfaces`, render as before.
 
 ### Added
 
@@ -17,6 +18,7 @@
 ### Changed
 
 - `validate.py` imports the shared protocol-family helper; its output does not change.
+- Both diagram views draw one entrance per declared interface on a box's top edge (data components with `interfaces` too). An edge enters through the interface its `targetInterface` names, or a derived dependency's `interface` when it names one, else through the first entrance; labels keep clear of the extra entrances.
 
 ### Fixed
 

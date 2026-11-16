@@ -115,6 +115,7 @@ class DiagramNode:
     caption: str = ""  # D5 caption for outside-lane nodes
     life: str = ""  # lifecycleStatus of the object; empty for external nodes (D12)
     tech: str = ""  # technology line of the box (D11)
+    interfaces: list[str] = field(default_factory=list)  # names of the surfaces an edge can enter through, in declared order
 
 
 @dataclass
@@ -130,6 +131,7 @@ class DiagramEdge:
     direction: str = ""
     flow: str = ""
     technology: str = ""
+    target_interface: str = ""  # the interface name that picks the attachment point on the target's top (targetInterface, or a derived _interface)
 
 
 @dataclass
@@ -208,6 +210,15 @@ INFRA_TYPES = frozenset({"network_service", "runtime_service", "host", "ai_gatew
 
 # D7: types whose runsOn may name the substrate of their service group.
 COMPONENT_TYPES = frozenset({"product_component", "data_component"})
+
+
+def declared_interface_names(obj: dict[str, Any]) -> list[str]:
+    """Names of the surfaces of a target, in declared order: its interfaces, or the one implicit ``data`` surface of a
+    data component that declares none. Other objects have none."""
+    if obj.get("type") not in COMPONENT_TYPES:
+        return []
+    found = [clean(i.get("name")) for i in obj.get("interfaces") or [] if isinstance(i, dict) and clean(i.get("name"))]
+    return found or (["data"] if obj.get("type") == "data_component" else [])
 
 # D4: band derived from type when the placing entry records no diagramTier.
 TYPE_BANDS = {
@@ -485,6 +496,7 @@ class Model:
                     derived=not tier,
                     life=lifecycle(obj),
                     tech=technology_line(catalog, obj),
+                    interfaces=declared_interface_names(obj),
                 )
             )
         outer: list[DiagramNode] = []
@@ -500,6 +512,7 @@ class Model:
                     caption=self._caption(uid),
                     life=lifecycle(obj),
                     tech=technology_line(catalog, obj),
+                    interfaces=declared_interface_names(obj),
                 )
             )
         for ext_id, text in externals.items():
@@ -548,6 +561,8 @@ class Model:
                 direction=str(rel.get("direction") or ""),
                 flow=flow,
                 technology=clean(rel.get("technology")),
+                # a derived relationship carries no targetInterface: its _interface counts only when it names a surface of the target
+                target_interface=clean(rel.get("_interface") if dependency else rel.get("targetInterface")),
             )
             self.edges.append(edge)
             drawn.add(id(rel))
@@ -1505,10 +1520,32 @@ def _fit_lines(text: str, width: int, limit: int) -> list[str]:
 
 TRACK_PITCH = 5  # D35: distance between two tracks of a row gap, gutter, band or channel, in both views
 ATTACH_DX = 20  # D36: a box's edges leave its bottom at centre + ATTACH_DX and enter its top at centre - ATTACH_DX
+ATTACH_FIRST = 30  # AC5: with two or more interfaces the first entrance is this far from the box's left edge
+ATTACH_SPAN = 60  # AC5: and the entrances share this much of the top edge (the step is span / (N - 1), at least TRACK_PITCH)
 LOGICAL_TRACK_PAD = 10  # D35: free space between a gap's or gutter's outer tracks and its boxes
 LOGICAL_LANE_SPACE = 50  # minimum free space between the main area and the outside lane (the lane gutter)
 GUTTER_EXACT = 7  # a gutter with at most this many tracks gets the crossing-minimal track order
 LOGICAL_LANE_SHIFT = 2  # outside-lane tracks sit this far off the main TRACK_PITCH lattice, so the two never share a y
+
+
+def _slot(interfaces: list, edge: DiagramEdge) -> tuple[int, int]:
+    """(index, count) of the interface an edge enters its target through: the one its target_interface names, else
+    the first. A target with at most one interface has one entry point."""
+    count = len(interfaces)
+    if count <= 1:
+        return 0, count
+    name = clean(edge.target_interface)
+    return (interfaces.index(name) if name in interfaces else 0), count
+
+
+def attach_in(left: int, width: int, slot: tuple[int, int]) -> int:
+    """AC5: the x where an edge enters a box's top. At most one interface is centre - ATTACH_DX; N >= 2 interfaces are
+    at left + 30 + i * step in declared order, step = max(5, round5(60 / (N - 1))), on the TRACK_PITCH lattice."""
+    k, count = slot
+    if count <= 1:
+        return left + width // 2 - ATTACH_DX
+    step = max(TRACK_PITCH, round(ATTACH_SPAN / (count - 1) / TRACK_PITCH) * TRACK_PITCH)
+    return left + ATTACH_FIRST + k * step
 
 
 def _ceil_grid(value: int) -> int:
@@ -1733,12 +1770,16 @@ def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool
     used = len(layout.space_tracks) - 2
     lane_space = layout.spaces[used + 1]
     drawn = _logical_drawn(model, layout)
+    faces = {n.uid: n.interfaces for n in model.nodes}
 
     def out_x(uid: str) -> int:
         return pos[uid][0] + LOGICAL_BOX_W // 2 + ATTACH_DX
 
-    def in_x(uid: str) -> int:
-        return pos[uid][0] + LOGICAL_BOX_W // 2 - ATTACH_DX
+    def in_x(uid: str, slot: tuple = (0, 0)) -> int:
+        return attach_in(pos[uid][0], LOGICAL_BOX_W, slot)
+
+    def slot_of(e: DiagramEdge) -> tuple:
+        return _slot(faces.get(e.target, []), e)
 
     def toward(x: int, space: tuple[int, int]) -> tuple[int, int]:
         left, width = space
@@ -1759,7 +1800,7 @@ def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool
     targets: dict[int, tuple] = {}  # edge index -> (out x, far x of the out-run, in x, far x of the in-run or None)
     for i, e in drawn:
         (ss, sr), (ts, tr) = layout.row_of[e.source], layout.row_of[e.target]
-        ax, bx = out_x(e.source), in_x(e.target)
+        ax, bx = out_x(e.source), in_x(e.target, slot_of(e))
         if ss == ts and tr == sr + 1 and _gap_of(layout, ("out", e.source)) == _gap_of(layout, ("in", e.target)):
             layout.plan[i] = ("direct",)
             targets[i] = (ax, bx, bx, None)
@@ -1789,7 +1830,7 @@ def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool
                 continue
             space = layout.spaces[layout.plan[i][1]] if layout.plan[i][0] == "gutter" else lane_space
             gap_b = _gap_of(layout, ("in", e.target))
-            in_key = ("in", e.target, (1 if far_b > bx else -1) if gap_b in split else 0)
+            in_key = ("in", e.target, (1 if far_b > bx else -1) if gap_b in split else 0, slot_of(e))  # one in-run per interface
             layout.halves[i] = (out_key, in_key)
             add(out_key, *toward(ax, space), i, e)
             add(in_key, *toward(bx, space), i, e)
@@ -1802,12 +1843,12 @@ def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool
         # the target).
         stubs: dict[tuple[str, int], list[tuple[int, str, tuple, set]]] = {}
         for key, run in sorted(runs.items()):
-            run.x = out_x(key[1]) if key[0] == "out" else in_x(key[1])
+            run.x = out_x(key[1]) if key[0] == "out" else in_x(key[1], key[3])
             stubs.setdefault(run.gap, []).append((run.x, key[0], key, run.uids))
         for i, e in drawn:
             if layout.plan[i][0] == "direct":
                 out_key = layout.halves[i][0]
-                stubs[runs[out_key].gap].append((in_x(e.target), "direct", out_key, {e.source, e.target}))
+                stubs[runs[out_key].gap].append((in_x(e.target, slot_of(e)), "direct", out_key, {e.source, e.target}))
         return {gap: _order_gap(items, stubs[gap]) for gap, items in sorted(by_gap.items())}
 
     # A gap whose runs cannot be ordered without crossing a co-visible stub (a cycle of rules in _order_gap) is
@@ -1845,7 +1886,7 @@ def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool
         if step[0] != "direct":
             j = step[1] if step[0] == "gutter" else used + 1
             centre = layout.spaces[j][0] + layout.spaces[j][1] // 2
-            for x, key in ((out_x(e.source), layout.halves[i][0]), (in_x(e.target), layout.halves[i][1])):
+            for x, key in ((out_x(e.source), layout.halves[i][0]), (in_x(e.target, slot_of(e)), layout.halves[i][1])):
                 joins.setdefault(("v", j, e.source), []).append((_run_y(layout, runs[key]), 1 if x > centre else -1))
     layout.space_tracks = [_order_gutter([run for key, run in sorted(vertical.items()) if key[1] == j], joins) for j in range(used + 2)]
     _place_logical(layout, outer)
@@ -1993,10 +2034,11 @@ def _route_edges(model: DiagramModel, layout: LogicalLayout) -> dict[int, list[t
     travel only in row gaps and gutters, so a route never crosses a box that is not one of its endpoints.
     """
     pos = layout.pos
+    faces = {n.uid: n.interfaces for n in model.nodes}
     routes: dict[int, list[tuple[int, int]]] = {}
     for i, e in _logical_drawn(model, layout):
         a, b = pos[e.source], pos[e.target]
-        ax, bx = a[0] + LOGICAL_BOX_W // 2 + ATTACH_DX, b[0] + LOGICAL_BOX_W // 2 - ATTACH_DX
+        ax, bx = a[0] + LOGICAL_BOX_W // 2 + ATTACH_DX, attach_in(b[0], LOGICAL_BOX_W, _slot(faces.get(e.target, []), e))
         ya = _run_y(layout, layout.runs[layout.halves[i][0]])
         step = layout.plan[i]
         if step[0] == "direct":
@@ -2280,15 +2322,19 @@ def _label_box_at(x: float, top: float, edge: DiagramEdge, limit: Any, anchor: s
     return (x - 2 if anchor == "start" else x - w + 2, top, w, _row_h(bool(clean(edge.technology))) if height is None else height)
 
 
-def _stub_side(left: float, width: float, stub: float) -> tuple:
+def _stub_side(left: float, width: float, stub: float, others: tuple = ()) -> tuple:
     """D37: within its box a label sits on the side of its own stub with more room: left-aligned at the box's left
     edge plus LABEL_DX when the stub is right of the box centre, otherwise right-aligned at the right edge minus
-    LABEL_DX; clipped to that side's width minus 6 px of clearance from the stub. Returns (x, anchor, max chars)."""
+    LABEL_DX; clipped to that side's width minus 6 px of clearance from the stub. ``others`` are the box's other
+    stubs (one per interface): the label also keeps 6 px clear of every one of them on its side, so it is clipped
+    at the outermost. Returns (x, anchor, max chars)."""
     if stub > left + width / 2:
         x = left + LABEL_DX
-        return (x, "start", max(4, int((stub - 6 - x - 4) / LABEL_CHAR_W)))
+        stop = min([stub] + [s for s in others if s < stub])
+        return (x, "start", max(4, int((stop - 6 - x - 4) / LABEL_CHAR_W)))
     x = left + width - LABEL_DX
-    return (x, "end", max(4, int((x - (stub + 6) - 4) / LABEL_CHAR_W)))
+    stop = max([stub] + [s for s in others if s > stub])
+    return (x, "end", max(4, int((x - (stop + 6) - 4) / LABEL_CHAR_W)))
 
 
 def _label_pairs(drawn: list) -> tuple:
@@ -2384,6 +2430,15 @@ def _edge_label(edge: DiagramEdge, ends: tuple, loop: Any, callout: tuple) -> st
     return out
 
 
+def _in_stubs(shown: list, routes: dict) -> dict:
+    """uid -> the distinct x of every stub entering the box's top, ascending (one per interface in use)."""
+    found: dict[str, set] = {}
+    for number, edge in shown:
+        if edge.source != edge.target and number in routes:
+            found.setdefault(edge.target, set()).add(routes[number][-1][0])
+    return {uid: tuple(sorted(xs)) for uid, xs in found.items()}
+
+
 def _edge_label_svgs(edges: list, routes: dict, tops: dict, loops: dict, obstacles: list) -> dict:
     """D37: the label and callout markup of every drawn edge, by edge number.
 
@@ -2399,8 +2454,8 @@ def _edge_label_svgs(edges: list, routes: dict, tops: dict, loops: dict, obstacl
         if number in tops:
             ends = []
             heights = []
-            for (left, width, stub), top, *row in tops[number]:  # an optional third item: the row height in effect
-                x, anchor, limit = _stub_side(left, width, stub)
+            for (left, width, stub, *others), top, *row in tops[number]:  # an optional third item: the row height in effect
+                x, anchor, limit = _stub_side(left, width, stub, tuple(others[0]) if others else ())
                 ends.append((x, top, limit, anchor))
                 heights.append(row[0] if row else None)
             boxes[number] = [_label_box_at(x, top, edge, limit, anchor, h) for (x, top, limit, anchor), h in zip(ends, heights)]
@@ -2410,10 +2465,10 @@ def _edge_label_svgs(edges: list, routes: dict, tops: dict, loops: dict, obstacl
     placed_loops: list = []
     for number, edge in edges:
         if edge.source == edge.target and _has_label(edge):
-            left, width, base = loops[number]
+            left, width, base, *stubs = loops[number]
             avoid = list(obstacles) + [b for n, e in edges if n in boxes and edge.source in (e.source, e.target) for b in boxes[n]]
             avoid += [b for uid, b in placed_loops if uid == edge.source]
-            x = left + width / 2 - ATTACH_DX + 6  # right of the box's own in-stub, so no stub crosses the text
+            x = max([left + width / 2 - ATTACH_DX] + list(stubs[0] if stubs else ())) + 6  # right of the box's own in-stubs, so no stub crosses the text
             at = _place_loop_label((x, base, max(4, int((left + width - LABEL_DX - x - 4) / LABEL_CHAR_W))), edge, avoid)
             loop_at[number] = at
             placed_loops.append((edge.source, _loop_box(at, edge)))
@@ -2506,6 +2561,7 @@ def render_logical_svg(model: DiagramModel) -> str:
         obstacles.append((layout.lane[0] + 10, layout.lane[1] + 15, len("External interactions") * 7 + 4, 12))
     loops: dict[str, int] = {}
     shown = [(n, e) for n, e in enumerate(model.edges) if e.source in layout.pos and e.target in layout.pos]
+    in_stubs = _in_stubs(shown, routes)
     tops: dict[int, tuple] = {}
     loop_base: dict[int, tuple] = {}
     loop_techs: dict[str, list] = {}  # per box, whether each loop records a technology (two-line label)
@@ -2517,7 +2573,7 @@ def render_logical_svg(model: DiagramModel) -> str:
             x, y = layout.pos[edge.source]
             lb_bottom, lb_height = _loop_stack(loop_techs[edge.source])[loops.get(edge.source, 0)]
             loops[edge.source] = loops.get(edge.source, 0) + 1
-            loop_base[number] = (x, LOGICAL_BOX_W, y - lb_bottom - lb_height + 10)
+            loop_base[number] = (x, LOGICAL_BOX_W, y - lb_bottom - lb_height + 10, in_stubs.get(edge.source, ()))
         elif number in layout.label_rows:
             k = layout.label_rows[number]
             gs, gt = _gap_of(layout, ("out", edge.source)), _gap_of(layout, ("in", edge.target))
@@ -2528,7 +2584,7 @@ def render_logical_svg(model: DiagramModel) -> str:
             bottom_t = gtop + gsize - own_rise  # a target's own loops rise under its label
             tops[number] = (
                 ((layout.pos[edge.source][0], LOGICAL_BOX_W, routes[number][0][0]), top_s, _row_h(gs in layout.gap_tech)),
-                ((layout.pos[edge.target][0], LOGICAL_BOX_W, routes[number][-1][0]), bottom_t - pt * (k + 1) + LABEL_PAD, _row_h(gt in layout.gap_tech)),
+                ((layout.pos[edge.target][0], LOGICAL_BOX_W, routes[number][-1][0], in_stubs.get(edge.target, ())), bottom_t - pt * (k + 1) + LABEL_PAD, _row_h(gt in layout.gap_tech)),
             )
     labels = _edge_label_svgs(shown, routes, tops, loop_base, obstacles)
     loops = {}
@@ -2667,6 +2723,7 @@ def _route_deployment_edges(
     chan_pad: int,
     lane_of: dict | None = None,
     gutters: dict | None = None,
+    enter_x: Any = None,
 ) -> tuple[dict, int, int]:
     """Comb routing (D15, D35, D36, deterministic): an edge between two boxes of one zone lane stays inside that lane;
     every other edge runs out of the stack to a vertical channel on its right.
@@ -2704,6 +2761,10 @@ def _route_deployment_edges(
         x, _y, w, _h = rects[uid]
         return x + w // 2 + (ATTACH_DX if out else -ATTACH_DX)
 
+    def enter(e: DiagramEdge) -> int:
+        """The x where an edge enters its target: its interface's attachment point (``enter_x``), else the default."""
+        return enter_x(e) if enter_x is not None else attach(e.target, False)
+
     in_lane: dict[int, tuple] = {}  # edge index -> (lane, gutter index) for a same-lane edge
     for i, e in drawn:
         (lane, col_s), (lane_t, col_t) = lane_of.get(e.source, (None, 0)), lane_of.get(e.target, (None, 0))
@@ -2728,7 +2789,7 @@ def _route_deployment_edges(
     index = {id(band): k for k, band in enumerate(bands)}  # identity lookup only; nothing iterates this dict
     for i, e in drawn:
         for uid, out, band in ((e.source, True, pools[e.source]["bottom"]), (e.target, False, pools[e.target]["top"])):
-            x = attach(uid, out)
+            x = attach(uid, True) if out else enter(e)
             if i in in_lane:  # the whole gutter: its tracks are not placed yet
                 left, width = gutters[in_lane[i][0]][in_lane[i][1]]
                 lo, hi = min(x, left), max(x, left + width)
@@ -2742,7 +2803,7 @@ def _route_deployment_edges(
             else:
                 run.lo, run.hi = min(run.lo, lo), max(run.hi, hi)
                 run.uids |= {e.source, e.target}
-    level: dict[tuple[bool, str], int] = {}
+    level: dict[tuple[bool, str, int], int] = {}  # (from the top?, box, attachment x) -> y
     placed: list[tuple[int, _Run]] = []  # (y, run) of every stack run, for the outside lane's bands
     by_band: dict[int, list[_Run]] = {}
     for run in sorted(runs.values(), key=lambda r: r.key):
@@ -2767,7 +2828,7 @@ def _route_deployment_edges(
                     track += 1
                 run.track = track
                 done.append(run)
-                level[(from_top, run.key[2])] = y
+                level[(from_top, run.key[2], run.key[3])] = y
                 if band.rightward:
                     placed.append((y, run))
                 used[from_top] = max(used[from_top], track + 1)
@@ -2777,7 +2838,7 @@ def _route_deployment_edges(
     for i, e in drawn:
         if i not in in_lane:
             continue
-        ys, yt = level[(True, e.source)], level[(False, e.target)]
+        ys, yt = level[(True, e.source, attach(e.source, True))], level[(False, e.target, enter(e))]
         key = ("g", in_lane[i][0], in_lane[i][1], e.source)
         run = vertical.get(key)
         if run is None:
@@ -2795,14 +2856,14 @@ def _route_deployment_edges(
     for i, e in drawn:
         sx, sy, _sw, sh = rects[e.source]
         tx, ty, _tw, _th = rects[e.target]
-        ox, ix = attach(e.source, True), attach(e.target, False)
+        ox, ix = attach(e.source, True), enter(e)
         if i in in_lane:
             left, width = gutters[in_lane[i][0]][in_lane[i][1]]
             run = vertical[("g", in_lane[i][0], in_lane[i][1], e.source)]
             cx = _track_at(left, width, gutter_count[in_lane[i]], run.track)
         else:
             cx = chan_x[e.source]
-        ys, yt = level[(True, e.source)], level[(False, e.target)]
+        ys, yt = level[(True, e.source, attach(e.source, True))], level[(False, e.target, enter(e))]
         raw = [(ox, sy + sh), (ox, ys), (cx, ys), (cx, yt), (ix, yt), (ix, ty)]
         pts: list[tuple[int, int]] = []
         for point in raw:
@@ -2822,6 +2883,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     lane's boxes are as tall as the tracks their runs need (D35). Deterministic (D15).
     """
     by_uid = {n.uid: n for n in model.deployment_nodes}
+    faces = {n.uid: n.interfaces for n in model.deployment_nodes}
     outline = _deployment_outline(model)
     containers = {g.uid for _t, groups in outline for g in groups if g.uid}
     containers |= {st.uid for _t, groups in outline for g in groups for lane in g.lanes for st in lane.stores if st.uid}  # D45
@@ -3124,7 +3186,11 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
         for node, by in lane_rows:
             rects[node.uid] = (lane_x, by, LOGICAL_BOX_W, LOGICAL_BOX_H)
             pos[node.uid] = (lane_x, by)
-        routes, used, gutter_need, last_need = _route_deployment_edges(drawn, rects, pools, bands, stack_right, chan_pad, lane_of, lane_gutters)
+        def enter(e: DiagramEdge, rects: dict = rects) -> int:
+            x, _y, w, _h = rects[e.target]
+            return attach_in(x, w, _slot(faces.get(e.target, []), e))
+
+        routes, used, gutter_need, last_need = _route_deployment_edges(drawn, rects, pools, bands, stack_right, chan_pad, lane_of, lane_gutters, enter)
         grown = [max(band.tracks, band.need) for band in bands]
         lab_now = _band_label_rows(drawn, pools, bands)
         gutter_now, last_now = max(n_gutter, gutter_need), max(n_last, last_need)
@@ -3154,6 +3220,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
         deploy_obstacles.append((lane_x, lane_top + 15, len("External interactions") * 7 + 4, 12))
     shown = [(n, e) for n, e in enumerate(model.edges) if e.source in rects and e.target in rects]
     label_rows, _mult = _label_pairs([(n, e) for n, e in shown if e.source != e.target])
+    in_stubs = _in_stubs(shown, routes)
     tops: dict[int, tuple] = {}
     loop_base: dict[int, tuple] = {}
     loop_count: dict[str, int] = {}
@@ -3162,7 +3229,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
             lb_bottom, lb_height = _loop_stack(loop_techs[edge.source])[loop_count.get(edge.source, 0)]
             loop_count[edge.source] = loop_count.get(edge.source, 0) + 1
             rx, ry, rw, _rh = rects[edge.source]
-            loop_base[number] = (rx + rw - LOGICAL_BOX_W, LOGICAL_BOX_W, ry - lb_bottom - lb_height + 10)
+            loop_base[number] = (rx + rw - LOGICAL_BOX_W, LOGICAL_BOX_W, ry - lb_bottom - lb_height + 10, in_stubs.get(edge.source, ()))
         elif number in label_rows:
             k = label_rows[number]
             band_s, band_t = pools[edge.source]["bottom"], pools[edge.target]["top"]
@@ -3171,7 +3238,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
             bottom_t = band_t.hi - rise([edge.target])  # a target's own loops rise under its label
             tops[number] = (
                 ((rects[edge.source][0], rects[edge.source][2], routes[number][0][0]), top_s, _row_h(band_s.tech)),
-                ((rects[edge.target][0], rects[edge.target][2], routes[number][-1][0]), bottom_t - pt * (k + 1) + LABEL_PAD, _row_h(band_t.tech)),
+                ((rects[edge.target][0], rects[edge.target][2], routes[number][-1][0], in_stubs.get(edge.target, ())), bottom_t - pt * (k + 1) + LABEL_PAD, _row_h(band_t.tech)),
             )
     labels = _edge_label_svgs(shown, routes, tops, loop_base, deploy_obstacles)
     loop_count = {}

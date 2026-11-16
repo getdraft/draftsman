@@ -1309,7 +1309,7 @@ class LaterStoryTests(unittest.TestCase):
     def test_derived_relationships(self) -> None:
         model = fixture_model()
         rows = {row["label"]: row for row in model.relationship_rows}
-        self.assertEqual(rows["reads cached sessions"]["source"], "inline dependency")
+        self.assertEqual(rows["session-read"]["source"], "inline dependency")
         self.assertEqual(rows["places orders"]["source"], "relationship object")
         self.assertNotIn("runs on", rows)
         dependencies = [edge for edge in model.edges if edge.origin == "inline dependency"]
@@ -3648,6 +3648,81 @@ class SameContainerRoutingTests(unittest.TestCase):
                 runs.append({p.relative_to(out.parent).as_posix().replace(f"html{n}", "h").replace(f"svg{n}", "s"): p.read_bytes() for d in (out, svg) for p in sorted(d.iterdir())})
             self.assertTrue(runs[0])
             self.assertEqual(runs[0], runs[1])
+
+
+class InterfaceEntranceTests(unittest.TestCase):
+    """AC5: one attachment point per declared interface on a box's top edge, in both views."""
+
+    @staticmethod
+    def expected_x(left: float, count: int, index: int) -> float:
+        """The plan's formula, written out here (not the renderer's helper)."""
+        if count <= 1:
+            return left + 200 / 2 - 20
+        step = max(5, int(60 / (count - 1) / 5 + 0.5) * 5)
+        return left + 30 + index * step
+
+    def test_attachment_points_for_one_two_three_and_fourteen_interfaces(self) -> None:
+        self.assertEqual([self.expected_x(0, 1, 0)], [80])
+        self.assertEqual([self.expected_x(0, 2, i) for i in range(2)], [30, 90])
+        self.assertEqual([self.expected_x(0, 3, i) for i in range(3)], [30, 60, 90])
+        self.assertEqual([self.expected_x(0, 14, i) for i in (0, 13)], [30, 95])
+        for count in (0, 1, 2, 3, 14):
+            for index in range(max(count, 1)):
+                with self.subTest(count=count, index=index):
+                    edge = generate_diagram.DiagramEdge("a", "b")
+                    names = [f"i{k}" for k in range(count)]
+                    edge.target_interface = names[index] if count else ""
+                    got = generate_diagram.attach_in(100, 200, generate_diagram._slot(names, edge))
+                    self.assertEqual(got, self.expected_x(100, count, index))
+                    self.assertEqual(got % 5, 0)
+
+    def test_entrance_selection(self) -> None:
+        names = ["x", "y", "z"]
+        pick = lambda name: generate_diagram._slot(names, generate_diagram.DiagramEdge("a", "b", target_interface=name))
+        self.assertEqual(pick("z"), (2, 3))
+        self.assertEqual(pick(""), (0, 3))
+        self.assertEqual(pick("nope"), (0, 3))  # a derived _interface that names no surface: the first point
+
+    def test_fixture_edges_enter_through_their_interface(self) -> None:
+        # (source, target, interface index, count): the fixture's two-interface component and two-interface data component
+        cases = [
+            ("FXPRD00001-0001", "FXPRD00002-0001", 0, 3),  # targetInterface orders-api
+            ("FXPRD00003-0001", "FXPRD00002-0001", 1, 3),  # targetInterface order-events
+            ("FXPRD00001-0001", "FXDCP00001-0001", 0, 2),  # targetInterface session-write
+            ("FXPRD00002-0001", "FXDCP00001-0001", 1, 2),  # derived dependency, interface session-read
+            ("FXPRD00004-0001", "FXPRD00002-0001", 2, 3),  # targetInterface order-admin: the third of three
+        ]
+        catalog = load_catalog(FIXTURE)
+        for view, render in (("logical", logical_svg), ("deployment", deployment_svg)):
+            svg = render(catalog, FIXTURE_SDP)
+            rects = node_rects(svg)
+            routes = {(a, b): pts for a, b, pts in edge_polylines(svg)}
+            for source, target, index, count in cases:
+                with self.subTest(view=view, source=source, target=target):
+                    pts = routes[(source, target)]
+                    self.assertEqual(pts[-1][0], self.expected_x(rects[target][0], count, index))
+                    self.assertEqual(pts[-1][1], rects[target][1])
+
+    def test_edges_without_a_named_interface_enter_the_first_point_and_single_surfaces_keep_centre(self) -> None:
+        objects = [
+            component("PC-1", "Caller", runtimeSpec={"dependencies": [{"ref": "PC-2", "interface": "unknown"}, {"ref": "DC-1"}]}),
+            component("PC-2", "Two", interfaces=[{"name": "a", "protocol": "REST"}, {"name": "b", "protocol": "gRPC"}]),
+            {"schemaVersion": "1.0", "uid": "DC-1", "type": "data_component", "name": "Store", "targetEngine": "postgresql"},
+            pattern({"G": ["PC-1", "PC-2", "DC-1"]}),
+        ]
+        for view in ("logical", "deployment"):
+            svg = svg_for(objects, view)
+            rects = node_rects(svg)
+            routes = {(a, b): pts for a, b, pts in edge_polylines(svg)}
+            self.assertEqual(routes[("PC-1", "PC-2")][-1][0], self.expected_x(rects["PC-2"][0], 2, 0), view)
+            self.assertEqual(routes[("PC-1", "DC-1")][-1][0], self.expected_x(rects["DC-1"][0], 1, 0), view)
+
+    def test_examples_and_fixture_render_identically_twice(self) -> None:
+        for root in (FIXTURE, REPO_ROOT / "examples"):
+            catalog = load_catalog(root)
+            for sdp in generate_diagram.sdps(catalog):
+                for render in (logical_svg, deployment_svg):
+                    self.assertEqual(render(catalog, sdp["uid"]), render(catalog, sdp["uid"]))
 
 
 class DiagramSkillTests(unittest.TestCase):
