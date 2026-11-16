@@ -4152,15 +4152,16 @@ class EdgeDeviceChainTests(unittest.TestCase):
         svg = deployment_svg(catalog, FIXTURE_SDP)
         lanes = self.lane_boxes(svg)
         devices = {k: [u.split(":")[-1] for u in v if u.startswith("exposure:")] for k, v in lanes.items()}
-        self.assertEqual(devices[("Web", "fx-app")], ["FXNET00003-0001"])  # Web and Application share the zone: one row
-        self.assertEqual(devices[("Application", "fx-app")], [])
-        self.assertEqual(devices[("Application", "fx-data")], ["FXNET00003-0001"])
+        # A3: Web and Application share target and zone, and each draws its own row in its own first lane
+        self.assertEqual(devices[("Web", "fx-app")], ["FXNET00003-0001"])
+        self.assertEqual(devices[("Application", "fx-app")], ["FXNET00003-0001"])
+        self.assertEqual(devices[("Application", "fx-data")], [])  # only the group's first lane
         self.assertEqual(devices[("Partner", "fx-public")], ["FXNET00004-0001", "FXNET00003-0001"])  # exposedThrough order
         self.assertEqual(devices[("Data", "fx-data")], [])  # exposedThrough none
         self.assertEqual(devices[("Archive", "fx-data")], [])  # data-only group under the same reference architecture
         self.assertEqual(devices[("Edge", "")], ["FXNET00003-0001"])  # also placed there: drawn only in the row
         self.assertNotIn("FXNET00003-0001", lanes[("Edge", "")])
-        self.assertIn(">fronts Web, Application</text>", svg)
+        self.assertNotIn(">fronts ", svg)  # one chain per row: no caption
         rects = node_rects(svg)
         row = [u for u in lanes[("Partner", "fx-public")] if u.startswith("exposure:")]
         self.assertEqual(rects[row[0]][1], rects[row[1]][1])
@@ -4171,7 +4172,7 @@ class EdgeDeviceChainTests(unittest.TestCase):
         self.assertIn(">FX Balancer<", box)
         self.assertIn(">FX Public Load Balancer<", box)
         # exposed groups without an inbound edge from another target: the row is drawn, no hop leaves it
-        for group, zone in (("Edge", ""), ("Batch", "fx-app"), ("Application", "fx-data")):
+        for group, zone in (("Edge", ""), ("Batch", "fx-app")):
             (dev,) = [u for u in lanes[(group, zone)] if u.startswith("exposure:")]
             self.assertNotIn(f'data-via="{dev}"', svg, group)
             self.assertNotIn(f'data-to="{dev}"', svg, group)
@@ -4188,6 +4189,17 @@ class EdgeDeviceChainTests(unittest.TestCase):
         self.assertEqual(devices("FXPRD00006-0001", "FXPRD00001-0001"), ["FXNET00003-0001"])  # filled slot, other target
         self.assertEqual(devices("FXPRD00006-0001", "FXPRD00002-0001"), ["FXNET00003-0001"])
         self.assertEqual(devices("FXPRD00001-0001", "FXPRD00007-0001"), ["FXNET00004-0001", "FXNET00003-0001"])  # target chain only
+        lanes = self.lane_boxes(svg)
+        app_lb = pieces[("FXPRD00006-0001", "FXPRD00002-0001")][0][1]
+        self.assertIn(app_lb, lanes[("Application", "fx-app")])  # the hop leaves the target group's own row
+        # R4: the pieces of the two-device hop never cross one another
+        segs = [(k, a, b) for k, (_s, _t, pts) in enumerate(pieces[("FXPRD00001-0001", "FXPRD00007-0001")]) for a, b in zip(pts, pts[1:])]
+        for k1, (ax, ay), (bx, by) in segs:
+            for k2, (cx, cy), (dx, dy) in segs:
+                if k1 < k2 and ax == bx and cy == dy:  # a vertical of one piece and a horizontal of another
+                    self.assertFalse(min(cx, dx) < ax < max(cx, dx) and min(ay, by) < cy < max(ay, by), (k1, k2, ax, cy))
+                if k1 < k2 and ay == by and cx == dx:
+                    self.assertFalse(min(ax, bx) < cx < max(ax, bx) and min(cy, dy) < ay < max(cy, dy), (k1, k2, cx, ay))
         for pair in (("FXPRD00001-0001", "FXPRD00002-0001"), ("FXNET00001-0001", "FXPRD00001-0001"),  # same target
                      ("FXPRD00002-0001", "FXDST00001-0001"), ("FXPRD00001-0001", "FXDCP00001-0001"),  # exposedThrough none
                      ("FXPRD00004-0001", "FXDCP00008-0001")):  # data-only group
