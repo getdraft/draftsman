@@ -59,8 +59,9 @@ fieldDescriptions:
   externalTarget: Name of an external system or service not represented as a catalog object (e.g. "LDAP Directory", "Stripe Payment API"). Use when the dependency target has no catalog UID.
   targetInterface: >
     Name of the target's interface this relationship enters through: an entry of the target's interfaces, or data
-    for a data component without an interfaces list. Rule relationship-target-interface warns when the target is a
-    product_component and this is missing or names no interface of the target. Never a port or host.
+    for a data component without an interfaces list. Rule relationship-target-interface reports an error when the
+    target is a product_component and this is missing or names no interface of the target (ratcheted: existing
+    relationships are baselined). A value on a target that has no interfaces list is a warning. Never a port or host.
   label: Short verb phrase describing the interaction — e.g. "calls", "reads from", "writes to", "sends events to".
   technology: Protocol or technology used — e.g. "HTTPS", "gRPC", "AMQP", "PostgreSQL wire protocol".
   direction: Communication pattern — synchronous for request/response, asynchronous for fire-and-forget, event for event-driven.
