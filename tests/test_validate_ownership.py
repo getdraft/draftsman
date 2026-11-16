@@ -405,6 +405,171 @@ class TargetInterfaceRuleTests(unittest.TestCase):
             self.assertIn(text, found["warning"][0])
 
 
+NS1 = "01M7C497N4-MSDZ"
+NS2 = "01M7C497N5-MSE0"
+CAP = "01M7C497N6-MSE1"
+RA = "01M7C497N7-MSE2"
+SDP2 = "01M7C497N8-MSE3"
+
+
+def _validator():
+    sys.path.insert(0, str(VALIDATE.parent))
+    try:
+        import validate as v  # noqa: PLC0415
+    finally:
+        sys.path.pop(0)
+    return v
+
+
+class ExposureWarningTests(unittest.TestCase):
+    """AC3: exposedThrough, fills and protocol-family warnings (never errors, never ratcheted)."""
+
+    def setUp(self) -> None:
+        self.v = _validator()
+        self.catalog = {
+            NS1: _obj(NS1, "network_service", "Fx Firewall", capabilities=[CAP]),
+            NS2: _obj(NS2, "network_service", "Fx Plain Device"),
+            COMP: _obj(COMP, "product_component", "Fx Component"),
+        }
+
+    def exposure(self, obj: Dict[str, Any]) -> List[str]:
+        out: List[str] = []
+        self.v.validate_exposure_refs(obj, Path("x.yaml"), self.catalog, out)
+        return out
+
+    def sdp(self, exposed: Any) -> Dict[str, Any]:
+        return _obj(SDP2, "software_deployment_pattern", "Fx Pattern", serviceGroups=[{"name": "web", "exposedThrough": exposed}])
+
+    def ra(self, **entry: Any) -> Dict[str, Any]:
+        return _obj(RA, "reference_architecture", "Fx Ra", serviceGroups=[{"name": "edge", "deployableObjects": [entry]}])
+
+    # exposedThrough
+    def test_exposed_through_valid_forms_are_clean(self) -> None:
+        for value in ("none", NS1, [NS1, NS2]):
+            self.assertEqual([], self.exposure(self.sdp(value)), value)
+
+    def test_exposed_through_unknown_uid_warns_with_value(self) -> None:
+        found = self.exposure(self.sdp("01M7C497ZZ-MSEZ"))
+        self.assertEqual(1, len(found), found)
+        self.assertIn("exposedThrough value '01M7C497ZZ-MSEZ'", found[0])
+
+    def test_exposed_through_wrong_type_and_list_member_warn(self) -> None:
+        self.assertIn(f"'{COMP}'", self.exposure(self.sdp(COMP))[0])
+        found = self.exposure(self.sdp([NS1, COMP, "none"]))
+        self.assertEqual(2, len(found), found)
+
+    # fills
+    def test_fills_clean_when_edge_slot_network_service_and_capability(self) -> None:
+        self.assertEqual([], self.exposure(self.ra(slot="firewall", fills=NS1, capability=CAP)))
+
+    def test_fills_without_capability_on_entry_gives_no_capability_warning(self) -> None:
+        self.assertEqual([], self.exposure(self.ra(slot="ingress", fills=NS2)))
+
+    def test_fills_target_not_network_service_warns(self) -> None:
+        found = self.exposure(self.ra(slot="firewall", fills=COMP))
+        self.assertEqual(1, len(found), found)
+        self.assertIn(f"fills '{COMP}' must be the uid of a network_service", found[0])
+
+    def test_fills_on_non_edge_slot_warns_with_slot_name(self) -> None:
+        found = self.exposure(self.ra(slot="database", fills=NS1))
+        self.assertEqual(1, len(found), found)
+        self.assertIn("slot 'database'", found[0])
+
+    def test_fills_definition_lacking_capability_warns(self) -> None:
+        found = self.exposure(self.ra(slot="load-balancer", fills=NS2, capability=CAP))
+        self.assertEqual(1, len(found), found)
+        for text in ("Fx Plain Device", CAP, "load-balancer"):
+            self.assertIn(text, found[0])
+
+    def test_fills_capability_satisfied_through_technology_component(self) -> None:
+        self.catalog[NS2]["technologyComponent"] = "01M7C497N9-MSE4"
+        self.catalog["01M7C497N9-MSE4"] = _obj("01M7C497N9-MSE4", "technology_component", "Fx Tech", capabilities=[CAP])
+        self.assertEqual([], self.exposure(self.ra(slot="firewall", fills=NS2, capability=CAP)))
+
+    # protocol family
+    def family_warnings(self, technology: str, protocol: Optional[str], derived: bool = False, **target: Any) -> List[str]:
+        iface = [{"name": "api", "protocol": protocol}] if protocol else []
+        catalog = {COMP2: _obj(COMP2, "product_component", "Fx Target", interfaces=iface, **target)}
+        rel = _obj(REL, "relationship", "Fx Flow", source=COMP, target=COMP2, technology=technology, targetInterface="api")
+        if derived:
+            rel["_derived"] = True
+        out: List[str] = []
+        self.v.validate_protocol_family(rel, Path("x.yaml"), catalog, out)
+        return out
+
+    def test_family_mismatch_names_both_protocols_and_families(self) -> None:
+        found = self.family_warnings("REST", "gRPC")
+        self.assertEqual(1, len(found), found)
+        for text in ("Fx Flow", "'REST'", "'gRPC'", "web", "grpc"):
+            self.assertIn(text, found[0])
+
+    def test_same_family_is_clean(self) -> None:
+        self.assertEqual([], self.family_warnings("HTTPS/REST", "GraphQL"))
+
+    def test_unknown_family_on_either_side_is_clean(self) -> None:
+        self.assertEqual([], self.family_warnings("AWS SDK (GetSecretValue)", "gRPC"))
+        self.assertEqual([], self.family_warnings("REST", "Carrier Pigeon"))
+
+    def test_derived_relationship_never_warns(self) -> None:
+        self.assertEqual([], self.family_warnings("REST", "gRPC", derived=True))
+
+    def test_data_component_implicit_surface_uses_target_engine(self) -> None:
+        catalog = {COMP2: _obj(COMP2, "data_component", "Fx Data", targetEngine="postgresql")}
+        rel = _obj(REL, "relationship", "Fx Flow", source=COMP, target=COMP2, technology="REST", targetInterface="data")
+        out: List[str] = []
+        self.v.validate_protocol_family(rel, Path("x.yaml"), catalog, out)
+        self.assertEqual(1, len(out), out)
+        self.assertIn("postgresql", out[0])
+
+    def data_family_warnings(self, technology: str, engine: str) -> List[str]:
+        catalog = {COMP2: _obj(COMP2, "data_component", "Fx Data", targetEngine=engine)}
+        rel = _obj(REL, "relationship", "Fx Flow", source=COMP, target=COMP2, technology=technology, targetInterface="data")
+        out: List[str] = []
+        self.v.validate_protocol_family(rel, Path("x.yaml"), catalog, out)
+        return out
+
+    def test_mongodb_technology_on_mongodb_data_component_is_clean(self) -> None:
+        self.assertEqual([], self.data_family_warnings("MongoDB", "mongodb"))
+
+    def test_snowflake_technology_on_postgresql_data_component_warns(self) -> None:
+        found = self.data_family_warnings("Snowflake", "postgresql")
+        self.assertEqual(1, len(found), found)
+        self.assertIn("snowflake", found[0])
+        self.assertIn("sql", found[0])
+
+    def test_other_engine_never_warns(self) -> None:
+        self.assertEqual([], self.data_family_warnings("Snowflake", "other"))
+
+    def test_none_inside_exposed_through_list_has_its_own_message(self) -> None:
+        found = self.exposure(self.sdp([NS1, "none"]))
+        self.assertEqual(1, len(found), found)
+        self.assertIn("only valid on its own", found[0])
+
+    def test_end_to_end_workspace_reports_warnings_and_exits_zero(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            ws = Path(tmp)
+            (ws / "catalog" / "engineering").mkdir(parents=True)
+            docs = [
+                _obj(COMP, "product_component", "Fx Caller"),
+                _obj(COMP2, "product_component", "Fx Target", interfaces=[{"name": "api", "protocol": "gRPC"}]),
+                _obj(REL, "relationship", "Fx Flow", source=COMP, target=COMP2, label="calls", catalogStatus="stub",
+                     technology="REST", targetInterface="api"),
+                _obj(NS1, "network_service", "Fx Firewall"),
+                _obj(RA, "reference_architecture", "Fx Ra", serviceGroups=[
+                    {"name": "edge", "deployableObjects": [{"slot": "database", "fills": COMP}]}]),
+                _obj(SDP2, "software_deployment_pattern", "Fx Pattern", serviceGroups=[
+                    {"name": "web", "exposedThrough": "01M7C497ZZ-MSEZ"}]),
+            ]
+            for doc in docs:
+                (ws / "catalog" / "engineering" / (str(doc["uid"]) + ".yaml")).write_text(yaml.safe_dump(doc), encoding="utf-8")
+            proc = subprocess.run([sys.executable, str(VALIDATE), "--workspace", str(ws)], capture_output=True, text=True, check=False)
+            out = proc.stdout + proc.stderr
+            warn = out.split("Validation warnings", 1)[-1] if "Validation warnings" in out else ""
+            for text in ("does not match interface 'api'", "exposedThrough value '01M7C497ZZ-MSEZ'", ".fills 'COMP'".replace("COMP", COMP), "slot 'database'"):
+                self.assertIn(text, warn, out)
+            self.assertFalse([l for l in out.split("Validation warnings")[0].splitlines() if "exposedThrough" in l or ".fills" in l], out)
+
+
 class FixtureBaselineTests(unittest.TestCase):
     def run_ws(self, workspace: Path, *flags: str) -> Tuple[int, str]:
         proc = subprocess.run(

@@ -13,6 +13,7 @@
 - `framework/tools/protocol_families.py` with `family(text)`, the single protocol-family table that the validator and the diagram renderer will share.
 - Ratcheted rule `relationship-target-interface` with the error and warning branches above, and the `interface_names` helper in `validate.py`; the fixture workspace baseline records its existing violations.
 - Derived dependency relationships carry the raw `runtimeSpec.dependencies[].interface` string as `_interface`.
+- Three warnings, never errors and never ratcheted: a service group `exposedThrough` that is neither `none` nor one or more `network_service` uids; a reference architecture `fills` whose target is not a `network_service`, whose slot is not an edge slot (firewall, web-application-firewall, load-balancer, api-gateway, ingress), or whose definition does not satisfy the slot's `capability` (an entry with no `capability` is not checked); and a relationship whose `technology` and its target interface's protocol resolve to different known protocol families (the text names both protocols). Derived relationships never produce the family warning.
 
 ### Changed
 
@@ -25,6 +26,7 @@
 ### Migration Notes
 
 - Run `validate.py --write-baseline` when vendoring this release to record existing relationships to product components in `.draft/validation-baseline.yaml`.
+- Resolve any new `exposedThrough`, `fills` or protocol-family warning when convenient; none of them fails validation.
 - Product teams add `interfaces` to their components and `targetInterface` to relationships as they touch them; that clears the baseline entry.
 
 ## 1.5.5 - 2026-11-15
