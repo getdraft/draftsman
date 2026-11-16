@@ -3934,6 +3934,133 @@ class PortResolutionTests(unittest.TestCase):
         self.assertEqual([n for n in names if "PROTOCOL" in n.upper()], [])
 
 
+class EdgeDeviceChainTests(unittest.TestCase):
+    """AC8: the exposure model, the edge device row of an exposed zone lane and the hops through it (deployment view)."""
+
+    LB = plain("LB", "network_service", "Balancer", productName="FX Balancer", listeners=[
+        {"name": "https", "protocol": "REST", "port": 443}, {"name": "grpc", "protocol": "gRPC", "port": 8443}])
+    FW = plain("FW", "network_service", "Firewall", listeners=[{"name": "https", "protocol": "REST", "port": 443}])
+    BARE = plain("BARE", "network_service", "Bare")  # no listener: contributes no port
+
+    @staticmethod
+    def ra(*entries: dict) -> dict:
+        return plain("RA-1", "reference_architecture", "Reference", serviceGroups=[{"name": "Edge", "deployableObjects": list(entries)}])
+
+    @staticmethod
+    def group(name: str, refs: list, target: str = "east", zone: str = "z1", **extra: object) -> dict:
+        return {"name": name, "deploymentTarget": target, "deployableObjects": [{"ref": r, "networkZone": zone} for r in refs], **extra}
+
+    def model(self, objects: list, groups: list, follows: str = "RA-1") -> generate_diagram.Model:
+        sdp = {
+            **plain("SDP-1", "software_deployment_pattern", "Demo Pattern"),
+            "networkZones": [{"id": "z1", "name": "Zone One", "tier": "application"}],
+            "serviceGroups": groups,
+        }
+        if follows:
+            sdp["followsReferenceArchitecture"] = follows
+        catalog = {o["uid"]: o for o in [*objects, sdp]}
+        return generate_diagram.Model(catalog, sdp, False)
+
+    def chains(self, model: generate_diagram.Model) -> dict:
+        return {c.group: c.exposed_through for c in model.containers}
+
+    def test_exposure_rules(self) -> None:
+        web = plain("WEB", "product_component", "Web")
+        data = plain("DAT", "data_component", "Data")
+        lb_slot = {"objectType": "network_service", "slot": "load-balancer", "fills": "LB"}
+        objects = [web, data, self.LB, self.FW, self.ra(lb_slot)]
+        model = self.model(objects, [
+            self.group("Default", ["WEB"]),
+            self.group("Off", ["WEB"], exposedThrough="none"),
+            self.group("One", ["WEB"], exposedThrough="FW"),
+            self.group("Two", ["WEB"], exposedThrough=["LB", "FW"]),
+            self.group("DataTier", ["DAT"]),
+            self.group("DataOwn", ["DAT"], exposedThrough="FW"),
+        ])
+        got = self.chains(model)
+        # Off, One, Two and DataOwn list WEB or DAT again (placed first above); they still carry their own chain
+        self.assertEqual(got["Default"], ["LB"])
+        self.assertEqual(got["DataTier"], [])  # a data tier is never exposed by the slot default
+        groups = [self.group("Off", ["WEB"], exposedThrough="none"), self.group("One", ["WEB"], target="w1", exposedThrough="FW"),
+                  self.group("Two", ["WEB"], target="w2", exposedThrough=["LB", "FW"]), self.group("DataOwn", ["DAT"], exposedThrough="FW")]
+        for g in groups:
+            with self.subTest(group=g["name"]):
+                self.assertEqual(self.chains(self.model(objects, [g]))[g["name"]], {"Off": [], "One": ["FW"], "Two": ["LB", "FW"], "DataOwn": ["FW"]}[g["name"]])
+        # no reference architecture, an unfilled slot, a non-edge slot: not exposed
+        self.assertEqual(self.chains(self.model(objects, [self.group("G", ["WEB"])], follows=""))["G"], [])
+        for entry in ({"slot": "load-balancer"}, {"slot": "application-runtime", "fills": "LB"}):
+            objects2 = [web, self.LB, self.ra(entry)]
+            self.assertEqual(self.chains(self.model(objects2, [self.group("G", ["WEB"])]))["G"], [])
+
+    def test_slot_chain_order_is_protection_then_availability_then_routing(self) -> None:
+        ingress = plain("ING", "network_service", "Ingress")
+        entries = [{"slot": "ingress", "fills": "ING"}, {"slot": "load-balancer", "fills": "LB"}, {"slot": "firewall", "fills": "FW"}]
+        model = self.model([plain("WEB", "product_component", "Web"), self.LB, self.FW, ingress, self.ra(*entries)], [self.group("G", ["WEB"])])
+        self.assertEqual(self.chains(model)["G"], ["FW", "LB", "ING"])
+
+    def test_one_row_per_zone_lane_identical_chains_collapse_distinct_chains_side_by_side(self) -> None:
+        comps = [plain(u, "product_component", u) for u in ("A", "B", "C", "D")]
+        objects = [*comps, self.LB, self.FW, self.ra({"slot": "load-balancer", "fills": "LB"})]
+        model = self.model(objects, [
+            self.group("GA", ["A"]), self.group("GB", ["B"]), self.group("GC", ["C"], exposedThrough=["FW", "LB"]),
+            self.group("GD", ["D"], target="west"),
+        ])
+        lanes = {c.group: c.lanes[0] for c in model.containers}
+        row = lanes["GA"].chains
+        self.assertEqual([(c.definitions, c.groups) for c in row], [(["LB"], ["GA", "GB"]), (["FW", "LB"], ["GC"])])
+        self.assertEqual((lanes["GB"].chains, lanes["GC"].chains), ([], []))  # drawn once, in the first lane of the zone
+        self.assertEqual([(c.definitions, c.groups) for c in lanes["GD"].chains], [(["LB"], ["GD"])])  # another target: own row
+        svg = generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model))
+        rects = node_rects(svg)
+        boxes = [b for c in row for b in c.boxes]
+        self.assertEqual([rects[b][1] for b in boxes], [rects[boxes[0]][1]] * 3)  # one row
+        self.assertEqual([rects[b][0] for b in boxes], sorted(rects[b][0] for b in boxes))  # in group order, left to right
+        self.assertLess(rects[boxes[0]][1], rects["A"][1])  # at the top of the lane
+        self.assertIn(">fronts GA, GB</text>", svg)
+        self.assertIn(">fronts GC</text>", svg)
+        self.assertEqual(len(re.findall(r'class="node[^"]*" data-id="exposure:', svg)), 4)
+
+    def test_hops_only_from_another_target_and_only_through_the_target_chain(self) -> None:
+        rel = lambda uid, s, t, **kw: plain(uid, "relationship", uid, source=s, target=t, **kw)
+        objects = [
+            plain("IN", "product_component", "Inside", interfaces=[{"name": "api", "protocol": "REST"}],
+                  runtimeSpec={"ports": [{"number": 8080, "protocol": "HTTP", "name": "http"}]}),
+            plain("SAME", "product_component", "Same"), plain("FAR", "product_component", "Far"), plain("OFF", "product_component", "Off"),
+            self.LB, self.FW, self.BARE, self.ra({"slot": "load-balancer", "fills": "LB"}),
+            rel("R1", "FAR", "IN", targetInterface="api", technology="HTTPS"),  # other target: hop
+            rel("R2", "SAME", "IN", targetInterface="api"),  # same target, other group: no hop
+            rel("R3", "IN", "FAR"),  # into the far group, whose own chain is [FW, BARE]; the source's chain is not used
+            rel("R4", "IN", "OFF"),  # into a group with exposedThrough none
+        ]
+        model = self.model(objects, [
+            self.group("Front", ["IN"]), self.group("Side", ["SAME"]),
+            self.group("Far", ["FAR"], target="west", exposedThrough=["FW", "BARE"]), self.group("Off", ["OFF"], target="west", exposedThrough="none"),
+        ])
+        edges = {e.uid: e for e in model.deployment_edges}
+        self.assertEqual([model.device_ref[b] for b in edges["R1"].hops], ["LB"])
+        self.assertEqual(edges["R1"].far_tech, "https 443 → http 8080")
+        self.assertEqual(edges["R1"].hop_names, ["Balancer"])
+        self.assertEqual((edges["R2"].hops, edges["R4"].hops), ([], []))
+        self.assertEqual([model.device_ref[b] for b in edges["R3"].hops], ["FW", "BARE"])
+        self.assertEqual(edges["R3"].far_tech, "https 443")  # FW's single listener; BARE has none and adds nothing
+        self.assertEqual(generate_diagram._callout_tech(edges["R3"]), "https 443 via Firewall via Bare")
+        self.assertEqual(generate_diagram._callout_tech(model.edges[0]), "HTTPS")  # the Application view's edges carry no hop
+
+    def test_device_also_placed_is_drawn_only_in_the_row_and_keeps_its_edges(self) -> None:
+        objects = [plain("WEB", "product_component", "Web"), self.LB, self.ra({"slot": "load-balancer", "fills": "LB"}),
+                   plain("R1", "relationship", "R1", source="LB", target="WEB", label="routes")]
+        model = self.model(objects, [self.group("G", ["WEB", "LB"])])
+        self.assertNotIn("LB", [n.uid for n in model.nodes_for_view("deployment")])
+        svg = generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model))
+        self.assertNotIn('data-id="LB"', svg)
+        (box,) = model.devices
+        self.assertIn(f'<g class="edge" data-from="{box}" data-to="WEB">', svg)
+        # an unplaced device that a placed object reaches stays in the outside lane as well
+        objects[-1] = plain("R1", "relationship", "R1", source="WEB", target="LB", label="checks")
+        model = self.model(objects, [self.group("G", ["WEB"])])
+        self.assertIn("LB", [n.uid for n in model.nodes_for_view("deployment") if n.outside])
+
+
 class DiagramSkillTests(unittest.TestCase):
     """The draftsman-diagram skill sends both views to the generator (plan D23, AC11, AC12)."""
 
