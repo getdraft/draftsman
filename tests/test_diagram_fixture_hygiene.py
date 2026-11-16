@@ -40,7 +40,8 @@ def scope_failures(paths: list[Path], numeric: bool) -> list[str]:
         for line_no, line in enumerate(text.splitlines(), start=1):
             where = f"{rel}:{line_no}"
             if numeric:
-                if TWELVE_DIGITS.search(line):
+                # A baseline entry's sha256 content hash can hold any digit run; it is not data.
+                if TWELVE_DIGITS.search(line) and not line.lstrip().startswith("hash:"):
                     failures.append(f"12-digit number at {where}")
                 if IPV4.search(line):
                     failures.append(f"IPv4 address at {where}")
