@@ -4638,7 +4638,7 @@ EDGE_SLOTS = ("firewall", "web-application-firewall", "load-balancer", "api-gate
 
 def _surface_protocol(target: dict[str, Any], name: str) -> tuple[str | None, str | None]:
     """Protocol text and family of the named surface of a target: a declared interface, or a data component's
-    implicit surface, whose protocol derives from targetEngine (engines with no protocol of their own count as other)."""
+    implicit surface, whose family is the family of its targetEngine (other or unknown gives None)."""
     for item in target.get("interfaces") or []:
         if isinstance(item, dict) and str(item.get("name") or "").strip() == name and is_non_empty(item.get("protocol")):
             protocol = str(item["protocol"]).strip()
@@ -4646,8 +4646,8 @@ def _surface_protocol(target: dict[str, Any], name: str) -> tuple[str | None, st
     if name == "data" and target.get("type") == "data_component" and not target.get("interfaces"):
         engine = str(target.get("targetEngine") or "").strip()
         engine_family = family(engine) if engine else None
-        if engine_family in ("mongodb", "bigquery", "snowflake"):
-            engine_family = "other"
+        if engine_family == "other":
+            engine_family = None
         return (f"{engine} (implicit data surface)" if engine_family else None), engine_family
     return None, None
 
@@ -4696,7 +4696,9 @@ def validate_exposure_refs(
                 ref = catalog_by_id.get(value) if isinstance(value, str) else None
                 if value == "none" and not isinstance(raw, list):
                     continue
-                if not (isinstance(ref, dict) and ref.get("type") == "network_service"):
+                if value == "none":
+                    warnings.append(f"{path}: {where} lists 'none'; none is only valid on its own, not inside a list")
+                elif not (isinstance(ref, dict) and ref.get("type") == "network_service"):
                     warnings.append(f"{path}: {where} value '{value}' must be none or the uid of a network_service definition")
         if obj.get("type") != "reference_architecture":
             continue

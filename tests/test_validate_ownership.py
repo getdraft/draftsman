@@ -521,6 +521,30 @@ class ExposureWarningTests(unittest.TestCase):
         self.assertEqual(1, len(out), out)
         self.assertIn("postgresql", out[0])
 
+    def data_family_warnings(self, technology: str, engine: str) -> List[str]:
+        catalog = {COMP2: _obj(COMP2, "data_component", "Fx Data", targetEngine=engine)}
+        rel = _obj(REL, "relationship", "Fx Flow", source=COMP, target=COMP2, technology=technology, targetInterface="data")
+        out: List[str] = []
+        self.v.validate_protocol_family(rel, Path("x.yaml"), catalog, out)
+        return out
+
+    def test_mongodb_technology_on_mongodb_data_component_is_clean(self) -> None:
+        self.assertEqual([], self.data_family_warnings("MongoDB", "mongodb"))
+
+    def test_snowflake_technology_on_postgresql_data_component_warns(self) -> None:
+        found = self.data_family_warnings("Snowflake", "postgresql")
+        self.assertEqual(1, len(found), found)
+        self.assertIn("snowflake", found[0])
+        self.assertIn("sql", found[0])
+
+    def test_other_engine_never_warns(self) -> None:
+        self.assertEqual([], self.data_family_warnings("Snowflake", "other"))
+
+    def test_none_inside_exposed_through_list_has_its_own_message(self) -> None:
+        found = self.exposure(self.sdp([NS1, "none"]))
+        self.assertEqual(1, len(found), found)
+        self.assertIn("only valid on its own", found[0])
+
     def test_end_to_end_workspace_reports_warnings_and_exits_zero(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             ws = Path(tmp)
