@@ -2,7 +2,7 @@
 
 ### Compatibility Impact
 
-- Nothing changes for existing content: every new field is optional and no warning reads them yet; the renderer reads `interfaces`, `targetInterface`, the derived `_interface`, `listeners` and component ports. Later stories in this release add a ratcheted rule that requires a relationship to a product component to name a target interface.
+- Nothing changes for existing content: every new field is optional and only the warnings listed under Added read them (no error reads them beyond the ratcheted rule); the renderer reads `interfaces`, `targetInterface`, the derived `_interface`, `listeners` and component ports. Later stories in this release add a ratcheted rule that requires a relationship to a product component to name a target interface.
 - New ratcheted rule `relationship-target-interface`: a relationship whose target is a product component must carry `targetInterface` naming one of its `interfaces`. Existing violations bind again when the relationship changes unless recorded in `.draft/validation-baseline.yaml`, so adopters run `validate.py --write-baseline` once after vendoring this release. Data components, `externalTarget`, instances and derived relationships are exempt.
 - A `targetInterface` naming a surface its target lacks is an error that is never baselined; on a target with no `interfaces` list (that is not a data component) or on an `externalTarget` it is a warning.
 - Components that already declare two or more `interfaces` get one entrance per interface on the top edge in both views, so their entrances and the edges into them move (today the examples' ops console). Components with one interface or none, and every data component without `interfaces`, render as before.

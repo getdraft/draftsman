@@ -214,7 +214,6 @@ type: relationship
 name: FX Web Shop to FX Order API
 source: FXPRD00001-0001
 target: FXPRD00002-0001
-targetInterface: rest
 label: places orders
 targetInterface: orders-api
 technology: HTTPS JSON
@@ -239,7 +238,6 @@ type: relationship
 name: FX Order Worker consumes orders
 source: FXPRD00003-0001
 target: FXPRD00002-0001
-targetInterface: grpc
 label: consumes order messages
 targetInterface: order-events
 technology: AMQP
