@@ -4,6 +4,7 @@ uid: FXSDP00001-0001
 type: software_deployment_pattern
 name: FX Storefront Pattern
 description: Invented storefront pattern used by the diagram tests.
+followsReferenceArchitecture: FXRAR00001-0001
 owner:
   team: fx-team-storefront
 catalogStatus: complete
@@ -23,6 +24,8 @@ serviceGroups:
   deploymentTarget: fx-cloud-east
   deployableObjects:
   - ref: FXNET00001-0001
+    diagramTier: presentation
+  - ref: FXNET00003-0001
     diagramTier: presentation
 - name: Web
   deploymentTarget: fx-cloud-east
@@ -47,6 +50,7 @@ serviceGroups:
     networkZone: fx-app
 - name: Data
   deploymentTarget: fx-dc-west
+  exposedThrough: none
   deployableObjects:
   - ref: FXDST00001-0001
     networkZone: fx-data
@@ -66,6 +70,21 @@ serviceGroups:
 - name: Reserved
   deploymentTarget: fx-dc-west
   deployableObjects: []
+- name: Partner
+  deploymentTarget: fx-dc-west
+  exposedThrough:
+  - FXNET00004-0001
+  - FXNET00003-0001
+  deployableObjects:
+  - ref: FXPRD00007-0001
+    networkZone: fx-public
+    diagramTier: presentation
+- name: Archive
+  deploymentTarget: fx-dc-west
+  deployableObjects:
+  - ref: FXDCP00008-0001
+    networkZone: fx-data
+    diagramTier: data
 ---
 schemaVersion: '1.0'
 uid: FXRTC00001-0001
@@ -94,6 +113,9 @@ type: product_component
 name: FX Web Shop
 language: TypeScript
 runsOn: FXRTC00001-0001
+interfaces:
+- name: storefront
+  protocol: REST
 catalogStatus: complete
 lifecycleStatus: preferred
 ---
@@ -336,5 +358,78 @@ target: FXPRD00002-0001
 label: administers orders
 targetInterface: order-admin
 technology: gRPC
+direction: synchronous
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXPRD00007-0001
+type: product_component
+name: FX Partner Portal
+language: Kotlin
+interfaces:
+- name: partner
+  protocol: REST
+runtimeSpec:
+  ports:
+  - number: 8080
+    protocol: HTTP
+    name: http
+    direction: inbound
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXDCP00008-0001
+type: data_component
+name: FX Order Archive
+targetEngine: postgresql
+runsOn: FXDST00008-0001
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXDST00008-0001
+type: data_store_service
+name: FX Archive Database
+productName: FX SQL Store
+listeners:
+- name: sql
+  protocol: SQL
+  port: 5432
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXEDG00021-0001
+type: relationship
+name: FX Order Auditor reviews the storefront
+source: FXPRD00006-0001
+target: FXPRD00001-0001
+label: reviews storefront orders
+targetInterface: storefront
+technology: HTTPS
+direction: synchronous
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00022-0001
+type: relationship
+name: FX Web Shop forwards partner orders
+source: FXPRD00001-0001
+target: FXPRD00007-0001
+label: forwards partner orders
+targetInterface: partner
+technology: HTTPS
+direction: synchronous
+catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXEDG00023-0001
+type: relationship
+name: FX Legacy Cart archives carts
+source: FXPRD00004-0001
+target: FXDCP00008-0001
+label: archives carts
+technology: SQL
 direction: synchronous
 catalogStatus: complete

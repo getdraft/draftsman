@@ -207,7 +207,7 @@ entries:
   hash: 2216d5a97a876955d292aca29b66fd611ec6d122e170fb1144f11787db78a508
 - rule: sdp-placement-types
   uid: FXSDP00001-0001
-  hash: de3f36e6b270b0dda9eb87e69d9e26444029787f75afc3c86d50a134fb9c38d4
+  hash: ed90e61ab6c9426b729c815f5b93dd7cbbd2897c3aab611a8c6fee141fa8b377
 - rule: sdp-placement-types
   uid: FXSDP00002-0001
   hash: 3fb4e0cc7e2774bcf1e37fd41715de8d317f8d4fd6974912017b483abf209417

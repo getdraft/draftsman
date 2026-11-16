@@ -17,3 +17,33 @@ source: FXPRD00005-0001
 target: FXRTC00009-0001
 label: calls
 catalogStatus: complete
+---
+schemaVersion: '1.0'
+uid: FXNET00003-0001
+type: network_service
+name: FX Public Load Balancer
+productName: FX Balancer
+listeners:
+- name: https
+  protocol: REST
+  port: 443
+  description: Invented public web listener.
+- name: grpc
+  protocol: gRPC
+  port: 8443
+  description: Invented public gRPC listener.
+catalogStatus: complete
+lifecycleStatus: preferred
+---
+schemaVersion: '1.0'
+uid: FXNET00004-0001
+type: network_service
+name: FX Web Firewall
+productName: FX Shield
+listeners:
+- name: https
+  protocol: REST
+  port: 443
+  description: Invented public web listener.
+catalogStatus: complete
+lifecycleStatus: preferred
