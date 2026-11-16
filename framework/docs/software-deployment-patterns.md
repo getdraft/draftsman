@@ -273,9 +273,14 @@ a warning.
 - **Deployment view.** Each connection is labelled with the resolved port chain.
   The target's port comes from the component's own inbound `runtimeSpec.ports`
   entry, then the listener of its substrate (a data component uses the listener
-  of the store it `runsOn`), matched to the interface's protocol family. Examples:
-  `SQL 5432`, `gRPC 8092`, `https 443 → http 8080`. When a recorded technology
-  differs from the chain's protocol word the line reads `technology · chain`.
+  of the store it `runsOn`), matched to the interface's protocol family, and
+  failing a match the substrate's single listener. Each device hop contributes its
+  listener matching the protocol family, else its single listener, else no port.
+  Examples: `SQL 5432`, `gRPC 8092` (a gRPC interface served by a port recorded
+  as `HTTP/2` prints the interface's word), `https 443 → http 8080`; device
+  listeners print as recorded. The line reads the chain alone when no technology
+  is recorded or it equals the chain's first protocol word (case-insensitive),
+  else `technology · chain` (`PostgreSQL wire protocol · SQL 5432`).
   A relationship whose `technology` and target interface protocol are in
   different families is a warning.
 
@@ -321,7 +326,7 @@ deployment targets. Both show all connections by default; hovering, focusing or
 pinning a box brings its connections forward while the others fade. Each section
 has a Fit width / Actual size toggle (fit by default, actual size scrolls) and an
 Open full page link to the standalone diagram page. A pattern with no generated
-diagram page shows a one-sentence note instead. The sections below them (Service
+diagram page shows a one-sentence note instead. The Service Groups rows show each group's exposure (the device names, or `not exposed`), and the Connections table has an Interface column. The sections below them (Service
 Groups, Decisions, Connections, Tier Variants, Metadata) carry the recorded
 detail. The figures are service-first placement views.
 

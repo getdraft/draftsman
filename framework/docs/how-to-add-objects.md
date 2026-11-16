@@ -161,7 +161,7 @@ A ReferenceArchitecture should be generic enough to guide many products, not jus
 7. Set `diagramTier` on every deployable object entry (ProductComponents and DataComponents only) using one of `presentation`, `application`, `data`, or `utility`.
 8. Add product-level `notes`, including availability requirement and data classification, so the SoftwareDeploymentPattern satisfies the SoftwareDeploymentPattern RequirementGroup.
 
-### Record interfaces, listeners and edge slots
+## Record Interfaces, Listeners And Edge Slots
 
 - Product team: on a ProductComponent add `interfaces` (name and protocol), and
   on each relationship that targets a product component set `targetInterface` to
