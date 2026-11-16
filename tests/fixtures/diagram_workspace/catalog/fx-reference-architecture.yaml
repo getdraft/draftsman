@@ -1,0 +1,15 @@
+# Fictional fixture (invented names). A reference architecture whose load-balancer edge slot is filled. The
+# storefront pattern follows it, so its groups without exposedThrough are fronted by the load balancer.
+schemaVersion: '1.0'
+uid: FXRAR00001-0001
+type: reference_architecture
+name: FX Web Reference Architecture
+catalogStatus: complete
+lifecycleStatus: preferred
+serviceGroups:
+- name: Edge
+  deployableObjects:
+  - objectType: network_service
+    slot: load-balancer
+    fills: FXNET00003-0001
+    diagramTier: presentation

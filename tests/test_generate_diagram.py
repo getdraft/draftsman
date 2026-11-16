@@ -34,11 +34,39 @@ LARGE_MAX_CROSSINGS = 873
 
 
 def edge_polylines(svg: str) -> list:
-    """(from uid, to uid, [(x, y), ...]) for every routed edge; self-loop curves are skipped."""
+    """(from uid, to uid, [(x, y), ...]) for every routed edge; self-loop curves are skipped. An edge through an edge
+    device chain (AC8: later paths carry data-via, the device box they leave) counts as one polyline per piece:
+    source to the first device, device to device, the last device to the target."""
     found = []
-    for match in re.finditer(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)"><title>[^<]*</title><path class="ln[^"]*" d="(M[-\d. L]+)"[^>]*/>', svg):
-        numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", match.group(3))]
-        found.append((match.group(1).replace("&amp;", "&"), match.group(2).replace("&amp;", "&"), list(zip(numbers[0::2], numbers[1::2]))))
+    for match in re.finditer(
+        r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)"><title>[^<]*</title>((?:<path class="ln[^"]*"(?: data-via="[^"]*")? d="M[-\d. L]+"[^>]*/>)+)',
+        svg,
+    ):
+        ends = [match.group(1).replace("&amp;", "&")]
+        paths = []
+        for via, d in re.findall(r'<path class="ln[^"]*"(?: data-via="([^"]*)")? d="(M[-\d. L]+)"', match.group(3)):
+            if via:
+                ends.append(via)
+            numbers = [float(n) for n in re.findall(r"-?\d+(?:\.\d+)?", d)]
+            paths.append(list(zip(numbers[0::2], numbers[1::2])))
+        ends.append(match.group(2).replace("&amp;", "&"))
+        found.extend((ends[k], ends[k + 1], pts) for k, pts in enumerate(paths))
+    return found
+
+
+def edge_pieces(svg: str) -> dict:
+    """(from uid, to uid) of each drawn edge -> its pieces [(piece from, piece to, points), ...]; one piece unless the
+    edge passes an edge device chain (AC8). The first edge of a pair wins."""
+    found: dict = {}
+    pieces = edge_polylines(svg)
+    for source, target in re.findall(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)"><title>[^<]*</title><path class="ln', svg):
+        source, target = xml_unescape(source), xml_unescape(target)
+        if source == target:  # a self-loop curve has no polyline
+            continue
+        run = [pieces.pop(0)]
+        while run[-1][1] != target:
+            run.append(pieces.pop(0))
+        found.setdefault((source, target), run)
     return found
 
 
@@ -2672,7 +2700,12 @@ class LaterStoryTests(unittest.TestCase):
         """One dict per label element (lb-s, lb-t, loop) with its box by the _label_mid metrics (6.2 px a character, 14 px tall)."""
         found = []
         for source, target, body in re.findall(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)">(.*?)</g>', svg, re.S):
-            pts = [(float(a), float(b)) for a, b in re.findall(r"[ML]([\d.-]+) ([\d.-]+)", re.search(r'<path class="ln[^"]*" d="([^"]*)"', body).group(1))]
+            # An edge through an edge device chain (AC8) has one path per piece; their points follow each other.
+            pts = [
+                (float(a), float(b))
+                for d in re.findall(r'<path class="ln[^"]*"(?: data-via="[^"]*")? d="([^"]*)"', body)
+                for a, b in re.findall(r"[ML]([\d.-]+) ([\d.-]+)", d)
+            ]
             for kind, x, base, anchor, text in re.findall(r'<text class="lb lb-([st])" x="([\d.]+)" y="([\d.]+)" text-anchor="(start|end)">(.*?)</text>', body):
                 lines = [xml_unescape(t) for t in re.findall(r"<tspan[^>]*>(.*?)</tspan>", text)]
                 w = max(len(t) for t in lines) * 6.2 + 4
@@ -3697,7 +3730,7 @@ class InterfaceEntranceTests(unittest.TestCase):
         for view, render in (("logical", logical_svg), ("deployment", deployment_svg)):
             svg = render(catalog, FIXTURE_SDP)
             rects = node_rects(svg)
-            routes = {(a, b): pts for a, b, pts in edge_polylines(svg)}
+            routes = {pair: run[-1][2] for pair, run in edge_pieces(svg).items()}  # the last piece enters the target
             for source, target, index, count in cases:
                 with self.subTest(view=view, source=source, target=target):
                     pts = routes[(source, target)]
@@ -3913,7 +3946,8 @@ class PortResolutionTests(unittest.TestCase):
 
         self.assertEqual(far_lines(deployment, "FXPRD00001-0001", "FXPRD00002-0001"), ["places orders", "HTTPS JSON · http 8080"])
         self.assertEqual(far_lines(deployment, "FXPRD00003-0001", "FXPRD00002-0001"), ["consumes order messages", "AMQP 5672"])
-        self.assertEqual(far_lines(deployment, "FXPRD00006-0001", "FXPRD00002-0001"), ["administers orders", "gRPC 8092"])
+        # from fx-dc-west into the exposed Application group: through the load balancer's gRPC listener (AC6, AC7)
+        self.assertEqual(far_lines(deployment, "FXPRD00006-0001", "FXPRD00002-0001"), ["administers orders", "gRPC 8443 → gRPC 8092 via FX Public Load Balancer"])
         self.assertEqual(far_lines(deployment, "FXPRD00002-0001", "FXDST00001-0001"), ["reads and writes orders", "SQL 5432"])
         self.assertEqual(far_lines(deployment, "FXPRD00004-0001", "FXDST00001-0001"), ["reads historic carts", "PostgreSQL wire protocol · SQL 5432"])
         self.assertEqual(far_lines(logical, "FXPRD00003-0001", "FXPRD00002-0001"), ["consumes order messages", "AMQP"])
@@ -3932,6 +3966,282 @@ class PortResolutionTests(unittest.TestCase):
         tree = __import__("ast").parse(source)
         names = {t.id for n in tree.body if isinstance(n, __import__("ast").Assign) for t in n.targets if isinstance(t, __import__("ast").Name)}
         self.assertEqual([n for n in names if "PROTOCOL" in n.upper()], [])
+
+
+class EdgeDeviceChainTests(unittest.TestCase):
+    """AC8: the exposure model, the edge device row of an exposed zone lane and the hops through it (deployment view)."""
+
+    LB = plain("LB", "network_service", "Balancer", productName="FX Balancer", listeners=[
+        {"name": "https", "protocol": "REST", "port": 443}, {"name": "grpc", "protocol": "gRPC", "port": 8443}])
+    FW = plain("FW", "network_service", "Firewall", listeners=[{"name": "https", "protocol": "REST", "port": 443}])
+    BARE = plain("BARE", "network_service", "Bare")  # no listener: contributes no port
+
+    @staticmethod
+    def ra(*entries: dict) -> dict:
+        return plain("RA-1", "reference_architecture", "Reference", serviceGroups=[{"name": "Edge", "deployableObjects": list(entries)}])
+
+    @staticmethod
+    def group(name: str, refs: list, target: str = "east", zone: str = "z1", **extra: object) -> dict:
+        return {"name": name, "deploymentTarget": target, "deployableObjects": [{"ref": r, "networkZone": zone} for r in refs], **extra}
+
+    def model(self, objects: list, groups: list, follows: str = "RA-1") -> generate_diagram.Model:
+        sdp = {
+            **plain("SDP-1", "software_deployment_pattern", "Demo Pattern"),
+            "networkZones": [{"id": "z1", "name": "Zone One", "tier": "application"}, {"id": "z2", "name": "Zone Two", "tier": "data"}],
+            "serviceGroups": groups,
+        }
+        if follows:
+            sdp["followsReferenceArchitecture"] = follows
+        catalog = {o["uid"]: o for o in [*objects, sdp]}
+        return generate_diagram.Model(catalog, sdp, False)
+
+    def chains(self, model: generate_diagram.Model) -> dict:
+        return {c.group: c.exposed_through for c in model.containers}
+
+    def test_exposure_rules(self) -> None:
+        web = plain("WEB", "product_component", "Web")
+        data = plain("DAT", "data_component", "Data")
+        lb_slot = {"objectType": "network_service", "slot": "load-balancer", "fills": "LB"}
+        objects = [web, data, self.LB, self.FW, self.ra(lb_slot)]
+        model = self.model(objects, [
+            self.group("Default", ["WEB"]),
+            self.group("Off", ["WEB"], exposedThrough="none"),
+            self.group("One", ["WEB"], exposedThrough="FW"),
+            self.group("Two", ["WEB"], exposedThrough=["LB", "FW"]),
+            self.group("DataTier", ["DAT"]),
+            self.group("DataOwn", ["DAT"], exposedThrough="FW"),
+        ])
+        got = self.chains(model)
+        # Off, One, Two and DataOwn list WEB or DAT again (placed first above); they still carry their own chain
+        self.assertEqual(got["Default"], ["LB"])
+        self.assertEqual(got["DataTier"], [])  # a data tier is never exposed by the slot default
+        groups = [self.group("Off", ["WEB"], exposedThrough="none"), self.group("One", ["WEB"], target="w1", exposedThrough="FW"),
+                  self.group("Two", ["WEB"], target="w2", exposedThrough=["LB", "FW"]), self.group("DataOwn", ["DAT"], exposedThrough="FW")]
+        for g in groups:
+            with self.subTest(group=g["name"]):
+                self.assertEqual(self.chains(self.model(objects, [g]))[g["name"]], {"Off": [], "One": ["FW"], "Two": ["LB", "FW"], "DataOwn": ["FW"]}[g["name"]])
+        # no reference architecture, an unfilled slot, a non-edge slot: not exposed
+        self.assertEqual(self.chains(self.model(objects, [self.group("G", ["WEB"])], follows=""))["G"], [])
+        for entry in ({"slot": "load-balancer"}, {"slot": "application-runtime", "fills": "LB"}):
+            objects2 = [web, self.LB, self.ra(entry)]
+            self.assertEqual(self.chains(self.model(objects2, [self.group("G", ["WEB"])]))["G"], [])
+
+    def test_slot_chain_order_is_protection_then_availability_then_routing(self) -> None:
+        ingress = plain("ING", "network_service", "Ingress")
+        entries = [{"slot": "ingress", "fills": "ING"}, {"slot": "load-balancer", "fills": "LB"}, {"slot": "firewall", "fills": "FW"}]
+        model = self.model([plain("WEB", "product_component", "Web"), self.LB, self.FW, ingress, self.ra(*entries)], [self.group("G", ["WEB"])])
+        self.assertEqual(self.chains(model)["G"], ["FW", "LB", "ING"])
+
+    def test_one_row_per_exposed_group_in_its_own_first_lane(self) -> None:
+        # A3: groups never share a row; two groups with the same chain in one target and zone each draw it
+        comps = [plain(u, "product_component", u) for u in ("A", "B", "C", "A2")]
+        objects = [*comps, self.LB, self.FW, self.ra({"slot": "load-balancer", "fills": "LB"})]
+        sdp_groups = [
+            self.group("GA", ["A"]), self.group("GB", ["B"]), self.group("GC", ["C"], exposedThrough=["FW", "LB"]),
+        ]
+        sdp_groups[0]["deployableObjects"].append({"ref": "A2", "networkZone": "z2"})  # a second lane: no row there
+        model = self.model(objects, sdp_groups)
+        lanes = {c.group: c.lanes for c in model.containers}
+        self.assertEqual([(c.definitions, c.groups) for c in lanes["GA"][0].chains], [(["LB"], ["GA"])])
+        self.assertEqual(lanes["GA"][1].chains, [])
+        self.assertEqual([(c.definitions, c.groups) for c in lanes["GB"][0].chains], [(["LB"], ["GB"])])
+        self.assertEqual([c.definitions for c in lanes["GC"][0].chains], [["FW", "LB"]])
+        svg = generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model))
+        rects = node_rects(svg)
+        groups = {g: tuple(int(v) for v in m) for g, *m in re.findall(
+            r'<g class="group[^"]*"(?: data-id="[^"]*")? data-group="([^"]*)"><title>[^<]*</title><rect class="grp" x="(\d+)" y="(\d+)" width="(\d+)" height="(\d+)"', svg)}
+        for name, member in (("GA", "A"), ("GB", "B"), ("GC", "C")):
+            (row,) = lanes[name][0].chains
+            gx, gy, gw, gh = groups[name]
+            for box in row.boxes:  # inside the group's own container, above its first lane's boxes
+                x, y, w, h = rects[box]
+                self.assertTrue(gx <= x and x + w <= gx + gw and gy <= y and y + h <= gy + gh, (name, box))
+                self.assertLess(y, rects[member][1])
+        fw, lb = lanes["GC"][0].chains[0].boxes
+        self.assertEqual(rects[fw][1], rects[lb][1])
+        self.assertLess(rects[fw][0], rects[lb][0])
+        self.assertNotIn(">fronts ", svg)  # one chain per row: no caption
+        self.assertEqual(len(re.findall(r'class="node[^"]*" data-id="exposure:', svg)), 4)
+
+    def test_hops_only_from_another_target_and_only_through_the_target_chain(self) -> None:
+        rel = lambda uid, s, t, **kw: plain(uid, "relationship", uid, source=s, target=t, **kw)
+        objects = [
+            plain("IN", "product_component", "Inside", interfaces=[{"name": "api", "protocol": "REST"}],
+                  runtimeSpec={"ports": [{"number": 8080, "protocol": "HTTP", "name": "http"}]}),
+            plain("SAME", "product_component", "Same"), plain("FAR", "product_component", "Far"), plain("OFF", "product_component", "Off"),
+            self.LB, self.FW, self.BARE, self.ra({"slot": "load-balancer", "fills": "LB"}),
+            rel("R1", "FAR", "IN", targetInterface="api", technology="HTTPS"),  # other target: hop
+            rel("R2", "SAME", "IN", targetInterface="api"),  # same target, other group: no hop
+            rel("R3", "IN", "FAR"),  # into the far group, whose own chain is [FW, BARE]; the source's chain is not used
+            rel("R4", "IN", "OFF"),  # into a group with exposedThrough none
+            rel("R5", "FAR", "LB"),  # into the placed device of the chain itself: no hop (it would loop through itself)
+            rel("R6", "FAR", "RT"),  # into the exposed group's substrate container: through its chain
+            plain("RT", "runtime_service", "Runtime"),
+        ]
+        model = self.model(objects, [
+            self.group("Front", ["IN", "LB"], substrate="RT"), self.group("Side", ["SAME"]),
+            self.group("Far", ["FAR"], target="west", exposedThrough=["FW", "BARE"]), self.group("Off", ["OFF"], target="west", exposedThrough="none"),
+        ])
+        edges = {e.uid: e for e in model.deployment_edges}
+        self.assertEqual([model.device_ref[b] for b in edges["R1"].hops], ["LB"])
+        self.assertEqual(edges["R1"].far_tech, "https 443 → http 8080")
+        self.assertEqual(edges["R1"].hop_names, ["Balancer"])
+        self.assertEqual((edges["R2"].hops, edges["R4"].hops, edges["R5"].hops), ([], [], []))
+        self.assertEqual([model.device_ref[b] for b in edges["R6"].hops], ["LB"])
+        svg = generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model))
+        pieces = edge_pieces(svg)
+        (box,) = model.hop_of["IN"]  # the Front group's row: its load balancer
+        self.assertEqual([(a, b) for a, b, _p in pieces[("FAR", box)]], [("FAR", box)])  # R5: one piece, into the box
+        self.assertEqual([(a, b) for a, b, _p in pieces[("FAR", "RT")]], [("FAR", box), (box, "RT")])
+        self.assertEqual([model.device_ref[b] for b in edges["R3"].hops], ["FW", "BARE"])
+        self.assertEqual(edges["R3"].far_tech, "https 443")  # FW's single listener; BARE has none and adds nothing
+        self.assertEqual(generate_diagram._callout_tech(edges["R3"]), "https 443 via Firewall via Bare")
+        self.assertEqual(generate_diagram._callout_tech(model.edges[0]), "HTTPS")  # the Application view's edges carry no hop
+
+    def test_placed_device_outside_its_groups_chain_keeps_its_box_and_its_edges_hop(self) -> None:
+        # round 2: LB is placed in Edge (exposedThrough none); App's slot-default chain holds LB; Far is fronted by FW
+        objects = [plain("APP", "product_component", "App"), plain("FAR", "product_component", "Far"), self.LB, self.FW,
+                   self.ra({"slot": "load-balancer", "fills": "LB"}), plain("R1", "relationship", "R1", source="LB", target="FAR")]
+        model = self.model(objects, [
+            self.group("Edge", ["LB"], exposedThrough="none"), self.group("App", ["APP"]),
+            self.group("Far", ["FAR"], target="west", exposedThrough="FW"),
+        ])
+        self.assertEqual(model.row_devices, {})
+        self.assertIn("LB", [n.uid for n in model.nodes_for_view("deployment")])
+        lanes = {c.group: c.lanes for c in model.containers}
+        self.assertEqual(lanes["Edge"][0].members, ["LB"])  # its placed box stays in its own container
+        self.assertEqual([c.definitions for c in lanes["App"][0].chains], [["LB"]])  # App draws its own copy
+        (edge,) = model.deployment_edges
+        self.assertEqual([model.device_ref[b] for b in edge.hops], ["FW"])  # a placed device's edge hops like any other
+        svg = generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model))
+        self.assertIn('data-id="LB"', svg)
+        self.assertEqual([(a, b) for a, b, _p in edge_pieces(svg)[("LB", "FAR")]], [("LB", edge.hops[0]), (edge.hops[0], "FAR")])
+
+    def test_device_also_placed_is_drawn_only_in_the_row_and_keeps_its_edges(self) -> None:
+        objects = [plain("WEB", "product_component", "Web"), self.LB, self.ra({"slot": "load-balancer", "fills": "LB"}),
+                   plain("R1", "relationship", "R1", source="LB", target="WEB", label="routes")]
+        model = self.model(objects, [self.group("G", ["WEB", "LB"])])
+        self.assertNotIn("LB", [n.uid for n in model.nodes_for_view("deployment")])
+        svg = generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model))
+        self.assertNotIn('data-id="LB"', svg)
+        (box,) = model.devices
+        self.assertIn(f'<g class="edge" data-from="{box}" data-to="WEB">', svg)
+        # an unplaced device that a placed object reaches stays in the outside lane as well
+        objects[-1] = plain("R1", "relationship", "R1", source="WEB", target="LB", label="checks")
+        model = self.model(objects, [self.group("G", ["WEB"])])
+        self.assertIn("LB", [n.uid for n in model.nodes_for_view("deployment") if n.outside])
+
+    # ------------------------------------------------------------------ the fixture (fresh SVG)
+    @staticmethod
+    def lane_boxes(svg: str) -> dict:
+        """(group name, zone id) -> the data-id of every box drawn in that zone lane, in drawn order."""
+        out = {}
+        marks = list(re.finditer(r'<g class="(group|zlane)(?:[^"]*)"(?: data-id="[^"]*")? data-(?:group|zone)="([^"]*)">', svg))
+        marks = [m for m in marks if 'class="group store' not in m.group(0)]
+        group = ""
+        for k, m in enumerate(marks):
+            if m.group(1) == "group":
+                group = m.group(2)
+                continue
+            end = marks[k + 1].start() if k + 1 < len(marks) else len(svg)
+            out[(group, m.group(2))] = re.findall(r'<g class="node[^"]*" data-id="([^"]*)">', svg[m.start() : end])
+        return out
+
+    def test_fixture_device_rows(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        svg = deployment_svg(catalog, FIXTURE_SDP)
+        lanes = self.lane_boxes(svg)
+        devices = {k: [u.split(":")[-1] for u in v if u.startswith("exposure:")] for k, v in lanes.items()}
+        # A3: Web and Application share target and zone, and each draws its own row in its own first lane
+        self.assertEqual(devices[("Web", "fx-app")], ["FXNET00003-0001"])
+        self.assertEqual(devices[("Application", "fx-app")], ["FXNET00003-0001"])
+        self.assertEqual(devices[("Application", "fx-data")], [])  # only the group's first lane
+        self.assertEqual(devices[("Partner", "fx-public")], ["FXNET00004-0001", "FXNET00003-0001"])  # exposedThrough order
+        self.assertEqual(devices[("Data", "fx-data")], [])  # exposedThrough none
+        self.assertEqual(devices[("Archive", "fx-data")], [])  # data-only group under the same reference architecture
+        self.assertEqual(devices[("Edge", "")], ["FXNET00003-0001"])  # also placed there: drawn only in the row
+        self.assertNotIn("FXNET00003-0001", lanes[("Edge", "")])
+        self.assertNotIn(">fronts ", svg)  # one chain per row: no caption
+        rects = node_rects(svg)
+        row = [u for u in lanes[("Partner", "fx-public")] if u.startswith("exposure:")]
+        self.assertEqual(rects[row[0]][1], rects[row[1]][1])
+        self.assertLess(rects[row[0]][0], rects[row[1]][0])
+        self.assertLess(rects[row[0]][1], rects["FXPRD00007-0001"][1])
+        box = re.search(rf'<g class="node[^"]*" data-id="{row[1]}">.*?</g>', svg).group(0)
+        self.assertIn("chip-network", box)
+        self.assertIn(">FX Balancer<", box)
+        self.assertIn(">FX Public Load Balancer<", box)
+        # exposed groups without an inbound edge from another target: the row is drawn, no hop leaves it
+        for group, zone in (("Edge", ""), ("Batch", "fx-app")):
+            (dev,) = [u for u in lanes[(group, zone)] if u.startswith("exposure:")]
+            self.assertNotIn(f'data-via="{dev}"', svg, group)
+            self.assertNotIn(f'data-to="{dev}"', svg, group)
+
+    def test_fixture_hops(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        svg = deployment_svg(catalog, FIXTURE_SDP)
+        pieces = edge_pieces(svg)
+        rects = node_rects(svg)
+
+        def devices(source: str, target: str) -> list:
+            return [b.split(":")[-1] for _s, b, _p in pieces[(source, target)][:-1]]
+
+        self.assertEqual(devices("FXPRD00006-0001", "FXPRD00001-0001"), ["FXNET00003-0001"])  # filled slot, other target
+        self.assertEqual(devices("FXPRD00006-0001", "FXPRD00002-0001"), ["FXNET00003-0001"])
+        self.assertEqual(devices("FXPRD00001-0001", "FXPRD00007-0001"), ["FXNET00004-0001", "FXNET00003-0001"])  # target chain only
+        lanes = self.lane_boxes(svg)
+        app_lb = pieces[("FXPRD00006-0001", "FXPRD00002-0001")][0][1]
+        self.assertIn(app_lb, lanes[("Application", "fx-app")])  # the hop leaves the target group's own row
+        # R4: the pieces of the two-device hop never cross one another
+        segs = [(k, a, b) for k, (_s, _t, pts) in enumerate(pieces[("FXPRD00001-0001", "FXPRD00007-0001")]) for a, b in zip(pts, pts[1:])]
+        for k1, (ax, ay), (bx, by) in segs:
+            for k2, (cx, cy), (dx, dy) in segs:
+                if k1 < k2 and ax == bx and cy == dy:  # a vertical of one piece and a horizontal of another
+                    self.assertFalse(min(cx, dx) < ax < max(cx, dx) and min(ay, by) < cy < max(ay, by), (k1, k2, ax, cy))
+                if k1 < k2 and ay == by and cx == dx:
+                    self.assertFalse(min(ax, bx) < cx < max(ax, bx) and min(cy, dy) < ay < max(cy, dy), (k1, k2, cx, ay))
+        for pair in (("FXPRD00001-0001", "FXPRD00002-0001"), ("FXNET00001-0001", "FXPRD00001-0001"),  # same target
+                     ("FXPRD00002-0001", "FXDST00001-0001"), ("FXPRD00001-0001", "FXDCP00001-0001"),  # exposedThrough none
+                     ("FXPRD00004-0001", "FXDCP00008-0001")):  # data-only group
+            self.assertEqual(devices(*pair), [], pair)
+        # each piece leaves a bottom and enters a top: the first device's top, device to device, the target's top
+        for pair in (("FXPRD00006-0001", "FXPRD00001-0001"), ("FXPRD00001-0001", "FXPRD00007-0001")):
+            run = pieces[pair]
+            for source, target, pts in run:
+                sx, sy, _sw, sh = rects[source]
+                tx, ty, _tw, _th = rects[target]
+                self.assertEqual(pts[0][1], sy + sh, (pair, source))
+                self.assertEqual(pts[-1][1], ty, (pair, target))
+                self.assertGreater(pts[1][1], pts[0][1])
+                self.assertLess(pts[-2][1], pts[-1][1])
+            self.assertEqual(run[-1][2][-1][0], rects[pair[1]][0] + 80)  # the target's single interface attachment
+        self.assertEqual(edges_hitting_foreign_boxes(svg), [])
+        self.assertEqual(side_violations(svg), [])
+
+    def test_fixture_chain_labels(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        svg = deployment_svg(catalog, FIXTURE_SDP)
+
+        def callout(source: str, target: str) -> str:
+            body = re.search(rf'<g class="edge" data-from="{source}" data-to="{target}">(.*?)</g>', svg, re.S).group(1)
+            return xml_unescape(re.sub(r"<[^>]*>", "", re.search(r'<text class="callout"[^>]*>(.*?)</text>', body, re.S).group(1)))
+
+        self.assertEqual(callout("FXPRD00006-0001", "FXPRD00001-0001"), "reviews storefront orders / https 443 → http 8080 via FX Public Load Balancer")
+        self.assertEqual(
+            callout("FXPRD00001-0001", "FXPRD00007-0001"),
+            "forwards partner orders / https 443 → https 443 → http 8080 via FX Web Firewall via FX Public Load Balancer",
+        )
+        self.assertEqual(callout("FXPRD00001-0001", "FXPRD00002-0001"), "places orders / HTTPS JSON · http 8080")  # no hop
+        logical = logical_svg(catalog, FIXTURE_SDP)
+        self.assertNotIn("exposure:", logical)
+        self.assertNotIn(" via ", logical)
+        self.assertNotIn("FXNET00003-0001", logical)
+
+    def test_fixture_renders_twice_identically_and_editable(self) -> None:
+        catalog = load_catalog(FIXTURE)
+        self.assertEqual(deployment_svg(catalog, FIXTURE_SDP), deployment_svg(catalog, FIXTURE_SDP))
+        code, _out, err = run_cli(["--workspace", str(FIXTURE), "--sdp", FIXTURE_SDP, "--editable", "--output", os.devnull])
+        self.assertEqual(code, 0, err)
 
 
 class DiagramSkillTests(unittest.TestCase):
@@ -4108,7 +4418,7 @@ class DiagramLayoutTests(unittest.TestCase):
             plain_catalog = fixture_catalog_without_layout()
             dm = generate_diagram.build_diagram_model(plain_catalog, plain_catalog[FIXTURE_SDP], False)
             self.assertEqual(sorted(e["ref"] for e in doc["logical"]), sorted(n.uid for n in dm.nodes))
-            self.assertEqual(len(doc["deployment"]), len(dm.deployment_nodes))
+            self.assertEqual(len(doc["deployment"]), len(dm.deployment_nodes) + len(generate_diagram._deployment_store_uids(dm)))
             self.assertTrue(all(isinstance(e["position"], int) and e["position"] >= 1 for e in doc["logical"] + doc["deployment"]))
             self.assertEqual(min(e["position"] for e in doc["logical"]), 1)
             file_1, page_1 = target.read_bytes(), page.read_bytes()
@@ -4138,9 +4448,10 @@ class DiagramLayoutTests(unittest.TestCase):
             self.assertNotIn("FXGONE00001-0001", logical)
             self.assertEqual(logical["FXPRD00004-0001"], 1)  # kept
             self.assertEqual(logical["FXPRD00001-0001"], 1)
-            # FXPRD00002 and FXPRD00003 have no position in their band; each follows the highest one there
-            self.assertEqual(sorted(logical[u] for u in ("FXPRD00002-0001", "FXPRD00003-0001")), [2, 3])
-            self.assertEqual(len(updated["logical"]), 9)
+            # FXPRD00002 and FXPRD00003 have no position in their band; each follows the highest one there (FXPRD00006
+            # is drawn between them since its interfaces-exposure edge to FXPRD00001)
+            self.assertEqual(sorted(logical[u] for u in ("FXPRD00002-0001", "FXPRD00003-0001", "FXPRD00006-0001")), [2, 3, 4])
+            self.assertEqual(len(updated["logical"]), 11)  # interfaces-exposure fixture: FX Partner Portal and FX Order Archive
             self.assertEqual(len(list((workspace / "catalog").glob("diagram-layout-*.yaml"))), 1)
 
     def test_write_layout_with_placed_only_is_a_usage_error(self) -> None:
