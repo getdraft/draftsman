@@ -1,7 +1,7 @@
 {
   "id": "draftsman-listener-foundation-341-a",
   "title": "Draftsman #341 Plan A: name every called endpoint and prevent incomplete internal architecture designs",
-  "status": "plan-gate",
+  "status": "awaiting-approval",
   "outcome": "Dale gets a reusable catalog entry for each endpoint that a system calls, instead of an ambiguous line between boxes. Calls identify the exact listener they use; unknown endpoints can be recorded as stubs without duplicates. Draftsman then prevents an internal deployment design from being marked complete while those details are still missing, and requires an explicit recorded decision when a listener has no authentication. This delivers the data model, authoring/lookup behavior and tested validation gates, not the updated diagrams or browser (Plan C) or exposure configuration (Plan B).",
   "target_repo": "getdraft/draftsman",
   "epics": [
