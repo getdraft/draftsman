@@ -72,7 +72,7 @@ listenerOwner:
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
 aiHint: >
   A Listener is a first-class, UID-addressable network endpoint owned by a component, data component or external system.
-  Record the protocol, port, endpoint and authenticationModel here. Use none only with a committed DecisionRecord justifying it.
+  Record the protocol, port, endpoint and authenticationModel here. Use none only when no authentication applies; a committed DecisionRecord should justify it (not yet enforced by validation).
   Use catalogStatus stub for an endpoint known only by name, incomplete when fields are partly known, and complete when fully authored.
 fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
@@ -83,7 +83,7 @@ fieldDescriptions:
   protocol: Use one of the approved protocol values.
   port: Record the TCP or UDP port number the listener is reachable on (1-65535).
   endpoint: Record the endpoint or address path for the listener, such as a route, topic or queue name.
-  authenticationModel: Use the authentication model that applies to this listener. none requires a committed DecisionRecord.
+  authenticationModel: Use the authentication model that applies to this listener. none should be justified by a committed DecisionRecord (not yet enforced by validation).
   methods: Optional list of operations or methods exposed by this listener, such as GET or Publish.
   description: Describe the purpose or consumer-facing behavior of this listener.
   catalogStatus: Use stub, incomplete, or complete to describe catalog maturity.

@@ -9,7 +9,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = REPO_ROOT / "framework" / "schemas" / "listener.schema.yaml"
 
 SCHEMA = yaml.safe_load(SCHEMA_PATH.read_text(encoding="utf-8"))
-UID_RE = re.compile(SCHEMA["uidPattern"].lstrip("^").rstrip("$"))
+UID_RE = re.compile(SCHEMA["uidPattern"])
 OWNER_SCHEMA = SCHEMA["listenerOwner"]
 
 VALID_UID = "01KS7ZZ1C5-1PFR"
@@ -27,7 +27,7 @@ def validate_listener(obj: object) -> list[str]:
     if obj.get("type") != "listener":
         errors.append("type must be listener")
     uid = obj.get("uid")
-    if "uid" in obj and not (isinstance(uid, str) and UID_RE.match(uid)):
+    if "uid" in obj and not (isinstance(uid, str) and UID_RE.fullmatch(uid)):
         errors.append("uid does not match uidPattern")
     if "name" in obj and (not isinstance(obj["name"], str) or not obj["name"].strip()):
         errors.append("name must be a non-empty string")
@@ -57,7 +57,7 @@ def _validate_owner(owner: object) -> list[str]:
         if field not in owner:
             errors.append(f"owner missing required field: {field}")
     ref = owner.get("ref")
-    if "ref" in owner and not (isinstance(ref, str) and UID_RE.match(ref)):
+    if "ref" in owner and not (isinstance(ref, str) and UID_RE.fullmatch(ref)):
         errors.append("owner.ref must be a UID")
     kind = owner.get("kind")
     if "kind" in owner and kind not in OWNER_SCHEMA["enumFields"]["kind"]:
@@ -114,4 +114,70 @@ def test_none_authentication_is_accepted_by_schema():
     assert validate_listener(_listener(authenticationModel="none")) == []
 
 
-@pytest_owner_kinds := None  # placeholder removed below
+def test_non_mapping_listener_is_rejected():
+    assert validate_listener("listener") == ["listener must be a mapping"]
+
+
+def test_each_required_field_is_reported_when_missing():
+    for field in SCHEMA["requiredFields"]:
+        errors = validate_listener(_listener(**{field: None}))
+        assert f"missing required field: {field}" in errors, field
+
+
+def test_wrong_type_is_rejected():
+    assert "type must be listener" in validate_listener(_listener(type="service"))
+
+
+def test_uid_must_match_full_pattern():
+    assert "uid does not match uidPattern" in validate_listener(_listener(uid="01KS7ZZ1C5-1PFRXXXX"))
+    assert "uid does not match uidPattern" in validate_listener(_listener(uid="01KS7ZZ1C5-1PFR\n"))
+    assert "uid does not match uidPattern" in validate_listener(_listener(uid="not-a-uid"))
+
+
+def test_blank_or_non_string_name_is_rejected():
+    assert "name must be a non-empty string" in validate_listener(_listener(name="   "))
+    assert "name must be a non-empty string" in validate_listener(_listener(name=42))
+
+
+def test_invalid_enum_values_are_rejected():
+    errors = validate_listener(_listener(catalogStatus="done", protocol="FTP", authenticationModel="basic"))
+    for field in ("catalogStatus", "protocol", "authenticationModel"):
+        assert any(e.startswith(f"{field} must be one of") for e in errors), field
+
+
+def test_invalid_port_is_rejected():
+    for port in (0, 65536, "443", 443.0, True):
+        assert "port must be an integer from 1 to 65535" in validate_listener(_listener(port=port)), port
+
+
+def test_blank_endpoint_and_bad_methods_are_rejected():
+    assert "endpoint must be a non-empty string" in validate_listener(_listener(endpoint=" "))
+    assert "methods must be a list of non-empty strings" in validate_listener(_listener(methods="GET"))
+    assert "methods must be a list of non-empty strings" in validate_listener(_listener(methods=["GET", ""]))
+
+
+def test_owner_must_be_a_mapping_with_ref_and_kind():
+    assert validate_listener(_listener(owner="product_component")) == ["owner must be a mapping with ref and kind"]
+    assert "owner missing required field: kind" in validate_listener(_listener(owner={"ref": OWNER_UID}))
+    assert "owner missing required field: ref" in validate_listener(_listener(owner={"kind": "product_component"}))
+
+
+def test_owner_ref_must_be_a_uid():
+    owner = {"ref": "orders-api", "kind": "product_component"}
+    assert "owner.ref must be a UID" in validate_listener(_listener(owner=owner))
+
+
+def test_owner_kind_must_be_an_approved_type():
+    owner = {"ref": OWNER_UID, "kind": "runtime_service"}
+    assert "owner.kind must be product_component, data_component or external_system" in validate_listener(_listener(owner=owner))
+
+
+def test_each_approved_owner_kind_is_accepted():
+    for kind in OWNER_SCHEMA["enumFields"]["kind"]:
+        assert validate_listener(_listener(owner={"ref": OWNER_UID, "kind": kind})) == []
+
+
+def test_none_authentication_is_documented_as_not_enforced():
+    assert "not yet enforced" in SCHEMA["aiHint"]
+    assert "not yet enforced" in SCHEMA["fieldDescriptions"]["authenticationModel"]
+
