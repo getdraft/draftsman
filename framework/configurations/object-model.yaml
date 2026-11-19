@@ -177,6 +177,16 @@ objectTypes:
       - VM · container · bare metal
       - serverless
 
+  listener:
+    displayName: Listener
+    titleFontSize: 10.5
+    width: 130
+    height: 74
+    displayFields:
+      - owner · protocol · port
+      - endpoint · authenticationModel
+      - catalogStatus
+
   reference_architecture:
     displayName: ReferenceArchitecture
     titleFontSize: 10.5

@@ -2168,6 +2168,37 @@ def validate_unrequired_dependency_rationales(
             )
 
 
+def validate_listener_fields(obj: dict[str, Any], schema: dict[str, Any], path: str, failures: list[str]) -> None:
+    """Listener rules the generic schema check does not express: UID, name, port range, endpoint, methods and owner shape."""
+    if obj.get("type") != "listener":
+        return
+    uid_pattern = re.compile(str(schema.get("uidPattern") or UID_PATTERN_TEXT))
+    if "uid" in obj and not (isinstance(obj["uid"], str) and uid_pattern.fullmatch(obj["uid"])):
+        failures.append(f"{path}: listener uid '{obj['uid']}' does not match the uid pattern")
+    if "name" in obj and (not isinstance(obj["name"], str) or not obj["name"].strip()):
+        failures.append(f"{path}: listener name must be a non-empty string")
+    port = obj.get("port")
+    if "port" in obj and (isinstance(port, bool) or not isinstance(port, int) or not 1 <= port <= 65535):
+        failures.append(f"{path}: listener port must be an integer from 1 to 65535")
+    endpoint = obj.get("endpoint")
+    if "endpoint" in obj and (not isinstance(endpoint, str) or not endpoint.strip()):
+        failures.append(f"{path}: listener endpoint must be a non-empty string")
+    methods = obj.get("methods")
+    if "methods" in obj and (not isinstance(methods, list) or not all(isinstance(m, str) and m.strip() for m in methods)):
+        failures.append(f"{path}: listener methods must be a list of non-empty strings")
+    if "owner" not in obj:
+        return
+    owner = obj["owner"]
+    if not isinstance(owner, dict):
+        failures.append(f"{path}: listener owner must be a mapping with ref and kind")
+        return
+    if "ref" in owner and not (isinstance(owner["ref"], str) and uid_pattern.fullmatch(owner["ref"])):
+        failures.append(f"{path}: listener owner.ref must be a UID")
+    allowed_kinds = ((schema.get("listenerOwner") or {}).get("enumFields") or {}).get("kind") or []
+    if "kind" in owner and owner["kind"] not in allowed_kinds:
+        failures.append(f"{path}: listener owner.kind must be one of {', '.join(allowed_kinds)}")
+
+
 def validate_against_schema(
     obj: dict[str, Any],
     path: Path,
@@ -2180,6 +2211,7 @@ def validate_against_schema(
         failures.append(f"{path}: no schema found for type '{obj.get('type')}'")
         return
     validate_schema_section(obj, schema, str(path), failures, warnings=warnings)
+    validate_listener_fields(obj, schema, str(path), failures)
 
 
 def record_requirement_gap(

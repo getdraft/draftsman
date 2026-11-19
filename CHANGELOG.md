@@ -1,3 +1,25 @@
+## 1.7.0 - 2026-11-19
+
+### Compatibility Impact
+
+- Adds the `listener` object type as a standalone, UID-addressable object. Existing workspaces that contain no listener objects are unaffected.
+
+### Added
+
+- The `listener` object type is registered in `framework/configurations/object-model.yaml`, and `validate.py` enforces its UID, name, port range (1-65535), endpoint, optional methods and owner shape (a mapping with a UID `ref` and a `kind` of product_component, data_component or external_system).
+
+### Changed
+
+- Listener objects are checked by `validate.py` in addition to the generic schema check, so malformed listener fields now fail validation.
+
+### Fixed
+
+- Listener validation tests now run the shipped `validate.py` through `tests/test_validation.py`; the private listener schema test is removed.
+
+### Migration Notes
+
+- Run `validate.py` after vendoring this release; any listener object that fails the new field checks must be corrected before it passes.
+
 ## 1.6.0 - 2026-11-16
 
 ### Compatibility Impact

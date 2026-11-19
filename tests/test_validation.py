@@ -4388,5 +4388,100 @@ class IntentRemovalDocsTests(unittest.TestCase):
         self.assertEqual(positions, sorted(positions))
 
 
+class ListenerValidationTests(unittest.TestCase):
+    VALID_UID = "01KS7ZZ1C5-1PFR"
+    OWNER_UID = "01KS7ZZ1C6-2QGS"
+
+    def _listener(self, **overrides) -> dict:
+        base = {
+            "schemaVersion": "1.0",
+            "uid": self.VALID_UID,
+            "type": "listener",
+            "name": "Orders API",
+            "owner": {"ref": self.OWNER_UID, "kind": "product_component"},
+            "protocol": "REST",
+            "port": 443,
+            "endpoint": "/orders",
+            "authenticationModel": "oauth",
+            "catalogStatus": "complete",
+        }
+        base.update(overrides)
+        return {k: v for k, v in base.items() if v is not None}
+
+    def _validate(self, listener: dict):
+        import yaml
+
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            folder = workspace / "catalog" / "listeners"
+            folder.mkdir(parents=True, exist_ok=True)
+            (folder / "listener-orders-api.yaml").write_text(
+                yaml.safe_dump(listener, sort_keys=False), encoding="utf-8"
+            )
+            return validate_workspace(workspace)
+
+    def test_valid_listener_passes_validation(self) -> None:
+        result = self._validate(self._listener())
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+
+    def test_valid_stub_with_methods_and_none_auth_passes(self) -> None:
+        stub = self._listener(catalogStatus="stub", authenticationModel="TBD", methods=["GET"], description="Pending.")
+        self.assertTrue(self._validate(stub).ok)
+        unauthenticated = self._listener(authenticationModel="none")
+        self.assertTrue(self._validate(unauthenticated).ok)
+
+    def test_missing_required_field_is_rejected(self) -> None:
+        for field in ("protocol", "port", "endpoint", "authenticationModel", "catalogStatus", "owner"):
+            with self.subTest(field=field):
+                result = self._validate(self._listener(**{field: None}))
+                self.assertFalse(result.ok, result.stdout + result.stderr)
+
+    def test_invalid_enum_values_are_rejected(self) -> None:
+        result = self._validate(self._listener(catalogStatus="done", protocol="FTP", authenticationModel="basic"))
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        for field in ("catalogStatus", "protocol", "authenticationModel"):
+            self.assertIn(field, result.stdout)
+
+    def test_invalid_uid_is_rejected(self) -> None:
+        result = self._validate(self._listener(uid="not-a-uid"))
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("listener uid 'not-a-uid' does not match the uid pattern", result.stdout)
+
+    def test_invalid_port_is_rejected(self) -> None:
+        for port in (0, 65536, True):
+            with self.subTest(port=port):
+                result = self._validate(self._listener(port=port))
+                self.assertFalse(result.ok, result.stdout + result.stderr)
+                self.assertIn("listener port must be an integer from 1 to 65535", result.stdout)
+
+    def test_blank_endpoint_and_bad_methods_are_rejected(self) -> None:
+        result = self._validate(self._listener(endpoint=" "))
+        self.assertIn("listener endpoint must be a non-empty string", result.stdout)
+        result = self._validate(self._listener(methods=["GET", ""]))
+        self.assertIn("listener methods must be a list of non-empty strings", result.stdout)
+
+    def test_owner_must_be_a_mapping(self) -> None:
+        result = self._validate(self._listener(owner="product_component"))
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("listener owner must be a mapping with ref and kind", result.stdout)
+
+    def test_owner_ref_must_be_a_uid(self) -> None:
+        result = self._validate(self._listener(owner={"ref": "orders-api", "kind": "product_component"}))
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("listener owner.ref must be a UID", result.stdout)
+
+    def test_owner_kind_must_be_an_approved_type(self) -> None:
+        result = self._validate(self._listener(owner={"ref": self.OWNER_UID, "kind": "runtime_service"}))
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("listener owner.kind must be one of", result.stdout)
+
+    def test_each_approved_owner_kind_is_accepted(self) -> None:
+        for kind in ("product_component", "data_component", "external_system"):
+            with self.subTest(kind=kind):
+                result = self._validate(self._listener(owner={"ref": self.OWNER_UID, "kind": kind}))
+                self.assertTrue(result.ok, result.stdout + result.stderr)
+
+
 if __name__ == "__main__":
     unittest.main()
