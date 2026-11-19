@@ -1,0 +1,75 @@
+schemaVersion: '1.0'
+type: listener
+requiredFields:
+- schemaVersion
+- uid
+- type
+- name
+- owner
+- protocol
+- port
+- endpoint
+- authenticationModel
+- catalogStatus
+optionalFields:
+- methods
+- description
+- aliases
+- tags
+- notes
+defaultOwnerRole: engineering
+enumFields:
+  catalogStatus:
+  - stub
+  - incomplete
+  - complete
+  protocol:
+  - REST
+  - gRPC
+  - GraphQL
+  - WebSocket
+  - AMQP
+  - SMTP
+  - SQL
+  - Redis
+  - Kafka
+  - SQS
+  - SNS
+  - S3
+  - DynamoDB
+  - HTTP
+  - HTTPS
+  - TCP
+  - UDP
+  - other
+  authenticationModel:
+  - iam
+  - api-key
+  - oauth
+  - saml
+  - 'none'
+  - other
+  - TBD
+fieldTypes:
+  owner: dict
+  port: int
+  endpoint: str
+  methods: list
+  aliases: list
+  tags: list
+  notes: dict
+fieldDescriptions:
+  schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
+  uid: Use the generated opaque UID for object identity. Do not edit it for display-name changes.
+  type: Use listener exactly.
+  name: Use a clear human-readable name for this listener.
+  owner: Declare the owner as kind (product_component, data_component or external_system) and ref (the catalog UID of an existing object of that type).
+  protocol: Record the application protocol the listener accepts.
+  port: Record the port number the listener is reached on.
+  endpoint: Record the endpoint path or address the listener serves, without the host.
+  authenticationModel: Use the authentication model that protects this listener. Use none only with a committed DecisionRecord justification.
+  methods: List the HTTP methods or operations the listener accepts, when known.
+  description: Describe the purpose or consumer-facing behavior of this listener.
+  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity.
+uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
+aiHint: A Listener is a UID-addressable endpoint owned by a product component, data component or external system. Record it once and reference its UID from the objects that call it.
