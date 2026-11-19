@@ -6,7 +6,7 @@
 
 ### Added
 
-- `listener_identity(obj)` and `normalize_listener_endpoint(endpoint)` in `framework/tools/validate.py`: a listener's exact identity is owner kind and ref, lowercased protocol, port (protocol default when omitted: HTTP 80, HTTPS 443) and the endpoint normalized to a path with templated parameters (`{name}` or `:name`) as `{}`. The host is discarded and never part of identity, so distinct owners never collapse.
+- `listener_identity(obj)` and `normalize_listener_endpoint(endpoint)` in `framework/tools/validate.py`: a listener's exact identity is owner kind and ref, lowercased protocol, port (protocol default when omitted: HTTP 80, HTTPS 443) and the endpoint normalized to a path with templated parameters (`{name}` or `:name`) as `{}`. A leading scheme and host are discarded and never part of identity, so distinct owners never collapse. Query strings and fragments are dropped. A `://` that appears after a leading slash is left in the path (not parsed as a host).
 - Tests `ListenerIdentityTests` in `tests/test_validation.py`.
 
 ### Changed
@@ -15,7 +15,7 @@
 
 ### Fixed
 
-- None.
+- `normalize_listener_endpoint` only strips a scheme and host when the endpoint begins with a URI scheme. Path-only endpoints that contain `://` (for example `/proxy/http://x/{id}`) stay distinct, and query strings and fragments are not part of the identity key.
 
 ### Migration Notes
 

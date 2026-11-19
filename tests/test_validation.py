@@ -4420,6 +4420,22 @@ class ListenerIdentityTests(unittest.TestCase):
         self.assertEqual(other, base)
         self.assertNotIn("example", "".join(str(part) for part in other).lower())
 
+    def test_embedded_scheme_in_path_is_not_treated_as_host(self) -> None:
+        v = self._validate_module()
+        embedded = v.listener_identity(self._listener(endpoint="/proxy/http://x/{id}"))
+        # Repeated slashes in the path still collapse, but the prefix is kept so this
+        # does not fall out as a scheme/host pair (which would be "/{}" or "/x/{}").
+        self.assertEqual(embedded[-1], "/proxy/http:/x/{}")
+        self.assertNotEqual(embedded, v.listener_identity(self._listener(endpoint="/x/{id}")))
+        self.assertNotEqual(embedded, v.listener_identity(self._listener(endpoint="http://x/{id}")))
+
+    def test_query_and_fragment_are_dropped_from_endpoint(self) -> None:
+        v = self._validate_module()
+        base = v.listener_identity(self._listener())
+        self.assertEqual(v.listener_identity(self._listener(endpoint="/orders/{id}?a=1")), base)
+        self.assertEqual(v.listener_identity(self._listener(endpoint="/orders/{id}#frag")), base)
+        self.assertEqual(v.listener_identity(self._listener(endpoint="/orders/{id}?a=1#frag")), base)
+
     def test_protocol_is_case_insensitive(self) -> None:
         v = self._validate_module()
         self.assertEqual(v.listener_identity(self._listener(protocol="https")), v.listener_identity(self._listener()))

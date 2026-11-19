@@ -437,13 +437,21 @@ _LISTENER_TEMPLATED_SEGMENT = re.compile(r"^(\{[^{}/]+\}|:[A-Za-z_][A-Za-z0-9_]*
 
 
 def normalize_listener_endpoint(endpoint: Any) -> str:
-    """Path of a listener endpoint: any scheme and host are dropped (the host is never persisted or keyed),
-    templated path parameters ({name} or :name) become {}, and trailing or repeated slashes are removed."""
+    """Path of a listener endpoint: a leading scheme and host are dropped (the host is never persisted or keyed),
+    query strings and fragments are dropped, templated path parameters ({name} or :name) become {}, and trailing
+    or repeated slashes are removed. A :// that appears after a leading slash is part of the path, not a scheme."""
     text = str(endpoint or "").strip()
-    if "://" in text:
-        text = text.split("://", 1)[1]
+    leading = re.match(r"^[A-Za-z][A-Za-z0-9+.-]*://", text)
+    if leading:
+        text = text[leading.end():]
         slash = text.find("/")
         text = text[slash:] if slash >= 0 else ""
+    cut = len(text)
+    for sep in ("?", "#"):
+        i = text.find(sep)
+        if i >= 0:
+            cut = min(cut, i)
+    text = text[:cut]
     segments = ["{}" if _LISTENER_TEMPLATED_SEGMENT.match(seg) else seg for seg in text.split("/") if seg]
     return "/" + "/".join(segments)
 
