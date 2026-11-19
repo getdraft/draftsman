@@ -4388,5 +4388,79 @@ class IntentRemovalDocsTests(unittest.TestCase):
         self.assertEqual(positions, sorted(positions))
 
 
+class ListenerCatalogTests(unittest.TestCase):
+    SYSTEM_UID = "01KQS0TF60-SYS1"
+    LISTENER_UID = "01KQS0TF61-AB12"
+
+    def _validate(self, owner_kind: str, owner_ref: str, **overrides: object):
+        fields = {"protocol": "HTTPS", "port": 443, "endpoint": "/orders/v1", "authenticationModel": "oauth"}
+        fields.update(overrides)
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            system_dir = workspace / "catalog" / "systems"
+            system_dir.mkdir(parents=True, exist_ok=True)
+            (system_dir / "system-test.yaml").write_text(
+                textwrap.dedent(
+                    f"""
+                    schemaVersion: "1.0"
+                    uid: {self.SYSTEM_UID}
+                    type: system
+                    name: Orders System
+                    catalogStatus: complete
+                    lifecycleStatus: preferred
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            listener_dir = workspace / "catalog" / "listeners"
+            listener_dir.mkdir(parents=True, exist_ok=True)
+            (listener_dir / "listener-test.yaml").write_text(
+                textwrap.dedent(
+                    f"""
+                    schemaVersion: "1.0"
+                    uid: {self.LISTENER_UID}
+                    type: listener
+                    name: Orders API listener
+                    owner:
+                      kind: {owner_kind}
+                      ref: {owner_ref}
+                    protocol: {fields['protocol']}
+                    port: {fields['port']}
+                    endpoint: {fields['endpoint']}
+                    authenticationModel: {fields['authenticationModel']}
+                    catalogStatus: stub
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            return validate_workspace(workspace)
+
+    def test_valid_listener_owned_by_external_system_is_accepted(self) -> None:
+        result = self._validate("external_system", self.SYSTEM_UID)
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+
+    def test_owner_ref_naming_no_catalog_object_is_rejected(self) -> None:
+        result = self._validate("external_system", "01KQS0TF62-NONE")
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("owner.ref '01KQS0TF62-NONE' names no catalog object", result.stdout)
+
+    def test_owner_ref_of_different_type_is_rejected(self) -> None:
+        result = self._validate("product_component", self.SYSTEM_UID)
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("is a system object, not a product_component", result.stdout)
+
+    def test_invalid_listener_protocol_is_rejected(self) -> None:
+        result = self._validate("external_system", self.SYSTEM_UID, protocol="FTP")
+        self.assertFalse(result.ok, result.stdout + result.stderr)
+        self.assertIn("Set protocol to one of", result.stdout)
+
+    def test_listener_with_no_authentication_is_accepted_by_schema(self) -> None:
+        result = self._validate("external_system", self.SYSTEM_UID, authenticationModel="none")
+        self.assertTrue(result.ok, result.stdout + result.stderr)
+
+
 if __name__ == "__main__":
     unittest.main()

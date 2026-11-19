@@ -401,6 +401,36 @@ def _check_relationship_definition_endpoint(obj: dict, catalog_by_id: dict, cont
 
 
 register_ratchet_rule("sdp-placement-types", _check_sdp_placement_types)
+OWNER_KIND_TYPES = {
+    "product_component": "product_component",
+    "data_component": "data_component",
+    "external_system": "system",
+}
+
+
+def _check_listener_owner(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
+    # A listener's owner.ref must name an existing catalog object whose type matches owner.kind.
+    if obj.get("type") != "listener" or not isinstance(obj.get("owner"), dict):
+        return []
+    owner = obj["owner"]
+    kind = owner.get("kind")
+    ref = owner.get("ref")
+    label = obj.get("name") or obj.get("uid")
+    if not isinstance(kind, str) or kind not in OWNER_KIND_TYPES:
+        return [f"listener '{label}' owner.kind must be one of {', '.join(OWNER_KIND_TYPES)}; '{kind}' is not valid"]
+    target = catalog_by_id.get(ref) if isinstance(ref, str) else None
+    if not isinstance(target, dict):
+        return [f"listener '{label}' owner.ref '{ref}' names no catalog object"]
+    expected = OWNER_KIND_TYPES[kind]
+    if target.get("type") != expected:
+        return [
+            f"listener '{label}' owner.ref '{ref}' is a {target.get('type')} object, not a {expected} "
+            f"as owner.kind '{kind}' requires"
+        ]
+    return []
+
+
+register_ratchet_rule("listener-owner", _check_listener_owner)
 register_ratchet_rule("relationship-definition-endpoint", _check_relationship_definition_endpoint)
 
 

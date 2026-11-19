@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- New object type `listener` (`framework/schemas/listener.schema.yaml`) and new ratcheted rule `listener-owner`: a listener's `owner.ref` must name an existing catalog object whose type matches `owner.kind`. No existing content declares listeners, so no existing file changes validation result.
+
+### Added
+
+- `listener` schema: a UID-addressable endpoint with `owner` (`kind` and `ref`), `protocol`, `port`, `endpoint`, `authenticationModel` (including `none`), optional `methods`, `description` and `catalogStatus` (`stub`, `incomplete`, `complete`).
+- Tests `ListenerCatalogTests` in `tests/test_validation.py` for valid and invalid listener fields and owners.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Nothing is required. Adopters who add listeners should set `owner.kind` to `product_component`, `data_component` or `external_system`; an `external_system` owner must be a `system` object.
+
 ## 1.6.0 - 2026-11-16
 
 ### Compatibility Impact
