@@ -10,11 +10,11 @@ limits:
   max_prs_per_story: 3
   max_sendbacks: 3
 board:
-  org: BeerCanLabs
+  org: getdraft
   project: 1
   title: Agentic SDLC
-  coder: cody-agent-factory-206b[bot]
-  reviewer: rev-agent-factory-18b3[bot]
+  coder: cody-agent-factory-getdraft[bot]
+  reviewer: rev-agent-factory-getdraft[bot]
 # Draftsman releases from its own main: a merge runs Validate Catalog (and tags the version), Promote Release
 # (promotes CHANGELOG "## Unreleased" and bumps draft-framework.yaml) and Deploy to GitHub Pages (docs/).
 # There is no pin to move, so a deploy is manual and needs a human approval.
