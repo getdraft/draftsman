@@ -36,5 +36,82 @@
     "The current ops adapter assumes a separate pin repo. Draftsman releases on merge to its own main via Promote Release and Deploy to GitHub Pages; deployment remains human-gated and is not a budget approval.",
     "The owner/normalized-key and internal/external classification contracts must be explicit before story breakdown. Missing product decisions are questions, not permission to guess."
   ],
-  "companion": "plans/draftsman-listener-foundation-341-a.md"
+  "companion": "plans/draftsman-listener-foundation-341-a.md",
+  "finops": {
+    "status": "estimated",
+    "agent": "SDLC FinOps",
+    "estimate": "2 stories (~2.5 passes/story, 5.23M tokens): $12.50 expected ($12.22 models + $0.28 infra), $16.63 P90",
+    "breakdown": {
+      "models": [
+        {
+          "role": "chiefArchitect",
+          "model": "claude-sonnet-5-5",
+          "input_tokens": 1200000,
+          "output_tokens": 110000,
+          "cost_usd": 3.5
+        },
+        {
+          "role": "finops",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 15000,
+          "output_tokens": 1500,
+          "cost_usd": 0.0023
+        },
+        {
+          "role": "conductor",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 60000,
+          "output_tokens": 6000,
+          "cost_usd": 0.009
+        },
+        {
+          "role": "coder",
+          "model": "claude-sonnet-5-5",
+          "input_tokens": 1900000,
+          "output_tokens": 80000,
+          "cost_usd": 4.6
+        },
+        {
+          "role": "reviewer",
+          "model": "claude-sonnet-5-5",
+          "input_tokens": 950000,
+          "output_tokens": 30000,
+          "cost_usd": 2.2
+        },
+        {
+          "role": "juror-1",
+          "model": "claude-sonnet-5-5",
+          "input_tokens": 285000,
+          "output_tokens": 7500,
+          "cost_usd": 0.645
+        },
+        {
+          "role": "juror-2",
+          "model": "gemini-4-argon",
+          "input_tokens": 285000,
+          "output_tokens": 7500,
+          "cost_usd": 0.645
+        },
+        {
+          "role": "juror-3",
+          "model": "grok-4.7",
+          "input_tokens": 285000,
+          "output_tokens": 7500,
+          "cost_usd": 0.615
+        }
+      ],
+      "tokens": {
+        "input": 4980000,
+        "output": 250000,
+        "total": 5230000
+      },
+      "stories": 2,
+      "passes_per_story": 2.5,
+      "deploy_points": 0,
+      "model_cost_usd": 12.22,
+      "infra_cost_usd": 0.28,
+      "total_expected_usd": 12.5,
+      "total_p90_usd": 16.63
+    }
+  }
 }
