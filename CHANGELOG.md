@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. No existing catalog content or validation result changes; the listener identity key is not yet enforced by any rule.
+
+### Added
+
+- `listener_identity(obj)` and `normalize_listener_endpoint(endpoint)` in `framework/tools/validate.py`: a listener's exact identity is owner kind and ref, lowercased protocol, port (protocol default when omitted: HTTP 80, HTTPS 443) and the endpoint normalized to a path with templated parameters (`{name}` or `:name`) as `{}`. The host is discarded and never part of identity, so distinct owners never collapse.
+- Tests `ListenerIdentityTests` in `tests/test_validation.py`.
+
+### Changed
+
+- The listener `endpoint` field description documents templated path parameters and that the host is not stored.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Nothing is required. Authors should write endpoints as paths without the host.
+
 ## 1.7.0 - 2026-11-19
 
 ### Compatibility Impact

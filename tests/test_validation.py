@@ -4388,6 +4388,62 @@ class IntentRemovalDocsTests(unittest.TestCase):
         self.assertEqual(positions, sorted(positions))
 
 
+class ListenerIdentityTests(unittest.TestCase):
+    OWNER = {"kind": "external_system", "ref": "01KQS0TF60-SYS1"}
+
+    def _validate_module(self):
+        sys.path.insert(0, str(REPO_ROOT / "framework" / "tools"))
+        import validate
+
+        return validate
+
+    def _listener(self, **fields: object) -> dict:
+        base = {"type": "listener", "owner": dict(self.OWNER), "protocol": "HTTPS", "port": 443, "endpoint": "/orders/{id}"}
+        base.update(fields)
+        return base
+
+    def test_default_port_matches_explicit_port(self) -> None:
+        v = self._validate_module()
+        self.assertEqual(v.listener_identity(self._listener(port=None)), v.listener_identity(self._listener()))
+        self.assertEqual(v.listener_identity(self._listener(protocol="HTTP", port=None))[3], 80)
+
+    def test_templated_path_parameters_and_trailing_slash_normalize(self) -> None:
+        v = self._validate_module()
+        base = v.listener_identity(self._listener())
+        self.assertEqual(v.listener_identity(self._listener(endpoint="/orders/{orderId}")), base)
+        self.assertEqual(v.listener_identity(self._listener(endpoint="/orders/:id/")), base)
+
+    def test_host_is_lowercased_out_of_identity_and_never_persisted(self) -> None:
+        v = self._validate_module()
+        base = v.listener_identity(self._listener())
+        other = v.listener_identity(self._listener(endpoint="https://API.Example.COM/orders/{id}"))
+        self.assertEqual(other, base)
+        self.assertNotIn("example", "".join(str(part) for part in other).lower())
+
+    def test_protocol_is_case_insensitive(self) -> None:
+        v = self._validate_module()
+        self.assertEqual(v.listener_identity(self._listener(protocol="https")), v.listener_identity(self._listener()))
+
+    def test_distinct_owners_never_collapse(self) -> None:
+        v = self._validate_module()
+        base = v.listener_identity(self._listener())
+        other_ref = self._listener(owner={"kind": "external_system", "ref": "01KQS0TF60-SYS2"})
+        other_kind = self._listener(owner={"kind": "product_component", "ref": "01KQS0TF60-SYS1"})
+        self.assertNotEqual(v.listener_identity(other_ref), base)
+        self.assertNotEqual(v.listener_identity(other_kind), base)
+
+    def test_port_and_literal_segments_distinguish_listeners(self) -> None:
+        v = self._validate_module()
+        base = v.listener_identity(self._listener())
+        self.assertNotEqual(v.listener_identity(self._listener(port=8443)), base)
+        self.assertNotEqual(v.listener_identity(self._listener(endpoint="/invoices/{id}")), base)
+
+    def test_identity_is_none_without_port_or_default(self) -> None:
+        v = self._validate_module()
+        self.assertIsNone(v.listener_identity(self._listener(protocol="Kafka", port=None)))
+        self.assertIsNone(v.listener_identity(self._listener(owner="not-a-dict")))
+
+
 class ListenerCatalogTests(unittest.TestCase):
     SYSTEM_UID = "01KQS0TF60-SYS1"
     LISTENER_UID = "01KQS0TF61-AB12"

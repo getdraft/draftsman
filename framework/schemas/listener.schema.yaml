@@ -66,7 +66,7 @@ fieldDescriptions:
   owner: Declare the owner as kind (product_component, data_component or external_system) and ref (the catalog UID of an existing object of that type).
   protocol: Record the application protocol the listener accepts.
   port: Record the port number the listener is reached on.
-  endpoint: Record the endpoint path or address the listener serves, without the host.
+  endpoint: Record the endpoint path the listener serves, without the host. Write templated path parameters as {name} or :name; the host is not stored and is not part of listener identity.
   authenticationModel: Use the authentication model that protects this listener. Use none only with a committed DecisionRecord justification.
   methods: List the HTTP methods or operations the listener accepts, when known.
   description: Describe the purpose or consumer-facing behavior of this listener.
