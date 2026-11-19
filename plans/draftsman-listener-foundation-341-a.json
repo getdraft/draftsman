@@ -1,0 +1,117 @@
+{
+  "id": "draftsman-listener-foundation-341-a",
+  "title": "Draftsman #341 Plan A: name every called endpoint and prevent incomplete internal architecture designs",
+  "status": "awaiting-approval",
+  "outcome": "Dale gets a reusable catalog entry for each endpoint that a system calls, instead of an ambiguous line between boxes. Calls identify the exact listener they use; unknown endpoints can be recorded as stubs without duplicates. Draftsman then prevents an internal deployment design from being marked complete while those details are still missing, and requires an explicit recorded decision when a listener has no authentication. This delivers the data model, authoring/lookup behavior and tested validation gates, not the updated diagrams or browser (Plan C) or exposure configuration (Plan B).",
+  "target_repo": "getdraft/draftsman",
+  "epics": [
+    {
+      "id": "E1",
+      "title": "Listener catalog, exact targets, normalized lookup and stubs",
+      "acceptance_criteria": [
+        "A listener is a first-class UID-addressable object owned by a component, data component or external system, with protocol, port, endpoint, authenticationModel, optional methods, description and catalogStatus (stub, incomplete, complete); validation tests cover valid and invalid fields/owners.",
+        "Identity is owner + protocol + port + endpoint, normalized as #341 specifies (default ports and templated path parameters; lowercase host input but do not persist host). Planning explicitly resolves how host normalization is handled when host is not stored; distinct owners never collapse.",
+        "The plan settles and documents the protocol enum extension (including SQL, Redis, Kafka, SQS, SNS, S3 and gRPC-web as needed); authenticationModel accepts none.",
+        "Every relationship must reference a real listener via targetListener, including data/external targets; missing or invalid references fail the ratcheted relationship-target-listener rule on changed content. runtimeSpec.dependencies[].interface can resolve the same listener UID. Protocol/technology disagreement warns, not ratchets.",
+        "Lookup-before-create resolves the owner and normalized exact key: existing listener is linked, missing listener creates and links a stub, and a later authored listener upgrades that stub without a duplicate UID. Ambiguous owners are returned for human choice, never guessed. A vendor-owned stub cannot leave stub without a company-internal relationship owner.",
+        "Legacy product_component.interfaces remains; existing relationships stay green after validate.py --write-baseline until next changed. Tests cover baseline preservation, changed relationships, both internal/external targets, normalization, duplicate prevention and stub upgrade."
+      ],
+      "deploy_point": false
+    },
+    {
+      "id": "E2",
+      "title": "Explicit listener protection and honest deployment-pattern completeness",
+      "acceptance_criteria": [
+        "Mandatory interface-protection applies to listeners and is satisfied by authenticationModel: TBD does not satisfy it, none does.",
+        "Conditional interface-unprotected-justification uses existing applicability on the listener authenticationModel equals none; only a committed DecisionRecord satisfies it and naAllowed is false. Tests reject missing, draft and N/A justifications and accept a committed decision.",
+        "The SDP completeness gate names and blocks any internally owned stub listener called by that pattern. External-vendor stubs do not block completion. Tests cover dependency traversal, several calls and mixed internal/external ownership.",
+        "The gate is ratcheted when the SDP or its dependent objects change; a framework upgrade alone does not retroactively fail unchanged content. Tests distinguish unchanged baseline from changed SDP/dependencies.",
+        "Upstream defines the mechanism, not which unauthenticated exceptions a company accepts; exception policy remains in company requirement groups. validate, unit tests, generated-asset checks and release-note checks pass on the final changes."
+      ],
+      "deploy_point": false
+    }
+  ],
+  "risks": [
+    "#341 was rewritten Nov 18 to supersede the earlier targetInterface proposal; main already contains #366 (v1.6.0) for that older design. Inspect current main and plan only the delta; do not rebuild already merged exposure/renderer work or silently retain the obsolete targetInterface contract.",
+    "The current ops adapter assumes a separate pin repo. Draftsman releases on merge to its own main via Promote Release and Deploy to GitHub Pages; deployment remains human-gated and is not a budget approval.",
+    "The owner/normalized-key and internal/external classification contracts must be explicit before story breakdown. Missing product decisions are questions, not permission to guess."
+  ],
+  "companion": "plans/draftsman-listener-foundation-341-a.md",
+  "finops": {
+    "status": "estimated",
+    "agent": "SDLC FinOps",
+    "estimate": "2 stories (~2.5 passes/story, 5.23M tokens): $12.50 expected ($12.22 models + $0.28 infra), $16.63 P90",
+    "breakdown": {
+      "models": [
+        {
+          "role": "chiefArchitect",
+          "model": "claude-sonnet-5-5",
+          "input_tokens": 1200000,
+          "output_tokens": 110000,
+          "cost_usd": 3.5
+        },
+        {
+          "role": "finops",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 15000,
+          "output_tokens": 1500,
+          "cost_usd": 0.0023
+        },
+        {
+          "role": "conductor",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 60000,
+          "output_tokens": 6000,
+          "cost_usd": 0.009
+        },
+        {
+          "role": "coder",
+          "model": "claude-sonnet-5-5",
+          "input_tokens": 1900000,
+          "output_tokens": 80000,
+          "cost_usd": 4.6
+        },
+        {
+          "role": "reviewer",
+          "model": "claude-sonnet-5-5",
+          "input_tokens": 950000,
+          "output_tokens": 30000,
+          "cost_usd": 2.2
+        },
+        {
+          "role": "juror-1",
+          "model": "claude-sonnet-5-5",
+          "input_tokens": 285000,
+          "output_tokens": 7500,
+          "cost_usd": 0.645
+        },
+        {
+          "role": "juror-2",
+          "model": "gemini-4-argon",
+          "input_tokens": 285000,
+          "output_tokens": 7500,
+          "cost_usd": 0.645
+        },
+        {
+          "role": "juror-3",
+          "model": "grok-4.7",
+          "input_tokens": 285000,
+          "output_tokens": 7500,
+          "cost_usd": 0.615
+        }
+      ],
+      "tokens": {
+        "input": 4980000,
+        "output": 250000,
+        "total": 5230000
+      },
+      "stories": 2,
+      "passes_per_story": 2.5,
+      "deploy_points": 0,
+      "model_cost_usd": 12.22,
+      "infra_cost_usd": 0.28,
+      "total_expected_usd": 12.5,
+      "total_p90_usd": 16.63
+    }
+  }
+}
