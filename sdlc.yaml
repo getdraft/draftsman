@@ -1,0 +1,29 @@
+# SDLC fleet config for getdraft/draftsman (BeerCanLabs agentic SDLC).
+# Validated against BeerCanLabs/agentic-sdlc shared/schemas/sdlc.schema.json. Names repos and steps only; never tokens.
+# The fleet's deployment reads its own copy of this file; agent display names live in the fleet's deployment config.
+repo: getdraft/draftsman
+base_branch: main
+required_checks:
+  - validate            # Validate Catalog job; the only required status check on main
+limits:
+  max_concurrent_stories: 1
+  max_prs_per_story: 3
+  max_sendbacks: 3
+board:
+  org: BeerCanLabs
+  project: 1
+  title: Agentic SDLC
+  coder: cody-agent-factory-206b[bot]
+  reviewer: rev-agent-factory-18b3[bot]
+# Draftsman releases from its own main: a merge runs Validate Catalog (and tags the version), Promote Release
+# (promotes CHANGELOG "## Unreleased" and bumps draft-framework.yaml) and Deploy to GitHub Pages (docs/).
+# There is no pin to move, so a deploy is manual and needs a human approval.
+deploy:
+  repo: getdraft/draftsman
+  pin_path: main
+  workflow: deploy-pages.yml
+  prod_tests:
+    - Validate Catalog (validate) is green on the merge commit on main
+    - Promote Release and Deploy to GitHub Pages runs for the merge commit succeeded
+  rollback: revert the merged PR on main; the revert push re-runs Promote Release and Deploy to GitHub Pages
+  requires_approval: true
