@@ -512,6 +512,66 @@ def _check_relationship_target_interface(obj: dict, catalog_by_id: dict, context
 register_ratchet_rule("relationship-target-interface", _check_relationship_target_interface)
 
 
+def _is_listener(obj: Any) -> bool:
+    return isinstance(obj, dict) and obj.get("type") == "listener"
+
+
+def _listener_owner_ref(listener: dict) -> Any:
+    owner = listener.get("owner")
+    return owner.get("ref") if isinstance(owner, dict) else None
+
+
+def _listener_dependency_messages(obj: dict, catalog_by_id: dict) -> list[str]:
+    # A product component's runtimeSpec.dependencies[].interface may be a listener UID; that listener must be owned by ref.
+    runtime_spec = obj.get("runtimeSpec")
+    dependencies = runtime_spec.get("dependencies") if isinstance(runtime_spec, dict) else None
+    if not isinstance(dependencies, list):
+        return []
+    messages: list[str] = []
+    for index, dependency in enumerate(dependencies):
+        if not isinstance(dependency, dict) or not isinstance(dependency.get("interface"), str):
+            continue
+        interface = dependency["interface"].strip()
+        listener = catalog_by_id.get(interface) if re.match(UID_PATTERN_TEXT, interface) else None
+        if not _is_listener(listener):
+            continue
+        ref = dependency.get("ref")
+        if _listener_owner_ref(listener) != str(ref or "").strip():
+            messages.append(
+                f"runtimeSpec.dependencies[{index}].interface '{interface}' is a listener owned by "
+                f"'{_listener_owner_ref(listener)}', not by its ref '{ref}'"
+            )
+    return messages
+
+
+def _check_relationship_target_listener(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
+    # Ratcheted: a relationship names the exact listener it calls (targetListener). For a catalog target the listener
+    # must be owned by that target; an externalTarget has no owner to compare, so any real listener serves.
+    if obj.get("_derived"):
+        return []
+    if obj.get("type") == "product_component":
+        return _listener_dependency_messages(obj, catalog_by_id)
+    if obj.get("type") != "relationship":
+        return []
+    rel = obj.get("name") or obj.get("uid")
+    ref = obj.get("targetListener")
+    if not is_non_empty(ref):
+        return [f"relationship '{rel}' names no targetListener: reference the listener the call uses"]
+    listener = catalog_by_id.get(str(ref).strip())
+    if not _is_listener(listener):
+        return [f"relationship '{rel}' targetListener '{ref}' names no listener object"]
+    target_ref = obj.get("target")
+    if is_non_empty(target_ref) and _listener_owner_ref(listener) != str(target_ref).strip():
+        return [
+            f"relationship '{rel}' targetListener '{ref}' is owned by '{_listener_owner_ref(listener)}', "
+            f"not by its target '{target_ref}'"
+        ]
+    return []
+
+
+register_ratchet_rule("relationship-target-listener", _check_relationship_target_listener)
+
+
 def object_hash(obj: dict[str, Any]) -> str:
     dumped = yaml.safe_dump(obj, sort_keys=True, allow_unicode=True)
     return hashlib.sha256(dumped.encode("utf-8")).hexdigest()
@@ -4727,6 +4787,32 @@ def _surface_protocol(target: dict[str, Any], name: str) -> tuple[str | None, st
     return None, None
 
 
+def _warn_listener_protocol(
+    obj: dict[str, Any],
+    path: Path,
+    catalog_by_id: dict[str, dict[str, Any]],
+    warnings: list[str],
+) -> None:
+    """Warn (never ratcheted) when a relationship's technology and its targetListener's protocol are in different known families."""
+    if obj.get("_derived") or obj.get("type") != "relationship":
+        return
+    if not is_non_empty(obj.get("technology")) or not is_non_empty(obj.get("targetListener")):
+        return
+    listener = catalog_by_id.get(str(obj["targetListener"]).strip())
+    if not _is_listener(listener):
+        return
+    protocol = str(listener.get("protocol") or "").strip()
+    technology = str(obj["technology"]).strip()
+    tech_family = family(technology)
+    listener_family = family(protocol)
+    if tech_family and listener_family and "other" not in (tech_family, listener_family) and tech_family != listener_family:
+        warnings.append(
+            f"{path}: relationship '{obj.get('name') or obj.get('uid')}' technology '{technology}' (family {tech_family}) "
+            f"does not match listener '{listener.get('name') or obj['targetListener']}' with protocol '{protocol}' "
+            f"(family {listener_family})"
+        )
+
+
 def validate_protocol_family(
     obj: dict[str, Any],
     path: Path,
@@ -4734,6 +4820,7 @@ def validate_protocol_family(
     warnings: list[str],
 ) -> None:
     """Warn when a relationship's technology and its target interface's protocol are in different known families."""
+    _warn_listener_protocol(obj, path, catalog_by_id, warnings)
     if obj.get("_derived") or not is_non_empty(obj.get("technology")) or not is_non_empty(obj.get("targetInterface")):
         return
     target = catalog_by_id.get(obj.get("target")) if is_non_empty(obj.get("target")) else None

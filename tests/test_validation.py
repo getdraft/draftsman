@@ -1186,6 +1186,44 @@ requirementGroups:
             self._write_data_service_decision_record(
                 data_dir.parent / "decision-records", uid="01KQS0TF62-DR01"
             )
+            system_dir = workspace / "catalog" / "systems"
+            listener_dir = workspace / "catalog" / "listeners"
+            system_dir.mkdir(parents=True, exist_ok=True)
+            listener_dir.mkdir(parents=True, exist_ok=True)
+            (system_dir / "system-backup-vault.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF62-SYS1
+                    type: system
+                    name: Test Backup Vault
+                    catalogStatus: stub
+                    lifecycleStatus: existing-only
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            (listener_dir / "listener-backup-vault.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schemaVersion: "1.0"
+                    uid: 01KQS0TF62-BKP1
+                    type: listener
+                    name: Test Backup Vault listener
+                    owner:
+                      kind: external_system
+                      ref: 01KQS0TF62-SYS1
+                    protocol: HTTPS
+                    port: 443
+                    endpoint: /
+                    authenticationModel: iam
+                    catalogStatus: stub
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
             (rel_dir / "rel-backup-vault.yaml").write_text(
                 textwrap.dedent(
                     """
@@ -1196,6 +1234,7 @@ requirementGroups:
                     catalogStatus: stub
                     source: 01KQS0TF62-DATA
                     externalTarget: Test Backup Vault
+                    targetListener: 01KQS0TF62-BKP1
                     label: backs up to
                     direction: synchronous
                     capabilities:
