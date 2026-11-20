@@ -248,17 +248,26 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 #
 # A rule is called once per authored object that has a uid. The runner turns the
 # messages into (rule_id, uid, message) violations.
+#
+# A rule whose verdict depends on other objects can pass digest=. The digest
+# function returns the content hash recorded in the baseline, so a change to any
+# object it covers makes the violation an error again. Without one, the hash is
+# the object's own content.
 # ---------------------------------------------------------------------------
 BASELINE_RELATIVE_PATH = Path(".draft") / "validation-baseline.yaml"
 BASELINE_SCHEMA_VERSION = "1.0"
 RatchetCheck = Callable[[dict, dict, dict], Iterable[str]]
+RatchetDigest = Callable[[dict, dict], str]
 RATCHET_RULES: dict[str, RatchetCheck] = {}
+RATCHET_DIGESTS: dict[str, RatchetDigest] = {}
 
 
-def register_ratchet_rule(rule_id: str, check: RatchetCheck) -> None:
+def register_ratchet_rule(rule_id: str, check: RatchetCheck, digest: RatchetDigest | None = None) -> None:
     if rule_id in RATCHET_RULES:
         raise ValueError(f"ratcheted rule '{rule_id}' is already registered")
     RATCHET_RULES[rule_id] = check
+    if digest is not None:
+        RATCHET_DIGESTS[rule_id] = digest
 
 
 def _check_ratchet_test_marker(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
@@ -667,7 +676,51 @@ def _check_sdp_internal_stub_listeners(obj: dict, catalog_by_id: dict, context: 
     return messages
 
 
-register_ratchet_rule("sdp-internal-stub-listener", _check_sdp_internal_stub_listeners)
+def sdp_dependent_objects(sdp: dict[str, Any], catalog_by_id: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    """Objects the SDP completeness gate depends on: the pattern's deployable objects, every relationship
+    from the pattern or one of them, and every listener those calls target. Sorted by uid."""
+    sdp_uid = str(sdp.get("uid") or "")
+    callers = {sdp_uid}
+    for group in sdp.get("serviceGroups") or []:
+        if not isinstance(group, dict):
+            continue
+        for entry in group.get("deployableObjects") or []:
+            ref = entry.get("ref") if isinstance(entry, dict) else None
+            if is_non_empty(ref):
+                callers.add(str(ref).strip())
+    dependents: dict[str, dict[str, Any]] = {}
+    for uid in callers:
+        obj = catalog_by_id.get(uid)
+        if isinstance(obj, dict) and uid != sdp_uid:
+            dependents[uid] = obj
+    for rel in catalog_by_id.values():
+        if (
+            isinstance(rel, dict)
+            and rel.get("type") == "relationship"
+            and str(rel.get("source") or "").strip() in callers
+            and is_non_empty(rel.get("uid"))
+        ):
+            dependents[str(rel["uid"])] = rel
+    for _caller, _via, listener_uid in sdp_listener_calls(sdp, catalog_by_id):
+        listener = catalog_by_id.get(listener_uid)
+        if isinstance(listener, dict):
+            dependents[listener_uid] = listener
+    return [dependents[uid] for uid in sorted(dependents)]
+
+
+def _digest_sdp_with_dependents(obj: dict, catalog_by_id: dict) -> str:
+    # The gate is ratcheted on the pattern and the objects it depends on: a change to any of them re-arms it.
+    dumped = yaml.safe_dump(
+        {"object": obj, "dependents": sdp_dependent_objects(obj, catalog_by_id)},
+        sort_keys=True,
+        allow_unicode=True,
+    )
+    return hashlib.sha256(dumped.encode("utf-8")).hexdigest()
+
+
+register_ratchet_rule(
+    "sdp-internal-stub-listener", _check_sdp_internal_stub_listeners, digest=_digest_sdp_with_dependents
+)
 
 
 def object_hash(obj: dict[str, Any]) -> str:
@@ -699,7 +752,9 @@ def collect_ratchet_violations(
         for rule_id in sorted(RATCHET_RULES):
             messages = list(RATCHET_RULES[rule_id](obj, catalog_by_id, context))
             if messages:
-                found.append((rule_id, uid, "; ".join(messages), path, object_hash(obj)))
+                digest = RATCHET_DIGESTS.get(rule_id)
+                content_hash = digest(obj, catalog_by_id) if digest else object_hash(obj)
+                found.append((rule_id, uid, "; ".join(messages), path, content_hash))
     found.sort(key=lambda item: (item[0], item[1]))
     return found
 

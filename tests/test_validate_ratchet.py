@@ -595,5 +595,130 @@ class InternalTargetBaselineTests(WorkspaceValidateTests):
         self.assertIn(RULE_LISTENER, self._failures(out))
 
 
+RULE_SDP_GATE = "sdp-internal-stub-listener"
+
+
+class SdpCompletenessGateRatchetTests(WorkspaceValidateTests):
+    """S2.4: the SDP gate is ratcheted on the pattern and its dependent objects, never on a framework upgrade alone."""
+
+    SDP = "01M7C497P0-SDP4"
+    WEB = "01M7C497P1-CMP4"
+    ORDERS = "01M7C497P2-CMP5"
+    OTHER = "01M7C497P3-CMP6"
+    LST = "01M7C497P4-STB4"
+    REL = "01M7C497P5-RSH4"
+    REL2 = "01M7C497P6-RSH5"
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.docs: dict[str, dict[str, Any]] = {
+            "web.yaml": {"schemaVersion": "1.0", "uid": self.WEB, "type": "product_component", "name": "Web",
+                         "catalogStatus": "incomplete", "lifecycleStatus": "candidate"},
+            "orders.yaml": {"schemaVersion": "1.0", "uid": self.ORDERS, "type": "product_component",
+                            "name": "Orders", "catalogStatus": "incomplete", "lifecycleStatus": "candidate"},
+            "other.yaml": {"schemaVersion": "1.0", "uid": self.OTHER, "type": "product_component",
+                           "name": "Unrelated", "catalogStatus": "incomplete", "lifecycleStatus": "candidate"},
+            "listener.yaml": {"schemaVersion": "1.0", "uid": self.LST, "type": "listener", "name": "Orders API",
+                              "owner": {"kind": "product_component", "ref": self.ORDERS}, "protocol": "HTTPS",
+                              "port": 443, "endpoint": "/orders", "authenticationModel": "TBD",
+                              "catalogStatus": "stub"},
+            "relationship.yaml": {"schemaVersion": "1.0", "uid": self.REL, "type": "relationship",
+                                  "name": "Web to Orders", "source": self.WEB, "target": self.ORDERS,
+                                  "targetListener": self.LST},
+            "sdp.yaml": {"schemaVersion": "1.0", "uid": self.SDP, "type": "software_deployment_pattern",
+                         "name": "Orders pattern", "catalogStatus": "complete",
+                         "serviceGroups": [{"name": "App", "deployableObjects": [{"ref": self.WEB}]}]},
+        }
+        self._flush()
+
+    def _flush(self) -> None:
+        for name, doc in self.docs.items():
+            (self.ws / "catalog" / name).write_text(yaml.safe_dump(doc, sort_keys=False), encoding="utf-8")
+
+    def _gate(self, out: str) -> Tuple[List[dict[str, str]], List[dict[str, str]]]:
+        failures = [r for r in self._failure_records(out) if r["rule"] == RULE_SDP_GATE]
+        warnings = [r for r in self._warning_records(out) if r["rule"] == RULE_SDP_GATE]
+        return failures, warnings
+
+    def _assert_baselined(self, out: str) -> None:
+        failures, warnings = self._gate(out)
+        self.assertEqual([], failures, out)
+        self.assertEqual([self.SDP], [r["uid"] for r in warnings], out)
+        self.assertTrue(all(r["path"].startswith("baseline: ") for r in warnings), warnings)
+
+    def _assert_rearmed(self, out: str) -> None:
+        failures, _warnings = self._gate(out)
+        self.assertEqual([self.SDP], [r["uid"] for r in failures], out)
+        self.assertIn("Orders API", failures[0]["message"])
+
+    def _baseline_and_check(self) -> None:
+        self._run("--write-baseline")
+        entries = yaml.safe_load(self.baseline.read_text(encoding="utf-8"))["entries"]
+        self.assertIn((RULE_SDP_GATE, self.SDP), [(e["rule"], e["uid"]) for e in entries])
+        self._assert_baselined(self._run())
+
+    def test_without_baseline_the_gate_is_an_error(self) -> None:
+        self._assert_rearmed(self._run())
+
+    def test_unchanged_pattern_and_dependents_stay_baseline_warnings(self) -> None:
+        self._baseline_and_check()
+        self._assert_baselined(self._run())
+
+    def test_framework_upgrade_alone_does_not_fail_unchanged_content(self) -> None:
+        self._baseline_and_check()
+        document = yaml.safe_load(self.baseline.read_text(encoding="utf-8"))
+        document["frameworkVersion"] = "0.0.1"
+        self.baseline.write_text(yaml.safe_dump(document, sort_keys=False), encoding="utf-8")
+        self._assert_baselined(self._run())
+
+    def test_unrelated_object_change_keeps_baseline(self) -> None:
+        self._baseline_and_check()
+        self.docs["other.yaml"]["name"] = "Unrelated, renamed"
+        self._flush()
+        self._assert_baselined(self._run())
+
+    def test_changed_pattern_rearms_the_gate(self) -> None:
+        self._baseline_and_check()
+        self.docs["sdp.yaml"]["description"] = "Edited pattern"
+        self._flush()
+        self._assert_rearmed(self._run())
+
+    def test_changed_deployable_object_rearms_the_gate(self) -> None:
+        self._baseline_and_check()
+        self.docs["web.yaml"]["name"] = "Web frontend"
+        self._flush()
+        self._assert_rearmed(self._run())
+
+    def test_changed_relationship_rearms_the_gate(self) -> None:
+        self._baseline_and_check()
+        self.docs["relationship.yaml"]["name"] = "Web calls Orders"
+        self._flush()
+        self._assert_rearmed(self._run())
+
+    def test_new_call_from_the_pattern_rearms_the_gate(self) -> None:
+        self._baseline_and_check()
+        self.docs["relationship-2.yaml"] = {
+            "schemaVersion": "1.0", "uid": self.REL2, "type": "relationship", "name": "Web to Orders again",
+            "source": self.WEB, "target": self.ORDERS, "targetListener": self.LST,
+        }
+        self._flush()
+        self._assert_rearmed(self._run())
+
+    def test_changed_called_listener_rearms_the_gate(self) -> None:
+        self._baseline_and_check()
+        self.docs["listener.yaml"]["description"] = "Still a stub, now described"
+        self._flush()
+        self._assert_rearmed(self._run())
+
+    def test_finished_listener_clears_the_gate(self) -> None:
+        self._baseline_and_check()
+        self.docs["listener.yaml"].update({"catalogStatus": "incomplete", "authenticationModel": "oauth"})
+        self._flush()
+        out = self._run()
+        failures, warnings = self._gate(out)
+        self.assertEqual([], failures, out)
+        self.assertEqual([], warnings, out)
+
+
 if __name__ == "__main__":
     unittest.main()
