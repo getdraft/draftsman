@@ -1,3 +1,27 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. Existing catalog files and validation results are unchanged. This release adds listener lookup-before-create helpers in `draft_table.catalog` for tools that resolve or author listeners.
+
+### Added
+
+- Listener catalog lookup in `draft_table/catalog.py`: a normalized identity key, owner resolution (with ambiguity returned for human choice), lookup-before-create that links an existing listener or creates a stub, authored upgrade of a stub without a new UID, and a vendor-owned stub rule that requires a company-internal relationship owner before the stub can leave `catalogStatus: stub`.
+- Tests in `tests/test_listener_lookup.py` for lookup, stub creation, upgrade, ambiguity, and the vendor rule.
+
+### Changed
+
+- `upgrade_listener_stub` sets `catalogStatus` to `incomplete` unless the authored listener supplies one, and drops a stub `authenticationModel: TBD` placeholder when the authored listener does not supply a model.
+- `record_authored_listener` applies `vendor_stub_problem` on both create and upgrade paths.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Nothing is required for existing catalogs. Tools that create or update listeners should call the new lookup-before-create helpers so existing listeners are reused and vendor-owned stubs cannot leave stub status without a company-internal relationship owner.
+
 ## 1.10.0 - 2026-11-20
 
 ### Compatibility Impact
