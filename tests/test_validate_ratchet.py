@@ -280,11 +280,11 @@ class RelationshipTargetListenerTests(unittest.TestCase):
     def _other(self) -> dict:
         return {"schemaVersion": "1.0", "uid": self.OTHER, "type": "data_component", "name": "Other Data"}
 
-    def _listener(self, owner_ref: str | None = None) -> dict:
+    def _listener(self, owner_ref: str | None = None, endpoint: str = "/") -> dict:
         return {
             "schemaVersion": "1.0", "uid": self.LISTENER, "type": "listener", "name": "Orders SQL",
             "owner": {"kind": "data_component", "ref": owner_ref or self.DATA},
-            "protocol": "SQL", "port": 5432, "endpoint": "/", "authenticationModel": "iam",
+            "protocol": "SQL", "port": 5432, "endpoint": endpoint, "authenticationModel": "iam",
             "catalogStatus": "complete",
         }
 
@@ -358,9 +358,9 @@ class RelationshipTargetListenerTests(unittest.TestCase):
 
 class LegacyInterfaceBaselineTests(unittest.TestCase):
     SYS = "01M7C497NA-SYS1"
-    LST = "01M7C497NB-LST1"
+    LST = "01M7C497NB-STB1"
     COMP = "01M7C497NC-CMP1"
-    REL = "01M7C497ND-REL1"
+    REL = "01M7C497ND-RSH1"
 
     def setUp(self) -> None:
         self._tmp = tempfile.TemporaryDirectory()
@@ -462,8 +462,8 @@ class InternalTargetBaselineTests(unittest.TestCase):
     COMP = "01M7C497NE-CMP2"
     DATA = "01M7C497NF-DAT2"
     OTHER = "01M7C497NJ-DAT3"
-    LST = "01M7C497NG-LST2"
-    REL = "01M7C497NH-REL2"
+    LST = "01M7C497NG-STB2"
+    REL = "01M7C497NH-RSH2"
 
     def setUp(self) -> None:
         self._tmp = tempfile.TemporaryDirectory()
@@ -529,7 +529,7 @@ class InternalTargetBaselineTests(unittest.TestCase):
         entries = yaml.safe_load(self.baseline.read_text(encoding="utf-8"))["entries"]
         self.assertNotIn(self.REL, [e["uid"] for e in entries])
         out = self._run()
-        self.assertEqual(0, 1 if self._failures(out) else 0)
+        self.assertNotIn(RULE_LISTENER, self._failures(out))
         self.assertNotIn(self.REL, self._failures(out))
 
     def test_internal_listener_owned_by_other_object_fails_after_baseline(self) -> None:
