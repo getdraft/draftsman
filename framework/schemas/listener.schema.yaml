@@ -64,7 +64,7 @@ fieldDescriptions:
   type: Use listener exactly.
   name: Use a clear human-readable name for this listener.
   owner: Declare the owner as kind (product_component, data_component or external_system) and ref (the catalog UID of an existing object of that type).
-  protocol: Record the application protocol the listener accepts.
+  protocol: Record the application protocol the listener accepts. The approved set is REST, gRPC, GraphQL, WebSocket, AMQP, SMTP, SQL, Redis, Kafka, SQS, SNS, S3, DynamoDB, HTTP, HTTPS, TCP, UDP and other. gRPC-web is recorded as gRPC (it resolves to the gRPC protocol family) and does not get its own value.
   port: Record the port number the listener is reached on.
   endpoint: Record the endpoint path the listener serves, without the host. Write templated path parameters as {name} or :name; the host is not stored and is not part of listener identity.
   authenticationModel: Use the authentication model that protects this listener. Use none only with a committed DecisionRecord justification.
