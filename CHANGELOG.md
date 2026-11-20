@@ -15,7 +15,7 @@
 
 ### Fixed
 
-- `normalize_listener_endpoint` only strips a scheme and host when the endpoint begins with a URI scheme. Path-only endpoints that contain `://` (for example `/proxy/http://x/{id}`) stay distinct, and query strings and fragments are not part of the identity key.
+- `normalize_listener_endpoint` only strips a scheme and host when the endpoint begins with a URI scheme. Path-only endpoints that contain `://` (for example `/proxy/http://x/{id}`) stay distinct, and query strings and fragments are not part of the identity key. A `?` or `#` that ends the authority (for example `https://host?x=/a/b`) no longer lets a later `/` in the query or fragment become the path; such endpoints normalize to `/`.
 
 ### Migration Notes
 

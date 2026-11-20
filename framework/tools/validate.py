@@ -444,8 +444,9 @@ def normalize_listener_endpoint(endpoint: Any) -> str:
     leading = re.match(r"^[A-Za-z][A-Za-z0-9+.-]*://", text)
     if leading:
         text = text[leading.end():]
-        slash = text.find("/")
-        text = text[slash:] if slash >= 0 else ""
+        starts = [i for i in (text.find(sep) for sep in ("/", "?", "#")) if i >= 0]
+        start = min(starts, default=len(text))
+        text = text[start:] if text[start:start + 1] == "/" else ""
     cut = len(text)
     for sep in ("?", "#"):
         i = text.find(sep)

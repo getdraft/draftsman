@@ -4420,6 +4420,12 @@ class ListenerIdentityTests(unittest.TestCase):
         self.assertEqual(other, base)
         self.assertNotIn("example", "".join(str(part) for part in other).lower())
 
+    def test_query_or_fragment_ending_authority_does_not_yield_path(self) -> None:
+        v = self._validate_module()
+        self.assertEqual(v.normalize_listener_endpoint("https://host?x=/a/b"), "/")
+        self.assertEqual(v.normalize_listener_endpoint("https://host#/a/b"), "/")
+        self.assertEqual(v.normalize_listener_endpoint("https://host/orders?x=/a/b"), "/orders")
+
     def test_embedded_scheme_in_path_is_not_treated_as_host(self) -> None:
         v = self._validate_module()
         embedded = v.listener_identity(self._listener(endpoint="/proxy/http://x/{id}"))
