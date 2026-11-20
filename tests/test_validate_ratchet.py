@@ -7,6 +7,7 @@ test-only ratcheted rule `ratchet-test-marker` fires on `xRatchetTest: fail`.
 from __future__ import annotations
 
 import hashlib
+import re
 import subprocess
 import sys
 import tempfile
@@ -21,6 +22,7 @@ VALIDATE = REPO_ROOT / "framework" / "tools" / "validate.py"
 RULE = "ratchet-test-marker"
 UID_A = "01M7C497MS-MSDM"
 UID_B = "01M7C497MT-MSDN"
+RULE_LISTENER = "relationship-target-listener"
 
 
 def _domain(uid: str, name: str, fail: bool) -> str:
@@ -199,6 +201,15 @@ class RatchetTests(unittest.TestCase):
         self.assertEqual(1, code)
         self.assertIn("duplicate baseline entry", out)
 
+    def test_rewriting_baseline_does_not_duplicate_entries(self) -> None:
+        self.put(UID_A)
+        self.run_validate("--write-baseline")
+        self.run_validate("--write-baseline")
+        self.assertEqual([UID_A], [e["uid"] for e in self.entries()])
+        code, out = self.run_validate()
+        self.assertEqual(0, code, out)
+        self.assertNotIn("duplicate baseline entry", out)
+
     def test_missing_baseline_file_treats_violation_as_error(self) -> None:
         self.put(UID_A)
         code, _ = self.run_validate()
@@ -270,11 +281,11 @@ class RelationshipTargetListenerTests(unittest.TestCase):
     def _other(self) -> dict:
         return {"schemaVersion": "1.0", "uid": self.OTHER, "type": "data_component", "name": "Other Data"}
 
-    def _listener(self, owner_ref: str | None = None) -> dict:
+    def _listener(self, owner_ref: str | None = None, endpoint: str = "/") -> dict:
         return {
             "schemaVersion": "1.0", "uid": self.LISTENER, "type": "listener", "name": "Orders SQL",
             "owner": {"kind": "data_component", "ref": owner_ref or self.DATA},
-            "protocol": "SQL", "port": 5432, "endpoint": "/", "authenticationModel": "iam",
+            "protocol": "SQL", "port": 5432, "endpoint": endpoint, "authenticationModel": "iam",
             "catalogStatus": "complete",
         }
 
@@ -295,6 +306,12 @@ class RelationshipTargetListenerTests(unittest.TestCase):
 
     def test_valid_internal_target_is_clean(self) -> None:
         self.assertEqual([], self._violations(self._data(), self._listener(), self._relationship()))
+
+    def test_listener_endpoint_variants_normalize_to_one_identity(self) -> None:
+        validate = self._validate()
+        base = validate.listener_identity(self._listener(endpoint="/orders/{id}"))
+        variant = validate.listener_identity(self._listener(endpoint="https://API.Example.COM/orders/:orderId/"))
+        self.assertEqual(base, variant)
 
     def test_missing_targetListener_fails(self) -> None:
         found = self._violations(self._data(), self._listener(), self._relationship(targetListener=None))
@@ -338,6 +355,244 @@ class RelationshipTargetListenerTests(unittest.TestCase):
             self._relationship(technology="PostgreSQL wire protocol"), Path("rel.yaml"), catalog, warnings
         )
         self.assertEqual([], warnings)
+
+
+class WorkspaceValidateTests(unittest.TestCase):
+    """Shared temp workspace, validate.py runner, and parsed failure/warning records."""
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.ws = Path(self._tmp.name)
+        (self.ws / "catalog").mkdir()
+        self.baseline = self.ws / ".draft" / "validation-baseline.yaml"
+
+    def _run(self, *flags: str) -> str:
+        proc = subprocess.run(
+            [sys.executable, str(VALIDATE), "--workspace", str(self.ws), *flags],
+            capture_output=True, text=True, check=False,
+        )
+        return proc.stdout + proc.stderr
+
+    @staticmethod
+    def _section(out: str, header: str) -> str:
+        if header not in out:
+            return ""
+        text = out.split(header, 1)[1]
+        for stop in ("Validation failures:", "Validation warnings:"):
+            if stop != header and stop in text:
+                text = text.split(stop, 1)[0]
+        return text
+
+    @classmethod
+    def _failures(cls, out: str) -> str:
+        return cls._section(out, "Validation failures:")
+
+    @classmethod
+    def _warnings(cls, out: str) -> str:
+        return cls._section(out, "Validation warnings:")
+
+    @staticmethod
+    def _records(section: str) -> List[dict[str, str]]:
+        """Parse '- path: ...' lines into {path, rule, uid, message, text}."""
+        out: List[dict[str, str]] = []
+        for line in section.splitlines():
+            raw = line.strip()
+            if not raw.startswith("- "):
+                continue
+            text = raw[2:]
+            rec = {"text": text, "path": "", "rule": "", "uid": "", "message": text}
+            m = re.match(
+                r"^(?P<path>.+?): \[(?P<rule>[^\]]+)\] (?P<uid>\S+): (?P<message>.*)$",
+                text,
+            )
+            if m:
+                rec.update(m.groupdict())
+            else:
+                path, _, rest = text.partition(": ")
+                rec["path"] = path
+                rec["message"] = rest or text
+            out.append(rec)
+        return out
+
+    @classmethod
+    def _failure_records(cls, out: str) -> List[dict[str, str]]:
+        return cls._records(cls._failures(out))
+
+    @classmethod
+    def _warning_records(cls, out: str) -> List[dict[str, str]]:
+        return cls._records(cls._warnings(out))
+
+    @staticmethod
+    def _file_verdicts(out: str) -> dict[str, str]:
+        """Map basename (e.g. listener.yaml) to PASS or FAIL from validator file lines."""
+        verdicts: dict[str, str] = {}
+        for line in out.splitlines():
+            if line.startswith("PASS ") or line.startswith("FAIL "):
+                status, _, path = line.partition(" ")
+                verdicts[Path(path.strip()).name] = status
+        return verdicts
+
+
+class LegacyInterfaceBaselineTests(WorkspaceValidateTests):
+    SYS = "01M7C497NA-SYS1"
+    LST = "01M7C497NB-STB1"
+    COMP = "01M7C497NC-CMP1"
+    REL = "01M7C497ND-RSH1"
+
+    def _write(self, **rel_changes: Any) -> None:
+        rel: dict[str, Any] = {
+            "schemaVersion": "1.0", "uid": self.REL, "type": "relationship", "name": "Comp to LDAP",
+            "source": self.COMP, "externalTarget": "LDAP Directory", "label": "calls", "catalogStatus": "complete",
+        }
+        rel.update(rel_changes)
+        docs = {
+            "system.yaml": {
+                "schemaVersion": "1.0", "uid": self.SYS, "type": "system", "name": "Directory System",
+                "catalogStatus": "complete", "lifecycleStatus": "preferred",
+            },
+            "listener.yaml": {
+                "schemaVersion": "1.0", "uid": self.LST, "type": "listener", "name": "LDAP listener",
+                "owner": {"kind": "external_system", "ref": self.SYS}, "protocol": "HTTPS", "port": 443,
+                "endpoint": "/ldap", "authenticationModel": "oauth", "catalogStatus": "stub",
+            },
+            "component.yaml": {
+                "schemaVersion": "1.0", "uid": self.COMP, "type": "product_component", "name": "Comp",
+                "repoUrl": "https://github.com/test/comp", "owner": {"team": "test"},
+                "classification": "api-service", "catalogStatus": "incomplete", "lifecycleStatus": "candidate",
+                "interfaces": [{"name": "Orders API", "protocol": "REST", "path": "/orders"}],
+            },
+            "relationship.yaml": rel,
+        }
+        for name, doc in docs.items():
+            (self.ws / "catalog" / name).write_text(yaml.safe_dump(doc, sort_keys=False), encoding="utf-8")
+
+    def test_baseline_preserves_unchanged_relationship_as_warning(self) -> None:
+        self._write()
+        self._run("--write-baseline")
+        entries = yaml.safe_load(self.baseline.read_text(encoding="utf-8"))["entries"]
+        self.assertIn((RULE_LISTENER, self.REL), [(e["rule"], e["uid"]) for e in entries])
+        out = self._run()
+        self.assertNotIn(self.REL, self._failures(out))
+        self.assertIn("baseline:", out)
+
+    def test_changed_relationship_without_listener_is_an_error(self) -> None:
+        self._write()
+        self._run("--write-baseline")
+        self._write(label="reads")
+        out = self._run()
+        self.assertIn(self.REL, self._failures(out))
+        self.assertIn(RULE_LISTENER, self._failures(out))
+
+    def test_changed_relationship_naming_external_listener_passes(self) -> None:
+        self._write()
+        self._run("--write-baseline")
+        self._write(label="reads", targetListener=self.LST)
+        out = self._run()
+        self.assertNotIn(self.REL, self._failures(out))
+
+    def test_stub_listener_upgrade_keeps_relationship_valid(self) -> None:
+        self._write(label="reads", targetListener=self.LST)
+        self.assertNotIn(self.REL, self._failures(self._run()))
+        listener_path = self.ws / "catalog" / "listener.yaml"
+        listener = yaml.safe_load(listener_path.read_text(encoding="utf-8"))
+        listener.update({"catalogStatus": "complete", "authenticationModel": "oauth", "description": "LDAP bind"})
+        listener_path.write_text(yaml.safe_dump(listener, sort_keys=False), encoding="utf-8")
+        out = self._run()
+        failure_uids = [rec.get("uid") for rec in self._failure_records(out)]
+        failure_rules = [rec.get("rule") for rec in self._failure_records(out)]
+        self.assertNotIn(self.REL, failure_uids)
+        self.assertNotIn(RULE_LISTENER, failure_rules)
+        verdicts = self._file_verdicts(out)
+        self.assertEqual("PASS", verdicts.get("listener.yaml"))
+        self.assertEqual("PASS", verdicts.get("relationship.yaml"))
+        passed_listener = next(
+            (line.split(" ", 1)[1] for line in out.splitlines()
+             if line.startswith("PASS ") and line.endswith("catalog/listener.yaml")),
+            "",
+        )
+        self.assertEqual(str(listener_path), passed_listener)
+
+    def test_legacy_interfaces_are_not_reported(self) -> None:
+        self._write()
+        self._run("--write-baseline")
+        self.assertTrue(self.baseline.is_file())
+        out = self._run()
+        for rec in self._failure_records(out) + self._warning_records(out):
+            on_component = self.COMP in rec.get("uid", "") or self.COMP in rec.get("path", "")
+            about_interfaces = (
+                rec.get("rule") == "interfaces"
+                or re.search(r"\binterfaces\b", rec.get("message") or "") is not None
+            )
+            self.assertFalse(on_component and about_interfaces, rec)
+        schema = yaml.safe_load(
+            (REPO_ROOT / "framework" / "schemas" / "product-component.schema.yaml").read_text(encoding="utf-8")
+        )
+        self.assertIn("interfaces", schema["optionalFields"])
+        self.assertEqual("interface", schema["collectionSchemas"]["interfaces"])
+
+
+class InternalTargetBaselineTests(WorkspaceValidateTests):
+    COMP = "01M7C497NE-CMP2"
+    DATA = "01M7C497NF-DAT2"
+    OTHER = "01M7C497NJ-DAT3"
+    LST = "01M7C497NG-STB2"
+    REL = "01M7C497NH-RSH2"
+
+    def _write(self, listener_owner: Any = None, **rel_changes: Any) -> None:
+        owner = listener_owner or self.DATA
+        rel: dict[str, Any] = {
+            "schemaVersion": "1.0", "uid": self.REL, "type": "relationship", "name": "Comp reads orders",
+            "source": self.COMP, "target": self.DATA, "label": "reads", "catalogStatus": "complete",
+        }
+        rel.update(rel_changes)
+        docs = {
+            "component.yaml": {
+                "schemaVersion": "1.0", "uid": self.COMP, "type": "product_component", "name": "Comp",
+                "repoUrl": "https://github.com/test/comp", "owner": {"team": "test"},
+                "classification": "api-service", "catalogStatus": "incomplete", "lifecycleStatus": "candidate",
+            },
+            "data.yaml": {"schemaVersion": "1.0", "uid": self.DATA, "type": "data_component", "name": "Orders Data"},
+            "listener.yaml": {
+                "schemaVersion": "1.0", "uid": self.LST, "type": "listener", "name": "Orders SQL",
+                "owner": {"kind": "data_component", "ref": owner}, "protocol": "SQL", "port": 5432,
+                "endpoint": "/", "authenticationModel": "iam", "catalogStatus": "complete",
+            },
+            "relationship.yaml": rel,
+        }
+        for name, doc in docs.items():
+            (self.ws / "catalog" / name).write_text(yaml.safe_dump(doc, sort_keys=False), encoding="utf-8")
+
+    def test_internal_target_baselined_then_changed_relationship_passes(self) -> None:
+        self._write()
+        self._run("--write-baseline")
+        entries = yaml.safe_load(self.baseline.read_text(encoding="utf-8"))["entries"]
+        self.assertIn((RULE_LISTENER, self.REL), [(e["rule"], e["uid"]) for e in entries])
+        out = self._run()
+        self.assertNotIn(self.REL, self._failures(out))
+        self.assertIn("baseline:", out)
+        self._write(label="uses", targetListener=self.LST)
+        out = self._run()
+        self.assertNotIn(self.REL, self._failures(out))
+
+    def test_internal_listener_written_after_baseline_is_clean_and_unrecorded(self) -> None:
+        self._write()
+        self._run("--write-baseline")
+        self._write(targetListener=self.LST)
+        self._run("--write-baseline")
+        entries = yaml.safe_load(self.baseline.read_text(encoding="utf-8"))["entries"]
+        self.assertNotIn(self.REL, [e["uid"] for e in entries])
+        out = self._run()
+        self.assertNotIn(RULE_LISTENER, self._failures(out))
+        self.assertNotIn(self.REL, self._failures(out))
+
+    def test_internal_listener_owned_by_other_object_fails_after_baseline(self) -> None:
+        self._write()
+        self._run("--write-baseline")
+        self._write(listener_owner=self.OTHER, label="uses", targetListener=self.LST)
+        out = self._run()
+        self.assertIn(self.REL, self._failures(out))
+        self.assertIn(RULE_LISTENER, self._failures(out))
 
 
 if __name__ == "__main__":

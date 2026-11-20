@@ -237,7 +237,7 @@ fieldDescriptions:
     the SDP placement.
   classification: Choose the one classification that best describes this component's role.
   language: Record the primary programming language or platform (e.g., TypeScript, Python, Java, Go, .NET).
-  interfaces: List the APIs, events, or protocol surfaces this component exposes, when defined by the component itself.
+  interfaces: "List the APIs, events, or protocol surfaces this component exposes, when defined by the component itself. This is the legacy surface: it stays valid and existing relationships that name a targetInterface keep working. New calls name the exact listener object through targetListener."
   networkBindings: List ports this component opens as defined by its own configuration, not by the runtime infrastructure.
   environmentConfiguration: List environment variables or configuration keys this component requires at runtime.
   runtimeSpec: >
