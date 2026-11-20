@@ -10,10 +10,6 @@ from pathlib import Path
 
 import yaml
 
-from draft_table.catalog import (
-    layer_listener_placeholder_unused,
-)
-
 SKILL = Path(__file__).resolve().parents[1] / "framework" / "skills" / "draftsman-core" / "SKILL.md"
 REFS = SKILL.parent / "references"
 

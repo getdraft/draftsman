@@ -416,6 +416,10 @@ def upgrade_listener_stub(stub: dict[str, Any], authored: dict[str, Any]) -> dic
     upgraded = {**stub, **{key: value for key, value in authored.items() if key not in ("uid", "type")}}
     upgraded["uid"] = stub["uid"]
     upgraded["type"] = "listener"
+    if "catalogStatus" not in authored:
+        upgraded["catalogStatus"] = "incomplete"
+    if "authenticationModel" not in authored and upgraded.get("authenticationModel") == "TBD":
+        upgraded.pop("authenticationModel")
     return upgraded
 
 
@@ -430,11 +434,17 @@ def record_authored_listener(objects: dict[str, dict[str, Any]], authored: dict[
     normalized = {**authored, "owner": owner_ref, "endpoint": normalize_listener_endpoint(authored.get("endpoint"))}
     if found["status"] == "not_found":
         listener = {**normalized, "uid": new_listener_uid(objects), "type": "listener"}
+        problem = vendor_stub_problem(objects, listener)
+        if problem:
+            return {"action": "rejected", "reason": problem}
         return {"action": "created", "uid": listener["uid"], "listener": listener}
     existing = objects[found["uid"]]
     if existing.get("catalogStatus") != "stub":
         return {"action": "linked", "uid": found["uid"], "listener": existing}
     merged = upgrade_listener_stub(existing, normalized)
+    problem = vendor_stub_problem(objects, merged)
+    if problem:
+        return {"action": "rejected", "reason": problem}
     return {"action": "upgraded", "uid": found["uid"], "listener": merged}
 
 
