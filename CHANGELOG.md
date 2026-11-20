@@ -1,3 +1,27 @@
+## Unreleased
+
+### Compatibility Impact
+
+- Workspaces that activate the bundled security requirement group (`01KQQ4Q027-T3CA`) now check listeners. A `complete` listener whose `authenticationModel` is `TBD` fails `interface-protection`; a `stub` or `incomplete` one only warns. Workspaces that do not activate the group are unchanged.
+
+### Added
+
+- Mandatory `interface-protection` requirement on `listener` in the bundled security requirement group. It is satisfied by `authenticationModel`: `none` and every other recorded model satisfy it, `TBD` does not, and `naAllowed` is false.
+- `notIn` on a `field` satisfaction mechanism lists values that never satisfy it.
+- Tests in `tests/test_validation.py` for listener protection with `oauth`, `none` and `TBD`, the stub warning, and `notIn` shape checks.
+
+### Changed
+
+- `listener` is a supported requirement scope, and listeners are checked against applicable requirement groups.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Before marking a listener `complete` in a workspace that activates the security group, record its real `authenticationModel` instead of `TBD`.
+
 ## 1.11.0 - 2026-11-20
 
 ### Compatibility Impact

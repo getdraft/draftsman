@@ -14,6 +14,7 @@ appliesTo:
 - runtime_service
 - network_service
 - software_deployment_pattern
+- listener
 provider:
   id: provider.draft-framework
   type: framework
@@ -464,6 +465,25 @@ requirements:
   - technologyComponentConfiguration
   - decisionRecord
   externalReference: https://controls.example.com/security-compliance/04.3.1
+- id: interface-protection
+  name: Interface Protection
+  description: Every listener records the authentication model that protects it.
+  rationale: >-
+    A called endpoint must say how callers authenticate. authenticationModel satisfies this requirement
+    with any recorded model, including none; TBD does not satisfy it. Choosing none is a recorded
+    decision, not a gap in the design.
+  appliesTo:
+  - listener
+  requirementMode: mandatory
+  naAllowed: false
+  canBeSatisfiedBy:
+  - mechanism: field
+    key: authenticationModel
+    notIn:
+    - TBD
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - field
 lifecycleStatus: existing-only
 tags:
 - compliance

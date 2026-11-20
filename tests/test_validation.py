@@ -4596,5 +4596,209 @@ class ListenerCatalogTests(unittest.TestCase):
         self.assertIn("gRPC-web", schema["fieldDescriptions"]["protocol"])
 
 
+class ListenerProtectionRequirementTests(unittest.TestCase):
+    """S2.1: mandatory interface-protection on listeners is satisfied by authenticationModel; TBD is not, none is."""
+
+    SECURITY_GROUP = "01KQQ4Q027-T3CA"
+    SYSTEM_UID = "01KQS0TF70-SYS2"
+    LISTENER_UID = "01KQS0TF71-AB13"
+
+    def _validate(self, authentication_model: str, catalog_status: str = "complete", activate: bool = True):
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            if activate:
+                workspace_yaml = workspace / ".draft" / "workspace.yaml"
+                import yaml
+
+                config = yaml.safe_load(workspace_yaml.read_text(encoding="utf-8")) or {}
+                requirements = config.setdefault("requirements", {})
+                requirements["activeRequirementGroups"] = [self.SECURITY_GROUP]
+                requirements["requireActiveRequirementGroupDisposition"] = True
+                workspace_yaml.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
+            system_dir = workspace / "catalog" / "systems"
+            system_dir.mkdir(parents=True, exist_ok=True)
+            (system_dir / "system-test.yaml").write_text(
+                textwrap.dedent(
+                    f"""
+                    schemaVersion: "1.0"
+                    uid: {self.SYSTEM_UID}
+                    type: system
+                    name: Payments System
+                    catalogStatus: complete
+                    lifecycleStatus: preferred
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            listener_dir = workspace / "catalog" / "listeners"
+            listener_dir.mkdir(parents=True, exist_ok=True)
+            (listener_dir / "listener-test.yaml").write_text(
+                textwrap.dedent(
+                    f"""
+                    schemaVersion: "1.0"
+                    uid: {self.LISTENER_UID}
+                    type: listener
+                    name: Payments API listener
+                    owner:
+                      kind: external_system
+                      ref: {self.SYSTEM_UID}
+                    protocol: HTTPS
+                    port: 443
+                    endpoint: /payments/v1
+                    authenticationModel: '{authentication_model}'
+                    catalogStatus: {catalog_status}
+                    """
+                ).strip()
+                + "\n",
+                encoding="utf-8",
+            )
+            return validate_workspace(workspace)
+
+    @staticmethod
+    def _section(output: str, header: str) -> str:
+        if header not in output:
+            return ""
+        text = output.split(header, 1)[1]
+        for stop in ("Validation failures:", "Validation warnings:"):
+            if stop != header and stop in text:
+                text = text.split(stop, 1)[0]
+        return text
+
+    def _protection_lines(self, output: str, header: str) -> list[str]:
+        return [
+            line
+            for line in self._section(output, header).splitlines()
+            if "listener-test.yaml" in line and "interface-protection" in line
+        ]
+
+    def test_recorded_authentication_model_satisfies_protection(self) -> None:
+        result = self._validate("oauth")
+        output = result.stdout + result.stderr
+        self.assertTrue(result.ok, output)
+        self.assertEqual([], self._protection_lines(output, "Validation failures:"))
+        self.assertEqual([], self._protection_lines(output, "Validation warnings:"))
+
+    def test_none_satisfies_protection(self) -> None:
+        result = self._validate("none")
+        output = result.stdout + result.stderr
+        self.assertEqual([], self._protection_lines(output, "Validation failures:"))
+        self.assertEqual([], self._protection_lines(output, "Validation warnings:"))
+
+    def test_tbd_does_not_satisfy_protection_on_complete_listener(self) -> None:
+        result = self._validate("TBD")
+        output = result.stdout + result.stderr
+        self.assertFalse(result.ok, output)
+        lines = self._protection_lines(output, "Validation failures:")
+        self.assertEqual(1, len(lines), output)
+        self.assertIn("Requirement not satisfied", lines[0])
+        self.assertIn("field(authenticationModel set, not TBD)", lines[0])
+
+    def test_tbd_on_stub_listener_warns_without_failing(self) -> None:
+        result = self._validate("TBD", catalog_status="stub")
+        output = result.stdout + result.stderr
+        self.assertTrue(result.ok, output)
+        self.assertEqual([], self._protection_lines(output, "Validation failures:"))
+        self.assertEqual(1, len(self._protection_lines(output, "Validation warnings:")), output)
+
+    def test_inactive_security_group_does_not_check_listeners(self) -> None:
+        result = self._validate("TBD", activate=False)
+        output = result.stdout + result.stderr
+        self.assertTrue(result.ok, output)
+        self.assertNotIn("interface-protection", output)
+
+    def test_interface_protection_requirement_is_mandatory_on_listeners(self) -> None:
+        import yaml
+
+        group = yaml.safe_load(
+            (
+                REPO_ROOT / "framework" / "configurations" / "requirement-groups"
+                / "requirement-group-draft-security-compliance.yaml"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertIn("listener", group["appliesTo"])
+        requirement = next(r for r in group["requirements"] if r["id"] == "interface-protection")
+        self.assertEqual(["listener"], requirement["appliesTo"])
+        self.assertEqual("mandatory", requirement["requirementMode"])
+        self.assertIs(False, requirement["naAllowed"])
+        self.assertEqual(
+            [{"mechanism": "field", "key": "authenticationModel", "notIn": ["TBD"]}],
+            requirement["canBeSatisfiedBy"],
+        )
+
+
+class FieldMechanismNotInTests(unittest.TestCase):
+    def setUp(self) -> None:
+        import sys
+
+        sys.path.insert(0, str(REPO_ROOT / "framework" / "tools"))
+        import validate
+
+        self.validate = validate
+        self.mechanism = {"mechanism": "field", "key": "authenticationModel", "notIn": ["TBD"]}
+
+    def test_not_in_value_never_satisfies(self) -> None:
+        satisfied = self.validate.mechanism_satisfied
+        self.assertFalse(satisfied({"authenticationModel": "TBD"}, self.mechanism, {}))
+        self.assertFalse(satisfied({}, self.mechanism, {}))
+        self.assertFalse(satisfied({"authenticationModel": ""}, self.mechanism, {}))
+        self.assertTrue(satisfied({"authenticationModel": "none"}, self.mechanism, {}))
+        self.assertTrue(satisfied({"authenticationModel": "iam"}, self.mechanism, {}))
+
+    def test_field_implementation_pointing_at_excluded_value_does_not_satisfy(self) -> None:
+        requirement = {
+            "id": "interface-protection",
+            "requirementMode": "mandatory",
+            "naAllowed": False,
+            "canBeSatisfiedBy": [self.mechanism],
+            "validAnswerTypes": ["field"],
+        }
+        implementation = {
+            "requirementGroup": "group-x",
+            "requirementId": "interface-protection",
+            "status": "satisfied",
+            "mechanism": "field",
+            "key": "authenticationModel",
+        }
+        obj = {"type": "listener", "uid": "01KQS0TF72-AB14", "authenticationModel": "TBD",
+               "requirementImplementations": [implementation]}
+        ok, _ = self.validate.validate_requirement(obj, requirement, "group-x", {})
+        self.assertFalse(ok)
+        obj["authenticationModel"] = "none"
+        ok, _ = self.validate.validate_requirement(obj, requirement, "group-x", {})
+        self.assertTrue(ok)
+
+    def test_not_in_must_be_a_list_on_a_field_mechanism(self) -> None:
+        group = {
+            "uid": "01KQS0TF73-RG01",
+            "type": "requirement_group",
+            "name": "Shape group",
+            "activation": "workspace",
+            "appliesTo": ["listener"],
+            "requirements": [
+                {
+                    "id": "bad-not-in",
+                    "requirementMode": "mandatory",
+                    "naAllowed": False,
+                    "canBeSatisfiedBy": [{"mechanism": "field", "key": "authenticationModel", "notIn": "TBD"}],
+                    "validAnswerTypes": ["field"],
+                },
+                {
+                    "id": "not-in-off-field",
+                    "requirementMode": "mandatory",
+                    "naAllowed": False,
+                    "canBeSatisfiedBy": [{"mechanism": "decisionRecord", "notIn": ["TBD"]}],
+                    "validAnswerTypes": ["decisionRecord"],
+                },
+            ],
+        }
+        failures: list[str] = []
+        self.validate.validate_requirement_group(group, Path("group.yaml"), set(), failures)
+        not_in = [f for f in failures if "notIn" in f]
+        self.assertEqual(2, len(not_in), failures)
+        self.assertNotIn("Replace invalid appliesTo values", " ".join(failures))
+
+
 if __name__ == "__main__":
     unittest.main()

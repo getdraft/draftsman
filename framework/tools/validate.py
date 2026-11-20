@@ -54,6 +54,7 @@ VALID_REQUIREMENT_SCOPES = {
     "reference_architecture",
     "software_deployment_pattern",
     "product_registration",
+    "listener",
 }
 
 VALID_REQUIREMENT_ANSWER_TYPES = {
@@ -1706,7 +1707,12 @@ def mechanism_description(mechanism: dict[str, Any]) -> str:
     if mechanism_type == "field":
         field = mechanism.get("key", "unknown")
         equals = mechanism.get("equals")
-        return f"field({field}={equals})" if equals is not None else f"field({field})"
+        if equals is not None:
+            return f"field({field}={equals})"
+        excluded = mechanism.get("notIn")
+        if isinstance(excluded, list) and excluded:
+            return f"field({field} set, not {' or '.join(str(value) for value in excluded)})"
+        return f"field({field})"
     if mechanism_type == "relationship":
         capability = mechanism.get("criteria", {}).get("capability", "unknown")
         return f"relationship(capability={capability})"
@@ -1881,12 +1887,37 @@ def resolve_field_path(node: Any, path: str) -> Any:
     return None
 
 
+def field_value_excluded(value: Any, mechanism: dict[str, Any]) -> bool:
+    """True when a field mechanism lists the value under notIn (for example TBD), so it never satisfies."""
+    excluded = mechanism.get("notIn")
+    if not isinstance(excluded, list):
+        return False
+    return isinstance(value, (str, int, float, bool)) and value in excluded
+
+
+def field_implementation_excluded(
+    obj: dict[str, Any], implementation: dict[str, Any], requirement: dict[str, Any]
+) -> bool:
+    """True when a field implementation points at a value the requirement's own field mechanism excludes."""
+    if implementation.get("mechanism") != "field":
+        return False
+    key = implementation.get("key")
+    for mechanism in requirement.get("canBeSatisfiedBy", []) or []:
+        if not isinstance(mechanism, dict) or mechanism.get("mechanism") != "field" or mechanism.get("key") != key:
+            continue
+        if field_value_excluded(get_nested_value(obj, str(key)), mechanism):
+            return True
+    return False
+
+
 def mechanism_satisfied(obj: dict[str, Any], mechanism: dict[str, Any], catalog_by_id: dict[str, dict[str, Any]]) -> bool:
     mechanism_type = mechanism.get("mechanism")
     if mechanism_type == "field":
         key = mechanism.get("key", "")
         if "." in key or "[]" in key:
             value = resolve_field_path(obj, key)
+            if field_value_excluded(value, mechanism):
+                return False
             if "equals" in mechanism:
                 return value == mechanism.get("equals")
             if mechanism.get("allowEmpty") is True:
@@ -1895,6 +1926,8 @@ def mechanism_satisfied(obj: dict[str, Any], mechanism: dict[str, Any], catalog_
         if key not in obj:
             return False
         value = obj.get(key)
+        if field_value_excluded(value, mechanism):
+            return False
         if "equals" in mechanism:
             return value == mechanism.get("equals")
         if mechanism.get("allowEmpty") is True:
@@ -2031,6 +2064,7 @@ def validate_requirement(
             status == "satisfied"
             and mechanism in valid_answer_types
             and implementation_resolves(obj, implementation, catalog_by_id)
+            and not field_implementation_excluded(obj, implementation, requirement)
         ):
             return True, ""
 
@@ -4289,6 +4323,8 @@ def validate_requirement_group(
                     failures.append(
                         f"{mechanism_context}: Set mechanism to one of {sorted(VALID_REQUIREMENT_ANSWER_TYPES)}"
                     )
+                if "notIn" in mechanism and (mechanism_type != "field" or not isinstance(mechanism.get("notIn"), list)):
+                    failures.append(f"{mechanism_context}: Use notIn only on a field mechanism, as a list of values")
                 criteria = mechanism.get("criteria")
                 if isinstance(criteria, dict):
                     capability = criteria.get("capability") or criteria.get("concern")
@@ -5063,6 +5099,18 @@ def main(argv: list[str] | None = None) -> int:
                 workspace_decision_record_approval,
                 failures,
                 warnings,
+            )
+        if obj.get("type") == "listener":
+            validate_applicable_requirements(
+                obj,
+                path,
+                requirement_groups,
+                catalog_by_id,
+                capability_ids,
+                failures,
+                warnings,
+                active_group_ids,
+                require_active_group_disposition,
             )
         if obj.get("type") == "relationship":
             validate_relationship(obj, path, catalog_by_id, failures)
