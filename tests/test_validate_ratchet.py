@@ -200,6 +200,15 @@ class RatchetTests(unittest.TestCase):
         self.assertEqual(1, code)
         self.assertIn("duplicate baseline entry", out)
 
+    def test_rewriting_baseline_does_not_duplicate_entries(self) -> None:
+        self.put(UID_A)
+        self.run_validate("--write-baseline")
+        self.run_validate("--write-baseline")
+        self.assertEqual([UID_A], [e["uid"] for e in self.entries()])
+        code, out = self.run_validate()
+        self.assertEqual(0, code, out)
+        self.assertNotIn("duplicate baseline entry", out)
+
     def test_missing_baseline_file_treats_violation_as_error(self) -> None:
         self.put(UID_A)
         code, _ = self.run_validate()
@@ -424,6 +433,17 @@ class LegacyInterfaceBaselineTests(unittest.TestCase):
         out = self._run()
         self.assertNotIn(self.REL, self._failures(out))
 
+    def test_stub_listener_upgrade_keeps_relationship_valid(self) -> None:
+        self._write(label="reads", targetListener=self.LST)
+        self.assertNotIn(self.REL, self._failures(self._run()))
+        listener_path = self.ws / "catalog" / "listener.yaml"
+        listener = yaml.safe_load(listener_path.read_text(encoding="utf-8"))
+        listener.update({"catalogStatus": "complete", "authenticationModel": "oauth", "description": "LDAP bind"})
+        listener_path.write_text(yaml.safe_dump(listener, sort_keys=False), encoding="utf-8")
+        out = self._run()
+        self.assertNotIn(self.REL, self._failures(out))
+        self.assertEqual(self.LST, listener["uid"])
+
     def test_legacy_interfaces_are_not_reported(self) -> None:
         self._write()
         self._run("--write-baseline")
@@ -438,5 +458,88 @@ class LegacyInterfaceBaselineTests(unittest.TestCase):
         self.assertEqual("interface", schema["collectionSchemas"]["interfaces"])
 
 
-if __name__ == "__main__":
+class InternalTargetBaselineTests(unittest.TestCase):
+    COMP = "01M7C497NE-CMP2"
+    DATA = "01M7C497NF-DAT2"
+    OTHER = "01M7C497NJ-DAT3"
+    LST = "01M7C497NG-LST2"
+    REL = "01M7C497NH-REL2"
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.ws = Path(self._tmp.name)
+        (self.ws / "catalog").mkdir()
+        self.baseline = self.ws / ".draft" / "validation-baseline.yaml"
+
+    def _write(self, listener_owner: Any = None, **rel_changes: Any) -> None:
+        owner = listener_owner or self.DATA
+        rel: dict[str, Any] = {
+            "schemaVersion": "1.0", "uid": self.REL, "type": "relationship", "name": "Comp reads orders",
+            "source": self.COMP, "target": self.DATA, "label": "reads", "catalogStatus": "complete",
+        }
+        rel.update(rel_changes)
+        docs = {
+            "component.yaml": {
+                "schemaVersion": "1.0", "uid": self.COMP, "type": "product_component", "name": "Comp",
+                "repoUrl": "https://github.com/test/comp", "owner": {"team": "test"},
+                "classification": "api-service", "catalogStatus": "incomplete", "lifecycleStatus": "candidate",
+            },
+            "data.yaml": {"schemaVersion": "1.0", "uid": self.DATA, "type": "data_component", "name": "Orders Data"},
+            "listener.yaml": {
+                "schemaVersion": "1.0", "uid": self.LST, "type": "listener", "name": "Orders SQL",
+                "owner": {"kind": "data_component", "ref": owner}, "protocol": "SQL", "port": 5432,
+                "endpoint": "/", "authenticationModel": "iam", "catalogStatus": "complete",
+            },
+            "relationship.yaml": rel,
+        }
+        for name, doc in docs.items():
+            (self.ws / "catalog" / name).write_text(yaml.safe_dump(doc, sort_keys=False), encoding="utf-8")
+
+    def _run(self, *flags: str) -> str:
+        proc = subprocess.run(
+            [sys.executable, str(VALIDATE), "--workspace", str(self.ws), *flags],
+            capture_output=True, text=True, check=False,
+        )
+        return proc.stdout + proc.stderr
+
+    @staticmethod
+    def _failures(out: str) -> str:
+        if "Validation failures:" not in out:
+            return ""
+        return out.split("Validation failures:")[1].split("Validation warnings:")[0]
+
+    def test_internal_target_baselined_then_changed_relationship_passes(self) -> None:
+        self._write()
+        self._run("--write-baseline")
+        entries = yaml.safe_load(self.baseline.read_text(encoding="utf-8"))["entries"]
+        self.assertIn((RULE_LISTENER, self.REL), [(e["rule"], e["uid"]) for e in entries])
+        out = self._run()
+        self.assertNotIn(self.REL, self._failures(out))
+        self.assertIn("baseline:", out)
+        self._write(label="uses", targetListener=self.LST)
+        out = self._run()
+        self.assertNotIn(self.REL, self._failures(out))
+
+    def test_internal_listener_written_after_baseline_is_clean_and_unrecorded(self) -> None:
+        self._write()
+        self._run("--write-baseline")
+        self._write(targetListener=self.LST)
+        self._run("--write-baseline")
+        entries = yaml.safe_load(self.baseline.read_text(encoding="utf-8"))["entries"]
+        self.assertNotIn(self.REL, [e["uid"] for e in entries])
+        out = self._run()
+        self.assertEqual(0, 1 if self._failures(out) else 0)
+        self.assertNotIn(self.REL, self._failures(out))
+
+    def test_internal_listener_owned_by_other_object_fails_after_baseline(self) -> None:
+        self._write()
+        self._run("--write-baseline")
+        self._write(listener_owner=self.OTHER, label="uses", targetListener=self.LST)
+        out = self._run()
+        self.assertIn(self.REL, self._failures(out))
+        self.assertIn(RULE_LISTENER, self._failures(out))
+
+
+if __name__ == "__main__":if __name__ == "__main__":
     unittest.main()

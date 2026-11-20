@@ -6,7 +6,7 @@
 
 ### Added
 
-- Tests in `tests/test_validate_ratchet.py` for baseline preservation, changed relationships, and legacy `interfaces` retention under the `relationship-target-listener` rule.
+- Tests in `tests/test_validate_ratchet.py` for baseline preservation, changed relationships, internal and external targets after a baseline write, duplicate baseline prevention, stub listener upgrade, and legacy `interfaces` retention under the `relationship-target-listener` rule.
 
 ### Changed
 
