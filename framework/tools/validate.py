@@ -431,6 +431,51 @@ def _check_listener_owner(obj: dict, catalog_by_id: dict, context: dict) -> Iter
 
 
 register_ratchet_rule("listener-owner", _check_listener_owner)
+
+
+LISTENER_DEFAULT_PORTS = {"http": 80, "https": 443}
+_LISTENER_TEMPLATED_SEGMENT = re.compile(r"^(\{[^{}/]+\}|:[A-Za-z_][A-Za-z0-9_]*)$")
+
+
+def normalize_listener_endpoint(endpoint: Any) -> str:
+    """Path of a listener endpoint: a leading scheme and host are dropped (the host is never persisted or keyed),
+    query strings and fragments are dropped, templated path parameters ({name} or :name) become {}, and trailing
+    or repeated slashes are removed. A :// that appears after a leading slash is part of the path, not a scheme."""
+    text = str(endpoint or "").strip()
+    leading = re.match(r"^[A-Za-z][A-Za-z0-9+.-]*://", text)
+    if leading:
+        text = text[leading.end():]
+        starts = [i for i in (text.find(sep) for sep in ("/", "?", "#")) if i >= 0]
+        start = min(starts, default=len(text))
+        text = text[start:] if text[start:start + 1] == "/" else ""
+    cut = len(text)
+    for sep in ("?", "#"):
+        i = text.find(sep)
+        if i >= 0:
+            cut = min(cut, i)
+    text = text[:cut]
+    segments = ["{}" if _LISTENER_TEMPLATED_SEGMENT.match(seg) else seg for seg in text.split("/") if seg]
+    return "/" + "/".join(segments)
+
+
+def listener_identity(obj: dict[str, Any]) -> tuple[str, str, str, int, str] | None:
+    """Exact identity of a listener: (owner kind, owner ref, protocol, port, normalized endpoint).
+    A missing port takes the protocol's default port; None is returned when the identity cannot be formed."""
+    if obj.get("type") != "listener" or not isinstance(obj.get("owner"), dict):
+        return None
+    kind = obj["owner"].get("kind")
+    ref = obj["owner"].get("ref")
+    protocol = str(obj.get("protocol") or "").strip().lower()
+    if not isinstance(kind, str) or not isinstance(ref, str) or not protocol:
+        return None
+    port = obj.get("port")
+    if port is None:
+        port = LISTENER_DEFAULT_PORTS.get(protocol)
+    if not isinstance(port, int) or isinstance(port, bool):
+        return None
+    return (kind, ref, protocol, port, normalize_listener_endpoint(obj.get("endpoint")))
+
+
 register_ratchet_rule("relationship-definition-endpoint", _check_relationship_definition_endpoint)
 
 
