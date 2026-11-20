@@ -287,7 +287,9 @@ class TargetInterfaceRuleTests(unittest.TestCase):
         self.rel()
         self.run_validate("--write-baseline")
         entries = yaml.safe_load((self.ws / ".draft" / "validation-baseline.yaml").read_text())["entries"]
-        self.assertEqual([(TI, REL)], [(e["rule"], e["uid"]) for e in entries])
+        pairs = [(e["rule"], e["uid"]) for e in entries]
+        self.assertIn((TI, REL), pairs)
+        self.assertEqual({TI, "relationship-target-listener"}, {rule for rule, uid in pairs if uid == REL})
         _, out = self.run_validate()
         found = self.lines(out)
         self.assertEqual([], found["error"], out)

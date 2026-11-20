@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- New ratcheted rule `relationship-target-listener`: every relationship must name a real listener via `targetListener`. For a catalog target the listener must be owned by that target; an `externalTarget` relationship only needs a real listener. Existing relationships without `targetListener` are recorded in `.draft/validation-baseline.yaml`, so they warn until the relationship changes. A product component `runtimeSpec.dependencies[].interface` that is a listener UID must be owned by that dependency's ref. Protocol or technology disagreement with the named listener is an unratcheted warning.
+
+### Added
+
+- Ratcheted rule `relationship-target-listener` in `framework/tools/validate.py`, the `targetListener` field on `framework/schemas/relationship.schema.yaml`, and tests in `tests/test_validate_ratchet.py`.
+- `examples/.draft/validation-baseline.yaml` entries for existing example relationships that do not yet name a `targetListener`.
+
+### Changed
+
+- The `runtimeSpec.dependencies[].interface` description in `framework/schemas/product-component.schema.yaml` notes that a listener UID must be owned by that dependency's ref.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- After vendoring this release, run `python framework/tools/validate.py --write-baseline` once so existing relationships without `targetListener` stay warnings. New or changed relationships must name a real `targetListener`; for a catalog target, that listener must be owned by the target.
+
 ## 1.9.0 - 2026-11-20
 
 ### Compatibility Impact
