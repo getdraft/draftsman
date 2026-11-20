@@ -2115,7 +2115,7 @@
       "name": "SoftwareDeploymentPattern RequirementGroup",
       "type": "requirement_group",
       "catalogStatus": "complete",
-      "description": "Structured checklist of required questions and answers used to define a complete and correct software deployment pattern."
+      "description": "Structured checklist of required questions and answers used to define a complete and correct software deployment pattern. A complete pattern must also pass the ratcheted sdp-internal-stub-listener gate, which blocks completion while a call in the pattern targets a stub listener owned by an internal component."
     },
     {
       "uid": "01KQQ4Q027-1GHC",

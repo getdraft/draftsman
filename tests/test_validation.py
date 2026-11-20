@@ -5052,5 +5052,169 @@ class ConditionalNotApplicableExceptionTests(unittest.TestCase):
         self.assertTrue(self.validate.mechanism_satisfied(obj, {"mechanism": "decisionRecord", "key": "k"}, catalog))
 
 
+class SdpInternalStubListenerGateTests(unittest.TestCase):
+    """S2.3: a complete SDP names and is blocked by internally owned stub listeners its calls target."""
+
+    SDP = "01KQS0TF90-SDP1"
+    WEB = "01KQS0TF91-CMP1"
+    WORKER = "01KQS0TF92-CMP2"
+    ORDERS = "01KQS0TF93-CMP3"
+    LEDGER = "01KQS0TF94-DAT1"
+    VENDOR = "01KQS0TF95-SYS1"
+    OUTSIDE = "01KQS0TF96-CMP4"
+
+    def setUp(self) -> None:
+        import sys
+
+        sys.path.insert(0, str(REPO_ROOT / "framework" / "tools"))
+        import validate
+
+        self.validate = validate
+
+    def _listener(self, uid: str, owner_kind: str, owner_ref: str, status: str = "stub", name: str = "") -> dict:
+        return {
+            "schemaVersion": "1.0", "uid": uid, "type": "listener", "name": name or f"listener {uid}",
+            "owner": {"kind": owner_kind, "ref": owner_ref}, "protocol": "HTTPS", "port": 443,
+            "endpoint": "/", "authenticationModel": "TBD", "catalogStatus": status,
+        }
+
+    @staticmethod
+    def _rel(uid: str, source: str, target: str, listener: str) -> dict:
+        return {
+            "schemaVersion": "1.0", "uid": uid, "type": "relationship", "name": f"call {uid}",
+            "source": source, "target": target, "targetListener": listener,
+        }
+
+    def _sdp(self, refs: list[str], status: str = "complete") -> dict:
+        return {
+            "schemaVersion": "1.0", "uid": self.SDP, "type": "software_deployment_pattern",
+            "name": "Orders pattern", "catalogStatus": status,
+            "serviceGroups": [
+                {"name": "App", "deployableObjects": [{"ref": ref} for ref in refs]},
+            ],
+        }
+
+    def _catalog(self, *objects: dict) -> dict:
+        base = [
+            {"uid": self.WEB, "type": "product_component", "name": "Web"},
+            {"uid": self.WORKER, "type": "product_component", "name": "Worker"},
+            {"uid": self.ORDERS, "type": "product_component", "name": "Orders"},
+            {"uid": self.LEDGER, "type": "data_component", "name": "Ledger"},
+            {"uid": self.VENDOR, "type": "system", "name": "Payments vendor"},
+            {"uid": self.OUTSIDE, "type": "product_component", "name": "Outside"},
+        ]
+        return {obj["uid"]: obj for obj in [*base, *objects]}
+
+    def _messages(self, sdp: dict, catalog: dict) -> list[str]:
+        catalog[sdp["uid"]] = sdp
+        check = self.validate.RATCHET_RULES["sdp-internal-stub-listener"]
+        return list(check(sdp, catalog, {}))
+
+    def test_internal_stub_called_by_relationship_blocks_and_is_named(self) -> None:
+        listener = self._listener("01KQS0TFA0-LST1", "product_component", self.ORDERS, name="Orders API")
+        catalog = self._catalog(listener, self._rel("01KQS0TFB0-REL1", self.WEB, self.ORDERS, listener["uid"]))
+        messages = self._messages(self._sdp([self.WEB]), catalog)
+        self.assertEqual(1, len(messages), messages)
+        self.assertIn("'Orders API' (01KQS0TFA0-LST1)", messages[0])
+        self.assertIn(f"Web ({self.WEB})", messages[0])
+        self.assertIn("internal product_component", messages[0])
+
+    def test_external_vendor_stub_does_not_block(self) -> None:
+        listener = self._listener("01KQS0TFA1-LST2", "external_system", self.VENDOR)
+        catalog = self._catalog(listener, self._rel("01KQS0TFB1-REL2", self.WEB, self.VENDOR, listener["uid"]))
+        self.assertEqual([], self._messages(self._sdp([self.WEB]), catalog))
+
+    def test_non_stub_internal_listener_does_not_block(self) -> None:
+        for status in ("incomplete", "complete"):
+            with self.subTest(status=status):
+                listener = self._listener("01KQS0TFA2-LST3", "product_component", self.ORDERS, status=status)
+                catalog = self._catalog(listener, self._rel("01KQS0TFB2-REL3", self.WEB, self.ORDERS, listener["uid"]))
+                self.assertEqual([], self._messages(self._sdp([self.WEB]), catalog))
+
+    def test_incomplete_pattern_is_not_gated(self) -> None:
+        listener = self._listener("01KQS0TFA3-LST4", "product_component", self.ORDERS)
+        catalog = self._catalog(listener, self._rel("01KQS0TFB3-REL4", self.WEB, self.ORDERS, listener["uid"]))
+        for status in ("stub", "incomplete"):
+            with self.subTest(status=status):
+                self.assertEqual([], self._messages(self._sdp([self.WEB], status=status), catalog))
+
+    def test_runtime_dependency_traversal_finds_internal_stub(self) -> None:
+        listener = self._listener("01KQS0TFA4-LST5", "data_component", self.LEDGER, name="Ledger SQL")
+        worker = {
+            "uid": self.WORKER, "type": "product_component", "name": "Worker",
+            "runtimeSpec": {"dependencies": [{"ref": self.LEDGER, "interface": listener["uid"]}]},
+        }
+        catalog = self._catalog(listener)
+        catalog[self.WORKER] = worker
+        messages = self._messages(self._sdp([self.WORKER]), catalog)
+        self.assertEqual(1, len(messages), messages)
+        self.assertIn("'Ledger SQL' (01KQS0TFA4-LST5)", messages[0])
+        self.assertIn("runtimeSpec.dependencies[0].interface", messages[0])
+        self.assertIn("internal data_component", messages[0])
+
+    def test_calls_from_objects_outside_the_pattern_are_ignored(self) -> None:
+        listener = self._listener("01KQS0TFA5-LST6", "product_component", self.ORDERS)
+        catalog = self._catalog(listener, self._rel("01KQS0TFB5-REL6", self.OUTSIDE, self.ORDERS, listener["uid"]))
+        self.assertEqual([], self._messages(self._sdp([self.WEB]), catalog))
+
+    def test_several_calls_with_mixed_ownership_name_only_internal_stubs(self) -> None:
+        orders = self._listener("01KQS0TFA6-LST7", "product_component", self.ORDERS, name="Orders API")
+        ledger = self._listener("01KQS0TFA7-LST8", "data_component", self.LEDGER, name="Ledger SQL")
+        vendor = self._listener("01KQS0TFA8-LST9", "external_system", self.VENDOR, name="Vendor API")
+        done = self._listener("01KQS0TFA9-LSTA", "product_component", self.ORDERS, status="complete", name="Orders v2")
+        worker = {
+            "uid": self.WORKER, "type": "product_component", "name": "Worker",
+            "runtimeSpec": {"dependencies": [{"ref": self.LEDGER, "interface": ledger["uid"]}]},
+        }
+        catalog = self._catalog(
+            orders, ledger, vendor, done,
+            self._rel("01KQS0TFB6-REL7", self.WEB, self.ORDERS, orders["uid"]),
+            self._rel("01KQS0TFB7-REL8", self.WEB, self.VENDOR, vendor["uid"]),
+            self._rel("01KQS0TFB8-REL9", self.WORKER, self.ORDERS, done["uid"]),
+            self._rel("01KQS0TFB9-RELA", self.WORKER, self.VENDOR, vendor["uid"]),
+        )
+        catalog[self.WORKER] = worker
+        messages = self._messages(self._sdp([self.WEB, self.WORKER]), catalog)
+        self.assertEqual(2, len(messages), messages)
+        joined = " | ".join(messages)
+        self.assertIn("'Orders API' (01KQS0TFA6-LST7)", joined)
+        self.assertIn("'Ledger SQL' (01KQS0TFA7-LST8)", joined)
+        self.assertNotIn("Vendor API", joined)
+        self.assertNotIn("Orders v2", joined)
+
+    def test_gate_fails_validation_end_to_end(self) -> None:
+        import yaml
+
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            catalog_dir = workspace / "catalog"
+            internal = self._listener("01KQS0TFAA-LSTB", "product_component", self.ORDERS, name="Orders API")
+            vendor = self._listener("01KQS0TFAB-LSTC", "external_system", self.VENDOR, name="Vendor API")
+            docs = {
+                "web.yaml": {"schemaVersion": "1.0", "uid": self.WEB, "type": "product_component", "name": "Web",
+                             "catalogStatus": "incomplete", "lifecycleStatus": "candidate"},
+                "orders.yaml": {"schemaVersion": "1.0", "uid": self.ORDERS, "type": "product_component",
+                                "name": "Orders", "catalogStatus": "incomplete", "lifecycleStatus": "candidate"},
+                "vendor.yaml": {"schemaVersion": "1.0", "uid": self.VENDOR, "type": "system", "name": "Payments vendor",
+                                "catalogStatus": "complete", "lifecycleStatus": "preferred"},
+                "listener-internal.yaml": internal,
+                "listener-vendor.yaml": vendor,
+                "rel-internal.yaml": self._rel("01KQS0TFBA-RELB", self.WEB, self.ORDERS, internal["uid"]),
+                "rel-vendor.yaml": self._rel("01KQS0TFBB-RELC", self.WEB, self.VENDOR, vendor["uid"]),
+                "sdp.yaml": self._sdp([self.WEB]),
+            }
+            for name, doc in docs.items():
+                (catalog_dir / name).write_text(yaml.safe_dump(doc, sort_keys=False), encoding="utf-8")
+            result = validate_workspace(workspace)
+        output = result.stdout + result.stderr
+        self.assertFalse(result.ok, output)
+        gate_lines = [line for line in output.splitlines() if "[sdp-internal-stub-listener]" in line]
+        self.assertEqual(1, len(gate_lines), output)
+        self.assertIn(self.SDP, gate_lines[0])
+        self.assertIn("'Orders API' (01KQS0TFAA-LSTB)", gate_lines[0])
+        self.assertNotIn("Vendor API", gate_lines[0])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -332,7 +332,7 @@ fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   type: Use the exact object type declared by the matching schema.
   name: Use a clear human-readable name for the object.
-  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition.
+  catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition. A pattern cannot be complete while a call in it targets a stub listener owned by an internal product or data component (ratcheted rule sdp-internal-stub-listener); stubs owned by external systems do not block.
   lifecycleStatus: Use candidate, preferred, existing-only, deprecated, or retired where this object still carries a lifecycle signal.
   businessContext: Use workspace-defined business taxonomy values, especially businessContext.pillar, to identify which company portfolio or pillar owns this deployment pattern.
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name, product-name, or taxonomy changes.
