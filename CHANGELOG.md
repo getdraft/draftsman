@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. The listener protocol enum and `authenticationModel` values are unchanged; this release settles and documents them.
+
+### Added
+
+- Test `ListenerCatalogTests.test_listener_protocol_enum_and_auth_none_are_settled` in `tests/test_validation.py`, which pins the listener protocol set (SQL, Redis, Kafka, SQS, SNS, S3, gRPC and others) and `authenticationModel: none`.
+
+### Changed
+
+- The listener `protocol` field description in `framework/schemas/listener.schema.yaml` lists the approved set and records gRPC-web as gRPC.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Nothing is required. Authors record gRPC-web listeners with protocol `gRPC`.
+
 ## 1.8.0 - 2026-11-20
 
 ### Compatibility Impact

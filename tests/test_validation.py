@@ -4539,6 +4539,23 @@ class ListenerCatalogTests(unittest.TestCase):
         result = self._validate("external_system", self.SYSTEM_UID, authenticationModel="none")
         self.assertTrue(result.ok, result.stdout + result.stderr)
 
+    def test_listener_protocol_enum_and_auth_none_are_settled(self) -> None:
+        import sys
+
+        import yaml
+
+        sys.path.insert(0, str(REPO_ROOT / "framework" / "tools"))
+        from protocol_families import family
+
+        schema = yaml.safe_load((REPO_ROOT / "framework" / "schemas" / "listener.schema.yaml").read_text(encoding="utf-8"))
+        protocols = set(schema["enumFields"]["protocol"])
+        for protocol in ("REST", "gRPC", "GraphQL", "WebSocket", "AMQP", "SQL", "Redis", "Kafka", "SQS", "SNS", "S3", "other"):
+            self.assertIn(protocol, protocols)
+        self.assertIn("none", schema["enumFields"]["authenticationModel"])
+        self.assertNotIn("gRPC-web", protocols)
+        self.assertEqual(family("gRPC-web"), "grpc")
+        self.assertIn("gRPC-web", schema["fieldDescriptions"]["protocol"])
+
 
 if __name__ == "__main__":
     unittest.main()
