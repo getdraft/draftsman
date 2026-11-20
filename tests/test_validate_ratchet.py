@@ -7,6 +7,7 @@ test-only ratcheted rule `ratchet-test-marker` fires on `xRatchetTest: fail`.
 from __future__ import annotations
 
 import hashlib
+import re
 import subprocess
 import sys
 import tempfile
@@ -356,11 +357,8 @@ class RelationshipTargetListenerTests(unittest.TestCase):
         self.assertEqual([], warnings)
 
 
-class LegacyInterfaceBaselineTests(unittest.TestCase):
-    SYS = "01M7C497NA-SYS1"
-    LST = "01M7C497NB-STB1"
-    COMP = "01M7C497NC-CMP1"
-    REL = "01M7C497ND-RSH1"
+class WorkspaceValidateTests(unittest.TestCase):
+    """Shared temp workspace, validate.py runner, and parsed failure/warning records."""
 
     def setUp(self) -> None:
         self._tmp = tempfile.TemporaryDirectory()
@@ -368,6 +366,79 @@ class LegacyInterfaceBaselineTests(unittest.TestCase):
         self.ws = Path(self._tmp.name)
         (self.ws / "catalog").mkdir()
         self.baseline = self.ws / ".draft" / "validation-baseline.yaml"
+
+    def _run(self, *flags: str) -> str:
+        proc = subprocess.run(
+            [sys.executable, str(VALIDATE), "--workspace", str(self.ws), *flags],
+            capture_output=True, text=True, check=False,
+        )
+        return proc.stdout + proc.stderr
+
+    @staticmethod
+    def _section(out: str, header: str) -> str:
+        if header not in out:
+            return ""
+        text = out.split(header, 1)[1]
+        for stop in ("Validation failures:", "Validation warnings:"):
+            if stop != header and stop in text:
+                text = text.split(stop, 1)[0]
+        return text
+
+    @classmethod
+    def _failures(cls, out: str) -> str:
+        return cls._section(out, "Validation failures:")
+
+    @classmethod
+    def _warnings(cls, out: str) -> str:
+        return cls._section(out, "Validation warnings:")
+
+    @staticmethod
+    def _records(section: str) -> List[dict[str, str]]:
+        """Parse '- path: ...' lines into {path, rule, uid, message, text}."""
+        out: List[dict[str, str]] = []
+        for line in section.splitlines():
+            raw = line.strip()
+            if not raw.startswith("- "):
+                continue
+            text = raw[2:]
+            rec = {"text": text, "path": "", "rule": "", "uid": "", "message": text}
+            m = re.match(
+                r"^(?P<path>.+?): \[(?P<rule>[^\]]+)\] (?P<uid>\S+): (?P<message>.*)$",
+                text,
+            )
+            if m:
+                rec.update(m.groupdict())
+            else:
+                path, _, rest = text.partition(": ")
+                rec["path"] = path
+                rec["message"] = rest or text
+            out.append(rec)
+        return out
+
+    @classmethod
+    def _failure_records(cls, out: str) -> List[dict[str, str]]:
+        return cls._records(cls._failures(out))
+
+    @classmethod
+    def _warning_records(cls, out: str) -> List[dict[str, str]]:
+        return cls._records(cls._warnings(out))
+
+    @staticmethod
+    def _file_verdicts(out: str) -> dict[str, str]:
+        """Map basename (e.g. listener.yaml) to PASS or FAIL from validator file lines."""
+        verdicts: dict[str, str] = {}
+        for line in out.splitlines():
+            if line.startswith("PASS ") or line.startswith("FAIL "):
+                status, _, path = line.partition(" ")
+                verdicts[Path(path.strip()).name] = status
+        return verdicts
+
+
+class LegacyInterfaceBaselineTests(WorkspaceValidateTests):
+    SYS = "01M7C497NA-SYS1"
+    LST = "01M7C497NB-STB1"
+    COMP = "01M7C497NC-CMP1"
+    REL = "01M7C497ND-RSH1"
 
     def _write(self, **rel_changes: Any) -> None:
         rel: dict[str, Any] = {
@@ -395,19 +466,6 @@ class LegacyInterfaceBaselineTests(unittest.TestCase):
         }
         for name, doc in docs.items():
             (self.ws / "catalog" / name).write_text(yaml.safe_dump(doc, sort_keys=False), encoding="utf-8")
-
-    def _run(self, *flags: str) -> str:
-        proc = subprocess.run(
-            [sys.executable, str(VALIDATE), "--workspace", str(self.ws), *flags],
-            capture_output=True, text=True, check=False,
-        )
-        return proc.stdout + proc.stderr
-
-    @staticmethod
-    def _failures(out: str) -> str:
-        if "Validation failures:" not in out:
-            return ""
-        return out.split("Validation failures:")[1].split("Validation warnings:")[0]
 
     def test_baseline_preserves_unchanged_relationship_as_warning(self) -> None:
         self._write()
@@ -441,16 +499,32 @@ class LegacyInterfaceBaselineTests(unittest.TestCase):
         listener.update({"catalogStatus": "complete", "authenticationModel": "oauth", "description": "LDAP bind"})
         listener_path.write_text(yaml.safe_dump(listener, sort_keys=False), encoding="utf-8")
         out = self._run()
-        self.assertNotIn(self.REL, self._failures(out))
-        self.assertEqual(self.LST, listener["uid"])
+        failure_uids = [rec.get("uid") for rec in self._failure_records(out)]
+        failure_rules = [rec.get("rule") for rec in self._failure_records(out)]
+        self.assertNotIn(self.REL, failure_uids)
+        self.assertNotIn(RULE_LISTENER, failure_rules)
+        verdicts = self._file_verdicts(out)
+        self.assertEqual("PASS", verdicts.get("listener.yaml"))
+        self.assertEqual("PASS", verdicts.get("relationship.yaml"))
+        passed_listener = next(
+            (line.split(" ", 1)[1] for line in out.splitlines()
+             if line.startswith("PASS ") and line.endswith("catalog/listener.yaml")),
+            "",
+        )
+        self.assertEqual(str(listener_path), passed_listener)
 
     def test_legacy_interfaces_are_not_reported(self) -> None:
         self._write()
         self._run("--write-baseline")
         self.assertTrue(self.baseline.is_file())
         out = self._run()
-        self.assertNotIn("interfaces", out)
-        self.assertNotIn(self.COMP, out)
+        for rec in self._failure_records(out) + self._warning_records(out):
+            on_component = self.COMP in rec.get("uid", "") or self.COMP in rec.get("path", "")
+            about_interfaces = (
+                rec.get("rule") == "interfaces"
+                or re.search(r"\binterfaces\b", rec.get("message") or "") is not None
+            )
+            self.assertFalse(on_component and about_interfaces, rec)
         schema = yaml.safe_load(
             (REPO_ROOT / "framework" / "schemas" / "product-component.schema.yaml").read_text(encoding="utf-8")
         )
@@ -458,19 +532,12 @@ class LegacyInterfaceBaselineTests(unittest.TestCase):
         self.assertEqual("interface", schema["collectionSchemas"]["interfaces"])
 
 
-class InternalTargetBaselineTests(unittest.TestCase):
+class InternalTargetBaselineTests(WorkspaceValidateTests):
     COMP = "01M7C497NE-CMP2"
     DATA = "01M7C497NF-DAT2"
     OTHER = "01M7C497NJ-DAT3"
     LST = "01M7C497NG-STB2"
     REL = "01M7C497NH-RSH2"
-
-    def setUp(self) -> None:
-        self._tmp = tempfile.TemporaryDirectory()
-        self.addCleanup(self._tmp.cleanup)
-        self.ws = Path(self._tmp.name)
-        (self.ws / "catalog").mkdir()
-        self.baseline = self.ws / ".draft" / "validation-baseline.yaml"
 
     def _write(self, listener_owner: Any = None, **rel_changes: Any) -> None:
         owner = listener_owner or self.DATA
@@ -495,19 +562,6 @@ class InternalTargetBaselineTests(unittest.TestCase):
         }
         for name, doc in docs.items():
             (self.ws / "catalog" / name).write_text(yaml.safe_dump(doc, sort_keys=False), encoding="utf-8")
-
-    def _run(self, *flags: str) -> str:
-        proc = subprocess.run(
-            [sys.executable, str(VALIDATE), "--workspace", str(self.ws), *flags],
-            capture_output=True, text=True, check=False,
-        )
-        return proc.stdout + proc.stderr
-
-    @staticmethod
-    def _failures(out: str) -> str:
-        if "Validation failures:" not in out:
-            return ""
-        return out.split("Validation failures:")[1].split("Validation warnings:")[0]
 
     def test_internal_target_baselined_then_changed_relationship_passes(self) -> None:
         self._write()
