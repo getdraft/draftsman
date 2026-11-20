@@ -432,6 +432,7 @@ def _check_listener_owner(obj: dict, catalog_by_id: dict, context: dict) -> Iter
 
 register_ratchet_rule("listener-owner", _check_listener_owner)
 
+
 LISTENER_DEFAULT_PORTS = {"http": 80, "https": 443}
 _LISTENER_TEMPLATED_SEGMENT = re.compile(r"^(\{[^{}/]+\}|:[A-Za-z_][A-Za-z0-9_]*)$")
 
@@ -473,6 +474,8 @@ def listener_identity(obj: dict[str, Any]) -> tuple[str, str, str, int, str] | N
     if not isinstance(port, int) or isinstance(port, bool):
         return None
     return (kind, ref, protocol, port, normalize_listener_endpoint(obj.get("endpoint")))
+
+
 register_ratchet_rule("relationship-definition-endpoint", _check_relationship_definition_endpoint)
 
 
