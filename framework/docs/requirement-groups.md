@@ -108,6 +108,22 @@ requirement on `listener` objects. It is satisfied by the listener's
 gaps, an unsatisfied `interface-protection` fails a `complete` listener and
 warns on a `stub` or `incomplete` one.
 
+Choosing `none` needs a recorded decision. The conditional
+`interface-unprotected-justification` requirement applies when the listener's
+`authenticationModel` equals `none`. Only a committed DecisionRecord satisfies
+it: one with `status` `accepted`, `mitigated` or `resolved`, referenced from the
+listener's `decisionRecords` with `key: interface_unprotected`. A missing
+record, an `open` draft, or a `not-applicable` answer does not satisfy it.
+DRAFT defines this mechanism only. Which unauthenticated exceptions a company
+accepts stays in company requirement groups and DecisionRecord approval policy.
+
+A `decisionRecord` mechanism with `committedOnly: true` ignores `open`
+DecisionRecords. Conditional requirements normally set `naAllowed: true`. The
+one exception is a conditional requirement whose every `canBeSatisfiedBy`
+entry is a `committedOnly` decisionRecord (with `validAnswerTypes` of only
+`decisionRecord`). It may set `naAllowed: false`, because its applicability
+already limits it to the objects that need the decision.
+
 ## Capability Demand
 
 RequirementGroups are the demand signal for capabilities. When a requirement

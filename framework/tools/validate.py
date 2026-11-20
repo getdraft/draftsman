@@ -67,6 +67,8 @@ VALID_REQUIREMENT_ANSWER_TYPES = {
     "field",
 }
 VALID_REQUIREMENT_MODES = {"mandatory", "conditional"}
+# DecisionRecord statuses that count as a committed decision. An open record is still a draft.
+COMMITTED_DECISION_STATUSES = {"accepted", "mitigated", "resolved"}
 VALID_REQUIREMENT_ACTIVATIONS = {"always", "workspace"}
 VALID_IMPLEMENTATION_STATUSES = {"candidate", "preferred", "existing-only", "deprecated", "retired"}
 STANDARD_TYPES = {
@@ -1733,10 +1735,11 @@ def mechanism_description(mechanism: dict[str, Any]) -> str:
         return f"note({mechanism.get('key', 'unknown')})"
     if mechanism_type == "decisionRecord":
         key = mechanism.get("key")
+        prefix = "committed " if mechanism.get("committedOnly") is True else ""
         if key:
-            return f"decisionRecord(key={key})"
+            return f"{prefix}decisionRecord(key={key})"
         capability = mechanism.get("criteria", {}).get("capability", "any")
-        return f"decisionRecord(capability={capability})"
+        return f"{prefix}decisionRecord(capability={capability})"
     return str(mechanism_type)
 
 
@@ -1910,6 +1913,47 @@ def field_implementation_excluded(
     return False
 
 
+def is_committed_decision_record(target: Any) -> bool:
+    return (
+        isinstance(target, dict)
+        and target.get("type") == "decision_record"
+        and target.get("status") in COMMITTED_DECISION_STATUSES
+    )
+
+
+def committed_only_decision_mechanisms(requirement: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        mechanism
+        for mechanism in requirement.get("canBeSatisfiedBy", []) or []
+        if isinstance(mechanism, dict)
+        and mechanism.get("mechanism") == "decisionRecord"
+        and mechanism.get("committedOnly") is True
+    ]
+
+
+def decision_implementation_uncommitted(
+    obj: dict[str, Any],
+    implementation: dict[str, Any],
+    requirement: dict[str, Any],
+    catalog_by_id: dict[str, dict[str, Any]],
+) -> bool:
+    """True when a decisionRecord implementation answers a committed-only requirement with no committed record."""
+    if implementation.get("mechanism") != "decisionRecord" or not committed_only_decision_mechanisms(requirement):
+        return False
+    direct_ref = implementation.get("ref")
+    if is_non_empty(direct_ref):
+        return not is_committed_decision_record(catalog_by_id.get(str(direct_ref)))
+    key = implementation.get("key")
+    for entry in obj.get("decisionRecords", []) or []:
+        if not isinstance(entry, dict) or not is_non_empty(entry.get("ref")):
+            continue
+        if key and (entry.get("key") or entry.get("concern")) != key:
+            continue
+        if is_committed_decision_record(catalog_by_id.get(str(entry.get("ref")))):
+            return False
+    return True
+
+
 def mechanism_satisfied(obj: dict[str, Any], mechanism: dict[str, Any], catalog_by_id: dict[str, dict[str, Any]]) -> bool:
     mechanism_type = mechanism.get("mechanism")
     if mechanism_type == "field":
@@ -2027,6 +2071,8 @@ def mechanism_satisfied(obj: dict[str, Any], mechanism: dict[str, Any], catalog_
             target = catalog_by_id.get(str(ref)) if is_non_empty(ref) else None
             if not target or target.get("type") != "decision_record":
                 continue
+            if mechanism.get("committedOnly") is True and not is_committed_decision_record(target):
+                continue
             # capability-scoped decision (service capability requirements)
             if capability and capability != "any":
                 if (entry.get("capability") or entry.get("concern")) == capability:
@@ -2065,6 +2111,7 @@ def validate_requirement(
             and mechanism in valid_answer_types
             and implementation_resolves(obj, implementation, catalog_by_id)
             and not field_implementation_excluded(obj, implementation, requirement)
+            and not decision_implementation_uncommitted(obj, implementation, requirement, catalog_by_id)
         ):
             return True, ""
 
@@ -4325,6 +4372,10 @@ def validate_requirement_group(
                     )
                 if "notIn" in mechanism and (mechanism_type != "field" or not isinstance(mechanism.get("notIn"), list)):
                     failures.append(f"{mechanism_context}: Use notIn only on a field mechanism, as a list of values")
+                if "committedOnly" in mechanism and (
+                    mechanism_type != "decisionRecord" or not isinstance(mechanism.get("committedOnly"), bool)
+                ):
+                    failures.append(f"{mechanism_context}: Use committedOnly only on a decisionRecord mechanism, as true or false")
                 criteria = mechanism.get("criteria")
                 if isinstance(criteria, dict):
                     capability = criteria.get("capability") or criteria.get("concern")
@@ -4337,8 +4388,26 @@ def validate_requirement_group(
             validate_applicability_shape(applicability, context, failures)
         elif mode == "conditional":
             failures.append(f"{context}: Add applicability rules for conditional requirements")
-        if mode == "conditional" and requirement.get("naAllowed") is not True:
-            failures.append(f"{context}: Set naAllowed: true for conditional requirements")
+        if mode == "conditional" and requirement.get("naAllowed") is not True and not decision_only_conditional(requirement):
+            failures.append(
+                f"{context}: Set naAllowed: true for conditional requirements (naAllowed: false is allowed only when "
+                "every canBeSatisfiedBy entry is a committedOnly decisionRecord)"
+            )
+
+
+def decision_only_conditional(requirement: dict[str, Any]) -> bool:
+    """A conditional requirement may set naAllowed: false only when a committed DecisionRecord is its sole answer.
+
+    Applicability already scopes such a requirement to the objects that need the decision, so not-applicable would
+    only let a draft or missing justification through.
+    """
+    mechanisms = requirement.get("canBeSatisfiedBy")
+    if not isinstance(mechanisms, list) or not mechanisms:
+        return False
+    if len(committed_only_decision_mechanisms(requirement)) != len(mechanisms):
+        return False
+    answer_types = requirement.get("validAnswerTypes")
+    return isinstance(answer_types, list) and set(answer_types) == {"decisionRecord"}
 
 
 def validate_applicability_shape(applicability: Any, context: str, failures: list[str]) -> None:
@@ -4518,6 +4587,15 @@ def validate_requirement_implementations(
         if mechanism and mechanism not in valid_answer_types:
             failures.append(
                 f"{context}: Set mechanism to one of {valid_answer_types} for {label}"
+            )
+        elif mechanism and decision_implementation_uncommitted(obj, implementation, requirement, catalog_by_id):
+            record_requirement_gap(
+                obj,
+                path,
+                f"[{object_label(obj)}] Commit the DecisionRecord for {label}: only an accepted, mitigated or resolved "
+                "DecisionRecord satisfies it, not an open draft",
+                failures,
+                warnings,
             )
         elif mechanism and not implementation_resolves(obj, implementation, catalog_by_id):
             record_requirement_gap(

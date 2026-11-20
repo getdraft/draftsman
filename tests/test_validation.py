@@ -4800,5 +4800,257 @@ class FieldMechanismNotInTests(unittest.TestCase):
         self.assertNotIn("Replace invalid appliesTo values", " ".join(failures))
 
 
+class UnprotectedListenerJustificationTests(unittest.TestCase):
+    """S2.2: authenticationModel none needs a committed DecisionRecord; naAllowed is false."""
+
+    SECURITY_GROUP = "01KQQ4Q027-T3CA"
+    REQUIREMENT = "interface-unprotected-justification"
+    SYSTEM_UID = "01KQS0TF80-SYS3"
+    LISTENER_UID = "01KQS0TF81-AB15"
+    DR_UID = "01KQS0TF82-DR15"
+
+    def _validate(
+        self,
+        authentication_model: str = "none",
+        dr_status: str | None = None,
+        dr_key: str = "interface_unprotected",
+        reference: bool = True,
+        implementations: list | None = None,
+    ):
+        import yaml
+
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            workspace_yaml = workspace / ".draft" / "workspace.yaml"
+            config = yaml.safe_load(workspace_yaml.read_text(encoding="utf-8")) or {}
+            requirements = config.setdefault("requirements", {})
+            requirements["activeRequirementGroups"] = [self.SECURITY_GROUP]
+            requirements["requireActiveRequirementGroupDisposition"] = True
+            workspace_yaml.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
+            catalog = workspace / "catalog"
+            (catalog / "systems").mkdir(parents=True, exist_ok=True)
+            (catalog / "systems" / "system-test.yaml").write_text(
+                yaml.safe_dump(
+                    {
+                        "schemaVersion": "1.0", "uid": self.SYSTEM_UID, "type": "system", "name": "Status System",
+                        "catalogStatus": "complete", "lifecycleStatus": "preferred",
+                    },
+                    sort_keys=False,
+                ),
+                encoding="utf-8",
+            )
+            if dr_status is not None:
+                (catalog / "decision-records").mkdir(parents=True, exist_ok=True)
+                (catalog / "decision-records" / "dr-unprotected.yaml").write_text(
+                    yaml.safe_dump(
+                        {
+                            "schemaVersion": "1.0", "uid": self.DR_UID, "type": "decision_record",
+                            "name": "Public health endpoint needs no authentication", "category": "decision",
+                            "status": dr_status, "catalogStatus": "complete", "lifecycleStatus": "preferred",
+                            "decisionRationale": "Load balancer health checks call it without credentials.",
+                            "linkedObject": self.LISTENER_UID,
+                        },
+                        sort_keys=False,
+                    ),
+                    encoding="utf-8",
+                )
+            listener = {
+                "schemaVersion": "1.0", "uid": self.LISTENER_UID, "type": "listener", "name": "Health listener",
+                "owner": {"kind": "external_system", "ref": self.SYSTEM_UID},
+                "protocol": "HTTPS", "port": 443, "endpoint": "/healthz",
+                "authenticationModel": authentication_model, "catalogStatus": "complete",
+            }
+            if dr_status is not None and reference:
+                listener["decisionRecords"] = [{"ref": self.DR_UID, "key": dr_key}]
+            if implementations is not None:
+                listener["requirementImplementations"] = implementations
+            (catalog / "listeners").mkdir(parents=True, exist_ok=True)
+            (catalog / "listeners" / "listener-test.yaml").write_text(
+                yaml.safe_dump(listener, sort_keys=False), encoding="utf-8"
+            )
+            return validate_workspace(workspace)
+
+    @staticmethod
+    def _section(output: str, header: str) -> str:
+        if header not in output:
+            return ""
+        text = output.split(header, 1)[1]
+        for stop in ("Validation failures:", "Validation warnings:"):
+            if stop != header and stop in text:
+                text = text.split(stop, 1)[0]
+        return text
+
+    def _lines(self, output: str, header: str) -> list[str]:
+        return [
+            line
+            for line in self._section(output, header).splitlines()
+            if "listener-test.yaml" in line and self.REQUIREMENT in line
+        ]
+
+    def _assert_rejected(self, result) -> list[str]:
+        output = result.stdout + result.stderr
+        self.assertFalse(result.ok, output)
+        lines = self._lines(output, "Validation failures:")
+        self.assertTrue(lines, output)
+        return lines
+
+    def test_missing_justification_is_rejected(self) -> None:
+        lines = self._assert_rejected(self._validate())
+        self.assertTrue(any("committed decisionRecord(key=interface_unprotected)" in line for line in lines), lines)
+
+    def test_unreferenced_decision_record_is_rejected(self) -> None:
+        self._assert_rejected(self._validate(dr_status="accepted", reference=False))
+
+    def test_draft_justification_is_rejected(self) -> None:
+        self._assert_rejected(self._validate(dr_status="open"))
+
+    def test_decision_with_another_key_is_rejected(self) -> None:
+        self._assert_rejected(self._validate(dr_status="accepted", dr_key="authentication"))
+
+    def test_not_applicable_justification_is_rejected(self) -> None:
+        implementation = {
+            "requirementGroup": self.SECURITY_GROUP, "requirementId": self.REQUIREMENT, "status": "not-applicable",
+        }
+        result = self._validate(implementations=[implementation])
+        self._assert_rejected(result)
+        self.assertIn("Use not-applicable only when the requirement sets naAllowed: true", result.stdout)
+
+    def test_decision_implementation_pointing_at_draft_is_rejected(self) -> None:
+        implementation = {
+            "requirementGroup": self.SECURITY_GROUP, "requirementId": self.REQUIREMENT, "status": "satisfied",
+            "mechanism": "decisionRecord", "ref": self.DR_UID,
+        }
+        result = self._validate(dr_status="open", reference=False, implementations=[implementation])
+        lines = self._assert_rejected(result)
+        self.assertTrue(any("Commit the DecisionRecord" in line for line in lines), lines)
+
+    def test_committed_decision_is_accepted(self) -> None:
+        for status in ("accepted", "mitigated", "resolved"):
+            with self.subTest(status=status):
+                result = self._validate(dr_status=status)
+                output = result.stdout + result.stderr
+                self.assertTrue(result.ok, output)
+                self.assertEqual([], self._lines(output, "Validation failures:"))
+                self.assertEqual([], self._lines(output, "Validation warnings:"))
+
+    def test_authenticated_listener_needs_no_justification(self) -> None:
+        result = self._validate(authentication_model="oauth")
+        output = result.stdout + result.stderr
+        self.assertTrue(result.ok, output)
+        self.assertNotIn(self.REQUIREMENT, output)
+
+    def test_bundled_requirement_definition(self) -> None:
+        import yaml
+
+        group = yaml.safe_load(
+            (
+                REPO_ROOT / "framework" / "configurations" / "requirement-groups"
+                / "requirement-group-draft-security-compliance.yaml"
+            ).read_text(encoding="utf-8")
+        )
+        requirement = next(r for r in group["requirements"] if r["id"] == self.REQUIREMENT)
+        self.assertEqual(["listener"], requirement["appliesTo"])
+        self.assertEqual("conditional", requirement["requirementMode"])
+        self.assertIs(False, requirement["naAllowed"])
+        self.assertEqual({"allOf": [{"field": "authenticationModel", "equals": "none"}]}, requirement["applicability"])
+        self.assertEqual(["decisionRecord"], requirement["validAnswerTypes"])
+        [mechanism] = requirement["canBeSatisfiedBy"]
+        self.assertEqual("decisionRecord", mechanism["mechanism"])
+        self.assertEqual("interface_unprotected", mechanism["key"])
+        self.assertIs(True, mechanism["committedOnly"])
+
+
+class ConditionalNotApplicableExceptionTests(unittest.TestCase):
+    """naAllowed: false on a conditional requirement is allowed only for a committed-DecisionRecord-only answer."""
+
+    def setUp(self) -> None:
+        import sys
+
+        sys.path.insert(0, str(REPO_ROOT / "framework" / "tools"))
+        import validate
+
+        self.validate = validate
+
+    def _failures(self, requirement: dict) -> list[str]:
+        base = {
+            "id": "conditional-x",
+            "requirementMode": "conditional",
+            "naAllowed": False,
+            "applicability": {"allOf": [{"field": "authenticationModel", "equals": "none"}]},
+        }
+        base.update(requirement)
+        group = {
+            "uid": "01KQS0TF83-RG02", "type": "requirement_group", "name": "Shape group",
+            "activation": "workspace", "appliesTo": ["listener"], "requirements": [base],
+        }
+        failures: list[str] = []
+        self.validate.validate_requirement_group(group, Path("group.yaml"), set(), failures)
+        return failures
+
+    def _na_failures(self, requirement: dict) -> list[str]:
+        return [f for f in self._failures(requirement) if "naAllowed: true for conditional" in f]
+
+    def test_committed_decision_only_answer_may_disallow_not_applicable(self) -> None:
+        requirement = {
+            "canBeSatisfiedBy": [{"mechanism": "decisionRecord", "key": "k", "committedOnly": True}],
+            "validAnswerTypes": ["decisionRecord"],
+        }
+        self.assertEqual([], self._failures(requirement))
+
+    def test_uncommitted_decision_answer_still_needs_not_applicable(self) -> None:
+        requirement = {
+            "canBeSatisfiedBy": [{"mechanism": "decisionRecord", "key": "k"}],
+            "validAnswerTypes": ["decisionRecord"],
+        }
+        self.assertEqual(1, len(self._na_failures(requirement)))
+
+    def test_field_answer_still_needs_not_applicable(self) -> None:
+        requirement = {
+            "canBeSatisfiedBy": [{"mechanism": "field", "key": "authenticationModel"}],
+            "validAnswerTypes": ["field"],
+        }
+        self.assertEqual(1, len(self._na_failures(requirement)))
+
+    def test_mixed_answers_still_need_not_applicable(self) -> None:
+        requirement = {
+            "canBeSatisfiedBy": [
+                {"mechanism": "decisionRecord", "key": "k", "committedOnly": True},
+                {"mechanism": "field", "key": "authenticationModel"},
+            ],
+            "validAnswerTypes": ["decisionRecord", "field"],
+        }
+        self.assertEqual(1, len(self._na_failures(requirement)))
+
+    def test_mandatory_requirements_are_unchanged(self) -> None:
+        requirement = {
+            "requirementMode": "mandatory",
+            "canBeSatisfiedBy": [{"mechanism": "field", "key": "authenticationModel"}],
+            "validAnswerTypes": ["field"],
+        }
+        self.assertEqual([], self._na_failures(requirement))
+
+    def test_committed_only_shape(self) -> None:
+        for mechanism in (
+            {"mechanism": "decisionRecord", "key": "k", "committedOnly": "yes"},
+            {"mechanism": "field", "key": "authenticationModel", "committedOnly": True},
+        ):
+            with self.subTest(mechanism=mechanism):
+                failures = self._failures(
+                    {"naAllowed": True, "canBeSatisfiedBy": [mechanism], "validAnswerTypes": [mechanism["mechanism"]]}
+                )
+                self.assertEqual(1, len([f for f in failures if "committedOnly" in f]), failures)
+
+    def test_open_decision_record_does_not_satisfy_committed_mechanism(self) -> None:
+        mechanism = {"mechanism": "decisionRecord", "key": "k", "committedOnly": True}
+        obj = {"type": "listener", "decisionRecords": [{"ref": "DR1", "key": "k"}]}
+        for status, expected in (("open", False), ("accepted", True), ("mitigated", True), ("resolved", True)):
+            with self.subTest(status=status):
+                catalog = {"DR1": {"type": "decision_record", "uid": "DR1", "status": status}}
+                self.assertIs(expected, self.validate.mechanism_satisfied(obj, mechanism, catalog))
+        catalog = {"DR1": {"type": "decision_record", "uid": "DR1", "status": "open"}}
+        self.assertTrue(self.validate.mechanism_satisfied(obj, {"mechanism": "decisionRecord", "key": "k"}, catalog))
+
+
 if __name__ == "__main__":
     unittest.main()

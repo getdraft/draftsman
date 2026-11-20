@@ -1,3 +1,29 @@
+## Unreleased
+
+### Compatibility Impact
+
+- Workspaces that activate the bundled security requirement group (`01KQQ4Q027-T3CA`) now require a committed DecisionRecord for every listener whose `authenticationModel` is `none`. A `complete` listener without one fails; a `stub` or `incomplete` one warns. Other requirement groups are unchanged: `committedOnly` is opt-in, and existing conditional requirements still need `naAllowed: true`.
+
+### Added
+
+- Conditional `interface-unprotected-justification` requirement on `listener` in the bundled security requirement group. It applies when `authenticationModel` equals `none`, is satisfied only by a committed DecisionRecord referenced with `key: interface_unprotected`, and sets `naAllowed: false`.
+- `committedOnly: true` on a `decisionRecord` satisfaction mechanism: only an `accepted`, `mitigated` or `resolved` DecisionRecord satisfies it, never an `open` draft, including through a `decisionRecord` requirementImplementation.
+- Listeners accept `decisionRecords` and `requirementImplementations`.
+- Tests in `tests/test_validation.py` rejecting missing, unreferenced, wrongly keyed, draft and not-applicable justifications, accepting committed ones, and covering the narrow `naAllowed` exception and `committedOnly` shape checks.
+
+### Changed
+
+- A conditional requirement may set `naAllowed: false` only when every `canBeSatisfiedBy` entry is a `committedOnly` decisionRecord. Every other conditional requirement still needs `naAllowed: true`.
+- The DecisionRecord `status` description records that `open` is a draft and `accepted`, `mitigated` and `resolved` are committed.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- For each listener with `authenticationModel: none` in a workspace that activates the security group, commit a DecisionRecord and reference it from the listener's `decisionRecords` with `key: interface_unprotected`.
+
 ## 1.12.0 - 2026-11-20
 
 ### Compatibility Impact
