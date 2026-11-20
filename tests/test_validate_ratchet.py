@@ -242,5 +242,103 @@ class RatchetTests(unittest.TestCase):
             validate.REPO_ROOT, validate.FRAMEWORK_ROOT = old
 
 
+class RelationshipTargetListenerTests(unittest.TestCase):
+    COMP = "01M7C497MX-MSDS"
+    DATA = "01M7C497MY-MSDT"
+    OTHER = "01M7C497MZ-MSDU"
+    LISTENER = "01M7C497MV-MSDQ"
+    REL = "01M7C497MW-MSDR"
+
+    def _validate(self) -> Any:
+        sys.path.insert(0, str(REPO_ROOT / "framework" / "tools"))
+        try:
+            import validate  # noqa: PLC0415
+        finally:
+            sys.path.pop(0)
+        return validate
+
+    def _violations(self, *objs: dict) -> List[Tuple]:
+        validate = self._validate()
+        objects = {Path(f"/ws/catalog/{i}.yaml"): o for i, o in enumerate(objs)}
+        catalog = {o["uid"]: o for o in objs}
+        found = validate.collect_ratchet_violations(objects, catalog)
+        return [v for v in found if v[0] == "relationship-target-listener"]
+
+    def _data(self) -> dict:
+        return {"schemaVersion": "1.0", "uid": self.DATA, "type": "data_component", "name": "Orders Data"}
+
+    def _other(self) -> dict:
+        return {"schemaVersion": "1.0", "uid": self.OTHER, "type": "data_component", "name": "Other Data"}
+
+    def _listener(self, owner_ref: str | None = None) -> dict:
+        return {
+            "schemaVersion": "1.0", "uid": self.LISTENER, "type": "listener", "name": "Orders SQL",
+            "owner": {"kind": "data_component", "ref": owner_ref or self.DATA},
+            "protocol": "SQL", "port": 5432, "endpoint": "/", "authenticationModel": "iam",
+            "catalogStatus": "complete",
+        }
+
+    def _relationship(self, **changes: Any) -> dict:
+        rel: dict = {
+            "schemaVersion": "1.0", "uid": self.REL, "type": "relationship", "name": "Comp → Data",
+            "source": self.COMP, "target": self.DATA, "label": "reads", "catalogStatus": "complete",
+            "targetListener": self.LISTENER,
+        }
+        rel.update(changes)
+        return {k: v for k, v in rel.items() if v is not None}
+
+    def _component(self, dependencies: list) -> dict:
+        return {
+            "schemaVersion": "1.0", "uid": self.COMP, "type": "product_component", "name": "Comp",
+            "runtimeSpec": {"dependencies": dependencies},
+        }
+
+    def test_valid_internal_target_is_clean(self) -> None:
+        self.assertEqual([], self._violations(self._data(), self._listener(), self._relationship()))
+
+    def test_missing_targetListener_fails(self) -> None:
+        found = self._violations(self._data(), self._listener(), self._relationship(targetListener=None))
+        self.assertEqual(1, len(found))
+        self.assertIn("no targetListener", found[0][2])
+
+    def test_unknown_listener_uid_fails(self) -> None:
+        found = self._violations(self._data(), self._listener(), self._relationship(targetListener="01M7C497MQ-MSDK"))
+        self.assertEqual(1, len(found))
+        self.assertIn("names no listener object", found[0][2])
+
+    def test_listener_owned_by_other_object_fails(self) -> None:
+        found = self._violations(self._data(), self._other(), self._listener(owner_ref=self.OTHER), self._relationship())
+        self.assertEqual(1, len(found))
+        self.assertIn("not by its target", found[0][2])
+
+    def test_external_target_needs_a_listener_but_no_owner_match(self) -> None:
+        external = self._relationship(target=None, externalTarget="LDAP Directory")
+        self.assertEqual([], self._violations(self._other(), self._listener(owner_ref=self.OTHER), external))
+        found = self._violations(self._relationship(target=None, externalTarget="LDAP Directory", targetListener=None))
+        self.assertEqual(1, len(found))
+
+    def test_dependency_interface_must_resolve_to_a_listener_of_its_ref(self) -> None:
+        deps = [{"ref": self.DATA, "purpose": "reads", "interface": self.LISTENER}]
+        self.assertEqual([], self._violations(self._data(), self._listener(), self._component(deps)))
+        found = self._violations(self._data(), self._other(), self._listener(owner_ref=self.OTHER), self._component(deps))
+        self.assertEqual(1, len(found))
+        self.assertIn("not by its ref", found[0][2])
+
+    def test_protocol_disagreement_warns_but_does_not_ratchet(self) -> None:
+        validate = self._validate()
+        objs = [self._data(), self._listener()]
+        catalog = {o["uid"]: o for o in objs}
+        warnings: list[str] = []
+        validate._warn_listener_protocol(self._relationship(technology="AMQP"), Path("rel.yaml"), catalog, warnings)
+        self.assertEqual(1, len(warnings))
+        self.assertIn("does not match listener", warnings[0])
+        self.assertEqual([], self._violations(*objs, self._relationship(technology="AMQP")))
+        warnings.clear()
+        validate._warn_listener_protocol(
+            self._relationship(technology="PostgreSQL wire protocol"), Path("rel.yaml"), catalog, warnings
+        )
+        self.assertEqual([], warnings)
+
+
 if __name__ == "__main__":
     unittest.main()

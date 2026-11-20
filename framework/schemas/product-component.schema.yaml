@@ -114,7 +114,7 @@ runtimeDependency:
   fieldDescriptions:
     ref: Reference the catalog UID for the service, data store, network service, component, or other object this component depends on.
     purpose: Explain why this component depends on the referenced object.
-    interface: Name the consumed API, topic, queue, bucket, or configuration surface when known.
+    interface: Name the consumed API, topic, queue, bucket, or configuration surface when known. When it is the UID of a listener, that listener must be owned by ref.
     notes: Add extra runtime dependency context that does not belong in a Relationship object.
 interface:
   requiredFields:

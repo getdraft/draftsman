@@ -14,6 +14,7 @@ optionalFields:
 - target
 - externalTarget
 - targetInterface
+- targetListener
 - technology
 - direction
 - flow
@@ -40,6 +41,7 @@ enumFields:
   - bidirectional
 fieldTypes:
   targetInterface: str
+  targetListener: str
   tags: list
   capabilities: list
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
@@ -62,6 +64,7 @@ fieldDescriptions:
     for a data component without an interfaces list. Rule relationship-target-interface reports an error when the
     target is a product_component and this is missing or names no interface of the target (ratcheted: existing
     relationships are baselined). A value on a target that has no interfaces list is a warning. Never a port or host.
+  targetListener: UID of the listener object this relationship calls, the exact endpoint on the target. Every relationship names one, including data and external targets. For a catalog target the listener must be owned by that target; for an externalTarget any listener UID serves. Rule relationship-target-listener is ratcheted.
   label: Short verb phrase describing the interaction — e.g. "calls", "reads from", "writes to", "sends events to".
   technology: Protocol or technology used — e.g. "HTTPS", "gRPC", "AMQP", "PostgreSQL wire protocol".
   direction: Communication pattern — synchronous for request/response, asynchronous for fire-and-forget, event for event-driven.
