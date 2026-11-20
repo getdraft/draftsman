@@ -21,6 +21,7 @@ VALIDATE = REPO_ROOT / "framework" / "tools" / "validate.py"
 RULE = "ratchet-test-marker"
 UID_A = "01M7C497MS-MSDM"
 UID_B = "01M7C497MT-MSDN"
+RULE_LISTENER = "relationship-target-listener"
 
 
 def _domain(uid: str, name: str, fail: bool) -> str:
@@ -296,6 +297,12 @@ class RelationshipTargetListenerTests(unittest.TestCase):
     def test_valid_internal_target_is_clean(self) -> None:
         self.assertEqual([], self._violations(self._data(), self._listener(), self._relationship()))
 
+    def test_listener_endpoint_variants_normalize_to_one_identity(self) -> None:
+        validate = self._validate()
+        base = validate.listener_identity(self._listener(endpoint="/orders/{id}"))
+        variant = validate.listener_identity(self._listener(endpoint="https://API.Example.COM/orders/:orderId/"))
+        self.assertEqual(base, variant)
+
     def test_missing_targetListener_fails(self) -> None:
         found = self._violations(self._data(), self._listener(), self._relationship(targetListener=None))
         self.assertEqual(1, len(found))
@@ -419,12 +426,16 @@ class LegacyInterfaceBaselineTests(unittest.TestCase):
 
     def test_legacy_interfaces_are_not_reported(self) -> None:
         self._write()
-        out = self._run("--write-baseline")
-        self.assertNotIn("interfaces", self._failures(out))
-        self.assertNotIn(self.COMP, self._failures(out))
-
-
-RULE_LISTENER = "relationship-target-listener"
+        self._run("--write-baseline")
+        self.assertTrue(self.baseline.is_file())
+        out = self._run()
+        self.assertNotIn("interfaces", out)
+        self.assertNotIn(self.COMP, out)
+        schema = yaml.safe_load(
+            (REPO_ROOT / "framework" / "schemas" / "product-component.schema.yaml").read_text(encoding="utf-8")
+        )
+        self.assertIn("interfaces", schema["optionalFields"])
+        self.assertEqual("interface", schema["collectionSchemas"]["interfaces"])
 
 
 if __name__ == "__main__":
