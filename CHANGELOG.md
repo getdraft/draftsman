@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- A `complete` software deployment pattern whose calls target a stub listener owned by an internal product or data component now fails the ratcheted `sdp-internal-stub-listener` rule. Run `validate.py --write-baseline` to keep existing patterns as baseline warnings until they change. Patterns that are not `complete`, and stubs owned by external systems, are unaffected.
+
+### Added
+
+- Ratcheted rule `sdp-internal-stub-listener`: the SDP completeness gate. It traverses the pattern's calls (relationships with `targetListener` from the pattern and its service groups' deployable objects, and their `runtimeSpec.dependencies[].interface` listener UIDs), names each internally owned stub listener with its caller and call, and blocks completion. Stub listeners owned by an `external_system` do not block.
+- Tests in `tests/test_validation.py` for relationship and runtime-dependency traversal, several calls, mixed internal and external ownership, non-stub listeners, incomplete patterns, calls from outside the pattern, and an end-to-end failure.
+
+### Changed
+
+- The software deployment pattern `catalogStatus` description and the SoftwareDeploymentPattern RequirementGroup description record the gate.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Before marking a pattern `complete`, finish every internally owned stub listener it calls, or run `validate.py --write-baseline` to grandfather existing patterns until they change.
+
 ## 1.13.0 - 2026-11-20
 
 ### Compatibility Impact

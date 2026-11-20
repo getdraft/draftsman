@@ -3,7 +3,9 @@ uid: 01KQQ4Q027-VK45
 type: requirement_group
 name: SoftwareDeploymentPattern RequirementGroup
 description: Structured checklist of required questions and answers used to define
-  a complete and correct software deployment pattern.
+  a complete and correct software deployment pattern. A complete pattern must also
+  pass the ratcheted sdp-internal-stub-listener gate, which blocks completion while a
+  call in the pattern targets a stub listener owned by an internal component.
 version: 1.0.0
 catalogStatus: complete
 authority:

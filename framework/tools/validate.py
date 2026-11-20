@@ -575,6 +575,101 @@ def _check_relationship_target_listener(obj: dict, catalog_by_id: dict, context:
 register_ratchet_rule("relationship-target-listener", _check_relationship_target_listener)
 
 
+# ---------------------------------------------------------------------------
+# SDP completeness gate (#341 E2)
+#
+# A software deployment pattern cannot be complete while a call in it targets a
+# stub listener owned by an internal component (owner.kind product_component or
+# data_component). Stubs owned by an external_system (a vendor) do not block.
+# The calls of a pattern are traversed from its service groups' deployableObjects
+# (and the pattern itself): every relationship from one of them that names a
+# targetListener, and every runtimeSpec.dependencies[].interface listener UID.
+# ---------------------------------------------------------------------------
+LISTENER_INTERNAL_OWNER_KINDS = ("product_component", "data_component")
+
+
+def sdp_listener_calls(sdp: dict[str, Any], catalog_by_id: dict[str, dict[str, Any]]) -> list[tuple[str, str, str]]:
+    """Return (caller uid, how the call is recorded, listener uid) for every listener call in an SDP, in order."""
+    callers: list[str] = []
+    sdp_uid = str(sdp.get("uid") or "")
+    if sdp_uid:
+        callers.append(sdp_uid)
+    for group in sdp.get("serviceGroups") or []:
+        if not isinstance(group, dict):
+            continue
+        for entry in group.get("deployableObjects") or []:
+            ref = entry.get("ref") if isinstance(entry, dict) else None
+            if is_non_empty(ref) and str(ref).strip() not in callers:
+                callers.append(str(ref).strip())
+    caller_set = set(callers)
+    calls: list[tuple[str, str, str]] = []
+    seen: set[tuple[str, str, str]] = set()
+
+    def add(caller: str, via: str, listener_uid: Any) -> None:
+        if not isinstance(listener_uid, str) or not listener_uid.strip():
+            return
+        key = (caller, via, listener_uid.strip())
+        if key not in seen:
+            seen.add(key)
+            calls.append(key)
+
+    relationships = sorted(
+        (
+            rel for rel in catalog_by_id.values()
+            if isinstance(rel, dict) and rel.get("type") == "relationship"
+            and str(rel.get("source") or "").strip() in caller_set
+        ),
+        key=lambda rel: str(rel.get("uid") or ""),
+    )
+    for caller in callers:
+        for rel in relationships:
+            if str(rel.get("source") or "").strip() == caller:
+                add(caller, f"relationship '{rel.get('name') or rel.get('uid')}'", rel.get("targetListener"))
+        obj = catalog_by_id.get(caller)
+        runtime_spec = obj.get("runtimeSpec") if isinstance(obj, dict) else None
+        dependencies = runtime_spec.get("dependencies") if isinstance(runtime_spec, dict) else None
+        for index, dependency in enumerate(dependencies if isinstance(dependencies, list) else []):
+            if isinstance(dependency, dict):
+                add(caller, f"runtimeSpec.dependencies[{index}].interface", dependency.get("interface"))
+    return calls
+
+
+def sdp_blocking_stub_listeners(
+    sdp: dict[str, Any], catalog_by_id: dict[str, dict[str, Any]]
+) -> list[tuple[str, str, dict[str, Any]]]:
+    """Return (caller uid, via, listener) for each call in the SDP that targets an internally owned stub listener."""
+    blocking: list[tuple[str, str, dict[str, Any]]] = []
+    for caller, via, listener_uid in sdp_listener_calls(sdp, catalog_by_id):
+        listener = catalog_by_id.get(listener_uid)
+        if not _is_listener(listener) or listener.get("catalogStatus") != "stub":
+            continue
+        owner = listener.get("owner") if isinstance(listener.get("owner"), dict) else {}
+        if owner.get("kind") in LISTENER_INTERNAL_OWNER_KINDS:
+            blocking.append((caller, via, listener))
+    return blocking
+
+
+def _check_sdp_internal_stub_listeners(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
+    # Ratcheted: a complete SDP names every internally owned stub listener its calls target.
+    if obj.get("type") != "software_deployment_pattern" or obj.get("catalogStatus") != "complete":
+        return []
+    messages: list[str] = []
+    for caller, via, listener in sdp_blocking_stub_listeners(obj, catalog_by_id):
+        caller_obj = catalog_by_id.get(caller) or {}
+        caller_name = caller_obj.get("name") or caller
+        owner = listener.get("owner") if isinstance(listener.get("owner"), dict) else {}
+        messages.append(
+            f"pattern cannot be complete: {caller_name} ({caller}) calls stub listener "
+            f"'{listener.get('name') or listener.get('uid')}' ({listener.get('uid')}) owned by internal "
+            f"{owner.get('kind')} '{owner.get('ref')}' through {via}; finish the listener or set the pattern's "
+            "catalogStatus to incomplete"
+        )
+    return messages
+
+
+register_ratchet_rule("sdp-internal-stub-listener", _check_sdp_internal_stub_listeners)
+
+
 def object_hash(obj: dict[str, Any]) -> str:
     dumped = yaml.safe_dump(obj, sort_keys=True, allow_unicode=True)
     return hashlib.sha256(dumped.encode("utf-8")).hexdigest()
