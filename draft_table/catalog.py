@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import re
+import secrets
+import time
 from pathlib import Path
 from typing import Any
 
@@ -243,3 +245,220 @@ def object_summary(obj: dict[str, Any]) -> dict[str, str]:
         "source": str(obj.get("_source", "")),
         "description": str(obj.get("description", "")).strip(),
     }
+
+
+LISTENER_DEFAULT_PORTS = {"http": 80, "https": 443}
+LISTENER_EXTERNAL_OWNER = "external_system"
+LISTENER_INTERNAL_OWNER_TYPES = ("product_component", "data_component")
+VENDOR_STUB_REASON = (
+    "A vendor-owned stub listener needs a company-internal relationship owner "
+    "(a product or data component that calls it)."
+)
+_LISTENER_PATH_PARAM = re.compile(r"\{[^{}/]+\}|:[A-Za-z_][A-Za-z0-9_]*(?=/|$)")
+_CROCKFORD = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+
+
+def normalize_listener_endpoint(endpoint: Any) -> str:
+    """Path only: no scheme, host, query or fragment; templated parameters become {}."""
+    text = re.sub(r"^[A-Za-z][A-Za-z0-9+.-]*://[^/]*", "", str(endpoint or "").strip())
+    text = text.split("?", 1)[0].split("#", 1)[0]
+    if not text.startswith("/"):
+        text = "/" + text
+    return _LISTENER_PATH_PARAM.sub("{}", text).rstrip("/") or "/"
+
+
+def listener_identity_key(listener: dict[str, Any]) -> tuple[str, str, str, int | None, str]:
+    """Exact identity: owner kind + owner ref + protocol + port (default when omitted) + normalized endpoint."""
+    owner = listener.get("owner") if isinstance(listener.get("owner"), dict) else {}
+    protocol = str(listener.get("protocol") or "").strip().lower()
+    port = listener.get("port")
+    if port in (None, ""):
+        port = LISTENER_DEFAULT_PORTS.get(protocol)
+    try:
+        port_number = int(port) if port not in (None, "") else None
+    except (TypeError, ValueError):
+        port_number = None
+    return (
+        str(owner.get("kind") or ""),
+        str(owner.get("ref") or "").strip(),
+        protocol,
+        port_number,
+        normalize_listener_endpoint(listener.get("endpoint")),
+    )
+
+
+def _names_of(obj: dict[str, Any]) -> set[str]:
+    aliases = obj.get("aliases") if isinstance(obj.get("aliases"), list) else []
+    values = [obj.get("name", ""), *aliases]
+    return {str(value).strip().lower() for value in values if str(value).strip()}
+
+
+def resolve_listener_owner(objects: dict[str, dict[str, Any]], owner_kind: str, owner_ref: str) -> dict[str, Any]:
+    """Resolve an owner by uid, or by exact name or alias. Several name matches are returned, never guessed."""
+    wanted = str(owner_ref or "").strip()
+    lowered = wanted.lower()
+    candidates: list[dict[str, str]] = []
+    for key, obj in objects.items():
+        if obj.get("type") != owner_kind:
+            continue
+        uid = str(obj.get("uid") or key)
+        if uid == wanted:
+            return {"status": "linked", "uid": uid}
+        if lowered and lowered in _names_of(obj):
+            candidates.append({"uid": uid, "name": str(obj.get("name") or uid)})
+    if len(candidates) == 1:
+        return {"status": "linked", "uid": candidates[0]["uid"]}
+    if candidates:
+        return {"status": "ambiguous", "candidates": candidates}
+    return {"status": "owner_not_found"}
+
+
+def lookup_listener(
+    objects: dict[str, dict[str, Any]],
+    owner_kind: str,
+    owner_ref: str,
+    protocol: Any,
+    port: Any,
+    endpoint: Any,
+) -> dict[str, Any]:
+    owner = resolve_listener_owner(objects, owner_kind, owner_ref)
+    if owner["status"] != "linked":
+        return owner
+    owner_uid = owner["uid"]
+    key = listener_identity_key(
+        {"owner": {"kind": owner_kind, "ref": owner_uid}, "protocol": protocol, "port": port, "endpoint": endpoint}
+    )
+    matches = [
+        str(obj.get("uid") or uid)
+        for uid, obj in objects.items()
+        if obj.get("type") == "listener" and listener_identity_key(obj) == key
+    ]
+    if not matches:
+        return {"status": "not_found", "ownerUid": owner_uid}
+    if len(matches) > 1:
+        return {"status": "ambiguous", "candidates": [{"uid": match} for match in matches]}
+    return {"status": "linked", "uid": matches[0], "ownerUid": owner_uid}
+
+
+def new_listener_uid(existing: Any) -> str:
+    taken = set(existing)
+    stamp = int(time.time() * 1000) & ((1 << 48) - 1)
+    chars = []
+    for _ in range(10):
+        chars.append(_CROCKFORD[stamp & 31])
+        stamp >>= 5
+    prefix = "".join(reversed(chars))
+    while True:
+        uid = f"{prefix}-" + "".join(secrets.choice(_CROCKFORD) for _ in range(4))
+        if uid not in taken:
+            return uid
+
+
+def create_listener_stub(
+    objects: dict[str, dict[str, Any]],
+    owner_uid: str,
+    owner_kind: str,
+    protocol: Any,
+    port: Any,
+    endpoint: Any,
+    name: str = "",
+) -> dict[str, Any]:
+    proto = str(protocol or "").strip()
+    number = port if port not in (None, "") else LISTENER_DEFAULT_PORTS.get(proto.lower())
+    if number is None:
+        raise ValueError("A listener needs a port, or a protocol with a default port.")
+    path = normalize_listener_endpoint(endpoint)
+    return {
+        "schemaVersion": "1.0",
+        "uid": new_listener_uid(objects),
+        "type": "listener",
+        "name": name or f"{proto} {path} stub",
+        "owner": {"kind": owner_kind, "ref": owner_uid},
+        "protocol": proto,
+        "port": int(number),
+        "endpoint": path,
+        "authenticationModel": "TBD",
+        "catalogStatus": "stub",
+    }
+
+
+def _is_internal_source(objects: dict[str, dict[str, Any]], uid: str | None) -> bool:
+    return bool(uid) and str(objects.get(str(uid), {}).get("type") or "") in LISTENER_INTERNAL_OWNER_TYPES
+
+
+def link_or_stub_listener(
+    objects: dict[str, dict[str, Any]],
+    owner_kind: str,
+    owner_ref: str,
+    protocol: Any,
+    port: Any,
+    endpoint: Any,
+    *,
+    name: str = "",
+    source_uid: str | None = None,
+) -> dict[str, Any]:
+    """Lookup-before-create: link an existing listener, or create one stub. Never guesses an owner."""
+    found = lookup_listener(objects, owner_kind, owner_ref, protocol, port, endpoint)
+    status = found["status"]
+    if status == "linked":
+        return {"action": "linked", "uid": found["uid"]}
+    if status != "not_found":
+        return {"action": status, "candidates": found.get("candidates", [])}
+    if owner_kind == LISTENER_EXTERNAL_OWNER and not _is_internal_source(objects, source_uid):
+        return {"action": "rejected", "reason": VENDOR_STUB_REASON}
+    stub = create_listener_stub(objects, found["ownerUid"], owner_kind, protocol, port, endpoint, name)
+    return {"action": "created", "uid": stub["uid"], "stub": stub}
+
+
+def upgrade_listener_stub(stub: dict[str, Any], authored: dict[str, Any]) -> dict[str, Any]:
+    if stub.get("catalogStatus") != "stub":
+        raise ValueError("Only a stub listener can be upgraded.")
+    upgraded = {**stub, **{key: value for key, value in authored.items() if key not in ("uid", "type")}}
+    upgraded["uid"] = stub["uid"]
+    upgraded["type"] = "listener"
+    if "catalogStatus" not in authored:
+        upgraded["catalogStatus"] = "incomplete"
+    if "authenticationModel" not in authored and upgraded.get("authenticationModel") == "TBD":
+        upgraded.pop("authenticationModel")
+    return upgraded
+
+
+def record_authored_listener(objects: dict[str, dict[str, Any]], authored: dict[str, Any]) -> dict[str, Any]:
+    """An authored listener links to an existing one, upgrades a matching stub, or is created. Never duplicates a UID."""
+    owner = authored.get("owner") if isinstance(authored.get("owner"), dict) else {}
+    kind = str(owner.get("kind") or "")
+    found = lookup_listener(objects, kind, str(owner.get("ref") or ""), authored.get("protocol"), authored.get("port"), authored.get("endpoint"))
+    if found["status"] not in ("linked", "not_found"):
+        return {"action": found["status"], "candidates": found.get("candidates", [])}
+    owner_ref = {"kind": kind, "ref": found["ownerUid"]}
+    normalized = {**authored, "owner": owner_ref, "endpoint": normalize_listener_endpoint(authored.get("endpoint"))}
+    if found["status"] == "not_found":
+        listener = {**normalized, "uid": new_listener_uid(objects), "type": "listener"}
+        problem = vendor_stub_problem(objects, listener)
+        if problem:
+            return {"action": "rejected", "reason": problem}
+        return {"action": "created", "uid": listener["uid"], "listener": listener}
+    existing = objects[found["uid"]]
+    if existing.get("catalogStatus") != "stub":
+        return {"action": "linked", "uid": found["uid"], "listener": existing}
+    merged = upgrade_listener_stub(existing, normalized)
+    problem = vendor_stub_problem(objects, merged)
+    if problem:
+        return {"action": "rejected", "reason": problem}
+    return {"action": "upgraded", "uid": found["uid"], "listener": merged}
+
+
+def vendor_stub_problem(objects: dict[str, dict[str, Any]], listener: dict[str, Any]) -> str | None:
+    """A vendor-owned stub may stay a stub only while a company-internal object's relationship targets it."""
+    owner = listener.get("owner") if isinstance(listener.get("owner"), dict) else {}
+    if listener.get("catalogStatus") != "stub" or owner.get("kind") != LISTENER_EXTERNAL_OWNER:
+        return None
+    uid = str(listener.get("uid") or "")
+    for obj in objects.values():
+        if (
+            obj.get("type") == "relationship"
+            and obj.get("targetListener") == uid
+            and _is_internal_source(objects, str(obj.get("source") or ""))
+        ):
+            return None
+    return VENDOR_STUB_REASON
