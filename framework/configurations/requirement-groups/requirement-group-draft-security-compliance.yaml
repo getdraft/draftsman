@@ -484,6 +484,33 @@ requirements:
   minimumSatisfactions: 1
   validAnswerTypes:
   - field
+- id: interface-unprotected-justification
+  name: Unprotected Interface Justification
+  description: A listener with no authentication records why, in a committed DecisionRecord.
+  rationale: >-
+    Choosing authenticationModel none is an exception that needs a recorded decision. Only a committed
+    DecisionRecord (accepted, mitigated or resolved) referenced from the listener's decisionRecords with
+    key: interface_unprotected satisfies it. A missing or open draft record does not, and it cannot be
+    marked not-applicable. Which unauthenticated exceptions are acceptable stays with company
+    requirement groups and approvers.
+  appliesTo:
+  - listener
+  requirementMode: conditional
+  naAllowed: false
+  applicability:
+    allOf:
+    - field: authenticationModel
+      equals: 'none'
+  canBeSatisfiedBy:
+  - mechanism: decisionRecord
+    key: interface_unprotected
+    committedOnly: true
+    example: >-
+      A committed DecisionRecord, referenced from decisionRecords with key: interface_unprotected,
+      recording why this listener accepts unauthenticated calls.
+  minimumSatisfactions: 1
+  validAnswerTypes:
+  - decisionRecord
 lifecycleStatus: existing-only
 tags:
 - compliance

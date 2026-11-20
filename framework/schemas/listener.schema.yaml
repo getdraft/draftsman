@@ -17,6 +17,8 @@ optionalFields:
 - aliases
 - tags
 - notes
+- decisionRecords
+- requirementImplementations
 defaultOwnerRole: engineering
 enumFields:
   catalogStatus:
@@ -58,6 +60,40 @@ fieldTypes:
   aliases: list
   tags: list
   notes: dict
+  decisionRecords: list
+  requirementImplementations: list
+collectionSchemas:
+  decisionRecords: decisionRecordRef
+  requirementImplementations: requirementImplementation
+decisionRecordRef:
+  requiredFields:
+  - ref
+  optionalFields:
+  - key
+  - concern
+  - capability
+requirementImplementation:
+  requiredFields:
+  - requirementGroup
+  - requirementId
+  - status
+  optionalFields:
+  - mechanism
+  - key
+  - equals
+  - criteria
+  - ref
+  - notes
+  enumFields:
+    status:
+    - satisfied
+    - not-applicable
+    - not-compliant
+    mechanism:
+    - decisionRecord
+    - field
+  fieldTypes:
+    criteria: dict
 fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   uid: Use the generated opaque UID for object identity. Do not edit it for display-name changes.
@@ -71,5 +107,7 @@ fieldDescriptions:
   methods: List the HTTP methods or operations the listener accepts, when known.
   description: Describe the purpose or consumer-facing behavior of this listener.
   catalogStatus: Use stub, incomplete, or complete to describe catalog maturity.
+  decisionRecords: Reference DecisionRecords for this listener. With authenticationModel none, reference a committed DecisionRecord with key interface_unprotected.
+  requirementImplementations: Record satisfied or not-compliant evidence for active requirements on this listener. interface-protection and interface-unprotected-justification cannot be not-applicable.
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
 aiHint: A Listener is a UID-addressable endpoint owned by a product component, data component or external system. Record it once and reference its UID from the objects that call it.
