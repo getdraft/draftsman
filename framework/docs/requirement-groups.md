@@ -95,6 +95,19 @@ Use `provider` for the organization that supplies the DRAFT mapping and
 language. For example, a company-owned policy mapping can have
 `provider.name: Company Name` and `authority.shortName: CompanyPolicy`.
 
+A `field` mechanism is satisfied when the object's `key` field holds a
+non-empty value (or the `equals` value when one is set). A `notIn` list names
+values that never satisfy it, such as `TBD`.
+
+### Listener Protection
+
+The bundled security group carries a mandatory `interface-protection`
+requirement on `listener` objects. It is satisfied by the listener's
+`authenticationModel`: any recorded model satisfies it, including `none`, but
+`TBD` does not. It cannot be marked not-applicable. Like other requirement
+gaps, an unsatisfied `interface-protection` fails a `complete` listener and
+warns on a `stub` or `incomplete` one.
+
 ## Capability Demand
 
 RequirementGroups are the demand signal for capabilities. When a requirement
