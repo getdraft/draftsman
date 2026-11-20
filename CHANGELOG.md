@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. Legacy `product_component.interfaces` remains valid. Existing relationships without `targetListener` stay baseline warnings after `validate.py --write-baseline` until they change.
+
+### Added
+
+- Tests in `tests/test_validate_ratchet.py` for baseline preservation, changed relationships, and legacy `interfaces` retention under the `relationship-target-listener` rule.
+
+### Changed
+
+- `product_component.interfaces` schema description records it as the legacy surface.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Run `python framework/tools/validate.py --write-baseline` once after vendoring so existing relationships stay warnings.
+
 ## 1.10.1 - 2026-11-20
 
 ### Compatibility Impact

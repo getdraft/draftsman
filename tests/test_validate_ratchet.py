@@ -340,5 +340,92 @@ class RelationshipTargetListenerTests(unittest.TestCase):
         self.assertEqual([], warnings)
 
 
+class LegacyInterfaceBaselineTests(unittest.TestCase):
+    SYS = "01M7C497NA-SYS1"
+    LST = "01M7C497NB-LST1"
+    COMP = "01M7C497NC-CMP1"
+    REL = "01M7C497ND-REL1"
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.ws = Path(self._tmp.name)
+        (self.ws / "catalog").mkdir()
+        self.baseline = self.ws / ".draft" / "validation-baseline.yaml"
+
+    def _write(self, **rel_changes: Any) -> None:
+        rel: dict[str, Any] = {
+            "schemaVersion": "1.0", "uid": self.REL, "type": "relationship", "name": "Comp to LDAP",
+            "source": self.COMP, "externalTarget": "LDAP Directory", "label": "calls", "catalogStatus": "complete",
+        }
+        rel.update(rel_changes)
+        docs = {
+            "system.yaml": {
+                "schemaVersion": "1.0", "uid": self.SYS, "type": "system", "name": "Directory System",
+                "catalogStatus": "complete", "lifecycleStatus": "preferred",
+            },
+            "listener.yaml": {
+                "schemaVersion": "1.0", "uid": self.LST, "type": "listener", "name": "LDAP listener",
+                "owner": {"kind": "external_system", "ref": self.SYS}, "protocol": "HTTPS", "port": 443,
+                "endpoint": "/ldap", "authenticationModel": "oauth", "catalogStatus": "stub",
+            },
+            "component.yaml": {
+                "schemaVersion": "1.0", "uid": self.COMP, "type": "product_component", "name": "Comp",
+                "repoUrl": "https://github.com/test/comp", "owner": {"team": "test"},
+                "classification": "api-service", "catalogStatus": "incomplete", "lifecycleStatus": "candidate",
+                "interfaces": [{"name": "Orders API", "protocol": "REST", "path": "/orders"}],
+            },
+            "relationship.yaml": rel,
+        }
+        for name, doc in docs.items():
+            (self.ws / "catalog" / name).write_text(yaml.safe_dump(doc, sort_keys=False), encoding="utf-8")
+
+    def _run(self, *flags: str) -> str:
+        proc = subprocess.run(
+            [sys.executable, str(VALIDATE), "--workspace", str(self.ws), *flags],
+            capture_output=True, text=True, check=False,
+        )
+        return proc.stdout + proc.stderr
+
+    @staticmethod
+    def _failures(out: str) -> str:
+        if "Validation failures:" not in out:
+            return ""
+        return out.split("Validation failures:")[1].split("Validation warnings:")[0]
+
+    def test_baseline_preserves_unchanged_relationship_as_warning(self) -> None:
+        self._write()
+        self._run("--write-baseline")
+        entries = yaml.safe_load(self.baseline.read_text(encoding="utf-8"))["entries"]
+        self.assertIn((RULE_LISTENER, self.REL), [(e["rule"], e["uid"]) for e in entries])
+        out = self._run()
+        self.assertNotIn(self.REL, self._failures(out))
+        self.assertIn("baseline:", out)
+
+    def test_changed_relationship_without_listener_is_an_error(self) -> None:
+        self._write()
+        self._run("--write-baseline")
+        self._write(label="reads")
+        out = self._run()
+        self.assertIn(self.REL, self._failures(out))
+        self.assertIn(RULE_LISTENER, self._failures(out))
+
+    def test_changed_relationship_naming_external_listener_passes(self) -> None:
+        self._write()
+        self._run("--write-baseline")
+        self._write(label="reads", targetListener=self.LST)
+        out = self._run()
+        self.assertNotIn(self.REL, self._failures(out))
+
+    def test_legacy_interfaces_are_not_reported(self) -> None:
+        self._write()
+        out = self._run("--write-baseline")
+        self.assertNotIn("interfaces", self._failures(out))
+        self.assertNotIn(self.COMP, self._failures(out))
+
+
+RULE_LISTENER = "relationship-target-listener"
+
+
 if __name__ == "__main__":
     unittest.main()
