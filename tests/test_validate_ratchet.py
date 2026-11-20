@@ -541,5 +541,5 @@ class InternalTargetBaselineTests(unittest.TestCase):
         self.assertIn(RULE_LISTENER, self._failures(out))
 
 
-if __name__ == "__main__":if __name__ == "__main__":
+if __name__ == "__main__":
     unittest.main()
