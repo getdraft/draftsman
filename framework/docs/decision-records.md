@@ -55,6 +55,40 @@ At minimum, a DecisionRecord includes:
  when a product deployment needs visible risk or decision context without
  overloading the SoftwareDeploymentPattern prose.
  
+ ## Unprotected Listener Justification
+
+ A listener with `authenticationModel: none` needs a recorded decision. The
+ bundled security requirement group defines the mechanism:
+
+ - `interface-protection` (mandatory) is satisfied by any recorded
+   `authenticationModel`, including `none`. `TBD` does not satisfy it.
+ - `interface-unprotected-justification` (conditional) applies only when
+   `authenticationModel` equals `none`. Only a committed DecisionRecord
+   satisfies it, referenced from the listener's `decisionRecords` with
+   `key: interface_unprotected`. Committed means `status` `accepted`,
+   `mitigated` or `resolved`; an `open` record is a draft. It sets
+   `naAllowed: false`, so it cannot be marked not-applicable.
+
+ ```yaml
+ # listener
+ authenticationModel: none
+ decisionRecords:
+   - ref: 01KQS0TF82-DR15
+     key: interface_unprotected
+ ```
+
+ Upstream DRAFT does not decide which unauthenticated listeners are
+ acceptable. It never allow-lists endpoints, ports, protocols or owners. That
+ exception policy belongs to the company:
+
+ - **Company requirement groups** add stricter rules on listeners. For example,
+   a workspace-activated group can require a second committed decision, a
+   security sign-off, for every listener with `authenticationModel: none`.
+ - **DecisionRecord approval policy** sets who may accept the justification.
+   For example, a rule with `match: { requirement: interface-unprotected-justification }`
+   routes a record that lists that requirement in `controlReferences` to the
+   security team.
+
  ## DecisionRecord Approval Policy
  
  Workspaces can declare a DecisionRecord approval policy in `.draft/workspace.yaml` under `decisionRecordApproval`. The validator enforces this policy when a DecisionRecord is moved to `status: accepted`.

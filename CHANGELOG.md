@@ -1,3 +1,31 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. This release changes documentation and tests only. Validation results are unchanged.
+
+### Added
+
+- `framework/docs/decision-records.md` section "Unprotected Listener Justification". It covers what upstream DRAFT defines (`interface-protection`, `interface-unprotected-justification`, committed DecisionRecords keyed `interface_unprotected`) and where company exception policy lives (company requirement groups and DecisionRecord approval policy).
+- Tests in `tests/test_validation.py`:
+  - the bundled group names no accepted exceptions
+  - the upstream mechanism alone accepts a committed decision
+  - a company requirement group adds a stricter rule that its own committed decision satisfies
+  - an approval policy routes the justification to the company's approver
+- Tests in `tests/test_release_notes.py` that the released notes for the listener protection and SDP completeness work are complete, and that requirement-group and listener schema changes count as contract changes.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No workspace migration required. To restrict which unauthenticated listeners are acceptable, add a company requirement group or a DecisionRecord approval rule as described in `framework/docs/decision-records.md`.
+
 ## 1.15.0 - 2026-11-20
 
 ### Compatibility Impact

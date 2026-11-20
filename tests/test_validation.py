@@ -5216,5 +5216,163 @@ class SdpInternalStubListenerGateTests(unittest.TestCase):
         self.assertNotIn("Vendor API", gate_lines[0])
 
 
+class UpstreamMechanismCompanyPolicyTests(unittest.TestCase):
+    """S2.5: upstream defines the unauthenticated-listener mechanism; exception policy stays with the company."""
+
+    SECURITY_GROUP = "01KQQ4Q027-T3CA"
+    COMPANY_GROUP = "01KQS0TFC4-RG03"
+    SYSTEM_UID = "01KQS0TFC0-SYS4"
+    LISTENER_UID = "01KQS0TFC1-AB16"
+    DR_UID = "01KQS0TFC2-DR16"
+    SIGNOFF_UID = "01KQS0TFC3-DR17"
+
+    def _group(self) -> dict:
+        import yaml
+
+        return yaml.safe_load(
+            (
+                REPO_ROOT / "framework" / "configurations" / "requirement-groups"
+                / "requirement-group-draft-security-compliance.yaml"
+            ).read_text(encoding="utf-8")
+        )
+
+    def _validate(self, company_group: bool = False, signoff: bool = False, approval_policy: bool = False,
+                  approver: str | None = None):
+        import yaml
+
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            ensure_workspace_layout(workspace)
+            workspace_yaml = workspace / ".draft" / "workspace.yaml"
+            config = yaml.safe_load(workspace_yaml.read_text(encoding="utf-8")) or {}
+            requirements = config.setdefault("requirements", {})
+            requirements["activeRequirementGroups"] = [self.SECURITY_GROUP] + ([self.COMPANY_GROUP] if company_group else [])
+            requirements["requireActiveRequirementGroupDisposition"] = True
+            if approval_policy:
+                config["decisionRecordApproval"] = {
+                    "default": {"approver": "team:architecture-review-board"},
+                    "rules": [
+                        {"match": {"requirement": "interface-unprotected-justification"}, "approver": "team:security"},
+                    ],
+                }
+            workspace_yaml.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
+            if company_group:
+                group_dir = workspace / "configurations" / "requirement-groups"
+                group_dir.mkdir(parents=True, exist_ok=True)
+                (group_dir / "requirement-group-company-listener-exceptions.yaml").write_text(
+                    yaml.safe_dump(
+                        {
+                            "schemaVersion": "1.0", "uid": self.COMPANY_GROUP, "type": "requirement_group",
+                            "name": "Company Listener Exceptions",
+                            "description": "Company policy: unauthenticated listeners need a security sign-off.",
+                            "catalogStatus": "incomplete", "owner": {"team": "security"},
+                            "activation": "workspace", "appliesTo": ["listener"],
+                            "requirements": [
+                                {
+                                    "id": "unauthenticated-listener-security-signoff",
+                                    "description": "Security signs off every unauthenticated listener.",
+                                    "rationale": "Company exception policy.",
+                                    "appliesTo": ["listener"],
+                                    "requirementMode": "conditional",
+                                    "naAllowed": False,
+                                    "applicability": {"allOf": [{"field": "authenticationModel", "equals": "none"}]},
+                                    "canBeSatisfiedBy": [
+                                        {"mechanism": "decisionRecord", "key": "security_signoff", "committedOnly": True},
+                                    ],
+                                    "minimumSatisfactions": 1,
+                                    "validAnswerTypes": ["decisionRecord"],
+                                },
+                            ],
+                        },
+                        sort_keys=False,
+                    ),
+                    encoding="utf-8",
+                )
+            catalog = workspace / "catalog"
+            for folder in ("systems", "decision-records", "listeners"):
+                (catalog / folder).mkdir(parents=True, exist_ok=True)
+            (catalog / "systems" / "system.yaml").write_text(
+                yaml.safe_dump({"schemaVersion": "1.0", "uid": self.SYSTEM_UID, "type": "system", "name": "Status",
+                                "catalogStatus": "complete", "lifecycleStatus": "preferred"}, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            def decision(uid: str, name: str) -> dict:
+                record = {
+                    "schemaVersion": "1.0", "uid": uid, "type": "decision_record", "name": name,
+                    "category": "decision", "status": "accepted", "catalogStatus": "complete",
+                    "lifecycleStatus": "preferred", "decisionRationale": "Health checks call it without credentials.",
+                    "linkedObject": self.LISTENER_UID,
+                    "controlReferences": ["interface-unprotected-justification"],
+                }
+                if approver:
+                    record.update({"approver": approver, "approvalDate": "2026-11-20"})
+                return record
+
+            (catalog / "decision-records" / "dr.yaml").write_text(
+                yaml.safe_dump(decision(self.DR_UID, "Health endpoint is unauthenticated"), sort_keys=False),
+                encoding="utf-8",
+            )
+            refs = [{"ref": self.DR_UID, "key": "interface_unprotected"}]
+            if signoff:
+                (catalog / "decision-records" / "signoff.yaml").write_text(
+                    yaml.safe_dump(decision(self.SIGNOFF_UID, "Security sign-off"), sort_keys=False), encoding="utf-8"
+                )
+                refs.append({"ref": self.SIGNOFF_UID, "key": "security_signoff"})
+            (catalog / "listeners" / "listener.yaml").write_text(
+                yaml.safe_dump(
+                    {
+                        "schemaVersion": "1.0", "uid": self.LISTENER_UID, "type": "listener", "name": "Health",
+                        "owner": {"kind": "external_system", "ref": self.SYSTEM_UID}, "protocol": "HTTPS",
+                        "port": 443, "endpoint": "/healthz", "authenticationModel": "none",
+                        "catalogStatus": "complete", "decisionRecords": refs,
+                    },
+                    sort_keys=False,
+                ),
+                encoding="utf-8",
+            )
+            return validate_workspace(workspace)
+
+    def test_upstream_justification_names_no_accepted_exceptions(self) -> None:
+        group = self._group()
+        requirement = next(r for r in group["requirements"] if r["id"] == "interface-unprotected-justification")
+        self.assertEqual({"allOf": [{"field": "authenticationModel", "equals": "none"}]}, requirement["applicability"])
+        [mechanism] = requirement["canBeSatisfiedBy"]
+        self.assertEqual({"mechanism", "key", "committedOnly", "example"}, set(mechanism))
+        listener_requirements = [r for r in group["requirements"] if "listener" in (r.get("appliesTo") or [])]
+        self.assertEqual(
+            {"interface-protection", "interface-unprotected-justification"},
+            {r["id"] for r in listener_requirements},
+        )
+        for requirement in listener_requirements:
+            clauses = (requirement.get("applicability") or {}).get("allOf", [])
+            self.assertTrue(all(c.get("field") == "authenticationModel" for c in clauses), requirement)
+
+    def test_upstream_mechanism_alone_accepts_a_committed_decision(self) -> None:
+        result = self._validate()
+        output = result.stdout + result.stderr
+        self.assertTrue(result.ok, output)
+        self.assertNotIn("unauthenticated-listener-security-signoff", output)
+
+    def test_company_requirement_group_adds_exception_policy(self) -> None:
+        result = self._validate(company_group=True)
+        output = result.stdout + result.stderr
+        self.assertFalse(result.ok, output)
+        self.assertIn("unauthenticated-listener-security-signoff", output)
+        self.assertNotIn("Requirement not satisfied: DRAFT Security / interface-unprotected-justification", output)
+
+    def test_company_policy_is_satisfied_by_its_own_committed_decision(self) -> None:
+        result = self._validate(company_group=True, signoff=True)
+        output = result.stdout + result.stderr
+        self.assertTrue(result.ok, output)
+
+    def test_company_approval_policy_routes_the_justification(self) -> None:
+        wrong = self._validate(approval_policy=True, approver="team:architecture-review-board")
+        self.assertFalse(wrong.ok, wrong.stdout + wrong.stderr)
+        self.assertIn("expected 'team:security'", wrong.stdout)
+        right = self._validate(approval_policy=True, approver="team:security")
+        self.assertTrue(right.ok, right.stdout + right.stderr)
+
+
 if __name__ == "__main__":
     unittest.main()

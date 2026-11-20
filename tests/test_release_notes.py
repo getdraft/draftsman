@@ -338,5 +338,45 @@ class DetectBumpTypeTests(unittest.TestCase):
         self.assertEqual(bump, "patch")
 
 
+class ListenerPlanReleaseNotesTests(unittest.TestCase):
+    """S2.5: the released notes for the listener protection and completeness work are complete."""
+
+    def _entries(self) -> dict:
+        return check_release_notes.parse_changelog(
+            (check_release_notes.REPO_ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+        )
+
+    def _entry_adding(self, needle: str) -> dict:
+        for key, entry in self._entries().items():
+            if key != "Unreleased" and needle in entry["sections"].get("Added", ""):
+                return entry
+        self.fail(f"no released CHANGELOG entry adds {needle}")
+
+    def test_each_plan_a_gate_has_complete_release_notes(self) -> None:
+        for needle in (
+            "`interface-protection`",
+            "`interface-unprotected-justification`",
+            "`sdp-internal-stub-listener`",
+            "`digest`",
+        ):
+            with self.subTest(needle=needle):
+                sections = self._entry_adding(needle)["sections"]
+                for name in ("Compatibility Impact", "Added", "Changed", "Fixed", "Migration Notes"):
+                    self.assertTrue(check_release_notes.meaningful_lines(sections.get(name, "")), (needle, name))
+
+    def test_requirement_group_and_schema_changes_are_contract_changes(self) -> None:
+        bump = check_release_notes.detect_bump_type(
+            files=[
+                "framework/configurations/requirement-groups/requirement-group-draft-security-compliance.yaml",
+                "CHANGELOG.md",
+            ]
+        )
+        self.assertEqual("minor", bump)
+        self.assertEqual(
+            "minor",
+            check_release_notes.detect_bump_type(files=["framework/schemas/listener.schema.yaml", "CHANGELOG.md"]),
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
