@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- The `sdp-internal-stub-listener` baseline hash now covers the pattern and its dependent objects. A baseline entry for this rule written by 1.14.0 no longer matches; run `validate.py --write-baseline` once, as the framework update procedure already does. Other ratcheted rules keep their per-object hash.
+
+### Added
+
+- Ratcheted rules can register a `digest` function that sets the baseline content hash. `sdp-internal-stub-listener` uses it to hash the pattern together with its deployable objects, every relationship from the pattern or those objects, and every listener those calls target.
+- Tests in `tests/test_validate_ratchet.py` for the gate without a baseline, unchanged content, a framework version change alone, unrelated changes, and changes to the pattern, a deployable object, a relationship, a new call, or a called listener, plus a finished listener clearing the gate.
+
+### Changed
+
+- The software deployment pattern `catalogStatus` description records what re-arms the gate.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- After updating the framework, run `python3 .draft/framework/tools/validate.py --workspace . --write-baseline` and commit `.draft/validation-baseline.yaml`.
+
 ## 1.14.0 - 2026-11-20
 
 ### Compatibility Impact
