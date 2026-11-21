@@ -21,12 +21,16 @@ Everything below is inference from file contents. Mark it as inferred and ask th
 | `aws_sqs_queue.fifo` | `runtime_service` | `technologyComponent: technology-aws-sqs` |
 | `aws_db_instance` (postgres) | `data_store_service` | `technologyComponent: technology-aws-rds-postgresql` |
 | `aws_lb_listener` (port 443) | `edge_gateway_service` | `technologyComponent: technology-aws-alb` |
+| A served route (`@app.get("/orders/{id}")`) with `EXPOSE 8080` | `listener` owned by the component | `owner`, `protocol: HTTP`, `port: 8080`, `endpoint: /orders/{id}` |
+| A client call (`requests.get(ORDERS_URL + "/orders/" + id)`) | `relationship` from the component | `targetListener`: the listener found or stubbed by Listener Lookup Before Create |
 
 The table maps what you find to the object that represents it. Where it lands in a pattern: a `product_component` or `data_component` is placed in `deployableObjects`; a `runtime_service` or host is the group's `substrate`; a `data_store_service` is a data component's `runsOn`; a load balancer or gateway comes from the reference architecture. Never list the infrastructure rows in `deployableObjects`, and never record a relationship on a service definition.
 
 Files worth reading: `Dockerfile`, `docker-compose.yml`, Kubernetes manifests, `*.tf`, `cdk.json`, `package.json`, `pom.xml`, `build.gradle`, `requirements.txt`, `Cargo.toml`, `application.yml`, `appsettings.json`, `.env.example`.
 
 Never copy a secret value from a configuration file into the catalog.
+
+Record each listener once, through Listener Lookup Before Create in `.draft/framework/docs/draftsman.md`: a route you read becomes a listener on the component that serves it, and a call you read links to the callee's listener or, when none matches, to a new stub. Never record a hostname; the endpoint is the path only.
 
 ## Committing the work
 

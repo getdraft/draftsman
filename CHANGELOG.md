@@ -1,3 +1,29 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. This release changes skills, documentation and tests only. Validation results are unchanged. Workspaces pick up the new skill text on the next framework refresh; re-run `setup_ide.py` so the `.claude/skills/` projections match (`validate_skills.py` reports stale ones).
+
+### Added
+
+- `draftsman-author` skill section "Calls land on listeners" (#341 E3). Every relationship sets `targetListener`. It carries the five-step Listener Lookup Before Create procedure (resolve the owner and ask when ambiguous, normalize the key, link an exact match without asking, otherwise stub and link, upgrade a stub in place), the vendor-stub, completeness-gate and `interface_unprotected` rules, and the `draft_table.catalog` helpers.
+- `draftsman-author/references/guide.md` repository-scan rows for a served route (a listener on the component) and a client call (a relationship with `targetListener`).
+- `draftsman-query` rows for listener questions ("What port does X listen on?" reads listener objects first; "Which endpoint does X call on Y?" reads `targetListener`), and a rule that a stub listener is not a recorded fact.
+- `tests/test_listener_docs.py` `ListenerSkillTests`: each skill points to the procedure, the author steps and key statements match the docs, the named helpers exist, every mention of guessing an owner or inventing a port is a prohibition, and scan-row protocols are schema enum values.
+
+### Changed
+
+- `draftsman-core` Author profile: every call lands on a listener object; never guess its owner or invent a port.
+- `draftsman-diagram`: a missing `targetListener` is fixed in the catalog with the lookup procedure.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No workspace migration required. After refreshing the framework, run `python3 .draft/framework/tools/setup_ide.py` to update projected skills.
+
 ## 1.18.1 - 2026-11-21
 
 ### Compatibility Impact
