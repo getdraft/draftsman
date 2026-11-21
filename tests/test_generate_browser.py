@@ -634,5 +634,109 @@ process.stdout.write(JSON.stringify(out));""")
         self.assertEqual(got[2]["state"], "none")
 
 
+class ListenerBrowserTests(unittest.TestCase):
+    """S5.3 (#341 E5): the Connections table's Listener column and the owned-listener list on detail pages."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        sys.path.insert(0, str(REPO_ROOT / "framework" / "tools"))
+        import generate_browser as gb
+
+        cls.gb = gb
+        cls.js = BROWSER_JS.read_text(encoding="utf-8")
+
+    @staticmethod
+    def listener(uid: str, owner: str, protocol: str = "HTTPS", port: object = 443, endpoint: str = "/",
+                 kind: str = "product_component", **extra: object) -> dict:
+        return {"uid": uid, "type": "listener", "name": f"L {uid}", "owner": {"kind": kind, "ref": owner},
+                "protocol": protocol, "port": port, "endpoint": endpoint, **extra}
+
+    def pattern_objects(self) -> list[dict]:
+        pattern = {"uid": "p", "type": "software_deployment_pattern", "name": "P", "serviceGroups": [
+            {"name": "G", "deployableObjects": [{"ref": "a"}, {"ref": "b"}]}]}
+        return [
+            pattern,
+            {"uid": "a", "type": "product_component", "name": "A"},
+            {"uid": "b", "type": "product_component", "name": "B"},
+            self.listener("lb", "b", "HTTPS", 443, "/orders"),
+            {"uid": "r1", "name": "r1", "type": "relationship", "source": "a", "target": "b", "targetListener": "lb"},
+            {"uid": "r2", "name": "r2", "type": "relationship", "source": "b", "target": "a"},
+            {"uid": "r3", "name": "r3", "type": "relationship", "source": "a", "target": "b", "targetListener": "a"},
+        ]
+
+    def test_connection_listener_column_values(self) -> None:
+        objects = self.pattern_objects()
+        rows = {c["label"] or str(i): c for i, c in enumerate(self.gb.build_sdp_connections(objects[0], objects))}
+        self.assertEqual([c["targetListener"] for c in rows.values()], ["L lb (HTTPS 443 /orders)", "", ""])
+        by_uid = {o["uid"]: o for o in objects}
+        partial = self.listener("lp", "b", "gRPC", None, "")
+        self.assertEqual(self.gb.connection_listener({"targetListener": "lp"}, {**by_uid, "lp": partial}), "L lp (gRPC)")
+        self.assertEqual(self.gb.connection_listener({"targetListener": " lb "}, by_uid), "L lb (HTTPS 443 /orders)")
+        self.assertEqual(self.gb.connection_listener({"targetListener": "missing"}, by_uid), "")
+        self.assertEqual(self.gb.connection_listener({"targetListener": 7}, by_uid), "")
+        self.assertEqual(self.gb.connection_listener({}, by_uid), "")
+
+    def test_owned_listeners_rows_and_order(self) -> None:
+        objects = [
+            {"uid": "c", "type": "product_component", "name": "C"},
+            self.listener("l3", "c", "HTTPS", 8443, "/", authenticationModel="mTLS", catalogStatus="approved"),
+            self.listener("l1", "c", "HTTP", 8080, "/admin"),
+            self.listener("l2", "c", "HTTP", 8080, "/"),
+            self.listener("x", "ext", kind="external_system"),
+            {"uid": "bad", "type": "listener", "owner": "c"},
+        ]
+        owned = self.gb.build_owned_listeners(objects)
+        self.assertEqual([row["uid"] for row in owned["c"]], ["l2", "l1", "l3"])
+        self.assertEqual(owned["c"][2], {"uid": "l3", "name": "L l3", "protocol": "HTTPS", "port": 8443, "endpoint": "/",
+                                         "authenticationModel": "mTLS", "catalogStatus": "approved"})
+        self.assertEqual([row["uid"] for row in owned["ext"]], ["x"])
+        self.assertNotIn("bad", json.dumps(owned))
+
+    def test_js_sources_and_detail_pages(self) -> None:
+        table = function_source(self.js, "_sdpConnectionsTableMarkup")
+        self.assertIn("<th>Interface</th><th>Listener</th><th>Label</th>", table)
+        self.assertIn("escapeHtml(c.targetListener || '')", table)
+        markup = function_source(self.js, "ownedListenersMarkup")
+        for text in ("object.ownedListeners", "<th>Endpoint</th>", "<th>Authentication</th>", "<th>Catalog Status</th>",
+                     "authenticationModel", "catalogStatus", "data-object-link"):
+            self.assertIn(text, markup)
+        self.assertEqual(self.js.count("body: ownedListenersMarkup(object)"), 2)  # product component and deployables
+        self.assertIn("${genericObjectMarkup(object)}\n      ${ownedListenersMarkup(object)}", self.js)  # external system
+
+    def test_rendered_listener_markup(self) -> None:
+        if shutil.which("node") is None:
+            self.skipTest("node is not on PATH; cannot render the rows")
+        src = "\n".join(function_source(self.js, n) for n in ("_sdpConnectionsTableMarkup", "ownedListenersMarkup"))
+        script = ("const escapeHtml=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\"/g,'&quot;');"
+                  "const objectLookup={a:{name:'A'},b:{name:'B'}};" + src + """
+const vm={zones:[],uidToZone:{},connections:[{from:'a',to:'b',protocol:'REST',label:'l',targetListener:'L <x> (HTTPS 443 /)'},{from:'b',to:'a',protocol:'SQL',label:'m'}]};
+const out={
+  conn:_sdpConnectionsTableMarkup(vm),
+  owned:ownedListenersMarkup({ownedListeners:[{uid:'l1',name:'Orders',protocol:'HTTPS',port:443,endpoint:'/o',authenticationModel:'OAuth',catalogStatus:'approved'}]}),
+  none:ownedListenersMarkup({ownedListeners:[]}),
+  missing:ownedListenersMarkup({}),
+};
+process.stdout.write(JSON.stringify(out));""")
+        result = subprocess.run(["node", "-e", script], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        out = json.loads(result.stdout)
+        self.assertIn('<td class="listener-cell">L &lt;x> (HTTPS 443 /)</td>', out["conn"])
+        self.assertIn('<td class="listener-cell"></td>', out["conn"])
+        self.assertIn('<td class="iface-cell"></td>', out["conn"])
+        for text in ('data-object-link="l1">Orders</span>', "<td>HTTPS</td>", "<td>443</td>", "<td>/o</td>",
+                     "<td>OAuth</td>", "<td>approved</td>"):
+            self.assertIn(text, out["owned"])
+        self.assertEqual((out["none"], out["missing"]), ("", ""))
+
+    def test_payload_carries_owned_listeners_only_for_owner_types(self) -> None:
+        objects = {o["uid"]: o for o in self.pattern_objects()}
+        payload = self.gb.build_browser_payload(objects, REPO_ROOT)
+        rows = {o["id"] if "id" in o else o["uid"]: o for o in payload["objects"]}
+        self.assertEqual([r["uid"] for r in rows["b"]["ownedListeners"]], ["lb"])
+        self.assertEqual(rows["a"]["ownedListeners"], [])
+        self.assertEqual(rows["p"]["ownedListeners"], [])
+        self.assertEqual([c["targetListener"] for c in rows["p"]["sdpConnections"]], ["L lb (HTTPS 443 /orders)", "", ""])
+
+
 if __name__ == "__main__":
     unittest.main()
