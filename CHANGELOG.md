@@ -1,3 +1,28 @@
+## Unreleased
+
+### Compatibility Impact
+
+- Both sync templates change again. The receiver's last step, "Report Sync Result" (`if: always()`), writes a job summary for every outcome and, when the sender's identity was verified, records the outcome as `results/<owner>__<name>/<correlationId>.json` on a `draft-sync-results` branch it creates from the default branch (with the `contents: write` it already has). The sender's new last step, "Await Central Result", reads that file with the App token it already uses for the dispatch and fails the product repository's run with the receiver's message. No new permission or secret; the sender's run now lasts until the central result arrives (default up to 20 minutes, repository variable `DRAFT_SYNC_AWAIT_MINUTES`).
+
+### Added
+
+- `sdp_sync.py report` (receiver) and `sdp_sync.py await-result` (sender) (#195 gap 7). An outcome is `accepted` (with the pull request), `rejected` (with the receiver's reason) or `failed` (validation failures, listed with the product's own files first and paths relative to the workspace; a failed pull request; or a run that stopped early), plus the commit, correlation id and receiver run link. `await-result` polls only its own correlation id, retries while the file does not exist, stops at once on 401/403, and prints the outcome as an escaped `::error` annotation and a job summary.
+- `tests/test_sdp_sync_report.py` with a fake GitHub contents API and command runner.
+- `receive` results now include `identityVerified`.
+
+### Changed
+
+- `templates/github/drafting-table-receiver.yml.tmpl`: "Validate Workspace Architecture" runs with `shell: bash` and keeps its output in `$RUNNER_TEMP/validate.log` for the report.
+- `templates/github/product-repo-sync.yml.tmpl`: adds "Await Central Result" after the dispatch.
+
+### Fixed
+
+- A rejected or invalid sync now fails the product repository's sync run with the reason, instead of appearing only in the central workspace's Actions log.
+
+### Migration Notes
+
+- Update both templates. Payloads rejected before the sender's identity is verified (old template, malformed payload) are shown only in the central run's summary, so the product run times out with a hint to check the central repository's Actions. Result files accumulate on `draft-sync-results`, one small file per sync; delete the branch at any time to clear them (the next report recreates it).
+
 ## 1.20.11 - 2026-11-21
 
 ### Compatibility Impact

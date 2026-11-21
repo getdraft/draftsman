@@ -7,6 +7,8 @@
 # go to a draft-sync/<product> branch and one pull request that later syncs update.
 # Repository settings: allow GitHub Actions to create pull requests. Optional repository variable
 # DRAFT_SYNC_AUTO_MERGE=true requests auto-merge when a change stays inside that product's cache folder.
+# Every run ends with a report: a job summary, and (once the sender's identity is verified) a result file on the
+# draft-sync-results branch that the product repository's sync run waits for and fails on.
 name: DRAFT Decentralized SDP Receiver
 
 on:
@@ -52,8 +54,9 @@ jobs:
             --result "$RUNNER_TEMP/sdp-sync-result.json"
 
       - name: Validate Workspace Architecture
+        shell: bash
         run: |
-          python3 .draft/framework/tools/validate.py --workspace .
+          python3 .draft/framework/tools/validate.py --workspace . 2>&1 | tee "$RUNNER_TEMP/validate.log"
 
       - name: Regenerate Machine Indexes & AI Map
         run: |
@@ -71,3 +74,19 @@ jobs:
             --result "$RUNNER_TEMP/sdp-sync-result.json" \
             --base "$BASE_BRANCH" \
             --auto-merge "${AUTO_MERGE:-false}"
+
+      - name: Report Sync Result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_STATUS: ${{ job.status }}
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          python3 .draft/framework/tools/sdp_sync.py report \
+            --workspace . \
+            --payload "$GITHUB_EVENT_PATH" \
+            --result "$RUNNER_TEMP/sdp-sync-result.json" \
+            --validate-log "$RUNNER_TEMP/validate.log" \
+            --job-status "$JOB_STATUS" \
+            --base "$BASE_BRANCH" \
+            --summary "$GITHUB_STEP_SUMMARY"
