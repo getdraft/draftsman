@@ -118,6 +118,7 @@ class DiagramNode:
     life: str = ""  # lifecycleStatus of the object; empty for external nodes (D12)
     tech: str = ""  # technology line of the box (D11)
     interfaces: list[str] = field(default_factory=list)  # names of the surfaces an edge can enter through, in declared order
+    listeners: list[str] = field(default_factory=list)  # uids of the listener objects the box owns, in LISTENER_ORDER (#341 E5)
 
 
 @dataclass
@@ -135,6 +136,7 @@ class DiagramEdge:
     technology: str = ""
     target_interface: str = ""  # the interface of the target the edge uses (a derived edge: its _interface when it names one)
     interface_hint: str = ""  # a derived edge's raw _interface string, a protocol hint for port resolution
+    target_listener: str = ""  # the listener object of the target the edge calls (targetListener), when the target owns it
     far_tech: str = ""  # deployment view only: the technology line of the far-end label with the resolved port chain
     hops: list[str] = field(default_factory=list)  # deployment view only: device box uids the edge passes, in chain order
     hop_names: list[str] = field(default_factory=list)  # the names of those devices' definitions, for the callout
@@ -260,6 +262,31 @@ TYPE_BANDS = {
 def type_band(obj_type: Any) -> str:
     # D4 (type-derived band): types outside the map fall back to application. Behaviour kept; not listed in D4.
     return TYPE_BANDS.get(str(obj_type or ""), "application")
+
+
+def _listener_order_key(obj: dict[str, Any]) -> tuple[int, str, str, str]:
+    """LISTENER_ORDER: port, then protocol (case-insensitive), then endpoint path, then uid. Listener objects live in
+    their own files, so their order on a box is fixed here, never taken from file or load order (D15)."""
+    port = obj.get("port")
+    number = port if isinstance(port, int) and not isinstance(port, bool) else -1
+    endpoint = "/" + "/".join(seg for seg in clean(obj.get("endpoint")).split("/") if seg)
+    return number, clean(obj.get("protocol")).lower(), endpoint, str(obj.get("uid", ""))
+
+
+def owned_listeners(catalog: dict[str, dict[str, Any]]) -> dict[str, list[str]]:
+    """Owner uid -> the uids of the listener objects it owns (owner.ref), in LISTENER_ORDER."""
+    owned: dict[str, list[dict[str, Any]]] = {}
+    for uid, obj in catalog.items():
+        owner = obj.get("owner") if isinstance(obj, dict) and obj.get("type") == "listener" else None
+        ref = clean(owner.get("ref")) if isinstance(owner, dict) else ""
+        if ref:
+            owned.setdefault(ref, []).append({**obj, "uid": str(obj.get("uid") or uid)})
+    return {ref: [o["uid"] for o in sorted(items, key=_listener_order_key)] for ref, items in owned.items()}
+
+
+def entrance_keys(node: DiagramNode) -> list[str]:
+    """The entrances of a box's top edge: one per owned listener object, else one per declared interface (AC5)."""
+    return node.listeners or node.interfaces
 
 
 def _endpoint(rel: dict[str, Any], key: str) -> str:
@@ -599,6 +626,7 @@ class Model:
                 if source in placed and not target and text:
                     externals.setdefault(external_uid(text), text)
 
+        listeners_by_owner = owned_listeners(catalog)
         nodes: list[DiagramNode] = []
         for uid, place in self.placement.items():
             obj = catalog[uid]
@@ -614,6 +642,7 @@ class Model:
                     life=lifecycle(obj),
                     tech=technology_line(catalog, obj),
                     interfaces=declared_interface_names(obj),
+                    listeners=list(listeners_by_owner.get(uid, [])),
                 )
             )
         outer: list[DiagramNode] = []
@@ -630,6 +659,7 @@ class Model:
                     life=lifecycle(obj),
                     tech=technology_line(catalog, obj),
                     interfaces=declared_interface_names(obj),
+                    listeners=list(listeners_by_owner.get(uid, [])),
                 )
             )
         for ext_id, text in externals.items():
@@ -673,6 +703,10 @@ class Model:
                 hint = clean(rel.get("_interface"))
                 if hint and any(name == hint for name, _p in declared_interfaces(catalog.get(end) or {})):
                     target_interface = hint
+            # the listener the edge calls: targetListener, or a derived edge's _interface that names a listener uid;
+            # it counts only when the target owns it (relationship-target-listener reports any other value)
+            called = hint if dependency else clean(rel.get("targetListener"))
+            target_listener = called if called and called in listeners_by_owner.get(end, []) else ""
             edge = DiagramEdge(
                 source=source,
                 target=end,
@@ -685,6 +719,7 @@ class Model:
                 technology=clean(rel.get("technology")),
                 target_interface=target_interface,
                 interface_hint=hint,
+                target_listener=target_listener,
             )
             self.edges.append(edge)
             drawn.add(id(rel))
@@ -1808,13 +1843,16 @@ LOGICAL_LANE_SHIFT = 2  # outside-lane tracks sit this far off the main TRACK_PI
 
 
 def _slot(interfaces: list, edge: DiagramEdge) -> tuple[int, int]:
-    """(index, count) of the interface an edge enters its target through: the one its target_interface names, else
-    the first. A target with at most one interface has one entry point."""
+    """(index, count) of the entrance an edge enters its target through. ``interfaces`` are the target's entrance keys
+    (entrance_keys): owned listener uids, matched by the edge's target_listener, else interface names, matched by its
+    target_interface. An edge naming neither enters the first. A target with at most one entrance has one entry point."""
     count = len(interfaces)
     if count <= 1:
         return 0, count
-    name = clean(edge.target_interface)
-    return (interfaces.index(name) if name in interfaces else 0), count
+    for name in (clean(edge.target_listener), clean(edge.target_interface)):
+        if name and name in interfaces:
+            return interfaces.index(name), count
+    return 0, count
 
 
 def attach_in(left: int, width: int, slot: tuple[int, int]) -> int:
@@ -2050,7 +2088,7 @@ def _plan_logical_tracks(model: DiagramModel, layout: LogicalLayout, outer: bool
     used = len(layout.space_tracks) - 2
     lane_space = layout.spaces[used + 1]
     drawn = _logical_drawn(model, layout)
-    faces = {n.uid: n.interfaces for n in model.nodes}
+    faces = {n.uid: entrance_keys(n) for n in model.nodes}
 
     def out_x(uid: str) -> int:
         return pos[uid][0] + LOGICAL_BOX_W // 2 + ATTACH_DX
@@ -2242,7 +2280,7 @@ def _plan_label_bands(model: DiagramModel, layout: LogicalLayout, drawn: list) -
     its top (labels of edges leaving the row above) and at its bottom (labels of edges entering the row below), and
     the rise of the self-loops of the row below under the bottom band; tracks run between the bands."""
     layout.label_rows, mult = _label_pairs(drawn)
-    layout.entrance_rows, needs = _entrance_rows(drawn, {n.uid: n.interfaces for n in model.nodes})
+    layout.entrance_rows, needs = _entrance_rows(drawn, {n.uid: entrance_keys(n) for n in model.nodes})
     rows_s: dict[tuple, int] = {}
     rows_t: dict[tuple, int] = {}
     layout.gap_tech = set()
@@ -2378,7 +2416,7 @@ def _route_edges(model: DiagramModel, layout: LogicalLayout) -> dict[int, list[t
     travel only in row gaps and gutters, so a route never crosses a box that is not one of its endpoints.
     """
     pos = layout.pos
-    faces = {n.uid: n.interfaces for n in model.nodes}
+    faces = {n.uid: entrance_keys(n) for n in model.nodes}
     routes: dict[int, list[tuple[int, int]]] = {}
     for i, e in _logical_drawn(model, layout):
         a, b = pos[e.source], pos[e.target]
@@ -3294,7 +3332,7 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
     lane's boxes are as tall as the tracks their runs need (D35). Deterministic (D15).
     """
     by_uid = {n.uid: n for n in model.deployment_nodes}
-    faces = {n.uid: n.interfaces for n in model.deployment_nodes}
+    faces = {n.uid: entrance_keys(n) for n in model.deployment_nodes}
     outline = _deployment_outline(model)
     all_edges = model.deployment_edges if len(model.deployment_edges) == len(model.edges) else model.edges  # with port chains
     containers = {g.uid for _t, groups in outline for g in groups if g.uid}
@@ -3322,7 +3360,8 @@ def render_deployment_svg(model: DiagramModel, order_out: dict[str, list[str]] |
             ends = [e.source, *e.hops, e.target]
             for k in range(len(ends) - 1):
                 last = k == len(ends) - 2
-                pieces.append((k * hop_base + i, replace(e, source=ends[k], target=ends[k + 1], target_interface=e.target_interface if last else "")))
+                pieces.append((k * hop_base + i, replace(e, source=ends[k], target=ends[k + 1], target_interface=e.target_interface if last else "",
+                                                       target_listener=e.target_listener if last else "")))
         else:
             pieces.append((i, e))
     loops: dict[str, int] = {}
