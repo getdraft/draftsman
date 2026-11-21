@@ -1,0 +1,31 @@
+{
+  "id": "draftsman-exposure-341-b",
+  "title": "Draftsman #341 Plan B: exposure through reference-architecture edge slots and service-group overrides",
+  "status": "approved",
+  "outcome": "Dale gets one clear, validated answer to which network devices front a service group's incoming traffic. The infrastructure team records it once by filling a reference architecture's edge slots with standard network service definitions; a product team can override it per service group, or turn it off. Bad references are errors instead of silent warnings, and the renderer and browser read exposure from the same resolver. This plan does not redraw diagrams or add browser columns (Plan C).",
+  "target_repo": "getdraft/draftsman",
+  "epics": [
+    {
+      "id": "E4",
+      "title": "Exposure: filled edge slots and exposedThrough",
+      "acceptance_criteria": [
+        "Every serviceGroups[].exposedThrough value is none on its own, or a network_service definition uid (serviceRole definition, or an object in the workspace's service definitions folder), or a list of such uids in chain order. A network_service instance, a non-network_service object, an unknown uid, none inside a list, an empty list or a repeated uid fails validation. The rule is not ratcheted: the field is additive. Tests cover each case.",
+        "A reference architecture fills only edge slots (firewall, web-application-firewall, load-balancer, api-gateway, ingress). fills must be a network_service definition uid, and when the slot names a capability the filling definition must satisfy it. Violations fail validation, not ratcheted. Tests cover a clean fill, a non-edge slot, a non-network_service, an instance, an unknown uid and a missing capability, including capability satisfied through a technology component.",
+        "Exposure is resolved in one place: a group with exposedThrough uses it (none switches exposure off; uids give the chain in order); a group without it, in a pattern that follows a reference architecture with filled edge slots, gets the filled chain in edge-slot order; otherwise it is not exposed (a data-tier group is exposed only through exposedThrough). The renderer and browser use that resolver, generated assets are unchanged, docs and release notes describe the contract, and validate, unit tests, generated-asset and release-note checks pass."
+      ],
+      "deploy_point": false
+    }
+  ],
+  "risks": [
+    "Most of the E4 data model already shipped with #347 (v1.6.0) for the older targetInterface design: fills on reference-architecture entries, serviceGroup.exposedThrough, warnings for bad values, and renderer/browser chain logic. Plan only the delta #341 asks for; do not rebuild it.",
+    "#341 says exposedThrough and fills must reference network_service definitions and that the rules are not ratcheted because the fields are additive. #347 made them warnings. Promoting them to errors can fail a workspace that already uses an invalid value; the release notes must say so.",
+    "Renderer and browser output must not change in this plan; renderer work (attachment points, port labels, routing) is Plan C (E5).",
+    "Delivered directly outside the agentic SDLC on Dale's 2026-11-20 7:51 PM Phoenix instruction while BeerCanLabs Actions billing blocks the fleet; each story records that on its PR and issue."
+  ],
+  "companion": "plans/draftsman-exposure-341-b.md",
+  "finops": {
+    "status": "not-estimated",
+    "agent": "none",
+    "estimate": "Not priced by SDLC FinOps: built directly outside the fleet on Dale's instruction, with no model budget hold."
+  }
+}
