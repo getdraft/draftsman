@@ -1,0 +1,40 @@
+{
+  "id": "draftsman-docs-renderer-341-c",
+  "title": "Draftsman #341 Plan C: listener docs and skills, and listener-aware diagrams and browser",
+  "status": "approved",
+  "outcome": "Dale's Draftsman explains, in its docs and in the skills agents load, exactly how to find or create the listener a call lands on without duplicates or guesses. The diagrams and the browser then show those listeners: each call enters the listener it names in the Application view, the Deployment view prints that listener's port, and the browser lists a Listener for every connection and the listeners each component owns.",
+  "target_repo": "getdraft/draftsman",
+  "epics": [
+    {
+      "id": "E3",
+      "title": "Listener docs and skills: lookup-before-create",
+      "acceptance_criteria": [
+        "The Draftsman docs describe the listener object and the lookup-before-create procedure #341 specifies: resolve the owner, normalize the identity key (owner + protocol + port + endpoint; lowercase protocol, default ports filled in, host dropped, path parameters templated), then link an exact match silently or create a stub listener (catalogStatus: stub) and link it; an ambiguous owner or key is listed and asked, never guessed; a later authored listener upgrades the stub in place; a vendor-owned stub needs a company-internal relationship owner before it leaves stub; the SDP completeness gate blocks calls to internally owned stubs. object-types, how-to-add-objects, draftsman and relationship docs say every relationship names a targetListener. A docs test pins the procedure's key statements and the release note is added.",
+        "The Draftsman skills (draftsman-core, draftsman-author and draftsman-query, plus the draftsman-diagram notes) carry the same lookup-before-create procedure and targetListener rule, point to the draft_table.catalog helpers (lookup_listener, create_listener_stub), and never tell an agent to guess an owner or invent a port. Skill validation, vendored-skill projection and a skills test pass, and the release note is added."
+      ],
+      "deploy_point": false
+    },
+    {
+      "id": "E5",
+      "title": "Listener-aware renderer and browser",
+      "acceptance_criteria": [
+        "Application view: a box that owns listener objects gets one attachment point per owned listener on its top edge, in a stable declared order, and a relationship with targetListener attaches to that listener's point. Boxes without listener objects keep today's per-interface entrances. Labels are unchanged and no port is shown. Output for catalogs without listener objects is byte-identical (goldens unchanged); new tests cover order, attachment and determinism.",
+        "Deployment view: a relationship's far-end technology line takes the port of the listener its targetListener names (SQL 5432, gRPC 8092), ahead of today's port resolution; through an exposed group's edge chain the hop ports still precede it (https 443 \u2192 http 8080 via <device>), and same-deployment-target traffic never takes the hop. Output for catalogs without listener objects is unchanged; tests cover the listener port, the chain and the fallback.",
+        "Browser: the Connections table gains a Listener column (the targetListener's name with protocol, port and endpoint, or blank), and a component, data component or external system detail page lists the listener objects it owns (protocol, port, endpoint, authenticationModel, catalogStatus). Existing columns stay; generated assets for the bundled examples change only by the new empty column; docs, the diagram skill and the release note are updated, and every check passes."
+      ],
+      "deploy_point": false
+    }
+  ],
+  "risks": [
+    "Most of the earlier E5 renderer work already shipped for the older targetInterface design (#348-#352: per-interface entrances, port chains, the edge device chain and routing, label-overlap fix, browser exposure and Interface column). Plan only the switch to listener objects and targetListener; do not rebuild it.",
+    "No catalog in the repo has listener objects yet, so the new rendering is proven on test fixtures; output for the bundled examples must stay unchanged apart from the new browser column.",
+    "Determinism contract (D15) must hold: listener order is fixed, not file order.",
+    "Delivered directly outside the agentic SDLC on Dale's standing instruction to clear the backlog and his 2026-11-20 7:51 PM Phoenix build-directly go-ahead, while BeerCanLabs Actions billing blocks the fleet; each story records that on its PR and issue."
+  ],
+  "companion": "plans/draftsman-docs-renderer-341-c.md",
+  "finops": {
+    "status": "not-estimated",
+    "agent": "none",
+    "estimate": "Not priced by SDLC FinOps: built directly outside the fleet on Dale's instruction, with no model budget hold."
+  }
+}
