@@ -92,6 +92,22 @@ class WiringTests(unittest.TestCase):
         receiver = yaml.safe_load(RECEIVER.read_text(encoding="utf-8"))
         self.assertNotIn("id-token", json.dumps(receiver.get("permissions", {})), "the receiver needs no OIDC permission")
 
+    def test_receiver_publishes_a_pull_request_instead_of_pushing(self) -> None:
+        text = RECEIVER.read_text(encoding="utf-8")
+        receiver = yaml.safe_load(text)
+        self.assertNotIn("git-auto-commit", text)
+        self.assertNotIn("git push", text)
+        self.assertEqual(receiver["permissions"], {"contents": "write", "pull-requests": "write"})
+        self.assertEqual(receiver["concurrency"], {"group": "draft-sdp-sync", "cancel-in-progress": False})
+        names = [s.get("name") for s in steps(RECEIVER)]
+        self.assertEqual(names[-1], "Publish Sync Pull Request")
+        self.assertLess(names.index("Regenerate Machine Indexes & AI Map"), names.index("Publish Sync Pull Request"))
+        publish = step(RECEIVER, "Publish Sync Pull Request")
+        self.assertEqual(publish["env"], {"GH_TOKEN": "${{ github.token }}", "BASE_BRANCH": "${{ github.event.repository.default_branch }}",
+                                          "AUTO_MERGE": "${{ vars.DRAFT_SYNC_AUTO_MERGE }}"})
+        self.assertIn("sdp_sync.py publish", publish["run"])
+        self.assertIn('--result "$RUNNER_TEMP/sdp-sync-result.json"', publish["run"])
+
     def test_receiver_receives_from_the_event_file_then_validates(self) -> None:
         names = [s.get("name") for s in steps(RECEIVER)]
         receive = step(RECEIVER, "Store Decentralized SDP Payload")

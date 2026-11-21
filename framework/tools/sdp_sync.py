@@ -15,6 +15,10 @@ Usage:
         --central-repository CENTRAL_OWNER/CENTRAL_NAME --output payload.json
     python3 sdp_sync.py receive --workspace . --payload "$GITHUB_EVENT_PATH" --central-repository CENTRAL_OWNER/CENTRAL_NAME \
         --result sdp-sync-result.json
+    python3 sdp_sync.py publish --workspace . --result sdp-sync-result.json --base main [--auto-merge true]
+
+``publish`` never pushes to the default branch: it commits the receiver's changes to ``draft-sync/<product>`` and
+opens or updates that branch's pull request. Every git and gh call is an argument list, never shell text.
 """
 
 from __future__ import annotations
@@ -27,7 +31,9 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
+import tempfile
 import time
 import urllib.parse
 import urllib.request
@@ -585,6 +591,135 @@ def check_repository(value: Any) -> str:
     return value
 
 
+# --------------------------------------------------------------------------- publish (pull request)
+
+SYNC_BRANCH_PREFIX = "draft-sync/"
+# Files the receiver workflow regenerates after every sync: run from the workspace's .draft/framework copy,
+# generate_indexes.py writes docs/assets/draft-indexes.json and generate_ai_index.py writes .draft/AI_INDEX.md.
+# They follow from the cache change, so they do not stop auto-merge.
+DERIVED_PATHS = ("docs/assets/draft-indexes.json", ".draft/AI_INDEX.md")
+BOT_NAME = "github-actions[bot]"
+BOT_EMAIL = "41898282+github-actions[bot]@users.noreply.github.com"
+_SLUG = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,38})__[a-z0-9._-]{1,100}$")
+_BRANCH = re.compile(r"^[A-Za-z0-9._][A-Za-z0-9._/-]{0,199}$")
+_PR_URL = re.compile(r"https://github\.com/[^/\s]+/[^/\s]+/pull/(\d+)")
+Runner = Callable[[list[str]], "subprocess.CompletedProcess[str]"]
+
+
+def subprocess_runner(cwd: Path) -> Runner:
+    def run(args: list[str]) -> subprocess.CompletedProcess[str]:
+        return subprocess.run(args, cwd=cwd, capture_output=True, text=True, check=False)
+    return run
+
+
+def _ok(run: Runner, args: list[str], what: str) -> str:
+    proc = run(args)
+    if proc.returncode != 0:
+        detail = (proc.stderr or proc.stdout or "").strip().splitlines()
+        raise SyncError(f"{what} failed (exit {proc.returncode}){': ' + detail[-1] if detail else ''}")
+    return proc.stdout or ""
+
+
+def changed_paths(run: Runner) -> list[str]:
+    """Paths git reports as changed or untracked, without Python bytecode the tools leave behind."""
+    out = _ok(run, ["git", "status", "--porcelain=v1", "-z", "--untracked-files=all"], "git status")
+    entries, paths = out.split("\0"), []
+    index = 0
+    while index < len(entries):
+        entry = entries[index]
+        index += 1
+        if len(entry) < 4:
+            continue
+        status, path = entry[:2], entry[3:]
+        paths.append(path)
+        if status[0] in "RC" and index < len(entries):  # a rename or copy is followed by its source path
+            paths.append(entries[index])
+            index += 1
+    keep = [p for p in paths if "__pycache__" not in PurePosixPath(p).parts and not p.endswith(".pyc")]
+    return sorted(set(keep))
+
+
+def is_confined(paths: list[str], product: str, repository: str) -> bool:
+    """True when the change is the product's cache folder (plus regenerated indexes) and nothing else."""
+    folder = f"{CACHE_ROOT.as_posix()}/{product}/"
+    legacy = f"{CACHE_ROOT.as_posix()}/{repository.replace('/', '_')}.yaml"
+    in_cache = [p for p in paths if p.startswith(folder) or p == legacy]
+    return bool(in_cache) and all(p in in_cache or p in DERIVED_PATHS for p in paths)
+
+
+def _pr_body(result: Mapping[str, Any], paths: list[str], confined: bool) -> str:
+    listed = "\n".join(f"- `{p}`" for p in paths[:200]) + ("\n- ..." if len(paths) > 200 else "")
+    return (
+        f"Decentralized SDP sync from `{result['repository']}` at `{result['commit']}`.\n\n"
+        f"- Product registration: `{result.get('registration') or 'unknown'}`\n"
+        f"- Action: `{result.get('action')}`\n"
+        f"- Correlation id: `{result.get('correlationId')}`\n"
+        f"- Confined to the product's cache folder: {'yes' if confined else 'no'}\n\n"
+        f"Changed files:\n\n{listed}\n\n"
+        "Opened by the DRAFT receiver workflow (`sdp_sync.py publish`). Later syncs from the same product update this "
+        "pull request; merging it is what changes the central catalog.\n"
+    )
+
+
+def publish(result: Mapping[str, Any], base: str, run: Runner, auto_merge: bool = False) -> dict[str, Any]:
+    """Commit the receiver's changes to draft-sync/<product> and open or update its pull request against base."""
+    if result.get("status") != "accepted":
+        raise SyncError("only an accepted sync can be published")
+    product, repository, commit = str(result.get("product") or ""), check_repository(result.get("repository")), str(result.get("commit") or "")
+    if not _SLUG.match(product) or product != product_slug(repository):
+        raise SyncError(f"the result names an invalid product {product!r}")
+    if not _COMMIT.match(commit):
+        raise SyncError("the result's commit is not a git commit SHA")
+    if not _BRANCH.match(base) or ".." in base or base.endswith(("/", ".lock")):
+        raise SyncError(f"{base!r} is not a branch name")
+    branch = SYNC_BRANCH_PREFIX + product
+    outcome: dict[str, Any] = {"status": "unchanged", "branch": branch, "base": base, "changed": [], "confined": False,
+                               "pullRequest": None, "autoMerge": "off"}
+    paths = changed_paths(run)
+    if not paths:
+        return outcome
+    confined = is_confined(paths, product, repository)
+    outcome.update(changed=paths, confined=confined, status="published")
+    title = f"DRAFT sync: {repository} at {commit[:12]}"
+    _ok(run, ["git", "checkout", "-B", branch], "git checkout")
+    _ok(run, ["git", "add", "-A", "--", *paths], "git add")
+    _ok(run, ["git", "-c", f"user.name={BOT_NAME}", "-c", f"user.email={BOT_EMAIL}", "commit", "--no-verify", "-m", title,
+              "-m", f"correlation id {result.get('correlationId')}"], "git commit")
+    # The branch is the receiver's own: each sync is a fresh snapshot on top of the default branch.
+    _ok(run, ["git", "push", "--force", "origin", f"HEAD:refs/heads/{branch}"], "git push")
+    with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False, encoding="utf-8") as handle:
+        handle.write(_pr_body(result, paths, confined))
+        body_file = handle.name
+    try:
+        listed = json.loads(_ok(run, ["gh", "pr", "list", "--head", branch, "--base", base, "--state", "open",
+                                      "--json", "number,url", "--limit", "1"], "gh pr list") or "[]")
+        if listed:
+            number, url = int(listed[0]["number"]), str(listed[0]["url"])
+            _ok(run, ["gh", "pr", "edit", str(number), "--title", title, "--body-file", body_file], "gh pr edit")
+            outcome["pullRequestAction"] = "updated"
+        else:
+            out = _ok(run, ["gh", "pr", "create", "--base", base, "--head", branch, "--title", title, "--body-file", body_file],
+                      "gh pr create")
+            match = _PR_URL.search(out)
+            if not match:
+                raise SyncError("gh pr create did not print a pull request URL")
+            number, url = int(match.group(1)), match.group(0)
+            outcome["pullRequestAction"] = "opened"
+    finally:
+        Path(body_file).unlink(missing_ok=True)
+    outcome["pullRequest"] = {"number": number, "url": url}
+    if auto_merge and confined:
+        proc = run(["gh", "pr", "merge", str(number), "--auto", "--squash"])
+        outcome["autoMerge"] = "enabled" if proc.returncode == 0 else "failed"
+    elif outcome["pullRequestAction"] == "updated":
+        # An earlier, confined sync may have turned auto-merge on; this change needs a reviewer.
+        run(["gh", "pr", "merge", str(number), "--disable-auto"])
+        outcome["autoMerge"] = "off" if not auto_merge else "off: the change reaches outside the product's cache folder"
+    elif auto_merge:
+        outcome["autoMerge"] = "off: the change reaches outside the product's cache folder"
+    return outcome
+
+
 # --------------------------------------------------------------------------- CLI
 
 
@@ -605,7 +740,32 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--central-repository", required=True, help="owner/name of this central workspace (the OIDC audience)")
     r.add_argument("--jwks", type=Path, help="read the OIDC key set from this file instead of fetching GitHub's (tests, offline checks)")
     r.add_argument("--result", type=Path, help="write the outcome as JSON here")
+    u = sub.add_parser("publish", help="Open or update the product's sync pull request in the central workspace.")
+    u.add_argument("--workspace", type=Path, default=Path("."))
+    u.add_argument("--result", type=Path, required=True, help="the result file receive wrote; the publish outcome is added to it")
+    u.add_argument("--base", required=True, help="the central workspace's default branch")
+    u.add_argument("--auto-merge", type=str.lower, choices=("true", "false", ""), default="false",
+                   help="request auto-merge when the change stays inside the product's cache folder")
     args = parser.parse_args(argv)
+
+    if args.command == "publish":
+        try:
+            result = json.loads(args.result.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as exc:
+            print(f"sdp_sync publish: cannot read the result file: {exc.__class__.__name__}", file=sys.stderr)
+            return 1
+        try:
+            outcome = publish(result, args.base, subprocess_runner(args.workspace), auto_merge=args.auto_merge == "true")
+        except SyncError as exc:
+            outcome = {"status": "failed", "message": str(exc)}
+        result["publish"] = outcome
+        args.result.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+        if outcome["status"] == "failed":
+            print(f"sdp_sync publish: {outcome['message']}", file=sys.stderr)
+            return 1
+        pr = outcome.get("pullRequest")
+        print(f"sdp_sync publish: {outcome['status']}" + (f": {outcome['pullRequestAction']} {pr['url']} (auto-merge {outcome['autoMerge']})" if pr else ""))
+        return 0
 
     if args.command == "pack":
         try:
