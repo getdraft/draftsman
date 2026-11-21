@@ -32,7 +32,7 @@ class ListenerLookupDocTests(unittest.TestCase):
         self.assertEqual(
             steps,
             ["Resolve the owner.", "Normalize the identity key.", "Link an exact match.",
-             "Otherwise create a stub and link it.", "Upgrade, do not duplicate."],
+             "Ask about near matches.", "Otherwise create a stub and link it.", "Upgrade, do not duplicate."],
         )
 
     def test_key_statements(self) -> None:
@@ -115,7 +115,7 @@ class ListenerSkillTests(unittest.TestCase):
         raw = (SKILLS / "draftsman-author" / "SKILL.md").read_text(encoding="utf-8")
         block = section(raw + "\n## end\n", "Calls land on listeners")
         steps = re.findall(r"(?m)^\d+\. \*\*([^*]+)\*\*", block)
-        self.assertEqual(steps, ["Resolve the owner", "Normalize the key:", "Exact match:", "No match:", "Real listener authored later:"])
+        self.assertEqual(steps, ["Resolve the owner", "Normalize the key:", "Exact match:", "Near match:", "No match:", "Real listener authored later:"])
         text = " ".join(block.split())
         for phrase in ("`targetListener`", "Never pick one", "without asking", "`catalogStatus: stub`", "keep its UID",
                        "company-internal caller", "`sdp-internal-stub-listener`", "`interface_unprotected`",

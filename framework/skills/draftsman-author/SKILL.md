@@ -29,7 +29,7 @@ Every relationship sets `targetListener` to the UID of the listener it calls, in
 1. **Resolve the owner** by UID, then exact name or alias. Several matches: list them and ask. Never pick one.
 2. **Normalize the key:** owner + protocol + port + endpoint path (default ports filled in, host dropped, path parameters templated).
 3. **Exact match:** link its UID without asking.
-4. **Near match** (same owner and protocol; only an API version in the path, an extending path on the same port, or the port differs): ask whether it is the same listener. Never link a near match silently.
+4. **Near match:** (same owner and protocol; only an API version in the path, an extending path on the same port, or the port differs): ask whether it is the same listener. Never link a near match silently.
 5. **No match:** create a listener with `catalogStatus: stub` and `authenticationModel: TBD` from what the caller knows, and link it. Several matches: list them and ask.
 6. **Real listener authored later:** upgrade the stub in place; keep its UID.
 

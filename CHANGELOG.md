@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- `draft_table.catalog.link_or_stub_listener` and `record_authored_listener` now return `action: near_match` with `candidates` instead of creating a listener when an existing listener of the same owner and protocol differs only by an API version in the path, by an extending path on the same port, or by the port. Pass `confirmed_new=True` once the user says none is the same listener to get the previous behaviour. Exact matches, owner resolution and stubs with no near match behave as before. Catalog content, validation and diagrams are unchanged.
+- `migrate_relationships.py` asks about a near-match listener instead of proposing a new stub beside it.
+
+### Added
+
+- `/draft migrate [object|sdp|folder]` (`framework/draft-actions/migrate.md`): runs `migrate_relationships.py` with the report and patch outside `catalog/`, presents its proposals for review, asks each needs-input question, and applies only what the user approves before validating (#368).
+- `draft_table.catalog.near_match_listeners` and `listener_near_match`: listeners that look like the one described (version, path or port difference, same owner and protocol) but are not an exact match.
+- `tests/test_listener_near_match.py`.
+
+### Changed
+
+- Listener Lookup Before Create (`framework/docs/draftsman.md`) gains step 4, "Ask about near matches": never link a near match silently. The `draftsman-author` and `draftsman-core` skills carry the same rule.
+- `/draft` routing (`framework/commands/draft.md`), the help tables in `templates/workspace/AGENTS.md.tmpl`, `templates/workspace/README.md.tmpl`, `framework/docs/draftsman-ai-configuration.md` and `framework/docs/operations-guide.md`, and the Cursor and Windsurf integrations list `migrate`.
+
+### Migration Notes
+
+- Tools that call `link_or_stub_listener` or `record_authored_listener` should handle `near_match` by asking the user, then call again with `confirmed_new=True` if it is a different listener. Existing workspaces pick up `/draft migrate` on their next framework update; regenerated workspace files list it in the help table.
+
 ## 1.20.3 - 2026-11-21
 
 ### Compatibility Impact
