@@ -1,7 +1,8 @@
 # DRAFT Framework 1.0 — Product Repo Sync GitHub Action
-# This workflow fires when .draft/sdp.yaml is updated in this engineering repo,
-# uses an ephemeral short-lived GitHub App token (or OIDC secret), and pushes
-# the sdp.yaml payload to the central drafting-table workspace.
+# This workflow fires when .draft/sdp.yaml or .draft/catalog/ changes in this engineering repo,
+# packs them with the framework's sdp_sync.py, uses an ephemeral short-lived GitHub App token,
+# and sends the payload to the central drafting-table workspace as a repository_dispatch event.
+# Values reach the scripts only through environment variables and files, never as script text.
 name: Sync SDP to Central DRAFT Workspace
 
 on:
@@ -31,28 +32,47 @@ jobs:
           private-key: ${{ secrets.DRAFT_APP_PRIVATE_KEY }}
           repositories: "${{ secrets.DRAFT_CENTRAL_REPO_NAME }}" # e.g. frontline-drafting-table
 
-      - name: Dispatch SDP Payload to Central Workspace
+      - name: Checkout the DRAFT sync tool
+        uses: actions/checkout@v4
+        with:
+          repository: getdraft/draftsman
+          # Set the DRAFT_FRAMEWORK_REF repository variable to the central workspace's framework version tag.
+          ref: ${{ vars.DRAFT_FRAMEWORK_REF || 'main' }}
+          path: .draft-sync-tool
+          sparse-checkout: framework/tools
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Pack SDP Payload
+        env:
+          REPOSITORY: ${{ github.repository }}
+          COMMIT: ${{ github.sha }}
+          REF: ${{ github.ref }}
+          CORRELATION_ID: ${{ github.run_id }}-${{ github.run_attempt }}
         run: |
-          if [ ! -f .draft/sdp.yaml ]; then
-            echo "No .draft/sdp.yaml found, skipping sync."
-            exit 0
-          fi
+          python -m pip install --quiet pyyaml
+          python3 .draft-sync-tool/framework/tools/sdp_sync.py pack \
+            --repo-root . \
+            --repository "$REPOSITORY" \
+            --commit "$COMMIT" \
+            --ref "$REF" \
+            --correlation-id "$CORRELATION_ID" \
+            --output "$RUNNER_TEMP/sdp-payload.json"
 
-          SDP_PAYLOAD=$(jq -s -R . .draft/sdp.yaml)
-          REPO_NAME="${{ github.repository }}"
-          CENTRAL_REPO="${{ secrets.DRAFT_CENTRAL_REPO_NAME }}"
-          ORG_NAME="${{ github.repository_owner }}"
-
-          curl -X POST \
-            -H "Authorization: bearer ${{ steps.generate_token.outputs.token }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${ORG_NAME}/${CENTRAL_REPO}/dispatches" \
-            -d @- <<EOF
-          {
-            "event_type": "sdp_updated",
-            "client_payload": {
-              "product_id": "${REPO_NAME}",
-              "sdp_content": ${SDP_PAYLOAD}
-            }
-          }
-          EOF
+      - name: Dispatch SDP Payload to Central Workspace
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+          CENTRAL_OWNER: ${{ github.repository_owner }}
+          CENTRAL_REPO: ${{ secrets.DRAFT_CENTRAL_REPO_NAME }}
+        run: |
+          jq -n --slurpfile payload "$RUNNER_TEMP/sdp-payload.json" \
+            '{event_type: "sdp_updated", client_payload: $payload[0]}' \
+          | curl --fail-with-body --silent --show-error -X POST \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              --data @- \
+              "https://api.github.com/repos/$CENTRAL_OWNER/$CENTRAL_REPO/dispatches"

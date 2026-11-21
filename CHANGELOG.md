@@ -1,3 +1,27 @@
+## Unreleased
+
+### Compatibility Impact
+
+- The sync workflow templates change. Product repositories and the central workspace adopt them by copying the new `templates/github/product-repo-sync.yml.tmpl` and `templates/github/drafting-table-receiver.yml.tmpl`; both sides must update together, because the receiver now accepts only the `draft-sdp-sync/1` payload and rejects the old `sdp_content` shape with an upgrade message. Product repositories need no new secrets; an optional `DRAFT_FRAMEWORK_REF` repository variable pins the sync tool to the central workspace's framework version (default `main`).
+
+### Added
+
+- `tests/test_sdp_sync_templates.py`: no `run:` step in either template contains a `${{ }}` expression, no template reads `client_payload` through an expression, the sender packs with the framework tool and dispatches the payload file, the receiver receives from the event file before validating, and the templates' own scripts, run with hostile repository names and an SDP full of shell metacharacters, treat them as data.
+
+### Changed
+
+- `templates/github/product-repo-sync.yml.tmpl`: checks out `getdraft/draftsman` (`framework/tools` only) at `DRAFT_FRAMEWORK_REF`, runs `sdp_sync.py pack` with values passed as environment variables, and sends the payload file with `jq --slurpfile` and `curl --fail-with-body`. A deleted `.draft/sdp.yaml` now sends a delete instead of skipping. The App token step is unchanged.
+- `templates/github/drafting-table-receiver.yml.tmpl`: runs `sdp_sync.py receive` on `$GITHUB_EVENT_PATH` before validation; the commit message no longer includes a payload value. It still commits to the default branch until the pull-request flow (#448).
+
+### Fixed
+
+- #195 gap 1: the receiver stores the SDP as YAML, so a single quote no longer breaks it and validation sees an SDP object rather than a string.
+- #195 gap 8: no payload value is interpolated into script text in either template.
+
+### Migration Notes
+
+- Replace both workflow files from the new templates at the same time (central receiver first is safest: until a product repository updates, its syncs are rejected with a clear message rather than stored wrongly). Optionally set `DRAFT_FRAMEWORK_REF` in each product repository to the central workspace's framework version tag.
+
 ## 1.20.6 - 2026-11-21
 
 ### Compatibility Impact
