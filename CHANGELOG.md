@@ -1,3 +1,28 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. Diagram and browser output are unchanged: the generated browser for the bundled examples is byte-identical before and after this change. Validation results are unchanged.
+
+### Added
+
+- `framework/tools/exposure.py`, the one exposure resolver (E4). It holds `EDGE_SLOTS` and the precedence: `exposedThrough: none` turns exposure off, an explicit uid or list is the chain, otherwise the followed reference architecture's filled edge slots apply except to a data tier. Functions: `slot_chain`, `pattern_slot_chain`, `group_chain`, `resolve_pattern_exposure`.
+- `tests/test_exposure.py`: precedence cases, edge slot order, lenient handling of bad values, a single `EDGE_SLOTS` shared by the renderer and validator, and agreement between the resolver, the deployment diagram model and the browser's exposure column on the diagram fixture and every example pattern.
+- `framework/docs/reference-architectures.md` section "Filled Edge Slots".
+
+### Changed
+
+- `generate_diagram.py` delegates `_slot_chain` and `_group_chain` to `exposure.py`; `validate.py` and `generate_diagram.py` take `EDGE_SLOTS` from it. The browser keeps reading the renderer's model, so it uses the same resolver.
+- `framework/docs/software-deployment-patterns.md` names the resolver. The vendored-layout diagram test copies `exposure.py` beside `generate_diagram.py`.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No workspace migration required. A vendored framework must include `tools/exposure.py`; the normal framework refresh copies the whole `tools/` folder.
+
 ## 1.17.0 - 2026-11-21
 
 ### Compatibility Impact

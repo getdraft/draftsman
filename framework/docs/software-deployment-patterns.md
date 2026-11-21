@@ -317,6 +317,13 @@ on one of the five edge slots and name a network_service definition, and when
 the entry names a `capability` the definition (or its technology component)
 must provide it. Each violation fails validation; none is ratcheted.
 
+The precedence above (`exposedThrough: none`, then an explicit chain, then the
+reference architecture's filled edge slots except for a data tier) is resolved
+in one place, `framework/tools/exposure.py`. The deployment diagram and the
+browser's exposure column both read it, so they always agree. The resolver is
+lenient: it leaves out values that are not network services, so a pattern that
+fails validation still renders.
+
 To fix a deployment page that lacks a port or a device: declare `listeners` on
 the definition; fill the slot with `fills` on the reference architecture entry
 (or set `exposedThrough`); and name the target interface on the relationship.
