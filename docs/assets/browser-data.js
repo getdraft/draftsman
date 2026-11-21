@@ -59,6 +59,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -224,6 +225,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -360,6 +362,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -501,6 +504,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -642,6 +646,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -783,6 +788,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -928,6 +934,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -1069,6 +1076,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -1230,6 +1238,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -1371,6 +1380,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -1512,6 +1522,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -1653,6 +1664,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -1803,6 +1815,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -1960,6 +1973,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -2101,6 +2115,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -2242,6 +2257,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -2383,6 +2399,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -2528,6 +2545,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -2689,6 +2707,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -2830,6 +2849,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -2971,6 +2991,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -3124,6 +3145,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -3265,6 +3287,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -3406,6 +3429,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -3577,6 +3601,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -3746,6 +3771,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -3887,6 +3913,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -4023,6 +4050,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -4159,6 +4187,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -4295,6 +4324,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -4445,6 +4475,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -4594,6 +4625,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -4755,6 +4787,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -4896,6 +4929,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -5037,6 +5071,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -5178,6 +5213,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -5344,6 +5380,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -5513,6 +5550,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -5654,6 +5692,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -5795,6 +5834,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -5936,6 +5976,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -6077,6 +6118,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -6218,6 +6260,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -6359,6 +6402,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -6494,6 +6538,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -6619,6 +6664,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -6751,6 +6797,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -6907,6 +6954,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -7044,6 +7092,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -7170,6 +7219,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -7305,6 +7355,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -7455,6 +7506,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -7585,6 +7637,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -7715,6 +7768,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -7846,6 +7900,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -8106,6 +8161,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -8499,6 +8555,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -8747,6 +8804,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -9052,6 +9110,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "01KQQ4Q027-K5DR",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -9673,6 +9732,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -10423,6 +10483,61 @@ window.DRAFT_BROWSER_DATA = {
             "decisionRecord"
           ],
           "externalReference": "https://controls.example.com/security-compliance/04.3.1"
+        },
+        {
+          "id": "interface-protection",
+          "name": "Interface Protection",
+          "description": "Every listener records the authentication model that protects it.",
+          "rationale": "A called endpoint must say how callers authenticate. authenticationModel satisfies this requirement with any recorded model, including none; TBD does not satisfy it. Choosing none is a recorded decision, not a gap in the design.",
+          "appliesTo": [
+            "listener"
+          ],
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "authenticationModel",
+              "notIn": [
+                "TBD"
+              ]
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "validAnswerTypes": [
+            "field"
+          ]
+        },
+        {
+          "id": "interface-unprotected-justification",
+          "name": "Unprotected Interface Justification",
+          "description": "A listener with no authentication records why, in a committed DecisionRecord.",
+          "rationale": "Choosing authenticationModel none is an exception that needs a recorded decision. Only a committed DecisionRecord (accepted, mitigated or resolved) referenced from the listener's decisionRecords with key: interface_unprotected satisfies it. A missing or open draft record does not, and it cannot be marked not-applicable. Which unauthenticated exceptions are acceptable stays with company requirement groups and approvers.",
+          "appliesTo": [
+            "listener"
+          ],
+          "requirementMode": "conditional",
+          "naAllowed": false,
+          "applicability": {
+            "allOf": [
+              {
+                "field": "authenticationModel",
+                "equals": "none"
+              }
+            ]
+          },
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "decisionRecord",
+              "key": "interface_unprotected",
+              "committedOnly": true,
+              "example": "A committed DecisionRecord, referenced from decisionRecords with key: interface_unprotected, recording why this listener accepts unauthenticated calls."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "validAnswerTypes": [
+            "decisionRecord"
+          ]
         }
       ],
       "implementations": [],
@@ -10432,11 +10547,13 @@ window.DRAFT_BROWSER_DATA = {
         "product_component",
         "runtime_service",
         "network_service",
-        "software_deployment_pattern"
+        "software_deployment_pattern",
+        "listener"
       ],
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -10462,7 +10579,7 @@ window.DRAFT_BROWSER_DATA = {
       "assumptions": [],
       "nextSteps": [],
       "defaultSelection": false,
-      "requirementCount": 16,
+      "requirementCount": 18,
       "hasRiskRef": false,
       "outboundRefs": [
         {
@@ -10573,7 +10690,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/requirement-group.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-T3CA\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Security and Security Compliance RequirementGroup\",\n  \"description\": \"Baseline security and compliance requirement group bundled with DRAFT. Requirements are applied to matching object types based on their target scope.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"activation\": \"workspace\",\n  \"appliesTo\": [\n    \"data_store_service\",\n    \"host\",\n    \"product_component\",\n    \"runtime_service\",\n    \"network_service\",\n    \"software_deployment_pattern\"\n  ],\n  \"provider\": {\n    \"id\": \"provider.draft-framework\",\n    \"type\": \"framework\",\n    \"name\": \"DRAFT Framework\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT Security\",\n    \"source\": \"Security Compliance Requirements\"\n  },\n  \"requirements\": [\n    {\n      \"id\": \"CC.SecurityCompliance.04.2.2\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.2.2\",\n      \"name\": \"Centralized Administrative Authentication\",\n      \"description\": \"Centralized Administrative Authentication\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.2.2 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"authentication\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: authentication, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-MHJM\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.2.2\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.4.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.4.1\",\n      \"name\": \"Password Policy\",\n      \"description\": \"Password Policy\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.4.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"authentication\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: authentication, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-MHJM\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.4.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.4.1.access-control-model\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.4.1\",\n      \"name\": \"Database Password Policy\",\n      \"description\": \"Database Password Policy\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.4.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"access_control_model\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-4JR6\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.4.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.06.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.06.1.1\",\n      \"name\": \"Centralized Log Management\",\n      \"description\": \"Centralized Log Management\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.06.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"log_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: log_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponentConfiguration\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-D04B\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/06.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.06.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.06.2.1\",\n      \"name\": \"Host Health and Welfare Monitoring\",\n      \"description\": \"Host Health and Welfare Monitoring\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.06.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"health_welfare_monitoring\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: health_welfare_monitoring, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"technologyComponentConfiguration\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-98VD\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/06.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.06.3.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.06.3.1\",\n      \"name\": \"Security Event Monitoring\",\n      \"description\": \"Security Event Monitoring\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.06.3.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"security_monitoring\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: security_monitoring, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"technologyComponentConfiguration\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-JW52\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/06.3.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.03.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.03.1.1\",\n      \"name\": \"Patch Governance\",\n      \"description\": \"Patch Governance\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.03.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"patch_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: patch_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-BH6E\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/03.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.03.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.03.2.1\",\n      \"name\": \"Patch Execution Workflow\",\n      \"description\": \"Patch Execution Workflow\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.03.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"patch_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: patch_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-BH6E\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/03.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.10.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.10.1.1\",\n      \"name\": \"ReferenceArchitecture Conformance\",\n      \"description\": \"ReferenceArchitecture Conformance\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.10.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"software_deployment_pattern\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"reference_architecture_conformance\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: reference_architecture_conformance, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/10.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.10.1.2\",\n      \"externalControlId\": \"CC.SecurityCompliance.10.1.2\",\n      \"name\": \"Availability Requirement\",\n      \"description\": \"Availability Requirement\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.10.1.2 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"software_deployment_pattern\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"availability_requirement\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: availability_requirement, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/10.1.2\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.00.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.00.2.1\",\n      \"name\": \"Data Classification\",\n      \"description\": \"Data Classification\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.00.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"software_deployment_pattern\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"data_classification\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: data_classification, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/00.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.00.2.1.access-control-model\",\n      \"externalControlId\": \"CC.SecurityCompliance.00.2.1\",\n      \"name\": \"Database Data Classification Context\",\n      \"description\": \"Database Data Classification Context\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.00.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"access_control_model\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-4JR6\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/00.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.10.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.10.2.1\",\n      \"name\": \"Database Backup Strategy\",\n      \"description\": \"Database Backup Strategy\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.10.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"backup_strategy\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: backup_strategy, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-7T2H\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/10.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.1.1\",\n      \"name\": \"Database Access Control Model\",\n      \"description\": \"Database Access Control Model\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"access_control_model\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-4JR6\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.3.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.3.1\",\n      \"name\": \"Secrets Management\",\n      \"description\": \"Secrets Management\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.3.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"runtime_service\",\n        \"network_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-DTJJ\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-DTJJ\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"secrets_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: secrets_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-DTJJ\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.3.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.3.1.product_component\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.3.1\",\n      \"name\": \"ProductComponent Secrets Management\",\n      \"description\": \"ProductComponent Secrets Management\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.3.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"product_component\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"product_component\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: product_component, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.3.1\"\n    }\n  ],\n  \"lifecycleStatus\": \"existing-only\",\n  \"tags\": [\n    \"compliance\",\n    \"controls\",\n    \"baseline\",\n    \"requirement-group\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-draft-security-compliance.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-T3CA\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Security and Security Compliance RequirementGroup\",\n  \"description\": \"Baseline security and compliance requirement group bundled with DRAFT. Requirements are applied to matching object types based on their target scope.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"activation\": \"workspace\",\n  \"appliesTo\": [\n    \"data_store_service\",\n    \"host\",\n    \"product_component\",\n    \"runtime_service\",\n    \"network_service\",\n    \"software_deployment_pattern\",\n    \"listener\"\n  ],\n  \"provider\": {\n    \"id\": \"provider.draft-framework\",\n    \"type\": \"framework\",\n    \"name\": \"DRAFT Framework\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT Security\",\n    \"source\": \"Security Compliance Requirements\"\n  },\n  \"requirements\": [\n    {\n      \"id\": \"CC.SecurityCompliance.04.2.2\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.2.2\",\n      \"name\": \"Centralized Administrative Authentication\",\n      \"description\": \"Centralized Administrative Authentication\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.2.2 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"authentication\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: authentication, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-MHJM\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.2.2\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.4.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.4.1\",\n      \"name\": \"Password Policy\",\n      \"description\": \"Password Policy\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.4.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"authentication\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: authentication, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-MHJM\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.4.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.4.1.access-control-model\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.4.1\",\n      \"name\": \"Database Password Policy\",\n      \"description\": \"Database Password Policy\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.4.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"access_control_model\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-4JR6\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.4.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.06.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.06.1.1\",\n      \"name\": \"Centralized Log Management\",\n      \"description\": \"Centralized Log Management\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.06.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"log_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: log_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponentConfiguration\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-D04B\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/06.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.06.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.06.2.1\",\n      \"name\": \"Host Health and Welfare Monitoring\",\n      \"description\": \"Host Health and Welfare Monitoring\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.06.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"health_welfare_monitoring\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: health_welfare_monitoring, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"technologyComponentConfiguration\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-98VD\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/06.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.06.3.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.06.3.1\",\n      \"name\": \"Security Event Monitoring\",\n      \"description\": \"Security Event Monitoring\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.06.3.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"security_monitoring\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: security_monitoring, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"technologyComponentConfiguration\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-JW52\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/06.3.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.03.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.03.1.1\",\n      \"name\": \"Patch Governance\",\n      \"description\": \"Patch Governance\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.03.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"patch_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: patch_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-BH6E\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/03.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.03.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.03.2.1\",\n      \"name\": \"Patch Execution Workflow\",\n      \"description\": \"Patch Execution Workflow\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.03.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"patch_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: patch_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-BH6E\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/03.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.10.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.10.1.1\",\n      \"name\": \"ReferenceArchitecture Conformance\",\n      \"description\": \"ReferenceArchitecture Conformance\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.10.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"software_deployment_pattern\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"reference_architecture_conformance\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: reference_architecture_conformance, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/10.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.10.1.2\",\n      \"externalControlId\": \"CC.SecurityCompliance.10.1.2\",\n      \"name\": \"Availability Requirement\",\n      \"description\": \"Availability Requirement\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.10.1.2 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"software_deployment_pattern\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"availability_requirement\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: availability_requirement, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/10.1.2\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.00.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.00.2.1\",\n      \"name\": \"Data Classification\",\n      \"description\": \"Data Classification\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.00.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"software_deployment_pattern\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"data_classification\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: data_classification, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/00.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.00.2.1.access-control-model\",\n      \"externalControlId\": \"CC.SecurityCompliance.00.2.1\",\n      \"name\": \"Database Data Classification Context\",\n      \"description\": \"Database Data Classification Context\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.00.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"access_control_model\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-4JR6\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/00.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.10.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.10.2.1\",\n      \"name\": \"Database Backup Strategy\",\n      \"description\": \"Database Backup Strategy\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.10.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"backup_strategy\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: backup_strategy, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-7T2H\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/10.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.1.1\",\n      \"name\": \"Database Access Control Model\",\n      \"description\": \"Database Access Control Model\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"access_control_model\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-4JR6\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.3.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.3.1\",\n      \"name\": \"Secrets Management\",\n      \"description\": \"Secrets Management\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.3.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"runtime_service\",\n        \"network_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-DTJJ\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-DTJJ\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"secrets_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: secrets_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-DTJJ\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.3.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.3.1.product_component\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.3.1\",\n      \"name\": \"ProductComponent Secrets Management\",\n      \"description\": \"ProductComponent Secrets Management\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.3.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"product_component\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"product_component\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: product_component, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.3.1\"\n    },\n    {\n      \"id\": \"interface-protection\",\n      \"name\": \"Interface Protection\",\n      \"description\": \"Every listener records the authentication model that protects it.\",\n      \"rationale\": \"A called endpoint must say how callers authenticate. authenticationModel satisfies this requirement with any recorded model, including none; TBD does not satisfy it. Choosing none is a recorded decision, not a gap in the design.\",\n      \"appliesTo\": [\n        \"listener\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"authenticationModel\",\n          \"notIn\": [\n            \"TBD\"\n          ]\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"interface-unprotected-justification\",\n      \"name\": \"Unprotected Interface Justification\",\n      \"description\": \"A listener with no authentication records why, in a committed DecisionRecord.\",\n      \"rationale\": \"Choosing authenticationModel none is an exception that needs a recorded decision. Only a committed DecisionRecord (accepted, mitigated or resolved) referenced from the listener's decisionRecords with key: interface_unprotected satisfies it. A missing or open draft record does not, and it cannot be marked not-applicable. Which unauthenticated exceptions are acceptable stays with company requirement groups and approvers.\",\n      \"appliesTo\": [\n        \"listener\"\n      ],\n      \"requirementMode\": \"conditional\",\n      \"naAllowed\": false,\n      \"applicability\": {\n        \"allOf\": [\n          {\n            \"field\": \"authenticationModel\",\n            \"equals\": \"none\"\n          }\n        ]\n      },\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"interface_unprotected\",\n          \"committedOnly\": true,\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: interface_unprotected, recording why this listener accepts unauthenticated calls.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"existing-only\",\n  \"tags\": [\n    \"compliance\",\n    \"controls\",\n    \"baseline\",\n    \"requirement-group\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-draft-security-compliance.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -11110,6 +11227,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -11862,6 +11980,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -12148,6 +12267,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -12416,6 +12536,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -12617,6 +12738,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -13033,6 +13155,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -13322,6 +13445,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -13572,6 +13696,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -13808,6 +13933,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -14040,6 +14166,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -14501,6 +14628,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -14862,6 +14990,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -16163,6 +16292,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -16493,6 +16623,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -16609,7 +16740,7 @@ window.DRAFT_BROWSER_DATA = {
       "category": "",
       "deliveryModel": "",
       "domain": "",
-      "description": "Structured checklist of required questions and answers used to define a complete and correct software deployment pattern.",
+      "description": "Structured checklist of required questions and answers used to define a complete and correct software deployment pattern. A complete pattern must also pass the ratcheted sdp-internal-stub-listener gate, which blocks completion while a call in the pattern targets a stub listener owned by an internal component.",
       "version": "1.0.0",
       "catalogStatus": "complete",
       "lifecycleStatus": "preferred",
@@ -16888,6 +17019,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -16975,7 +17107,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/requirement-group.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-VK45\",\n  \"type\": \"requirement_group\",\n  \"name\": \"SoftwareDeploymentPattern RequirementGroup\",\n  \"description\": \"Structured checklist of required questions and answers used to define a complete and correct software deployment pattern.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"software_deployment_pattern\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"reference-architecture-conformance\",\n      \"description\": \"The SoftwareDeploymentPattern must reference a valid ReferenceArchitecture ID or explicitly document that no applicable ReferenceArchitecture exists yet.\",\n      \"rationale\": \"Connecting deployments to patterns enables governance discoverability and impact analysis.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"followsReferenceArchitecture\",\n          \"example\": \"reference-architecture.dotnet.three-tier.ha\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noApplicablePattern\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noApplicablePattern, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"decisionRecord\",\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"service-groups\",\n      \"description\": \"The SoftwareDeploymentPattern must declare the service groups that make up the deployed product.\",\n      \"rationale\": \"A deployment manifest is incomplete until the real deployed service group structure is explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"serviceGroups\",\n          \"example\": \"Non-empty serviceGroups list with named deployment groups and deployable object references\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"role\": \"service-group\"\n          },\n          \"example\": \"Frontend UI, Data Services, Shared Event Processing Services\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"internalComponent\"\n      ]\n    },\n    {\n      \"id\": \"deployment-targets\",\n      \"description\": \"Every service group must describe its deployment boundary or execution context at the level needed to understand ownership, isolation, and operational responsibility.\",\n      \"rationale\": \"Deployment reality is not complete until the architect can explain the boundary that matters for operating and governing each service group; that boundary may be an account, cluster, data center, customer site, tenant/environment boundary, SaaS context, or another architecture-relevant execution context.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"deploymentTargets\",\n          \"example\": \"deploymentTargets: aws:us-east-1:prod\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"deploymentTargets\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: deploymentTargets, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"availability-requirement\",\n      \"description\": \"The product availability tier must be documented.\",\n      \"rationale\": \"Availability requirements justify deployment posture and inform operational support models.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"availabilityRequirement\",\n          \"example\": \"availabilityRequirement: high-availability\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"availabilityRequirement\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: availabilityRequirement, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"additional-interactions\",\n      \"description\": \"Any external systems this product interacts with beyond what its component deployable objects declare must be documented via relationship objects \\u2014 or explicitly stated as none.\",\n      \"rationale\": \"Product-specific integrations are invisible to the architecture without explicit declaration.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"externalDependencies\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: externalDependencies, recording this decision (or why it is not applicable).\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noAdditionalInteractions\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noAdditionalInteractions, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"data-classification\",\n      \"description\": \"The type of data this product stores or processes must be documented.\",\n      \"rationale\": \"Data classification drives security posture requirements and compliance obligations.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"dataClassification\",\n          \"example\": \"dataClassification: internal\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"dataClassification\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: dataClassification, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"failure-domain\",\n      \"description\": \"The SoftwareDeploymentPattern must document the deployment-level failure domain of the product.\",\n      \"rationale\": \"Product-level impact boundaries cannot be inferred from component selections alone.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"failureDomain\",\n          \"example\": \"failureDomain: regional\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"failureDomain\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: failureDomain, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"pattern-deviations\",\n      \"description\": \"Any intentional deviation from the selected ReferenceArchitecture must be documented, or the SoftwareDeploymentPattern must explicitly state that no deviations exist.\",\n      \"rationale\": \"The SoftwareDeploymentPattern is where pattern intent becomes product deployment reality, so departures from the ReferenceArchitecture must be visible.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"patternDeviations\",\n          \"example\": \"patternDeviations: none\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"patternDeviations\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: patternDeviations, recording this decision (or why it is not applicable).\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noPatternDeviations\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noPatternDeviations, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"inter-service-connections\",\n      \"description\": \"Primary inter-service communication paths that cross a tier boundary (e.g. presentation\\u2192application) or a network zone boundary must be documented as relationship objects in the catalog, or the pattern must explicitly state that no cross-boundary connections exist.\\n\",\n      \"rationale\": \"Service-to-service communication across tiers and zones is an architecture decision with security, performance, and compliance implications. Without explicit connection records the architecture cannot be analyzed for data-flow compliance, blast-radius, or network policy conformance.\\n\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"interServiceConnections\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: interServiceConnections, recording this decision (or why it is not applicable).\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noCrossBoundaryConnections\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noCrossBoundaryConnections, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"naRationale\": \"Acceptable when the deployment has only a single tier and no network zones.\",\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ],\n      \"interviewHint\": \"Use the propose-and-confirm pattern. Ask one yes/no question per tier crossing (presentation\\u2192application, application\\u2192data, application\\u2192utility). For each confirmed crossing, present a multi-select list of the services in the source tier and ask which ones make calls across. Then ask protocol once per crossing using the connectionProtocols vocabulary list. Do not ask about port or label. Do not attempt to enumerate every same-tier connection in a single session.\\n\"\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"software-deployment-pattern\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-software-deployment-pattern.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-VK45\",\n  \"type\": \"requirement_group\",\n  \"name\": \"SoftwareDeploymentPattern RequirementGroup\",\n  \"description\": \"Structured checklist of required questions and answers used to define a complete and correct software deployment pattern. A complete pattern must also pass the ratcheted sdp-internal-stub-listener gate, which blocks completion while a call in the pattern targets a stub listener owned by an internal component.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"software_deployment_pattern\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"reference-architecture-conformance\",\n      \"description\": \"The SoftwareDeploymentPattern must reference a valid ReferenceArchitecture ID or explicitly document that no applicable ReferenceArchitecture exists yet.\",\n      \"rationale\": \"Connecting deployments to patterns enables governance discoverability and impact analysis.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"followsReferenceArchitecture\",\n          \"example\": \"reference-architecture.dotnet.three-tier.ha\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noApplicablePattern\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noApplicablePattern, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"decisionRecord\",\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"service-groups\",\n      \"description\": \"The SoftwareDeploymentPattern must declare the service groups that make up the deployed product.\",\n      \"rationale\": \"A deployment manifest is incomplete until the real deployed service group structure is explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"serviceGroups\",\n          \"example\": \"Non-empty serviceGroups list with named deployment groups and deployable object references\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"role\": \"service-group\"\n          },\n          \"example\": \"Frontend UI, Data Services, Shared Event Processing Services\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"internalComponent\"\n      ]\n    },\n    {\n      \"id\": \"deployment-targets\",\n      \"description\": \"Every service group must describe its deployment boundary or execution context at the level needed to understand ownership, isolation, and operational responsibility.\",\n      \"rationale\": \"Deployment reality is not complete until the architect can explain the boundary that matters for operating and governing each service group; that boundary may be an account, cluster, data center, customer site, tenant/environment boundary, SaaS context, or another architecture-relevant execution context.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"deploymentTargets\",\n          \"example\": \"deploymentTargets: aws:us-east-1:prod\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"deploymentTargets\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: deploymentTargets, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"availability-requirement\",\n      \"description\": \"The product availability tier must be documented.\",\n      \"rationale\": \"Availability requirements justify deployment posture and inform operational support models.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"availabilityRequirement\",\n          \"example\": \"availabilityRequirement: high-availability\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"availabilityRequirement\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: availabilityRequirement, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"additional-interactions\",\n      \"description\": \"Any external systems this product interacts with beyond what its component deployable objects declare must be documented via relationship objects \\u2014 or explicitly stated as none.\",\n      \"rationale\": \"Product-specific integrations are invisible to the architecture without explicit declaration.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"externalDependencies\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: externalDependencies, recording this decision (or why it is not applicable).\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noAdditionalInteractions\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noAdditionalInteractions, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"data-classification\",\n      \"description\": \"The type of data this product stores or processes must be documented.\",\n      \"rationale\": \"Data classification drives security posture requirements and compliance obligations.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"dataClassification\",\n          \"example\": \"dataClassification: internal\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"dataClassification\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: dataClassification, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"failure-domain\",\n      \"description\": \"The SoftwareDeploymentPattern must document the deployment-level failure domain of the product.\",\n      \"rationale\": \"Product-level impact boundaries cannot be inferred from component selections alone.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"failureDomain\",\n          \"example\": \"failureDomain: regional\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"failureDomain\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: failureDomain, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"pattern-deviations\",\n      \"description\": \"Any intentional deviation from the selected ReferenceArchitecture must be documented, or the SoftwareDeploymentPattern must explicitly state that no deviations exist.\",\n      \"rationale\": \"The SoftwareDeploymentPattern is where pattern intent becomes product deployment reality, so departures from the ReferenceArchitecture must be visible.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"patternDeviations\",\n          \"example\": \"patternDeviations: none\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"patternDeviations\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: patternDeviations, recording this decision (or why it is not applicable).\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noPatternDeviations\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noPatternDeviations, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"inter-service-connections\",\n      \"description\": \"Primary inter-service communication paths that cross a tier boundary (e.g. presentation\\u2192application) or a network zone boundary must be documented as relationship objects in the catalog, or the pattern must explicitly state that no cross-boundary connections exist.\\n\",\n      \"rationale\": \"Service-to-service communication across tiers and zones is an architecture decision with security, performance, and compliance implications. Without explicit connection records the architecture cannot be analyzed for data-flow compliance, blast-radius, or network policy conformance.\\n\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"interServiceConnections\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: interServiceConnections, recording this decision (or why it is not applicable).\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noCrossBoundaryConnections\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noCrossBoundaryConnections, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"naRationale\": \"Acceptable when the deployment has only a single tier and no network zones.\",\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ],\n      \"interviewHint\": \"Use the propose-and-confirm pattern. Ask one yes/no question per tier crossing (presentation\\u2192application, application\\u2192data, application\\u2192utility). For each confirmed crossing, present a multi-select list of the services in the source tier and ask which ones make calls across. Then ask protocol once per crossing using the connectionProtocols vocabulary list. Do not ask about port or label. Do not attempt to enumerate every same-tier connection in a single session.\\n\"\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"software-deployment-pattern\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-software-deployment-pattern.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -17035,6 +17167,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -17133,6 +17266,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -17238,6 +17372,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -17430,6 +17565,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -17640,6 +17776,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -17840,6 +17977,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -18044,6 +18182,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -18253,6 +18392,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -18445,6 +18585,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -18649,6 +18790,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -18852,6 +18994,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -19035,6 +19178,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -19207,6 +19351,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -19348,6 +19493,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -19489,6 +19635,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -19630,6 +19777,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -19779,6 +19927,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -19922,6 +20071,1026 @@ window.DRAFT_BROWSER_DATA = {
       "inboundRelationships": []
     },
     {
+      "id": "01KVFRT368-SF01",
+      "uid": "01KVFRT368-SF01",
+      "name": "Billing Export SFTP",
+      "aliases": [],
+      "type": "listener",
+      "typeLabel": "Listener",
+      "filterType": "listener",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "SFTP (SSH file transfer) outbox for usage exports. SSH key authentication per consumer. Looks like the Image Import SFTP listener (same protocol and port) but is a different listener: the owner is part of listener identity.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "other",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "kind": "product_component",
+        "ref": "01KVFRT368-PCB1"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/engineering/listeners/listener-billing-export-sftp.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PCB1",
+          "path": "owner.ref"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "owner",
+          "protocol",
+          "port",
+          "endpoint",
+          "authenticationModel",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "methods",
+          "description",
+          "aliases",
+          "tags",
+          "notes",
+          "decisionRecords",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "owner": "dict",
+          "port": "int",
+          "endpoint": "str",
+          "methods": "list",
+          "aliases": "list",
+          "tags": "list",
+          "notes": "dict",
+          "decisionRecords": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "protocol": [
+            "REST",
+            "gRPC",
+            "GraphQL",
+            "WebSocket",
+            "AMQP",
+            "SMTP",
+            "SQL",
+            "Redis",
+            "Kafka",
+            "SQS",
+            "SNS",
+            "S3",
+            "DynamoDB",
+            "HTTP",
+            "HTTPS",
+            "TCP",
+            "UDP",
+            "other"
+          ],
+          "authenticationModel": [
+            "iam",
+            "api-key",
+            "oauth",
+            "saml",
+            "none",
+            "other",
+            "TBD"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "decisionRecords": "decisionRecordRef",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/listener.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-SF01\",\n  \"type\": \"listener\",\n  \"name\": \"Billing Export SFTP\",\n  \"owner\": {\n    \"kind\": \"product_component\",\n    \"ref\": \"01KVFRT368-PCB1\"\n  },\n  \"protocol\": \"TCP\",\n  \"port\": 22,\n  \"endpoint\": \"/\",\n  \"authenticationModel\": \"other\",\n  \"catalogStatus\": \"complete\",\n  \"description\": \"SFTP (SSH file transfer) outbox for usage exports. SSH key authentication per consumer. Looks like the Image Import SFTP listener (same protocol and port) but is a different listener: the owner is part of listener identity.\",\n  \"_source\": \"examples/catalog/engineering/listeners/listener-billing-export-sftp.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KVFRT368-SF02",
+      "uid": "01KVFRT368-SF02",
+      "name": "Image Import SFTP",
+      "aliases": [],
+      "type": "listener",
+      "typeLabel": "Listener",
+      "filterType": "listener",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "SFTP (SSH file transfer) inbox for VM image uploads. SSH key authentication per uploader. Same protocol and port as the Billing Export SFTP listener, different owner, so a different listener.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "other",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "kind": "product_component",
+        "ref": "01KVFRT368-PC12"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/engineering/listeners/listener-image-import-sftp.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PC12",
+          "path": "owner.ref"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "owner",
+          "protocol",
+          "port",
+          "endpoint",
+          "authenticationModel",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "methods",
+          "description",
+          "aliases",
+          "tags",
+          "notes",
+          "decisionRecords",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "owner": "dict",
+          "port": "int",
+          "endpoint": "str",
+          "methods": "list",
+          "aliases": "list",
+          "tags": "list",
+          "notes": "dict",
+          "decisionRecords": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "protocol": [
+            "REST",
+            "gRPC",
+            "GraphQL",
+            "WebSocket",
+            "AMQP",
+            "SMTP",
+            "SQL",
+            "Redis",
+            "Kafka",
+            "SQS",
+            "SNS",
+            "S3",
+            "DynamoDB",
+            "HTTP",
+            "HTTPS",
+            "TCP",
+            "UDP",
+            "other"
+          ],
+          "authenticationModel": [
+            "iam",
+            "api-key",
+            "oauth",
+            "saml",
+            "none",
+            "other",
+            "TBD"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "decisionRecords": "decisionRecordRef",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/listener.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-SF02\",\n  \"type\": \"listener\",\n  \"name\": \"Image Import SFTP\",\n  \"owner\": {\n    \"kind\": \"product_component\",\n    \"ref\": \"01KVFRT368-PC12\"\n  },\n  \"protocol\": \"TCP\",\n  \"port\": 22,\n  \"endpoint\": \"/\",\n  \"authenticationModel\": \"other\",\n  \"catalogStatus\": \"complete\",\n  \"description\": \"SFTP (SSH file transfer) inbox for VM image uploads. SSH key authentication per uploader. Same protocol and port as the Billing Export SFTP listener, different owner, so a different listener.\",\n  \"_source\": \"examples/catalog/engineering/listeners/listener-image-import-sftp.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KVFRT368-PD03",
+      "uid": "01KVFRT368-PD03",
+      "name": "PagerDuty Events API v2",
+      "aliases": [],
+      "type": "listener",
+      "typeLabel": "Listener",
+      "filterType": "listener",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Vendor endpoint that accepts alert events. Recorded once and reused by every caller; the integration key is the api-key.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "api-key",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "kind": "external_system",
+        "ref": "01KVFRT368-SY01"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/engineering/listeners/listener-pagerduty-events-v2.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-SY01",
+          "path": "owner.ref"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "owner",
+          "protocol",
+          "port",
+          "endpoint",
+          "authenticationModel",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "methods",
+          "description",
+          "aliases",
+          "tags",
+          "notes",
+          "decisionRecords",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "owner": "dict",
+          "port": "int",
+          "endpoint": "str",
+          "methods": "list",
+          "aliases": "list",
+          "tags": "list",
+          "notes": "dict",
+          "decisionRecords": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "protocol": [
+            "REST",
+            "gRPC",
+            "GraphQL",
+            "WebSocket",
+            "AMQP",
+            "SMTP",
+            "SQL",
+            "Redis",
+            "Kafka",
+            "SQS",
+            "SNS",
+            "S3",
+            "DynamoDB",
+            "HTTP",
+            "HTTPS",
+            "TCP",
+            "UDP",
+            "other"
+          ],
+          "authenticationModel": [
+            "iam",
+            "api-key",
+            "oauth",
+            "saml",
+            "none",
+            "other",
+            "TBD"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "decisionRecords": "decisionRecordRef",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/listener.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-PD03\",\n  \"type\": \"listener\",\n  \"name\": \"PagerDuty Events API v2\",\n  \"owner\": {\n    \"kind\": \"external_system\",\n    \"ref\": \"01KVFRT368-SY01\"\n  },\n  \"protocol\": \"HTTPS\",\n  \"port\": 443,\n  \"endpoint\": \"/v2/enqueue\",\n  \"authenticationModel\": \"api-key\",\n  \"catalogStatus\": \"complete\",\n  \"description\": \"Vendor endpoint that accepts alert events. Recorded once and reused by every caller; the integration key is the api-key.\",\n  \"methods\": [\n    \"POST\"\n  ],\n  \"_source\": \"examples/catalog/engineering/listeners/listener-pagerduty-events-v2.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KVFRT368-PCB1",
+      "uid": "01KVFRT368-PCB1",
+      "name": "Billing Export Service",
+      "aliases": [],
+      "type": "product_component",
+      "typeLabel": "ProductComponent / Api Service",
+      "filterType": "product_component",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Builds nightly tenant usage and chargeback files from Ceilometer data and serves them to finance tooling over its own SFTP outbox.",
+      "version": "1.3.0",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "preferred",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "STCK000006-RS06",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "api-service",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "platform-engineering",
+        "contact": "platform-engineering@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#1f8a5b",
+      "source": "examples/catalog/engineering/product-components/product-component-billing-export-service.yaml",
+      "tags": [
+        "product-component",
+        "openstack",
+        "file-exchange"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [
+        {
+          "uid": "01KVFRT368-SF01",
+          "name": "Billing Export SFTP",
+          "protocol": "TCP",
+          "port": 22,
+          "endpoint": "/",
+          "authenticationModel": "other",
+          "catalogStatus": "complete"
+        }
+      ],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [
+        {
+          "ref": "01KVFRT368-DR01",
+          "key": "product_component"
+        }
+      ],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "STCK000006-RS06",
+          "path": "runsOn"
+        },
+        {
+          "target": "01KVFRT368-DR01",
+          "path": "decisionRecords[0].ref"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KVFRT368-SF01",
+          "path": "owner.ref"
+        },
+        {
+          "source": "01KVFRT368-DR01",
+          "path": "linkedObject"
+        },
+        {
+          "source": "01KVFRT368-RS04",
+          "path": "source"
+        },
+        {
+          "source": "01KVFRT368-RS01",
+          "path": "target"
+        },
+        {
+          "source": "KGX2365XDE-1RN6",
+          "path": "source"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "repoUrl",
+          "owner",
+          "classification",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "lifecycleStatus",
+          "aliases",
+          "description",
+          "version",
+          "tags",
+          "runsOn",
+          "language",
+          "interfaces",
+          "networkBindings",
+          "environmentConfiguration",
+          "runtimeSpec",
+          "notes",
+          "decisionRecords",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "runsOn": "str",
+          "tags": "list",
+          "interfaces": "list",
+          "networkBindings": "list",
+          "environmentConfiguration": "list",
+          "runtimeSpec": "dict",
+          "notes": "dict",
+          "requirementGroups": "list",
+          "decisionRecords": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ],
+          "classification": [
+            "web-application",
+            "api-service",
+            "worker",
+            "library",
+            "cli",
+            "other"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "interfaces": "interface",
+          "networkBindings": "networkBinding",
+          "environmentConfiguration": "environmentVariable",
+          "decisionRecords": "decisionRecordRef",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/product-component.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-PCB1\",\n  \"type\": \"product_component\",\n  \"name\": \"Billing Export Service\",\n  \"description\": \"Builds nightly tenant usage and chargeback files from Ceilometer data and serves them to finance tooling over its own SFTP outbox.\",\n  \"version\": \"1.3.0\",\n  \"catalogStatus\": \"complete\",\n  \"lifecycleStatus\": \"preferred\",\n  \"repoUrl\": \"https://github.example.com/platform-engineering/billing-export\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"product-component\",\n    \"openstack\",\n    \"file-exchange\"\n  ],\n  \"classification\": \"api-service\",\n  \"language\": \"Python\",\n  \"runtimeRequirement\": \"Python 3.12\",\n  \"runsOn\": \"STCK000006-RS06\",\n  \"interfaces\": [\n    {\n      \"name\": \"SFTP outbox\",\n      \"protocol\": \"other\",\n      \"path\": \"/\",\n      \"authenticationModel\": \"other\",\n      \"description\": \"Usage and chargeback export files, downloaded over SFTP (SSH key per consumer).\"\n    }\n  ],\n  \"decisionRecords\": [\n    {\n      \"ref\": \"01KVFRT368-DR01\",\n      \"key\": \"product_component\"\n    }\n  ],\n  \"_source\": \"examples/catalog/engineering/product-components/product-component-billing-export-service.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [
+        {
+          "uid": "01KVFRT368-RS04",
+          "name": "Billing Export Service \u2192 PagerDuty",
+          "label": "sends alerts to",
+          "technology": "HTTPS",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-SY01",
+          "targetName": "PagerDuty",
+          "capabilities": []
+        },
+        {
+          "uid": "KGX2365XDE-1RN6",
+          "name": "Billing Export Service \u2192 Horizon Dashboard",
+          "label": "runs on",
+          "technology": "",
+          "direction": "",
+          "targetUid": "STCK000006-RS06",
+          "targetName": "Horizon Dashboard",
+          "capabilities": []
+        }
+      ],
+      "inboundRelationships": [
+        {
+          "uid": "01KVFRT368-RS01",
+          "name": "OpenStack Ops Console \u2192 Billing Export Service",
+          "label": "downloads usage exports from",
+          "technology": "SFTP",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-PCB1",
+          "targetName": "Billing Export Service",
+          "capabilities": [],
+          "sourceUid": "01KSE5V73Z-Q0A0",
+          "sourceName": "OpenStack Ops Console"
+        }
+      ]
+    },
+    {
+      "id": "01KVFRT368-PC12",
+      "uid": "01KVFRT368-PC12",
+      "name": "Image Import Service",
+      "aliases": [],
+      "type": "product_component",
+      "typeLabel": "ProductComponent / Api Service",
+      "filterType": "product_component",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Accepts uploaded VM images over its own SFTP inbox, scans and converts them, and registers them with Glance.",
+      "version": "1.3.0",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "preferred",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "STCK000006-RS06",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "api-service",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "platform-engineering",
+        "contact": "platform-engineering@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#1f8a5b",
+      "source": "examples/catalog/engineering/product-components/product-component-image-import-service.yaml",
+      "tags": [
+        "product-component",
+        "openstack",
+        "file-exchange"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [
+        {
+          "uid": "01KVFRT368-SF02",
+          "name": "Image Import SFTP",
+          "protocol": "TCP",
+          "port": 22,
+          "endpoint": "/",
+          "authenticationModel": "other",
+          "catalogStatus": "complete"
+        }
+      ],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [
+        {
+          "ref": "01KVFRT368-DR02",
+          "key": "product_component"
+        }
+      ],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "STCK000006-RS06",
+          "path": "runsOn"
+        },
+        {
+          "target": "01KVFRT368-DR02",
+          "path": "decisionRecords[0].ref"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KVFRT368-SF02",
+          "path": "owner.ref"
+        },
+        {
+          "source": "01KVFRT368-DR02",
+          "path": "linkedObject"
+        },
+        {
+          "source": "01KVFRT368-RS05",
+          "path": "source"
+        },
+        {
+          "source": "01KVFRT368-RS02",
+          "path": "target"
+        },
+        {
+          "source": "PVEV4MTX3V-PHY9",
+          "path": "source"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "repoUrl",
+          "owner",
+          "classification",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "lifecycleStatus",
+          "aliases",
+          "description",
+          "version",
+          "tags",
+          "runsOn",
+          "language",
+          "interfaces",
+          "networkBindings",
+          "environmentConfiguration",
+          "runtimeSpec",
+          "notes",
+          "decisionRecords",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "runsOn": "str",
+          "tags": "list",
+          "interfaces": "list",
+          "networkBindings": "list",
+          "environmentConfiguration": "list",
+          "runtimeSpec": "dict",
+          "notes": "dict",
+          "requirementGroups": "list",
+          "decisionRecords": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ],
+          "classification": [
+            "web-application",
+            "api-service",
+            "worker",
+            "library",
+            "cli",
+            "other"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "interfaces": "interface",
+          "networkBindings": "networkBinding",
+          "environmentConfiguration": "environmentVariable",
+          "decisionRecords": "decisionRecordRef",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/product-component.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-PC12\",\n  \"type\": \"product_component\",\n  \"name\": \"Image Import Service\",\n  \"description\": \"Accepts uploaded VM images over its own SFTP inbox, scans and converts them, and registers them with Glance.\",\n  \"version\": \"1.3.0\",\n  \"catalogStatus\": \"complete\",\n  \"lifecycleStatus\": \"preferred\",\n  \"repoUrl\": \"https://github.example.com/platform-engineering/image-import\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"product-component\",\n    \"openstack\",\n    \"file-exchange\"\n  ],\n  \"classification\": \"api-service\",\n  \"language\": \"Python\",\n  \"runtimeRequirement\": \"Python 3.12\",\n  \"runsOn\": \"STCK000006-RS06\",\n  \"interfaces\": [\n    {\n      \"name\": \"SFTP inbox\",\n      \"protocol\": \"other\",\n      \"path\": \"/\",\n      \"authenticationModel\": \"other\",\n      \"description\": \"VM image uploads over SFTP (SSH key per uploader).\"\n    }\n  ],\n  \"decisionRecords\": [\n    {\n      \"ref\": \"01KVFRT368-DR02\",\n      \"key\": \"product_component\"\n    }\n  ],\n  \"_source\": \"examples/catalog/engineering/product-components/product-component-image-import-service.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [
+        {
+          "uid": "01KVFRT368-RS05",
+          "name": "Image Import Service \u2192 PagerDuty",
+          "label": "sends alerts to",
+          "technology": "HTTPS",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-SY01",
+          "targetName": "PagerDuty",
+          "capabilities": []
+        },
+        {
+          "uid": "PVEV4MTX3V-PHY9",
+          "name": "Image Import Service \u2192 Horizon Dashboard",
+          "label": "runs on",
+          "technology": "",
+          "direction": "",
+          "targetUid": "STCK000006-RS06",
+          "targetName": "Horizon Dashboard",
+          "capabilities": []
+        }
+      ],
+      "inboundRelationships": [
+        {
+          "uid": "01KVFRT368-RS02",
+          "name": "OpenStack Ops Console \u2192 Image Import Service",
+          "label": "uploads VM images to",
+          "technology": "SFTP",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-PC12",
+          "targetName": "Image Import Service",
+          "capabilities": [],
+          "sourceUid": "01KSE5V73Z-Q0A0",
+          "sourceName": "OpenStack Ops Console"
+        }
+      ]
+    },
+    {
       "id": "01KSE5V73Z-Q0A0",
       "uid": "01KSE5V73Z-Q0A0",
       "name": "OpenStack Ops Console",
@@ -19986,6 +21155,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -20043,6 +21213,18 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KT1340EW-5H7Z",
           "path": "linkedObject"
+        },
+        {
+          "source": "01KVFRT368-RS03",
+          "path": "source"
+        },
+        {
+          "source": "01KVFRT368-RS01",
+          "path": "source"
+        },
+        {
+          "source": "01KVFRT368-RS02",
+          "path": "source"
         },
         {
           "source": "95BR2EYAF9-AJ9Y",
@@ -20125,6 +21307,36 @@ window.DRAFT_BROWSER_DATA = {
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSE5V73Z-Q0A0\",\n  \"type\": \"product_component\",\n  \"name\": \"OpenStack Ops Console\",\n  \"description\": \"Internal web-based operations console for platform engineering teams. Surfaces real-time service health, quota utilization, and incident triage workflows across the OpenStack control plane. Deployed alongside Horizon on the same runtime service.\",\n  \"version\": \"2.4.1\",\n  \"catalogStatus\": \"complete\",\n  \"lifecycleStatus\": \"preferred\",\n  \"repoUrl\": \"https://github.example.com/platform-engineering/openstack-ops-console\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"product-component\",\n    \"openstack\",\n    \"operations\",\n    \"internal-tooling\"\n  ],\n  \"classification\": \"web-application\",\n  \"language\": \"TypeScript\",\n  \"runtimeRequirement\": \"Node 20 LTS\",\n  \"runsOn\": \"STCK000006-RS06\",\n  \"interfaces\": [\n    {\n      \"name\": \"Ops Console UI\",\n      \"protocol\": \"REST\",\n      \"path\": \"/ops\",\n      \"authenticationModel\": \"saml\",\n      \"description\": \"Web UI for internal operators. SAML SSO via enterprise identity provider.\"\n    },\n    {\n      \"name\": \"Health API\",\n      \"protocol\": \"REST\",\n      \"path\": \"/ops/api/health\",\n      \"authenticationModel\": \"api-key\",\n      \"description\": \"Machine-readable health endpoint consumed by monitoring pipelines.\"\n    }\n  ],\n  \"networkBindings\": [\n    {\n      \"port\": 8080,\n      \"protocol\": \"HTTPS\",\n      \"direction\": \"inbound\",\n      \"description\": \"Inbound HTTPS from Horizon nginx reverse proxy.\"\n    }\n  ],\n  \"environmentConfiguration\": [\n    {\n      \"name\": \"KEYSTONE_ENDPOINT\",\n      \"description\": \"Keystone identity service endpoint for authentication delegation.\",\n      \"required\": true,\n      \"sensitive\": false\n    },\n    {\n      \"name\": \"OPS_CONSOLE_SECRET_KEY\",\n      \"description\": \"Application secret key used for session signing.\",\n      \"required\": true,\n      \"sensitive\": true\n    },\n    {\n      \"name\": \"SAML_IDP_METADATA_URL\",\n      \"description\": \"URL for the enterprise SAML identity provider metadata document.\",\n      \"required\": true,\n      \"sensitive\": false\n    }\n  ],\n  \"notes\": {\n    \"product_component\": \"Application secrets (OPS_CONSOLE_SECRET_KEY, SAML credentials) are injected at deploy time from the platform secret store. No secrets present in source code or container images. See decision record 01KSE5V73Z-DRSC.\"\n  },\n  \"decisionRecords\": [\n    {\n      \"ref\": \"01KSE5V73Z-DRSC\"\n    },\n    {\n      \"ref\": \"01KT1340EW-5H7Z\",\n      \"key\": \"product_component\"\n    }\n  ],\n  \"_source\": \"examples/catalog/engineering/product-components/product-component-openstack-ops-console.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [
+        {
+          "uid": "01KVFRT368-RS03",
+          "name": "OpenStack Ops Console \u2192 PagerDuty",
+          "label": "sends alerts to",
+          "technology": "HTTPS",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-SY01",
+          "targetName": "PagerDuty",
+          "capabilities": []
+        },
+        {
+          "uid": "01KVFRT368-RS01",
+          "name": "OpenStack Ops Console \u2192 Billing Export Service",
+          "label": "downloads usage exports from",
+          "technology": "SFTP",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-PCB1",
+          "targetName": "Billing Export Service",
+          "capabilities": []
+        },
+        {
+          "uid": "01KVFRT368-RS02",
+          "name": "OpenStack Ops Console \u2192 Image Import Service",
+          "label": "uploads VM images to",
+          "technology": "SFTP",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-PC12",
+          "targetName": "Image Import Service",
+          "capabilities": []
+        },
         {
           "uid": "95BR2EYAF9-AJ9Y",
           "name": "OpenStack Ops Console \u2192 Horizon Dashboard",
@@ -20237,6 +21449,7 @@ window.DRAFT_BROWSER_DATA = {
           "description": "Internal tier hosting relational databases (MariaDB Galera), message broker (RabbitMQ), and object storage (Swift). Accessible only from control plane services."
         }
       ],
+      "ownedListeners": [],
       "sdpConnections": [
         {
           "from": "01KSF29JTP-9HYA",
@@ -20246,7 +21459,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "proxies authentication requests",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "01KSF29JTP-9HYA",
@@ -20256,7 +21470,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "proxies networking API requests",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "01KSF29JTP-9HYA",
@@ -20266,7 +21481,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "proxies compute API requests",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000008-RS08",
@@ -20276,7 +21492,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000008-RS08",
@@ -20286,7 +21503,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "sends events to",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000005-RS05",
@@ -20296,7 +21514,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "validates tokens",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000005-RS05",
@@ -20306,7 +21525,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "publishes and consumes RPC messages",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000005-RS05",
@@ -20316,7 +21536,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "persists volume state",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000003-RS03",
@@ -20326,7 +21547,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000003-RS03",
@@ -20336,7 +21558,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000003-RS03",
@@ -20346,7 +21569,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000007-RS07",
@@ -20356,7 +21580,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000007-RS07",
@@ -20366,7 +21591,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000007-RS07",
@@ -20376,7 +21602,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -20386,7 +21613,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -20396,7 +21624,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -20406,7 +21635,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -20416,7 +21646,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -20426,7 +21657,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -20436,7 +21668,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -20446,7 +21679,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -20456,7 +21690,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -20466,7 +21701,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -20476,7 +21712,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000002-RS02",
@@ -20486,7 +21723,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "persists identity data",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000004-RS04",
@@ -20496,7 +21734,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "validates tokens",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000004-RS04",
@@ -20506,7 +21745,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "publishes and consumes agent RPC messages",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000004-RS04",
@@ -20516,7 +21756,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "persists network state",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -20526,7 +21767,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "attaches block volumes",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -20536,7 +21778,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "validates tokens",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -20546,7 +21789,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "publishes and consumes RPC messages",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -20556,7 +21800,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -20566,7 +21811,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "provisions network ports",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -20576,7 +21822,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "reads from / writes to",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000D-RS0D",
@@ -20586,7 +21833,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000B-RS0B",
@@ -20596,7 +21844,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000B-RS0B",
@@ -20606,7 +21855,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000C-RS0C",
@@ -20616,7 +21866,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000C-RS0C",
@@ -20626,7 +21877,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000A-RS0A",
@@ -20636,7 +21888,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000A-RS0A",
@@ -20646,7 +21899,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000A-RS0A",
@@ -20656,7 +21910,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         }
       ],
       "serviceGroups": [
@@ -21167,6 +22422,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -21341,6 +22597,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -21527,6 +22784,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -21705,6 +22963,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -21879,6 +23138,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -22065,6 +23325,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -22239,6 +23500,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -22425,6 +23687,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -22603,6 +23866,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -22777,6 +24041,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -22963,6 +24228,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -23137,6 +24403,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -23323,6 +24590,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -23501,6 +24769,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -23675,6 +24944,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -23861,6 +25131,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -24035,6 +25306,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -24221,6 +25493,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -24399,6 +25672,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -24573,6 +25847,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -24759,6 +26034,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -24933,6 +26209,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -25119,6 +26396,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -25297,6 +26575,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -25471,6 +26750,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -25657,6 +26937,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -25831,6 +27112,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -26017,6 +27299,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -26195,6 +27478,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -26369,6 +27653,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -26555,6 +27840,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -26729,6 +28015,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -26915,6 +28202,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -27093,6 +28381,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -27267,6 +28556,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -27454,6 +28744,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -27630,6 +28921,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -27812,6 +29104,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -27998,6 +29291,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -28168,6 +29462,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -28342,6 +29637,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -28512,6 +29808,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -28695,6 +29992,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -28870,6 +30168,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -28979,6 +30278,348 @@ window.DRAFT_BROWSER_DATA = {
       "inboundRelationships": []
     },
     {
+      "id": "01KVFRT368-DR01",
+      "uid": "01KVFRT368-DR01",
+      "name": "Billing Export Service \u2014 Security and Compliance decisions",
+      "aliases": [],
+      "type": "decision_record",
+      "typeLabel": "DecisionRecord / decision",
+      "filterType": "decision_record",
+      "category": "decision",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "preferred",
+      "status": "accepted",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "platform-engineering",
+        "contact": "platform-engineering@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#1f8a5b",
+      "source": "examples/catalog/governance/decision-records/dr-product-component-billing-export-service-compliance.yaml",
+      "tags": [
+        "decision-record",
+        "example",
+        "compliance"
+      ],
+      "ardCategory": "decision",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "Records the security and compliance decisions for Billing Export Service addressing the product_component control requirement(s). Its SFTP listener uses per-client SSH keys; this DecisionRecord is the committed answer that satisfies the requirement(s).",
+      "relatedDecisionRecords": [],
+      "linkedObject": "01KVFRT368-PCB1",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PCB1",
+          "path": "linkedObject"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KVFRT368-PCB1",
+          "path": "decisionRecords[0].ref"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "category",
+          "status",
+          "catalogStatus",
+          "lifecycleStatus"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags",
+          "affectedComponent",
+          "impact",
+          "mitigationPath",
+          "decisionRationale",
+          "relatedDecisionRecords",
+          "controlReferences",
+          "linkedObject",
+          "approver",
+          "approvalDate"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "relatedDecisionRecords": "list",
+          "controlReferences": "list",
+          "approver": "str",
+          "approvalDate": "str"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ],
+          "category": [
+            "risk",
+            "decision"
+          ],
+          "status": [
+            "open",
+            "accepted",
+            "mitigated",
+            "resolved"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/decision-record.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-DR01\",\n  \"type\": \"decision_record\",\n  \"name\": \"Billing Export Service \\u2014 Security and Compliance decisions\",\n  \"category\": \"decision\",\n  \"status\": \"accepted\",\n  \"catalogStatus\": \"complete\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"linkedObject\": \"01KVFRT368-PCB1\",\n  \"tags\": [\n    \"decision-record\",\n    \"example\",\n    \"compliance\"\n  ],\n  \"decisionRationale\": \"Records the security and compliance decisions for Billing Export Service addressing the product_component control requirement(s). Its SFTP listener uses per-client SSH keys; this DecisionRecord is the committed answer that satisfies the requirement(s).\",\n  \"_source\": \"examples/catalog/governance/decision-records/dr-product-component-billing-export-service-compliance.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KVFRT368-DR02",
+      "uid": "01KVFRT368-DR02",
+      "name": "Image Import Service \u2014 Security and Compliance decisions",
+      "aliases": [],
+      "type": "decision_record",
+      "typeLabel": "DecisionRecord / decision",
+      "filterType": "decision_record",
+      "category": "decision",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "preferred",
+      "status": "accepted",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "platform-engineering",
+        "contact": "platform-engineering@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#1f8a5b",
+      "source": "examples/catalog/governance/decision-records/dr-product-component-image-import-service-compliance.yaml",
+      "tags": [
+        "decision-record",
+        "example",
+        "compliance"
+      ],
+      "ardCategory": "decision",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "Records the security and compliance decisions for Image Import Service addressing the product_component control requirement(s). Its SFTP listener uses per-client SSH keys; this DecisionRecord is the committed answer that satisfies the requirement(s).",
+      "relatedDecisionRecords": [],
+      "linkedObject": "01KVFRT368-PC12",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PC12",
+          "path": "linkedObject"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KVFRT368-PC12",
+          "path": "decisionRecords[0].ref"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "category",
+          "status",
+          "catalogStatus",
+          "lifecycleStatus"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags",
+          "affectedComponent",
+          "impact",
+          "mitigationPath",
+          "decisionRationale",
+          "relatedDecisionRecords",
+          "controlReferences",
+          "linkedObject",
+          "approver",
+          "approvalDate"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "relatedDecisionRecords": "list",
+          "controlReferences": "list",
+          "approver": "str",
+          "approvalDate": "str"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ],
+          "category": [
+            "risk",
+            "decision"
+          ],
+          "status": [
+            "open",
+            "accepted",
+            "mitigated",
+            "resolved"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/decision-record.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-DR02\",\n  \"type\": \"decision_record\",\n  \"name\": \"Image Import Service \\u2014 Security and Compliance decisions\",\n  \"category\": \"decision\",\n  \"status\": \"accepted\",\n  \"catalogStatus\": \"complete\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"linkedObject\": \"01KVFRT368-PC12\",\n  \"tags\": [\n    \"decision-record\",\n    \"example\",\n    \"compliance\"\n  ],\n  \"decisionRationale\": \"Records the security and compliance decisions for Image Import Service addressing the product_component control requirement(s). Its SFTP listener uses per-client SSH keys; this DecisionRecord is the committed answer that satisfies the requirement(s).\",\n  \"_source\": \"examples/catalog/governance/decision-records/dr-product-component-image-import-service-compliance.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
       "id": "01KT1340EW-5H7Z",
       "uid": "01KT1340EW-5H7Z",
       "name": "OpenStack Ops Console \u2014 Security and Compliance decisions",
@@ -29040,6 +30681,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -29210,6 +30852,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -29380,6 +31023,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -29550,6 +31194,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -29724,6 +31369,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -29894,6 +31540,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -30068,6 +31715,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -30242,6 +31890,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -30424,6 +32073,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -30594,6 +32244,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -30768,6 +32419,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -30942,6 +32594,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -31124,6 +32777,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -31294,6 +32948,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -31468,6 +33123,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -31642,6 +33298,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -31824,6 +33481,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -31994,6 +33652,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -32168,6 +33827,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -32342,6 +34002,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -32524,6 +34185,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -32694,6 +34356,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -32868,6 +34531,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -33042,6 +34706,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -33224,6 +34889,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -33394,6 +35060,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -33568,6 +35235,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -33742,6 +35410,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -33924,6 +35593,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -34094,6 +35764,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -34268,6 +35939,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -34442,6 +36114,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -34624,6 +36297,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -34794,6 +36468,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -34968,6 +36643,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -35142,6 +36818,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -35324,6 +37001,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -35494,6 +37172,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -35668,6 +37347,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -35842,6 +37522,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -36024,6 +37705,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -36194,6 +37876,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -36368,6 +38051,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -36542,6 +38226,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -36724,6 +38409,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -36894,6 +38580,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -37068,6 +38755,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -37242,6 +38930,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -37424,6 +39113,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -37594,6 +39284,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -37768,6 +39459,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -37942,6 +39634,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -38124,6 +39817,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -38294,6 +39988,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -38468,6 +40163,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -38642,6 +40338,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -38824,6 +40521,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -39002,6 +40700,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -39172,6 +40871,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -39346,6 +41046,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -39520,6 +41221,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -39687,6 +41389,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -39740,6 +41443,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -39749,6 +41453,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -39833,6 +41538,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -39886,6 +41592,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -39895,6 +41602,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -39979,6 +41687,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -40032,6 +41741,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -40041,6 +41751,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40125,6 +41836,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -40174,6 +41886,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -40183,6 +41896,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40267,6 +41981,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -40316,6 +42031,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -40325,6 +42041,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40409,6 +42126,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -40458,6 +42176,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -40467,6 +42186,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40551,6 +42271,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -40600,6 +42321,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -40609,6 +42331,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40634,6 +42357,155 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/relationship.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"type\": \"relationship\",\n  \"uid\": \"01KSKWFZZW-ZEKF\",\n  \"name\": \"AWS Lambda Serverless Host \\u2192 AWS Lambda Service\",\n  \"catalogStatus\": \"stub\",\n  \"source\": \"01KQQ4Q025-1XDE\",\n  \"label\": \"calls\",\n  \"externalTarget\": \"AWS Lambda Service\",\n  \"notes\": \"The Lambda service itself provides the execution environment.\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-aws-lambda-serverless-host-calls-aws-lambda-service.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KVFRT368-RS04",
+      "uid": "01KVFRT368-RS04",
+      "name": "Billing Export Service \u2192 PagerDuty",
+      "aliases": [],
+      "type": "relationship",
+      "typeLabel": "Relationship",
+      "filterType": "relationship",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Billing Export Service raises incidents through the shared PagerDuty Events API v2 listener.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/governance/relationships/relationship-billing-export-service-alerts-pagerduty.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PCB1",
+          "path": "source"
+        },
+        {
+          "target": "01KVFRT368-SY01",
+          "path": "target"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "source",
+          "label",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "target",
+          "externalTarget",
+          "targetInterface",
+          "targetListener",
+          "technology",
+          "direction",
+          "flow",
+          "capabilities",
+          "notes",
+          "tags"
+        ],
+        "fieldTypes": {
+          "targetInterface": "str",
+          "targetListener": "str",
+          "tags": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "direction": [
+            "synchronous",
+            "asynchronous",
+            "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/relationship.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-RS04\",\n  \"type\": \"relationship\",\n  \"name\": \"Billing Export Service \\u2192 PagerDuty\",\n  \"description\": \"Billing Export Service raises incidents through the shared PagerDuty Events API v2 listener.\",\n  \"source\": \"01KVFRT368-PCB1\",\n  \"target\": \"01KVFRT368-SY01\",\n  \"targetListener\": \"01KVFRT368-PD03\",\n  \"label\": \"sends alerts to\",\n  \"technology\": \"HTTPS\",\n  \"direction\": \"synchronous\",\n  \"catalogStatus\": \"complete\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-billing-export-service-alerts-pagerduty.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -40693,6 +42565,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -40746,6 +42619,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -40755,6 +42629,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40839,6 +42714,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -40892,6 +42768,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -40901,6 +42778,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -40985,6 +42863,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -41038,6 +42917,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -41047,6 +42927,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -41131,6 +43012,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -41184,6 +43066,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -41193,6 +43076,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -41277,6 +43161,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -41326,6 +43211,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -41335,6 +43221,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -41419,6 +43306,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -41472,6 +43360,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -41481,6 +43370,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -41565,6 +43455,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -41614,6 +43505,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -41623,6 +43515,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -41707,6 +43600,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -41760,6 +43654,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -41769,6 +43664,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -41853,6 +43749,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -41906,6 +43803,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -41915,6 +43813,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -41999,6 +43898,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -42052,6 +43952,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -42061,6 +43962,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -42145,6 +44047,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -42198,6 +44101,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -42207,6 +44111,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -42291,6 +44196,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -42344,6 +44250,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -42353,6 +44260,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -42437,6 +44345,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -42490,6 +44399,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -42499,6 +44409,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -42583,6 +44494,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -42636,6 +44548,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -42645,6 +44558,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -42729,6 +44643,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -42782,6 +44697,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -42791,6 +44707,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -42875,6 +44792,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -42928,6 +44846,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -42937,6 +44856,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -43021,6 +44941,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -43074,6 +44995,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -43083,6 +45005,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -43167,6 +45090,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -43220,6 +45144,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -43229,6 +45154,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -43313,6 +45239,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -43366,6 +45293,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -43375,6 +45303,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -43400,6 +45329,155 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/relationship.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"type\": \"relationship\",\n  \"uid\": \"01KSKWG003-G3Q2\",\n  \"name\": \"Horizon Dashboard \\u2192 Nova Compute Service\",\n  \"catalogStatus\": \"incomplete\",\n  \"source\": \"STCK000006-RS06\",\n  \"label\": \"calls\",\n  \"target\": \"STCK000001-RS01\",\n  \"notes\": \"Horizon calls Nova APIs to display and manage compute instances, flavors, key pairs, and virtual console access.\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-horizon-dashboard-calls-nova-compute-service.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KVFRT368-RS05",
+      "uid": "01KVFRT368-RS05",
+      "name": "Image Import Service \u2192 PagerDuty",
+      "aliases": [],
+      "type": "relationship",
+      "typeLabel": "Relationship",
+      "filterType": "relationship",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Image Import Service raises incidents through the shared PagerDuty Events API v2 listener.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/governance/relationships/relationship-image-import-service-alerts-pagerduty.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PC12",
+          "path": "source"
+        },
+        {
+          "target": "01KVFRT368-SY01",
+          "path": "target"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "source",
+          "label",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "target",
+          "externalTarget",
+          "targetInterface",
+          "targetListener",
+          "technology",
+          "direction",
+          "flow",
+          "capabilities",
+          "notes",
+          "tags"
+        ],
+        "fieldTypes": {
+          "targetInterface": "str",
+          "targetListener": "str",
+          "tags": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "direction": [
+            "synchronous",
+            "asynchronous",
+            "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/relationship.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-RS05\",\n  \"type\": \"relationship\",\n  \"name\": \"Image Import Service \\u2192 PagerDuty\",\n  \"description\": \"Image Import Service raises incidents through the shared PagerDuty Events API v2 listener.\",\n  \"source\": \"01KVFRT368-PC12\",\n  \"target\": \"01KVFRT368-SY01\",\n  \"targetListener\": \"01KVFRT368-PD03\",\n  \"label\": \"sends alerts to\",\n  \"technology\": \"HTTPS\",\n  \"direction\": \"synchronous\",\n  \"catalogStatus\": \"complete\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-image-import-service-alerts-pagerduty.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -43459,6 +45537,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -43512,6 +45591,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -43521,6 +45601,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -43605,6 +45686,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -43658,6 +45740,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -43667,6 +45750,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -43751,6 +45835,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -43804,6 +45889,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -43813,6 +45899,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -43897,6 +45984,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -43950,6 +46038,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -43959,6 +46048,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -44043,6 +46133,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -44092,6 +46183,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -44101,6 +46193,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -44185,6 +46278,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -44234,6 +46328,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -44243,6 +46338,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -44327,6 +46423,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -44380,6 +46477,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -44389,6 +46487,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -44473,6 +46572,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -44526,6 +46626,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -44535,6 +46636,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -44619,6 +46721,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -44672,6 +46775,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -44681,6 +46785,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -44765,6 +46870,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -44814,6 +46920,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -44823,6 +46930,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -44907,6 +47015,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -44960,6 +47069,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -44969,6 +47079,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -45053,6 +47164,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -45106,6 +47218,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -45115,6 +47228,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -45199,6 +47313,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -45252,6 +47367,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -45261,6 +47377,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -45345,6 +47462,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -45398,6 +47516,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -45407,6 +47526,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -45491,6 +47611,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -45544,6 +47665,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -45553,6 +47675,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -45637,6 +47760,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -45686,6 +47810,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -45695,6 +47820,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -45779,6 +47905,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -45832,6 +47959,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -45841,6 +47969,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -45925,6 +48054,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -45978,6 +48108,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -45987,6 +48118,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -46071,6 +48203,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -46120,6 +48253,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -46129,6 +48263,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -46154,6 +48289,453 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/relationship.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"type\": \"relationship\",\n  \"uid\": \"01KSKWFZZV-A346\",\n  \"name\": \"OpenStack Shared Database \\u2192 Backup Service\",\n  \"catalogStatus\": \"stub\",\n  \"source\": \"STCK000007-DAR7\",\n  \"label\": \"calls\",\n  \"externalTarget\": \"Backup Service\",\n  \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling with per-schema logical exports writing to object storage.\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-openstack-shared-database-calls-backup-service.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KVFRT368-RS03",
+      "uid": "01KVFRT368-RS03",
+      "name": "OpenStack Ops Console \u2192 PagerDuty",
+      "aliases": [],
+      "type": "relationship",
+      "typeLabel": "Relationship",
+      "filterType": "relationship",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "OpenStack Ops Console raises incidents through the shared PagerDuty Events API v2 listener.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/governance/relationships/relationship-ops-console-alerts-pagerduty.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSE5V73Z-Q0A0",
+          "path": "source"
+        },
+        {
+          "target": "01KVFRT368-SY01",
+          "path": "target"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "source",
+          "label",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "target",
+          "externalTarget",
+          "targetInterface",
+          "targetListener",
+          "technology",
+          "direction",
+          "flow",
+          "capabilities",
+          "notes",
+          "tags"
+        ],
+        "fieldTypes": {
+          "targetInterface": "str",
+          "targetListener": "str",
+          "tags": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "direction": [
+            "synchronous",
+            "asynchronous",
+            "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/relationship.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-RS03\",\n  \"type\": \"relationship\",\n  \"name\": \"OpenStack Ops Console \\u2192 PagerDuty\",\n  \"description\": \"OpenStack Ops Console raises incidents through the shared PagerDuty Events API v2 listener.\",\n  \"source\": \"01KSE5V73Z-Q0A0\",\n  \"target\": \"01KVFRT368-SY01\",\n  \"targetListener\": \"01KVFRT368-PD03\",\n  \"label\": \"sends alerts to\",\n  \"technology\": \"HTTPS\",\n  \"direction\": \"synchronous\",\n  \"catalogStatus\": \"complete\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-ops-console-alerts-pagerduty.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KVFRT368-RS01",
+      "uid": "01KVFRT368-RS01",
+      "name": "OpenStack Ops Console \u2192 Billing Export Service",
+      "aliases": [],
+      "type": "relationship",
+      "typeLabel": "Relationship",
+      "filterType": "relationship",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Operators download chargeback files from the Billing Export SFTP outbox.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/governance/relationships/relationship-ops-console-downloads-billing-exports.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSE5V73Z-Q0A0",
+          "path": "source"
+        },
+        {
+          "target": "01KVFRT368-PCB1",
+          "path": "target"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "source",
+          "label",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "target",
+          "externalTarget",
+          "targetInterface",
+          "targetListener",
+          "technology",
+          "direction",
+          "flow",
+          "capabilities",
+          "notes",
+          "tags"
+        ],
+        "fieldTypes": {
+          "targetInterface": "str",
+          "targetListener": "str",
+          "tags": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "direction": [
+            "synchronous",
+            "asynchronous",
+            "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/relationship.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-RS01\",\n  \"type\": \"relationship\",\n  \"name\": \"OpenStack Ops Console \\u2192 Billing Export Service\",\n  \"description\": \"Operators download chargeback files from the Billing Export SFTP outbox.\",\n  \"source\": \"01KSE5V73Z-Q0A0\",\n  \"target\": \"01KVFRT368-PCB1\",\n  \"targetListener\": \"01KVFRT368-SF01\",\n  \"label\": \"downloads usage exports from\",\n  \"technology\": \"SFTP\",\n  \"direction\": \"synchronous\",\n  \"catalogStatus\": \"complete\",\n  \"targetInterface\": \"SFTP outbox\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-ops-console-downloads-billing-exports.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "01KVFRT368-RS02",
+      "uid": "01KVFRT368-RS02",
+      "name": "OpenStack Ops Console \u2192 Image Import Service",
+      "aliases": [],
+      "type": "relationship",
+      "typeLabel": "Relationship",
+      "filterType": "relationship",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Operators upload golden images to the Image Import SFTP inbox.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/governance/relationships/relationship-ops-console-uploads-images.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSE5V73Z-Q0A0",
+          "path": "source"
+        },
+        {
+          "target": "01KVFRT368-PC12",
+          "path": "target"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "source",
+          "label",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "target",
+          "externalTarget",
+          "targetInterface",
+          "targetListener",
+          "technology",
+          "direction",
+          "flow",
+          "capabilities",
+          "notes",
+          "tags"
+        ],
+        "fieldTypes": {
+          "targetInterface": "str",
+          "targetListener": "str",
+          "tags": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "direction": [
+            "synchronous",
+            "asynchronous",
+            "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/relationship.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-RS02\",\n  \"type\": \"relationship\",\n  \"name\": \"OpenStack Ops Console \\u2192 Image Import Service\",\n  \"description\": \"Operators upload golden images to the Image Import SFTP inbox.\",\n  \"source\": \"01KSE5V73Z-Q0A0\",\n  \"target\": \"01KVFRT368-PC12\",\n  \"targetListener\": \"01KVFRT368-SF02\",\n  \"label\": \"uploads VM images to\",\n  \"technology\": \"SFTP\",\n  \"direction\": \"synchronous\",\n  \"catalogStatus\": \"complete\",\n  \"targetInterface\": \"SFTP inbox\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-ops-console-uploads-images.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -46213,6 +48795,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -46266,6 +48849,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -46275,6 +48859,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -46359,6 +48944,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -46412,6 +48998,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -46421,6 +49008,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -46505,6 +49093,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -46558,6 +49147,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -46567,6 +49157,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -46651,6 +49242,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -46704,6 +49296,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -46713,6 +49306,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -46797,6 +49391,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -46850,6 +49445,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -46859,6 +49455,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -46943,6 +49540,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -46992,6 +49590,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -47001,6 +49600,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -47085,6 +49685,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -47138,6 +49739,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -47147,6 +49749,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -47231,6 +49834,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -47284,6 +49888,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -47293,6 +49898,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -47377,6 +49983,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -47430,6 +50037,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -47439,6 +50047,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -47532,6 +50141,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -47755,6 +50365,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -47974,6 +50585,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -48094,6 +50706,202 @@ window.DRAFT_BROWSER_DATA = {
       "inboundRelationships": []
     },
     {
+      "id": "01KVFRT368-SY01",
+      "uid": "01KVFRT368-SY01",
+      "name": "PagerDuty",
+      "aliases": [
+        "PagerDuty Events API"
+      ],
+      "type": "system",
+      "typeLabel": "System",
+      "filterType": "system",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "External incident alerting service. Recorded once as a system so every caller targets the same listener instead of a free-text externalTarget.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "preferred",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#1f8a5b",
+      "source": "examples/catalog/governance/systems/system-pagerduty.yaml",
+      "tags": [
+        "external",
+        "alerting"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [],
+      "referencedBy": [
+        {
+          "source": "01KVFRT368-PD03",
+          "path": "owner.ref"
+        },
+        {
+          "source": "01KVFRT368-RS04",
+          "path": "target"
+        },
+        {
+          "source": "01KVFRT368-RS05",
+          "path": "target"
+        },
+        {
+          "source": "01KVFRT368-RS03",
+          "path": "target"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "catalogStatus",
+          "lifecycleStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "containers",
+          "externalActors",
+          "owner",
+          "tags",
+          "notes"
+        ],
+        "fieldTypes": {
+          "containers": "list",
+          "externalActors": "list",
+          "tags": "list",
+          "owner": "dict"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "containers": "systemContainer",
+          "externalActors": "externalActor"
+        },
+        "schemaPath": "framework/schemas/system.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-SY01\",\n  \"type\": \"system\",\n  \"name\": \"PagerDuty\",\n  \"aliases\": [\n    \"PagerDuty Events API\"\n  ],\n  \"description\": \"External incident alerting service. Recorded once as a system so every caller targets the same listener instead of a free-text externalTarget.\",\n  \"catalogStatus\": \"complete\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"tags\": [\n    \"external\",\n    \"alerting\"\n  ],\n  \"_source\": \"examples/catalog/governance/systems/system-pagerduty.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": [
+        {
+          "uid": "01KVFRT368-RS04",
+          "name": "Billing Export Service \u2192 PagerDuty",
+          "label": "sends alerts to",
+          "technology": "HTTPS",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-SY01",
+          "targetName": "PagerDuty",
+          "capabilities": [],
+          "sourceUid": "01KVFRT368-PCB1",
+          "sourceName": "Billing Export Service"
+        },
+        {
+          "uid": "01KVFRT368-RS05",
+          "name": "Image Import Service \u2192 PagerDuty",
+          "label": "sends alerts to",
+          "technology": "HTTPS",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-SY01",
+          "targetName": "PagerDuty",
+          "capabilities": [],
+          "sourceUid": "01KVFRT368-PC12",
+          "sourceName": "Image Import Service"
+        },
+        {
+          "uid": "01KVFRT368-RS03",
+          "name": "OpenStack Ops Console \u2192 PagerDuty",
+          "label": "sends alerts to",
+          "technology": "HTTPS",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-SY01",
+          "targetName": "PagerDuty",
+          "capabilities": [],
+          "sourceUid": "01KSE5V73Z-Q0A0",
+          "sourceName": "OpenStack Ops Console"
+        }
+      ]
+    },
+    {
       "id": "STCK000005-DAR5",
       "uid": "STCK000005-DAR5",
       "name": "Cinder Database",
@@ -48201,6 +51009,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -48678,6 +51487,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -49151,6 +51961,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -49628,6 +52439,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -50104,6 +52916,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -50584,6 +53397,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -51123,6 +53937,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -51585,6 +54400,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -52238,6 +55054,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -52491,6 +55308,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -52886,6 +55704,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -53220,6 +56039,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -53606,6 +56426,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -54043,6 +56864,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -54476,6 +57298,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -54897,6 +57720,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -55013,6 +57837,14 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "referencedBy": [
         {
+          "source": "01KVFRT368-PCB1",
+          "path": "runsOn"
+        },
+        {
+          "source": "01KVFRT368-PC12",
+          "path": "runsOn"
+        },
+        {
           "source": "01KSE5V73Z-Q0A0",
           "path": "runsOn"
         },
@@ -55059,6 +57891,14 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KSKWG003-G3Q2",
           "path": "source"
+        },
+        {
+          "source": "KGX2365XDE-1RN6",
+          "path": "target"
+        },
+        {
+          "source": "PVEV4MTX3V-PHY9",
+          "path": "target"
         },
         {
           "source": "95BR2EYAF9-AJ9Y",
@@ -55255,6 +58095,30 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "inboundRelationships": [
         {
+          "uid": "KGX2365XDE-1RN6",
+          "name": "Billing Export Service \u2192 Horizon Dashboard",
+          "label": "runs on",
+          "technology": "",
+          "direction": "",
+          "targetUid": "STCK000006-RS06",
+          "targetName": "Horizon Dashboard",
+          "capabilities": [],
+          "sourceUid": "01KVFRT368-PCB1",
+          "sourceName": "Billing Export Service"
+        },
+        {
+          "uid": "PVEV4MTX3V-PHY9",
+          "name": "Image Import Service \u2192 Horizon Dashboard",
+          "label": "runs on",
+          "technology": "",
+          "direction": "",
+          "targetUid": "STCK000006-RS06",
+          "targetName": "Horizon Dashboard",
+          "capabilities": [],
+          "sourceUid": "01KVFRT368-PC12",
+          "sourceName": "Image Import Service"
+        },
+        {
           "uid": "95BR2EYAF9-AJ9Y",
           "name": "OpenStack Ops Console \u2192 Horizon Dashboard",
           "label": "runs on",
@@ -55361,6 +58225,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -55776,6 +58641,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -56376,6 +59242,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -56832,6 +59699,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -57334,6 +60202,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -57823,6 +60692,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -58209,6 +61079,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -58595,6 +61466,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -58966,6 +61838,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -59133,6 +62006,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -59297,6 +62171,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -59460,6 +62335,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -59636,6 +62512,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -59847,6 +62724,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -60011,6 +62889,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -60175,6 +63054,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -60340,6 +63220,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -60505,6 +63386,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -60670,6 +63552,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -60835,6 +63718,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -61000,6 +63884,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -61166,6 +64051,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -61336,6 +64222,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -61500,6 +64387,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -61673,6 +64561,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -61844,6 +64733,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -62026,6 +64916,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -62188,6 +65079,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -62335,6 +65227,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -62388,6 +65281,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -62397,6 +65291,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -62422,6 +65317,304 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/relationship.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"Z0C8YHRRYJ-9A1E\",\n  \"type\": \"relationship\",\n  \"name\": \"Platform Audit Schema \\u2192 OpenStack Shared Database\",\n  \"source\": \"01KSE5V73Z-RTKZ\",\n  \"target\": \"STCK000007-DAR7\",\n  \"label\": \"runs on\",\n  \"notes\": \"Derived from runsOn field\",\n  \"catalogStatus\": \"complete\",\n  \"_source\": \"derived from examples/catalog/engineering/data-components/data-component-platform-audit-schema.yaml [runsOn]\",\n  \"_derived\": true\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "KGX2365XDE-1RN6",
+      "uid": "KGX2365XDE-1RN6",
+      "name": "Billing Export Service \u2192 Horizon Dashboard",
+      "aliases": [],
+      "type": "relationship",
+      "typeLabel": "Relationship",
+      "filterType": "relationship",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "derived from examples/catalog/engineering/product-components/product-component-billing-export-service.yaml [runsOn]",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": "Derived from runsOn field",
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PCB1",
+          "path": "source"
+        },
+        {
+          "target": "STCK000006-RS06",
+          "path": "target"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "source",
+          "label",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "target",
+          "externalTarget",
+          "targetInterface",
+          "targetListener",
+          "technology",
+          "direction",
+          "flow",
+          "capabilities",
+          "notes",
+          "tags"
+        ],
+        "fieldTypes": {
+          "targetInterface": "str",
+          "targetListener": "str",
+          "tags": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "direction": [
+            "synchronous",
+            "asynchronous",
+            "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/relationship.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"KGX2365XDE-1RN6\",\n  \"type\": \"relationship\",\n  \"name\": \"Billing Export Service \\u2192 Horizon Dashboard\",\n  \"source\": \"01KVFRT368-PCB1\",\n  \"target\": \"STCK000006-RS06\",\n  \"label\": \"runs on\",\n  \"notes\": \"Derived from runsOn field\",\n  \"catalogStatus\": \"complete\",\n  \"_source\": \"derived from examples/catalog/engineering/product-components/product-component-billing-export-service.yaml [runsOn]\",\n  \"_derived\": true\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    {
+      "id": "PVEV4MTX3V-PHY9",
+      "uid": "PVEV4MTX3V-PHY9",
+      "name": "Image Import Service \u2192 Horizon Dashboard",
+      "aliases": [],
+      "type": "relationship",
+      "typeLabel": "Relationship",
+      "filterType": "relationship",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "derived from examples/catalog/engineering/product-components/product-component-image-import-service.yaml [runsOn]",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": "Derived from runsOn field",
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PC12",
+          "path": "source"
+        },
+        {
+          "target": "STCK000006-RS06",
+          "path": "target"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "source",
+          "label",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "target",
+          "externalTarget",
+          "targetInterface",
+          "targetListener",
+          "technology",
+          "direction",
+          "flow",
+          "capabilities",
+          "notes",
+          "tags"
+        ],
+        "fieldTypes": {
+          "targetInterface": "str",
+          "targetListener": "str",
+          "tags": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "direction": [
+            "synchronous",
+            "asynchronous",
+            "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/relationship.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"PVEV4MTX3V-PHY9\",\n  \"type\": \"relationship\",\n  \"name\": \"Image Import Service \\u2192 Horizon Dashboard\",\n  \"source\": \"01KVFRT368-PC12\",\n  \"target\": \"STCK000006-RS06\",\n  \"label\": \"runs on\",\n  \"notes\": \"Derived from runsOn field\",\n  \"catalogStatus\": \"complete\",\n  \"_source\": \"derived from examples/catalog/engineering/product-components/product-component-image-import-service.yaml [runsOn]\",\n  \"_derived\": true\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -62481,6 +65674,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -62534,6 +65728,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -62543,6 +65738,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -62627,6 +65823,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -62680,6 +65877,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -62689,6 +65887,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -62773,6 +65972,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -62826,6 +66026,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -62835,6 +66036,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -62919,6 +66121,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -62972,6 +66175,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -62981,6 +66185,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -63065,6 +66270,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -63118,6 +66324,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -63127,6 +66334,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -63211,6 +66419,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -63264,6 +66473,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -63273,6 +66483,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -63357,6 +66568,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -63410,6 +66622,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -63419,6 +66632,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -63503,6 +66717,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -63556,6 +66771,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -63565,6 +66781,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -63649,6 +66866,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -63702,6 +66920,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -63711,6 +66930,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -63795,6 +67015,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -63848,6 +67069,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -63857,6 +67079,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -63941,6 +67164,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -63994,6 +67218,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -64003,6 +67228,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -64087,6 +67313,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -64140,6 +67367,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -64149,6 +67377,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -64233,6 +67462,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -64286,6 +67516,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -64295,6 +67526,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -64379,6 +67611,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -64432,6 +67665,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -64441,6 +67675,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -64525,6 +67760,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -64578,6 +67814,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -64587,6 +67824,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -64671,6 +67909,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -64724,6 +67963,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -64733,6 +67973,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -64817,6 +68058,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -64870,6 +68112,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -64879,6 +68122,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -64963,6 +68207,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -65016,6 +68261,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -65025,6 +68271,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -65109,6 +68356,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -65162,6 +68410,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -65171,6 +68420,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -65255,6 +68505,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -65308,6 +68559,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -65317,6 +68569,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -65401,6 +68654,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -65454,6 +68708,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -65463,6 +68718,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -65547,6 +68803,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -65600,6 +68857,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -65609,6 +68867,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -65699,6 +68958,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -65864,6 +69124,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -66000,6 +69261,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -66141,6 +69403,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -66282,6 +69545,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -66423,6 +69687,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -66568,6 +69833,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -66709,6 +69975,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -66870,6 +70137,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -67011,6 +70279,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -67152,6 +70421,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -67293,6 +70563,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -67443,6 +70714,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -67600,6 +70872,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -67741,6 +71014,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -67882,6 +71156,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -68023,6 +71298,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -68168,6 +71444,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -68329,6 +71606,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -68470,6 +71748,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -68611,6 +71890,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -68764,6 +72044,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -68905,6 +72186,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -69046,6 +72328,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -69217,6 +72500,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -69386,6 +72670,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -69527,6 +72812,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -69663,6 +72949,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -69799,6 +73086,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -69935,6 +73223,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -70085,6 +73374,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -70234,6 +73524,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -70395,6 +73686,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -70536,6 +73828,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -70677,6 +73970,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -70818,6 +74112,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -70984,6 +74279,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -71153,6 +74449,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -71294,6 +74591,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -71435,6 +74733,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -71576,6 +74875,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -71717,6 +75017,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -71858,6 +75159,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -71999,6 +75301,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -72134,6 +75437,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -72259,6 +75563,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -72391,6 +75696,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -72547,6 +75853,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -72684,6 +75991,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -72810,6 +76118,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -72945,6 +76254,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -73095,6 +76405,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -73225,6 +76536,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -73355,6 +76667,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -73486,6 +76799,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -73746,6 +77060,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -74139,6 +77454,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -74387,6 +77703,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -74692,6 +78009,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "01KQQ4Q027-K5DR",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -75313,6 +78631,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -76063,6 +79382,61 @@ window.DRAFT_BROWSER_DATA = {
             "decisionRecord"
           ],
           "externalReference": "https://controls.example.com/security-compliance/04.3.1"
+        },
+        {
+          "id": "interface-protection",
+          "name": "Interface Protection",
+          "description": "Every listener records the authentication model that protects it.",
+          "rationale": "A called endpoint must say how callers authenticate. authenticationModel satisfies this requirement with any recorded model, including none; TBD does not satisfy it. Choosing none is a recorded decision, not a gap in the design.",
+          "appliesTo": [
+            "listener"
+          ],
+          "requirementMode": "mandatory",
+          "naAllowed": false,
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "field",
+              "key": "authenticationModel",
+              "notIn": [
+                "TBD"
+              ]
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "validAnswerTypes": [
+            "field"
+          ]
+        },
+        {
+          "id": "interface-unprotected-justification",
+          "name": "Unprotected Interface Justification",
+          "description": "A listener with no authentication records why, in a committed DecisionRecord.",
+          "rationale": "Choosing authenticationModel none is an exception that needs a recorded decision. Only a committed DecisionRecord (accepted, mitigated or resolved) referenced from the listener's decisionRecords with key: interface_unprotected satisfies it. A missing or open draft record does not, and it cannot be marked not-applicable. Which unauthenticated exceptions are acceptable stays with company requirement groups and approvers.",
+          "appliesTo": [
+            "listener"
+          ],
+          "requirementMode": "conditional",
+          "naAllowed": false,
+          "applicability": {
+            "allOf": [
+              {
+                "field": "authenticationModel",
+                "equals": "none"
+              }
+            ]
+          },
+          "canBeSatisfiedBy": [
+            {
+              "mechanism": "decisionRecord",
+              "key": "interface_unprotected",
+              "committedOnly": true,
+              "example": "A committed DecisionRecord, referenced from decisionRecords with key: interface_unprotected, recording why this listener accepts unauthenticated calls."
+            }
+          ],
+          "minimumSatisfactions": 1,
+          "validAnswerTypes": [
+            "decisionRecord"
+          ]
         }
       ],
       "implementations": [],
@@ -76072,11 +79446,13 @@ window.DRAFT_BROWSER_DATA = {
         "product_component",
         "runtime_service",
         "network_service",
-        "software_deployment_pattern"
+        "software_deployment_pattern",
+        "listener"
       ],
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -76102,7 +79478,7 @@ window.DRAFT_BROWSER_DATA = {
       "assumptions": [],
       "nextSteps": [],
       "defaultSelection": false,
-      "requirementCount": 16,
+      "requirementCount": 18,
       "hasRiskRef": false,
       "outboundRefs": [
         {
@@ -76213,7 +79589,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/requirement-group.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-T3CA\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Security and Security Compliance RequirementGroup\",\n  \"description\": \"Baseline security and compliance requirement group bundled with DRAFT. Requirements are applied to matching object types based on their target scope.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"activation\": \"workspace\",\n  \"appliesTo\": [\n    \"data_store_service\",\n    \"host\",\n    \"product_component\",\n    \"runtime_service\",\n    \"network_service\",\n    \"software_deployment_pattern\"\n  ],\n  \"provider\": {\n    \"id\": \"provider.draft-framework\",\n    \"type\": \"framework\",\n    \"name\": \"DRAFT Framework\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT Security\",\n    \"source\": \"Security Compliance Requirements\"\n  },\n  \"requirements\": [\n    {\n      \"id\": \"CC.SecurityCompliance.04.2.2\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.2.2\",\n      \"name\": \"Centralized Administrative Authentication\",\n      \"description\": \"Centralized Administrative Authentication\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.2.2 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"authentication\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: authentication, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-MHJM\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.2.2\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.4.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.4.1\",\n      \"name\": \"Password Policy\",\n      \"description\": \"Password Policy\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.4.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"authentication\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: authentication, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-MHJM\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.4.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.4.1.access-control-model\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.4.1\",\n      \"name\": \"Database Password Policy\",\n      \"description\": \"Database Password Policy\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.4.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"access_control_model\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-4JR6\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.4.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.06.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.06.1.1\",\n      \"name\": \"Centralized Log Management\",\n      \"description\": \"Centralized Log Management\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.06.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"log_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: log_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponentConfiguration\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-D04B\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/06.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.06.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.06.2.1\",\n      \"name\": \"Host Health and Welfare Monitoring\",\n      \"description\": \"Host Health and Welfare Monitoring\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.06.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"health_welfare_monitoring\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: health_welfare_monitoring, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"technologyComponentConfiguration\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-98VD\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/06.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.06.3.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.06.3.1\",\n      \"name\": \"Security Event Monitoring\",\n      \"description\": \"Security Event Monitoring\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.06.3.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"security_monitoring\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: security_monitoring, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"technologyComponentConfiguration\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-JW52\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/06.3.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.03.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.03.1.1\",\n      \"name\": \"Patch Governance\",\n      \"description\": \"Patch Governance\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.03.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"patch_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: patch_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-BH6E\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/03.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.03.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.03.2.1\",\n      \"name\": \"Patch Execution Workflow\",\n      \"description\": \"Patch Execution Workflow\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.03.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"patch_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: patch_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-BH6E\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/03.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.10.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.10.1.1\",\n      \"name\": \"ReferenceArchitecture Conformance\",\n      \"description\": \"ReferenceArchitecture Conformance\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.10.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"software_deployment_pattern\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"reference_architecture_conformance\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: reference_architecture_conformance, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/10.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.10.1.2\",\n      \"externalControlId\": \"CC.SecurityCompliance.10.1.2\",\n      \"name\": \"Availability Requirement\",\n      \"description\": \"Availability Requirement\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.10.1.2 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"software_deployment_pattern\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"availability_requirement\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: availability_requirement, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/10.1.2\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.00.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.00.2.1\",\n      \"name\": \"Data Classification\",\n      \"description\": \"Data Classification\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.00.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"software_deployment_pattern\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"data_classification\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: data_classification, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/00.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.00.2.1.access-control-model\",\n      \"externalControlId\": \"CC.SecurityCompliance.00.2.1\",\n      \"name\": \"Database Data Classification Context\",\n      \"description\": \"Database Data Classification Context\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.00.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"access_control_model\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-4JR6\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/00.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.10.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.10.2.1\",\n      \"name\": \"Database Backup Strategy\",\n      \"description\": \"Database Backup Strategy\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.10.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"backup_strategy\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: backup_strategy, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-7T2H\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/10.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.1.1\",\n      \"name\": \"Database Access Control Model\",\n      \"description\": \"Database Access Control Model\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"access_control_model\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-4JR6\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.3.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.3.1\",\n      \"name\": \"Secrets Management\",\n      \"description\": \"Secrets Management\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.3.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"runtime_service\",\n        \"network_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-DTJJ\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-DTJJ\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"secrets_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: secrets_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-DTJJ\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.3.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.3.1.product_component\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.3.1\",\n      \"name\": \"ProductComponent Secrets Management\",\n      \"description\": \"ProductComponent Secrets Management\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.3.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"product_component\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"product_component\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: product_component, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.3.1\"\n    }\n  ],\n  \"lifecycleStatus\": \"existing-only\",\n  \"tags\": [\n    \"compliance\",\n    \"controls\",\n    \"baseline\",\n    \"requirement-group\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-draft-security-compliance.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-T3CA\",\n  \"type\": \"requirement_group\",\n  \"name\": \"Security and Security Compliance RequirementGroup\",\n  \"description\": \"Baseline security and compliance requirement group bundled with DRAFT. Requirements are applied to matching object types based on their target scope.\\n\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"activation\": \"workspace\",\n  \"appliesTo\": [\n    \"data_store_service\",\n    \"host\",\n    \"product_component\",\n    \"runtime_service\",\n    \"network_service\",\n    \"software_deployment_pattern\",\n    \"listener\"\n  ],\n  \"provider\": {\n    \"id\": \"provider.draft-framework\",\n    \"type\": \"framework\",\n    \"name\": \"DRAFT Framework\"\n  },\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT Security\",\n    \"source\": \"Security Compliance Requirements\"\n  },\n  \"requirements\": [\n    {\n      \"id\": \"CC.SecurityCompliance.04.2.2\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.2.2\",\n      \"name\": \"Centralized Administrative Authentication\",\n      \"description\": \"Centralized Administrative Authentication\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.2.2 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"authentication\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: authentication, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-MHJM\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.2.2\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.4.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.4.1\",\n      \"name\": \"Password Policy\",\n      \"description\": \"Password Policy\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.4.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-MHJM\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"authentication\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: authentication, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-MHJM\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.4.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.4.1.access-control-model\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.4.1\",\n      \"name\": \"Database Password Policy\",\n      \"description\": \"Database Password Policy\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.4.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"access_control_model\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-4JR6\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.4.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.06.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.06.1.1\",\n      \"name\": \"Centralized Log Management\",\n      \"description\": \"Centralized Log Management\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.06.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-D04B\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"log_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: log_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponentConfiguration\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-D04B\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/06.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.06.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.06.2.1\",\n      \"name\": \"Host Health and Welfare Monitoring\",\n      \"description\": \"Host Health and Welfare Monitoring\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.06.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-98VD\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"health_welfare_monitoring\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: health_welfare_monitoring, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"technologyComponentConfiguration\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-98VD\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/06.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.06.3.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.06.3.1\",\n      \"name\": \"Security Event Monitoring\",\n      \"description\": \"Security Event Monitoring\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.06.3.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-JW52\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"security_monitoring\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: security_monitoring, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"technologyComponentConfiguration\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-JW52\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/06.3.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.03.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.03.1.1\",\n      \"name\": \"Patch Governance\",\n      \"description\": \"Patch Governance\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.03.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"patch_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: patch_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-BH6E\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/03.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.03.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.03.2.1\",\n      \"name\": \"Patch Execution Workflow\",\n      \"description\": \"Patch Execution Workflow\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.03.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"host\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"technologyComponent\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-BH6E\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"patch_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: patch_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"technologyComponent\",\n        \"relationship\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-BH6E\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/03.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.10.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.10.1.1\",\n      \"name\": \"ReferenceArchitecture Conformance\",\n      \"description\": \"ReferenceArchitecture Conformance\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.10.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"software_deployment_pattern\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"reference_architecture_conformance\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: reference_architecture_conformance, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/10.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.10.1.2\",\n      \"externalControlId\": \"CC.SecurityCompliance.10.1.2\",\n      \"name\": \"Availability Requirement\",\n      \"description\": \"Availability Requirement\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.10.1.2 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"software_deployment_pattern\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"availability_requirement\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: availability_requirement, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/10.1.2\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.00.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.00.2.1\",\n      \"name\": \"Data Classification\",\n      \"description\": \"Data Classification\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.00.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"software_deployment_pattern\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"data_classification\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: data_classification, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/00.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.00.2.1.access-control-model\",\n      \"externalControlId\": \"CC.SecurityCompliance.00.2.1\",\n      \"name\": \"Database Data Classification Context\",\n      \"description\": \"Database Data Classification Context\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.00.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"access_control_model\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-4JR6\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/00.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.10.2.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.10.2.1\",\n      \"name\": \"Database Backup Strategy\",\n      \"description\": \"Database Backup Strategy\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.10.2.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"backup_strategy\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: backup_strategy, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-7T2H\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/10.2.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.1.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.1.1\",\n      \"name\": \"Database Access Control Model\",\n      \"description\": \"Database Access Control Model\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.1.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"data_store_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-4JR6\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"access_control_model\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: access_control_model, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-4JR6\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.1.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.3.1\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.3.1\",\n      \"name\": \"Secrets Management\",\n      \"description\": \"Secrets Management\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.3.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"runtime_service\",\n        \"network_service\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-DTJJ\"\n          }\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\",\n          \"criteria\": {\n            \"capability\": \"01KQQ4Q026-DTJJ\"\n          }\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"secrets_management\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: secrets_management, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"relatedCapability\": \"01KQQ4Q026-DTJJ\",\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.3.1\"\n    },\n    {\n      \"id\": \"CC.SecurityCompliance.04.3.1.product_component\",\n      \"externalControlId\": \"CC.SecurityCompliance.04.3.1\",\n      \"name\": \"ProductComponent Secrets Management\",\n      \"description\": \"ProductComponent Secrets Management\",\n      \"rationale\": \"Record how this object satisfies CC.SecurityCompliance.04.3.1 for Security and Security Compliance Requirements.\",\n      \"appliesTo\": [\n        \"product_component\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"relationship\"\n        },\n        {\n          \"mechanism\": \"technologyComponentConfiguration\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"product_component\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: product_component, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"relationship\",\n        \"technologyComponentConfiguration\",\n        \"decisionRecord\"\n      ],\n      \"externalReference\": \"https://controls.example.com/security-compliance/04.3.1\"\n    },\n    {\n      \"id\": \"interface-protection\",\n      \"name\": \"Interface Protection\",\n      \"description\": \"Every listener records the authentication model that protects it.\",\n      \"rationale\": \"A called endpoint must say how callers authenticate. authenticationModel satisfies this requirement with any recorded model, including none; TBD does not satisfy it. Choosing none is a recorded decision, not a gap in the design.\",\n      \"appliesTo\": [\n        \"listener\"\n      ],\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"authenticationModel\",\n          \"notIn\": [\n            \"TBD\"\n          ]\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"interface-unprotected-justification\",\n      \"name\": \"Unprotected Interface Justification\",\n      \"description\": \"A listener with no authentication records why, in a committed DecisionRecord.\",\n      \"rationale\": \"Choosing authenticationModel none is an exception that needs a recorded decision. Only a committed DecisionRecord (accepted, mitigated or resolved) referenced from the listener's decisionRecords with key: interface_unprotected satisfies it. A missing or open draft record does not, and it cannot be marked not-applicable. Which unauthenticated exceptions are acceptable stays with company requirement groups and approvers.\",\n      \"appliesTo\": [\n        \"listener\"\n      ],\n      \"requirementMode\": \"conditional\",\n      \"naAllowed\": false,\n      \"applicability\": {\n        \"allOf\": [\n          {\n            \"field\": \"authenticationModel\",\n            \"equals\": \"none\"\n          }\n        ]\n      },\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"interface_unprotected\",\n          \"committedOnly\": true,\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: interface_unprotected, recording why this listener accepts unauthenticated calls.\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ]\n    }\n  ],\n  \"lifecycleStatus\": \"existing-only\",\n  \"tags\": [\n    \"compliance\",\n    \"controls\",\n    \"baseline\",\n    \"requirement-group\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-draft-security-compliance.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -76750,6 +80126,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -77502,6 +80879,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -77788,6 +81166,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -78056,6 +81435,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -78257,6 +81637,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -78673,6 +82054,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -78962,6 +82344,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -79212,6 +82595,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -79448,6 +82832,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -79680,6 +83065,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -80141,6 +83527,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -80502,6 +83889,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -81803,6 +85191,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -82133,6 +85522,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -82249,7 +85639,7 @@ window.DRAFT_BROWSER_DATA = {
       "category": "",
       "deliveryModel": "",
       "domain": "",
-      "description": "Structured checklist of required questions and answers used to define a complete and correct software deployment pattern.",
+      "description": "Structured checklist of required questions and answers used to define a complete and correct software deployment pattern. A complete pattern must also pass the ratcheted sdp-internal-stub-listener gate, which blocks completion while a call in the pattern targets a stub listener owned by an internal component.",
       "version": "1.0.0",
       "catalogStatus": "complete",
       "lifecycleStatus": "preferred",
@@ -82528,6 +85918,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -82615,7 +86006,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "schemaPath": "framework/schemas/requirement-group.schema.yaml"
       },
-      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-VK45\",\n  \"type\": \"requirement_group\",\n  \"name\": \"SoftwareDeploymentPattern RequirementGroup\",\n  \"description\": \"Structured checklist of required questions and answers used to define a complete and correct software deployment pattern.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"software_deployment_pattern\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"reference-architecture-conformance\",\n      \"description\": \"The SoftwareDeploymentPattern must reference a valid ReferenceArchitecture ID or explicitly document that no applicable ReferenceArchitecture exists yet.\",\n      \"rationale\": \"Connecting deployments to patterns enables governance discoverability and impact analysis.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"followsReferenceArchitecture\",\n          \"example\": \"reference-architecture.dotnet.three-tier.ha\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noApplicablePattern\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noApplicablePattern, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"decisionRecord\",\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"service-groups\",\n      \"description\": \"The SoftwareDeploymentPattern must declare the service groups that make up the deployed product.\",\n      \"rationale\": \"A deployment manifest is incomplete until the real deployed service group structure is explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"serviceGroups\",\n          \"example\": \"Non-empty serviceGroups list with named deployment groups and deployable object references\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"role\": \"service-group\"\n          },\n          \"example\": \"Frontend UI, Data Services, Shared Event Processing Services\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"internalComponent\"\n      ]\n    },\n    {\n      \"id\": \"deployment-targets\",\n      \"description\": \"Every service group must describe its deployment boundary or execution context at the level needed to understand ownership, isolation, and operational responsibility.\",\n      \"rationale\": \"Deployment reality is not complete until the architect can explain the boundary that matters for operating and governing each service group; that boundary may be an account, cluster, data center, customer site, tenant/environment boundary, SaaS context, or another architecture-relevant execution context.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"deploymentTargets\",\n          \"example\": \"deploymentTargets: aws:us-east-1:prod\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"deploymentTargets\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: deploymentTargets, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"availability-requirement\",\n      \"description\": \"The product availability tier must be documented.\",\n      \"rationale\": \"Availability requirements justify deployment posture and inform operational support models.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"availabilityRequirement\",\n          \"example\": \"availabilityRequirement: high-availability\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"availabilityRequirement\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: availabilityRequirement, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"additional-interactions\",\n      \"description\": \"Any external systems this product interacts with beyond what its component deployable objects declare must be documented via relationship objects \\u2014 or explicitly stated as none.\",\n      \"rationale\": \"Product-specific integrations are invisible to the architecture without explicit declaration.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"externalDependencies\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: externalDependencies, recording this decision (or why it is not applicable).\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noAdditionalInteractions\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noAdditionalInteractions, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"data-classification\",\n      \"description\": \"The type of data this product stores or processes must be documented.\",\n      \"rationale\": \"Data classification drives security posture requirements and compliance obligations.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"dataClassification\",\n          \"example\": \"dataClassification: internal\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"dataClassification\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: dataClassification, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"failure-domain\",\n      \"description\": \"The SoftwareDeploymentPattern must document the deployment-level failure domain of the product.\",\n      \"rationale\": \"Product-level impact boundaries cannot be inferred from component selections alone.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"failureDomain\",\n          \"example\": \"failureDomain: regional\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"failureDomain\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: failureDomain, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"pattern-deviations\",\n      \"description\": \"Any intentional deviation from the selected ReferenceArchitecture must be documented, or the SoftwareDeploymentPattern must explicitly state that no deviations exist.\",\n      \"rationale\": \"The SoftwareDeploymentPattern is where pattern intent becomes product deployment reality, so departures from the ReferenceArchitecture must be visible.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"patternDeviations\",\n          \"example\": \"patternDeviations: none\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"patternDeviations\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: patternDeviations, recording this decision (or why it is not applicable).\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noPatternDeviations\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noPatternDeviations, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"inter-service-connections\",\n      \"description\": \"Primary inter-service communication paths that cross a tier boundary (e.g. presentation\\u2192application) or a network zone boundary must be documented as relationship objects in the catalog, or the pattern must explicitly state that no cross-boundary connections exist.\\n\",\n      \"rationale\": \"Service-to-service communication across tiers and zones is an architecture decision with security, performance, and compliance implications. Without explicit connection records the architecture cannot be analyzed for data-flow compliance, blast-radius, or network policy conformance.\\n\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"interServiceConnections\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: interServiceConnections, recording this decision (or why it is not applicable).\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noCrossBoundaryConnections\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noCrossBoundaryConnections, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"naRationale\": \"Acceptable when the deployment has only a single tier and no network zones.\",\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ],\n      \"interviewHint\": \"Use the propose-and-confirm pattern. Ask one yes/no question per tier crossing (presentation\\u2192application, application\\u2192data, application\\u2192utility). For each confirmed crossing, present a multi-select list of the services in the source tier and ask which ones make calls across. Then ask protocol once per crossing using the connectionProtocols vocabulary list. Do not ask about port or label. Do not attempt to enumerate every same-tier connection in a single session.\\n\"\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"software-deployment-pattern\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-software-deployment-pattern.yaml\"\n}",
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KQQ4Q027-VK45\",\n  \"type\": \"requirement_group\",\n  \"name\": \"SoftwareDeploymentPattern RequirementGroup\",\n  \"description\": \"Structured checklist of required questions and answers used to define a complete and correct software deployment pattern. A complete pattern must also pass the ratcheted sdp-internal-stub-listener gate, which blocks completion while a call in the pattern targets a stub listener owned by an internal component.\",\n  \"version\": \"1.0.0\",\n  \"catalogStatus\": \"complete\",\n  \"authority\": {\n    \"name\": \"DRAFT Framework\",\n    \"shortName\": \"DRAFT\",\n    \"source\": \"DRAFT Framework\"\n  },\n  \"activation\": \"always\",\n  \"appliesTo\": [\n    \"software_deployment_pattern\"\n  ],\n  \"requirements\": [\n    {\n      \"id\": \"reference-architecture-conformance\",\n      \"description\": \"The SoftwareDeploymentPattern must reference a valid ReferenceArchitecture ID or explicitly document that no applicable ReferenceArchitecture exists yet.\",\n      \"rationale\": \"Connecting deployments to patterns enables governance discoverability and impact analysis.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"followsReferenceArchitecture\",\n          \"example\": \"reference-architecture.dotnet.three-tier.ha\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noApplicablePattern\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noApplicablePattern, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"decisionRecord\",\n        \"field\"\n      ]\n    },\n    {\n      \"id\": \"service-groups\",\n      \"description\": \"The SoftwareDeploymentPattern must declare the service groups that make up the deployed product.\",\n      \"rationale\": \"A deployment manifest is incomplete until the real deployed service group structure is explicit.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"serviceGroups\",\n          \"example\": \"Non-empty serviceGroups list with named deployment groups and deployable object references\"\n        },\n        {\n          \"mechanism\": \"internalComponent\",\n          \"criteria\": {\n            \"role\": \"service-group\"\n          },\n          \"example\": \"Frontend UI, Data Services, Shared Event Processing Services\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"internalComponent\"\n      ]\n    },\n    {\n      \"id\": \"deployment-targets\",\n      \"description\": \"Every service group must describe its deployment boundary or execution context at the level needed to understand ownership, isolation, and operational responsibility.\",\n      \"rationale\": \"Deployment reality is not complete until the architect can explain the boundary that matters for operating and governing each service group; that boundary may be an account, cluster, data center, customer site, tenant/environment boundary, SaaS context, or another architecture-relevant execution context.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"deploymentTargets\",\n          \"example\": \"deploymentTargets: aws:us-east-1:prod\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"deploymentTargets\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: deploymentTargets, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"availability-requirement\",\n      \"description\": \"The product availability tier must be documented.\",\n      \"rationale\": \"Availability requirements justify deployment posture and inform operational support models.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"availabilityRequirement\",\n          \"example\": \"availabilityRequirement: high-availability\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"availabilityRequirement\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: availabilityRequirement, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"additional-interactions\",\n      \"description\": \"Any external systems this product interacts with beyond what its component deployable objects declare must be documented via relationship objects \\u2014 or explicitly stated as none.\",\n      \"rationale\": \"Product-specific integrations are invisible to the architecture without explicit declaration.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"externalDependencies\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: externalDependencies, recording this decision (or why it is not applicable).\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noAdditionalInteractions\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noAdditionalInteractions, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"data-classification\",\n      \"description\": \"The type of data this product stores or processes must be documented.\",\n      \"rationale\": \"Data classification drives security posture requirements and compliance obligations.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"dataClassification\",\n          \"example\": \"dataClassification: internal\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"dataClassification\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: dataClassification, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"failure-domain\",\n      \"description\": \"The SoftwareDeploymentPattern must document the deployment-level failure domain of the product.\",\n      \"rationale\": \"Product-level impact boundaries cannot be inferred from component selections alone.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"failureDomain\",\n          \"example\": \"failureDomain: regional\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"failureDomain\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: failureDomain, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"pattern-deviations\",\n      \"description\": \"Any intentional deviation from the selected ReferenceArchitecture must be documented, or the SoftwareDeploymentPattern must explicitly state that no deviations exist.\",\n      \"rationale\": \"The SoftwareDeploymentPattern is where pattern intent becomes product deployment reality, so departures from the ReferenceArchitecture must be visible.\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"field\",\n          \"key\": \"patternDeviations\",\n          \"example\": \"patternDeviations: none\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"patternDeviations\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: patternDeviations, recording this decision (or why it is not applicable).\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noPatternDeviations\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noPatternDeviations, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": false,\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ]\n    },\n    {\n      \"id\": \"inter-service-connections\",\n      \"description\": \"Primary inter-service communication paths that cross a tier boundary (e.g. presentation\\u2192application) or a network zone boundary must be documented as relationship objects in the catalog, or the pattern must explicitly state that no cross-boundary connections exist.\\n\",\n      \"rationale\": \"Service-to-service communication across tiers and zones is an architecture decision with security, performance, and compliance implications. Without explicit connection records the architecture cannot be analyzed for data-flow compliance, blast-radius, or network policy conformance.\\n\",\n      \"canBeSatisfiedBy\": [\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"interServiceConnections\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: interServiceConnections, recording this decision (or why it is not applicable).\"\n        },\n        {\n          \"mechanism\": \"decisionRecord\",\n          \"key\": \"noCrossBoundaryConnections\",\n          \"example\": \"A committed DecisionRecord, referenced from decisionRecords with key: noCrossBoundaryConnections, recording this decision (or why it is not applicable).\"\n        }\n      ],\n      \"minimumSatisfactions\": 1,\n      \"requirementMode\": \"mandatory\",\n      \"naAllowed\": true,\n      \"naRationale\": \"Acceptable when the deployment has only a single tier and no network zones.\",\n      \"validAnswerTypes\": [\n        \"field\",\n        \"decisionRecord\"\n      ],\n      \"interviewHint\": \"Use the propose-and-confirm pattern. Ask one yes/no question per tier crossing (presentation\\u2192application, application\\u2192data, application\\u2192utility). For each confirmed crossing, present a multi-select list of the services in the source tier and ask which ones make calls across. Then ask protocol once per crossing using the connectionProtocols vocabulary list. Do not ask about port or label. Do not attempt to enumerate every same-tier connection in a single session.\\n\"\n    }\n  ],\n  \"lifecycleStatus\": \"preferred\",\n  \"tags\": [\n    \"software-deployment-pattern\",\n    \"requirement-group\",\n    \"definition\"\n  ],\n  \"_source\": \"framework/configurations/requirement-groups/requirement-group-software-deployment-pattern.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -82675,6 +86066,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -82773,6 +86165,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -82878,6 +86271,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -83070,6 +86464,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -83280,6 +86675,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -83480,6 +86876,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -83684,6 +87081,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -83893,6 +87291,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -84085,6 +87484,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -84289,6 +87689,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -84492,6 +87893,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -84675,6 +88077,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [
         {
@@ -84847,6 +88250,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -84988,6 +88392,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -85129,6 +88534,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -85270,6 +88676,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -85419,6 +88826,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -85561,6 +88969,1026 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "inboundRelationships": []
     },
+    "01KVFRT368-SF01": {
+      "id": "01KVFRT368-SF01",
+      "uid": "01KVFRT368-SF01",
+      "name": "Billing Export SFTP",
+      "aliases": [],
+      "type": "listener",
+      "typeLabel": "Listener",
+      "filterType": "listener",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "SFTP (SSH file transfer) outbox for usage exports. SSH key authentication per consumer. Looks like the Image Import SFTP listener (same protocol and port) but is a different listener: the owner is part of listener identity.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "other",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "kind": "product_component",
+        "ref": "01KVFRT368-PCB1"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/engineering/listeners/listener-billing-export-sftp.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PCB1",
+          "path": "owner.ref"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "owner",
+          "protocol",
+          "port",
+          "endpoint",
+          "authenticationModel",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "methods",
+          "description",
+          "aliases",
+          "tags",
+          "notes",
+          "decisionRecords",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "owner": "dict",
+          "port": "int",
+          "endpoint": "str",
+          "methods": "list",
+          "aliases": "list",
+          "tags": "list",
+          "notes": "dict",
+          "decisionRecords": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "protocol": [
+            "REST",
+            "gRPC",
+            "GraphQL",
+            "WebSocket",
+            "AMQP",
+            "SMTP",
+            "SQL",
+            "Redis",
+            "Kafka",
+            "SQS",
+            "SNS",
+            "S3",
+            "DynamoDB",
+            "HTTP",
+            "HTTPS",
+            "TCP",
+            "UDP",
+            "other"
+          ],
+          "authenticationModel": [
+            "iam",
+            "api-key",
+            "oauth",
+            "saml",
+            "none",
+            "other",
+            "TBD"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "decisionRecords": "decisionRecordRef",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/listener.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-SF01\",\n  \"type\": \"listener\",\n  \"name\": \"Billing Export SFTP\",\n  \"owner\": {\n    \"kind\": \"product_component\",\n    \"ref\": \"01KVFRT368-PCB1\"\n  },\n  \"protocol\": \"TCP\",\n  \"port\": 22,\n  \"endpoint\": \"/\",\n  \"authenticationModel\": \"other\",\n  \"catalogStatus\": \"complete\",\n  \"description\": \"SFTP (SSH file transfer) outbox for usage exports. SSH key authentication per consumer. Looks like the Image Import SFTP listener (same protocol and port) but is a different listener: the owner is part of listener identity.\",\n  \"_source\": \"examples/catalog/engineering/listeners/listener-billing-export-sftp.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KVFRT368-SF02": {
+      "id": "01KVFRT368-SF02",
+      "uid": "01KVFRT368-SF02",
+      "name": "Image Import SFTP",
+      "aliases": [],
+      "type": "listener",
+      "typeLabel": "Listener",
+      "filterType": "listener",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "SFTP (SSH file transfer) inbox for VM image uploads. SSH key authentication per uploader. Same protocol and port as the Billing Export SFTP listener, different owner, so a different listener.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "other",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "kind": "product_component",
+        "ref": "01KVFRT368-PC12"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/engineering/listeners/listener-image-import-sftp.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PC12",
+          "path": "owner.ref"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "owner",
+          "protocol",
+          "port",
+          "endpoint",
+          "authenticationModel",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "methods",
+          "description",
+          "aliases",
+          "tags",
+          "notes",
+          "decisionRecords",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "owner": "dict",
+          "port": "int",
+          "endpoint": "str",
+          "methods": "list",
+          "aliases": "list",
+          "tags": "list",
+          "notes": "dict",
+          "decisionRecords": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "protocol": [
+            "REST",
+            "gRPC",
+            "GraphQL",
+            "WebSocket",
+            "AMQP",
+            "SMTP",
+            "SQL",
+            "Redis",
+            "Kafka",
+            "SQS",
+            "SNS",
+            "S3",
+            "DynamoDB",
+            "HTTP",
+            "HTTPS",
+            "TCP",
+            "UDP",
+            "other"
+          ],
+          "authenticationModel": [
+            "iam",
+            "api-key",
+            "oauth",
+            "saml",
+            "none",
+            "other",
+            "TBD"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "decisionRecords": "decisionRecordRef",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/listener.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-SF02\",\n  \"type\": \"listener\",\n  \"name\": \"Image Import SFTP\",\n  \"owner\": {\n    \"kind\": \"product_component\",\n    \"ref\": \"01KVFRT368-PC12\"\n  },\n  \"protocol\": \"TCP\",\n  \"port\": 22,\n  \"endpoint\": \"/\",\n  \"authenticationModel\": \"other\",\n  \"catalogStatus\": \"complete\",\n  \"description\": \"SFTP (SSH file transfer) inbox for VM image uploads. SSH key authentication per uploader. Same protocol and port as the Billing Export SFTP listener, different owner, so a different listener.\",\n  \"_source\": \"examples/catalog/engineering/listeners/listener-image-import-sftp.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KVFRT368-PD03": {
+      "id": "01KVFRT368-PD03",
+      "uid": "01KVFRT368-PD03",
+      "name": "PagerDuty Events API v2",
+      "aliases": [],
+      "type": "listener",
+      "typeLabel": "Listener",
+      "filterType": "listener",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Vendor endpoint that accepts alert events. Recorded once and reused by every caller; the integration key is the api-key.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "api-key",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "kind": "external_system",
+        "ref": "01KVFRT368-SY01"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/engineering/listeners/listener-pagerduty-events-v2.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-SY01",
+          "path": "owner.ref"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "owner",
+          "protocol",
+          "port",
+          "endpoint",
+          "authenticationModel",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "methods",
+          "description",
+          "aliases",
+          "tags",
+          "notes",
+          "decisionRecords",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "owner": "dict",
+          "port": "int",
+          "endpoint": "str",
+          "methods": "list",
+          "aliases": "list",
+          "tags": "list",
+          "notes": "dict",
+          "decisionRecords": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "protocol": [
+            "REST",
+            "gRPC",
+            "GraphQL",
+            "WebSocket",
+            "AMQP",
+            "SMTP",
+            "SQL",
+            "Redis",
+            "Kafka",
+            "SQS",
+            "SNS",
+            "S3",
+            "DynamoDB",
+            "HTTP",
+            "HTTPS",
+            "TCP",
+            "UDP",
+            "other"
+          ],
+          "authenticationModel": [
+            "iam",
+            "api-key",
+            "oauth",
+            "saml",
+            "none",
+            "other",
+            "TBD"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "decisionRecords": "decisionRecordRef",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/listener.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-PD03\",\n  \"type\": \"listener\",\n  \"name\": \"PagerDuty Events API v2\",\n  \"owner\": {\n    \"kind\": \"external_system\",\n    \"ref\": \"01KVFRT368-SY01\"\n  },\n  \"protocol\": \"HTTPS\",\n  \"port\": 443,\n  \"endpoint\": \"/v2/enqueue\",\n  \"authenticationModel\": \"api-key\",\n  \"catalogStatus\": \"complete\",\n  \"description\": \"Vendor endpoint that accepts alert events. Recorded once and reused by every caller; the integration key is the api-key.\",\n  \"methods\": [\n    \"POST\"\n  ],\n  \"_source\": \"examples/catalog/engineering/listeners/listener-pagerduty-events-v2.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KVFRT368-PCB1": {
+      "id": "01KVFRT368-PCB1",
+      "uid": "01KVFRT368-PCB1",
+      "name": "Billing Export Service",
+      "aliases": [],
+      "type": "product_component",
+      "typeLabel": "ProductComponent / Api Service",
+      "filterType": "product_component",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Builds nightly tenant usage and chargeback files from Ceilometer data and serves them to finance tooling over its own SFTP outbox.",
+      "version": "1.3.0",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "preferred",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "STCK000006-RS06",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "api-service",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "platform-engineering",
+        "contact": "platform-engineering@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#1f8a5b",
+      "source": "examples/catalog/engineering/product-components/product-component-billing-export-service.yaml",
+      "tags": [
+        "product-component",
+        "openstack",
+        "file-exchange"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [
+        {
+          "uid": "01KVFRT368-SF01",
+          "name": "Billing Export SFTP",
+          "protocol": "TCP",
+          "port": 22,
+          "endpoint": "/",
+          "authenticationModel": "other",
+          "catalogStatus": "complete"
+        }
+      ],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [
+        {
+          "ref": "01KVFRT368-DR01",
+          "key": "product_component"
+        }
+      ],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "STCK000006-RS06",
+          "path": "runsOn"
+        },
+        {
+          "target": "01KVFRT368-DR01",
+          "path": "decisionRecords[0].ref"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KVFRT368-SF01",
+          "path": "owner.ref"
+        },
+        {
+          "source": "01KVFRT368-DR01",
+          "path": "linkedObject"
+        },
+        {
+          "source": "01KVFRT368-RS04",
+          "path": "source"
+        },
+        {
+          "source": "01KVFRT368-RS01",
+          "path": "target"
+        },
+        {
+          "source": "KGX2365XDE-1RN6",
+          "path": "source"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "repoUrl",
+          "owner",
+          "classification",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "lifecycleStatus",
+          "aliases",
+          "description",
+          "version",
+          "tags",
+          "runsOn",
+          "language",
+          "interfaces",
+          "networkBindings",
+          "environmentConfiguration",
+          "runtimeSpec",
+          "notes",
+          "decisionRecords",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "runsOn": "str",
+          "tags": "list",
+          "interfaces": "list",
+          "networkBindings": "list",
+          "environmentConfiguration": "list",
+          "runtimeSpec": "dict",
+          "notes": "dict",
+          "requirementGroups": "list",
+          "decisionRecords": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ],
+          "classification": [
+            "web-application",
+            "api-service",
+            "worker",
+            "library",
+            "cli",
+            "other"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "interfaces": "interface",
+          "networkBindings": "networkBinding",
+          "environmentConfiguration": "environmentVariable",
+          "decisionRecords": "decisionRecordRef",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/product-component.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-PCB1\",\n  \"type\": \"product_component\",\n  \"name\": \"Billing Export Service\",\n  \"description\": \"Builds nightly tenant usage and chargeback files from Ceilometer data and serves them to finance tooling over its own SFTP outbox.\",\n  \"version\": \"1.3.0\",\n  \"catalogStatus\": \"complete\",\n  \"lifecycleStatus\": \"preferred\",\n  \"repoUrl\": \"https://github.example.com/platform-engineering/billing-export\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"product-component\",\n    \"openstack\",\n    \"file-exchange\"\n  ],\n  \"classification\": \"api-service\",\n  \"language\": \"Python\",\n  \"runtimeRequirement\": \"Python 3.12\",\n  \"runsOn\": \"STCK000006-RS06\",\n  \"interfaces\": [\n    {\n      \"name\": \"SFTP outbox\",\n      \"protocol\": \"other\",\n      \"path\": \"/\",\n      \"authenticationModel\": \"other\",\n      \"description\": \"Usage and chargeback export files, downloaded over SFTP (SSH key per consumer).\"\n    }\n  ],\n  \"decisionRecords\": [\n    {\n      \"ref\": \"01KVFRT368-DR01\",\n      \"key\": \"product_component\"\n    }\n  ],\n  \"_source\": \"examples/catalog/engineering/product-components/product-component-billing-export-service.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [
+        {
+          "uid": "01KVFRT368-RS04",
+          "name": "Billing Export Service \u2192 PagerDuty",
+          "label": "sends alerts to",
+          "technology": "HTTPS",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-SY01",
+          "targetName": "PagerDuty",
+          "capabilities": []
+        },
+        {
+          "uid": "KGX2365XDE-1RN6",
+          "name": "Billing Export Service \u2192 Horizon Dashboard",
+          "label": "runs on",
+          "technology": "",
+          "direction": "",
+          "targetUid": "STCK000006-RS06",
+          "targetName": "Horizon Dashboard",
+          "capabilities": []
+        }
+      ],
+      "inboundRelationships": [
+        {
+          "uid": "01KVFRT368-RS01",
+          "name": "OpenStack Ops Console \u2192 Billing Export Service",
+          "label": "downloads usage exports from",
+          "technology": "SFTP",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-PCB1",
+          "targetName": "Billing Export Service",
+          "capabilities": [],
+          "sourceUid": "01KSE5V73Z-Q0A0",
+          "sourceName": "OpenStack Ops Console"
+        }
+      ]
+    },
+    "01KVFRT368-PC12": {
+      "id": "01KVFRT368-PC12",
+      "uid": "01KVFRT368-PC12",
+      "name": "Image Import Service",
+      "aliases": [],
+      "type": "product_component",
+      "typeLabel": "ProductComponent / Api Service",
+      "filterType": "product_component",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Accepts uploaded VM images over its own SFTP inbox, scans and converts them, and registers them with Glance.",
+      "version": "1.3.0",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "preferred",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "STCK000006-RS06",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "api-service",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "platform-engineering",
+        "contact": "platform-engineering@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#1f8a5b",
+      "source": "examples/catalog/engineering/product-components/product-component-image-import-service.yaml",
+      "tags": [
+        "product-component",
+        "openstack",
+        "file-exchange"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [
+        {
+          "uid": "01KVFRT368-SF02",
+          "name": "Image Import SFTP",
+          "protocol": "TCP",
+          "port": 22,
+          "endpoint": "/",
+          "authenticationModel": "other",
+          "catalogStatus": "complete"
+        }
+      ],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [
+        {
+          "ref": "01KVFRT368-DR02",
+          "key": "product_component"
+        }
+      ],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "STCK000006-RS06",
+          "path": "runsOn"
+        },
+        {
+          "target": "01KVFRT368-DR02",
+          "path": "decisionRecords[0].ref"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KVFRT368-SF02",
+          "path": "owner.ref"
+        },
+        {
+          "source": "01KVFRT368-DR02",
+          "path": "linkedObject"
+        },
+        {
+          "source": "01KVFRT368-RS05",
+          "path": "source"
+        },
+        {
+          "source": "01KVFRT368-RS02",
+          "path": "target"
+        },
+        {
+          "source": "PVEV4MTX3V-PHY9",
+          "path": "source"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "repoUrl",
+          "owner",
+          "classification",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "lifecycleStatus",
+          "aliases",
+          "description",
+          "version",
+          "tags",
+          "runsOn",
+          "language",
+          "interfaces",
+          "networkBindings",
+          "environmentConfiguration",
+          "runtimeSpec",
+          "notes",
+          "decisionRecords",
+          "requirementImplementations"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "runsOn": "str",
+          "tags": "list",
+          "interfaces": "list",
+          "networkBindings": "list",
+          "environmentConfiguration": "list",
+          "runtimeSpec": "dict",
+          "notes": "dict",
+          "requirementGroups": "list",
+          "decisionRecords": "list",
+          "requirementImplementations": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ],
+          "classification": [
+            "web-application",
+            "api-service",
+            "worker",
+            "library",
+            "cli",
+            "other"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "interfaces": "interface",
+          "networkBindings": "networkBinding",
+          "environmentConfiguration": "environmentVariable",
+          "decisionRecords": "decisionRecordRef",
+          "requirementImplementations": "requirementImplementation"
+        },
+        "schemaPath": "framework/schemas/product-component.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-PC12\",\n  \"type\": \"product_component\",\n  \"name\": \"Image Import Service\",\n  \"description\": \"Accepts uploaded VM images over its own SFTP inbox, scans and converts them, and registers them with Glance.\",\n  \"version\": \"1.3.0\",\n  \"catalogStatus\": \"complete\",\n  \"lifecycleStatus\": \"preferred\",\n  \"repoUrl\": \"https://github.example.com/platform-engineering/image-import\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"product-component\",\n    \"openstack\",\n    \"file-exchange\"\n  ],\n  \"classification\": \"api-service\",\n  \"language\": \"Python\",\n  \"runtimeRequirement\": \"Python 3.12\",\n  \"runsOn\": \"STCK000006-RS06\",\n  \"interfaces\": [\n    {\n      \"name\": \"SFTP inbox\",\n      \"protocol\": \"other\",\n      \"path\": \"/\",\n      \"authenticationModel\": \"other\",\n      \"description\": \"VM image uploads over SFTP (SSH key per uploader).\"\n    }\n  ],\n  \"decisionRecords\": [\n    {\n      \"ref\": \"01KVFRT368-DR02\",\n      \"key\": \"product_component\"\n    }\n  ],\n  \"_source\": \"examples/catalog/engineering/product-components/product-component-image-import-service.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [
+        {
+          "uid": "01KVFRT368-RS05",
+          "name": "Image Import Service \u2192 PagerDuty",
+          "label": "sends alerts to",
+          "technology": "HTTPS",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-SY01",
+          "targetName": "PagerDuty",
+          "capabilities": []
+        },
+        {
+          "uid": "PVEV4MTX3V-PHY9",
+          "name": "Image Import Service \u2192 Horizon Dashboard",
+          "label": "runs on",
+          "technology": "",
+          "direction": "",
+          "targetUid": "STCK000006-RS06",
+          "targetName": "Horizon Dashboard",
+          "capabilities": []
+        }
+      ],
+      "inboundRelationships": [
+        {
+          "uid": "01KVFRT368-RS02",
+          "name": "OpenStack Ops Console \u2192 Image Import Service",
+          "label": "uploads VM images to",
+          "technology": "SFTP",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-PC12",
+          "targetName": "Image Import Service",
+          "capabilities": [],
+          "sourceUid": "01KSE5V73Z-Q0A0",
+          "sourceName": "OpenStack Ops Console"
+        }
+      ]
+    },
     "01KSE5V73Z-Q0A0": {
       "id": "01KSE5V73Z-Q0A0",
       "uid": "01KSE5V73Z-Q0A0",
@@ -85626,6 +90054,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -85683,6 +90112,18 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KT1340EW-5H7Z",
           "path": "linkedObject"
+        },
+        {
+          "source": "01KVFRT368-RS03",
+          "path": "source"
+        },
+        {
+          "source": "01KVFRT368-RS01",
+          "path": "source"
+        },
+        {
+          "source": "01KVFRT368-RS02",
+          "path": "source"
         },
         {
           "source": "95BR2EYAF9-AJ9Y",
@@ -85765,6 +90206,36 @@ window.DRAFT_BROWSER_DATA = {
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KSE5V73Z-Q0A0\",\n  \"type\": \"product_component\",\n  \"name\": \"OpenStack Ops Console\",\n  \"description\": \"Internal web-based operations console for platform engineering teams. Surfaces real-time service health, quota utilization, and incident triage workflows across the OpenStack control plane. Deployed alongside Horizon on the same runtime service.\",\n  \"version\": \"2.4.1\",\n  \"catalogStatus\": \"complete\",\n  \"lifecycleStatus\": \"preferred\",\n  \"repoUrl\": \"https://github.example.com/platform-engineering/openstack-ops-console\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"tags\": [\n    \"product-component\",\n    \"openstack\",\n    \"operations\",\n    \"internal-tooling\"\n  ],\n  \"classification\": \"web-application\",\n  \"language\": \"TypeScript\",\n  \"runtimeRequirement\": \"Node 20 LTS\",\n  \"runsOn\": \"STCK000006-RS06\",\n  \"interfaces\": [\n    {\n      \"name\": \"Ops Console UI\",\n      \"protocol\": \"REST\",\n      \"path\": \"/ops\",\n      \"authenticationModel\": \"saml\",\n      \"description\": \"Web UI for internal operators. SAML SSO via enterprise identity provider.\"\n    },\n    {\n      \"name\": \"Health API\",\n      \"protocol\": \"REST\",\n      \"path\": \"/ops/api/health\",\n      \"authenticationModel\": \"api-key\",\n      \"description\": \"Machine-readable health endpoint consumed by monitoring pipelines.\"\n    }\n  ],\n  \"networkBindings\": [\n    {\n      \"port\": 8080,\n      \"protocol\": \"HTTPS\",\n      \"direction\": \"inbound\",\n      \"description\": \"Inbound HTTPS from Horizon nginx reverse proxy.\"\n    }\n  ],\n  \"environmentConfiguration\": [\n    {\n      \"name\": \"KEYSTONE_ENDPOINT\",\n      \"description\": \"Keystone identity service endpoint for authentication delegation.\",\n      \"required\": true,\n      \"sensitive\": false\n    },\n    {\n      \"name\": \"OPS_CONSOLE_SECRET_KEY\",\n      \"description\": \"Application secret key used for session signing.\",\n      \"required\": true,\n      \"sensitive\": true\n    },\n    {\n      \"name\": \"SAML_IDP_METADATA_URL\",\n      \"description\": \"URL for the enterprise SAML identity provider metadata document.\",\n      \"required\": true,\n      \"sensitive\": false\n    }\n  ],\n  \"notes\": {\n    \"product_component\": \"Application secrets (OPS_CONSOLE_SECRET_KEY, SAML credentials) are injected at deploy time from the platform secret store. No secrets present in source code or container images. See decision record 01KSE5V73Z-DRSC.\"\n  },\n  \"decisionRecords\": [\n    {\n      \"ref\": \"01KSE5V73Z-DRSC\"\n    },\n    {\n      \"ref\": \"01KT1340EW-5H7Z\",\n      \"key\": \"product_component\"\n    }\n  ],\n  \"_source\": \"examples/catalog/engineering/product-components/product-component-openstack-ops-console.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [
+        {
+          "uid": "01KVFRT368-RS03",
+          "name": "OpenStack Ops Console \u2192 PagerDuty",
+          "label": "sends alerts to",
+          "technology": "HTTPS",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-SY01",
+          "targetName": "PagerDuty",
+          "capabilities": []
+        },
+        {
+          "uid": "01KVFRT368-RS01",
+          "name": "OpenStack Ops Console \u2192 Billing Export Service",
+          "label": "downloads usage exports from",
+          "technology": "SFTP",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-PCB1",
+          "targetName": "Billing Export Service",
+          "capabilities": []
+        },
+        {
+          "uid": "01KVFRT368-RS02",
+          "name": "OpenStack Ops Console \u2192 Image Import Service",
+          "label": "uploads VM images to",
+          "technology": "SFTP",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-PC12",
+          "targetName": "Image Import Service",
+          "capabilities": []
+        },
         {
           "uid": "95BR2EYAF9-AJ9Y",
           "name": "OpenStack Ops Console \u2192 Horizon Dashboard",
@@ -85877,6 +90348,7 @@ window.DRAFT_BROWSER_DATA = {
           "description": "Internal tier hosting relational databases (MariaDB Galera), message broker (RabbitMQ), and object storage (Swift). Accessible only from control plane services."
         }
       ],
+      "ownedListeners": [],
       "sdpConnections": [
         {
           "from": "01KSF29JTP-9HYA",
@@ -85886,7 +90358,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "proxies authentication requests",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "01KSF29JTP-9HYA",
@@ -85896,7 +90369,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "proxies networking API requests",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "01KSF29JTP-9HYA",
@@ -85906,7 +90380,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "proxies compute API requests",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000008-RS08",
@@ -85916,7 +90391,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000008-RS08",
@@ -85926,7 +90402,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "sends events to",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000005-RS05",
@@ -85936,7 +90413,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "validates tokens",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000005-RS05",
@@ -85946,7 +90424,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "publishes and consumes RPC messages",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000005-RS05",
@@ -85956,7 +90435,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "persists volume state",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000003-RS03",
@@ -85966,7 +90446,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000003-RS03",
@@ -85976,7 +90457,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000003-RS03",
@@ -85986,7 +90468,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000007-RS07",
@@ -85996,7 +90479,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000007-RS07",
@@ -86006,7 +90490,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000007-RS07",
@@ -86016,7 +90501,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -86026,7 +90512,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -86036,7 +90523,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -86046,7 +90534,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -86056,7 +90545,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -86066,7 +90556,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000006-RS06",
@@ -86076,7 +90567,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -86086,7 +90578,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -86096,7 +90589,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -86106,7 +90600,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000009-RS09",
@@ -86116,7 +90611,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000002-RS02",
@@ -86126,7 +90622,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "persists identity data",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000004-RS04",
@@ -86136,7 +90633,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "validates tokens",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000004-RS04",
@@ -86146,7 +90644,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "publishes and consumes agent RPC messages",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000004-RS04",
@@ -86156,7 +90655,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "persists network state",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -86166,7 +90666,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "attaches block volumes",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -86176,7 +90677,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "validates tokens",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -86186,7 +90688,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "publishes and consumes RPC messages",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -86196,7 +90699,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -86206,7 +90710,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "provisions network ports",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK000001-RS01",
@@ -86216,7 +90721,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "reads from / writes to",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000D-RS0D",
@@ -86226,7 +90732,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000B-RS0B",
@@ -86236,7 +90743,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000B-RS0B",
@@ -86246,7 +90754,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000C-RS0C",
@@ -86256,7 +90765,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000C-RS0C",
@@ -86266,7 +90776,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000A-RS0A",
@@ -86276,7 +90787,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000A-RS0A",
@@ -86286,7 +90798,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         },
         {
           "from": "STCK00000A-RS0A",
@@ -86296,7 +90809,8 @@ window.DRAFT_BROWSER_DATA = {
           "port": "",
           "label": "calls",
           "serviceGroup": "",
-          "targetInterface": ""
+          "targetInterface": "",
+          "targetListener": ""
         }
       ],
       "serviceGroups": [
@@ -86807,6 +91321,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -86981,6 +91496,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -87167,6 +91683,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -87345,6 +91862,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -87519,6 +92037,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -87705,6 +92224,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -87879,6 +92399,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -88065,6 +92586,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -88243,6 +92765,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -88417,6 +92940,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -88603,6 +93127,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -88777,6 +93302,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -88963,6 +93489,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -89141,6 +93668,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -89315,6 +93843,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -89501,6 +94030,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -89675,6 +94205,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -89861,6 +94392,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -90039,6 +94571,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -90213,6 +94746,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -90399,6 +94933,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -90573,6 +95108,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -90759,6 +95295,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -90937,6 +95474,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -91111,6 +95649,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -91297,6 +95836,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -91471,6 +96011,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -91657,6 +96198,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -91835,6 +96377,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -92009,6 +96552,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -92195,6 +96739,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -92369,6 +96914,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -92555,6 +97101,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -92733,6 +97280,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -92907,6 +97455,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -93094,6 +97643,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -93270,6 +97820,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -93452,6 +98003,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -93638,6 +98190,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -93808,6 +98361,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -93982,6 +98536,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -94152,6 +98707,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -94335,6 +98891,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -94510,6 +99067,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -94618,6 +99176,348 @@ window.DRAFT_BROWSER_DATA = {
       "outboundRelationships": [],
       "inboundRelationships": []
     },
+    "01KVFRT368-DR01": {
+      "id": "01KVFRT368-DR01",
+      "uid": "01KVFRT368-DR01",
+      "name": "Billing Export Service \u2014 Security and Compliance decisions",
+      "aliases": [],
+      "type": "decision_record",
+      "typeLabel": "DecisionRecord / decision",
+      "filterType": "decision_record",
+      "category": "decision",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "preferred",
+      "status": "accepted",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "platform-engineering",
+        "contact": "platform-engineering@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#1f8a5b",
+      "source": "examples/catalog/governance/decision-records/dr-product-component-billing-export-service-compliance.yaml",
+      "tags": [
+        "decision-record",
+        "example",
+        "compliance"
+      ],
+      "ardCategory": "decision",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "Records the security and compliance decisions for Billing Export Service addressing the product_component control requirement(s). Its SFTP listener uses per-client SSH keys; this DecisionRecord is the committed answer that satisfies the requirement(s).",
+      "relatedDecisionRecords": [],
+      "linkedObject": "01KVFRT368-PCB1",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PCB1",
+          "path": "linkedObject"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KVFRT368-PCB1",
+          "path": "decisionRecords[0].ref"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "category",
+          "status",
+          "catalogStatus",
+          "lifecycleStatus"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags",
+          "affectedComponent",
+          "impact",
+          "mitigationPath",
+          "decisionRationale",
+          "relatedDecisionRecords",
+          "controlReferences",
+          "linkedObject",
+          "approver",
+          "approvalDate"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "relatedDecisionRecords": "list",
+          "controlReferences": "list",
+          "approver": "str",
+          "approvalDate": "str"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ],
+          "category": [
+            "risk",
+            "decision"
+          ],
+          "status": [
+            "open",
+            "accepted",
+            "mitigated",
+            "resolved"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/decision-record.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-DR01\",\n  \"type\": \"decision_record\",\n  \"name\": \"Billing Export Service \\u2014 Security and Compliance decisions\",\n  \"category\": \"decision\",\n  \"status\": \"accepted\",\n  \"catalogStatus\": \"complete\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"linkedObject\": \"01KVFRT368-PCB1\",\n  \"tags\": [\n    \"decision-record\",\n    \"example\",\n    \"compliance\"\n  ],\n  \"decisionRationale\": \"Records the security and compliance decisions for Billing Export Service addressing the product_component control requirement(s). Its SFTP listener uses per-client SSH keys; this DecisionRecord is the committed answer that satisfies the requirement(s).\",\n  \"_source\": \"examples/catalog/governance/decision-records/dr-product-component-billing-export-service-compliance.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KVFRT368-DR02": {
+      "id": "01KVFRT368-DR02",
+      "uid": "01KVFRT368-DR02",
+      "name": "Image Import Service \u2014 Security and Compliance decisions",
+      "aliases": [],
+      "type": "decision_record",
+      "typeLabel": "DecisionRecord / decision",
+      "filterType": "decision_record",
+      "category": "decision",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "preferred",
+      "status": "accepted",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "platform-engineering",
+        "contact": "platform-engineering@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#1f8a5b",
+      "source": "examples/catalog/governance/decision-records/dr-product-component-image-import-service-compliance.yaml",
+      "tags": [
+        "decision-record",
+        "example",
+        "compliance"
+      ],
+      "ardCategory": "decision",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "Records the security and compliance decisions for Image Import Service addressing the product_component control requirement(s). Its SFTP listener uses per-client SSH keys; this DecisionRecord is the committed answer that satisfies the requirement(s).",
+      "relatedDecisionRecords": [],
+      "linkedObject": "01KVFRT368-PC12",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PC12",
+          "path": "linkedObject"
+        }
+      ],
+      "referencedBy": [
+        {
+          "source": "01KVFRT368-PC12",
+          "path": "decisionRecords[0].ref"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "category",
+          "status",
+          "catalogStatus",
+          "lifecycleStatus"
+        ],
+        "optionalFields": [
+          "aliases",
+          "description",
+          "version",
+          "owner",
+          "tags",
+          "affectedComponent",
+          "impact",
+          "mitigationPath",
+          "decisionRationale",
+          "relatedDecisionRecords",
+          "controlReferences",
+          "linkedObject",
+          "approver",
+          "approvalDate"
+        ],
+        "fieldTypes": {
+          "aliases": "list",
+          "owner": "dict",
+          "tags": "list",
+          "relatedDecisionRecords": "list",
+          "controlReferences": "list",
+          "approver": "str",
+          "approvalDate": "str"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ],
+          "category": [
+            "risk",
+            "decision"
+          ],
+          "status": [
+            "open",
+            "accepted",
+            "mitigated",
+            "resolved"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/decision-record.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-DR02\",\n  \"type\": \"decision_record\",\n  \"name\": \"Image Import Service \\u2014 Security and Compliance decisions\",\n  \"category\": \"decision\",\n  \"status\": \"accepted\",\n  \"catalogStatus\": \"complete\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"platform-engineering\",\n    \"contact\": \"platform-engineering@example.com\"\n  },\n  \"linkedObject\": \"01KVFRT368-PC12\",\n  \"tags\": [\n    \"decision-record\",\n    \"example\",\n    \"compliance\"\n  ],\n  \"decisionRationale\": \"Records the security and compliance decisions for Image Import Service addressing the product_component control requirement(s). Its SFTP listener uses per-client SSH keys; this DecisionRecord is the committed answer that satisfies the requirement(s).\",\n  \"_source\": \"examples/catalog/governance/decision-records/dr-product-component-image-import-service-compliance.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
     "01KT1340EW-5H7Z": {
       "id": "01KT1340EW-5H7Z",
       "uid": "01KT1340EW-5H7Z",
@@ -94680,6 +99580,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -94850,6 +99751,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -95020,6 +99922,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -95190,6 +100093,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -95364,6 +100268,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -95534,6 +100439,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -95708,6 +100614,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -95882,6 +100789,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -96064,6 +100972,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -96234,6 +101143,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -96408,6 +101318,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -96582,6 +101493,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -96764,6 +101676,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -96934,6 +101847,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -97108,6 +102022,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -97282,6 +102197,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -97464,6 +102380,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -97634,6 +102551,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -97808,6 +102726,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -97982,6 +102901,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -98164,6 +103084,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -98334,6 +103255,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -98508,6 +103430,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -98682,6 +103605,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -98864,6 +103788,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -99034,6 +103959,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -99208,6 +104134,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -99382,6 +104309,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -99564,6 +104492,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -99734,6 +104663,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -99908,6 +104838,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -100082,6 +105013,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -100264,6 +105196,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -100434,6 +105367,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -100608,6 +105542,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -100782,6 +105717,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -100964,6 +105900,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -101134,6 +106071,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -101308,6 +106246,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -101482,6 +106421,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -101664,6 +106604,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -101834,6 +106775,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -102008,6 +106950,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -102182,6 +107125,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -102364,6 +107308,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -102534,6 +107479,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -102708,6 +107654,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -102882,6 +107829,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -103064,6 +108012,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -103234,6 +108183,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -103408,6 +108358,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -103582,6 +108533,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -103764,6 +108716,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -103934,6 +108887,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -104108,6 +109062,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -104282,6 +109237,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -104464,6 +109420,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -104642,6 +109599,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -104812,6 +109770,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -104986,6 +109945,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -105160,6 +110120,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -105327,6 +110288,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -105380,6 +110342,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -105389,6 +110352,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -105473,6 +110437,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -105526,6 +110491,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -105535,6 +110501,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -105619,6 +110586,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -105672,6 +110640,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -105681,6 +110650,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -105765,6 +110735,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -105814,6 +110785,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -105823,6 +110795,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -105907,6 +110880,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -105956,6 +110930,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -105965,6 +110940,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -106049,6 +111025,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -106098,6 +111075,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -106107,6 +111085,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -106191,6 +111170,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -106240,6 +111220,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -106249,6 +111230,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -106274,6 +111256,155 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/relationship.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"type\": \"relationship\",\n  \"uid\": \"01KSKWFZZW-ZEKF\",\n  \"name\": \"AWS Lambda Serverless Host \\u2192 AWS Lambda Service\",\n  \"catalogStatus\": \"stub\",\n  \"source\": \"01KQQ4Q025-1XDE\",\n  \"label\": \"calls\",\n  \"externalTarget\": \"AWS Lambda Service\",\n  \"notes\": \"The Lambda service itself provides the execution environment.\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-aws-lambda-serverless-host-calls-aws-lambda-service.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KVFRT368-RS04": {
+      "id": "01KVFRT368-RS04",
+      "uid": "01KVFRT368-RS04",
+      "name": "Billing Export Service \u2192 PagerDuty",
+      "aliases": [],
+      "type": "relationship",
+      "typeLabel": "Relationship",
+      "filterType": "relationship",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Billing Export Service raises incidents through the shared PagerDuty Events API v2 listener.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/governance/relationships/relationship-billing-export-service-alerts-pagerduty.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PCB1",
+          "path": "source"
+        },
+        {
+          "target": "01KVFRT368-SY01",
+          "path": "target"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "source",
+          "label",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "target",
+          "externalTarget",
+          "targetInterface",
+          "targetListener",
+          "technology",
+          "direction",
+          "flow",
+          "capabilities",
+          "notes",
+          "tags"
+        ],
+        "fieldTypes": {
+          "targetInterface": "str",
+          "targetListener": "str",
+          "tags": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "direction": [
+            "synchronous",
+            "asynchronous",
+            "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/relationship.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-RS04\",\n  \"type\": \"relationship\",\n  \"name\": \"Billing Export Service \\u2192 PagerDuty\",\n  \"description\": \"Billing Export Service raises incidents through the shared PagerDuty Events API v2 listener.\",\n  \"source\": \"01KVFRT368-PCB1\",\n  \"target\": \"01KVFRT368-SY01\",\n  \"targetListener\": \"01KVFRT368-PD03\",\n  \"label\": \"sends alerts to\",\n  \"technology\": \"HTTPS\",\n  \"direction\": \"synchronous\",\n  \"catalogStatus\": \"complete\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-billing-export-service-alerts-pagerduty.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -106333,6 +111464,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -106386,6 +111518,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -106395,6 +111528,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -106479,6 +111613,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -106532,6 +111667,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -106541,6 +111677,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -106625,6 +111762,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -106678,6 +111816,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -106687,6 +111826,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -106771,6 +111911,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -106824,6 +111965,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -106833,6 +111975,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -106917,6 +112060,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -106966,6 +112110,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -106975,6 +112120,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -107059,6 +112205,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -107112,6 +112259,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -107121,6 +112269,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -107205,6 +112354,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -107254,6 +112404,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -107263,6 +112414,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -107347,6 +112499,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -107400,6 +112553,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -107409,6 +112563,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -107493,6 +112648,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -107546,6 +112702,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -107555,6 +112712,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -107639,6 +112797,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -107692,6 +112851,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -107701,6 +112861,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -107785,6 +112946,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -107838,6 +113000,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -107847,6 +113010,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -107931,6 +113095,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -107984,6 +113149,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -107993,6 +113159,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -108077,6 +113244,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -108130,6 +113298,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -108139,6 +113308,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -108223,6 +113393,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -108276,6 +113447,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -108285,6 +113457,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -108369,6 +113542,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -108422,6 +113596,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -108431,6 +113606,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -108515,6 +113691,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -108568,6 +113745,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -108577,6 +113755,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -108661,6 +113840,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -108714,6 +113894,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -108723,6 +113904,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -108807,6 +113989,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -108860,6 +114043,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -108869,6 +114053,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -108953,6 +114138,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -109006,6 +114192,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -109015,6 +114202,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -109040,6 +114228,155 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/relationship.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"type\": \"relationship\",\n  \"uid\": \"01KSKWG003-G3Q2\",\n  \"name\": \"Horizon Dashboard \\u2192 Nova Compute Service\",\n  \"catalogStatus\": \"incomplete\",\n  \"source\": \"STCK000006-RS06\",\n  \"label\": \"calls\",\n  \"target\": \"STCK000001-RS01\",\n  \"notes\": \"Horizon calls Nova APIs to display and manage compute instances, flavors, key pairs, and virtual console access.\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-horizon-dashboard-calls-nova-compute-service.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KVFRT368-RS05": {
+      "id": "01KVFRT368-RS05",
+      "uid": "01KVFRT368-RS05",
+      "name": "Image Import Service \u2192 PagerDuty",
+      "aliases": [],
+      "type": "relationship",
+      "typeLabel": "Relationship",
+      "filterType": "relationship",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Image Import Service raises incidents through the shared PagerDuty Events API v2 listener.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/governance/relationships/relationship-image-import-service-alerts-pagerduty.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PC12",
+          "path": "source"
+        },
+        {
+          "target": "01KVFRT368-SY01",
+          "path": "target"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "source",
+          "label",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "target",
+          "externalTarget",
+          "targetInterface",
+          "targetListener",
+          "technology",
+          "direction",
+          "flow",
+          "capabilities",
+          "notes",
+          "tags"
+        ],
+        "fieldTypes": {
+          "targetInterface": "str",
+          "targetListener": "str",
+          "tags": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "direction": [
+            "synchronous",
+            "asynchronous",
+            "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/relationship.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-RS05\",\n  \"type\": \"relationship\",\n  \"name\": \"Image Import Service \\u2192 PagerDuty\",\n  \"description\": \"Image Import Service raises incidents through the shared PagerDuty Events API v2 listener.\",\n  \"source\": \"01KVFRT368-PC12\",\n  \"target\": \"01KVFRT368-SY01\",\n  \"targetListener\": \"01KVFRT368-PD03\",\n  \"label\": \"sends alerts to\",\n  \"technology\": \"HTTPS\",\n  \"direction\": \"synchronous\",\n  \"catalogStatus\": \"complete\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-image-import-service-alerts-pagerduty.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -109099,6 +114436,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -109152,6 +114490,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -109161,6 +114500,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -109245,6 +114585,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -109298,6 +114639,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -109307,6 +114649,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -109391,6 +114734,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -109444,6 +114788,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -109453,6 +114798,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -109537,6 +114883,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -109590,6 +114937,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -109599,6 +114947,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -109683,6 +115032,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -109732,6 +115082,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -109741,6 +115092,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -109825,6 +115177,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -109874,6 +115227,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -109883,6 +115237,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -109967,6 +115322,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -110020,6 +115376,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -110029,6 +115386,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110113,6 +115471,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -110166,6 +115525,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -110175,6 +115535,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110259,6 +115620,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -110312,6 +115674,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -110321,6 +115684,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110405,6 +115769,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -110454,6 +115819,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -110463,6 +115829,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110547,6 +115914,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -110600,6 +115968,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -110609,6 +115978,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110693,6 +116063,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -110746,6 +116117,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -110755,6 +116127,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110839,6 +116212,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -110892,6 +116266,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -110901,6 +116276,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -110985,6 +116361,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -111038,6 +116415,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -111047,6 +116425,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -111131,6 +116510,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -111184,6 +116564,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -111193,6 +116574,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -111277,6 +116659,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -111326,6 +116709,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -111335,6 +116719,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -111419,6 +116804,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -111472,6 +116858,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -111481,6 +116868,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -111565,6 +116953,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -111618,6 +117007,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -111627,6 +117017,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -111711,6 +117102,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -111760,6 +117152,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -111769,6 +117162,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -111794,6 +117188,453 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/relationship.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"type\": \"relationship\",\n  \"uid\": \"01KSKWFZZV-A346\",\n  \"name\": \"OpenStack Shared Database \\u2192 Backup Service\",\n  \"catalogStatus\": \"stub\",\n  \"source\": \"STCK000007-DAR7\",\n  \"label\": \"calls\",\n  \"externalTarget\": \"Backup Service\",\n  \"notes\": \"Point-in-time backups via Percona XtraBackup automated backup tooling with per-schema logical exports writing to object storage.\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-openstack-shared-database-calls-backup-service.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KVFRT368-RS03": {
+      "id": "01KVFRT368-RS03",
+      "uid": "01KVFRT368-RS03",
+      "name": "OpenStack Ops Console \u2192 PagerDuty",
+      "aliases": [],
+      "type": "relationship",
+      "typeLabel": "Relationship",
+      "filterType": "relationship",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "OpenStack Ops Console raises incidents through the shared PagerDuty Events API v2 listener.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/governance/relationships/relationship-ops-console-alerts-pagerduty.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSE5V73Z-Q0A0",
+          "path": "source"
+        },
+        {
+          "target": "01KVFRT368-SY01",
+          "path": "target"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "source",
+          "label",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "target",
+          "externalTarget",
+          "targetInterface",
+          "targetListener",
+          "technology",
+          "direction",
+          "flow",
+          "capabilities",
+          "notes",
+          "tags"
+        ],
+        "fieldTypes": {
+          "targetInterface": "str",
+          "targetListener": "str",
+          "tags": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "direction": [
+            "synchronous",
+            "asynchronous",
+            "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/relationship.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-RS03\",\n  \"type\": \"relationship\",\n  \"name\": \"OpenStack Ops Console \\u2192 PagerDuty\",\n  \"description\": \"OpenStack Ops Console raises incidents through the shared PagerDuty Events API v2 listener.\",\n  \"source\": \"01KSE5V73Z-Q0A0\",\n  \"target\": \"01KVFRT368-SY01\",\n  \"targetListener\": \"01KVFRT368-PD03\",\n  \"label\": \"sends alerts to\",\n  \"technology\": \"HTTPS\",\n  \"direction\": \"synchronous\",\n  \"catalogStatus\": \"complete\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-ops-console-alerts-pagerduty.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KVFRT368-RS01": {
+      "id": "01KVFRT368-RS01",
+      "uid": "01KVFRT368-RS01",
+      "name": "OpenStack Ops Console \u2192 Billing Export Service",
+      "aliases": [],
+      "type": "relationship",
+      "typeLabel": "Relationship",
+      "filterType": "relationship",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Operators download chargeback files from the Billing Export SFTP outbox.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/governance/relationships/relationship-ops-console-downloads-billing-exports.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSE5V73Z-Q0A0",
+          "path": "source"
+        },
+        {
+          "target": "01KVFRT368-PCB1",
+          "path": "target"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "source",
+          "label",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "target",
+          "externalTarget",
+          "targetInterface",
+          "targetListener",
+          "technology",
+          "direction",
+          "flow",
+          "capabilities",
+          "notes",
+          "tags"
+        ],
+        "fieldTypes": {
+          "targetInterface": "str",
+          "targetListener": "str",
+          "tags": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "direction": [
+            "synchronous",
+            "asynchronous",
+            "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/relationship.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-RS01\",\n  \"type\": \"relationship\",\n  \"name\": \"OpenStack Ops Console \\u2192 Billing Export Service\",\n  \"description\": \"Operators download chargeback files from the Billing Export SFTP outbox.\",\n  \"source\": \"01KSE5V73Z-Q0A0\",\n  \"target\": \"01KVFRT368-PCB1\",\n  \"targetListener\": \"01KVFRT368-SF01\",\n  \"label\": \"downloads usage exports from\",\n  \"technology\": \"SFTP\",\n  \"direction\": \"synchronous\",\n  \"catalogStatus\": \"complete\",\n  \"targetInterface\": \"SFTP outbox\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-ops-console-downloads-billing-exports.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "01KVFRT368-RS02": {
+      "id": "01KVFRT368-RS02",
+      "uid": "01KVFRT368-RS02",
+      "name": "OpenStack Ops Console \u2192 Image Import Service",
+      "aliases": [],
+      "type": "relationship",
+      "typeLabel": "Relationship",
+      "filterType": "relationship",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "Operators upload golden images to the Image Import SFTP inbox.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "examples/catalog/governance/relationships/relationship-ops-console-uploads-images.yaml",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KSE5V73Z-Q0A0",
+          "path": "source"
+        },
+        {
+          "target": "01KVFRT368-PC12",
+          "path": "target"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "source",
+          "label",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "target",
+          "externalTarget",
+          "targetInterface",
+          "targetListener",
+          "technology",
+          "direction",
+          "flow",
+          "capabilities",
+          "notes",
+          "tags"
+        ],
+        "fieldTypes": {
+          "targetInterface": "str",
+          "targetListener": "str",
+          "tags": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "direction": [
+            "synchronous",
+            "asynchronous",
+            "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/relationship.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-RS02\",\n  \"type\": \"relationship\",\n  \"name\": \"OpenStack Ops Console \\u2192 Image Import Service\",\n  \"description\": \"Operators upload golden images to the Image Import SFTP inbox.\",\n  \"source\": \"01KSE5V73Z-Q0A0\",\n  \"target\": \"01KVFRT368-PC12\",\n  \"targetListener\": \"01KVFRT368-SF02\",\n  \"label\": \"uploads VM images to\",\n  \"technology\": \"SFTP\",\n  \"direction\": \"synchronous\",\n  \"catalogStatus\": \"complete\",\n  \"targetInterface\": \"SFTP inbox\",\n  \"_source\": \"examples/catalog/governance/relationships/relationship-ops-console-uploads-images.yaml\"\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -111853,6 +117694,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -111906,6 +117748,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -111915,6 +117758,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -111999,6 +117843,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -112052,6 +117897,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -112061,6 +117907,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -112145,6 +117992,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -112198,6 +118046,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -112207,6 +118056,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -112291,6 +118141,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -112344,6 +118195,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -112353,6 +118205,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -112437,6 +118290,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -112490,6 +118344,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -112499,6 +118354,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -112583,6 +118439,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -112632,6 +118489,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -112641,6 +118499,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -112725,6 +118584,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -112778,6 +118638,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -112787,6 +118648,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -112871,6 +118733,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -112924,6 +118787,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -112933,6 +118797,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -113017,6 +118882,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -113070,6 +118936,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -113079,6 +118946,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -113172,6 +119040,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -113395,6 +119264,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -113614,6 +119484,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -113733,6 +119604,202 @@ window.DRAFT_BROWSER_DATA = {
       "outboundRelationships": [],
       "inboundRelationships": []
     },
+    "01KVFRT368-SY01": {
+      "id": "01KVFRT368-SY01",
+      "uid": "01KVFRT368-SY01",
+      "name": "PagerDuty",
+      "aliases": [
+        "PagerDuty Events API"
+      ],
+      "type": "system",
+      "typeLabel": "System",
+      "filterType": "system",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "External incident alerting service. Recorded once as a system so every caller targets the same listener instead of a free-text externalTarget.",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "preferred",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {
+        "team": "cloud-architecture",
+        "contact": "cloud-architecture@example.com"
+      },
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#1f8a5b",
+      "source": "examples/catalog/governance/systems/system-pagerduty.yaml",
+      "tags": [
+        "external",
+        "alerting"
+      ],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": {},
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [],
+      "referencedBy": [
+        {
+          "source": "01KVFRT368-PD03",
+          "path": "owner.ref"
+        },
+        {
+          "source": "01KVFRT368-RS04",
+          "path": "target"
+        },
+        {
+          "source": "01KVFRT368-RS05",
+          "path": "target"
+        },
+        {
+          "source": "01KVFRT368-RS03",
+          "path": "target"
+        }
+      ],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "catalogStatus",
+          "lifecycleStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "containers",
+          "externalActors",
+          "owner",
+          "tags",
+          "notes"
+        ],
+        "fieldTypes": {
+          "containers": "list",
+          "externalActors": "list",
+          "tags": "list",
+          "owner": "dict"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "lifecycleStatus": [
+            "candidate",
+            "preferred",
+            "existing-only",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {
+          "containers": "systemContainer",
+          "externalActors": "externalActor"
+        },
+        "schemaPath": "framework/schemas/system.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"01KVFRT368-SY01\",\n  \"type\": \"system\",\n  \"name\": \"PagerDuty\",\n  \"aliases\": [\n    \"PagerDuty Events API\"\n  ],\n  \"description\": \"External incident alerting service. Recorded once as a system so every caller targets the same listener instead of a free-text externalTarget.\",\n  \"catalogStatus\": \"complete\",\n  \"lifecycleStatus\": \"preferred\",\n  \"owner\": {\n    \"team\": \"cloud-architecture\",\n    \"contact\": \"cloud-architecture@example.com\"\n  },\n  \"tags\": [\n    \"external\",\n    \"alerting\"\n  ],\n  \"_source\": \"examples/catalog/governance/systems/system-pagerduty.yaml\"\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": [
+        {
+          "uid": "01KVFRT368-RS04",
+          "name": "Billing Export Service \u2192 PagerDuty",
+          "label": "sends alerts to",
+          "technology": "HTTPS",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-SY01",
+          "targetName": "PagerDuty",
+          "capabilities": [],
+          "sourceUid": "01KVFRT368-PCB1",
+          "sourceName": "Billing Export Service"
+        },
+        {
+          "uid": "01KVFRT368-RS05",
+          "name": "Image Import Service \u2192 PagerDuty",
+          "label": "sends alerts to",
+          "technology": "HTTPS",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-SY01",
+          "targetName": "PagerDuty",
+          "capabilities": [],
+          "sourceUid": "01KVFRT368-PC12",
+          "sourceName": "Image Import Service"
+        },
+        {
+          "uid": "01KVFRT368-RS03",
+          "name": "OpenStack Ops Console \u2192 PagerDuty",
+          "label": "sends alerts to",
+          "technology": "HTTPS",
+          "direction": "synchronous",
+          "targetUid": "01KVFRT368-SY01",
+          "targetName": "PagerDuty",
+          "capabilities": [],
+          "sourceUid": "01KSE5V73Z-Q0A0",
+          "sourceName": "OpenStack Ops Console"
+        }
+      ]
+    },
     "STCK000005-DAR5": {
       "id": "STCK000005-DAR5",
       "uid": "STCK000005-DAR5",
@@ -113841,6 +119908,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -114318,6 +120386,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -114791,6 +120860,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -115268,6 +121338,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -115744,6 +121815,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -116224,6 +122296,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -116763,6 +122836,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -117225,6 +123299,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -117878,6 +123953,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -118131,6 +124207,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -118526,6 +124603,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -118860,6 +124938,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -119246,6 +125325,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -119683,6 +125763,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -120116,6 +126197,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -120537,6 +126619,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -120653,6 +126736,14 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "referencedBy": [
         {
+          "source": "01KVFRT368-PCB1",
+          "path": "runsOn"
+        },
+        {
+          "source": "01KVFRT368-PC12",
+          "path": "runsOn"
+        },
+        {
           "source": "01KSE5V73Z-Q0A0",
           "path": "runsOn"
         },
@@ -120699,6 +126790,14 @@ window.DRAFT_BROWSER_DATA = {
         {
           "source": "01KSKWG003-G3Q2",
           "path": "source"
+        },
+        {
+          "source": "KGX2365XDE-1RN6",
+          "path": "target"
+        },
+        {
+          "source": "PVEV4MTX3V-PHY9",
+          "path": "target"
         },
         {
           "source": "95BR2EYAF9-AJ9Y",
@@ -120895,6 +126994,30 @@ window.DRAFT_BROWSER_DATA = {
       ],
       "inboundRelationships": [
         {
+          "uid": "KGX2365XDE-1RN6",
+          "name": "Billing Export Service \u2192 Horizon Dashboard",
+          "label": "runs on",
+          "technology": "",
+          "direction": "",
+          "targetUid": "STCK000006-RS06",
+          "targetName": "Horizon Dashboard",
+          "capabilities": [],
+          "sourceUid": "01KVFRT368-PCB1",
+          "sourceName": "Billing Export Service"
+        },
+        {
+          "uid": "PVEV4MTX3V-PHY9",
+          "name": "Image Import Service \u2192 Horizon Dashboard",
+          "label": "runs on",
+          "technology": "",
+          "direction": "",
+          "targetUid": "STCK000006-RS06",
+          "targetName": "Horizon Dashboard",
+          "capabilities": [],
+          "sourceUid": "01KVFRT368-PC12",
+          "sourceName": "Image Import Service"
+        },
+        {
           "uid": "95BR2EYAF9-AJ9Y",
           "name": "OpenStack Ops Console \u2192 Horizon Dashboard",
           "label": "runs on",
@@ -121001,6 +127124,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -121416,6 +127540,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -122016,6 +128141,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -122472,6 +128598,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -122974,6 +129101,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -123463,6 +129591,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -123849,6 +129978,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -124235,6 +130365,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -124606,6 +130737,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -124773,6 +130905,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -124937,6 +131070,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -125100,6 +131234,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -125276,6 +131411,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -125487,6 +131623,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -125651,6 +131788,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -125815,6 +131953,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -125980,6 +132119,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -126145,6 +132285,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -126310,6 +132451,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -126475,6 +132617,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -126640,6 +132783,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -126806,6 +132950,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -126976,6 +133121,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -127140,6 +133286,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -127313,6 +133460,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -127484,6 +133632,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -127666,6 +133815,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -127828,6 +133978,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -127975,6 +134126,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -128028,6 +134180,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -128037,6 +134190,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -128062,6 +134216,304 @@ window.DRAFT_BROWSER_DATA = {
         "schemaPath": "framework/schemas/relationship.schema.yaml"
       },
       "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"Z0C8YHRRYJ-9A1E\",\n  \"type\": \"relationship\",\n  \"name\": \"Platform Audit Schema \\u2192 OpenStack Shared Database\",\n  \"source\": \"01KSE5V73Z-RTKZ\",\n  \"target\": \"STCK000007-DAR7\",\n  \"label\": \"runs on\",\n  \"notes\": \"Derived from runsOn field\",\n  \"catalogStatus\": \"complete\",\n  \"_source\": \"derived from examples/catalog/engineering/data-components/data-component-platform-audit-schema.yaml [runsOn]\",\n  \"_derived\": true\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "KGX2365XDE-1RN6": {
+      "id": "KGX2365XDE-1RN6",
+      "uid": "KGX2365XDE-1RN6",
+      "name": "Billing Export Service \u2192 Horizon Dashboard",
+      "aliases": [],
+      "type": "relationship",
+      "typeLabel": "Relationship",
+      "filterType": "relationship",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "derived from examples/catalog/engineering/product-components/product-component-billing-export-service.yaml [runsOn]",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": "Derived from runsOn field",
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PCB1",
+          "path": "source"
+        },
+        {
+          "target": "STCK000006-RS06",
+          "path": "target"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "source",
+          "label",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "target",
+          "externalTarget",
+          "targetInterface",
+          "targetListener",
+          "technology",
+          "direction",
+          "flow",
+          "capabilities",
+          "notes",
+          "tags"
+        ],
+        "fieldTypes": {
+          "targetInterface": "str",
+          "targetListener": "str",
+          "tags": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "direction": [
+            "synchronous",
+            "asynchronous",
+            "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/relationship.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"KGX2365XDE-1RN6\",\n  \"type\": \"relationship\",\n  \"name\": \"Billing Export Service \\u2192 Horizon Dashboard\",\n  \"source\": \"01KVFRT368-PCB1\",\n  \"target\": \"STCK000006-RS06\",\n  \"label\": \"runs on\",\n  \"notes\": \"Derived from runsOn field\",\n  \"catalogStatus\": \"complete\",\n  \"_source\": \"derived from examples/catalog/engineering/product-components/product-component-billing-export-service.yaml [runsOn]\",\n  \"_derived\": true\n}",
+      "existsInCatalog": true,
+      "outboundRelationships": [],
+      "inboundRelationships": []
+    },
+    "PVEV4MTX3V-PHY9": {
+      "id": "PVEV4MTX3V-PHY9",
+      "uid": "PVEV4MTX3V-PHY9",
+      "name": "Image Import Service \u2192 Horizon Dashboard",
+      "aliases": [],
+      "type": "relationship",
+      "typeLabel": "Relationship",
+      "filterType": "relationship",
+      "category": "",
+      "deliveryModel": "",
+      "domain": "",
+      "description": "",
+      "version": "",
+      "catalogStatus": "complete",
+      "lifecycleStatus": "unknown",
+      "status": "",
+      "businessContext": {},
+      "product": "",
+      "runsOn": "",
+      "subtype": "",
+      "vendor": "",
+      "productName": "",
+      "productVersion": "",
+      "classification": "",
+      "platformDependency": "",
+      "capabilities": [],
+      "configurations": [],
+      "networkPlacement": "",
+      "patchingOwner": "",
+      "complianceCerts": [],
+      "requirementGroups": [],
+      "requirementImplementations": [],
+      "dataLeavesInfrastructure": null,
+      "dataResidencyCommitment": "",
+      "dpaNotes": "",
+      "vendorSLA": "",
+      "authenticationModel": "",
+      "incidentNotificationProcess": "",
+      "owner": {},
+      "definitionOwner": {},
+      "provider": {},
+      "authority": {},
+      "shape": "round-rectangle",
+      "color": "#7a6e60",
+      "source": "derived from examples/catalog/engineering/product-components/product-component-image-import-service.yaml [runsOn]",
+      "tags": [],
+      "ardCategory": "",
+      "internalComponents": [],
+      "notes": "Derived from runsOn field",
+      "requirements": [],
+      "implementations": [],
+      "appliesTo": {},
+      "inherits": "",
+      "scalingUnits": [],
+      "networkZones": [],
+      "ownedListeners": [],
+      "sdpConnections": [],
+      "serviceGroups": [],
+      "groupExposure": [],
+      "tierVariants": [],
+      "tierId": "",
+      "purpose": "",
+      "availabilityExpectation": "",
+      "costPosture": "",
+      "complianceScope": [],
+      "parameterSurface": [],
+      "followsReferenceArchitecture": "",
+      "decisionRecords": [],
+      "affectedComponent": "",
+      "impact": "",
+      "mitigationPath": "",
+      "decisionRationale": "",
+      "relatedDecisionRecords": [],
+      "linkedObject": "",
+      "primaryObjectType": "",
+      "primaryObjectUid": "",
+      "generatedObjects": [],
+      "unresolvedQuestions": [],
+      "assumptions": [],
+      "nextSteps": [],
+      "defaultSelection": false,
+      "requirementCount": 0,
+      "hasRiskRef": false,
+      "outboundRefs": [
+        {
+          "target": "01KVFRT368-PC12",
+          "path": "source"
+        },
+        {
+          "target": "STCK000006-RS06",
+          "path": "target"
+        }
+      ],
+      "referencedBy": [],
+      "editorSchema": {
+        "requiredFields": [
+          "schemaVersion",
+          "uid",
+          "type",
+          "name",
+          "source",
+          "label",
+          "catalogStatus"
+        ],
+        "optionalFields": [
+          "description",
+          "target",
+          "externalTarget",
+          "targetInterface",
+          "targetListener",
+          "technology",
+          "direction",
+          "flow",
+          "capabilities",
+          "notes",
+          "tags"
+        ],
+        "fieldTypes": {
+          "targetInterface": "str",
+          "targetListener": "str",
+          "tags": "list",
+          "capabilities": "list"
+        },
+        "enumFields": {
+          "catalogStatus": [
+            "stub",
+            "incomplete",
+            "complete"
+          ],
+          "direction": [
+            "synchronous",
+            "asynchronous",
+            "event"
+          ],
+          "flow": [
+            "outbound",
+            "inbound",
+            "bidirectional"
+          ]
+        },
+        "enumListFields": {},
+        "collectionSchemas": {},
+        "schemaPath": "framework/schemas/relationship.schema.yaml"
+      },
+      "detail": "{\n  \"schemaVersion\": \"1.0\",\n  \"uid\": \"PVEV4MTX3V-PHY9\",\n  \"type\": \"relationship\",\n  \"name\": \"Image Import Service \\u2192 Horizon Dashboard\",\n  \"source\": \"01KVFRT368-PC12\",\n  \"target\": \"STCK000006-RS06\",\n  \"label\": \"runs on\",\n  \"notes\": \"Derived from runsOn field\",\n  \"catalogStatus\": \"complete\",\n  \"_source\": \"derived from examples/catalog/engineering/product-components/product-component-image-import-service.yaml [runsOn]\",\n  \"_derived\": true\n}",
       "existsInCatalog": true,
       "outboundRelationships": [],
       "inboundRelationships": []
@@ -128121,6 +134573,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -128174,6 +134627,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -128183,6 +134637,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -128267,6 +134722,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -128320,6 +134776,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -128329,6 +134786,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -128413,6 +134871,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -128466,6 +134925,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -128475,6 +134935,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -128559,6 +135020,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -128612,6 +135074,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -128621,6 +135084,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -128705,6 +135169,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -128758,6 +135223,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -128767,6 +135233,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -128851,6 +135318,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -128904,6 +135372,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -128913,6 +135382,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -128997,6 +135467,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -129050,6 +135521,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -129059,6 +135531,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -129143,6 +135616,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -129196,6 +135670,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -129205,6 +135680,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -129289,6 +135765,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -129342,6 +135819,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -129351,6 +135829,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -129435,6 +135914,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -129488,6 +135968,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -129497,6 +135978,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -129581,6 +136063,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -129634,6 +136117,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -129643,6 +136127,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -129727,6 +136212,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -129780,6 +136266,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -129789,6 +136276,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -129873,6 +136361,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -129926,6 +136415,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -129935,6 +136425,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -130019,6 +136510,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -130072,6 +136564,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -130081,6 +136574,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -130165,6 +136659,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -130218,6 +136713,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -130227,6 +136723,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -130311,6 +136808,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -130364,6 +136862,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -130373,6 +136872,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -130457,6 +136957,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -130510,6 +137011,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -130519,6 +137021,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -130603,6 +137106,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -130656,6 +137160,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -130665,6 +137170,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -130749,6 +137255,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -130802,6 +137309,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -130811,6 +137319,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -130895,6 +137404,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -130948,6 +137458,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -130957,6 +137468,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -131041,6 +137553,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -131094,6 +137607,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -131103,6 +137617,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -131187,6 +137702,7 @@ window.DRAFT_BROWSER_DATA = {
       "inherits": "",
       "scalingUnits": [],
       "networkZones": [],
+      "ownedListeners": [],
       "sdpConnections": [],
       "serviceGroups": [],
       "groupExposure": [],
@@ -131240,6 +137756,7 @@ window.DRAFT_BROWSER_DATA = {
           "target",
           "externalTarget",
           "targetInterface",
+          "targetListener",
           "technology",
           "direction",
           "flow",
@@ -131249,6 +137766,7 @@ window.DRAFT_BROWSER_DATA = {
         ],
         "fieldTypes": {
           "targetInterface": "str",
+          "targetListener": "str",
           "tags": "list",
           "capabilities": "list"
         },
@@ -131295,6 +137813,7 @@ window.DRAFT_BROWSER_DATA = {
     "domain",
     "drafting_session",
     "host",
+    "listener",
     "network_service",
     "object_patch",
     "product_component",
@@ -132049,7 +138568,77 @@ window.DRAFT_BROWSER_DATA = {
         "path": "source"
       }
     ],
+    "01KVFRT368-PCB1": [
+      {
+        "source": "01KVFRT368-SF01",
+        "path": "owner.ref"
+      },
+      {
+        "source": "01KVFRT368-DR01",
+        "path": "linkedObject"
+      },
+      {
+        "source": "01KVFRT368-RS04",
+        "path": "source"
+      },
+      {
+        "source": "01KVFRT368-RS01",
+        "path": "target"
+      },
+      {
+        "source": "KGX2365XDE-1RN6",
+        "path": "source"
+      }
+    ],
+    "01KVFRT368-PC12": [
+      {
+        "source": "01KVFRT368-SF02",
+        "path": "owner.ref"
+      },
+      {
+        "source": "01KVFRT368-DR02",
+        "path": "linkedObject"
+      },
+      {
+        "source": "01KVFRT368-RS05",
+        "path": "source"
+      },
+      {
+        "source": "01KVFRT368-RS02",
+        "path": "target"
+      },
+      {
+        "source": "PVEV4MTX3V-PHY9",
+        "path": "source"
+      }
+    ],
+    "01KVFRT368-SY01": [
+      {
+        "source": "01KVFRT368-PD03",
+        "path": "owner.ref"
+      },
+      {
+        "source": "01KVFRT368-RS04",
+        "path": "target"
+      },
+      {
+        "source": "01KVFRT368-RS05",
+        "path": "target"
+      },
+      {
+        "source": "01KVFRT368-RS03",
+        "path": "target"
+      }
+    ],
     "STCK000006-RS06": [
+      {
+        "source": "01KVFRT368-PCB1",
+        "path": "runsOn"
+      },
+      {
+        "source": "01KVFRT368-PC12",
+        "path": "runsOn"
+      },
       {
         "source": "01KSE5V73Z-Q0A0",
         "path": "runsOn"
@@ -132099,12 +138688,32 @@ window.DRAFT_BROWSER_DATA = {
         "path": "source"
       },
       {
+        "source": "KGX2365XDE-1RN6",
+        "path": "target"
+      },
+      {
+        "source": "PVEV4MTX3V-PHY9",
+        "path": "target"
+      },
+      {
         "source": "95BR2EYAF9-AJ9Y",
         "path": "target"
       },
       {
         "source": "B94JQQASNF-0TMY",
         "path": "source"
+      }
+    ],
+    "01KVFRT368-DR01": [
+      {
+        "source": "01KVFRT368-PCB1",
+        "path": "decisionRecords[0].ref"
+      }
+    ],
+    "01KVFRT368-DR02": [
+      {
+        "source": "01KVFRT368-PC12",
+        "path": "decisionRecords[0].ref"
       }
     ],
     "01KSE5V73Z-DRSC": [
@@ -133305,6 +139914,18 @@ window.DRAFT_BROWSER_DATA = {
       {
         "source": "01KT1340EW-5H7Z",
         "path": "linkedObject"
+      },
+      {
+        "source": "01KVFRT368-RS03",
+        "path": "source"
+      },
+      {
+        "source": "01KVFRT368-RS01",
+        "path": "source"
+      },
+      {
+        "source": "01KVFRT368-RS02",
+        "path": "source"
       },
       {
         "source": "95BR2EYAF9-AJ9Y",
@@ -135219,6 +141840,12 @@ window.DRAFT_BROWSER_DATA = {
         "catalogStatus": "complete"
       },
       {
+        "uid": "01KVFRT368-DR01",
+        "name": "Billing Export Service \u2014 Security and Compliance decisions",
+        "type": "decision_record",
+        "catalogStatus": "complete"
+      },
+      {
         "uid": "01KT11AQX6-62RD",
         "name": "Ceilometer Telemetry Service \u2014 Identity, Access, and Secrets",
         "type": "decision_record",
@@ -135402,6 +142029,12 @@ window.DRAFT_BROWSER_DATA = {
       {
         "uid": "01KT1340J8-PZ32",
         "name": "Horizon Dashboard \u2014 Security and Compliance decisions",
+        "type": "decision_record",
+        "catalogStatus": "complete"
+      },
+      {
+        "uid": "01KVFRT368-DR02",
+        "name": "Image Import Service \u2014 Security and Compliance decisions",
         "type": "decision_record",
         "catalogStatus": "complete"
       },
@@ -135922,6 +142555,27 @@ window.DRAFT_BROWSER_DATA = {
         "description": "General-purpose self-managed Linux host standard for the OpenStack example control-plane, data, and utility services. This models the reusable substrate pattern, not a single node role.\n"
       },
       {
+        "uid": "01KVFRT368-SF01",
+        "name": "Billing Export SFTP",
+        "type": "listener",
+        "catalogStatus": "complete",
+        "description": "SFTP (SSH file transfer) outbox for usage exports. SSH key authentication per consumer. Looks like the Image Import SFTP listener (same protocol and port) but is a different listener: the owner is part of listener identity."
+      },
+      {
+        "uid": "01KVFRT368-SF02",
+        "name": "Image Import SFTP",
+        "type": "listener",
+        "catalogStatus": "complete",
+        "description": "SFTP (SSH file transfer) inbox for VM image uploads. SSH key authentication per uploader. Same protocol and port as the Billing Export SFTP listener, different owner, so a different listener."
+      },
+      {
+        "uid": "01KVFRT368-PD03",
+        "name": "PagerDuty Events API v2",
+        "type": "listener",
+        "catalogStatus": "complete",
+        "description": "Vendor endpoint that accepts alert events. Recorded once and reused by every caller; the integration key is the api-key."
+      },
+      {
         "uid": "01KSF29JTP-9HYA",
         "name": "OpenStack API Load Balancer",
         "type": "network_service",
@@ -135959,6 +142613,20 @@ window.DRAFT_BROWSER_DATA = {
         "catalogStatus": "incomplete",
         "description": "Example workspace-owned capability implementation mapping.",
         "target": "01KQQ4Q026-JW52"
+      },
+      {
+        "uid": "01KVFRT368-PCB1",
+        "name": "Billing Export Service",
+        "type": "product_component",
+        "catalogStatus": "complete",
+        "description": "Builds nightly tenant usage and chargeback files from Ceilometer data and serves them to finance tooling over its own SFTP outbox."
+      },
+      {
+        "uid": "01KVFRT368-PC12",
+        "name": "Image Import Service",
+        "type": "product_component",
+        "catalogStatus": "complete",
+        "description": "Accepts uploaded VM images over its own SFTP inbox, scans and converts them, and registers them with Glance."
       },
       {
         "uid": "01KSE5V73Z-Q0A0",
@@ -136104,6 +142772,27 @@ window.DRAFT_BROWSER_DATA = {
         "catalogStatus": "stub",
         "source": "01KQQ4Q025-1XDE",
         "label": "calls"
+      },
+      {
+        "uid": "KGX2365XDE-1RN6",
+        "name": "Billing Export Service \u2192 Horizon Dashboard",
+        "type": "relationship",
+        "catalogStatus": "complete",
+        "source": "01KVFRT368-PCB1",
+        "target": "STCK000006-RS06",
+        "label": "runs on"
+      },
+      {
+        "uid": "01KVFRT368-RS04",
+        "name": "Billing Export Service \u2192 PagerDuty",
+        "type": "relationship",
+        "catalogStatus": "complete",
+        "description": "Billing Export Service raises incidents through the shared PagerDuty Events API v2 listener.",
+        "source": "01KVFRT368-PCB1",
+        "target": "01KVFRT368-SY01",
+        "label": "sends alerts to",
+        "technology": "HTTPS",
+        "direction": "synchronous"
       },
       {
         "uid": "01KSKWFZZY-FS6X",
@@ -136345,6 +143034,27 @@ window.DRAFT_BROWSER_DATA = {
         "source": "STCK000006-RS06",
         "target": "STCK00000F-HS0F",
         "label": "runs on"
+      },
+      {
+        "uid": "PVEV4MTX3V-PHY9",
+        "name": "Image Import Service \u2192 Horizon Dashboard",
+        "type": "relationship",
+        "catalogStatus": "complete",
+        "source": "01KVFRT368-PC12",
+        "target": "STCK000006-RS06",
+        "label": "runs on"
+      },
+      {
+        "uid": "01KVFRT368-RS05",
+        "name": "Image Import Service \u2192 PagerDuty",
+        "type": "relationship",
+        "catalogStatus": "complete",
+        "description": "Image Import Service raises incidents through the shared PagerDuty Events API v2 listener.",
+        "source": "01KVFRT368-PC12",
+        "target": "01KVFRT368-SY01",
+        "label": "sends alerts to",
+        "technology": "HTTPS",
+        "direction": "synchronous"
       },
       {
         "uid": "01KSKWG006-9TPR",
@@ -136604,6 +143314,18 @@ window.DRAFT_BROWSER_DATA = {
         "label": "runs on"
       },
       {
+        "uid": "01KVFRT368-RS01",
+        "name": "OpenStack Ops Console \u2192 Billing Export Service",
+        "type": "relationship",
+        "catalogStatus": "complete",
+        "description": "Operators download chargeback files from the Billing Export SFTP outbox.",
+        "source": "01KSE5V73Z-Q0A0",
+        "target": "01KVFRT368-PCB1",
+        "label": "downloads usage exports from",
+        "technology": "SFTP",
+        "direction": "synchronous"
+      },
+      {
         "uid": "95BR2EYAF9-AJ9Y",
         "name": "OpenStack Ops Console \u2192 Horizon Dashboard",
         "type": "relationship",
@@ -136611,6 +143333,30 @@ window.DRAFT_BROWSER_DATA = {
         "source": "01KSE5V73Z-Q0A0",
         "target": "STCK000006-RS06",
         "label": "runs on"
+      },
+      {
+        "uid": "01KVFRT368-RS02",
+        "name": "OpenStack Ops Console \u2192 Image Import Service",
+        "type": "relationship",
+        "catalogStatus": "complete",
+        "description": "Operators upload golden images to the Image Import SFTP inbox.",
+        "source": "01KSE5V73Z-Q0A0",
+        "target": "01KVFRT368-PC12",
+        "label": "uploads VM images to",
+        "technology": "SFTP",
+        "direction": "synchronous"
+      },
+      {
+        "uid": "01KVFRT368-RS03",
+        "name": "OpenStack Ops Console \u2192 PagerDuty",
+        "type": "relationship",
+        "catalogStatus": "complete",
+        "description": "OpenStack Ops Console raises incidents through the shared PagerDuty Events API v2 listener.",
+        "source": "01KSE5V73Z-Q0A0",
+        "target": "01KVFRT368-SY01",
+        "label": "sends alerts to",
+        "technology": "HTTPS",
+        "direction": "synchronous"
       },
       {
         "uid": "01KSKWFZZV-A346",
@@ -136901,7 +143647,7 @@ window.DRAFT_BROWSER_DATA = {
         "name": "SoftwareDeploymentPattern RequirementGroup",
         "type": "requirement_group",
         "catalogStatus": "complete",
-        "description": "Structured checklist of required questions and answers used to define a complete and correct software deployment pattern."
+        "description": "Structured checklist of required questions and answers used to define a complete and correct software deployment pattern. A complete pattern must also pass the ratcheted sdp-internal-stub-listener gate, which blocks completion while a call in the pattern targets a stub listener owned by an internal component."
       },
       {
         "uid": "01KQQ4Q027-1GHC",
@@ -137021,6 +143767,13 @@ window.DRAFT_BROWSER_DATA = {
         "type": "system",
         "catalogStatus": "complete",
         "description": "Core OpenStack compute, networking, and storage services that together deliver IaaS capabilities to tenant workloads."
+      },
+      {
+        "uid": "01KVFRT368-SY01",
+        "name": "PagerDuty",
+        "type": "system",
+        "catalogStatus": "complete",
+        "description": "External incident alerting service. Recorded once as a system so every caller targets the same listener instead of a free-text externalTarget."
       },
       {
         "uid": "01KQQ4Q025-9N4R",
@@ -138095,7 +144848,7 @@ window.DRAFT_BROWSER_DATA = {
         },
         "active": true,
         "description": "Baseline security and compliance requirement group bundled with DRAFT. Requirements are applied to matching object types based on their target scope.\n",
-        "requirementCount": 16
+        "requirementCount": 18
       },
       {
         "id": "01KQQ4Q027-K5DR",
@@ -138158,7 +144911,7 @@ window.DRAFT_BROWSER_DATA = {
           "source": "DRAFT Framework"
         },
         "active": true,
-        "description": "Structured checklist of required questions and answers used to define a complete and correct software deployment pattern.",
+        "description": "Structured checklist of required questions and answers used to define a complete and correct software deployment pattern. A complete pattern must also pass the ratcheted sdp-internal-stub-listener gate, which blocks completion while a call in the pattern targets a stub listener owned by an internal component.",
         "requirementCount": 9
       },
       {
@@ -138366,6 +145119,15 @@ window.DRAFT_BROWSER_DATA = {
       "name": "API Load Balancer \u2192 Nova Compute"
     },
     {
+      "id": "01KVFRT368-RS04",
+      "source": "01KVFRT368-PCB1",
+      "target": "01KVFRT368-SY01",
+      "label": "sends alerts to",
+      "technology": "HTTPS",
+      "direction": "synchronous",
+      "name": "Billing Export Service \u2192 PagerDuty"
+    },
+    {
       "id": "01KSKWFZZY-FS6X",
       "source": "STCK000008-RS08",
       "target": "STCK000002-RS02",
@@ -138519,6 +145281,15 @@ window.DRAFT_BROWSER_DATA = {
       "name": "Horizon Dashboard \u2192 Nova Compute Service"
     },
     {
+      "id": "01KVFRT368-RS05",
+      "source": "01KVFRT368-PC12",
+      "target": "01KVFRT368-SY01",
+      "label": "sends alerts to",
+      "technology": "HTTPS",
+      "direction": "synchronous",
+      "name": "Image Import Service \u2192 PagerDuty"
+    },
+    {
       "id": "01KSKWG006-9TPR",
       "source": "STCK000009-RS09",
       "target": "STCK000007-DAR7",
@@ -138645,6 +145416,33 @@ window.DRAFT_BROWSER_DATA = {
       "name": "Nova Compute \u2192 Nova Database"
     },
     {
+      "id": "01KVFRT368-RS03",
+      "source": "01KSE5V73Z-Q0A0",
+      "target": "01KVFRT368-SY01",
+      "label": "sends alerts to",
+      "technology": "HTTPS",
+      "direction": "synchronous",
+      "name": "OpenStack Ops Console \u2192 PagerDuty"
+    },
+    {
+      "id": "01KVFRT368-RS01",
+      "source": "01KSE5V73Z-Q0A0",
+      "target": "01KVFRT368-PCB1",
+      "label": "downloads usage exports from",
+      "technology": "SFTP",
+      "direction": "synchronous",
+      "name": "OpenStack Ops Console \u2192 Billing Export Service"
+    },
+    {
+      "id": "01KVFRT368-RS02",
+      "source": "01KSE5V73Z-Q0A0",
+      "target": "01KVFRT368-PC12",
+      "label": "uploads VM images to",
+      "technology": "SFTP",
+      "direction": "synchronous",
+      "name": "OpenStack Ops Console \u2192 Image Import Service"
+    },
+    {
       "id": "01KSKWG00D-2AYJ",
       "source": "STCK00000D-RS0D",
       "target": "STCK000002-RS02",
@@ -138724,6 +145522,24 @@ window.DRAFT_BROWSER_DATA = {
       "technology": "",
       "direction": "",
       "name": "Platform Audit Schema \u2192 OpenStack Shared Database"
+    },
+    {
+      "id": "KGX2365XDE-1RN6",
+      "source": "01KVFRT368-PCB1",
+      "target": "STCK000006-RS06",
+      "label": "runs on",
+      "technology": "",
+      "direction": "",
+      "name": "Billing Export Service \u2192 Horizon Dashboard"
+    },
+    {
+      "id": "PVEV4MTX3V-PHY9",
+      "source": "01KVFRT368-PC12",
+      "target": "STCK000006-RS06",
+      "label": "runs on",
+      "technology": "",
+      "direction": "",
+      "name": "Image Import Service \u2192 Horizon Dashboard"
     },
     {
       "id": "95BR2EYAF9-AJ9Y",
