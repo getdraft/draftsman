@@ -39,16 +39,20 @@ from typing import Any
 
 import yaml
 
+from uid_utils import UID_PATTERN_TEXT
+
 PAYLOAD_FORMAT = "draft-sdp-sync/1"
 # GitHub repository_dispatch: client_payload has at most 10 top-level properties and must stay under 64 KB.
 MAX_CLIENT_PAYLOAD_BYTES = 65_000
 MAX_TOP_LEVEL_PROPERTIES = 10
 SDP_PATH = ".draft/sdp.yaml"
+CATALOG_DIR = ".draft/catalog"
 CACHE_ROOT = Path(".draft") / "external_sdps"
 ACTIONS = ("upsert", "delete")
 _REPOSITORY = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})/[A-Za-z0-9._-]{1,100}$")
 _COMMIT = re.compile(r"^[0-9a-f]{7,64}$")
 _CORRELATION = re.compile(r"^[A-Za-z0-9._-]{1,80}$")
+_UID = re.compile(UID_PATTERN_TEXT)
 _GITHUB_URL = re.compile(
     r"^(?:https?://(?:www\.)?github\.com/|ssh://git@github\.com/|git@github\.com:)([^/\s]+)/([^/\s]+?)(?:\.git)?/?$", re.IGNORECASE
 )
@@ -76,15 +80,17 @@ class SyncError(Exception):
 
 def pack(repo_root: Path, repository: str, commit: str, ref: str, correlation_id: str | None = None,
          oidc_token: str | None = None) -> dict[str, Any]:
-    """Build the client_payload for a product repository. A missing .draft/sdp.yaml packs a delete."""
+    """Build the client_payload for a product repository: .draft/sdp.yaml plus the YAML under .draft/catalog/.
+
+    A missing .draft/sdp.yaml packs a delete, which removes everything the central workspace caches for the
+    product; .draft/catalog/ is not sent without an SDP.
+    """
     check_repository(repository)
     sdp = repo_root / SDP_PATH
     files: dict[str, str] = {}
     action = "delete"
     if sdp.is_file():
-        text = sdp.read_text(encoding="utf-8")
-        parse_object(SDP_PATH, text)
-        files[SDP_PATH] = text
+        files = product_files(repo_root)
         action = "upsert"
     payload = {
         "format": PAYLOAD_FORMAT,
@@ -124,6 +130,37 @@ def request_oidc_token(audience: str, env: Mapping[str, str] | None = None,
     if not isinstance(value, str) or not _JWT.match(value):
         raise SyncError("the GitHub Actions OIDC token request returned no token")
     return value
+
+
+def product_files(repo_root: Path) -> dict[str, str]:
+    """.draft/sdp.yaml and every YAML file under .draft/catalog/, checked the way the receiver will check them."""
+    found = [repo_root / SDP_PATH]
+    catalog = repo_root / CATALOG_DIR
+    if catalog.is_symlink():
+        raise SyncError(f"refusing {CATALOG_DIR}: synced files cannot be symbolic links")
+    if catalog.is_dir():
+        for path in sorted(catalog.rglob("*")):
+            if path.is_symlink():  # a linked file or folder could pull in content from outside .draft/catalog/
+                raise SyncError(f"refusing {path.relative_to(repo_root).as_posix()}: synced files cannot be symbolic links")
+            if path.suffix in (".yaml", ".yml"):
+                found.append(path)
+    files: dict[str, str] = {}
+    for path in found:
+        source_path = path.relative_to(repo_root).as_posix()
+        if any(part.is_symlink() for part in (path, *path.parents) if repo_root in part.parents):
+            raise SyncError(f"refusing {source_path}: synced files cannot be symbolic links")
+        if not path.is_file():
+            continue
+        cache_path(source_path)
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as exc:
+            raise SyncError(f"cannot read {source_path}: {exc.__class__.__name__}") from None
+        kind = parse_object(source_path, text).get("type")
+        if kind not in PRODUCT_OWNED_TYPES:
+            raise SyncError(f"{source_path}: a product repository cannot sync a {kind!r} object; allowed types are {', '.join(PRODUCT_OWNED_TYPES)}")
+        files[source_path] = text
+    return files
 
 
 def check_size(payload: dict[str, Any]) -> None:
@@ -346,21 +383,24 @@ def normalize_github_url(url: Any) -> str | None:
     return f"{match.group(1)}/{match.group(2)}".lower() if match else None
 
 
-def _read_objects(root: Path) -> list[tuple[Path, dict[str, Any]]]:
+def _read_file(path: Path) -> list[dict[str, Any]]:
+    try:
+        docs = list(yaml.safe_load_all(path.read_text(encoding="utf-8")))
+    except (OSError, UnicodeDecodeError, yaml.YAMLError):
+        return []  # validate.py reports unreadable files; they cannot own or define a UID here
     found = []
-    if not root.exists():
-        return found
-    for path in sorted(root.rglob("*")):
-        if path.suffix not in (".yaml", ".yml") or not path.is_file():
-            continue
-        try:
-            data = yaml.safe_load(path.read_text(encoding="utf-8"))
-        except (OSError, UnicodeDecodeError, yaml.YAMLError):
-            continue  # validate.py reports unreadable files; they cannot own a UID here
+    for data in docs:
         for doc in data if isinstance(data, list) else [data]:
             if isinstance(doc, dict):
-                found.append((path, doc))
+                found.append(doc)
     return found
+
+
+def _read_objects(root: Path) -> list[tuple[Path, dict[str, Any]]]:
+    if not root.exists():
+        return []
+    return [(path, doc) for path in sorted(root.rglob("*")) if path.suffix in (".yaml", ".yml") and path.is_file()
+            for doc in _read_file(path)]
 
 
 def find_registration(workspace: Path, repository: str) -> dict[str, Any]:
@@ -428,6 +468,56 @@ def check_ownership(workspace: Path, repository: str, objects: dict[str, dict[st
                             "a product may only record relationships, listeners and decisions for its own objects")
 
 
+def referenced_uids(data: Any, refs: set[str]) -> set[str]:
+    """Every UID-shaped string in an object, the way validate.py collects references."""
+    if isinstance(data, str):
+        if _UID.match(data):
+            refs.add(data)
+    elif isinstance(data, dict):
+        for value in data.values():
+            referenced_uids(value, refs)
+    elif isinstance(data, list):
+        for item in data:
+            referenced_uids(item, refs)
+    return refs
+
+
+def known_uids(workspace: Path, own_slug: str, own_legacy: Path) -> set[str]:
+    """UIDs validate.py can resolve in this workspace (framework and provider configurations, catalog/, community,
+    other products' caches), leaving out this product's own previous snapshot, which the sync replaces."""
+    import validate  # the receiver's framework copy; imported here so the sender needs only this file and uid_utils
+
+    cache = (workspace / CACHE_ROOT).resolve()
+    own_folder, legacy = cache / own_slug, own_legacy.resolve()
+    uids: set[str] = set()
+    for root in validate.workspace_yaml_roots(workspace.resolve()):
+        for path in validate.discover_yaml_files(root):
+            resolved = path.resolve()
+            if resolved == legacy or own_folder == resolved or own_folder in resolved.parents:
+                continue
+            uids.update(str(doc["uid"]) for doc in _read_file(path) if doc.get("uid"))
+    return uids
+
+
+def check_references(workspace: Path, repository: str, objects: dict[str, dict[str, Any]]) -> None:
+    """Every UID a synced object references is defined by the sync itself or already resolves in the workspace."""
+    own = {str(obj.get("uid")) for obj in objects.values() if obj.get("uid")}
+    known: set[str] | None = None
+    unresolved = []
+    for path, obj in objects.items():
+        refs = referenced_uids(obj, set()) - own
+        if not refs:
+            continue
+        if known is None:
+            known = known_uids(workspace, product_slug(repository), legacy_flat_file(workspace, repository))
+        missing = sorted(refs - known)
+        if missing:
+            unresolved.append(f"{path} references {', '.join(missing)}")
+    if unresolved:
+        raise SyncError("unresolved references: " + "; ".join(unresolved) + ". Each UID must be an object in this sync "
+                        "or already in the central workspace; sync or register the missing object first, or fix the UID")
+
+
 # --------------------------------------------------------------------------- receive
 
 
@@ -456,6 +546,7 @@ def receive(workspace: Path, payload: dict[str, Any], *, central_repository: str
             objects[source_path] = parse_object(source_path, text)
             targets[target] = text
         check_ownership(workspace, repository, objects)
+        check_references(workspace, repository, objects)
     except SyncError as exc:
         return Result("rejected", str(exc), repository=str(payload.get("repository") or ""),
                       action=str(payload.get("action") or ""), correlation_id=str(payload.get("correlationId") or ""),

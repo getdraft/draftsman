@@ -75,6 +75,11 @@ class WiringTests(unittest.TestCase):
         self.assertEqual(token["uses"], "actions/create-github-app-token@v1")
         self.assertEqual(token["with"]["repositories"], "${{ secrets.DRAFT_CENTRAL_REPO_NAME }}")
 
+    def test_sender_runs_when_the_sdp_or_the_product_catalog_changes(self) -> None:
+        sender = yaml.safe_load(SENDER.read_text(encoding="utf-8"))
+        trigger = sender.get("on", sender.get(True))  # YAML 1.1 reads a bare `on:` key as True
+        self.assertEqual(trigger["push"]["paths"], [".draft/sdp.yaml", ".draft/catalog/**"])
+
     def test_sender_requests_an_oidc_token_for_the_receivers_audience(self) -> None:
         sender = yaml.safe_load(SENDER.read_text(encoding="utf-8"))
         self.assertEqual(sender["jobs"]["transmit_sdp"]["permissions"]["id-token"], "write")

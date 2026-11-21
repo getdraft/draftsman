@@ -182,6 +182,141 @@ class RejectionTests(unittest.TestCase):
         self.assertIn("cannot read the payload file", unreadable.stderr)
 
 
+
+def component(uid: str, name: str, **fields: object) -> str:
+    return yaml.safe_dump({"schemaVersion": "1.0", "uid": uid, "type": "product_component", "name": name,
+                           "repoUrl": f"https://github.com/{REPOSITORY}", "owner": {"team": "absence"},
+                           "classification": "worker", "catalogStatus": "stub", "lifecycleStatus": "candidate", **fields}, sort_keys=False)
+
+
+WORKER = "01M7SYNC0D-PC04"
+CONFIG_UID = "01KSWVZSZ5-71PY"  # defined in framework/configurations, which every workspace resolves
+
+
+class ProductCatalogTests(unittest.TestCase):
+    """#195 S2.3: .draft/catalog/ objects travel with the SDP, and every reference must resolve."""
+
+    def add(self, fx: Fixture, rel: str, text: str) -> Path:
+        path = fx.product / ".draft" / "catalog" / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8")
+        return path
+
+    def test_pack_includes_catalog_yaml_and_receive_stores_it_in_the_product_cache(self) -> None:
+        fx = Fixture(self)
+        self.add(fx, "components/worker.yaml", component(WORKER, "Absence Worker", dependsOn=["01M7SYNC02-PC01"]))
+        self.add(fx, "README.md", "not synced\n")
+        self.add(fx, "notes.txt", "not synced\n")
+        payload = fx.pack()
+        self.assertEqual(sorted(payload["files"]), [".draft/catalog/components/worker.yaml", ".draft/sdp.yaml"])
+        result = identity.receive(fx.central, payload)
+        self.assertEqual(result.status, "accepted", result.message)
+        self.assertEqual(sorted(result.written), [f".draft/external_sdps/{SLUG}/catalog/components/worker.yaml",
+                                                  f".draft/external_sdps/{SLUG}/sdp.yaml"])
+        self.assertEqual((fx.cache() / "catalog" / "components" / "worker.yaml").read_text(encoding="utf-8"),
+                         (fx.product / ".draft" / "catalog" / "components" / "worker.yaml").read_text(encoding="utf-8"))
+        code, out = fx.validate()
+        self.assertEqual(code, 0, out)
+
+    def test_the_sdp_may_place_a_component_from_the_same_sync(self) -> None:
+        fx = Fixture(self)
+        self.add(fx, "worker.yaml", component(WORKER, "Absence Worker"))
+        sdp = fx.product / ".draft" / "sdp.yaml"
+        sdp.write_text(sdp.read_text(encoding="utf-8") + f"  - ref: {WORKER}\n    diagramTier: application\n", encoding="utf-8")
+        self.assertEqual(identity.receive(fx.central, fx.pack()).status, "accepted")
+
+    def test_an_unresolved_reference_is_refused_and_named(self) -> None:
+        fx = Fixture(self)
+        self.add(fx, "worker.yaml", component(WORKER, "Absence Worker", dependsOn=["01M7SYNC0E-PC99", "01M7SYNC02-PC01"]))
+        sdp = fx.product / ".draft" / "sdp.yaml"
+        sdp.write_text(sdp.read_text(encoding="utf-8") + "  - ref: 01M7SYNC0F-PC98\n", encoding="utf-8")
+        result = identity.receive(fx.central, fx.pack())
+        self.assertEqual(result.status, "rejected")
+        self.assertIn("unresolved references", result.message)
+        self.assertIn(".draft/catalog/worker.yaml references 01M7SYNC0E-PC99", result.message)
+        self.assertIn(".draft/sdp.yaml references 01M7SYNC0F-PC98", result.message)
+        self.assertNotIn("01M7SYNC02-PC01", result.message, "central catalog references resolve")
+        self.assertFalse(fx.cache().exists())
+
+    def test_references_resolve_against_configurations_and_other_products(self) -> None:
+        fx = Fixture(self)
+        other = fx.central / ".draft" / "external_sdps" / "example-org__payroll-service" / "catalog" / "pay.yaml"
+        other.parent.mkdir(parents=True)
+        other.write_text(component("01M7SYNC0G-PC05", "Payroll"), encoding="utf-8")
+        self.add(fx, "worker.yaml", component(WORKER, "Absence Worker", dependsOn=["01M7SYNC0G-PC05"], capabilities=[CONFIG_UID]))
+        result = identity.receive(fx.central, fx.pack())
+        self.assertEqual(result.status, "accepted", result.message)
+
+    def test_the_products_previous_snapshot_does_not_resolve_references(self) -> None:
+        fx = Fixture(self)
+        worker = self.add(fx, "worker.yaml", component(WORKER, "Absence Worker"))
+        self.add(fx, "helper.yaml", component("01M7SYNC0H-PC06", "Helper", dependsOn=[WORKER]))
+        self.assertEqual(identity.receive(fx.central, fx.pack()).status, "accepted")
+        worker.unlink()  # helper still points at the worker, which this sync no longer carries
+        result = identity.receive(fx.central, fx.pack())
+        self.assertEqual(result.status, "rejected")
+        self.assertIn(f".draft/catalog/helper.yaml references {WORKER}", result.message)
+        self.assertTrue((fx.cache() / "catalog" / "worker.yaml").exists(), "a rejected sync leaves the last snapshot")
+
+    def test_a_resync_drops_catalog_files_the_product_removed(self) -> None:
+        fx = Fixture(self)
+        worker = self.add(fx, "worker.yaml", component(WORKER, "Absence Worker"))
+        self.assertEqual(identity.receive(fx.central, fx.pack()).status, "accepted")
+        worker.unlink()
+        result = identity.receive(fx.central, fx.pack())
+        self.assertEqual(result.status, "accepted", result.message)
+        self.assertEqual(result.removed, [f".draft/external_sdps/{SLUG}/catalog/worker.yaml"])
+        self.assertFalse((fx.cache() / "catalog").exists())
+
+    def test_a_missing_sdp_deletes_every_cached_file_even_with_catalog_files_left(self) -> None:
+        fx = Fixture(self)
+        self.add(fx, "worker.yaml", component(WORKER, "Absence Worker"))
+        self.add(fx, "nested/helper.yaml", component("01M7SYNC0H-PC06", "Helper"))
+        self.assertEqual(identity.receive(fx.central, fx.pack()).status, "accepted")
+        (fx.product / ".draft" / "sdp.yaml").unlink()
+        payload = fx.pack()
+        self.assertEqual((payload["action"], payload["files"]), ("delete", {}))
+        result = identity.receive(fx.central, payload)
+        self.assertEqual(result.status, "accepted", result.message)
+        self.assertEqual(result.removed, sorted([f".draft/external_sdps/{SLUG}/sdp.yaml", f".draft/external_sdps/{SLUG}/catalog/worker.yaml",
+                                                 f".draft/external_sdps/{SLUG}/catalog/nested/helper.yaml"]))
+        self.assertFalse(fx.cache().exists())
+
+    def test_pack_refuses_central_types_hidden_paths_and_symlinks(self) -> None:
+        fx = Fixture(self)
+        system = self.add(fx, "system.yaml", yaml.safe_dump({"uid": "01M7SYNC0J-SY01", "type": "system", "name": "x"}))
+        with self.assertRaisesRegex(sdp_sync.SyncError, "cannot sync a 'system' object"):
+            fx.pack()
+        system.unlink()
+        hidden = self.add(fx, ".hidden/x.yaml", component(WORKER, "Hidden"))
+        with self.assertRaisesRegex(sdp_sync.SyncError, "refusing path"):
+            fx.pack()
+        hidden.unlink()
+        outside = fx.tmp / "outside.yaml"
+        outside.write_text(component(WORKER, "Outside"), encoding="utf-8")
+        (fx.product / ".draft" / "catalog" / "link.yaml").symlink_to(outside)
+        with self.assertRaisesRegex(sdp_sync.SyncError, "cannot be symbolic links"):
+            fx.pack()
+        (fx.product / ".draft" / "catalog" / "link.yaml").unlink()
+        (fx.product / ".draft" / "catalog" / "linked-dir").symlink_to(fx.tmp, target_is_directory=True)
+        with self.assertRaisesRegex(sdp_sync.SyncError, "cannot be symbolic links"):
+            fx.pack()
+
+    def test_pack_refuses_an_unreadable_catalog_object(self) -> None:
+        fx = Fixture(self)
+        self.add(fx, "broken.yaml", "uid: [unclosed\n")
+        with self.assertRaisesRegex(sdp_sync.SyncError, "broken.yaml is not valid YAML"):
+            fx.pack()
+
+    def test_references_are_collected_like_validate(self) -> None:
+        import validate
+        obj = {"uid": WORKER, "a": [{"ref": "01M7SYNC02-PC01"}, "01M7SYNC0E-PC99 in prose", "not-a-uid"], "b": {"c": CONFIG_UID}}
+        theirs: set[str] = set()
+        validate.extract_referenced_uids(obj, theirs)
+        self.assertEqual(sdp_sync.referenced_uids(obj, set()), theirs)
+        self.assertEqual(theirs, {WORKER, "01M7SYNC02-PC01", CONFIG_UID})
+
+
 class FixtureTests(unittest.TestCase):
     def test_fixture_central_workspace_registers_the_product(self) -> None:
         regs = [yaml.safe_load(p.read_text(encoding="utf-8")) for p in (FIXTURES / "central_workspace").rglob("*.yaml")]
