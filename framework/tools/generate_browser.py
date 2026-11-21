@@ -812,6 +812,7 @@ def build_sdp_connections(obj: dict[str, Any], all_objects: list[dict[str, Any]]
                 "label": str(rel.get("label", "")).strip(),
                 "serviceGroup": "",
                 "targetInterface": connection_interface(rel, by_uid.get(tgt)),
+                "targetListener": connection_listener(rel, by_uid),
             })
 
     return connections
@@ -837,6 +838,57 @@ def connection_interface(rel: dict[str, Any], target: dict[str, Any] | None) -> 
     except ImportError:  # the renderer is unavailable (the diagram step reports it); show no derived interface
         return ""
     return raw if raw in gd.declared_interface_names(target) else ""
+
+
+LISTENER_OWNER_TYPES = ("product_component", "data_component", "external_system")
+
+
+def listener_summary(listener: dict[str, Any]) -> str:
+    """'protocol port endpoint' of a listener object, skipping parts it does not record (HTTPS 443 /api)."""
+    port = listener.get("port")
+    parts = [
+        str(listener.get("protocol") or "").strip(),
+        str(port).strip() if port is not None and not isinstance(port, bool) else "",
+        str(listener.get("endpoint") or "").strip(),
+    ]
+    return " ".join(part for part in parts if part)
+
+
+def connection_listener(rel: dict[str, Any], by_uid: dict[str, dict[str, Any]]) -> str:
+    """The Listener column of a connection: the targetListener's name with its protocol, port and endpoint
+    ("Orders API (HTTPS 443 /orders)"), or "" when the relationship names none or the uid is not a listener object."""
+    ref = rel.get("targetListener")
+    listener = by_uid.get(ref.strip()) if isinstance(ref, str) and ref.strip() else None
+    if not isinstance(listener, dict) or listener.get("type") != "listener":
+        return ""
+    name = str(listener.get("name") or listener.get("uid") or "").strip()
+    summary = listener_summary(listener)
+    return f"{name} ({summary})" if name and summary else name or summary
+
+
+def build_owned_listeners(all_objects: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    """Owner uid -> the listener objects it owns (owner.ref), in the renderer's listener order (port, protocol,
+    endpoint, uid), each as {uid, name, protocol, port, endpoint, authenticationModel, catalogStatus}."""
+    by_uid = {str(o.get("uid", "")): o for o in all_objects if isinstance(o, dict) and o.get("uid")}
+    try:
+        import generate_diagram as gd
+    except ImportError:  # the renderer is unavailable (the diagram step reports it); list no owned listeners
+        return {}
+    owned: dict[str, list[dict[str, Any]]] = {}
+    for owner, uids in gd.owned_listeners(by_uid).items():
+        owned[owner] = [
+            {
+                "uid": uid,
+                "name": str(by_uid[uid].get("name", "")),
+                "protocol": str(by_uid[uid].get("protocol", "") or ""),
+                "port": by_uid[uid].get("port", ""),
+                "endpoint": str(by_uid[uid].get("endpoint", "") or ""),
+                "authenticationModel": str(by_uid[uid].get("authenticationModel", "") or ""),
+                "catalogStatus": str(by_uid[uid].get("catalogStatus", "") or ""),
+            }
+            for uid in uids
+        ]
+    return owned
 
 
 def build_group_exposure(obj: dict[str, Any], registry: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
@@ -911,6 +963,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
             return "#64748b"
         return f"#{LIFECYCLE_COLORS.get(status, LIFECYCLE_COLORS['unknown'])}"
 
+    owned_listener_rows = build_owned_listeners(objects)
     for obj in objects:
         obj = strip_legacy_intent(obj)
         object_id = obj["uid"]
@@ -981,6 +1034,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
                 "inherits": obj.get("inherits", ""),
                 "scalingUnits": obj.get("scalingUnits", []),
                 "networkZones": obj.get("networkZones", []),
+                "ownedListeners": owned_listener_rows.get(object_id, []) if obj.get("type") in LISTENER_OWNER_TYPES else [],
                 "sdpConnections": build_sdp_connections(obj, objects) if obj.get("type") == "software_deployment_pattern" else [],
                 "serviceGroups": obj.get("serviceGroups", []),
                 "groupExposure": build_group_exposure(obj, registry) if obj.get("type") == "software_deployment_pattern" else [],

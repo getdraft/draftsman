@@ -5215,6 +5215,23 @@ function interfacesListenersMarkup(object) {
   `;
 }
 
+// The listener objects a product component, data component or external system owns (owner.ref), in the
+// renderer's listener order; blank when it owns none.
+function ownedListenersMarkup(object) {
+  const listeners = Array.isArray(object.ownedListeners) ? object.ownedListeners.filter(l => l && typeof l === 'object') : [];
+  if (!listeners.length) return '';
+  const cell = value => `<td>${escapeHtml(value === undefined || value === null ? '' : value)}</td>`;
+  const rows = listeners.map(l => `<tr><td><span class="ard-link" data-object-link="${escapeHtml(l.uid || '')}">${escapeHtml(l.name || l.uid || '')}</span></td>${
+    [l.protocol, l.port, l.endpoint, l.authenticationModel, l.catalogStatus].map(cell).join('')}</tr>`).join('');
+  return `
+    <section class="section-card">
+      <h3>Owned Listeners</h3>
+      <table class="conn-table"><thead><tr><th>Name</th><th>Protocol</th><th>Port</th><th>Endpoint</th><th>Authentication</th><th>Catalog Status</th></tr></thead>
+        <tbody>${rows}</tbody></table>
+    </section>
+  `;
+}
+
 function deliveryModelDetailMarkup(object) {
   if (!SERVICE_OBJECT_TYPES.includes(object.type)) {
     return '';
@@ -6926,6 +6943,7 @@ function _sdpConnectionsTableMarkup(vm) {
       </span></td>
       <td><span class="proto ${proto}">${escapeHtml(c.protocol || '')}</span></td>
       <td class="iface-cell">${escapeHtml(c.targetInterface || '')}</td>
+      <td class="listener-cell">${escapeHtml(c.targetListener || '')}</td>
       <td class="label-cell">${escapeHtml(c.label || '')}</td>
     </tr>`;
   }).join('');
@@ -6937,7 +6955,7 @@ function _sdpConnectionsTableMarkup(vm) {
     <div class="conn-table-wrap">
       <table class="conn-table">
         <thead><tr>
-          <th>From</th><th>To</th><th>Protocol</th><th>Interface</th><th>Label</th>
+          <th>From</th><th>To</th><th>Protocol</th><th>Interface</th><th>Listener</th><th>Label</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
@@ -7195,6 +7213,7 @@ function renderDetailView() {
       ${secondaryDetailMarkup([
         { title: 'ProductComponent Classification', body: productServiceDetailMarkup(object) },
         { title: 'Interfaces and Listeners', body: interfacesListenersMarkup(object) },
+        { title: 'Owned Listeners', body: ownedListenersMarkup(object) },
         { title: 'Requirement Evidence', body: requirementEvidenceMarkup(object) },
         { title: 'References', body: usedByMarkup(object) }
       ])}
@@ -7241,6 +7260,7 @@ function renderDetailView() {
       ${secondaryDetailMarkup([
         { title: 'Delivery Details', body: deliveryModelDetailMarkup(object) },
         { title: 'Interfaces and Listeners', body: interfacesListenersMarkup(object) },
+        { title: 'Owned Listeners', body: ownedListenersMarkup(object) },
         { title: 'Requirement Evidence', body: requirementEvidenceMarkup(object) },
         { title: 'Deployment Configurations', body: deploymentConfigurationsMarkup(object) },
         { title: 'References', body: usedByMarkup(object) }
@@ -7250,6 +7270,7 @@ function renderDetailView() {
     detailBody = `
       ${headerMarkup}
       ${genericObjectMarkup(object)}
+      ${ownedListenersMarkup(object)}
       ${referencesMarkup(object)}
     `;
   }
