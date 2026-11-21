@@ -1,4 +1,4 @@
-## 1.20.4 - 2026-11-21
+## Unreleased
 
 ### Compatibility Impact
 
@@ -27,7 +27,7 @@
   3. Migrate on touch: a new relationship, or an edited one, is checked as an error again. Before editing one, run `/draft migrate` (or `migrate_relationships.py --object <uid>`) for reviewed proposals: caller as `source`, a `system` object and its listener instead of `externalTarget`, no `flow`.
   4. Optionally migrate a whole SDP or folder at a time with `/draft migrate sdp <uid>` or `folder <path>`, then re-run `--write-baseline` to drop the cleared entries.
 
-## Unreleased
+## 1.20.4 - 2026-11-21
 
 ### Compatibility Impact
 
