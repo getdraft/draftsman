@@ -46,6 +46,15 @@ create one with the Listener Lookup Before Create procedure in
 `listeners` field on definitions below is a different, older record of a
 definition's ports.
 
+The target model for a call: the caller is the relationship's `source`, the
+listener's owner is its `target` (a `system` object for an external party), and
+`targetListener` is the listener's UID. Omit `flow`, and do not use free-text
+`externalTarget`. A listener's identity is owner + protocol + port + endpoint,
+so two components that both serve SFTP on port 22 own two listeners, while one
+external system's listener is recorded once and reused by every caller. See
+Add A Listener in [how-to-add-objects.md](how-to-add-objects.md) for the bundled
+examples.
+
 Interfaces and listeners are recorded by different owners. Product teams record
 `interfaces` on a ProductComponent (and optionally on a DataComponent, which
 otherwise has one implicit `data` surface) and `targetInterface` on the

@@ -1,0 +1,30 @@
+schemaVersion: '1.0'
+uid: 01KVFRT368-PC12
+type: product_component
+name: Image Import Service
+description: Accepts uploaded VM images over its own SFTP inbox, scans and converts them, and registers them with
+  Glance.
+version: 1.3.0
+catalogStatus: complete
+lifecycleStatus: preferred
+repoUrl: https://github.example.com/platform-engineering/image-import
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+tags:
+- product-component
+- openstack
+- file-exchange
+classification: api-service
+language: Python
+runtimeRequirement: Python 3.12
+runsOn: STCK000006-RS06
+interfaces:
+- name: SFTP inbox
+  protocol: other
+  path: /
+  authenticationModel: other
+  description: VM image uploads over SFTP (SSH key per uploader).
+decisionRecords:
+- ref: 01KVFRT368-DR02
+  key: product_component

@@ -433,6 +433,12 @@
       "catalogStatus": "complete"
     },
     {
+      "uid": "01KVFRT368-DR01",
+      "name": "Billing Export Service \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
       "uid": "01KT11AQX6-62RD",
       "name": "Ceilometer Telemetry Service \u2014 Identity, Access, and Secrets",
       "type": "decision_record",
@@ -616,6 +622,12 @@
     {
       "uid": "01KT1340J8-PZ32",
       "name": "Horizon Dashboard \u2014 Security and Compliance decisions",
+      "type": "decision_record",
+      "catalogStatus": "complete"
+    },
+    {
+      "uid": "01KVFRT368-DR02",
+      "name": "Image Import Service \u2014 Security and Compliance decisions",
       "type": "decision_record",
       "catalogStatus": "complete"
     },
@@ -1136,6 +1148,27 @@
       "description": "General-purpose self-managed Linux host standard for the OpenStack example control-plane, data, and utility services. This models the reusable substrate pattern, not a single node role.\n"
     },
     {
+      "uid": "01KVFRT368-SF01",
+      "name": "Billing Export SFTP",
+      "type": "listener",
+      "catalogStatus": "complete",
+      "description": "SFTP (SSH file transfer) outbox for usage exports. SSH key authentication per consumer. Looks like the Image Import SFTP listener (same protocol and port) but is a different listener: the owner is part of listener identity."
+    },
+    {
+      "uid": "01KVFRT368-SF02",
+      "name": "Image Import SFTP",
+      "type": "listener",
+      "catalogStatus": "complete",
+      "description": "SFTP (SSH file transfer) inbox for VM image uploads. SSH key authentication per uploader. Same protocol and port as the Billing Export SFTP listener, different owner, so a different listener."
+    },
+    {
+      "uid": "01KVFRT368-PD03",
+      "name": "PagerDuty Events API v2",
+      "type": "listener",
+      "catalogStatus": "complete",
+      "description": "Vendor endpoint that accepts alert events. Recorded once and reused by every caller; the integration key is the api-key."
+    },
+    {
       "uid": "01KSF29JTP-9HYA",
       "name": "OpenStack API Load Balancer",
       "type": "network_service",
@@ -1173,6 +1206,20 @@
       "catalogStatus": "incomplete",
       "description": "Example workspace-owned capability implementation mapping.",
       "target": "01KQQ4Q026-JW52"
+    },
+    {
+      "uid": "01KVFRT368-PCB1",
+      "name": "Billing Export Service",
+      "type": "product_component",
+      "catalogStatus": "complete",
+      "description": "Builds nightly tenant usage and chargeback files from Ceilometer data and serves them to finance tooling over its own SFTP outbox."
+    },
+    {
+      "uid": "01KVFRT368-PC12",
+      "name": "Image Import Service",
+      "type": "product_component",
+      "catalogStatus": "complete",
+      "description": "Accepts uploaded VM images over its own SFTP inbox, scans and converts them, and registers them with Glance."
     },
     {
       "uid": "01KSE5V73Z-Q0A0",
@@ -1318,6 +1365,27 @@
       "catalogStatus": "stub",
       "source": "01KQQ4Q025-1XDE",
       "label": "calls"
+    },
+    {
+      "uid": "KGX2365XDE-1RN6",
+      "name": "Billing Export Service \u2192 Horizon Dashboard",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "01KVFRT368-PCB1",
+      "target": "STCK000006-RS06",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KVFRT368-RS04",
+      "name": "Billing Export Service \u2192 PagerDuty",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Billing Export Service raises incidents through the shared PagerDuty Events API v2 listener.",
+      "source": "01KVFRT368-PCB1",
+      "target": "01KVFRT368-SY01",
+      "label": "sends alerts to",
+      "technology": "HTTPS",
+      "direction": "synchronous"
     },
     {
       "uid": "01KSKWFZZY-FS6X",
@@ -1559,6 +1627,27 @@
       "source": "STCK000006-RS06",
       "target": "STCK00000F-HS0F",
       "label": "runs on"
+    },
+    {
+      "uid": "PVEV4MTX3V-PHY9",
+      "name": "Image Import Service \u2192 Horizon Dashboard",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "source": "01KVFRT368-PC12",
+      "target": "STCK000006-RS06",
+      "label": "runs on"
+    },
+    {
+      "uid": "01KVFRT368-RS05",
+      "name": "Image Import Service \u2192 PagerDuty",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Image Import Service raises incidents through the shared PagerDuty Events API v2 listener.",
+      "source": "01KVFRT368-PC12",
+      "target": "01KVFRT368-SY01",
+      "label": "sends alerts to",
+      "technology": "HTTPS",
+      "direction": "synchronous"
     },
     {
       "uid": "01KSKWG006-9TPR",
@@ -1818,6 +1907,18 @@
       "label": "runs on"
     },
     {
+      "uid": "01KVFRT368-RS01",
+      "name": "OpenStack Ops Console \u2192 Billing Export Service",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Operators download chargeback files from the Billing Export SFTP outbox.",
+      "source": "01KSE5V73Z-Q0A0",
+      "target": "01KVFRT368-PCB1",
+      "label": "downloads usage exports from",
+      "technology": "SFTP",
+      "direction": "synchronous"
+    },
+    {
       "uid": "95BR2EYAF9-AJ9Y",
       "name": "OpenStack Ops Console \u2192 Horizon Dashboard",
       "type": "relationship",
@@ -1825,6 +1926,30 @@
       "source": "01KSE5V73Z-Q0A0",
       "target": "STCK000006-RS06",
       "label": "runs on"
+    },
+    {
+      "uid": "01KVFRT368-RS02",
+      "name": "OpenStack Ops Console \u2192 Image Import Service",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "Operators upload golden images to the Image Import SFTP inbox.",
+      "source": "01KSE5V73Z-Q0A0",
+      "target": "01KVFRT368-PC12",
+      "label": "uploads VM images to",
+      "technology": "SFTP",
+      "direction": "synchronous"
+    },
+    {
+      "uid": "01KVFRT368-RS03",
+      "name": "OpenStack Ops Console \u2192 PagerDuty",
+      "type": "relationship",
+      "catalogStatus": "complete",
+      "description": "OpenStack Ops Console raises incidents through the shared PagerDuty Events API v2 listener.",
+      "source": "01KSE5V73Z-Q0A0",
+      "target": "01KVFRT368-SY01",
+      "label": "sends alerts to",
+      "technology": "HTTPS",
+      "direction": "synchronous"
     },
     {
       "uid": "01KSKWFZZV-A346",
@@ -2235,6 +2360,13 @@
       "type": "system",
       "catalogStatus": "complete",
       "description": "Core OpenStack compute, networking, and storage services that together deliver IaaS capabilities to tenant workloads."
+    },
+    {
+      "uid": "01KVFRT368-SY01",
+      "name": "PagerDuty",
+      "type": "system",
+      "catalogStatus": "complete",
+      "description": "External incident alerting service. Recorded once as a system so every caller targets the same listener instead of a free-text externalTarget."
     },
     {
       "uid": "01KQQ4Q025-9N4R",

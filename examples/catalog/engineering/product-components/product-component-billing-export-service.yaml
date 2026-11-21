@@ -1,0 +1,30 @@
+schemaVersion: '1.0'
+uid: 01KVFRT368-PCB1
+type: product_component
+name: Billing Export Service
+description: Builds nightly tenant usage and chargeback files from Ceilometer data and serves them to finance tooling
+  over its own SFTP outbox.
+version: 1.3.0
+catalogStatus: complete
+lifecycleStatus: preferred
+repoUrl: https://github.example.com/platform-engineering/billing-export
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+tags:
+- product-component
+- openstack
+- file-exchange
+classification: api-service
+language: Python
+runtimeRequirement: Python 3.12
+runsOn: STCK000006-RS06
+interfaces:
+- name: SFTP outbox
+  protocol: other
+  path: /
+  authenticationModel: other
+  description: Usage and chargeback export files, downloaded over SFTP (SSH key per consumer).
+decisionRecords:
+- ref: 01KVFRT368-DR01
+  key: product_component

@@ -1,0 +1,14 @@
+schemaVersion: '1.0'
+uid: 01KVFRT368-SF02
+type: listener
+name: Image Import SFTP
+owner:
+  kind: product_component
+  ref: 01KVFRT368-PC12
+protocol: TCP
+port: 22
+endpoint: /
+authenticationModel: other
+catalogStatus: complete
+description: SFTP (SSH file transfer) inbox for VM image uploads. SSH key authentication per uploader. Same protocol
+  and port as the Billing Export SFTP listener, different owner, so a different listener.

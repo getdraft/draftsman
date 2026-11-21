@@ -2,6 +2,35 @@
 
 ### Compatibility Impact
 
+- None for existing content. New example objects only, plus documentation. This release completes #368: `flow: inbound`, `flow: bidirectional` and free-text `externalTarget` are deprecated, not removed. They keep loading, validating and rendering; removing them is left for a later major version.
+
+### Added
+
+- Examples of the listener target model in `examples/catalog/`: Billing Export Service and Image Import Service each own an SFTP listener on TCP port 22 at `/` (look-alike listeners, different owners, so two listeners), and the PagerDuty `system` owns one Events API v2 listener that the Ops Console, Billing Export Service and Image Import Service all target. All of them validate without the baseline.
+- `tests/test_flow_retirement_examples.py`.
+
+### Changed
+
+- `framework/docs/object-types.md` states the target model for a call (caller as `source`, listener owner as `target`, `targetListener`, no `flow` or `externalTarget`).
+- `framework/docs/how-to-add-objects.md` (Add A Listener) asks about near matches and walks through the new examples.
+- `docs/assets/draft-indexes.json` and `AI_INDEX.md` regenerated for the new examples.
+
+### Fixed
+
+- `draft_table.catalog.load_effective_catalog` now loads Listener objects from `catalog/engineering/listeners/` (and `catalog/listeners/`), so the lookup helpers find listeners stored where the docs say to put them.
+
+### Migration Notes
+
+- Adoption path for the relationship deprecations (#368), a strangler migration:
+  1. Refresh the framework (`/draft update`).
+  2. Run `python3 .draft/framework/tools/validate.py --workspace . --write-baseline` and commit `.draft/validation-baseline.yaml`. Existing uses of the deprecated fields become `baseline:` warnings under `relationship-flow-deprecated`, `relationship-external-target-freetext` and `relationship-source-is-listener-side` (and `relationship-target-listener`), so nothing fails.
+  3. Migrate on touch: a new relationship, or an edited one, is checked as an error again. Before editing one, run `/draft migrate` (or `migrate_relationships.py --object <uid>`) for reviewed proposals: caller as `source`, a `system` object and its listener instead of `externalTarget`, no `flow`.
+  4. Optionally migrate a whole SDP or folder at a time with `/draft migrate sdp <uid>` or `folder <path>`, then re-run `--write-baseline` to drop the cleared entries.
+
+## Unreleased
+
+### Compatibility Impact
+
 - `draft_table.catalog.link_or_stub_listener` and `record_authored_listener` now return `action: near_match` with `candidates` instead of creating a listener when an existing listener of the same owner and protocol differs only by an API version in the path, by an extending path on the same port, or by the port. Pass `confirmed_new=True` once the user says none is the same listener to get the previous behaviour. Exact matches, owner resolution and stubs with no near match behave as before. Catalog content, validation and diagrams are unchanged.
 - `migrate_relationships.py` asks about a near-match listener instead of proposing a new stub beside it.
 

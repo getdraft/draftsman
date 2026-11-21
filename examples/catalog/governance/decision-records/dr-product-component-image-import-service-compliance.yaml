@@ -1,0 +1,19 @@
+schemaVersion: '1.0'
+uid: 01KVFRT368-DR02
+type: decision_record
+name: Image Import Service — Security and Compliance decisions
+category: decision
+status: accepted
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: platform-engineering
+  contact: platform-engineering@example.com
+linkedObject: 01KVFRT368-PC12
+tags:
+- decision-record
+- example
+- compliance
+decisionRationale: Records the security and compliance decisions for Image Import Service addressing the product_component
+  control requirement(s). Its SFTP listener uses per-client SSH keys; this DecisionRecord is the committed answer
+  that satisfies the requirement(s).

@@ -26,9 +26,11 @@ CATALOG_FOLDERS = (
     "reference-architectures",
     "software-deployment-patterns",
     "sessions",
+    "listeners",
     # Nested catalog folders by content role
     "engineering/product-components",
     "engineering/data-components",
+    "engineering/listeners",
     "engineering/software-deployment-patterns",
     "shared-services/hosts",
     "shared-services/runtime-services",
