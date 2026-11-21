@@ -4385,6 +4385,88 @@ EXAMPLES_BASE_SVG_SHA256 = {
 EXAMPLES_MULTI_INTERFACE_PATTERNS: tuple = ()
 
 
+class ListenerPortTests(unittest.TestCase):
+    """#341 E5 S5.2: the Deployment view's far-end port comes from the listener the call names (targetListener)."""
+
+    LB = EdgeDeviceChainTests.LB
+    ra = staticmethod(EdgeDeviceChainTests.ra)
+    group = staticmethod(EdgeDeviceChainTests.group)
+    model = EdgeDeviceChainTests.model
+
+    def target(self) -> list:
+        return [
+            plain("IN", "product_component", "Inside", interfaces=[{"name": "api", "protocol": "REST"}, {"name": "rpc", "protocol": "gRPC"}],
+                  runtimeSpec={"ports": [{"number": 9090, "protocol": "HTTP", "name": "http"}, {"number": 9091, "protocol": "gRPC", "name": "g"}]}),
+            listener("LS-HTTP", "IN", "HTTP", 8080, "/orders"),
+            listener("LS-RPC", "IN", "gRPC", 8092),
+            plain("SRC", "product_component", "Source"), plain("FAR", "product_component", "Far"),
+        ]
+
+    def edges(self, rels: list, extra: list = (), groups: list | None = None, follows: str = "") -> dict:
+        objects = [*self.target(), *extra, *rels]
+        groups = groups or [self.group("G", ["SRC", "IN"])]
+        return {e.uid: e for e in self.model(objects, groups, follows=follows).deployment_edges}
+
+    @staticmethod
+    def rel(uid: str, source: str, target: str = "IN", **extra: object) -> dict:
+        return plain(uid, "relationship", uid, source=source, target=target, **extra)
+
+    def test_listener_port_wins_over_component_ports(self) -> None:
+        edges = self.edges([self.rel("R1", "SRC", targetListener="LS-HTTP", targetInterface="api"),
+                            self.rel("R2", "SRC", targetListener="LS-RPC", targetInterface="rpc")])
+        self.assertEqual(edges["R1"].far_tech, "http 8080")
+        self.assertEqual(edges["R2"].far_tech, "gRPC 8092")
+
+    def test_technology_line_rules_still_apply(self) -> None:
+        dc = plain("DC", "data_component", "Orders", runsOn="ST", targetEngine="postgresql")
+        store = plain("ST", "data_store_service", "Store", listeners=[{"name": "sql", "protocol": "SQL", "port": 9999}])
+        rels = [self.rel("R1", "SRC", "DC", targetListener="LS-SQL", technology="PostgreSQL wire protocol"),
+                self.rel("R2", "SRC", targetListener="LS-RPC", technology="gRPC")]
+        edges = self.edges(rels, [dc, store, listener("LS-SQL", "DC", "SQL", 5432, kind="data_component")],
+                           [self.group("G", ["SRC", "IN", "DC"])])
+        self.assertEqual(edges["R1"].far_tech, "PostgreSQL wire protocol · SQL 5432")  # the listener, not the store's 9999
+        self.assertEqual(edges["R2"].far_tech, "gRPC 8092")  # technology equal to the chain's first word prints once
+
+    def test_hop_ports_precede_the_listener_port_and_follow_its_protocol(self) -> None:
+        rels = [self.rel("R1", "FAR", targetListener="LS-HTTP", technology="HTTPS"),
+                self.rel("R2", "FAR", targetListener="LS-RPC"),
+                self.rel("R3", "SRC", targetListener="LS-HTTP")]
+        groups = [self.group("Front", ["SRC", "IN"]), self.group("Far", ["FAR"], target="west", exposedThrough="none")]
+        edges = self.edges(rels, [self.LB, self.ra({"slot": "load-balancer", "fills": "LB"})], groups, follows="RA-1")
+        self.assertEqual(edges["R1"].far_tech, "https 443 → http 8080")
+        self.assertEqual(edges["R1"].hop_names, ["Balancer"])
+        self.assertEqual(edges["R2"].far_tech, "gRPC 8443 → gRPC 8092")  # the device listener of the called listener's family
+        self.assertEqual((edges["R3"].far_tech, edges["R3"].hops), ("http 8080", []))  # same deployment target: no hop
+        self.assertEqual(generate_diagram._callout_tech(edges["R1"]), "https 443 → http 8080 via Balancer")
+
+    def test_fallback_when_the_listener_does_not_apply(self) -> None:
+        other = listener("LS-ELSE", "SRC", "HTTP", 7000)
+        portless = {**listener("LS-NOPORT", "IN", "HTTP", 1), "port": "eighty"}
+        rels = [self.rel("R1", "SRC", targetListener="LS-ELSE", targetInterface="api"),  # owned by another object
+                self.rel("R2", "SRC", targetListener="LS-NOPORT", targetInterface="api"),  # no integer port
+                self.rel("R3", "SRC", targetInterface="api")]  # names none
+        edges = self.edges(rels, [other, portless])
+        self.assertEqual([edges[u].far_tech for u in ("R1", "R2", "R3")], ["http 9090"] * 3)
+
+    def test_external_target_uses_its_listener(self) -> None:
+        system = plain("SYS", "system", "Payments Vendor")
+        ext = listener("LS-EXT", "SYS", "HTTPS", 443, "/v1/charges", kind="external_system")
+        rels = [self.rel("R1", "SRC", "", externalTarget="Stripe API", targetListener="LS-EXT"),
+                self.rel("R2", "SRC", "", externalTarget="Mail API", targetListener="LS-MISSING")]
+        for r in rels:
+            del r["target"]
+        edges = self.edges(rels, [system, ext])
+        self.assertEqual(edges["R1"].far_tech, "https 443")
+        self.assertEqual(edges["R2"].far_tech, "")
+
+    def test_application_view_still_shows_no_port(self) -> None:
+        objects = [*self.target(), self.rel("R1", "SRC", targetListener="LS-HTTP", label="calls")]
+        model = self.model(objects, [self.group("G", ["SRC", "IN"])], follows="")
+        svg = generate_diagram.render_logical_svg(generate_diagram.diagram_of(model))
+        self.assertNotIn("8080", svg)
+        self.assertIn("8080", generate_diagram.render_deployment_svg(generate_diagram.diagram_of(model)))
+
+
 class LayoutHardeningTests(unittest.TestCase):
     """AC9: no edge crosses a box it does not connect to, labels entering one box through different entrances never
     overlap, byte-identical renders, --editable renders, and examples unchanged from the base."""
