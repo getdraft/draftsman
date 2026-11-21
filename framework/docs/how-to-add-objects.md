@@ -161,8 +161,29 @@ A ReferenceArchitecture should be generic enough to guide many products, not jus
 7. Set `diagramTier` on every deployable object entry (ProductComponents and DataComponents only) using one of `presentation`, `application`, `data`, or `utility`.
 8. Add product-level `notes`, including availability requirement and data classification, so the SoftwareDeploymentPattern satisfies the SoftwareDeploymentPattern RequirementGroup.
 
+## Add A Listener
+
+1. Run the Listener Lookup Before Create procedure in
+   [draftsman.md](draftsman.md) first. If it links an existing listener, stop:
+   use that UID.
+2. Create the file under the engineering catalog, for example
+   `catalog/engineering/listeners/`. Add or repair the generated `uid`.
+3. Set `owner` to `kind` (`product_component`, `data_component` or
+   `external_system`) and `ref` (the owner's UID).
+4. Set `protocol`, `port` and `endpoint` (the path only, no host; write path
+   parameters as `{name}` or `:name`).
+5. Set `authenticationModel`. `TBD` does not satisfy `interface-protection`;
+   `none` needs a committed DecisionRecord keyed `interface_unprotected`.
+6. Set `catalogStatus`: `stub` when only the caller's knowledge is recorded,
+   otherwise `incomplete` or `complete`. Authoring a listener whose key matches
+   a stub upgrades that stub and keeps its UID.
+7. Set `targetListener` to this UID on every relationship that calls it, and run
+   validation.
+
 ## Record Interfaces, Listeners And Edge Slots
 
+- Every relationship sets `targetListener` to the Listener object it calls
+  (ratcheted rule `relationship-target-listener`); see Add A Listener.
 - Product team: on a ProductComponent add `interfaces` (name and protocol), and
   on each relationship that targets a product component set `targetInterface` to
   the name of an interface it uses (ratcheted rule `relationship-target-interface`;

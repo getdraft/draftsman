@@ -36,7 +36,15 @@ by the engineering team and deployed inside or on top of Shared Services Objects
 | ProductComponent | `product_component` | A first-party deployable runtime unit — API, worker, scheduler, or service — that runs on a RuntimeService or Host. Product teams may declare component-owned runtime ports and dependencies in `runtimeSpec`. | Uses `runsOn` to reference the RuntimeService or Host it is deployed on. |
 | DataComponent | `data_component` | A first-party data schema, dataset, or storage unit that lives inside a DataStoreService. | Uses `runsOn` to reference the DataStoreService it is deployed on. |
 | SoftwareDeploymentPattern | `software_deployment_pattern` | The intended assembly of deployable objects for a product or product capability. | Defines the deployable package shape that automation can target. |
+| Listener | `listener` | The exact endpoint a call lands on: owner, `protocol`, `port`, `endpoint` (path only) and `authenticationModel`, with `catalogStatus` `stub`, `incomplete` or `complete`. | Owned by a ProductComponent, DataComponent or external system (`owner.kind` and `owner.ref`); relationships reference it through `targetListener`. |
 | ProductRegistration | `product_registration` | Advertises the formal registration contract linking a product engineering repository to the central `drafting-table` catalog. | Points to the product source repo URL and its decentralized `.draft/sdp.yaml` manifest. |
+
+A Listener object is the endpoint a call lands on, and every relationship names
+one in `targetListener`. Product teams own their components' listeners; find or
+create one with the Listener Lookup Before Create procedure in
+[draftsman.md](draftsman.md), never by guessing an owner or a port. The
+`listeners` field on definitions below is a different, older record of a
+definition's ports.
 
 Interfaces and listeners are recorded by different owners. Product teams record
 `interfaces` on a ProductComponent (and optionally on a DataComponent, which

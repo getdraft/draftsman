@@ -1,3 +1,27 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. This release changes documentation and tests only. Validation results are unchanged.
+
+### Added
+
+- `framework/docs/draftsman.md` section "Listener Lookup Before Create" (#341 E3): what a listener object is, and the procedure for finding or creating the listener a call lands on. Resolve the owner (several matches are listed, never picked), normalize the key (owner + protocol + port + endpoint), link an exact match without asking, otherwise create and link a stub, and upgrade a stub in place when the real listener is authored. It also covers the vendor-owned stub rule, the SDP completeness gate, the `none` authentication decision record and the `draft_table.catalog` helpers.
+- `framework/docs/how-to-add-objects.md` section "Add A Listener", and a Listener row in the Engineering Objects table of `framework/docs/object-types.md`.
+- `tests/test_listener_docs.py`: the procedure's steps and key statements, plus checks that the documented owner kinds, default ports, helper names and endpoint normalization match `validate.py` and `draft_table/catalog.py`.
+
+### Changed
+
+- Relationship Authoring in `framework/docs/draftsman.md` adds a `targetListener` step. `how-to-add-objects.md` and `object-types.md` say every relationship names a `targetListener`, and separate Listener objects from the older `listeners` field on definitions.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No workspace migration required.
+
 ## 1.18.0 - 2026-11-21
 
 ### Compatibility Impact

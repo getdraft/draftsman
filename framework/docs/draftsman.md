@@ -1038,6 +1038,56 @@ resumptionContext:
 If the session's `sessionStatus` is `blocked`, surface the blocking reason from
 `unresolvedQuestions` or `nextSteps` before asking the user how to proceed.
 
+## Listener Lookup Before Create
+
+A listener is the exact endpoint a call lands on: a `listener` object with its
+own UID, owned by a ProductComponent, a DataComponent or an external system
+(`owner.kind` is `product_component`, `data_component` or `external_system`, and
+`owner.ref` is that object's UID). It records `protocol`, `port`, `endpoint` and
+`authenticationModel`; the caller never does. Every relationship names the
+listener it calls in `targetListener` (ratcheted rule
+`relationship-target-listener`), including calls to data components and
+external targets.
+
+Before writing a relationship, resolve its listener with this procedure. Never
+create a listener without running it, and never guess.
+
+1. **Resolve the owner.** Match the owner the user names by UID, then by exact
+   name or alias, among objects of the owner kind. One match is the owner.
+   Several matches are listed for the user to choose from, never picked. No
+   match means the owner must be authored (or confirmed) first.
+2. **Normalize the identity key.** The key is owner + protocol + port +
+   endpoint. Protocol is compared lowercase; a missing port takes the
+   protocol's default (`http` 80, `https` 443); the endpoint keeps only its path
+   (scheme, host, query and fragment are dropped, the host is never stored);
+   templated path parameters (`{id}` or `:id`) compare as one placeholder; and
+   trailing slashes are ignored. Two components that each serve SFTP on port 22
+   own two different listeners, because the owner is part of the key.
+3. **Link an exact match.** If exactly one listener has the key, set
+   `targetListener` to its UID without asking.
+4. **Otherwise create a stub and link it.** If none has the key, create a
+   listener with `catalogStatus: stub` from what the caller knows (owner,
+   protocol, port, endpoint; `authenticationModel: TBD`) and link its UID.
+   Several listeners with the same key are listed and asked about, never
+   chosen silently.
+5. **Upgrade, do not duplicate.** When the real listener is authored later it
+   has the same key, so it upgrades the stub in place and keeps its UID.
+
+Rules that follow from the procedure:
+
+- A stub owned by an external system needs a company-internal relationship
+  owner (a ProductComponent or DataComponent whose relationship calls it) before
+  it can be created or leave `stub`.
+- A SoftwareDeploymentPattern cannot be completed while any call in it targets a
+  stub listener owned by an internal component; the error names the listener
+  (ratcheted rule `sdp-internal-stub-listener`). Stubs owned by external
+  systems do not block completion.
+- `authenticationModel: none` needs a committed DecisionRecord keyed
+  `interface_unprotected` (see [decision-records.md](decision-records.md)).
+- Tools follow the same procedure through `draft_table.catalog`:
+  `lookup_listener`, `link_or_stub_listener`, `record_authored_listener`,
+  `upgrade_listener_stub` and `vendor_stub_problem`.
+
 ## Relationship Authoring
 
 Relationships are the primary way to model inter-object communication edges —
@@ -1057,13 +1107,17 @@ For each relationship:
    `externalTarget` to the free-text name of an external system with no catalog
    representation (e.g. `"LDAP Directory"`, `"Stripe Payment API"`). Use
    `externalTarget` when the dependency exists but has no catalog UID.
-3. Set `label` to a short verb phrase: "calls", "reads from", "writes to",
+3. Set `targetListener` to the UID of the listener the call lands on, resolved
+   with the Listener Lookup Before Create procedure above. For a catalog
+   target the listener must be owned by that target; for an `externalTarget`
+   it is the external system's listener.
+4. Set `label` to a short verb phrase: "calls", "reads from", "writes to",
    "sends events to", "authenticates via".
-4. Set `technology` when known and not obvious: "HTTPS", "gRPC", "AMQP",
+5. Set `technology` when known and not obvious: "HTTPS", "gRPC", "AMQP",
    "PostgreSQL wire protocol".
-5. Set `direction` to `synchronous` for request/response, `asynchronous` for
+6. Set `direction` to `synchronous` for request/response, `asynchronous` for
    fire-and-forget, or `event` for publish/subscribe or event-driven.
-6. Set `flow` to `outbound` (default), `inbound`, or `bidirectional` from the
+7. Set `flow` to `outbound` (default), `inbound`, or `bidirectional` from the
    source object's perspective.
 
 Write the relationship object to `catalog/relationships/` using the naming
