@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- The central receiver no longer commits to its default branch. Copy the new `templates/github/drafting-table-receiver.yml.tmpl`: it needs `pull-requests: write` (added to the template) and the repository setting "Allow GitHub Actions to create and approve pull requests". Each product's sync becomes one pull request from `draft-sync/<owner>__<name>`, updated by later syncs; synced content reaches the catalog when someone merges it. The `stefanzweifel/git-auto-commit-action` step is gone. Product repositories need no change.
+
+### Added
+
+- `sdp_sync.py publish` (#195 gap 6): after `receive`, validation and index regeneration, it commits the changed files (never Python bytecode) to `draft-sync/<product>` on top of the default branch, force-updates that branch, and opens the product's pull request or updates the open one (title, body with repository, commit, registration, correlation id and the changed files). With `--auto-merge true` (template: repository variable `DRAFT_SYNC_AUTO_MERGE=true`) it requests squash auto-merge only when every change is inside that product's cache folder (or its old flat file) plus the regenerated `docs/assets/draft-indexes.json` and `.draft/AI_INDEX.md`; a later update that reaches further turns auto-merge off. Every git and gh call is an argument list. The outcome is added to the result file under `publish`.
+- `tests/test_sdp_sync_publish.py`: a fake command runner for every branch of the flow, plus the template's own publish script against a real git repository with a fake `gh`.
+
+### Changed
+
+- `templates/github/drafting-table-receiver.yml.tmpl`: `permissions` adds `pull-requests: write`; a `draft-sdp-sync` concurrency group runs syncs one at a time; the last step is "Publish Sync Pull Request" (`GH_TOKEN` from `github.token`, base from the event's default branch).
+
+### Fixed
+
+- A sync can no longer change the central workspace's default branch without a pull request.
+
+### Migration Notes
+
+- Enable "Allow GitHub Actions to create and approve pull requests" in the central repository (Settings, Actions, General) before updating the receiver. To use auto-merge, also enable "Allow auto-merge" and set the `DRAFT_SYNC_AUTO_MERGE` variable to `true`. Pull requests opened with `GITHUB_TOKEN` do not start other workflows, so required status checks on the default branch will not run on them; leave such checks off for these branches or merge by hand.
+
 ## 1.20.10 - 2026-11-21
 
 ### Compatibility Impact

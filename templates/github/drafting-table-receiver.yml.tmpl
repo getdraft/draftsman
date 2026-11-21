@@ -3,7 +3,10 @@
 # with the framework's sdp_sync.py, validates the workspace, and regenerates the central indexes.
 # The payload is read from the event file by the tool; no payload value is placed in script text.
 # The tool verifies the sender's GitHub Actions OIDC token (audience: this repository) against GitHub's
-# published keys before storing anything.
+# published keys before storing anything. Nothing is pushed to the default branch: each product's changes
+# go to a draft-sync/<product> branch and one pull request that later syncs update.
+# Repository settings: allow GitHub Actions to create pull requests. Optional repository variable
+# DRAFT_SYNC_AUTO_MERGE=true requests auto-merge when a change stays inside that product's cache folder.
 name: DRAFT Decentralized SDP Receiver
 
 on:
@@ -12,6 +15,12 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
+
+# One sync at a time, so pull requests and regenerated indexes never race.
+concurrency:
+  group: draft-sdp-sync
+  cancel-in-progress: false
 
 jobs:
   sync_sdp:
@@ -51,7 +60,14 @@ jobs:
           python3 .draft/framework/tools/generate_indexes.py --workspace .
           python3 .draft/framework/tools/generate_ai_index.py
 
-      - name: Commit Updated Index & Cache
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore(draft): sync decentralized SDP"
+      - name: Publish Sync Pull Request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+          AUTO_MERGE: ${{ vars.DRAFT_SYNC_AUTO_MERGE }}
+        run: |
+          python3 .draft/framework/tools/sdp_sync.py publish \
+            --workspace . \
+            --result "$RUNNER_TEMP/sdp-sync-result.json" \
+            --base "$BASE_BRANCH" \
+            --auto-merge "${AUTO_MERGE:-false}"
