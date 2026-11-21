@@ -275,6 +275,14 @@ a warning.
   way an edge naming no entrance of its target enters the first. The
   Deployment view uses the same entrances. The Application view never shows a
   port and never shows a device.
+- **Arrowheads (both views).** A relationship that names its listener (a
+  `targetListener` the target owns, or any Listener object for an
+  `externalTarget`) is a call from caller to listener: it draws one arrowhead,
+  at the listener end, and its moving dots run from the caller, whatever a
+  legacy `flow` says. A relationship that names no listener draws as before:
+  the arrowhead at the target for `outbound` or no `flow`, at the source for
+  `inbound`, at both ends for `bidirectional` (deprecated values, reported by
+  `relationship-flow-deprecated`).
 - **Deployment view.** Each connection is labelled with the resolved port chain.
   When the relationship's `targetListener` names a Listener object the target
   owns (or, for an `externalTarget`, any Listener object) and that listener has a
@@ -430,7 +438,7 @@ target: <to-uid>
 label: calls
 technology: <protocol>        # was: connection.protocol
 direction: synchronous        # synchronous / asynchronous / event
-flow: outbound
+targetListener: <listener-uid>  # the listener the call lands on
 ```
 
 Then remove the `connections` list from the service group. The browser and
