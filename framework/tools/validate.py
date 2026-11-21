@@ -586,6 +586,89 @@ register_ratchet_rule("relationship-target-listener", _check_relationship_target
 
 
 # ---------------------------------------------------------------------------
+# Deprecated relationship fields (#368)
+#
+# flow: inbound, flow: bidirectional and free-text externalTarget are deprecated but still valid. These ratcheted
+# rules make existing uses `baseline:` warnings after --write-baseline and fail only new or edited relationships.
+# Derived relationships (runtimeSpec.dependencies) are exempt: they are not authored as relationship objects.
+# ---------------------------------------------------------------------------
+DEPRECATED_FLOWS = ("inbound", "bidirectional")
+
+
+def _authored_relationship(obj: dict) -> bool:
+    return obj.get("type") == "relationship" and not obj.get("_derived")
+
+
+def _relationship_flow(obj: dict) -> str:
+    flow = obj.get("flow")
+    return flow.strip().lower() if isinstance(flow, str) else ""
+
+
+def _check_relationship_flow_deprecated(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
+    if not _authored_relationship(obj):
+        return []
+    flow = _relationship_flow(obj)
+    if flow not in DEPRECATED_FLOWS:
+        return []
+    rel = obj.get("name") or obj.get("uid")
+    if flow == "bidirectional":
+        fix = "a request/response call is flow outbound (or no flow) with direction synchronous"
+    else:
+        fix = "make the caller the source and the called object the target, then drop flow (outbound is the default)"
+    return [f"relationship '{rel}' uses deprecated flow '{flow}': {fix}"]
+
+
+register_ratchet_rule("relationship-flow-deprecated", _check_relationship_flow_deprecated)
+
+
+def _check_relationship_external_target_freetext(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
+    if not _authored_relationship(obj) or not is_non_empty(obj.get("externalTarget")):
+        return []
+    rel = obj.get("name") or obj.get("uid")
+    text = str(obj["externalTarget"]).strip()
+    return [
+        f"relationship '{rel}' uses deprecated free-text externalTarget '{text}': record the external party as a "
+        f"system object with a listener (Listener Lookup Before Create), then set target and targetListener"
+    ]
+
+
+register_ratchet_rule("relationship-external-target-freetext", _check_relationship_external_target_freetext)
+
+
+def _owns_listener(catalog_by_id: dict, uid: str) -> bool:
+    return any(_is_listener(item) and _listener_owner_ref(item) == uid for item in catalog_by_id.values())
+
+
+def _check_relationship_source_is_listener_side(obj: dict, catalog_by_id: dict, context: dict) -> Iterable[str]:
+    # Heuristic, and only ever on flow: inbound (already flagged by relationship-flow-deprecated): the source looks
+    # like the side being called (it owns a listener, or the other end is an outside party), so the caller is
+    # probably recorded as the target.
+    if not _authored_relationship(obj) or _relationship_flow(obj) != "inbound":
+        return []
+    source = str(obj.get("source") or "").strip()
+    target_ref = str(obj.get("target") or "").strip()
+    target = catalog_by_id.get(target_ref) if target_ref else None
+    reasons = []
+    if source and _owns_listener(catalog_by_id, source):
+        reasons.append("its source owns a listener")
+    if not target_ref and is_non_empty(obj.get("externalTarget")):
+        reasons.append("its target is the free-text outside party")
+    elif isinstance(target, dict) and target.get("type") == "system":
+        reasons.append("its target is an external system")
+    if not reasons:
+        return []
+    rel = obj.get("name") or obj.get("uid")
+    return [
+        f"relationship '{rel}' looks like it records the listener side as source ({' and '.join(reasons)}): the caller "
+        f"is the source; swap source and target, or, for an unknown outside caller, record the protection on the "
+        f"listener's authenticationModel or description instead"
+    ]
+
+
+register_ratchet_rule("relationship-source-is-listener-side", _check_relationship_source_is_listener_side)
+
+
+# ---------------------------------------------------------------------------
 # SDP completeness gate (#341 E2)
 #
 # A software deployment pattern cannot be complete while a call in it targets a

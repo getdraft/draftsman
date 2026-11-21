@@ -1,6 +1,42 @@
 schemaVersion: '1.0'
 frameworkVersion: 1.9.0
 entries:
+- rule: relationship-external-target-freetext
+  uid: 01KSKWFZZS-1SZX
+  hash: 0e80a49786567b2963c2c1d5f01d428bdc18a91cbc3fb11e4ee24a367d4ab193
+- rule: relationship-external-target-freetext
+  uid: 01KSKWFZZS-73X6
+  hash: b03a279ad919e005845b278d2cc0496619a9f8f5b5ea6c04ee195fb53124f30d
+- rule: relationship-external-target-freetext
+  uid: 01KSKWFZZT-1511
+  hash: 82e84a796bff8e69e94c147074bf4f5305d936417107905f2fcd53c1051f8466
+- rule: relationship-external-target-freetext
+  uid: 01KSKWFZZT-JW98
+  hash: 4ff6fa885187e9da922370c7e4f3cae49402709dc5ebe1140649ef3b63476869
+- rule: relationship-external-target-freetext
+  uid: 01KSKWFZZT-R5CF
+  hash: 2534c3328efc8a9de84634dc27f4dfb4e1193c2183afde86f95ee1fd2b196cb0
+- rule: relationship-external-target-freetext
+  uid: 01KSKWFZZV-A346
+  hash: bd3f467a13b47ad25cbe698721e7547c21e3264181486dd2252ee5af3264320b
+- rule: relationship-external-target-freetext
+  uid: 01KSKWFZZW-2BN8
+  hash: bea18492c546b8272d93cec50a7f3568c75f8fe670528ce1c5ca4fc9484aee94
+- rule: relationship-external-target-freetext
+  uid: 01KSKWFZZW-ZEKF
+  hash: ea314fcac617da3fbc1e202aebd10eb07c6dc4a582ee3e985ddeea8ceaadf2d4
+- rule: relationship-external-target-freetext
+  uid: 01KSKWFZZX-34KP
+  hash: 0bec50085aac5e3f33ec13f128166bd64cb25c6e9d511fc08674917856c85060
+- rule: relationship-external-target-freetext
+  uid: 01KSKWFZZX-JWP6
+  hash: 8bd57190e78075cb6c4f70369707d094554fce4e6c8f92f075f6c753606079d6
+- rule: relationship-external-target-freetext
+  uid: 01KSKWFZZX-NE4F
+  hash: 192c8c06032f65fe7ee5b8c52f2dea44bfe9cca4f4b38192dfc23752b7d4dda2
+- rule: relationship-external-target-freetext
+  uid: 01KSKWG008-3RQB
+  hash: adcc67d24fa74c9c359fe37f1eb48dbb6d46f33c9bcd5c07febaff768af8d04f
 - rule: relationship-target-listener
   uid: 01KSK0C6DP-5GFZ
   hash: 0e29785abf6f9b1ff2e8389c6f9e01f48571276ccb2eaba88f754c60585e5d42
