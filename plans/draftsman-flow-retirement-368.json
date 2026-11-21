@@ -1,7 +1,7 @@
 {
   "id": "draftsman-flow-retirement-368",
   "title": "Draftsman #368: retire relationship flow and migrate legacy relationships to listeners",
-  "status": "approved",
+  "status": "complete",
   "outcome": "Every call in Dale's Draftsman reads one way: the caller is the source and the arrow lands on the listener it calls. The old flow values and free-text external targets keep working but are flagged, only when someone touches them, and a migration helper proposes the fixes as a reviewable patch so no workspace has a flag day.",
   "target_repo": "getdraft/draftsman",
   "epics": [
