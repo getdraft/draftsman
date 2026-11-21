@@ -346,6 +346,60 @@ def lookup_listener(
     return {"status": "linked", "uid": matches[0], "ownerUid": owner_uid}
 
 
+_VERSION_SEGMENT = re.compile(r"^(v\d+(\.\d+)*|\d{4}-\d{2}(-\d{2})?)$", re.IGNORECASE)
+
+
+def _unversioned_segments(endpoint: Any) -> tuple[str, ...]:
+    return tuple(part for part in normalize_listener_endpoint(endpoint).split("/") if part and not _VERSION_SEGMENT.match(part))
+
+
+def listener_near_match(key: tuple[str, str, str, int | None, str], other: tuple[str, str, str, int | None, str]) -> list[str]:
+    """How two listener identity keys nearly match, or [] when they do not (or match exactly).
+
+    A near match has the same owner and protocol, and differs only by an API version segment in the path
+    (``/v1/orders`` and ``/v2/orders``), by a path one of them extends (``/`` and ``/orders``, same port), or by
+    the port (same path). It is a question for the user, never a link.
+    """
+    if key == other or key[:3] != other[:3] or not key[1]:
+        return []
+    base, other_base = _unversioned_segments(key[4]), _unversioned_segments(other[4])
+    same_port = key[3] == other[3]
+    differs: list[str] = []
+    if base == other_base:
+        if key[4] != other[4]:
+            differs.append("version")
+        if not same_port:
+            differs.append("port")
+    elif same_port and (base[: len(other_base)] == other_base or other_base[: len(base)] == base):
+        differs.append("path")
+    return differs
+
+
+def near_match_listeners(
+    objects: dict[str, dict[str, Any]],
+    owner_kind: str,
+    owner_ref: str,
+    protocol: Any,
+    port: Any,
+    endpoint: Any,
+) -> list[dict[str, Any]]:
+    """Listeners that look like the one described but do not match it exactly. Ask the user about each."""
+    owner = resolve_listener_owner(objects, owner_kind, owner_ref)
+    if owner["status"] != "linked":
+        return []
+    key = listener_identity_key({"owner": {"kind": owner_kind, "ref": owner["uid"]}, "protocol": protocol, "port": port, "endpoint": endpoint})
+    found = []
+    for uid, obj in objects.items():
+        if obj.get("type") != "listener":
+            continue
+        other = listener_identity_key(obj)
+        differs = listener_near_match(key, other)
+        if differs:
+            found.append({"uid": str(obj.get("uid") or uid), "name": str(obj.get("name") or uid), "protocol": other[2],
+                          "port": other[3], "endpoint": other[4], "differs": differs})
+    return sorted(found, key=lambda item: item["uid"])
+
+
 def new_listener_uid(existing: Any) -> str:
     taken = set(existing)
     stamp = int(time.time() * 1000) & ((1 << 48) - 1)
@@ -402,14 +456,23 @@ def link_or_stub_listener(
     *,
     name: str = "",
     source_uid: str | None = None,
+    confirmed_new: bool = False,
 ) -> dict[str, Any]:
-    """Lookup-before-create: link an existing listener, or create one stub. Never guesses an owner."""
+    """Lookup-before-create: link an existing listener, or create one stub. Never guesses an owner.
+
+    When no listener matches exactly but some nearly match, the result is ``near_match`` with those candidates:
+    ask whether one of them is the same listener. Pass ``confirmed_new=True`` once the user says it is not.
+    """
     found = lookup_listener(objects, owner_kind, owner_ref, protocol, port, endpoint)
     status = found["status"]
     if status == "linked":
         return {"action": "linked", "uid": found["uid"]}
     if status != "not_found":
         return {"action": status, "candidates": found.get("candidates", [])}
+    if not confirmed_new:
+        near = near_match_listeners(objects, owner_kind, found["ownerUid"], protocol, port, endpoint)
+        if near:
+            return {"action": "near_match", "candidates": near}
     if owner_kind == LISTENER_EXTERNAL_OWNER and not _is_internal_source(objects, source_uid):
         return {"action": "rejected", "reason": VENDOR_STUB_REASON}
     stub = create_listener_stub(objects, found["ownerUid"], owner_kind, protocol, port, endpoint, name)
@@ -429,13 +492,22 @@ def upgrade_listener_stub(stub: dict[str, Any], authored: dict[str, Any]) -> dic
     return upgraded
 
 
-def record_authored_listener(objects: dict[str, dict[str, Any]], authored: dict[str, Any]) -> dict[str, Any]:
-    """An authored listener links to an existing one, upgrades a matching stub, or is created. Never duplicates a UID."""
+def record_authored_listener(
+    objects: dict[str, dict[str, Any]], authored: dict[str, Any], *, confirmed_new: bool = False
+) -> dict[str, Any]:
+    """An authored listener links to an existing one, upgrades a matching stub, or is created. Never duplicates a UID.
+
+    A new listener that nearly matches existing ones returns ``near_match`` until ``confirmed_new=True``.
+    """
     owner = authored.get("owner") if isinstance(authored.get("owner"), dict) else {}
     kind = str(owner.get("kind") or "")
     found = lookup_listener(objects, kind, str(owner.get("ref") or ""), authored.get("protocol"), authored.get("port"), authored.get("endpoint"))
     if found["status"] not in ("linked", "not_found"):
         return {"action": found["status"], "candidates": found.get("candidates", [])}
+    if found["status"] == "not_found" and not confirmed_new:
+        near = near_match_listeners(objects, kind, found["ownerUid"], authored.get("protocol"), authored.get("port"), authored.get("endpoint"))
+        if near:
+            return {"action": "near_match", "candidates": near}
     owner_ref = {"kind": kind, "ref": found["ownerUid"]}
     normalized = {**authored, "owner": owner_ref, "endpoint": normalize_listener_endpoint(authored.get("endpoint"))}
     if found["status"] == "not_found":

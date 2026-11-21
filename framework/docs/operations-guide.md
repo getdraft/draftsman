@@ -62,6 +62,7 @@ The primary interface for developers and AI assistants inside a DRAFT workspace 
 | `guide` | `/draft guide [intent]` | Workspace | Bootstraps the workspace, launches a guided interface to author new catalog objects, and manages drafting sessions, saving incomplete state, and recording open questions. |
 | `review` | `/draft review [PR number\|security\|path]` | Workspace | Reviews an open pull request for catalog correctness, or audits catalog content for quality and security compliance. |
 | `update` | `/draft update` | Workspace | Refreshes the vendored framework copy (`.draft/framework/`) in a company workspace. |
+| `migrate` | `/draft migrate [object\|sdp\|folder]` | Workspace | Proposes listener-based replacements for deprecated relationship fields (`migrate_relationships.py`) and reviews them with the user; nothing changes until a patch is approved. |
 
 ### Command Rules
 * **No-Argument Help:** Invoking `/draft` with no arguments, or `/draft help`, must always print the complete usage documentation and available verbs.

@@ -1066,12 +1066,19 @@ create a listener without running it, and never guess.
    own two different listeners, because the owner is part of the key.
 3. **Link an exact match.** If exactly one listener has the key, set
    `targetListener` to its UID without asking.
-4. **Otherwise create a stub and link it.** If none has the key, create a
+4. **Ask about near matches.** If none has the key but a listener of the same
+   owner and protocol differs only by an API version in the path (`/v1/orders`
+   and `/v2/orders`), by a path one of them extends (`/` and `/orders` on the
+   same port) or by the port (same path), ask whether the call is on that
+   listener. Link it only when the user says it is the same listener; never
+   link a near match silently. Two SFTP listeners on ports 22 and 2222 of the
+   same server are a near match; SFTP on two different servers is not.
+5. **Otherwise create a stub and link it.** If none has the key, create a
    listener with `catalogStatus: stub` from what the caller knows (owner,
    protocol, port, endpoint; `authenticationModel: TBD`) and link its UID.
    Several listeners with the same key are listed and asked about, never
    chosen silently.
-5. **Upgrade, do not duplicate.** When the real listener is authored later it
+6. **Upgrade, do not duplicate.** When the real listener is authored later it
    has the same key, so it upgrades the stub in place and keeps its UID.
 
 Rules that follow from the procedure:
@@ -1086,8 +1093,11 @@ Rules that follow from the procedure:
 - `authenticationModel: none` needs a committed DecisionRecord keyed
   `interface_unprotected` (see [decision-records.md](decision-records.md)).
 - Tools follow the same procedure through `draft_table.catalog`:
-  `lookup_listener`, `link_or_stub_listener`, `record_authored_listener`,
-  `upgrade_listener_stub` and `vendor_stub_problem`.
+  `lookup_listener`, `near_match_listeners`, `link_or_stub_listener`,
+  `record_authored_listener`, `upgrade_listener_stub` and
+  `vendor_stub_problem`. `link_or_stub_listener` and `record_authored_listener`
+  return `near_match` with the candidates instead of creating a listener; pass
+  `confirmed_new=True` after the user says none of them is the same listener.
 
 ## Relationship Authoring
 
@@ -1162,12 +1172,13 @@ only a new relationship, or an edited one, fails:
   free-text `externalTarget` or a `system` object), so the caller is probably
   recorded as the target.
 
-To move existing relationships, run
-`python framework/tools/migrate_relationships.py --workspace <ws> --report migration.md --patch migration.patch`
-(scope it with `--object <uid>`, `--sdp <uid>` or `--folder <path>`). It only
+To move existing relationships, run `/draft migrate`, or
+`python3 .draft/framework/tools/migrate_relationships.py --workspace . --report <file> --patch <file>`
+with both files outside `catalog/` (scope it with `--object <uid>`, `--sdp <uid>` or `--folder <path>`). It only
 proposes: nothing in `catalog/` changes. The report lists each conversion, the
 new System and Listener stubs, relationships that need your input (a listener
-to name, a protocol and port, an ambiguous system), and protection descriptions
+to name, a protocol and port, an ambiguous system, a near-match listener to
+confirm), and protection descriptions
 to move onto listeners. Review it, apply the patch with `git apply` on a
 branch, then run `validate.py`.
 

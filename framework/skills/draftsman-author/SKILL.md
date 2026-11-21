@@ -29,12 +29,13 @@ Every relationship sets `targetListener` to the UID of the listener it calls, in
 1. **Resolve the owner** by UID, then exact name or alias. Several matches: list them and ask. Never pick one.
 2. **Normalize the key:** owner + protocol + port + endpoint path (default ports filled in, host dropped, path parameters templated).
 3. **Exact match:** link its UID without asking.
-4. **No match:** create a listener with `catalogStatus: stub` and `authenticationModel: TBD` from what the caller knows, and link it. Several matches: list them and ask.
-5. **Real listener authored later:** upgrade the stub in place; keep its UID.
+4. **Near match:** (same owner and protocol; only an API version in the path, an extending path on the same port, or the port differs): ask whether it is the same listener. Never link a near match silently.
+5. **No match:** create a listener with `catalogStatus: stub` and `authenticationModel: TBD` from what the caller knows, and link it. Several matches: list them and ask.
+6. **Real listener authored later:** upgrade the stub in place; keep its UID.
 
-A stub owned by an external system needs a company-internal caller. A pattern cannot be completed while it calls an internally owned stub (`sdp-internal-stub-listener`). `authenticationModel: none` needs a committed DecisionRecord keyed `interface_unprotected`. When you can run Python, use `draft_table.catalog` (`link_or_stub_listener`, `record_authored_listener`) instead of matching by hand. A port or endpoint you did not read is not recorded: leave the listener a stub and list the gap (rule R6).
+A stub owned by an external system needs a company-internal caller. A pattern cannot be completed while it calls an internally owned stub (`sdp-internal-stub-listener`). `authenticationModel: none` needs a committed DecisionRecord keyed `interface_unprotected`. When you can run Python, use `draft_table.catalog` (`link_or_stub_listener`, `record_authored_listener`, `near_match_listeners`) instead of matching by hand; a `near_match` result is a question for the user, and `confirmed_new=True` is passed only after they answer that it is a different listener. A port or endpoint you did not read is not recorded: leave the listener a stub and list the gap (rule R6).
 
-The caller is always the relationship's `source`. Omit `flow` (`outbound` is the default). Never write `flow: inbound`, `flow: bidirectional` or free-text `externalTarget` in a new or edited relationship: they are deprecated (still accepted on existing content). Make the caller the source instead of `inbound`, use `direction: synchronous` for request/response instead of `bidirectional`, and target the external party's `system` object instead of `externalTarget` (Deprecated Relationship Fields in `.draft/framework/docs/draftsman.md`).
+The caller is always the relationship's `source`. Omit `flow` (`outbound` is the default). Never write `flow: inbound`, `flow: bidirectional` or free-text `externalTarget` in a new or edited relationship: they are deprecated (still accepted on existing content). Make the caller the source instead of `inbound`, use `direction: synchronous` for request/response instead of `bidirectional`, and target the external party's `system` object instead of `externalTarget` (Deprecated Relationship Fields in `.draft/framework/docs/draftsman.md`). To move existing relationships, use `/draft migrate` (`draft-actions/migrate.md`).
 
 ## Scanning a code repository
 

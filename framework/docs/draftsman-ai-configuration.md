@@ -120,6 +120,7 @@ routed by the workspace bootstrap instructions.
 | `/draft guide [intent]` | Bootstrap, then start or resume a guided DraftingSession or ad hoc authoring |
 | `/draft review [PR\|security\|path]` | Review an open PR for catalog correctness, or audit catalog content for quality and security compliance |
 | `/draft update` | Check for framework updates and guide a safe upgrade |
+| `/draft migrate [object\|sdp\|folder]` | Propose listener-based replacements for deprecated relationship fields, for review |
 
 The upstream `getdraft/draftsman` repository also exposes `/draft
 review-framework` for maintainers reviewing the framework itself. It is

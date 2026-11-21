@@ -35,6 +35,28 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from validate import LISTENER_DEFAULT_PORTS, listener_identity  # noqa: E402
 
+# Same rule as draft_table.catalog.listener_near_match (draft_table is not vendored into company workspaces;
+# tests keep the two in step).
+_VERSION_SEGMENT = re.compile(r"^(v\d+(\.\d+)*|\d{4}-\d{2}(-\d{2})?)$", re.IGNORECASE)
+
+
+def listener_near_match(key: tuple, other: tuple) -> list[str]:
+    """Same owner and protocol; differs only by a version segment, an extending path (same port) or the port."""
+    if key == other or tuple(key[:3]) != tuple(other[:3]) or not key[1]:
+        return []
+    def base(path: str) -> tuple[str, ...]:
+        return tuple(part for part in str(path).split("/") if part and not _VERSION_SEGMENT.match(part))
+    a, b = base(key[4]), base(other[4])
+    differs: list[str] = []
+    if a == b:
+        if key[4] != other[4]:
+            differs.append("version")
+        if key[3] != other[3]:
+            differs.append("port")
+    elif key[3] == other[3] and (a[: len(b)] == b or b[: len(a)] == a):
+        differs.append("path")
+    return differs
+
 DEPRECATED_FLOWS = ("inbound", "bidirectional")
 INTERNAL_CALLER_TYPES = ("product_component", "data_component")
 LISTENER_PROTOCOLS = ("REST", "gRPC", "GraphQL", "WebSocket", "AMQP", "SMTP", "SQL", "Redis", "Kafka", "SQS", "SNS",
@@ -322,6 +344,15 @@ class Planner:
             if listener_identity(obj) == key:
                 details.append(f"listener: existing {uid} ({protocol} {port} /)")
                 return uid
+        near = [(uid, obj, listener_near_match(key, listener_identity(obj))) for uid, obj in sorted(self.objects.items())
+                if obj.get("type") == "listener" and listener_identity(obj)]
+        near = [(uid, obj, differs) for uid, obj, differs in near if differs]
+        if near:
+            self.add("needs-input", rel, f"is this call on an existing listener of '{self.name(system)}'? Never link a near match silently",
+                     *[f"near match {uid} ({obj.get('name') or uid}: {obj.get('protocol')} {obj.get('port')} {obj.get('endpoint') or '/'}; "
+                       f"differs by {', '.join(differs)}): if it is the same listener set targetListener to it, otherwise author the new listener"
+                       for uid, obj, differs in near])
+            return ""
         source = self.objects.get(str(rel.get("source") or ""), {})
         if source.get("type") not in INTERNAL_CALLER_TYPES:
             self.add("needs-input", rel, f"a vendor stub listener on '{self.name(system)}' needs a company-internal caller",
