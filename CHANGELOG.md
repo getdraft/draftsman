@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None yet. `framework/tools/sdp_sync.py` is new and the sync workflow templates do not call it until the next change, so existing product and central workspaces behave as before. The tool's cache layout is `.draft/external_sdps/<owner>__<name>/`; `validate.py` already reads every YAML file under `.draft/external_sdps/`, including the old flat `<owner>_<name>.yaml` files, which the tool removes when it stores that product's new snapshot.
+
+### Added
+
+- `framework/tools/sdp_sync.py` (#195): `pack` builds a versioned `repository_dispatch` payload (`draft-sdp-sync/1`: repository, commit, ref, action, correlation id and the files' text) from a product repository, packing a delete when `.draft/sdp.yaml` is missing, and refuses payloads over GitHub's limits (10 top-level properties, 64 KB). `receive` reads the payload or the GitHub event file, checks every field, stores each file as the exact YAML text sent (never a JSON-quoted string), replaces the product's cache folder as a snapshot, refuses paths outside `.draft/sdp.yaml` and `.draft/catalog/**.yaml`, and writes a result file. Nothing is written when a payload is rejected, and every rejection names its reason.
+- Fixture product repository and central workspace in `tests/fixtures/sdp_sync/`, and `tests/test_sdp_sync.py`: a round trip through both commands that `validate.py` accepts, the old payload shape, resync and delete, size limits and rejections.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- The stored SDP is YAML rather than a quoted JSON string, and a single quote in the YAML no longer breaks the write (#195 gap 1), once the receiver template calls `sdp_sync.py receive` in the next change.
+
+### Migration Notes
+
+- No workspace migration required yet.
+
 ## 1.20.5 - 2026-11-21
 
 ### Compatibility Impact
