@@ -31,12 +31,13 @@ vendored under `.draft/framework/draft-actions/` (company workspace).
 | `guide` | `draft-actions/guide.md` (routes to the `draftsman-author` skill) | Bootstrap, then start or resume a guided DraftingSession or ad hoc authoring. |
 | `review` | `draft-actions/review.md` (routes to the `draftsman-review` skill) | Review an open PR for catalog correctness, or audit catalog content for quality and security compliance. |
 | `update` | `draft-actions/update.md` (routes to the `draftsman-update` skill) | Check for framework updates and guide a safe upgrade. |
+| `migrate` | `draft-actions/migrate.md` (direct action, no skill) | Propose listener-based replacements for deprecated relationship fields and review them before anything changes. |
 | `validate` | `draft-actions/validate.md` (direct action, no skill) | Validate the DRAFT catalog and report fixes. *(Internal — called by `guide` and `review`. Works as a standalone verb but is not in the help table.)* |
 
 Once you have matched the verb, **read that action file and follow it exactly**,
 treating `REST` as the action's `$ARGUMENTS`. The `guide`, `review` and `update` action files are
 routers: each tells you to load `draftsman-core` and one workflow skill, which holds the steps.
-`validate` stays a direct action: it runs `validate.py` and has no skill.
+`migrate` and `validate` stay direct actions: they run `migrate_relationships.py` and `validate.py` and have no skill.
 
 ### Upstream-only verb
 
@@ -71,5 +72,6 @@ Output **only** this table — no preamble, setup guides, or extra notes:
 | `/draft guide` | Engineering & Shared Services | Bootstrap and start or resume guided catalog authoring. |
 | `/draft review` | Everyone | Review an open PR for catalog correctness, or audit catalog content for quality and security compliance. |
 | `/draft update` | Draft Admins | Check for DRAFT framework updates and guide a safe upgrade. |
+| `/draft migrate` | Engineering & Shared Services | Propose listener-based replacements for deprecated relationship fields and review them. |
 
 End with one line: `Run /draft <verb> to start, e.g. /draft guide.`

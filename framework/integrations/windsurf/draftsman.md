@@ -8,7 +8,7 @@ This workspace uses the DRAFT architecture framework. When the user types
 - `/draft` (or `/draft help`) → list the available verbs
 - `/draft guide [intent]` → read `.draft/framework/draft-actions/guide.md`
 - `/draft review [PR|security|path]` → read `.draft/framework/draft-actions/review.md`
-- Other verbs (`update`) resolve the same way.
+- Other verbs (`update`, `migrate`) resolve the same way.
 
 All Draftsman workflows bootstrap from `AGENTS.md` and treat
 `.draft/framework/` as the approved vendored framework copy. Do not edit
