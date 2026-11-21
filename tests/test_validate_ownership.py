@@ -412,6 +412,9 @@ NS2 = "01M7C497N5-MSE0"
 CAP = "01M7C497N6-MSE1"
 RA = "01M7C497N7-MSE2"
 SDP2 = "01M7C497N8-MSE3"
+NS3 = "01M7C497NA-MSE5"
+NS4 = "01M7C497NB-MSE6"
+NS5 = "01M7C497NC-MSE7"
 
 
 def _validator():
@@ -424,7 +427,7 @@ def _validator():
 
 
 class ExposureWarningTests(unittest.TestCase):
-    """AC3: exposedThrough, fills and protocol-family warnings (never errors, never ratcheted)."""
+    """AC3: fills and protocol-family warnings (never errors, never ratcheted). exposedThrough is an error: see ExposedThroughErrorTests."""
 
     def setUp(self) -> None:
         self.v = _validator()
@@ -444,21 +447,6 @@ class ExposureWarningTests(unittest.TestCase):
 
     def ra(self, **entry: Any) -> Dict[str, Any]:
         return _obj(RA, "reference_architecture", "Fx Ra", serviceGroups=[{"name": "edge", "deployableObjects": [entry]}])
-
-    # exposedThrough
-    def test_exposed_through_valid_forms_are_clean(self) -> None:
-        for value in ("none", NS1, [NS1, NS2]):
-            self.assertEqual([], self.exposure(self.sdp(value)), value)
-
-    def test_exposed_through_unknown_uid_warns_with_value(self) -> None:
-        found = self.exposure(self.sdp("01M7C497ZZ-MSEZ"))
-        self.assertEqual(1, len(found), found)
-        self.assertIn("exposedThrough value '01M7C497ZZ-MSEZ'", found[0])
-
-    def test_exposed_through_wrong_type_and_list_member_warn(self) -> None:
-        self.assertIn(f"'{COMP}'", self.exposure(self.sdp(COMP))[0])
-        found = self.exposure(self.sdp([NS1, COMP, "none"]))
-        self.assertEqual(2, len(found), found)
 
     # fills
     def test_fills_clean_when_edge_slot_network_service_and_capability(self) -> None:
@@ -542,11 +530,6 @@ class ExposureWarningTests(unittest.TestCase):
     def test_other_engine_never_warns(self) -> None:
         self.assertEqual([], self.data_family_warnings("Snowflake", "other"))
 
-    def test_none_inside_exposed_through_list_has_its_own_message(self) -> None:
-        found = self.exposure(self.sdp([NS1, "none"]))
-        self.assertEqual(1, len(found), found)
-        self.assertIn("only valid on its own", found[0])
-
     def test_end_to_end_workspace_reports_warnings_and_exits_zero(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             ws = Path(tmp)
@@ -559,17 +542,118 @@ class ExposureWarningTests(unittest.TestCase):
                 _obj(NS1, "network_service", "Fx Firewall"),
                 _obj(RA, "reference_architecture", "Fx Ra", serviceGroups=[
                     {"name": "edge", "deployableObjects": [{"slot": "database", "fills": COMP}]}]),
-                _obj(SDP2, "software_deployment_pattern", "Fx Pattern", serviceGroups=[
-                    {"name": "web", "exposedThrough": "01M7C497ZZ-MSEZ"}]),
             ]
             for doc in docs:
                 (ws / "catalog" / "engineering" / (str(doc["uid"]) + ".yaml")).write_text(yaml.safe_dump(doc), encoding="utf-8")
             proc = subprocess.run([sys.executable, str(VALIDATE), "--workspace", str(ws)], capture_output=True, text=True, check=False)
             out = proc.stdout + proc.stderr
             warn = out.split("Validation warnings", 1)[-1] if "Validation warnings" in out else ""
-            for text in ("does not match interface 'api'", "exposedThrough value '01M7C497ZZ-MSEZ'", ".fills 'COMP'".replace("COMP", COMP), "slot 'database'"):
+            for text in ("does not match interface 'api'", ".fills 'COMP'".replace("COMP", COMP), "slot 'database'"):
                 self.assertIn(text, warn, out)
-            self.assertFalse([l for l in out.split("Validation warnings")[0].splitlines() if "exposedThrough" in l or ".fills" in l], out)
+            self.assertFalse([l for l in out.split("Validation warnings")[0].splitlines() if ".fills" in l], out)
+
+
+class ExposedThroughErrorTests(unittest.TestCase):
+    """E4 S3.1: exposedThrough must be none or network_service definition uids; violations fail, not ratcheted."""
+
+    def setUp(self) -> None:
+        self.v = _validator()
+        self.catalog = {
+            NS1: _obj(NS1, "network_service", "Fx Firewall", serviceRole="definition"),
+            NS2: _obj(NS2, "network_service", "Fx Balancer", serviceRole="definition"),
+            NS3: _obj(NS3, "network_service", "Fx Balancer Prod", serviceRole="instance"),
+            COMP: _obj(COMP, "product_component", "Fx Component"),
+        }
+
+    def errors(self, exposed: Any, role_context: Optional[Dict[str, Any]] = None) -> List[str]:
+        sdp = _obj(SDP2, "software_deployment_pattern", "Fx Pattern", serviceGroups=[{"name": "web", "exposedThrough": exposed}])
+        out: List[str] = []
+        self.v.validate_exposed_through(sdp, Path("x.yaml"), self.catalog, out, role_context)
+        return out
+
+    def test_valid_forms_are_clean(self) -> None:
+        for value in ("none", NS1, [NS1], [NS1, NS2]):
+            self.assertEqual([], self.errors(value), value)
+
+    def test_unknown_uid_fails_with_value_and_group(self) -> None:
+        found = self.errors("01M7C497ZZ-MSEZ")
+        self.assertEqual(1, len(found), found)
+        for text in ("serviceGroups[0].exposedThrough", "'01M7C497ZZ-MSEZ'", "no object has that uid"):
+            self.assertIn(text, found[0])
+
+    def test_non_network_service_fails_naming_its_type(self) -> None:
+        found = self.errors(COMP)
+        self.assertEqual(1, len(found), found)
+        self.assertIn("product_component", found[0])
+
+    def test_instance_by_service_role_fails(self) -> None:
+        found = self.errors([NS1, NS3])
+        self.assertEqual(1, len(found), found)
+        self.assertIn("instance", found[0])
+        self.assertIn("Fx Balancer Prod", found[0])
+
+    def test_none_inside_list_fails(self) -> None:
+        found = self.errors([NS1, "none"])
+        self.assertEqual(1, len(found), found)
+        self.assertIn("only valid on its own", found[0])
+
+    def test_empty_list_fails(self) -> None:
+        found = self.errors([])
+        self.assertEqual(1, len(found), found)
+        self.assertIn("empty list", found[0])
+
+    def test_repeated_uid_fails_once(self) -> None:
+        found = self.errors([NS1, NS2, NS1])
+        self.assertEqual(1, len(found), found)
+        self.assertIn(f"repeats '{NS1}'", found[0])
+
+    def test_wrong_field_type_is_left_to_the_schema_check(self) -> None:
+        self.assertEqual([], self.errors(3))
+
+    def folder_context(self, root: Path, folder: Optional[str]) -> Dict[str, Any]:
+        config = {"paths": {"serviceDefinitionsFolder": folder}} if folder else {}
+        return {
+            "workspace_root": root,
+            "workspace_config": config,
+            "paths": {NS4: root / "catalog" / "shared-services" / "lb.yaml", NS5: root / "catalog" / "engineering" / "lb.yaml"},
+        }
+
+    def test_role_from_definitions_folder(self) -> None:
+        self.catalog[NS4] = _obj(NS4, "network_service", "Fx Folder Definition")
+        self.catalog[NS5] = _obj(NS5, "network_service", "Fx Folder Instance")
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx = self.folder_context(Path(tmp), "catalog/shared-services")
+            self.assertEqual([], self.errors(NS4, ctx))
+            found = self.errors(NS5, ctx)
+            self.assertEqual(1, len(found), found)
+            self.assertIn("instance", found[0])
+
+    def test_no_definitions_folder_accepts_unmarked_network_service(self) -> None:
+        self.catalog[NS5] = _obj(NS5, "network_service", "Fx Unmarked")
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual([], self.errors(NS5, self.folder_context(Path(tmp), None)))
+            self.assertEqual(1, len(self.errors(NS3, self.folder_context(Path(tmp), None))))
+
+    def test_end_to_end_workspace_fails_and_is_not_baselined(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            ws = Path(tmp)
+            (ws / "catalog" / "engineering").mkdir(parents=True)
+            docs = [
+                _obj(NS1, "network_service", "Fx Firewall", serviceRole="definition"),
+                _obj(SDP2, "software_deployment_pattern", "Fx Pattern", serviceGroups=[
+                    {"name": "web", "exposedThrough": [NS1, "01M7C497ZZ-MSEZ"]}]),
+            ]
+            for doc in docs:
+                (ws / "catalog" / "engineering" / (str(doc["uid"]) + ".yaml")).write_text(yaml.safe_dump(doc), encoding="utf-8")
+            for flags in ((), ("--write-baseline",)):
+                proc = subprocess.run([sys.executable, str(VALIDATE), "--workspace", str(ws), *flags],
+                                      capture_output=True, text=True, check=False)
+            proc = subprocess.run([sys.executable, str(VALIDATE), "--workspace", str(ws)], capture_output=True, text=True, check=False)
+            out = proc.stdout + proc.stderr
+            self.assertEqual(1, proc.returncode, out)
+            errors = out.split("Validation warnings")[0]
+            self.assertIn("exposedThrough value '01M7C497ZZ-MSEZ'", errors, out)
+            self.assertNotIn(f"'{NS1}'", errors, out)
 
 
 class FixtureBaselineTests(unittest.TestCase):

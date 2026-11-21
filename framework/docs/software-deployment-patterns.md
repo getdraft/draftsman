@@ -305,6 +305,13 @@ because the group has a north door and those requirements apply to it.
 - A data tier (all data components) is not exposed by the slot default;
   `exposedThrough: none` draws nothing.
 
+`exposedThrough` is either the literal `none` on its own, a network_service
+definition uid, or a list of such uids in chain order. Validation fails (it is
+not ratcheted) on an unknown uid, a non-network_service, a network_service
+instance (`serviceRole: instance`, or outside the service definitions folder
+when the workspace names one), `none` inside a list, an empty list, or a uid
+listed twice.
+
 To fix a deployment page that lacks a port or a device: declare `listeners` on
 the definition; fill the slot with `fills` on the reference architecture entry
 (or set `exposedThrough`); and name the target interface on the relationship.

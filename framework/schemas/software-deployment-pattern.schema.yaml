@@ -177,6 +177,8 @@ serviceGroup:
       fronts this group's traffic from outside its zone; or the literal none for a group that
       receives no such traffic.
       Overrides the filled edge slot of the reference architecture the pattern follows.
+      Validation fails (not ratcheted) on an unknown uid, a non-network_service, a
+      network_service instance, none inside a list, an empty list or a repeated uid.
     deploymentTarget: >
       Workspace vocabulary value identifying the physical or logical deployment
       target for this service group (e.g. aws-us-east-1, openstack-controller).
