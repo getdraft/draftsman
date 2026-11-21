@@ -1,7 +1,7 @@
 {
   "id": "draftsman-docs-renderer-341-c",
   "title": "Draftsman #341 Plan C: listener docs and skills, and listener-aware diagrams and browser",
-  "status": "approved",
+  "status": "complete",
   "outcome": "Dale's Draftsman explains, in its docs and in the skills agents load, exactly how to find or create the listener a call lands on without duplicates or guesses. The diagrams and the browser then show those listeners: each call enters the listener it names in the Application view, the Deployment view prints that listener's port, and the browser lists a Listener for every connection and the listeners each component owns.",
   "target_repo": "getdraft/draftsman",
   "epics": [
