@@ -1,3 +1,28 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. `flow: inbound`, `flow: bidirectional` and free-text `externalTarget` are deprecated in documentation only: they stay in the schema, existing relationships keep loading, validating and rendering exactly as before, and no new warning or error is raised in this release. Ratcheted rules that flag them only on new or edited content follow in a later release (#368). Removal is deferred to a later major version.
+
+### Added
+
+- `framework/docs/draftsman.md`: a "Deprecated Relationship Fields" section with the replacement for each deprecated value: `bidirectional` becomes `outbound` with `direction: synchronous`, `inbound` becomes a relationship with the caller as `source` (or the protection noted on the listener for an unknown outside caller), and `externalTarget` becomes `target: <system uid>` plus `targetListener`.
+- `tests/test_relationship_deprecation.py` pins that the values are still accepted and the deprecation wording in the schema, template, docs and author skill.
+
+### Changed
+
+- `framework/schemas/relationship.schema.yaml`: `aiHint` and field descriptions mark `flow: inbound`, `flow: bidirectional` and `externalTarget` deprecated (enum and fields unchanged).
+- `templates/relationship.yaml.tmpl`: defaults to `flow: outbound`, adds `targetListener`, and drops the `externalTarget` line (comments explain the replacement).
+- Relationship authoring guidance in `draftsman.md`, `object-types.md` (new Relationship row), `how-to-add-objects.md`, `yaml-schema-reference.md`, `sdp-completion-interview.md`, `software-deployment-patterns.md` and the `draftsman-author` skill: the caller is always `source`, omit `flow`, and target an external party's `system` object instead of `externalTarget`.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No workspace migration required. Existing relationships need no change now; a migration helper that proposes the conversions as a reviewable patch is planned under #368.
+
 ## 1.18.5 - 2026-11-21
 
 ### Compatibility Impact
