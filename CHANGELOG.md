@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- `sdp_sync.py pack` now sends every YAML file under the product repository's `.draft/catalog/` with `.draft/sdp.yaml`, and the receiver now rejects a sync whose objects reference a UID that is neither in the same sync nor already in the central workspace. A product whose SDP points at an object the central workspace does not have must sync or register that object first. Files under `.draft/catalog/` that are not product-owned types, hidden paths, unreadable YAML and symbolic links now stop the sender before it dispatches.
+
+### Added
+
+- `sdp_sync.py` product catalog sync (#195 gap 5): `pack` collects `.draft/sdp.yaml` plus `.draft/catalog/**/*.yaml|yml` (other files are ignored) and checks each the way the receiver will. `receive` stores them under `.draft/external_sdps/<owner>__<name>/catalog/` and runs a reference check: every UID-shaped value (collected like `validate.py`) must be an object in the sync or resolve in the workspace's framework and provider configurations, `catalog/`, community content or another product's cache. The product's own previous snapshot does not count, so a reference to an object the product stopped syncing is caught. The rejection names each file and its missing UIDs.
+- Tests in `tests/test_sdp_sync.py` and `tests/test_sdp_sync_templates.py`.
+
+### Changed
+
+- The UID ownership and reference scans read multi-document YAML files.
+
+### Fixed
+
+- A missing `.draft/sdp.yaml` sends a delete that removes every file cached for the product, including its catalog objects, even when `.draft/catalog/` still has files; a resync drops catalog files the product removed.
+
+### Migration Notes
+
+- Before updating the receiver, check that each product's `.draft/sdp.yaml` and `.draft/catalog/` reference only objects they sync or that the central workspace holds. Deleting a product's SDP leaves central objects that referenced its components dangling; `validate.py` reports them.
+
 ## 1.20.9 - 2026-11-21
 
 ### Compatibility Impact
