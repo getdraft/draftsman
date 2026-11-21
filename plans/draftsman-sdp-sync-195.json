@@ -1,0 +1,54 @@
+{
+  "id": "draftsman-sdp-sync-195",
+  "title": "Draftsman #195: a tested, hardened decentralized SDP sync pipeline",
+  "status": "approved",
+  "outcome": "A product team in Dale's Draftsman updates .draft/sdp.yaml in its own repository and sees it reach the central catalog as a reviewed pull request, or sees exactly why it did not, in its own workflow run. Every step runs through one tested tool, the receiver accepts content only from the repository its ProductRegistration names, and nothing from the payload is ever run as shell text.",
+  "target_repo": "getdraft/draftsman",
+  "epics": [
+    {
+      "id": "E1",
+      "title": "Testable sync core",
+      "acceptance_criteria": [
+        "framework/tools/sdp_sync.py has pack and receive commands and a versioned JSON payload (format, product repository, commit, action, correlation id, files). receive writes each file as the YAML text that was sent, never a JSON-quoted string, and refuses payloads over the repository_dispatch size limit with a clear message.",
+        "tests/fixtures holds a fixture product repository (.draft/sdp.yaml, .draft/catalog/) and a fixture central workspace with its ProductRegistration; a test packs the product repository, receives the payload into a copy of the central workspace, and validate.py accepts the result.",
+        "The sender and receiver workflow templates call sdp_sync.py instead of inline jq/echo; no run: step contains a ${{ github.event.client_payload... }} or other payload expression, and a template test enforces it. The 'frontline-drafting-table' comment line in product-repo-sync.yml.tmpl is left unchanged."
+      ],
+      "deploy_point": false
+    },
+    {
+      "id": "E2",
+      "title": "Receiver hardening",
+      "acceptance_criteria": [
+        "The receiver accepts a payload only when its repository matches exactly one ProductRegistration repository.url (normalized), only for files under that product's own cache folder and of product-owned types, and never with a UID that another product or the central catalog already owns; every rejection names the reason.",
+        "The sender proves its identity with a GitHub Actions OIDC token (audience configurable); the receiver verifies its RS256 signature against GitHub's published keys with the standard library only, and checks issuer, audience, expiry, the repository claim against the registration and the ref against the registered default branch.",
+        "Product components, data components, listeners, relationships and decision records under the product's .draft/catalog/ are synced with the SDP; a reference the central catalog cannot resolve fails with a message that names the reference. Removing .draft/sdp.yaml sends a delete, and the receiver removes that product's cached files.",
+        "A valid payload becomes a pull request against the central repository from a per-product branch (draft-sync/<product>), updated on later syncs; nothing is pushed to the default branch. Auto-merge is optional and only when the change touches that product's cache folder alone.",
+        "Every outcome is written as a result file and job summary on the receiver; the sender waits for the matching receiver run by correlation id and fails its own run, in the product repository, with the receiver's message when validation or acceptance fails."
+      ],
+      "deploy_point": false
+    },
+    {
+      "id": "E3",
+      "title": "Docs and return-path design",
+      "acceptance_criteria": [
+        "decentralized-sdp-setup.md describes the tested pipeline: App and token permissions, OIDC audience, payload format, cache layout, the pull-request flow, how failures reach the product team, deletion, troubleshooting, and the upgrade from the old flat external_sdps files.",
+        "A design document (framework/docs/proposals/sdp-return-path.md) describes how a central change (a review finding, a shared-service update) reaches a product repository, and answers who owns that step. Design only: no workflow or tool is built for it."
+      ],
+      "deploy_point": false
+    }
+  ],
+  "risks": [
+    "Security is the point of #195: every receiver input is treated as untrusted; payload values never reach shell text, and acceptance needs both a registration match and a verified OIDC identity.",
+    "GitHub Actions cannot run in this repository's tests, so all logic lives in sdp_sync.py and the workflow templates stay thin; tests cover the tool with fakes for git, gh and the GitHub API, plus a static check of the templates.",
+    "repository_dispatch payloads are size-limited; pack refuses oversize payloads with a clear message rather than truncating.",
+    "Existing company workspaces may hold old flat .draft/external_sdps/<owner>_<repo>.yaml files; validate keeps reading them, and the receiver removes a product's flat file when it writes the new layout.",
+    "Never edit Frontline-specific text: the 'frontline-drafting-table' comment line in product-repo-sync.yml.tmpl stays as it is.",
+    "Delivered directly outside the agentic SDLC on Dale's standing instruction to clear the backlog and his 2026-11-20 7:51 PM Phoenix build-directly go-ahead, while BeerCanLabs Actions billing blocks the fleet; each story records that on its PR and issue."
+  ],
+  "companion": "plans/draftsman-sdp-sync-195.md",
+  "finops": {
+    "status": "not-estimated",
+    "agent": "none",
+    "estimate": "Not priced by SDLC FinOps: built directly outside the fleet on Dale's instruction, with no model budget hold."
+  }
+}
