@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. Tests and a test fixture only.
+
+### Added
+
+- `tests/fixtures/legacy_v155_workspace/`: a workspace with relationships authored before the listener model (`flow: bidirectional`, `flow: inbound`, free-text `externalTarget`, an `inbound` call from an outside party, and no `targetListener`), with no baseline file (#368).
+- `tests/test_legacy_relationship_compat.py`: copying that workspace and running `validate.py --write-baseline`, as a framework refresh does, gives exit code 0 with only `baseline:` warnings for every ratcheted rule; without a baseline the new rules are errors; editing one relationship turns only that relationship's violations into errors while the untouched ones stay warnings; and migrating the edited one clears its deprecated-field errors.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No workspace migration required.
+
 ## 1.20.0 - 2026-11-21
 
 ### Compatibility Impact

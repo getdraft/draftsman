@@ -1,0 +1,14 @@
+schemaVersion: "1.0"
+uid: 01M7C4AA01-WEB1
+type: product_component
+name: Legacy Web Shop
+repoUrl: https://github.com/example/legacy-web-shop
+owner:
+  team: storefront
+classification: web-application
+catalogStatus: incomplete
+lifecycleStatus: candidate
+interfaces:
+  - name: web
+    protocol: REST
+    path: /

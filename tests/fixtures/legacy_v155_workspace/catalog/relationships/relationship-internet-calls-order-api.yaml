@@ -1,0 +1,11 @@
+schemaVersion: "1.0"
+uid: 01M7C4AA06-RS04
+type: relationship
+name: Legacy Order API ← Internet clients
+catalogStatus: complete
+source: 01M7C4AA02-AP01
+externalTarget: Internet clients
+label: is called by
+technology: HTTPS
+direction: synchronous
+flow: inbound
