@@ -16,6 +16,10 @@ Usage:
     python3 sdp_sync.py receive --workspace . --payload "$GITHUB_EVENT_PATH" --central-repository CENTRAL_OWNER/CENTRAL_NAME \
         --result sdp-sync-result.json
     python3 sdp_sync.py publish --workspace . --result sdp-sync-result.json --base main [--auto-merge true]
+    python3 sdp_sync.py report --payload "$GITHUB_EVENT_PATH" --result sdp-sync-result.json --validate-log validate.log \
+        --job-status "$JOB_STATUS" --base main --summary "$GITHUB_STEP_SUMMARY"
+    python3 sdp_sync.py await-result --central-repository CENTRAL_OWNER/CENTRAL_NAME --repository OWNER/NAME \
+        --correlation-id ID --summary "$GITHUB_STEP_SUMMARY"
 
 ``publish`` never pushes to the default branch: it commits the receiver's changes to ``draft-sync/<product>`` and
 opens or updates that branch's pull request. Every git and gh call is an argument list, never shell text.
@@ -35,6 +39,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import uuid
@@ -195,11 +200,12 @@ class Result:
     registration: str = ""
     written: list[str] = field(default_factory=list)
     removed: list[str] = field(default_factory=list)
+    identity_verified: bool = False
 
     def as_json(self) -> dict[str, Any]:
         return {"status": self.status, "message": self.message, "repository": self.repository, "product": self.product,
                 "registration": self.registration, "action": self.action, "correlationId": self.correlation_id,
-                "commit": self.commit, "written": self.written, "removed": self.removed}
+                "commit": self.commit, "written": self.written, "removed": self.removed, "identityVerified": self.identity_verified}
 
 
 def product_slug(repository: str) -> str:
@@ -535,6 +541,7 @@ def receive(workspace: Path, payload: dict[str, Any], *, central_repository: str
     function returning it, and defaults to fetching it from GitHub.
     """
     registration: dict[str, Any] = {}
+    verified = False
     try:
         audience = audience_for(central_repository)
         check_payload(payload)
@@ -543,6 +550,7 @@ def receive(workspace: Path, payload: dict[str, Any], *, central_repository: str
         claims = verify_oidc_token(payload["oidcToken"], audience, fetch_github_jwks if keys is None else keys, now)
         registration = find_registration(workspace, repository)
         check_identity(claims, payload, registration)
+        verified = True
         targets: dict[PurePosixPath, str] = {}
         objects: dict[str, dict[str, Any]] = {}
         for source_path, text in sorted(payload["files"].items()):
@@ -556,11 +564,13 @@ def receive(workspace: Path, payload: dict[str, Any], *, central_repository: str
     except SyncError as exc:
         return Result("rejected", str(exc), repository=str(payload.get("repository") or ""),
                       action=str(payload.get("action") or ""), correlation_id=str(payload.get("correlationId") or ""),
-                      commit=str(payload.get("commit") or ""), registration=str(registration.get("uid") or ""))
+                      commit=str(payload.get("commit") or ""), registration=str(registration.get("uid") or ""),
+                      identity_verified=verified)
 
     folder = workspace / CACHE_ROOT / slug
     result = Result("accepted", "", repository=repository, product=slug, action=payload["action"],
-                    correlation_id=payload["correlationId"], commit=payload["commit"], registration=str(registration.get("uid") or ""))
+                    correlation_id=payload["correlationId"], commit=payload["commit"], registration=str(registration.get("uid") or ""),
+                    identity_verified=True)
     if folder.exists():
         result.removed = sorted(rel(workspace, p) for p in folder.rglob("*") if p.is_file())
         shutil.rmtree(folder)
@@ -720,6 +730,178 @@ def publish(result: Mapping[str, Any], base: str, run: Runner, auto_merge: bool 
     return outcome
 
 
+# --------------------------------------------------------------------------- report back (#195 gap 7)
+
+# The receiver records every outcome as results/<owner>__<name>/<correlationId>.json on this branch, with the
+# GITHUB_TOKEN contents permission it already has. The sender reads it with the App token it already uses for
+# the dispatch (contents access on the central repository), so reporting back needs no new permission.
+RESULTS_BRANCH = "draft-sync-results"
+MAX_REPORTED_LINES = 20
+MAX_MESSAGE_CHARS = 6000
+
+
+def result_path(repository: str, correlation_id: str) -> str:
+    if not isinstance(correlation_id, str) or not _CORRELATION.match(correlation_id):
+        raise SyncError("the correlation id is missing or has characters other than letters, digits, '.', '_' and '-'")
+    return f"results/{product_slug(repository)}/{correlation_id}.json"
+
+
+def validation_failures(log: str, workspace: Path | None = None, product: str = "") -> list[str]:
+    """The 'Validation failures:' lines from validate.py output, this product's cache first, paths made relative."""
+    lines: list[str] = []
+    inside = False
+    for line in log.splitlines():
+        if line.strip() == "Validation failures:":
+            inside = True
+        elif inside and line.startswith("- "):
+            lines.append(line[2:])
+        elif inside and line.strip():
+            break  # the next section ("Validation warnings:")
+    if workspace is not None:
+        prefix = str(workspace.resolve()) + "/"
+        lines = [line.replace(prefix, "") for line in lines]
+    mine = f"{CACHE_ROOT.as_posix()}/{product}/" if product else None
+    return sorted(lines, key=lambda line: 0 if mine and mine in line else 1)
+
+
+def final_outcome(result: Mapping[str, Any] | None, payload: Mapping[str, Any] | None, job_status: str,
+                  validate_log: str = "", workspace: Path | None = None, run_url: str = "") -> dict[str, Any]:
+    """One outcome for the whole receiver run: accepted, rejected, or failed (with the reason)."""
+    source = result or payload or {}
+    outcome: dict[str, Any] = {
+        "format": "draft-sdp-sync-result/1",
+        "repository": str(source.get("repository") or ""), "correlationId": str(source.get("correlationId") or ""),
+        "commit": str(source.get("commit") or ""), "action": str(source.get("action") or ""),
+        "product": str((result or {}).get("product") or ""), "registration": str((result or {}).get("registration") or ""),
+        "receiverRun": run_url, "jobStatus": job_status, "pullRequest": None, "details": [],
+        # Only a sync whose OIDC identity was verified is recorded where its product repository looks for it.
+        "identityVerified": bool((result or {}).get("identityVerified")),
+    }
+    publish_outcome = (result or {}).get("publish") if isinstance((result or {}).get("publish"), dict) else None
+    if result is None:
+        outcome.update(status="failed", message=f"the central receiver stopped before it could check this sync (job {job_status or 'unknown'}); "
+                                                "see the receiver run")
+    elif result.get("status") != "accepted":
+        outcome.update(status="rejected", message=str(result.get("message") or "rejected"))
+    elif publish_outcome and publish_outcome.get("status") == "failed":
+        outcome.update(status="failed", message="the sync was stored and validated, but opening its pull request failed: "
+                                                f"{publish_outcome.get('message')}")
+    elif publish_outcome:
+        pr = publish_outcome.get("pullRequest") or None
+        outcome.update(status="accepted", pullRequest=pr, autoMerge=publish_outcome.get("autoMerge"),
+                       message=(f"{publish_outcome.get('pullRequestAction', 'updated')} pull request {pr['url']}" if pr
+                                else "accepted; the central workspace already matches this sync"))
+    else:
+        failures = validation_failures(validate_log, workspace, outcome["product"])
+        if failures:
+            outcome.update(status="failed", details=failures[:MAX_REPORTED_LINES],
+                           message=f"the central workspace does not validate with this sync ({len(failures)} failure(s)); "
+                                   "fix them in the product repository and push again")
+        else:
+            outcome.update(status="failed", message=f"the sync was accepted but a later receiver step did not finish (job {job_status or 'unknown'}); "
+                                                    "see the receiver run")
+    outcome["message"] = outcome["message"][:MAX_MESSAGE_CHARS]
+    return outcome
+
+
+def summary_markdown(outcome: Mapping[str, Any], heading: str = "DRAFT SDP sync") -> str:
+    icon = {"accepted": "Accepted", "rejected": "Rejected", "failed": "Failed"}.get(str(outcome.get("status")), str(outcome.get("status")))
+    lines = [f"## {heading}: {icon}", "", str(outcome.get("message") or ""), "",
+             f"- Product repository: `{outcome.get('repository') or 'unknown'}`",
+             f"- Commit: `{outcome.get('commit') or 'unknown'}`",
+             f"- Correlation id: `{outcome.get('correlationId') or 'unknown'}`"]
+    if outcome.get("pullRequest"):
+        lines.append(f"- Pull request: {outcome['pullRequest']['url']}")
+    if outcome.get("receiverRun"):
+        lines.append(f"- Central receiver run: {outcome['receiverRun']}")
+    if outcome.get("details"):
+        lines += ["", "```", *[str(d) for d in outcome["details"]], "```"]
+    return "\n".join(lines) + "\n"
+
+
+def store_outcome(outcome: Mapping[str, Any], central_repository: str, base: str, run: Runner) -> str:
+    """Write the outcome to RESULTS_BRANCH through the contents API (gh, argument lists only).
+
+    Only outcomes whose sender identity was verified are written: an unauthenticated payload cannot plant a result
+    where a product repository will read it.
+    """
+    if not outcome.get("identityVerified"):
+        raise SyncError("the sender's identity was not verified, so the result is shown in this run's summary only")
+    check_repository(central_repository)
+    if not _BRANCH.match(base) or ".." in base:
+        raise SyncError(f"{base!r} is not a branch name")
+    path = result_path(str(outcome.get("repository")), str(outcome.get("correlationId")))
+    api = f"repos/{central_repository}"
+    if run(["gh", "api", f"{api}/git/ref/heads/{RESULTS_BRANCH}", "--jq", ".object.sha"]).returncode != 0:
+        sha = _ok(run, ["gh", "api", f"{api}/git/ref/heads/{base}", "--jq", ".object.sha"], "reading the default branch").strip()
+        created = run(["gh", "api", "--method", "POST", f"{api}/git/refs", "-f", f"ref=refs/heads/{RESULTS_BRANCH}", "-f", f"sha={sha}"])
+        if created.returncode != 0 and run(["gh", "api", f"{api}/git/ref/heads/{RESULTS_BRANCH}"]).returncode != 0:
+            raise SyncError(f"could not create the {RESULTS_BRANCH} branch")
+    content = base64.b64encode((json.dumps(outcome, indent=2) + "\n").encode("utf-8")).decode("ascii")
+    put = ["gh", "api", "--method", "PUT", f"{api}/contents/{path}", "-f", f"message=DRAFT sync result {outcome.get('correlationId')}",
+           "-f", f"content={content}", "-f", f"branch={RESULTS_BRANCH}"]
+    if run(put).returncode != 0:
+        # The file exists (the report step was re-run): update it in place.
+        sha = _ok(run, ["gh", "api", f"{api}/contents/{path}?ref={RESULTS_BRANCH}", "--jq", ".sha"], "reading the existing result").strip()
+        _ok(run, [*put, "-f", f"sha={sha}"], "writing the sync result")
+    return path
+
+
+def annotation(text: str) -> str:
+    """Escape text for a GitHub Actions workflow command, so a message cannot start a command of its own."""
+    return text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+
+
+def github_contents_fetcher(central_repository: str, token: str, opener: Callable[..., Any] = urllib.request.urlopen,
+                            api: str = "https://api.github.com") -> Callable[[str], bytes | None]:
+    """GET a file from RESULTS_BRANCH; None while it does not exist yet."""
+    check_repository(central_repository)
+
+    def fetch(path: str) -> bytes | None:
+        url = f"{api}/repos/{central_repository}/contents/{urllib.parse.quote(path)}?ref={RESULTS_BRANCH}"
+        request = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}", "Accept": "application/vnd.github.raw+json",
+                                                       "X-GitHub-Api-Version": "2022-11-28"})
+        try:
+            with opener(request, timeout=30) as response:
+                return response.read()
+        except urllib.error.HTTPError as exc:
+            if exc.code == 404:
+                return None
+            raise SyncError(f"reading the central result failed with HTTP {exc.code}; the App token needs contents access "
+                            "to the central repository") from None
+        except OSError as exc:
+            raise SyncError(f"reading the central result failed: {exc.__class__.__name__}") from None
+    return fetch
+
+
+def await_result(repository: str, correlation_id: str, fetch: Callable[[str], bytes | None], timeout: float = 1200,
+                 interval: float = 15, sleep: Callable[[float], None] = time.sleep,
+                 clock: Callable[[], float] = time.monotonic) -> dict[str, Any]:
+    """Poll for the receiver's outcome of this sync; transient read errors are retried until the timeout."""
+    path = result_path(check_repository(repository), correlation_id)
+    deadline = clock() + timeout
+    last_error = ""
+    while True:
+        try:
+            data = fetch(path)
+        except SyncError as exc:
+            data, last_error = None, str(exc)
+            if "HTTP 401" in last_error or "HTTP 403" in last_error:
+                raise
+        if data is not None:
+            try:
+                outcome = json.loads(data.decode("utf-8"))
+            except ValueError:
+                outcome = None
+            if (isinstance(outcome, dict) and outcome.get("correlationId") == correlation_id
+                    and str(outcome.get("repository")).lower() == repository.lower()):
+                return outcome
+        if clock() >= deadline:
+            raise SyncError(f"no result from the central receiver after {int(timeout)} seconds{' (' + last_error + ')' if last_error else ''}; "
+                            "it may be queued behind other syncs or have failed to start; check the central repository's Actions")
+        sleep(interval)
+
+
 # --------------------------------------------------------------------------- CLI
 
 
@@ -746,7 +928,28 @@ def main(argv: list[str] | None = None) -> int:
     u.add_argument("--base", required=True, help="the central workspace's default branch")
     u.add_argument("--auto-merge", type=str.lower, choices=("true", "false", ""), default="false",
                    help="request auto-merge when the change stays inside the product's cache folder")
+    t = sub.add_parser("report", help="Record the receiver run's outcome (job summary and the results branch). Run with if: always().")
+    t.add_argument("--workspace", type=Path, default=Path("."))
+    t.add_argument("--payload", type=Path, help="the event file, to name the sync when receive never ran")
+    t.add_argument("--result", type=Path, required=True)
+    t.add_argument("--validate-log", type=Path)
+    t.add_argument("--job-status", default="")
+    t.add_argument("--base", required=True, help="the central workspace's default branch (the results branch starts there)")
+    t.add_argument("--summary", type=Path, help="append Markdown here ($GITHUB_STEP_SUMMARY)")
+    t.add_argument("--no-store", action="store_true", help="write the summary only (tests, dry runs)")
+    w = sub.add_parser("await-result", help="In the product repository: wait for the central outcome and fail if it failed.")
+    w.add_argument("--central-repository", required=True)
+    w.add_argument("--repository", required=True)
+    w.add_argument("--correlation-id", required=True)
+    w.add_argument("--timeout-minutes", type=float, default=20)
+    w.add_argument("--interval-seconds", type=float, default=15)
+    w.add_argument("--summary", type=Path)
     args = parser.parse_args(argv)
+
+    if args.command == "report":
+        return _report_cli(args)
+    if args.command == "await-result":
+        return _await_cli(args)
 
     if args.command == "publish":
         try:
@@ -795,6 +998,74 @@ def main(argv: list[str] | None = None) -> int:
         args.result.write_text(json.dumps(result.as_json(), indent=2) + "\n", encoding="utf-8")
     print(f"sdp_sync receive: {result.status}: {result.message}", file=sys.stdout if result.status == "accepted" else sys.stderr)
     return 0 if result.status == "accepted" else 1
+
+
+def _read_json(path: Path | None) -> dict[str, Any] | None:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8")) if path else None
+    except (OSError, ValueError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def _append(path: Path | None, text: str) -> None:
+    if path:
+        with path.open("a", encoding="utf-8") as handle:
+            handle.write(text)
+
+
+def _report_cli(args: argparse.Namespace) -> int:
+    payload = None
+    if args.payload:
+        try:
+            payload = load_payload(args.payload)
+        except SyncError:
+            payload = None
+    log = ""
+    if args.validate_log:
+        try:
+            log = args.validate_log.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            log = ""
+    env = os.environ
+    central = env.get("GITHUB_REPOSITORY", "")
+    run_url = f"{env.get('GITHUB_SERVER_URL', 'https://github.com')}/{central}/actions/runs/{env['GITHUB_RUN_ID']}" if env.get("GITHUB_RUN_ID") and central else ""
+    outcome = final_outcome(_read_json(args.result), payload, args.job_status, log, args.workspace, run_url)
+    _append(args.summary, summary_markdown(outcome))
+    print(f"sdp_sync report: {outcome['status']}: {outcome['message']}")
+    if args.no_store:
+        return 0
+    if not outcome["identityVerified"]:
+        print("sdp_sync report: the sender's identity was not verified; the outcome is in this run's summary only")
+        return 0
+    try:
+        path = store_outcome(outcome, central, args.base, subprocess_runner(args.workspace))
+    except SyncError as exc:
+        print(f"sdp_sync report: the product repository cannot be told: {exc}", file=sys.stderr)
+        return 1
+    print(f"sdp_sync report: recorded {path} on {RESULTS_BRANCH}")
+    return 0
+
+
+def _await_cli(args: argparse.Namespace) -> int:
+    token = os.environ.get("GH_TOKEN", "")
+    try:
+        if not token:
+            raise SyncError("GH_TOKEN is not set; pass the App token used for the dispatch")
+        outcome = await_result(args.repository, args.correlation_id, github_contents_fetcher(args.central_repository, token),
+                               timeout=args.timeout_minutes * 60, interval=args.interval_seconds)
+    except SyncError as exc:
+        print(f"::error title=DRAFT sync::{annotation(str(exc))}")
+        _append(args.summary, f"## DRAFT SDP sync: no result\n\n{exc}\n")
+        return 1
+    _append(args.summary, summary_markdown(outcome, "DRAFT SDP sync (central result)"))
+    if outcome.get("status") == "accepted":
+        print(f"DRAFT sync accepted: {outcome.get('message')}")
+        return 0
+    details = "\n".join(str(d) for d in outcome.get("details") or [])
+    text = str(outcome.get("message")) + (f"\n{details}" if details else "") + (f"\nCentral run: {outcome['receiverRun']}" if outcome.get("receiverRun") else "")
+    print(f"::error title=DRAFT sync {annotation(str(outcome.get('status')))}::{annotation(text)}")
+    return 1
 
 
 if __name__ == "__main__":

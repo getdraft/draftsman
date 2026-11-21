@@ -100,7 +100,7 @@ class WiringTests(unittest.TestCase):
         self.assertEqual(receiver["permissions"], {"contents": "write", "pull-requests": "write"})
         self.assertEqual(receiver["concurrency"], {"group": "draft-sdp-sync", "cancel-in-progress": False})
         names = [s.get("name") for s in steps(RECEIVER)]
-        self.assertEqual(names[-1], "Publish Sync Pull Request")
+        self.assertEqual(names[-2:], ["Publish Sync Pull Request", "Report Sync Result"])
         self.assertLess(names.index("Regenerate Machine Indexes & AI Map"), names.index("Publish Sync Pull Request"))
         publish = step(RECEIVER, "Publish Sync Pull Request")
         self.assertEqual(publish["env"], {"GH_TOKEN": "${{ github.token }}", "BASE_BRANCH": "${{ github.event.repository.default_branch }}",
