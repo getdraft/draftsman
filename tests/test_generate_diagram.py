@@ -3773,6 +3773,95 @@ class InterfaceEntranceTests(unittest.TestCase):
                     self.assertEqual(render(catalog, sdp["uid"]), render(catalog, sdp["uid"]))
 
 
+def listener(uid: str, owner: str, protocol: str, port: int, endpoint: str = "/", kind: str = "product_component") -> dict:
+    return plain(uid, "listener", uid, owner={"kind": kind, "ref": owner}, protocol=protocol, port=port, endpoint=endpoint,
+                 authenticationModel="oauth", catalogStatus="complete")
+
+
+class ListenerEntranceTests(unittest.TestCase):
+    """#341 E5 S5.1: one attachment point per owned listener object, and targetListener picks it, in both views."""
+
+    expected_x = staticmethod(InterfaceEntranceTests.expected_x)
+
+    def objects(self, **caller: object) -> list:
+        return [
+            component("PC-1", "Caller", **caller),
+            component("PC-3", "Other Caller"),
+            component("PC-2", "Orders", interfaces=[{"name": "api", "protocol": "REST"}, {"name": "rpc", "protocol": "gRPC"}]),
+            # written out of LISTENER_ORDER on purpose: LS-API (8080 /), LS-ADMIN (8080 /admin), LS-RPC (8092)
+            listener("LS-RPC", "PC-2", "gRPC", 8092),
+            listener("LS-ADMIN", "PC-2", "HTTP", 8080, "/admin"),
+            listener("LS-API", "PC-2", "HTTP", 8080, "/"),
+            listener("LS-ELSE", "PC-3", "HTTP", 80),
+            plain("REL-1", "relationship", "calls rpc", source="PC-1", target="PC-2", label="calls rpc", targetListener="LS-RPC", targetInterface="api"),
+            plain("REL-2", "relationship", "calls admin", source="PC-3", target="PC-2", label="calls admin", targetListener="LS-ADMIN"),
+            pattern({"G": ["PC-1", "PC-3", "PC-2"]}),
+        ]
+
+    def test_owned_listener_order_is_fixed(self) -> None:
+        objects = self.objects()
+        catalog = {o["uid"]: o for o in objects}
+        self.assertEqual(generate_diagram.owned_listeners(catalog)["PC-2"], ["LS-API", "LS-ADMIN", "LS-RPC"])
+        backwards = {o["uid"]: o for o in reversed(objects)}
+        self.assertEqual(generate_diagram.owned_listeners(backwards), generate_diagram.owned_listeners(catalog))
+        same = {**catalog, "LS-B": listener("LS-B", "PC-2", "http", 8080, "/admin/"), "LS-A": listener("LS-A", "PC-2", "HTTP", 8080, "/admin")}
+        self.assertEqual(generate_diagram.owned_listeners(same)["PC-2"][1:4], ["LS-A", "LS-ADMIN", "LS-B"])  # ties by uid
+
+    def test_nodes_carry_listeners_and_entrances_prefer_them(self) -> None:
+        model = generate_diagram.diagram_of(model_of(self.objects()))
+        node = {n.uid: n for n in model.nodes}["PC-2"]
+        self.assertEqual(node.listeners, ["LS-API", "LS-ADMIN", "LS-RPC"])
+        self.assertEqual(generate_diagram.entrance_keys(node), node.listeners)
+        caller = {n.uid: n for n in model.nodes}["PC-1"]
+        self.assertEqual(generate_diagram.entrance_keys(caller), [])
+        self.assertNotIn("LS-RPC", {n.uid for n in model.nodes})  # a listener is never a box
+
+    def test_target_listener_wins_over_target_interface(self) -> None:
+        keys = ["LS-ADMIN", "LS-API", "LS-RPC"]
+        edge = generate_diagram.DiagramEdge("a", "b", target_interface="LS-API", target_listener="LS-RPC")
+        self.assertEqual(generate_diagram._slot(keys, edge), (2, 3))
+        self.assertEqual(generate_diagram._slot(keys, generate_diagram.DiagramEdge("a", "b", target_interface="api")), (0, 3))
+        self.assertEqual(generate_diagram._slot(["api", "rpc"], generate_diagram.DiagramEdge("a", "b", target_interface="rpc", target_listener="LS-RPC")), (1, 2))
+
+    def test_edges_enter_the_listener_they_name_in_both_views(self) -> None:
+        for view in ("logical", "deployment"):
+            svg = svg_for(self.objects(), view)
+            rects = node_rects(svg)
+            routes = {(a, b): pts for a, b, pts in edge_polylines(svg)}
+            with self.subTest(view=view):
+                self.assertEqual(routes[("PC-1", "PC-2")][-1][0], self.expected_x(rects["PC-2"][0], 3, 2))
+                self.assertEqual(routes[("PC-3", "PC-2")][-1][0], self.expected_x(rects["PC-2"][0], 3, 1))
+                self.assertEqual(routes[("PC-1", "PC-2")][-1][1], rects["PC-2"][1])
+
+    def test_a_listener_owned_by_another_object_is_ignored(self) -> None:
+        objects = self.objects()
+        objects[7] = {**objects[7], "targetListener": "LS-ELSE"}
+        edge = [e for e in model_of(objects).edges if e.uid == "REL-1"][0]
+        self.assertEqual(edge.target_listener, "")
+        svg = svg_for(objects)
+        rects = node_rects(svg)
+        routes = {(a, b): pts for a, b, pts in edge_polylines(svg)}
+        self.assertEqual(routes[("PC-1", "PC-2")][-1][0], self.expected_x(rects["PC-2"][0], 3, 0))
+
+    def test_derived_dependency_naming_a_listener_enters_it(self) -> None:
+        objects = [o for o in self.objects() if o["uid"] not in ("REL-1", "REL-2")]
+        objects[0] = component("PC-1", "Caller", runtimeSpec={"dependencies": [{"ref": "PC-2", "interface": "LS-ADMIN"}]})
+        svg = svg_for(objects)
+        rects = node_rects(svg)
+        routes = {(a, b): pts for a, b, pts in edge_polylines(svg)}
+        self.assertEqual(routes[("PC-1", "PC-2")][-1][0], self.expected_x(rects["PC-2"][0], 3, 1))
+
+    def test_labels_are_unchanged_and_no_port_in_the_application_view(self) -> None:
+        with_listeners = svg_for(self.objects())
+        self.assertNotIn("8092", with_listeners)
+        self.assertNotIn("8080", with_listeners)
+        self.assertIn("calls rpc", with_listeners)
+
+    def test_render_does_not_depend_on_file_order(self) -> None:
+        for view in ("logical", "deployment"):
+            self.assertEqual(svg_for(self.objects(), view), svg_for(list(reversed(self.objects())), view), view)
+
+
 class PortResolutionTests(unittest.TestCase):
     """Port resolution and the deployment-view port labels (interfaces-exposure, AC6 and AC7 for target ports)."""
 

@@ -266,10 +266,15 @@ a warning.
 
 ### What each view shows
 
-- **Application view.** One entrance on the top edge of a box per declared
-  interface, in declared order; an edge enters through the interface its
-  `targetInterface` names, else the first. It never shows a port and never shows
-  a device.
+- **Application view.** One entrance on the top edge of a box per Listener
+  object it owns (`owner.ref`), ordered by port, then protocol, then endpoint
+  path, then uid; an edge enters through the listener its `targetListener` names
+  (a runtime dependency's `interface` may name one too). A box that owns no
+  Listener objects keeps one entrance per declared interface, in declared order,
+  and an edge enters through the interface its `targetInterface` names. Either
+  way an edge naming no entrance of its target enters the first. The
+  Deployment view uses the same entrances. The Application view never shows a
+  port and never shows a device.
 - **Deployment view.** Each connection is labelled with the resolved port chain.
   The target's port comes from the component's own inbound `runtimeSpec.ports`
   entry, then the listener of its substrate (a data component uses the listener

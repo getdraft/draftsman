@@ -1,3 +1,27 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None for catalogs without Listener objects: their diagrams are byte-identical (golden tests unchanged, and the generated browser for the bundled examples is identical). A pattern whose components own Listener objects now draws one entrance per listener instead of one per declared interface, so those diagrams change.
+
+### Added
+
+- Application and Deployment views draw one attachment point per Listener object a box owns (#341 E5), on the box's top edge. Listeners are ordered by port, then protocol (case-insensitive), then endpoint path, then uid, so the order never depends on file order (D15). A relationship enters through the listener its `targetListener` names, and a runtime dependency enters through the listener its `interface` names. Each counts only when the target owns that listener.
+- `owned_listeners` and `entrance_keys` in `framework/tools/generate_diagram.py`; `DiagramNode.listeners` and `DiagramEdge.target_listener`.
+- `ListenerEntranceTests` in `tests/test_generate_diagram.py` cover the fixed order and tie-breaks, entrance selection (`targetListener` over `targetInterface`), edges entering the named listener in both views, a listener owned by another object being ignored, a derived dependency naming a listener, no port in the Application view, and output independent of file order.
+
+### Changed
+
+- A box with no Listener objects keeps its per-interface entrances (AC5). `framework/docs/software-deployment-patterns.md` and the `draftsman-diagram` skill describe both.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No workspace migration required.
+
 ## 1.18.2 - 2026-11-21
 
 ### Compatibility Impact
