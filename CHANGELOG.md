@@ -11,7 +11,7 @@
 
 ### Changed
 
-- None.
+- `tests/test_flow_retirement_examples.py` finds the #368 adoption note in whichever release section holds it, so it keeps passing after release promotion.
 
 ### Fixed
 
