@@ -4261,7 +4261,7 @@ class InterfaceExposureFieldTests(unittest.TestCase):
             g = d["serviceGroups"]
             g[0]["exposedThrough"] = "01KSF29JTP-9HYA"
             if len(g) > 1:
-                g[1]["exposedThrough"] = ["01KSF29JTP-9HYA", "01KSF29JTP-9HYA"]
+                g[1]["exposedThrough"] = ["01KSF29JTP-9HYA"]
             if len(g) > 2:
                 g[2]["exposedThrough"] = "none"
 

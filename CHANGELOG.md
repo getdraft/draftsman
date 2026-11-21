@@ -1,3 +1,27 @@
+## Unreleased
+
+### Compatibility Impact
+
+- `serviceGroups[].exposedThrough` problems are now validation errors instead of warnings (E4, not ratcheted, so no baseline entry hides them). A pattern that lists an unknown uid, a non-network_service, a network_service instance, `none` inside a list, an empty list or a repeated uid now fails validation. Patterns with valid values are unaffected.
+
+### Added
+
+- `validate_exposed_through` in `framework/tools/validate.py`. It fails each bad `exposedThrough` value with the group index and the offending uid, and rejects a repeated uid in a chain.
+- Tests in `tests/test_validate_ownership.py` for each valid and invalid `exposedThrough` form, including a network_service instance (by `serviceRole` and by folder), a workspace with no definitions folder configured, and an end-to-end run that exits 1.
+
+### Changed
+
+- `validate_exposure_refs` now covers reference architecture `fills` only; `exposedThrough` checks moved to `validate_exposed_through`.
+- `framework/schemas/software-deployment-pattern.schema.yaml` describes the `exposedThrough` failures.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Run `validate.py`. For each `exposedThrough` failure, replace the value with the uid of a network_service definition (an object with `serviceRole: definition`, or one in the service definitions folder), or with `none`. List each device once, in chain order. In a workspace with no service definitions folder configured, a network_service without `serviceRole` is accepted.
+
 ## 1.15.1 - 2026-11-20
 
 ### Compatibility Impact

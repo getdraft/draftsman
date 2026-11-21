@@ -5102,30 +5102,93 @@ def validate_protocol_family(
         )
 
 
+def _known_service_instance(
+    uid: str,
+    ref: dict[str, Any],
+    role_context: dict[str, Any] | None,
+) -> bool:
+    """True when an infrastructure object is known to be an instance, not a definition (D51).
+
+    An object is an instance when it says serviceRole: instance, or when the workspace names a
+    service definitions folder and the object lives outside it. With no serviceRole and no
+    definitions folder configured the role cannot be told, so the object is not treated as one.
+    """
+    if ref.get("serviceRole") == "instance":
+        return True
+    if ref.get("serviceRole") == "definition":
+        return False
+    context = role_context or {}
+    workspace_config = context.get("workspace_config") or {}
+    if not service_definition_folders(workspace_config):
+        return False
+    return (
+        service_role(ref, context.get("paths", {}).get(uid), workspace_config, context.get("workspace_root"))
+        == "instance"
+    )
+
+
+def validate_exposed_through(
+    obj: dict[str, Any],
+    path: Path,
+    catalog_by_id: dict[str, dict[str, Any]],
+    failures: list[str],
+    role_context: dict[str, Any] | None = None,
+) -> None:
+    """Fail serviceGroups[].exposedThrough values that are not none or network_service definition uids (E4).
+
+    Not ratcheted: exposedThrough is additive, so every value is checked on every run.
+    """
+    if obj.get("type") != "software_deployment_pattern":
+        return
+    for index, group in enumerate(obj.get("serviceGroups") or []):
+        if not isinstance(group, dict) or "exposedThrough" not in group:
+            continue
+        raw = group.get("exposedThrough")
+        where = f"serviceGroups[{index}].exposedThrough"
+        if raw == "none" or not isinstance(raw, (str, list)):
+            continue  # a wrong field type is reported by the schema check
+        if isinstance(raw, list) and not raw:
+            failures.append(f"{path}: {where} is an empty list; use none or one or more network_service definition uids")
+            continue
+        values = raw if isinstance(raw, list) else [raw]
+        seen: set[str] = set()
+        for value in values:
+            if value == "none":
+                failures.append(f"{path}: {where} lists 'none'; none is only valid on its own, not inside a list")
+                continue
+            if isinstance(value, str) and value in seen:
+                failures.append(f"{path}: {where} repeats '{value}'; list each edge device once, in chain order")
+                continue
+            if isinstance(value, str):
+                seen.add(value)
+            ref = catalog_by_id.get(value) if isinstance(value, str) else None
+            if ref is None:
+                failures.append(
+                    f"{path}: {where} value '{value}' must be none or the uid of a network_service definition "
+                    f"(no object has that uid)"
+                )
+            elif ref.get("type") != "network_service":
+                failures.append(
+                    f"{path}: {where} value '{value}' must be none or the uid of a network_service definition "
+                    f"(got {_describe(ref, str(value))})"
+                )
+            elif _known_service_instance(str(value), ref, role_context):
+                failures.append(
+                    f"{path}: {where} value '{value}' names a network_service instance {_describe(ref, str(value))}; "
+                    f"use the uid of its definition (serviceRole: definition, or an object in the service definitions folder)"
+                )
+
+
 def validate_exposure_refs(
     obj: dict[str, Any],
     path: Path,
     catalog_by_id: dict[str, dict[str, Any]],
     warnings: list[str],
 ) -> None:
-    """Warn on serviceGroups[].exposedThrough and reference architecture fills that do not name a network_service."""
+    """Warn on reference architecture fills that do not name a network_service on an edge slot."""
     for index, group in enumerate(obj.get("serviceGroups") or []):
         if not isinstance(group, dict):
             continue
-        if obj.get("type") == "software_deployment_pattern" and "exposedThrough" in group:
-            raw = group.get("exposedThrough")
-            values = raw if isinstance(raw, list) else [raw]
-            where = f"serviceGroups[{index}].exposedThrough"
-            if isinstance(raw, list) and not raw:
-                warnings.append(f"{path}: {where} is an empty list; use none or one or more network_service uids")
-            for value in values:
-                ref = catalog_by_id.get(value) if isinstance(value, str) else None
-                if value == "none" and not isinstance(raw, list):
-                    continue
-                if value == "none":
-                    warnings.append(f"{path}: {where} lists 'none'; none is only valid on its own, not inside a list")
-                elif not (isinstance(ref, dict) and ref.get("type") == "network_service"):
-                    warnings.append(f"{path}: {where} value '{value}' must be none or the uid of a network_service definition")
         if obj.get("type") != "reference_architecture":
             continue
         for entry_index, entry in enumerate(group.get("deployableObjects") or []):
@@ -5288,6 +5351,15 @@ def main(argv: list[str] | None = None) -> int:
     validate_workspace_vocabulary_references(objects, workspace_vocabulary, failures, warnings)
     validate_duplicate_capability_domain_names(objects, workspace_root, warnings)
     validate_capability_ownership_patches(objects, catalog_by_id, capability_ids, warnings)
+    exposure_role_context: dict[str, Any] = {
+        "workspace_root": workspace_root,
+        "workspace_config": load_workspace_config(workspace_root, []),
+        "paths": {
+            str(o["uid"]): p
+            for p, o in sorted(objects.items())
+            if isinstance(o, dict) and is_non_empty(o.get("uid"))
+        },
+    }
 
     for path, obj in objects.items():
         if obj.get("type") is None:
@@ -5344,6 +5416,8 @@ def main(argv: list[str] | None = None) -> int:
             validate_relationship(obj, path, catalog_by_id, failures)
             validate_target_interface(obj, path, catalog_by_id, failures, warnings)
             validate_protocol_family(obj, path, catalog_by_id, warnings)
+        if obj.get("type") == "software_deployment_pattern":
+            validate_exposed_through(obj, path, catalog_by_id, failures, exposure_role_context)
         if obj.get("type") in ("software_deployment_pattern", "reference_architecture"):
             validate_exposure_refs(obj, path, catalog_by_id, warnings)
         if obj.get("type") == "diagram_layout":
