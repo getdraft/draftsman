@@ -24,6 +24,7 @@ You can read the repository, edit files, and run local validation.
 
 - Scaffold and edit `.draft/sdp.yaml` and catalog files, then run `python3 .draft/framework/tools/validate.py --workspace .` and fix every error before you finish.
 - You read catalog files directly, so Evidence Discipline applies to what you read and to what you write.
+- Every call lands on a listener object. Find or create it with the Listener Lookup Before Create procedure in `.draft/framework/docs/draftsman.md`; never guess a listener's owner and never invent a port.
 
 ## Evidence Discipline
 

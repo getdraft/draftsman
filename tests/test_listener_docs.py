@@ -90,3 +90,63 @@ class ListenerLookupDocTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+SKILLS = REPO_ROOT / "framework" / "skills"
+
+
+class ListenerSkillTests(unittest.TestCase):
+    """#341 E3 S4.2: the skills agents load carry the same procedure and never license a guess."""
+
+    def read(self, rel: str) -> str:
+        return " ".join((SKILLS / rel).read_text(encoding="utf-8").split())
+
+    def test_every_listener_skill_points_to_the_procedure(self) -> None:
+        for rel in ("draftsman-core/SKILL.md", "draftsman-author/SKILL.md", "draftsman-author/references/guide.md",
+                    "draftsman-diagram/SKILL.md"):
+            text = self.read(rel)
+            self.assertIn("Listener Lookup Before Create", text, rel)
+            self.assertIn(".draft/framework/docs/draftsman.md", text, rel)
+
+    def test_procedure_doc_heading_exists(self) -> None:
+        self.assertRegex((DOCS / "draftsman.md").read_text(encoding="utf-8"), r"(?m)^## Listener Lookup Before Create$")
+
+    def test_author_skill_steps_match_the_docs(self) -> None:
+        raw = (SKILLS / "draftsman-author" / "SKILL.md").read_text(encoding="utf-8")
+        block = section(raw + "\n## end\n", "Calls land on listeners")
+        steps = re.findall(r"(?m)^\d+\. \*\*([^*]+)\*\*", block)
+        self.assertEqual(steps, ["Resolve the owner", "Normalize the key:", "Exact match:", "No match:", "Real listener authored later:"])
+        text = " ".join(block.split())
+        for phrase in ("`targetListener`", "Never pick one", "without asking", "`catalogStatus: stub`", "keep its UID",
+                       "company-internal caller", "`sdp-internal-stub-listener`", "`interface_unprotected`",
+                       "`relationship-target-listener`"):
+            self.assertIn(phrase, text)
+
+    def test_author_skill_helpers_exist(self) -> None:
+        raw = (SKILLS / "draftsman-author" / "SKILL.md").read_text(encoding="utf-8")
+        names = re.findall(r"`(\w+_listener)`", raw)
+        self.assertTrue(names)
+        for name in names:
+            self.assertTrue(callable(getattr(catalog, name, None)), name)
+
+    def test_no_skill_licenses_guessing(self) -> None:
+        self.assertIn("never guess a listener's owner and never invent a port", self.read("draftsman-core/SKILL.md"))
+        self.assertIn("never by inventing a port", self.read("draftsman-diagram/SKILL.md"))
+        # every mention of guessing an owner or inventing a port is a prohibition
+        for rel in ("draftsman-core/SKILL.md", "draftsman-author/SKILL.md", "draftsman-query/SKILL.md", "draftsman-diagram/SKILL.md"):
+            text = self.read(rel)
+            for match in re.finditer(r"(?i)\b(guess\w*|invent\w*) (the |a |an )?(listener's )?(owner|port)", text):
+                before = text[max(0, match.start() - 12):match.start()].lower()
+                self.assertRegex(before, r"(never|not|by) ?$", (rel, match.group(0)))
+
+    def test_query_skill_reads_listener_objects(self) -> None:
+        text = self.read("draftsman-query/SKILL.md")
+        for phrase in ("`listener` objects whose `owner.ref` is X", "`targetListener`", "A stub is not a fact"):
+            self.assertIn(phrase, text)
+
+    def test_guide_scan_rows_use_schema_values(self) -> None:
+        import yaml
+
+        schema = yaml.safe_load((REPO_ROOT / "framework" / "schemas" / "listener.schema.yaml").read_text(encoding="utf-8"))
+        for protocol in re.findall(r"`protocol: (\w+)`", self.read("draftsman-author/references/guide.md")):
+            self.assertIn(protocol, schema["enumFields"]["protocol"])

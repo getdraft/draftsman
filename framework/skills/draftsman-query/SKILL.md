@@ -13,13 +13,15 @@ Load `draftsman-core` first; its Evidence Discipline rules bind every answer her
 2. **Absent field, absent answer.** If `technology`, `port`, `protocol` or `label` is not present, say the source you can see does not carry it. Never fill the gap with a category you guessed from a name.
 3. **Say what you cannot see.** Answer about your index or the files you opened, not about "the catalog".
 4. **Qualify every count.** Say how you got the number, and never call a substring match complete.
+5. **A stub is not a fact.** A listener with `catalogStatus: stub` records only what a caller knew; say so, and report `authenticationModel: TBD` as not recorded.
 
 ## Question types
 
 | Question | Where to look | Fields |
 | :--- | :--- | :--- |
 | Is an API exposed for X? | index entries for `product_component` and `software_deployment_pattern` matching X | linked `edge_gateway_service`; `interfaces` or `api_spec`; protocols and routing |
-| What port does X listen on? | `runtime_service`, `product_component`, container profiles | listener ports, ingress ports, network zone |
+| What port does X listen on? | `listener` objects whose `owner.ref` is X; then `runtime_service`, container profiles | `protocol`, `port`, `endpoint`, `catalogStatus`; definition `listeners`, ingress ports, network zone |
+| Which endpoint does X call on Y? | `relationship` objects from X to Y | `targetListener`, then that listener's `protocol`, `port` and `endpoint` |
 | What does X write to? | `software_deployment_pattern` links between `product_component` and `data_store_service` | the link fields |
 | Which services use Y? | reverse search across every `software_deployment_pattern` in the index | the dependency fields |
 | How do I get my product into DRAFT? | `draftsman-core/references/onboarding.md` | not applicable |
