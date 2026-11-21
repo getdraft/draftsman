@@ -1118,8 +1118,8 @@ For each relationship:
    "PostgreSQL wire protocol".
 6. Set `direction` to `synchronous` for request/response, `asynchronous` for
    fire-and-forget, or `event` for publish/subscribe or event-driven.
-7. Do not set `flow`, or set it to `outbound` (the default). The caller is always
-   the `source`, so `flow: inbound` and `flow: bidirectional` are deprecated: for
+7. Set `flow` only to `outbound`, or leave it out (`outbound` is the default).
+   The caller is always the `source`, so `flow: inbound` and `flow: bidirectional` are deprecated: for
    "X calls this component", make X the source; for a request/response call, use
    `direction: synchronous`. Do not use free-text `externalTarget` for new
    relationships, which is deprecated too: record the external party as a
