@@ -1,7 +1,7 @@
 {
   "id": "draftsman-sdp-sync-195",
   "title": "Draftsman #195: a tested, hardened decentralized SDP sync pipeline",
-  "status": "approved",
+  "status": "complete",
   "outcome": "A product team in Dale's Draftsman updates .draft/sdp.yaml in its own repository and sees it reach the central catalog as a reviewed pull request, or sees exactly why it did not, in its own workflow run. Every step runs through one tested tool, the receiver accepts content only from the repository its ProductRegistration names, and nothing from the payload is ever run as shell text.",
   "target_repo": "getdraft/draftsman",
   "epics": [
