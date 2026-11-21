@@ -19,6 +19,7 @@ if str(TOOLS_ROOT) not in sys.path:
 
 from uid_utils import UID_PATTERN_TEXT, generate_uid
 from protocol_families import family
+from exposure import EDGE_SLOTS as EXPOSURE_EDGE_SLOTS
 
 
 FRAMEWORK_ROOT = Path(__file__).resolve().parent.parent
@@ -5032,7 +5033,7 @@ def validate_target_interface(
         )
 
 
-EDGE_SLOTS = ("firewall", "web-application-firewall", "load-balancer", "api-gateway", "ingress")
+EDGE_SLOTS = EXPOSURE_EDGE_SLOTS
 
 
 def _surface_protocol(target: dict[str, Any], name: str) -> tuple[str | None, str | None]:

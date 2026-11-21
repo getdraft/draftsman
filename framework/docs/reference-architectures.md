@@ -54,6 +54,20 @@ When an engineer starts a SoftwareDeploymentPattern, the Draftsman should ask ea
 
 If a slot requires a shared service type and the company catalog does not yet contain one, scaffold a placeholder deployable service with `catalogStatus: stub` and the schema's `defaultOwnerRole` (typically `shared-services`) rather than letting the product team directly own or deploy a raw TechnologyComponent.
 
+### Filled Edge Slots
+
+Five slots are edge slots: `firewall`, `web-application-firewall`,
+`load-balancer`, `api-gateway` and `ingress`. An edge slot entry may add
+`fills`: the uid of the network_service definition that fills the slot. Every
+pattern that follows the RA inherits that device chain, in that slot order, for
+its exposed service groups unless a group sets its own `exposedThrough` (see
+"The edge device chain" in `software-deployment-patterns.md`).
+
+Validation fails, not ratcheted, when `fills` is set on any other slot or on an
+entry with no slot, names an unknown uid, a non-network_service or a
+network_service instance, or names a definition that does not satisfy the
+entry's `capability` directly or through its technology component.
+
 ## Framework RA objectType Entries
 
 Framework-level RAs use capability slots instead of company-specific `ref` values in `deployableObjects` entries. `objectType` declares the expected catalog object type, while `capability` declares the governed architecture outcome that the selected object or implementation must satisfy. The company catalog defines which specific Host, RuntimeService, DataStoreService, or NetworkService definitions satisfy each slot. The SDP that follows the RA does not copy those definitions into its own `deployableObjects`: it consumes them through `substrate` and `runsOn`, and edge services come from the RA's slots (ratcheted rule `sdp-placement-types`).

@@ -3300,7 +3300,7 @@ class LaterStoryTests(unittest.TestCase):
             tools = framework / "tools"
             tools.mkdir(parents=True)
             (framework / "draft-framework.yaml").write_text('version: "9.8.7"\n', encoding="utf-8")
-            for name in ("generate_diagram.py", "generate_c4.py", "protocol_families.py"):
+            for name in ("generate_diagram.py", "generate_c4.py", "protocol_families.py", "exposure.py"):
                 (tools / name).write_text((REPO_ROOT / "framework" / "tools" / name).read_text(encoding="utf-8"), encoding="utf-8")
             script = "import sys; sys.path.insert(0, sys.argv[1]); import generate_diagram as g; print(g.framework_version())"
             result = subprocess.run([sys.executable, "-I", "-c", script, str(tools)], capture_output=True, text=True, check=True)

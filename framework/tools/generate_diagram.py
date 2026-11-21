@@ -54,6 +54,7 @@ if str(TOOLS_ROOT) not in sys.path:
 
 from generate_c4 import DEFAULT_WORKSPACE_ROOT, load_catalog  # noqa: E402
 from protocol_families import family  # noqa: E402
+import exposure  # noqa: E402
 
 E = html.escape
 
@@ -233,7 +234,7 @@ COMPONENT_TYPES = frozenset({"product_component", "data_component"})
 
 # The reference-architecture edge slots, in the order a chain is drawn: protection first, then availability and
 # performance, then routing (AC8). validate.py keeps the same list for its fills warnings.
-EDGE_SLOTS = ("firewall", "web-application-firewall", "load-balancer", "api-gateway", "ingress")
+EDGE_SLOTS = exposure.EDGE_SLOTS
 
 
 def declared_interface_names(obj: dict[str, Any]) -> list[str]:
@@ -980,43 +981,12 @@ class Model:
         return protocol if family(clean(listener.get("protocol"))) == fam else ""
 
     def _slot_chain(self) -> list[str]:
-        """The filled edge slots of the reference architecture the pattern follows, as a device chain: every entry
-        whose slot is an edge slot and which fills a network_service, in EDGE_SLOTS order (document order within a
-        slot). The reference-architecture service group an entry sits in does not matter."""
-        ra = self.catalog.get(clean(self.sdp.get("followsReferenceArchitecture")))
-        ra_groups = ra.get("serviceGroups") if isinstance(ra, dict) else None
-        filled: list[tuple[int, str]] = []
-        for ra_group in ra_groups if isinstance(ra_groups, list) else []:
-            for entry in (ra_group.get("deployableObjects") or []) if isinstance(ra_group, dict) else []:
-                if not isinstance(entry, dict) or clean(entry.get("slot")) not in EDGE_SLOTS:
-                    continue
-                uid = clean(entry.get("fills"))
-                if self.catalog.get(uid, {}).get("type") == "network_service" and uid not in [u for _k, u in filled]:
-                    filled.append((EDGE_SLOTS.index(clean(entry.get("slot"))), uid))
-        return [uid for _k, uid in sorted(filled, key=lambda item: item[0])]
+        """The filled edge slots of the reference architecture the pattern follows (exposure.pattern_slot_chain)."""
+        return exposure.pattern_slot_chain(self.sdp, self.catalog)
 
     def _group_chain(self, group: dict[str, Any], slot_chain: list[str]) -> list[str]:
-        """A group's edge device chain; [] when it is not exposed.
-
-        exposedThrough decides when present: none switches exposure off; a uid or a list of uids is the chain in the
-        given order (values that are not network_service definitions are left out; validate.py warns on them).
-        Without it the reference architecture's filled edge slots apply, except to a group whose deployable objects
-        are all data components (a data tier), which only exposedThrough exposes."""
-        own = group.get("exposed")
-        if own == "none":
-            return []
-        values = [own] if isinstance(own, str) and clean(own) else own if isinstance(own, list) and own else None
-        if values is not None:
-            chain: list[str] = []
-            for value in values:
-                uid = clean(value) if isinstance(value, str) else ""
-                if self.catalog.get(uid, {}).get("type") == "network_service" and uid not in chain:
-                    chain.append(uid)
-            return chain
-        listed = group["listed"]
-        if listed and all(self.catalog[uid].get("type") == "data_component" for uid in listed):
-            return []
-        return list(slot_chain)
+        """A group's edge device chain; [] when it is not exposed (exposure.group_chain holds the precedence)."""
+        return exposure.group_chain(group.get("exposed"), group["listed"], self.catalog, slot_chain)
 
     def _build_exposure(self) -> None:
         """The edge device chains of the deployment view (interfaces-exposure, AC8, amended A3).
