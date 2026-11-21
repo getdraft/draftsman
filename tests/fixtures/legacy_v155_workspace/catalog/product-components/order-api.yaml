@@ -1,0 +1,14 @@
+schemaVersion: "1.0"
+uid: 01M7C4AA02-AP01
+type: product_component
+name: Legacy Order API
+repoUrl: https://github.com/example/legacy-order-api
+owner:
+  team: storefront
+classification: api-service
+catalogStatus: incomplete
+lifecycleStatus: candidate
+interfaces:
+  - name: orders
+    protocol: REST
+    path: /orders

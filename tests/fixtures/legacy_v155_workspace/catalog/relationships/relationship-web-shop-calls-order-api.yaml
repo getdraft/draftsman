@@ -1,0 +1,12 @@
+schemaVersion: "1.0"
+uid: 01M7C4AA03-RS01
+type: relationship
+name: Legacy Web Shop → Legacy Order API
+catalogStatus: complete
+source: 01M7C4AA01-WEB1
+target: 01M7C4AA02-AP01
+targetInterface: orders
+label: calls
+technology: HTTPS
+direction: synchronous
+flow: bidirectional

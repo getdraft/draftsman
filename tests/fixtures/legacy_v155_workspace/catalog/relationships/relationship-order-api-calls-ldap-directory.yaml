@@ -1,0 +1,11 @@
+schemaVersion: "1.0"
+uid: 01M7C4AA05-RS03
+type: relationship
+name: Legacy Order API → LDAP Directory
+catalogStatus: complete
+source: 01M7C4AA02-AP01
+externalTarget: LDAP Directory
+label: authenticates via
+technology: LDAPS
+direction: synchronous
+flow: outbound
