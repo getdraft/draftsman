@@ -16,6 +16,10 @@
 - Listener Lookup Before Create (`framework/docs/draftsman.md`) gains step 4, "Ask about near matches": never link a near match silently. The `draftsman-author` and `draftsman-core` skills carry the same rule.
 - `/draft` routing (`framework/commands/draft.md`), the help tables in `templates/workspace/AGENTS.md.tmpl`, `templates/workspace/README.md.tmpl`, `framework/docs/draftsman-ai-configuration.md` and `framework/docs/operations-guide.md`, and the Cursor and Windsurf integrations list `migrate`.
 
+### Fixed
+
+- None.
+
 ### Migration Notes
 
 - Tools that call `link_or_stub_listener` or `record_authored_listener` should handle `near_match` by asking the user, then call again with `confirmed_new=True` if it is a different listener. Existing workspaces pick up `/draft migrate` on their next framework update; regenerated workspace files list it in the help table.
