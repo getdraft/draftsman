@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. `migrate_relationships.py` is a new opt-in tool that only writes a report and a patch outside `catalog/`; workspaces, validation and diagrams are unchanged until a reviewed patch is applied.
+
+### Added
+
+- `framework/tools/migrate_relationships.py`: proposes listener-based replacements for deprecated relationship fields (#368). `flow: bidirectional` becomes `outbound`; `flow: inbound` swaps source and target (and asks for the listener); an inbound call from an unknown outside party is proposed for removal, with its protection to record on the listener; free-text `externalTarget` links an existing System (by name or alias) and Listener, or proposes System and Listener stubs when the protocol has a default port and the caller is a company component. Ambiguous matches, multi-object files and unknown protocols are reported as needing input. Scope with `--object`, `--sdp` or `--folder`; output a Markdown report, a `git apply` patch, or JSON. UIDs of proposed stubs are stable across runs.
+- `tests/test_migrate_relationships.py`.
+
+### Changed
+
+- `framework/docs/draftsman.md` (Deprecated Relationship Fields) describes the migration helper.
+
+### Fixed
+
+- `draft_table.catalog`: a listener owner of kind `external_system` now resolves `system` objects, not only `external_system` ones, so Listener Lookup Before Create links outside parties recorded as Systems.
+
+### Migration Notes
+
+- Optional: run `migrate_relationships.py`, review the report, apply the patch on a branch and run `validate.py`. Not running it keeps the existing baseline warnings.
+
 ## 1.20.2 - 2026-11-21
 
 ### Compatibility Impact

@@ -293,13 +293,19 @@ def _names_of(obj: dict[str, Any]) -> set[str]:
     return {str(value).strip().lower() for value in values if str(value).strip()}
 
 
+# owner.kind -> the catalog object types it names. An external_system owner is a `system` object (validate.py
+# OWNER_KIND_TYPES); the literal kind is accepted too for callers that pass bare owner records.
+LISTENER_OWNER_OBJECT_TYPES = {LISTENER_EXTERNAL_OWNER: ("system", LISTENER_EXTERNAL_OWNER)}
+
+
 def resolve_listener_owner(objects: dict[str, dict[str, Any]], owner_kind: str, owner_ref: str) -> dict[str, Any]:
     """Resolve an owner by uid, or by exact name or alias. Several name matches are returned, never guessed."""
     wanted = str(owner_ref or "").strip()
     lowered = wanted.lower()
+    types = LISTENER_OWNER_OBJECT_TYPES.get(owner_kind, (owner_kind,))
     candidates: list[dict[str, str]] = []
     for key, obj in objects.items():
-        if obj.get("type") != owner_kind:
+        if obj.get("type") not in types:
             continue
         uid = str(obj.get("uid") or key)
         if uid == wanted:

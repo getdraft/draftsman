@@ -1162,6 +1162,15 @@ only a new relationship, or an edited one, fails:
   free-text `externalTarget` or a `system` object), so the caller is probably
   recorded as the target.
 
+To move existing relationships, run
+`python framework/tools/migrate_relationships.py --workspace <ws> --report migration.md --patch migration.patch`
+(scope it with `--object <uid>`, `--sdp <uid>` or `--folder <path>`). It only
+proposes: nothing in `catalog/` changes. The report lists each conversion, the
+new System and Listener stubs, relationships that need your input (a listener
+to name, a protocol and port, an ambiguous system), and protection descriptions
+to move onto listeners. Review it, apply the patch with `git apply` on a
+branch, then run `validate.py`.
+
 When reading source material (diagrams, SDPs, architecture docs), extract visible
 directed connections and propose relationship objects for each one. Surface them
 as a group at the end of the session rather than interrupting the main authoring
