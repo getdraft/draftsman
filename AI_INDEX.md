@@ -75,7 +75,7 @@ the selected framework schemas/configurations, provider packs, and workspace YAM
 | framework/docs/bring-your-own-agent.md | Bring Your Own Agent | How a company gives its own AI agent the Draftsman capability by loading the DRAFT skills, with no DRAFT-operated agent |
 | framework/docs/capabilities.md | Capabilities | A Capability is a first-class framework object that names an architecture |
 | framework/docs/company-vocabulary.md | Company Vocabulary | Company vocabulary lists are optional governed lists in `.draft/workspace.yaml`. |
-| framework/docs/decentralized-sdp-setup.md | Decentralized SoftwareDeploymentPatterns & Product Registration | How product engineering teams house SoftwareDeploymentPatterns in their own repos and register with drafting-table. |
+| framework/docs/decentralized-sdp-setup.md | Decentralized SoftwareDeploymentPatterns & Product Registration | How product engineering teams keep SoftwareDeploymentPatterns in their own repos, register with drafting-table, and s... |
 | framework/docs/decision-records.md | DecisionRecords | DecisionRecords are first-class records for known risks, |
 | framework/docs/delivery-models.md | Delivery Models | Delivery models explain how a deployable service is operated. |
 | framework/docs/design-principles.md | Design Principles | DRAFT is opinionated. |

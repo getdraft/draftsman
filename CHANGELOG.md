@@ -19,7 +19,7 @@
 
 ### Migration Notes
 
-- None.
+- No action is required by this release. Teams adopting or upgrading the sync should follow the new "One-Time Setup" and "Upgrading from the Original Sync" sections of `framework/docs/decentralized-sdp-setup.md`, and decide how to handle required status checks on `draft-sync/*` pull requests before enabling `DRAFT_SYNC_AUTO_MERGE`.
 
 ## 1.20.12 - 2026-11-21
 
