@@ -355,7 +355,12 @@ deployment targets. Both show all connections by default; hovering, focusing or
 pinning a box brings its connections forward while the others fade. Each section
 has a Fit width / Actual size toggle (fit by default, actual size scrolls) and an
 Open full page link to the standalone diagram page. A pattern with no generated
-diagram page shows a one-sentence note instead. The Service Groups rows show each group's exposure (the device names, or `not exposed`), and the Connections table has an Interface column. The sections below them (Service
+diagram page shows a one-sentence note instead. The Service Groups rows show each group's exposure (the device names, or `not exposed`), and the Connections table has an Interface column and a Listener column (the
+`targetListener`'s name with its protocol, port and endpoint, such as
+`Orders API (HTTPS 443 /orders)`, or blank). A product component, data component
+or external system detail page lists the Listener objects it owns (name,
+protocol, port, endpoint, authenticationModel, catalogStatus) in listener order:
+port, then protocol, then endpoint, then uid. The sections below them (Service
 Groups, Decisions, Connections, Tier Variants, Metadata) carry the recorded
 detail. The figures are service-first placement views.
 

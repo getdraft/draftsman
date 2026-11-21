@@ -1,3 +1,28 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None for catalog content. The generated browser for catalogs without Listener objects changes only by the new, empty Listener column in a pattern's Connections table and an empty `ownedListeners` / `targetListener` field in the browser data. Run `generate_browser.py --refresh-shell` on an existing install to pick up the new column and section.
+
+### Added
+
+- Browser: a pattern's Connections table gains a Listener column after Interface. It shows the relationship's `targetListener` name with its protocol, port and endpoint (`Orders API (HTTPS 443 /orders)`), or is blank when no Listener object is named (#341 E5).
+- Browser: a product component, data component or external system detail page has an Owned Listeners section listing the Listener objects it owns through `owner.ref` (name, protocol, port, endpoint, authenticationModel, catalogStatus), in the renderer's listener order (port, protocol, endpoint, uid). Each name links to the listener's own page.
+- `connection_listener`, `listener_summary` and `build_owned_listeners` in `framework/tools/generate_browser.py`; browser objects carry `ownedListeners`, and pattern connections carry `targetListener`.
+- `ListenerBrowserTests` in `tests/test_generate_browser.py`.
+
+### Changed
+
+- `framework/docs/software-deployment-patterns.md` and the `draftsman-diagram` skill describe the Listener column and the Owned Listeners section.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No workspace migration required.
+
 ## 1.18.4 - 2026-11-21
 
 ### Compatibility Impact
