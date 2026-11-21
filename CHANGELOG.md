@@ -1,3 +1,27 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None for catalogs without Listener objects: their diagrams are byte-identical (golden tests unchanged, and the generated browser for the bundled examples is identical). In a pattern whose relationships name Listener objects through `targetListener`, the Deployment view's far-end port now comes from that listener, so those labels can change.
+
+### Added
+
+- Deployment view: when a relationship's `targetListener` names a Listener object with a port (#341 E5), the far-end technology line uses that port, ahead of today's port resolution: `http 8080`, `gRPC 8092`, `SQL 5432`. For a catalog target the target must own the listener. For an `externalTarget`, any Listener object counts, so external calls can show a port too. Device hops in an exposed group's chain pick their listener by the called listener's protocol family (`https 443 → http 8080 via <device>`), and same-deployment-target traffic still never hops.
+- `Model._called_listener` in `framework/tools/generate_diagram.py`.
+- `ListenerPortTests` in `tests/test_generate_diagram.py` cover the listener port over component ports, the technology-line rules, hop ports and family through a chain, no hop inside one deployment target, fallback (a listener owned by another object, a listener without an integer port, no `targetListener`), an external target's listener, and no port in the Application view.
+
+### Changed
+
+- `framework/docs/software-deployment-patterns.md` and the `draftsman-diagram` skill describe the listener port and the fallback.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- No workspace migration required.
+
 ## 1.18.3 - 2026-11-21
 
 ### Compatibility Impact

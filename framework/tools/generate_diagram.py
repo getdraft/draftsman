@@ -1001,6 +1001,24 @@ class Model:
             host = obj
         return pick_listener(listeners_of(host), fam)
 
+    def _called_listener(self, edge: DiagramEdge) -> dict[str, Any] | None:
+        """The listener object an edge calls, as a listener-like dict (protocol, port), or None (#341 E5 S5.2).
+
+        A catalog target: the target-owned listener of edge.target_listener. An external target has no owner to
+        compare, so its relationship's targetListener counts when it names a listener object. A listener without an
+        integer port gives none; today's resolution then applies."""
+        uid = edge.target_listener
+        if not uid and edge.target not in self.catalog and edge.source != edge.target:
+            rel = self.catalog.get(edge.uid)
+            uid = clean(rel.get("targetListener")) if isinstance(rel, dict) and rel.get("type") == "relationship" else ""
+        obj = self.catalog.get(uid) if uid else None
+        if not isinstance(obj, dict) or obj.get("type") != "listener":
+            return None
+        port = obj.get("port")
+        if not isinstance(port, int) or isinstance(port, bool) or not clean(obj.get("protocol")):
+            return None
+        return {"protocol": clean(obj.get("protocol")), "port": port}
+
     def _matched_word(self, edge: DiagramEdge, listener: dict[str, Any]) -> str:
         """The interface protocol a target port prints instead of its recorded protocol (amendment A2), or "".
 
@@ -1089,15 +1107,19 @@ class Model:
         listener of the relationship's protocol family, else its single listener, else none (AC6)."""
         self.deployment_edges: list[DiagramEdge] = []
         for edge in self.edges:
-            listener = self._target_listener(edge)
-            target_port = listener_text(listener, self._matched_word(edge, listener)) if listener else ""
+            called = self._called_listener(edge)
+            if called:  # the listener the call names decides the target's port; its protocol prints as recorded
+                target_port = listener_text(called)
+            else:
+                listener = self._target_listener(edge)
+                target_port = listener_text(listener, self._matched_word(edge, listener)) if listener else ""
             boxes = self.hop_of.get(edge.target, []) if edge.source != edge.target else []
             where = self._where(edge.target)
             if not boxes or where is None or self._where(edge.source) == where:
                 boxes = []
             if edge.target in self.row_devices or any(self.device_ref[b] == edge.target for b in boxes) or self.row_devices.get(edge.source) in boxes:
                 boxes = []  # an edge into a device of the chain, or out of one of its boxes, never passes it (no self-loop)
-            fam = self._relationship_family(edge)[0]
+            fam = (family(called["protocol"]) if called else None) or self._relationship_family(edge)[0]
             hop_ports = []
             for box in boxes:
                 front = pick_listener(listeners_of(self.catalog[self.device_ref[box]]), fam)
