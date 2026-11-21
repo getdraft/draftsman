@@ -1233,7 +1233,7 @@ requirementGroups:
                     name: Test Data Service to Test Backup Vault
                     catalogStatus: stub
                     source: 01KQS0TF62-DATA
-                    externalTarget: Test Backup Vault
+                    target: 01KQS0TF62-SYS1
                     targetListener: 01KQS0TF62-BKP1
                     label: backs up to
                     direction: synchronous

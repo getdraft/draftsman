@@ -446,6 +446,7 @@ class LegacyInterfaceBaselineTests(WorkspaceValidateTests):
             "source": self.COMP, "externalTarget": "LDAP Directory", "label": "calls", "catalogStatus": "complete",
         }
         rel.update(rel_changes)
+        rel = {key: value for key, value in rel.items() if value is not None}  # None drops a field (externalTarget)
         docs = {
             "system.yaml": {
                 "schemaVersion": "1.0", "uid": self.SYS, "type": "system", "name": "Directory System",
@@ -487,12 +488,13 @@ class LegacyInterfaceBaselineTests(WorkspaceValidateTests):
     def test_changed_relationship_naming_external_listener_passes(self) -> None:
         self._write()
         self._run("--write-baseline")
-        self._write(label="reads", targetListener=self.LST)
+        # Migrated as #368 asks: the system object is the target (free-text externalTarget is deprecated).
+        self._write(label="reads", targetListener=self.LST, externalTarget=None, target=self.SYS)
         out = self._run()
         self.assertNotIn(self.REL, self._failures(out))
 
     def test_stub_listener_upgrade_keeps_relationship_valid(self) -> None:
-        self._write(label="reads", targetListener=self.LST)
+        self._write(label="reads", targetListener=self.LST, externalTarget=None, target=self.SYS)
         self.assertNotIn(self.REL, self._failures(self._run()))
         listener_path = self.ws / "catalog" / "listener.yaml"
         listener = yaml.safe_load(listener_path.read_text(encoding="utf-8"))

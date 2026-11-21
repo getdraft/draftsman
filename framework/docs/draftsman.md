@@ -1151,6 +1151,17 @@ in new or edited relationships:
   `targetListener: <listener uid>`, found or created with Listener Lookup Before
   Create.
 
+Three ratcheted rules report them. After a framework refresh,
+`validate.py --write-baseline` records existing uses as `baseline:` warnings;
+only a new relationship, or an edited one, fails:
+
+- `relationship-flow-deprecated`: `flow` is `inbound` or `bidirectional`.
+- `relationship-external-target-freetext`: `externalTarget` is set.
+- `relationship-source-is-listener-side`: a heuristic on `flow: inbound` only,
+  when the source owns a listener or the other end is an outside party (a
+  free-text `externalTarget` or a `system` object), so the caller is probably
+  recorded as the target.
+
 When reading source material (diagrams, SDPs, architecture docs), extract visible
 directed connections and propose relationship objects for each one. Surface them
 as a group at the end of the session rather than interrupting the main authoring
