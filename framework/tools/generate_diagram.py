@@ -284,6 +284,10 @@ def owned_listeners(catalog: dict[str, dict[str, Any]]) -> dict[str, list[str]]:
     return {ref: [o["uid"] for o in sorted(items, key=_listener_order_key)] for ref, items in owned.items()}
 
 
+def _is_listener_obj(obj: Any) -> bool:
+    return isinstance(obj, dict) and obj.get("type") == "listener"
+
+
 def entrance_keys(node: DiagramNode) -> list[str]:
     """The entrances of a box's top edge: one per owned listener object, else one per declared interface (AC5)."""
     return node.listeners or node.interfaces
@@ -707,6 +711,11 @@ class Model:
             # it counts only when the target owns it (relationship-target-listener reports any other value)
             called = hint if dependency else clean(rel.get("targetListener"))
             target_listener = called if called and called in listeners_by_owner.get(end, []) else ""
+            # #368: a call that names its listener is caller -> listener, so it draws one arrowhead at the listener
+            # end whatever a legacy flow says. An externalTarget has no owner to compare, so any listener object
+            # counts. Relationships that name no listener keep their flow and draw exactly as before.
+            if target_listener or (not target and called and _is_listener_obj(catalog.get(called))):
+                flow = "outbound"
             edge = DiagramEdge(
                 source=source,
                 target=end,
@@ -2632,7 +2641,8 @@ def _edge_marks(edge: DiagramEdge, prefix: str) -> tuple[str, str]:
     """Path class and arrowhead attributes (D13).
 
     Asynchronous draws dashed and event dotted; synchronous or absent is solid. The arrowhead is at the target for
-    outbound or absent flow, at the source for inbound, and at both ends for bidirectional.
+    outbound or absent flow, at the source for inbound, and at both ends for bidirectional. An edge whose
+    relationship names its listener always carries outbound flow (#368), so it has one arrowhead, at the listener.
     """
     cls = "ln"
     if edge.direction == "asynchronous":
