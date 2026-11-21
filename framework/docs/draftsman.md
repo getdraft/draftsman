@@ -797,8 +797,9 @@ otherwise.
 **Recording connections:**
 
 For each confirmed crossing, write one relationship object per (from, to) pair
-identified in Round B, using the protocol from Round C as the `technology` field
-and `flow: outbound` as the default. Set `direction` to `synchronous` for
+identified in Round B, using the protocol from Round C as the `technology` field,
+with the caller as `source` (omit `flow`; `outbound` is the default and the
+other values are deprecated). Set `direction` to `synchronous` for
 REST/gRPC/HTTPS calls, `asynchronous` for fire-and-forget, and `event` for
 event-driven or pub/sub. Do not ask about `port` or `label`. Write relationship
 files to `catalog/relationships/` using the naming convention
@@ -1117,8 +1118,14 @@ For each relationship:
    "PostgreSQL wire protocol".
 6. Set `direction` to `synchronous` for request/response, `asynchronous` for
    fire-and-forget, or `event` for publish/subscribe or event-driven.
-7. Set `flow` to `outbound` (default), `inbound`, or `bidirectional` from the
-   source object's perspective.
+7. Do not set `flow`, or set it to `outbound` (the default). The caller is always
+   the `source`, so `flow: inbound` and `flow: bidirectional` are deprecated: for
+   "X calls this component", make X the source; for a request/response call, use
+   `direction: synchronous`. Do not use free-text `externalTarget` for new
+   relationships, which is deprecated too: record the external party as a
+   `system` object with its listeners and set `target` and `targetListener`.
+   Existing deprecated values still load, validate and render; see
+   Deprecated Relationship Fields below.
 
 Write the relationship object to `catalog/relationships/` using the naming
 convention `relationship-<source-name>-<verb>-<target-name>.yaml`.
@@ -1126,6 +1133,23 @@ convention `relationship-<source-name>-<verb>-<target-name>.yaml`.
 Do not ask about relationships unless the user brings up connections, dependencies,
 or topology. Do not block or delay drafting of other objects waiting for relationship
 completeness.
+
+### Deprecated Relationship Fields
+
+`flow: inbound`, `flow: bidirectional` and free-text `externalTarget` are
+deprecated. They stay valid: existing relationships keep loading, validating and
+rendering, and nothing is removed until a later major version. Never write them
+in new or edited relationships:
+
+- `flow: bidirectional` on a request/response call becomes `flow: outbound` (or
+  no `flow`) with `direction: synchronous`.
+- `flow: inbound` ("this component is called by X") becomes a relationship with
+  X as `source` and the component as `target`. When X is an unknown outside
+  party, record the protection on the component's listener
+  (`authenticationModel`, `description`) instead of a relationship.
+- `externalTarget: <name>` becomes `target: <system uid>` and
+  `targetListener: <listener uid>`, found or created with Listener Lookup Before
+  Create.
 
 When reading source material (diagrams, SDPs, architecture docs), extract visible
 directed connections and propose relationship objects for each one. Surface them

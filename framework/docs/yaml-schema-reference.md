@@ -44,8 +44,11 @@ separate object types.
 
 ## Relationships
 
-A `relationship` object (`catalog/relationships/`) carries `source`, `target`
-(or `externalTarget`), `label`, `technology`, `direction` and `flow`. Its optional
+A `relationship` object (`catalog/relationships/`) carries `source`, `target`,
+`targetListener`, `label`, `technology` and `direction`. `flow` defaults to
+`outbound`; `flow: inbound`, `flow: bidirectional` and free-text `externalTarget`
+are deprecated but still accepted (see Deprecated Relationship Fields in the
+Draftsman docs). Its optional
 `targetInterface` is the name of the interface it uses on the target: an entry of
 a product component's `interfaces`, or `data` for a data component's implicit
 surface. Product teams record it; the ratcheted rule `relationship-target-interface`

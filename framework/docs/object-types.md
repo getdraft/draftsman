@@ -118,6 +118,7 @@ unmarked or mark them `definition`.
 | Domain | `domain` | Names a planning area such as compute, observability, identity, or data; membership is generated from `Capability.domain`. |
 | DecisionRecord | `decision_record` | Records an architecture decision, risk, exception, or rationale. |
 | DraftingSession | `drafting_session` | Stores interview memory, source material, assumptions, unresolved questions, and generated work while drafting. |
+| Relationship | `relationship` | A call from a caller (`source`) to the listener it lands on (`target` owns it, `targetListener` names it). `flow: inbound`, `flow: bidirectional` and free-text `externalTarget` are deprecated but still accepted. |
 | ObjectPatch | `object_patch` | A workspace overlay that changes selected fields on a framework-owned object without copying the full object. |
 
 ## Delivery Models

@@ -231,8 +231,8 @@ drafting workflow and revisit it with the accountable owner.
 
 Inter-service dependencies are modeled as relationship objects in
 `catalog/relationships/`, not as inline fields inside the SDP. A relationship
-object carries a `source` UID, a `target` UID (or `externalTarget` for systems
-with no catalog object), a `label`, `technology`, and optional `capabilities`
+object carries a `source` UID, a `target` UID (free-text `externalTarget` for
+systems with no catalog object is deprecated but still accepted), a `label`, `technology`, and optional `capabilities`
 that the validator uses as requirement evidence. The generated diagrams draw
 relationship objects whose both endpoints are deployed in the same SDP as
 connection edges, and the pattern detail page shows them in its Connections
