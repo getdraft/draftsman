@@ -1,6 +1,7 @@
 # DRAFT Framework 1.0 — Central Receiver GitHub Action
-# This workflow listens for decentralized SDP updates sent by engineering product repos,
-# validates the payload, updates local cache, and regenerates central AI/browser indexes.
+# This workflow receives decentralized SDP updates sent by engineering product repos, stores them
+# with the framework's sdp_sync.py, validates the workspace, and regenerates the central indexes.
+# The payload is read from the event file by the tool; no payload value is placed in script text.
 name: DRAFT Decentralized SDP Receiver
 
 on:
@@ -31,11 +32,10 @@ jobs:
 
       - name: Store Decentralized SDP Payload
         run: |
-          mkdir -p .draft/external_sdps
-          PRODUCT_ID="${{ github.event.client_payload.product_id }}"
-          # Clean payload filename
-          SAFE_ID=$(echo "$PRODUCT_ID" | tr '/' '_')
-          echo '${{ toJson(github.event.client_payload.sdp_content) }}' > ".draft/external_sdps/${SAFE_ID}.yaml"
+          python3 .draft/framework/tools/sdp_sync.py receive \
+            --workspace . \
+            --payload "$GITHUB_EVENT_PATH" \
+            --result "$RUNNER_TEMP/sdp-sync-result.json"
 
       - name: Validate Workspace Architecture
         run: |
@@ -49,4 +49,4 @@ jobs:
       - name: Commit Updated Index & Cache
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore(draft): sync decentralized SDP for ${{ github.event.client_payload.product_id }}"
+          commit_message: "chore(draft): sync decentralized SDP"
