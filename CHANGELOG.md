@@ -11,7 +11,7 @@
 
 ### Changed
 
-- `templates/github/product-repo-sync.yml.tmpl` and `templates/github/drafting-table-receiver.yml.tmpl` pass the central workspace's name to `sdp_sync.py` through an environment variable. The App token step and the `frontline-drafting-table` example comment are unchanged.
+- `templates/github/product-repo-sync.yml.tmpl` and `templates/github/drafting-table-receiver.yml.tmpl` pass the central workspace's name to `sdp_sync.py` through an environment variable. The App token step is unchanged.
 
 ### Fixed
 
