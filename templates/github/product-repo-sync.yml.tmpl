@@ -2,6 +2,8 @@
 # This workflow fires when .draft/sdp.yaml or .draft/catalog/ changes in this engineering repo,
 # packs them with the framework's sdp_sync.py, uses an ephemeral short-lived GitHub App token,
 # and sends the payload to the central drafting-table workspace as a repository_dispatch event.
+# The payload carries a GitHub Actions OIDC token (id-token: write) whose audience names the central
+# workspace; the receiver verifies it to know the sync really came from this repository's default branch.
 # Values reach the scripts only through environment variables and files, never as script text.
 name: Sync SDP to Central DRAFT Workspace
 
@@ -52,6 +54,7 @@ jobs:
           COMMIT: ${{ github.sha }}
           REF: ${{ github.ref }}
           CORRELATION_ID: ${{ github.run_id }}-${{ github.run_attempt }}
+          CENTRAL_REPOSITORY: ${{ github.repository_owner }}/${{ secrets.DRAFT_CENTRAL_REPO_NAME }}
         run: |
           python -m pip install --quiet pyyaml
           python3 .draft-sync-tool/framework/tools/sdp_sync.py pack \
@@ -60,6 +63,7 @@ jobs:
             --commit "$COMMIT" \
             --ref "$REF" \
             --correlation-id "$CORRELATION_ID" \
+            --central-repository "$CENTRAL_REPOSITORY" \
             --output "$RUNNER_TEMP/sdp-payload.json"
 
       - name: Dispatch SDP Payload to Central Workspace

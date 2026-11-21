@@ -2,6 +2,8 @@
 # This workflow receives decentralized SDP updates sent by engineering product repos, stores them
 # with the framework's sdp_sync.py, validates the workspace, and regenerates the central indexes.
 # The payload is read from the event file by the tool; no payload value is placed in script text.
+# The tool verifies the sender's GitHub Actions OIDC token (audience: this repository) against GitHub's
+# published keys before storing anything.
 name: DRAFT Decentralized SDP Receiver
 
 on:
@@ -31,10 +33,13 @@ jobs:
           pip install pyyaml
 
       - name: Store Decentralized SDP Payload
+        env:
+          CENTRAL_REPOSITORY: ${{ github.repository }}
         run: |
           python3 .draft/framework/tools/sdp_sync.py receive \
             --workspace . \
             --payload "$GITHUB_EVENT_PATH" \
+            --central-repository "$CENTRAL_REPOSITORY" \
             --result "$RUNNER_TEMP/sdp-sync-result.json"
 
       - name: Validate Workspace Architecture
