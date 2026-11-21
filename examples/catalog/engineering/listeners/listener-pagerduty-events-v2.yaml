@@ -1,0 +1,16 @@
+schemaVersion: '1.0'
+uid: 01KVFRT368-PD03
+type: listener
+name: PagerDuty Events API v2
+owner:
+  kind: external_system
+  ref: 01KVFRT368-SY01
+protocol: HTTPS
+port: 443
+endpoint: /v2/enqueue
+authenticationModel: api-key
+catalogStatus: complete
+description: Vendor endpoint that accepts alert events. Recorded once and reused by every caller; the integration
+  key is the api-key.
+methods:
+- POST

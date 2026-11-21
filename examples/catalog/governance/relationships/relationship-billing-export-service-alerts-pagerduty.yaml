@@ -1,0 +1,12 @@
+schemaVersion: '1.0'
+uid: 01KVFRT368-RS04
+type: relationship
+name: Billing Export Service → PagerDuty
+description: Billing Export Service raises incidents through the shared PagerDuty Events API v2 listener.
+source: 01KVFRT368-PCB1
+target: 01KVFRT368-SY01
+targetListener: 01KVFRT368-PD03
+label: sends alerts to
+technology: HTTPS
+direction: synchronous
+catalogStatus: complete

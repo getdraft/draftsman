@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KVFRT368-RS01
+type: relationship
+name: OpenStack Ops Console → Billing Export Service
+description: Operators download chargeback files from the Billing Export SFTP outbox.
+source: 01KSE5V73Z-Q0A0
+target: 01KVFRT368-PCB1
+targetListener: 01KVFRT368-SF01
+label: downloads usage exports from
+technology: SFTP
+direction: synchronous
+catalogStatus: complete
+targetInterface: SFTP outbox

@@ -1,0 +1,16 @@
+schemaVersion: '1.0'
+uid: 01KVFRT368-SY01
+type: system
+name: PagerDuty
+aliases:
+- PagerDuty Events API
+description: External incident alerting service. Recorded once as a system so every caller targets the same listener
+  instead of a free-text externalTarget.
+catalogStatus: complete
+lifecycleStatus: preferred
+owner:
+  team: cloud-architecture
+  contact: cloud-architecture@example.com
+tags:
+- external
+- alerting

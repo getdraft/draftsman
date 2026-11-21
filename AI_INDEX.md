@@ -240,6 +240,8 @@ These are sample catalog objects used to validate and demonstrate the framework.
 
 | UID | Name | Type | Tags | Description | Path |
 |---|---|---|---|---|---|
+| 01KVFRT368-PCB1 | Billing Export Service | product_component | product-component, openstack, file-exchange | Builds nightly tenant usage and chargeback files from Ceilometer data and serves them to finance tooling over its own... | examples/catalog/engineering/product-components/product-component-billing-export-service.yaml |
+| 01KVFRT368-PC12 | Image Import Service | product_component | product-component, openstack, file-exchange | Accepts uploaded VM images over its own SFTP inbox, scans and converts them, and registers them with Glance. | examples/catalog/engineering/product-components/product-component-image-import-service.yaml |
 | 01KSE5V73Z-Q0A0 | OpenStack Ops Console | product_component | product-component, openstack, operations, internal-tooling | Internal web-based operations console for platform engineering teams. Surfaces real-time service health, quota utiliz... | examples/catalog/engineering/product-components/product-component-openstack-ops-console.yaml |
 | 01KSE5V73Z-RTKZ | Platform Audit Schema | data_component | data-component, openstack, audit, compliance | Relational schema tracking platform-level audit events — control plane API calls, administrative actions, quota chang... | examples/catalog/engineering/data-components/data-component-platform-audit-schema.yaml |
 | STCK000001-SDP1 | OpenStack IaaS Platform | software_deployment_pattern | software-deployment-pattern, openstack, iaas, cloud, platform | Full-stack self-managed OpenStack Infrastructure-as-a-Service deployment pattern covering the complete control plane... | examples/catalog/engineering/software-deployment-patterns/sdp-openstack-iaas-platform.yaml |
@@ -331,6 +333,8 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | 01KT11AQWX-A5ZZ | OpenStack API Load Balancer — Resilience and Availability | decision_record | decision-record, example, resilience |  | examples/catalog/governance/decision-records/dr-network-service-openstack-api-lb-resilience.yaml |
 | 01KSE5V73Z-CRZV | No WAF Required — OpenStack Is Internal-Only | decision_record | decision-record, openstack, security, network-boundary | Documents the accepted decision that a Web Application Firewall (WAF) is not required for the OpenStack IaaS platform... | examples/catalog/governance/decision-records/dr-openstack-no-waf-internal-only.yaml |
 | 01KSE5V73Z-DRSC | OpenStack Ops Console — Secrets Injection via Platform Secret Store | decision_record | decision-record, openstack, secrets, product-component | Documents the decision to inject application secrets into the OpenStack Ops Console at deploy time via the platform s... | examples/catalog/governance/decision-records/dr-ops-console-secrets-injection.yaml |
+| 01KVFRT368-DR01 | Billing Export Service — Security and Compliance decisions | decision_record | decision-record, example, compliance |  | examples/catalog/governance/decision-records/dr-product-component-billing-export-service-compliance.yaml |
+| 01KVFRT368-DR02 | Image Import Service — Security and Compliance decisions | decision_record | decision-record, example, compliance |  | examples/catalog/governance/decision-records/dr-product-component-image-import-service-compliance.yaml |
 | 01KT1340EW-5H7Z | OpenStack Ops Console — Security and Compliance decisions | decision_record | decision-record, example, compliance |  | examples/catalog/governance/decision-records/dr-product-component-openstack-ops-console-compliance.yaml |
 | 01KT1340HF-1HG3 | AWS Lambda Runtime — Security and Compliance decisions | decision_record | decision-record, example, compliance |  | examples/catalog/governance/decision-records/dr-runtime-service-aws-lambda-runtime-compliance.yaml |
 | 01KT11AQX1-55F1 | AWS Lambda Runtime — Deployment Topology and Qualities | decision_record | decision-record, example, deployment |  | examples/catalog/governance/decision-records/dr-runtime-service-aws-lambda-runtime-deployment.yaml |
@@ -401,6 +405,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | 01KSKWFZZX-34KP | AWS Lambda Runtime → AWS IAM | relationship |  |  | examples/catalog/governance/relationships/relationship-aws-lambda-runtime-calls-aws-iam.yaml |
 | 01KSKWFZZX-JWP6 | AWS Lambda Runtime → Amazon CloudWatch Logs | relationship |  |  | examples/catalog/governance/relationships/relationship-aws-lambda-runtime-sends-events-to-amazon-cloudwatch-logs.yaml |
 | 01KSKWFZZW-ZEKF | AWS Lambda Serverless Host → AWS Lambda Service | relationship |  |  | examples/catalog/governance/relationships/relationship-aws-lambda-serverless-host-calls-aws-lambda-service.yaml |
+| 01KVFRT368-RS04 | Billing Export Service → PagerDuty | relationship |  | Billing Export Service raises incidents through the shared PagerDuty Events API v2 listener. | examples/catalog/governance/relationships/relationship-billing-export-service-alerts-pagerduty.yaml |
 | 01KSKWFZZY-FS6X | Ceilometer Telemetry Service → Keystone Identity | relationship |  |  | examples/catalog/governance/relationships/relationship-ceilometer-telemetry-service-calls-keystone-identity.yaml |
 | 01KSKWFZZY-501S | Ceilometer Telemetry Service → RabbitMQ Message Broker | relationship |  |  | examples/catalog/governance/relationships/relationship-ceilometer-telemetry-service-sends-events-to-rabbitmq-message-broker.yaml |
 | 01KSKCDR01-KST1 | Cinder Block Storage → Keystone Identity | relationship |  | Cinder validates every incoming API request by verifying the caller's Keystone token. Cinder's service account is reg... | examples/catalog/governance/relationships/relationship-cinder-calls-keystone.yaml |
@@ -420,6 +425,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | 01KSKWG003-9EKX | Horizon Dashboard → Keystone Identity | relationship |  |  | examples/catalog/governance/relationships/relationship-horizon-dashboard-calls-keystone-identity.yaml |
 | 01KSKWG004-0E34 | Horizon Dashboard → Neutron Networking | relationship |  |  | examples/catalog/governance/relationships/relationship-horizon-dashboard-calls-neutron-networking.yaml |
 | 01KSKWG003-G3Q2 | Horizon Dashboard → Nova Compute Service | relationship |  |  | examples/catalog/governance/relationships/relationship-horizon-dashboard-calls-nova-compute-service.yaml |
+| 01KVFRT368-RS05 | Image Import Service → PagerDuty | relationship |  | Image Import Service raises incidents through the shared PagerDuty Events API v2 listener. | examples/catalog/governance/relationships/relationship-image-import-service-alerts-pagerduty.yaml |
 | 01KSKWG006-9TPR | Ironic Bare Metal Service → Ironic Database | relationship |  |  | examples/catalog/governance/relationships/relationship-ironic-bare-metal-service-calls-ironic-database.yaml |
 | 01KSKWG005-PQGD | Ironic Bare Metal Service → Keystone Identity | relationship |  |  | examples/catalog/governance/relationships/relationship-ironic-bare-metal-service-calls-keystone-identity.yaml |
 | 01KSKWG007-6VBX | Ironic Bare Metal Service → Nova Compute Service | relationship |  |  | examples/catalog/governance/relationships/relationship-ironic-bare-metal-service-calls-nova-compute-service.yaml |
@@ -439,6 +445,9 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | 01KSKN0V01-NTN1 | Nova Compute → Neutron Networking | relationship |  | Nova calls Neutron APIs to create, attach, and detach virtual network interfaces during instance provisioning and del... | examples/catalog/governance/relationships/relationship-nova-provisions-neutron.yaml |
 | 01KSK0C6DP-5GFZ | Nova Compute → Nova Database | relationship |  | Nova Compute reads and writes scheduling, instance, and host state to the Nova Database. | examples/catalog/governance/relationships/relationship-nova-reads-nova-database.yaml |
 | 01KSKWFZZV-A346 | OpenStack Shared Database → Backup Service | relationship |  |  | examples/catalog/governance/relationships/relationship-openstack-shared-database-calls-backup-service.yaml |
+| 01KVFRT368-RS03 | OpenStack Ops Console → PagerDuty | relationship |  | OpenStack Ops Console raises incidents through the shared PagerDuty Events API v2 listener. | examples/catalog/governance/relationships/relationship-ops-console-alerts-pagerduty.yaml |
+| 01KVFRT368-RS01 | OpenStack Ops Console → Billing Export Service | relationship |  | Operators download chargeback files from the Billing Export SFTP outbox. | examples/catalog/governance/relationships/relationship-ops-console-downloads-billing-exports.yaml |
+| 01KVFRT368-RS02 | OpenStack Ops Console → Image Import Service | relationship |  | Operators upload golden images to the Image Import SFTP inbox. | examples/catalog/governance/relationships/relationship-ops-console-uploads-images.yaml |
 | 01KSKWG00D-2AYJ | RabbitMQ Message Broker Service → Keystone Identity | relationship |  |  | examples/catalog/governance/relationships/relationship-rabbitmq-message-broker-service-calls-keystone-identity.yaml |
 | 01KSKWG00D-V0KN | Sahara Data Processing Service → Keystone Identity | relationship |  |  | examples/catalog/governance/relationships/relationship-sahara-data-processing-service-calls-keystone-identity.yaml |
 | 01KSKWG00E-56JG | Sahara Data Processing Service → Sahara Database | relationship |  |  | examples/catalog/governance/relationships/relationship-sahara-data-processing-service-calls-sahara-database.yaml |
@@ -449,6 +458,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | 01KSKWG00F-PV05 | Trove Database Service → RabbitMQ Message Broker | relationship |  |  | examples/catalog/governance/relationships/relationship-trove-database-service-calls-rabbitmq-message-broker.yaml |
 | 01KSKWG00G-07D0 | Trove Database Service → Trove Database | relationship |  |  | examples/catalog/governance/relationships/relationship-trove-database-service-calls-trove-database.yaml |
 | 01KSK1FMGV-JMTP | OpenStack Compute Platform | system | openstack, iaas, infrastructure | Core OpenStack compute, networking, and storage services that together deliver IaaS capabilities to tenant workloads. | examples/catalog/governance/systems/system-openstack-compute.yaml |
+| 01KVFRT368-SY01 | PagerDuty | system | external, alerting | External incident alerting service. Recorded once as a system so every caller targets the same listener instead of a... | examples/catalog/governance/systems/system-pagerduty.yaml |
 
 ## Content Folder Counts
 
@@ -459,7 +469,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | framework/configurations/reference-architectures | 0 |
 | framework/configurations/domains | 11 |
 | community/reference-architectures | 10 |
-| examples/catalog/engineering/product-components | 1 |
+| examples/catalog/engineering/product-components | 3 |
 | examples/catalog/engineering/data-components | 1 |
 | examples/catalog/engineering/software-deployment-patterns | 1 |
 | examples/catalog/shared-services/hosts | 2 |
@@ -467,10 +477,10 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | examples/catalog/shared-services/data-store-services | 7 |
 | examples/catalog/shared-services/network-services | 1 |
 | examples/catalog/shared-services/technology-components | 20 |
-| examples/catalog/governance/decision-records | 105 |
+| examples/catalog/governance/decision-records | 107 |
 | examples/catalog/governance/sessions | 2 |
-| examples/catalog/governance/relationships | 54 |
-| examples/catalog/governance/systems | 1 |
+| examples/catalog/governance/relationships | 59 |
+| examples/catalog/governance/systems | 2 |
 | examples/catalog/governance/reference-architectures | 0 |
 
 ## Templates

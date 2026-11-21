@@ -1,0 +1,15 @@
+schemaVersion: '1.0'
+uid: 01KVFRT368-SF01
+type: listener
+name: Billing Export SFTP
+owner:
+  kind: product_component
+  ref: 01KVFRT368-PCB1
+protocol: TCP
+port: 22
+endpoint: /
+authenticationModel: other
+catalogStatus: complete
+description: 'SFTP (SSH file transfer) outbox for usage exports. SSH key authentication per consumer. Looks like
+  the Image Import SFTP listener (same protocol and port) but is a different listener: the owner is part of listener
+  identity.'

@@ -168,7 +168,9 @@ A ReferenceArchitecture should be generic enough to guide many products, not jus
 
 1. Run the Listener Lookup Before Create procedure in
    [draftsman.md](draftsman.md) first. If it links an existing listener, stop:
-   use that UID.
+   use that UID. If it reports a near match (same owner and protocol, only the
+   version, an extending path or the port differs), ask whether it is the same
+   listener before creating a new one.
 2. Create the file under the engineering catalog, for example
    `catalog/engineering/listeners/`. Add or repair the generated `uid`.
 3. Set `owner` to `kind` (`product_component`, `data_component` or
@@ -182,6 +184,32 @@ A ReferenceArchitecture should be generic enough to guide many products, not jus
    a stub upgrades that stub and keeps its UID.
 7. Set `targetListener` to this UID on every relationship that calls it, and run
    validation.
+
+The bundled examples show the target model (`examples/catalog/`):
+
+- **Look-alike internal listeners.** Billing Export Service and Image Import
+  Service each own an SFTP listener on TCP port 22 at `/`
+  (`listener-billing-export-sftp.yaml`, `listener-image-import-sftp.yaml`).
+  Same protocol, port and path, different owners: two listeners, never a near
+  match, and each relationship from the Ops Console names its own.
+- **One external system, one listener, several callers.** PagerDuty is a
+  `system` object (`system-pagerduty.yaml`) owning one listener, PagerDuty
+  Events API v2 (HTTPS 443 `/v2/enqueue`). The Ops Console, Billing Export
+  Service and Image Import Service each have a relationship with
+  `target: <PagerDuty>` and `targetListener: <Events API v2>`, with no
+  `externalTarget` and no `flow`.
+
+```yaml
+source: 01KVFRT368-PCB1        # Billing Export Service, the caller
+target: 01KVFRT368-SY01        # PagerDuty system
+targetListener: 01KVFRT368-PD03 # PagerDuty Events API v2
+label: sends alerts to
+technology: HTTPS
+direction: synchronous
+```
+
+The older example relationships that still use `externalTarget` are kept as
+legacy content (baselined); `/draft migrate` shows how it would convert them.
 
 ## Record Interfaces, Listeners And Edge Slots
 

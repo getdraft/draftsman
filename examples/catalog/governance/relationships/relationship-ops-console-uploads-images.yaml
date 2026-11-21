@@ -1,0 +1,13 @@
+schemaVersion: '1.0'
+uid: 01KVFRT368-RS02
+type: relationship
+name: OpenStack Ops Console → Image Import Service
+description: Operators upload golden images to the Image Import SFTP inbox.
+source: 01KSE5V73Z-Q0A0
+target: 01KVFRT368-PC12
+targetListener: 01KVFRT368-SF02
+label: uploads VM images to
+technology: SFTP
+direction: synchronous
+catalogStatus: complete
+targetInterface: SFTP inbox
