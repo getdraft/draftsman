@@ -5179,37 +5179,58 @@ def validate_exposed_through(
                 )
 
 
-def validate_exposure_refs(
+def validate_fills(
     obj: dict[str, Any],
     path: Path,
     catalog_by_id: dict[str, dict[str, Any]],
-    warnings: list[str],
+    failures: list[str],
+    role_context: dict[str, Any] | None = None,
 ) -> None:
-    """Warn on reference architecture fills that do not name a network_service on an edge slot."""
+    """Fail reference architecture fills that are not a network_service definition on an edge slot (E4).
+
+    Not ratcheted: fills is additive, so every entry is checked on every run.
+    """
+    if obj.get("type") != "reference_architecture":
+        return
     for index, group in enumerate(obj.get("serviceGroups") or []):
         if not isinstance(group, dict):
-            continue
-        if obj.get("type") != "reference_architecture":
             continue
         for entry_index, entry in enumerate(group.get("deployableObjects") or []):
             if not isinstance(entry, dict) or "fills" not in entry:
                 continue
             value = entry.get("fills")
-            ref = catalog_by_id.get(value) if isinstance(value, str) else None
+            if not isinstance(value, str):
+                continue  # a wrong field type is reported by the schema check
             where = f"serviceGroups[{index}].deployableObjects[{entry_index}]"
-            if not (isinstance(ref, dict) and ref.get("type") == "network_service"):
-                warnings.append(f"{path}: {where}.fills '{value}' must be the uid of a network_service definition")
-            if entry.get("slot") not in EDGE_SLOTS:
-                warnings.append(
-                    f"{path}: {where}.fills is set on slot '{entry.get('slot')}'; only the edge slots {', '.join(EDGE_SLOTS)} are filled"
+            slot = entry.get("slot")
+            if slot not in EDGE_SLOTS:
+                slot_text = f"slot '{slot}'" if is_non_empty(slot) else "an entry with no slot"
+                failures.append(
+                    f"{path}: {where}.fills is set on {slot_text}; only the edge slots {', '.join(EDGE_SLOTS)} are filled"
+                )
+            ref = catalog_by_id.get(value)
+            if ref is None:
+                failures.append(
+                    f"{path}: {where}.fills '{value}' must be the uid of a network_service definition (no object has that uid)"
+                )
+                continue
+            if ref.get("type") != "network_service":
+                failures.append(
+                    f"{path}: {where}.fills '{value}' must be the uid of a network_service definition "
+                    f"(got {_describe(ref, value)})"
+                )
+                continue
+            if _known_service_instance(value, ref, role_context):
+                failures.append(
+                    f"{path}: {where}.fills '{value}' names a network_service instance {_describe(ref, value)}; "
+                    f"use the uid of its definition (serviceRole: definition, or an object in the service definitions folder)"
                 )
             cap_uid = entry.get("capability")
-            if is_non_empty(cap_uid) and isinstance(ref, dict) and not _target_satisfies_capability(
-                str(value), ref, str(cap_uid), catalog_by_id
-            ):
-                warnings.append(
+            if is_non_empty(cap_uid) and not _target_satisfies_capability(value, ref, str(cap_uid), catalog_by_id):
+                failures.append(
                     f"{path}: {where}.fills '{value}' ({ref.get('name') or value}) does not satisfy capability "
-                    f"'{cap_uid}' of slot '{entry.get('slot')}'"
+                    f"'{cap_uid}' of slot '{slot}'; fill it with a definition that has the capability, directly "
+                    f"or through its technology component"
                 )
 
 
@@ -5418,8 +5439,8 @@ def main(argv: list[str] | None = None) -> int:
             validate_protocol_family(obj, path, catalog_by_id, warnings)
         if obj.get("type") == "software_deployment_pattern":
             validate_exposed_through(obj, path, catalog_by_id, failures, exposure_role_context)
-        if obj.get("type") in ("software_deployment_pattern", "reference_architecture"):
-            validate_exposure_refs(obj, path, catalog_by_id, warnings)
+        if obj.get("type") == "reference_architecture":
+            validate_fills(obj, path, catalog_by_id, failures, exposure_role_context)
         if obj.get("type") == "diagram_layout":
             validate_diagram_layout(obj, path, catalog_by_id, failures, warnings)
         if obj.get("type") == "system":

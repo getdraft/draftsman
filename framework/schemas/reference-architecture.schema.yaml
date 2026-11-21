@@ -99,10 +99,13 @@ deployableObjectEntry:
   fieldTypes:
     fills: str
   fieldDescriptions:
-    fills: Optional on an edge slot (load-balancer, ingress, web-application-firewall,
-      api-gateway). The catalog uid of the network_service definition that fills
+    fills: Optional on an edge slot (firewall, web-application-firewall, load-balancer,
+      api-gateway, ingress). The catalog uid of the network_service definition that fills
       the slot, so every pattern that follows this reference architecture inherits
-      which definition fronts its exposed service groups.
+      which definition fronts its exposed service groups. Validation fails (not
+      ratcheted) when fills is on a non-edge slot, names an unknown uid, a
+      non-network_service or a network_service instance, or names a definition
+      that does not satisfy the entry's capability.
     ref: Reference a specific catalog object UID when this entry represents a known
       deployable object. Used in company SDPs and RAs that reference catalog-specific
       objects.

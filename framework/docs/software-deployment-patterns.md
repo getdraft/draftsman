@@ -312,6 +312,11 @@ instance (`serviceRole: instance`, or outside the service definitions folder
 when the workspace names one), `none` inside a list, an empty list, or a uid
 listed twice.
 
+`fills` on a reference architecture entry is checked the same way: it must sit
+on one of the five edge slots and name a network_service definition, and when
+the entry names a `capability` the definition (or its technology component)
+must provide it. Each violation fails validation; none is ratcheted.
+
 To fix a deployment page that lacks a port or a device: declare `listeners` on
 the definition; fill the slot with `fills` on the reference architecture entry
 (or set `exposedThrough`); and name the target interface on the relationship.

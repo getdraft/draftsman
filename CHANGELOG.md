@@ -1,3 +1,27 @@
+## Unreleased
+
+### Compatibility Impact
+
+- Reference architecture `fills` problems are now validation errors instead of warnings (E4, not ratcheted, so no baseline entry hides them). An RA entry fails when `fills` is set on a slot that is not an edge slot (or on an entry with no slot), names an unknown uid, a non-network_service or a network_service instance, or names a definition that does not satisfy the entry's `capability`. Reference architectures with valid fills are unaffected.
+
+### Added
+
+- `validate_fills` in `framework/tools/validate.py`. It reports the group and entry index, the slot and the offending uid, and uses the same definition-or-instance test as `exposedThrough`.
+- Tests in `tests/test_validate_ownership.py` for a clean fill on every edge slot, a non-edge slot, an entry with no slot, a non-network_service, an unknown uid, an instance (by `serviceRole` and by folder), a missing capability, a capability satisfied through a technology component, and an end-to-end run that exits 1 and that `--write-baseline` does not clear.
+
+### Changed
+
+- `validate_exposure_refs` is replaced by `validate_fills`; exposure validation no longer emits warnings.
+- `framework/schemas/reference-architecture.schema.yaml` lists all five edge slots for `fills` (it omitted `firewall`) and describes the failures.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- Run `validate.py`. For each `fills` failure, move `fills` to an edge slot entry (`firewall`, `web-application-firewall`, `load-balancer`, `api-gateway`, `ingress`), point it at a network_service definition, or give that definition (or its technology component) the slot's capability. In a workspace with no service definitions folder configured, a network_service without `serviceRole` is accepted.
+
 ## 1.16.0 - 2026-11-21
 
 ### Compatibility Impact

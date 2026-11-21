@@ -427,23 +427,24 @@ def _validator():
 
 
 class ExposureWarningTests(unittest.TestCase):
-    """AC3: fills and protocol-family warnings (never errors, never ratcheted). exposedThrough is an error: see ExposedThroughErrorTests."""
+    """Protocol-family warnings (never errors, never ratcheted) and E4 S3.2 fills errors (not ratcheted).
+
+    exposedThrough errors are in ExposedThroughErrorTests.
+    """
 
     def setUp(self) -> None:
         self.v = _validator()
         self.catalog = {
-            NS1: _obj(NS1, "network_service", "Fx Firewall", capabilities=[CAP]),
-            NS2: _obj(NS2, "network_service", "Fx Plain Device"),
+            NS1: _obj(NS1, "network_service", "Fx Firewall", capabilities=[CAP], serviceRole="definition"),
+            NS2: _obj(NS2, "network_service", "Fx Plain Device", serviceRole="definition"),
+            NS3: _obj(NS3, "network_service", "Fx Firewall Prod", capabilities=[CAP], serviceRole="instance"),
             COMP: _obj(COMP, "product_component", "Fx Component"),
         }
 
-    def exposure(self, obj: Dict[str, Any]) -> List[str]:
+    def exposure(self, obj: Dict[str, Any], role_context: Optional[Dict[str, Any]] = None) -> List[str]:
         out: List[str] = []
-        self.v.validate_exposure_refs(obj, Path("x.yaml"), self.catalog, out)
+        self.v.validate_fills(obj, Path("x.yaml"), self.catalog, out, role_context)
         return out
-
-    def sdp(self, exposed: Any) -> Dict[str, Any]:
-        return _obj(SDP2, "software_deployment_pattern", "Fx Pattern", serviceGroups=[{"name": "web", "exposedThrough": exposed}])
 
     def ra(self, **entry: Any) -> Dict[str, Any]:
         return _obj(RA, "reference_architecture", "Fx Ra", serviceGroups=[{"name": "edge", "deployableObjects": [entry]}])
@@ -452,20 +453,20 @@ class ExposureWarningTests(unittest.TestCase):
     def test_fills_clean_when_edge_slot_network_service_and_capability(self) -> None:
         self.assertEqual([], self.exposure(self.ra(slot="firewall", fills=NS1, capability=CAP)))
 
-    def test_fills_without_capability_on_entry_gives_no_capability_warning(self) -> None:
+    def test_fills_without_capability_on_entry_gives_no_capability_failure(self) -> None:
         self.assertEqual([], self.exposure(self.ra(slot="ingress", fills=NS2)))
 
-    def test_fills_target_not_network_service_warns(self) -> None:
+    def test_fills_target_not_network_service_fails(self) -> None:
         found = self.exposure(self.ra(slot="firewall", fills=COMP))
         self.assertEqual(1, len(found), found)
         self.assertIn(f"fills '{COMP}' must be the uid of a network_service", found[0])
 
-    def test_fills_on_non_edge_slot_warns_with_slot_name(self) -> None:
+    def test_fills_on_non_edge_slot_fails_with_slot_name(self) -> None:
         found = self.exposure(self.ra(slot="database", fills=NS1))
         self.assertEqual(1, len(found), found)
         self.assertIn("slot 'database'", found[0])
 
-    def test_fills_definition_lacking_capability_warns(self) -> None:
+    def test_fills_definition_lacking_capability_fails(self) -> None:
         found = self.exposure(self.ra(slot="load-balancer", fills=NS2, capability=CAP))
         self.assertEqual(1, len(found), found)
         for text in ("Fx Plain Device", CAP, "load-balancer"):
@@ -475,6 +476,45 @@ class ExposureWarningTests(unittest.TestCase):
         self.catalog[NS2]["technologyComponent"] = "01M7C497N9-MSE4"
         self.catalog["01M7C497N9-MSE4"] = _obj("01M7C497N9-MSE4", "technology_component", "Fx Tech", capabilities=[CAP])
         self.assertEqual([], self.exposure(self.ra(slot="firewall", fills=NS2, capability=CAP)))
+
+    def test_every_edge_slot_can_be_filled(self) -> None:
+        for slot in ("firewall", "web-application-firewall", "load-balancer", "api-gateway", "ingress"):
+            self.assertEqual([], self.exposure(self.ra(slot=slot, fills=NS2)), slot)
+
+    def test_fills_unknown_uid_fails(self) -> None:
+        found = self.exposure(self.ra(slot="firewall", fills="01M7C497ZZ-MSEZ"))
+        self.assertEqual(1, len(found), found)
+        self.assertIn("no object has that uid", found[0])
+
+    def test_fills_instance_fails(self) -> None:
+        found = self.exposure(self.ra(slot="firewall", fills=NS3, capability=CAP))
+        self.assertEqual(1, len(found), found)
+        self.assertIn("instance", found[0])
+        self.assertIn("Fx Firewall Prod", found[0])
+
+    def test_fills_instance_by_folder_fails(self) -> None:
+        self.catalog[NS5] = _obj(NS5, "network_service", "Fx Folder Instance")
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            ctx = {"workspace_root": root, "workspace_config": {"paths": {"serviceDefinitionsFolder": "catalog/shared-services"}},
+                   "paths": {NS5: root / "catalog" / "engineering" / "lb.yaml"}}
+            found = self.exposure(self.ra(slot="load-balancer", fills=NS5), ctx)
+            self.assertEqual(1, len(found), found)
+            self.assertIn("instance", found[0])
+
+    def test_fills_without_slot_fails(self) -> None:
+        found = self.exposure(self.ra(fills=NS1))
+        self.assertEqual(1, len(found), found)
+        self.assertIn("an entry with no slot", found[0])
+
+    def test_fills_wrong_type_is_left_to_the_schema_check(self) -> None:
+        self.assertEqual([], self.exposure(self.ra(slot="firewall", fills=3)))
+
+    def test_entries_without_fills_and_patterns_are_ignored(self) -> None:
+        self.assertEqual([], self.exposure(self.ra(slot="database", objectType="data_store_service")))
+        sdp = _obj(SDP2, "software_deployment_pattern", "Fx Pattern", serviceGroups=[
+            {"name": "web", "deployableObjects": [{"slot": "database", "fills": COMP}]}])
+        self.assertEqual([], self.exposure(sdp))
 
     # protocol family
     def family_warnings(self, technology: str, protocol: Optional[str], derived: bool = False, **target: Any) -> List[str]:
@@ -530,7 +570,7 @@ class ExposureWarningTests(unittest.TestCase):
     def test_other_engine_never_warns(self) -> None:
         self.assertEqual([], self.data_family_warnings("Snowflake", "other"))
 
-    def test_end_to_end_workspace_reports_warnings_and_exits_zero(self) -> None:
+    def test_end_to_end_workspace_reports_family_warning(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             ws = Path(tmp)
             (ws / "catalog" / "engineering").mkdir(parents=True)
@@ -539,18 +579,35 @@ class ExposureWarningTests(unittest.TestCase):
                 _obj(COMP2, "product_component", "Fx Target", interfaces=[{"name": "api", "protocol": "gRPC"}]),
                 _obj(REL, "relationship", "Fx Flow", source=COMP, target=COMP2, label="calls", catalogStatus="stub",
                      technology="REST", targetInterface="api"),
-                _obj(NS1, "network_service", "Fx Firewall"),
-                _obj(RA, "reference_architecture", "Fx Ra", serviceGroups=[
-                    {"name": "edge", "deployableObjects": [{"slot": "database", "fills": COMP}]}]),
             ]
             for doc in docs:
                 (ws / "catalog" / "engineering" / (str(doc["uid"]) + ".yaml")).write_text(yaml.safe_dump(doc), encoding="utf-8")
             proc = subprocess.run([sys.executable, str(VALIDATE), "--workspace", str(ws)], capture_output=True, text=True, check=False)
             out = proc.stdout + proc.stderr
             warn = out.split("Validation warnings", 1)[-1] if "Validation warnings" in out else ""
-            for text in ("does not match interface 'api'", ".fills 'COMP'".replace("COMP", COMP), "slot 'database'"):
-                self.assertIn(text, warn, out)
-            self.assertFalse([l for l in out.split("Validation warnings")[0].splitlines() if ".fills" in l], out)
+            self.assertIn("does not match interface 'api'", warn, out)
+
+    def test_end_to_end_fills_fail_and_are_not_baselined(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            ws = Path(tmp)
+            (ws / "catalog" / "engineering").mkdir(parents=True)
+            docs = [
+                _obj(COMP, "product_component", "Fx Caller"),
+                _obj(NS1, "network_service", "Fx Firewall", serviceRole="definition"),
+                _obj(RA, "reference_architecture", "Fx Ra", serviceGroups=[{"name": "edge", "deployableObjects": [
+                    {"slot": "firewall", "fills": NS1}, {"slot": "database", "fills": COMP}]}]),
+            ]
+            for doc in docs:
+                (ws / "catalog" / "engineering" / (str(doc["uid"]) + ".yaml")).write_text(yaml.safe_dump(doc), encoding="utf-8")
+            subprocess.run([sys.executable, str(VALIDATE), "--workspace", str(ws), "--write-baseline"],
+                           capture_output=True, text=True, check=False)
+            proc = subprocess.run([sys.executable, str(VALIDATE), "--workspace", str(ws)], capture_output=True, text=True, check=False)
+            out = proc.stdout + proc.stderr
+            self.assertEqual(1, proc.returncode, out)
+            errors = out.split("Validation warnings")[0]
+            for text in (f"deployableObjects[1].fills is set on slot 'database'", f".fills '{COMP}' must be the uid"):
+                self.assertIn(text, errors, out)
+            self.assertNotIn("deployableObjects[0].fills", errors, out)
 
 
 class ExposedThroughErrorTests(unittest.TestCase):
