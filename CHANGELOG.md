@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. Documentation only; no tool, template or schema changes.
+
+### Added
+
+- `framework/docs/proposals/sdp-return-path.md` (#195): a design, not built, for how central changes (review findings, shared-service updates, corrections) reach a product repository. It recommends "central publishes, product pulls": requests are reviewed central catalog content, and each product repository's own workflow reads its requests with the App token it already has and opens an issue with its own `GITHUB_TOKEN`, so no central credential ever touches a product repository. It sets out who owns each step (the central side asks, the product team changes) and the open questions.
+- `tests/test_sdp_sync_docs.py`: the setup guide names every secret, variable, workflow and constant the templates and `sdp_sync.py` use, documents the known limits, and has valid example UIDs; the return-path proposal stays design only.
+
+### Changed
+
+- `framework/docs/decentralized-sdp-setup.md` rewritten for the tested pipeline: one-time setup (central settings, the GitHub App with Contents access on the central repository only, registration with the now-required `defaultBranch`, product repository variables), a tokens-and-permissions table, the OIDC audience and checks, the `draft-sdp-sync/1` payload and limits, what the receiver accepts, the cache layout, the pull-request flow and auto-merge, how failures reach the product team, deletion, security notes and known limits, troubleshooting by message, and the upgrade from flat `external_sdps` files and the original templates.
+
+### Fixed
+
+- The setup guide now documents two limits found while building #195: a live OIDC token can be resent with different files for the same commit during its lifetime (and what limits that risk), and required status checks do not run on sync pull requests opened with `GITHUB_TOKEN` (with the two ways to handle it and the repository settings involved).
+
+### Migration Notes
+
+- No action is required by this release. Teams adopting or upgrading the sync should follow the new "One-Time Setup" and "Upgrading from the Original Sync" sections of `framework/docs/decentralized-sdp-setup.md`, and decide how to handle required status checks on `draft-sync/*` pull requests before enabling `DRAFT_SYNC_AUTO_MERGE`.
+
 ## 1.20.12 - 2026-11-21
 
 ### Compatibility Impact
