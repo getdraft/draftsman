@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- Diagrams change only for relationships that name a listener: a relationship with a `targetListener` the target owns (or any Listener object, for an `externalTarget`) now draws one arrowhead at the listener end, and its moving dots run from the caller, even when it still carries `flow: inbound` or `flow: bidirectional`. Relationships that name no listener draw exactly as before, so a framework refresh does not redraw existing diagrams (the golden SVGs are unchanged and the bundled examples name no listeners).
+
+### Added
+
+- `ListenerArrowheadTests` in `tests/test_generate_diagram.py`: one head at the listener for migrated calls (catalog and external targets, both views), legacy relationships unchanged, a listener owned by another object not counting, the flow overlay direction, and a deterministic mixed workspace (#368).
+
+### Changed
+
+- `framework/tools/generate_diagram.py`: an edge whose relationship names its listener takes `outbound` flow for drawing.
+- `framework/docs/software-deployment-patterns.md` (new Arrowheads bullet; the migration example names `targetListener` instead of `flow`) and the `draftsman-diagram` skill describe the rule.
+
+### Fixed
+
+- A relationship already moved to a listener but still carrying `flow: inbound` no longer draws its arrowhead at the caller.
+
+### Migration Notes
+
+- No workspace migration required.
+
 ## 1.20.1 - 2026-11-21
 
 ### Compatibility Impact

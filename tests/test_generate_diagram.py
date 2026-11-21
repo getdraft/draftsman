@@ -4385,6 +4385,84 @@ EXAMPLES_BASE_SVG_SHA256 = {
 EXAMPLES_MULTI_INTERFACE_PATTERNS: tuple = ()
 
 
+class ListenerArrowheadTests(unittest.TestCase):
+    """#368 S2.1: a relationship that names its listener draws one arrowhead, at the listener end; others draw as before."""
+
+    START, END = 'marker-start="url(#{p}-start)"', 'marker-end="url(#{p}-end)"'
+
+    def objects(self) -> list:
+        names = "ABCDEFGH"
+        objects = [component(f"C-{n}", n) for n in names] + [pattern({"G": [f"C-{n}" for n in names]})]
+        objects += [
+            listener("LS-B", "C-B", "HTTPS", 443),
+            listener("LS-H", "C-H", "HTTPS", 443),
+            plain("SYS-V", "system", "Vendor", catalogStatus="complete", lifecycleStatus="preferred"),
+            listener("LS-V", "SYS-V", "HTTPS", 443, kind="external_system"),
+        ]
+
+        def rel(uid: str, source: str, target: str, flow: str | None, **extra: object) -> dict:
+            out = {**relationship(uid, source, target, uid), **extra}
+            if flow:
+                out["flow"] = flow
+            return out
+
+        objects += [
+            rel("R-BI", "C-A", "C-B", "bidirectional", targetListener="LS-B"),  # migrated target, legacy flow left
+            rel("R-IN", "C-C", "C-B", "inbound", targetListener="LS-B"),
+            rel("R-OUT", "C-D", "C-B", None, targetListener="LS-B"),
+            rel("R-LEGACY-BI", "C-E", "C-F", "bidirectional"),  # not migrated: drawn as today
+            rel("R-LEGACY-IN", "C-F", "C-G", "inbound"),
+            rel("R-FOREIGN", "C-G", "C-F", "inbound", targetListener="LS-H"),  # LS-H is not C-F's: does not count
+        ]
+        ext = {k: v for k, v in rel("R-EXT", "C-H", "", "bidirectional", targetListener="LS-V").items() if k != "target"}
+        ext_legacy = {k: v for k, v in rel("R-EXT-LEGACY", "C-E", "", "bidirectional").items() if k != "target"}
+        objects += [{**ext, "externalTarget": "Vendor API"}, {**ext_legacy, "externalTarget": "Old Vendor"}]
+        return objects
+
+    @staticmethod
+    def edge_groups(svg: str) -> dict:
+        return {(s, t): body for s, t, body in re.findall(r'<g class="edge" data-from="([^"]*)" data-to="([^"]*)">(.*?)</g>', svg, re.S)}
+
+    def marks(self, svg: str, prefix: str) -> dict:
+        start, end = self.START.format(p=prefix), self.END.format(p=prefix)
+        return {key: (start in attrs, end in attrs) for key, attrs in edge_paths(svg).items()}
+
+    def test_named_listener_draws_one_head_at_the_listener_in_both_views(self) -> None:
+        ext = generate_diagram.external_uid("Vendor API")
+        for view, prefix in (("logical", "lg"), ("deployment", "dp")):
+            svg = svg_for(self.objects(), view)
+            marks = self.marks(svg, prefix)
+            with self.subTest(view=view):
+                for key in (("C-A", "C-B"), ("C-C", "C-B"), ("C-D", "C-B"), ("C-H", ext)):
+                    self.assertEqual(marks[key], (False, True), key)
+
+    def test_legacy_relationships_draw_as_before(self) -> None:
+        old = generate_diagram.external_uid("Old Vendor")
+        svg = svg_for(self.objects())
+        marks = self.marks(svg, "lg")
+        self.assertEqual(marks[("C-E", "C-F")], (True, True))
+        self.assertEqual(marks[("C-F", "C-G")], (True, False))
+        self.assertEqual(marks[("C-G", "C-F")], (True, False))  # names a listener C-F does not own
+        self.assertEqual(marks[("C-E", old)], (True, True))
+
+    def test_flow_overlay_runs_caller_to_listener(self) -> None:
+        groups = self.edge_groups(svg_for(self.objects()))
+        for key in (("C-A", "C-B"), ("C-C", "C-B")):
+            self.assertIn('<path class="fl"', groups[key])
+            self.assertNotIn('class="fl rev"', groups[key], key)
+        self.assertIn('class="fl rev"', groups[("C-E", "C-F")])
+
+    def test_edge_flow_in_the_model(self) -> None:
+        flows = {e.uid: e.flow for e in model_of(self.objects()).edges}
+        self.assertEqual((flows["R-BI"], flows["R-IN"], flows["R-OUT"], flows["R-EXT"]), ("outbound",) * 4)
+        self.assertEqual((flows["R-LEGACY-BI"], flows["R-LEGACY-IN"], flows["R-FOREIGN"], flows["R-EXT-LEGACY"]),
+                         ("bidirectional", "inbound", "inbound", "bidirectional"))
+
+    def test_mixed_workspace_is_deterministic(self) -> None:
+        objects = self.objects()
+        self.assertEqual(svg_for(objects), svg_for(list(reversed(objects))))
+
+
 class ListenerPortTests(unittest.TestCase):
     """#341 E5 S5.2: the Deployment view's far-end port comes from the listener the call names (targetListener)."""
 
