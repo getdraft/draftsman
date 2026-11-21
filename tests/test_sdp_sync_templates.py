@@ -8,8 +8,11 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 import unittest
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 import yaml
 
@@ -19,6 +22,8 @@ SENDER = TEMPLATES / "product-repo-sync.yml.tmpl"
 RECEIVER = TEMPLATES / "drafting-table-receiver.yml.tmpl"
 FIXTURES = ROOT / "tests" / "fixtures" / "sdp_sync"
 EXPRESSION = re.compile(r"\$\{\{.*?\}\}", re.S)
+sys.path.insert(0, str(ROOT))
+from tests import sdp_sync_identity as identity  # noqa: E402
 
 
 def steps(path: Path) -> list[dict]:
@@ -58,7 +63,8 @@ class WiringTests(unittest.TestCase):
                          ("actions/checkout@v4", "getdraft/draftsman", ".draft-sync-tool"))
         pack = step(SENDER, "Pack SDP Payload")
         self.assertIn(".draft-sync-tool/framework/tools/sdp_sync.py pack", pack["run"])
-        self.assertEqual(set(pack["env"]), {"REPOSITORY", "COMMIT", "REF", "CORRELATION_ID"})
+        self.assertEqual(set(pack["env"]), {"REPOSITORY", "COMMIT", "REF", "CORRELATION_ID", "CENTRAL_REPOSITORY"})
+        self.assertIn('--central-repository "$CENTRAL_REPOSITORY"', pack["run"])
         dispatch = step(SENDER, "Dispatch SDP Payload to Central Workspace")
         self.assertIn('--slurpfile payload "$RUNNER_TEMP/sdp-payload.json"', dispatch["run"])
         self.assertIn("GH_TOKEN", dispatch["env"])
@@ -68,6 +74,18 @@ class WiringTests(unittest.TestCase):
         token = step(SENDER, "Generate Ephemeral App Token for Central Workspace")
         self.assertEqual(token["uses"], "actions/create-github-app-token@v1")
         self.assertEqual(token["with"]["repositories"], "${{ secrets.DRAFT_CENTRAL_REPO_NAME }}")
+
+    def test_sender_requests_an_oidc_token_for_the_receivers_audience(self) -> None:
+        sender = yaml.safe_load(SENDER.read_text(encoding="utf-8"))
+        self.assertEqual(sender["jobs"]["transmit_sdp"]["permissions"]["id-token"], "write")
+        sent = step(SENDER, "Pack SDP Payload")["env"]["CENTRAL_REPOSITORY"]
+        received = step(RECEIVER, "Store Decentralized SDP Payload")
+        self.assertEqual(sent, "${{ github.repository_owner }}/${{ secrets.DRAFT_CENTRAL_REPO_NAME }}")
+        self.assertEqual(received["env"]["CENTRAL_REPOSITORY"], "${{ github.repository }}")
+        self.assertIn('--central-repository "$CENTRAL_REPOSITORY"', received["run"])
+        self.assertNotIn("--jwks", received["run"], "the receiver must use GitHub's published keys")
+        receiver = yaml.safe_load(RECEIVER.read_text(encoding="utf-8"))
+        self.assertNotIn("id-token", json.dumps(receiver.get("permissions", {})), "the receiver needs no OIDC permission")
 
     def test_receiver_receives_from_the_event_file_then_validates(self) -> None:
         names = [s.get("name") for s in steps(RECEIVER)]
@@ -110,12 +128,38 @@ class ScriptSimulationTests(unittest.TestCase):
         self.assertIn("not a GitHub repository name", out.stderr)
         self.assertFalse(self.canary.exists())
 
+    def fake_token_endpoint(self, claims: dict) -> str:
+        """A stand-in for the runner's ACTIONS_ID_TOKEN_REQUEST_URL that signs a token for the requested audience."""
+        seen = self.token_requests = []
+
+        class Handler(BaseHTTPRequestHandler):
+            def do_GET(self) -> None:  # noqa: N802
+                query = parse_qs(urlparse(self.path).query)
+                seen.append((query, self.headers.get("Authorization")))
+                body = json.dumps({"value": identity.token({**claims, "aud": query["audience"][0]})}).encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(body)
+
+            def log_message(self, *args: object) -> None:
+                pass
+
+        server = HTTPServer(("127.0.0.1", 0), Handler)
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        self.addCleanup(server.server_close)
+        self.addCleanup(server.shutdown)
+        return f"http://127.0.0.1:{server.server_port}/token?api-version=2.0"
+
     @unittest.skipUnless(shutil.which("jq"), "jq is not installed (GitHub-hosted runners have it)")
     def test_sender_and_receiver_scripts_round_trip_a_hostile_sdp(self) -> None:
         sdp = self.product / ".draft" / "sdp.yaml"
         sdp.write_text(sdp.read_text(encoding="utf-8") + f"notes:\n  shell: \"$(touch {self.canary}) `touch {self.canary}` ' \\\" ;\"\n", encoding="utf-8")
+        url = self.fake_token_endpoint(identity.claims_for("example-org/absence-service", "a" * 40))
         packed = bash(self.pack_script(), self.product, {**self.env, "REPOSITORY": "example-org/absence-service", "COMMIT": "a" * 40,
-                                                          "REF": "refs/heads/main", "CORRELATION_ID": "7-1"})
+                                                          "REF": "refs/heads/main", "CORRELATION_ID": "7-1",
+                                                          "CENTRAL_REPOSITORY": "Example-Org/drafting-table",
+                                                          "ACTIONS_ID_TOKEN_REQUEST_URL": url, "ACTIONS_ID_TOKEN_REQUEST_TOKEN": "runner-bearer"})
         self.assertEqual(packed.returncode, 0, packed.stderr)
         # Build the dispatch body exactly as the sender's jq does, and hand it to the receiver as the event file.
         jq = step(SENDER, "Dispatch SDP Payload to Central Workspace")["run"].split("|", 1)[0]
@@ -125,7 +169,11 @@ class ScriptSimulationTests(unittest.TestCase):
         self.assertEqual(event["event_type"], "sdp_updated")
         event_file = self.tmp / "event.json"
         event_file.write_text(json.dumps({"action": "sdp_updated", "client_payload": event["client_payload"]}), encoding="utf-8")
-        received = bash(step(RECEIVER, "Store Decentralized SDP Payload")["run"], self.central, {**self.env, "GITHUB_EVENT_PATH": str(event_file)})
+        self.assertEqual(self.token_requests, [({"api-version": ["2.0"], "audience": [identity.AUDIENCE]}, "Bearer runner-bearer")])
+        # The receiver normally fetches GitHub's key set; here it reads the test key set from a file.
+        jwks = identity.write_jwks(self.tmp / "jwks.json")
+        receive_script = step(RECEIVER, "Store Decentralized SDP Payload")["run"].rstrip("\n") + f' \\\n  --jwks "{jwks}"\n'
+        received = bash(receive_script, self.central, {**self.env, "GITHUB_EVENT_PATH": str(event_file), "CENTRAL_REPOSITORY": identity.CENTRAL})
         self.assertEqual(received.returncode, 0, received.stderr)
         stored = self.central / ".draft" / "external_sdps" / "example-org__absence-service" / "sdp.yaml"
         self.assertEqual(stored.read_text(encoding="utf-8"), sdp.read_text(encoding="utf-8"))

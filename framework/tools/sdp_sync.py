@@ -5,19 +5,34 @@ The product repository's workflow runs ``pack`` and sends the JSON it writes as 
 ``client_payload``. The central workspace's receiver workflow runs ``receive`` on the event file. Payload values
 only ever travel through files; nothing here builds shell text.
 
+The sender proves who it is with a GitHub Actions OIDC token whose audience names the central workspace
+(``draft-sdp-sync:<central owner>/<central name>``). ``receive`` verifies the RS256 signature against GitHub's
+published key set with the standard library, then checks the issuer, audience, expiry, that the token's repository
+is the registered one and that its ref is the registered default branch.
+
 Usage:
-    python3 sdp_sync.py pack --repo-root . --repository OWNER/NAME --commit SHA --ref refs/heads/main --output payload.json
-    python3 sdp_sync.py receive --workspace . --payload "$GITHUB_EVENT_PATH" --result sdp-sync-result.json
+    python3 sdp_sync.py pack --repo-root . --repository OWNER/NAME --commit SHA --ref refs/heads/main \
+        --central-repository CENTRAL_OWNER/CENTRAL_NAME --output payload.json
+    python3 sdp_sync.py receive --workspace . --payload "$GITHUB_EVENT_PATH" --central-repository CENTRAL_OWNER/CENTRAL_NAME \
+        --result sdp-sync-result.json
 """
 
 from __future__ import annotations
 
 import argparse
+import base64
+import hashlib
+import hmac
 import json
+import os
 import re
 import shutil
 import sys
+import time
+import urllib.parse
+import urllib.request
 import uuid
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -40,6 +55,16 @@ _GITHUB_URL = re.compile(
 # Object types a product team owns and may sync. Everything else (systems, shared services, registrations,
 # requirement groups, configurations) is central content and is never accepted from a product repository.
 PRODUCT_OWNED_TYPES = ("software_deployment_pattern", "product_component", "data_component", "listener", "relationship", "decision_record")
+# GitHub Actions OIDC. Tokens are short-lived; LEEWAY_SECONDS absorbs clock skew between GitHub and the runner.
+OIDC_ISSUER = "https://token.actions.githubusercontent.com"
+OIDC_JWKS_URL = OIDC_ISSUER + "/.well-known/jwks"
+AUDIENCE_PREFIX = "draft-sdp-sync:"
+LEEWAY_SECONDS = 60
+MIN_RSA_BITS = 2048
+_JWT = re.compile(r"^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$")
+# DER DigestInfo prefix for SHA-256 (RFC 8017 section 9.2, note 1).
+_SHA256_DIGEST_INFO = bytes.fromhex("3031300d060960864801650304020105000420")
+KeySource = Mapping[str, Any] | Callable[[], Mapping[str, Any]]
 
 
 class SyncError(Exception):
@@ -49,7 +74,8 @@ class SyncError(Exception):
 # --------------------------------------------------------------------------- pack
 
 
-def pack(repo_root: Path, repository: str, commit: str, ref: str, correlation_id: str | None = None) -> dict[str, Any]:
+def pack(repo_root: Path, repository: str, commit: str, ref: str, correlation_id: str | None = None,
+         oidc_token: str | None = None) -> dict[str, Any]:
     """Build the client_payload for a product repository. A missing .draft/sdp.yaml packs a delete."""
     check_repository(repository)
     sdp = repo_root / SDP_PATH
@@ -69,8 +95,35 @@ def pack(repo_root: Path, repository: str, commit: str, ref: str, correlation_id
         "correlationId": correlation_id or uuid.uuid4().hex,
         "files": files,
     }
+    if oidc_token is not None:
+        payload["oidcToken"] = oidc_token
     check_size(payload)
     return payload
+
+
+def audience_for(central_repository: str) -> str:
+    """The OIDC audience a sender requests and a receiver requires: it names one central workspace."""
+    return AUDIENCE_PREFIX + check_repository(central_repository).lower()
+
+
+def request_oidc_token(audience: str, env: Mapping[str, str] | None = None,
+                       opener: Callable[..., Any] = urllib.request.urlopen) -> str:
+    """Ask the GitHub Actions runner for an OIDC token (the job needs permissions: id-token: write)."""
+    env = os.environ if env is None else env
+    url, bearer = env.get("ACTIONS_ID_TOKEN_REQUEST_URL"), env.get("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+    if not url or not bearer:
+        raise SyncError("no GitHub Actions OIDC token is available; the sync job needs 'permissions: id-token: write'")
+    separator = "&" if "?" in url else "?"
+    request = urllib.request.Request(f"{url}{separator}audience={urllib.parse.quote(audience, safe='')}",
+                                     headers={"Authorization": f"Bearer {bearer}", "Accept": "application/json"})
+    try:
+        with opener(request, timeout=30) as response:
+            value = json.loads(response.read().decode("utf-8")).get("value")
+    except (OSError, ValueError, AttributeError) as exc:
+        raise SyncError(f"could not get a GitHub Actions OIDC token: {exc.__class__.__name__}") from None
+    if not isinstance(value, str) or not _JWT.match(value):
+        raise SyncError("the GitHub Actions OIDC token request returned no token")
+    return value
 
 
 def check_size(payload: dict[str, Any]) -> None:
@@ -152,6 +205,11 @@ def check_payload(payload: dict[str, Any]) -> None:
         raise SyncError(f"an upsert must include {SDP_PATH}")
     if payload["action"] == "delete" and files:
         raise SyncError("a delete carries no files")
+    if "oidcToken" not in payload:
+        raise SyncError("the payload carries no OIDC token; update the product repository's sync workflow to the current template "
+                        "(its job needs 'permissions: id-token: write')")
+    if not isinstance(payload["oidcToken"], str) or not _JWT.match(payload["oidcToken"]):
+        raise SyncError("the payload's oidcToken is not a JWT")
 
 
 def cache_path(source_path: str) -> PurePosixPath:
@@ -176,6 +234,107 @@ def parse_object(path: str, text: str) -> dict[str, Any]:
     if path == SDP_PATH and data.get("type") != "software_deployment_pattern":
         raise SyncError(f"{SDP_PATH} must be a software_deployment_pattern, not {data.get('type')!r}")
     return data
+
+
+# --------------------------------------------------------------------------- identity (OIDC)
+
+
+def _b64url(text: str) -> bytes:
+    return base64.urlsafe_b64decode(text + "=" * (-len(text) % 4))
+
+
+def _b64url_int(text: Any) -> int:
+    if not isinstance(text, str) or not text:
+        raise SyncError("GitHub's OIDC key set has a malformed RSA key")
+    try:
+        return int.from_bytes(_b64url(text), "big")
+    except ValueError:
+        raise SyncError("GitHub's OIDC key set has a malformed RSA key") from None
+
+
+def rs256_verify(n: int, e: int, signing_input: bytes, signature: bytes) -> bool:
+    """RSASSA-PKCS1-v1_5 with SHA-256 (RFC 8017 section 8.2.2), standard library only."""
+    k = (n.bit_length() + 7) // 8
+    if n.bit_length() < MIN_RSA_BITS or len(signature) != k:
+        return False
+    s = int.from_bytes(signature, "big")
+    if s >= n:
+        return False
+    encoded = pow(s, e, n).to_bytes(k, "big")
+    digest = _SHA256_DIGEST_INFO + hashlib.sha256(signing_input).digest()
+    expected = b"\x00\x01" + b"\xff" * (k - len(digest) - 3) + b"\x00" + digest
+    return hmac.compare_digest(encoded, expected)
+
+
+def fetch_github_jwks(opener: Callable[..., Any] = urllib.request.urlopen) -> dict[str, Any]:
+    try:
+        with opener(urllib.request.Request(OIDC_JWKS_URL, headers={"Accept": "application/json"}), timeout=30) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except (OSError, ValueError) as exc:
+        raise SyncError(f"could not fetch GitHub's OIDC key set: {exc.__class__.__name__}") from None
+
+
+def _signing_key(keys: KeySource, kid: str) -> tuple[int, int]:
+    jwks = keys() if callable(keys) else keys
+    candidates = jwks.get("keys") if isinstance(jwks, Mapping) else None
+    for key in candidates if isinstance(candidates, list) else []:
+        if not isinstance(key, Mapping) or key.get("kid") != kid or key.get("kty") != "RSA":
+            continue
+        if key.get("use", "sig") != "sig" or key.get("alg", "RS256") != "RS256":
+            continue
+        return _b64url_int(key.get("n")), _b64url_int(key.get("e"))
+    raise SyncError(f"the OIDC token's signing key {kid!r} is not in GitHub's key set")
+
+
+def verify_oidc_token(token: str, audience: str, keys: KeySource, now: float | None = None) -> dict[str, Any]:
+    """Verify a GitHub Actions OIDC token's signature, issuer, audience and lifetime; return its claims."""
+    try:
+        header_b64, claims_b64, signature_b64 = token.split(".")
+        header = json.loads(_b64url(header_b64))
+        claims = json.loads(_b64url(claims_b64))
+        signature = _b64url(signature_b64)
+    except ValueError:
+        raise SyncError("the payload's oidcToken is not a readable JWT") from None
+    if not isinstance(header, dict) or not isinstance(claims, dict):
+        raise SyncError("the payload's oidcToken is not a readable JWT")
+    if header.get("alg") != "RS256":
+        raise SyncError(f"the OIDC token is signed with {header.get('alg')!r}; only RS256 is accepted")
+    if not isinstance(header.get("kid"), str):
+        raise SyncError("the OIDC token names no signing key (kid)")
+    n, e = _signing_key(keys, header["kid"])
+    if not rs256_verify(n, e, f"{header_b64}.{claims_b64}".encode("ascii"), signature):
+        raise SyncError("the OIDC token's signature does not verify against GitHub's key set")
+    if claims.get("iss") != OIDC_ISSUER:
+        raise SyncError(f"the OIDC token was issued by {claims.get('iss')!r}, not GitHub Actions ({OIDC_ISSUER})")
+    aud = claims.get("aud")
+    if audience not in (aud if isinstance(aud, list) else [aud]):
+        raise SyncError(f"the OIDC token is for audience {aud!r}, not this central workspace ({audience!r})")
+    now = time.time() if now is None else now
+    exp = claims.get("exp")
+    if not isinstance(exp, (int, float)) or exp + LEEWAY_SECONDS < now:
+        raise SyncError("the OIDC token has expired; re-run the product repository's sync workflow")
+    for name in ("nbf", "iat"):
+        if isinstance(claims.get(name), (int, float)) and claims[name] - LEEWAY_SECONDS > now:
+            raise SyncError(f"the OIDC token's {name} is in the future")
+    return claims
+
+
+def check_identity(claims: Mapping[str, Any], payload: Mapping[str, Any], registration: Mapping[str, Any]) -> None:
+    """The token must come from the registered repository's default branch, for this very commit and ref."""
+    repository = str(payload["repository"]).lower()
+    if str(claims.get("repository") or "").lower() != repository:
+        raise SyncError(f"the OIDC token was issued to {claims.get('repository')!r}, not {payload['repository']}")
+    repo = registration.get("repository") if isinstance(registration.get("repository"), dict) else {}
+    branch = repo.get("defaultBranch")
+    if not isinstance(branch, str) or not branch:
+        raise SyncError(f"ProductRegistration {registration.get('uid')} has no repository.defaultBranch; a Draft Admin must set it")
+    expected_ref = f"refs/heads/{branch}"
+    if claims.get("ref") != expected_ref:
+        raise SyncError(f"the OIDC token's ref is {claims.get('ref')!r}; only the registered default branch ({expected_ref}) can sync")
+    if payload["ref"] != claims.get("ref"):
+        raise SyncError(f"the payload's ref {payload['ref']!r} does not match the OIDC token's ref {claims.get('ref')!r}")
+    if str(claims.get("sha") or "").lower() != str(payload["commit"]).lower():
+        raise SyncError("the payload's commit does not match the OIDC token's sha")
 
 
 # --------------------------------------------------------------------------- acceptance
@@ -272,14 +431,22 @@ def check_ownership(workspace: Path, repository: str, objects: dict[str, dict[st
 # --------------------------------------------------------------------------- receive
 
 
-def receive(workspace: Path, payload: dict[str, Any]) -> Result:
-    """Accept a payload from a registered product and store it in its cache folder, replaced as a snapshot."""
+def receive(workspace: Path, payload: dict[str, Any], *, central_repository: str, keys: KeySource | None = None,
+            now: float | None = None) -> Result:
+    """Accept a payload from a registered product and store it in its cache folder, replaced as a snapshot.
+
+    ``central_repository`` is this workspace's owner/name (the OIDC audience); ``keys`` is GitHub's JWKS, or a
+    function returning it, and defaults to fetching it from GitHub.
+    """
     registration: dict[str, Any] = {}
     try:
+        audience = audience_for(central_repository)
         check_payload(payload)
         repository = payload["repository"]
         slug = product_slug(repository)
+        claims = verify_oidc_token(payload["oidcToken"], audience, fetch_github_jwks if keys is None else keys, now)
         registration = find_registration(workspace, repository)
+        check_identity(claims, payload, registration)
         targets: dict[PurePosixPath, str] = {}
         objects: dict[str, dict[str, Any]] = {}
         for source_path, text in sorted(payload["files"].items()):
@@ -339,16 +506,21 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--commit", required=True)
     p.add_argument("--ref", required=True)
     p.add_argument("--correlation-id")
+    p.add_argument("--central-repository", help="owner/name of the central workspace; attaches a GitHub Actions OIDC token for it")
     p.add_argument("--output", type=Path, required=True)
     r = sub.add_parser("receive", help="Store a payload in the central workspace.")
     r.add_argument("--workspace", type=Path, default=Path("."))
     r.add_argument("--payload", type=Path, required=True, help="payload JSON, or a GitHub event file with client_payload")
+    r.add_argument("--central-repository", required=True, help="owner/name of this central workspace (the OIDC audience)")
+    r.add_argument("--jwks", type=Path, help="read the OIDC key set from this file instead of fetching GitHub's (tests, offline checks)")
     r.add_argument("--result", type=Path, help="write the outcome as JSON here")
     args = parser.parse_args(argv)
 
     if args.command == "pack":
         try:
-            payload = pack(args.repo_root, args.repository, args.commit, args.ref, args.correlation_id)
+            check_repository(args.repository)
+            token = request_oidc_token(audience_for(args.central_repository)) if args.central_repository else None
+            payload = pack(args.repo_root, args.repository, args.commit, args.ref, args.correlation_id, oidc_token=token)
         except SyncError as exc:
             print(f"sdp_sync pack: {exc}", file=sys.stderr)
             return 1
@@ -358,10 +530,16 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         payload = load_payload(args.payload)
+        keys = None
+        if args.jwks:
+            try:
+                keys = json.loads(args.jwks.read_text(encoding="utf-8"))
+            except (OSError, ValueError) as exc:
+                raise SyncError(f"cannot read the key set file: {exc.__class__.__name__}") from None
     except SyncError as exc:
         result = Result("rejected", str(exc))
     else:
-        result = receive(args.workspace, payload)
+        result = receive(args.workspace, payload, central_repository=args.central_repository, keys=keys)
     if args.result:
         args.result.write_text(json.dumps(result.as_json(), indent=2) + "\n", encoding="utf-8")
     print(f"sdp_sync receive: {result.status}: {result.message}", file=sys.stdout if result.status == "accepted" else sys.stderr)

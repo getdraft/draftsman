@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "framework" / "tools"))
 
 import sdp_sync  # noqa: E402
+from tests import sdp_sync_identity as identity  # noqa: E402
 
 FIXTURES = ROOT / "tests" / "fixtures" / "sdp_sync"
 REPOSITORY = "example-org/absence-service"
@@ -40,7 +41,7 @@ class Central:
         payload = {"format": sdp_sync.PAYLOAD_FORMAT, "repository": repository, "commit": COMMIT, "ref": "refs/heads/main",
                    "action": action, "correlationId": "run-1",
                    "files": ({".draft/sdp.yaml": SDP} if files is None else files) if action == "upsert" else {}}
-        return sdp_sync.receive(self.root, payload)
+        return identity.receive(self.root, payload)
 
 
 class RegistrationTests(unittest.TestCase):

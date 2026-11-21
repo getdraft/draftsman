@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- The SDP receiver now requires a GitHub Actions OIDC token in every sync payload (`oidcToken`) and rejects payloads without one. Product repositories and the central workspace update together again: copy the new `templates/github/product-repo-sync.yml.tmpl` (its job already has `permissions: id-token: write`; the pack step now passes `--central-repository`) and `templates/github/drafting-table-receiver.yml.tmpl` (passes `--central-repository`). Only the registered default branch (`repository.defaultBranch` on the ProductRegistration, which is now required) can sync. `sdp_sync.receive()` now takes `central_repository=` and optional `keys=` and `now=` arguments.
+
+### Added
+
+- `sdp_sync.py` sender identity (#195 gap 4): `pack --central-repository OWNER/NAME` asks the runner for an OIDC token with audience `draft-sdp-sync:<central owner>/<central name>` and attaches it; `receive --central-repository OWNER/NAME` verifies its RS256 signature against GitHub's published key set (`https://token.actions.githubusercontent.com/.well-known/jwks`) with the standard library only, and checks the issuer, the audience, expiry and not-before (60 seconds of clock skew allowed), that the token's `repository` is the payload's registered repository, that its `ref` is `refs/heads/<defaultBranch>` and that its `ref` and `sha` match the payload. Every rejection names its reason; the token is never written to the cache, the result file or the log. `receive --jwks FILE` reads a key set from a file for tests and offline checks.
+- `tests/test_sdp_sync_oidc.py` and `tests/sdp_sync_identity.py`, which sign test tokens with a fixed test-only key (`tests/fixtures/sdp_sync/oidc_test_key.json`) and inject its key set.
+
+### Changed
+
+- `templates/github/product-repo-sync.yml.tmpl` and `templates/github/drafting-table-receiver.yml.tmpl` pass the central workspace's name to `sdp_sync.py` through an environment variable. The App token step and the `frontline-drafting-table` example comment are unchanged.
+
+### Fixed
+
+- A workflow in another repository, a fork, or a feature branch can no longer sync as a registered product by putting that product's name in the payload.
+
+### Migration Notes
+
+- Make sure each syncing product's ProductRegistration sets `repository.defaultBranch` to the branch that syncs. Update the central receiver and each product's sync workflow from the templates in the same change window; a product still on the old template is rejected with a message asking for the update. The receiver needs outbound HTTPS to `token.actions.githubusercontent.com` (GitHub-hosted runners have it).
+
 ## 1.20.8 - 2026-11-21
 
 ### Compatibility Impact

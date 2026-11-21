@@ -16,6 +16,7 @@ TOOLS = ROOT / "framework" / "tools"
 sys.path.insert(0, str(TOOLS))
 
 import sdp_sync  # noqa: E402
+from tests import sdp_sync_identity as identity  # noqa: E402
 
 FIXTURES = ROOT / "tests" / "fixtures" / "sdp_sync"
 REPOSITORY = "example-org/absence-service"
@@ -58,9 +59,12 @@ class RoundTripTests(unittest.TestCase):
         self.assertEqual(packed.returncode, 0, packed.stderr)
         # The receiver gets the payload inside a GitHub event file.
         event = fx.tmp / "event.json"
-        event.write_text(json.dumps({"action": "sdp_updated", "client_payload": json.loads(payload_file.read_text())}), encoding="utf-8")
+        # pack without --central-repository attaches no token (there is no runner here); sign it as GitHub would.
+        signed = identity.sign(json.loads(payload_file.read_text()))
+        event.write_text(json.dumps({"action": "sdp_updated", "client_payload": signed}), encoding="utf-8")
         result_file = fx.tmp / "result.json"
-        received = run_cli("receive", "--workspace", str(fx.central), "--payload", str(event), "--result", str(result_file))
+        received = run_cli("receive", "--workspace", str(fx.central), "--payload", str(event), "--central-repository", identity.CENTRAL,
+                           "--jwks", str(identity.write_jwks(fx.tmp / "jwks.json")), "--result", str(result_file))
         self.assertEqual(received.returncode, 0, received.stderr)
 
         stored = fx.cache() / "sdp.yaml"
@@ -71,6 +75,7 @@ class RoundTripTests(unittest.TestCase):
         result = json.loads(result_file.read_text())
         self.assertEqual((result["status"], result["product"], result["correlationId"]), ("accepted", SLUG, "run-1"))
         self.assertEqual(result["written"], [f".draft/external_sdps/{SLUG}/sdp.yaml"])
+        self.assertNotIn(signed["oidcToken"], result_file.read_text() + received.stdout + received.stderr)
         code, out = fx.validate()
         self.assertEqual(code, 0, out)
         self.assertIn(f"external_sdps/{SLUG}/sdp.yaml", out)
@@ -80,7 +85,7 @@ class RoundTripTests(unittest.TestCase):
         text = (FIXTURES / "product_repo" / ".draft" / "sdp.yaml").read_text(encoding="utf-8")
         legacy_file_text = json.dumps(json.dumps(text))
         self.assertIsInstance(yaml.safe_load(legacy_file_text), str)
-        result = sdp_sync.receive(Fixture(self).central, {"product_id": REPOSITORY, "sdp_content": text})
+        result = identity.receive(Fixture(self).central, {"product_id": REPOSITORY, "sdp_content": text})
         self.assertEqual(result.status, "rejected")
         self.assertIn("old sdp_content format", result.message)
 
@@ -92,7 +97,7 @@ class RoundTripTests(unittest.TestCase):
         stale = fx.cache() / "catalog" / "stale.yaml"
         stale.parent.mkdir(parents=True)
         stale.write_text("type: product_component\n", encoding="utf-8")
-        result = sdp_sync.receive(fx.central, fx.pack())
+        result = identity.receive(fx.central, fx.pack())
         self.assertEqual(result.status, "accepted", result.message)
         self.assertFalse(legacy.exists())
         self.assertFalse(stale.exists())
@@ -100,11 +105,11 @@ class RoundTripTests(unittest.TestCase):
 
     def test_a_missing_sdp_packs_and_receives_a_delete(self) -> None:
         fx = Fixture(self)
-        self.assertEqual(sdp_sync.receive(fx.central, fx.pack()).status, "accepted")
+        self.assertEqual(identity.receive(fx.central, fx.pack()).status, "accepted")
         (fx.product / ".draft" / "sdp.yaml").unlink()
         payload = fx.pack()
         self.assertEqual((payload["action"], payload["files"]), ("delete", {}))
-        result = sdp_sync.receive(fx.central, payload)
+        result = identity.receive(fx.central, payload)
         self.assertEqual(result.status, "accepted", result.message)
         self.assertFalse(fx.cache().exists())
         self.assertEqual(result.removed, [f".draft/external_sdps/{SLUG}/sdp.yaml"])
@@ -121,14 +126,14 @@ class PayloadLimitTests(unittest.TestCase):
                                  "--ref", "refs/heads/main", "--output", str(fx.tmp / "p.json")).returncode, 1)
 
     def test_payload_fits_repository_dispatch_limits(self) -> None:
-        payload = Fixture(self).pack()
+        payload = identity.sign(Fixture(self).pack())
         self.assertLessEqual(len(payload), sdp_sync.MAX_TOP_LEVEL_PROPERTIES)
         self.assertLess(len(json.dumps(payload).encode()), 65_536)
 
 
 class RejectionTests(unittest.TestCase):
     def reject(self, fx: Fixture, payload: dict, expected: str) -> None:
-        result = sdp_sync.receive(fx.central, payload)
+        result = identity.receive(fx.central, payload)
         self.assertEqual(result.status, "rejected", payload)
         self.assertIn(expected, result.message)
         self.assertFalse((fx.central / ".draft" / "external_sdps").exists(), "nothing is written on rejection")
@@ -166,11 +171,13 @@ class RejectionTests(unittest.TestCase):
         fx = Fixture(self)
         bad = fx.tmp / "bad.json"
         bad.write_text(json.dumps({"client_payload": {"format": "nope"}}), encoding="utf-8")
-        out = run_cli("receive", "--workspace", str(fx.central), "--payload", str(bad), "--result", str(fx.tmp / "r.json"))
+        out = run_cli("receive", "--workspace", str(fx.central), "--payload", str(bad), "--central-repository", identity.CENTRAL,
+                      "--result", str(fx.tmp / "r.json"))
         self.assertEqual(out.returncode, 1)
         self.assertIn("rejected", out.stderr)
         self.assertEqual(json.loads((fx.tmp / "r.json").read_text())["status"], "rejected")
-        unreadable = run_cli("receive", "--workspace", str(fx.central), "--payload", str(fx.tmp / "missing.json"))
+        unreadable = run_cli("receive", "--workspace", str(fx.central), "--payload", str(fx.tmp / "missing.json"),
+                             "--central-repository", identity.CENTRAL)
         self.assertEqual(unreadable.returncode, 1)
         self.assertIn("cannot read the payload file", unreadable.stderr)
 
