@@ -276,7 +276,12 @@ a warning.
   Deployment view uses the same entrances. The Application view never shows a
   port and never shows a device.
 - **Deployment view.** Each connection is labelled with the resolved port chain.
-  The target's port comes from the component's own inbound `runtimeSpec.ports`
+  When the relationship's `targetListener` names a Listener object the target
+  owns (or, for an `externalTarget`, any Listener object) and that listener has a
+  port, the target's port is that listener's, printed as `protocol port` with
+  HTTP, HTTPS and REST lower-cased (`http 8080`, `gRPC 8092`, `SQL 5432`), and
+  each device hop matches that listener's protocol family. Otherwise the
+  target's port comes from the component's own inbound `runtimeSpec.ports`
   entry, then the listener of its substrate (a data component uses the listener
   of the store it `runsOn`), matched to the interface's protocol family, and
   failing a match the substrate's single listener. Each device hop contributes its
