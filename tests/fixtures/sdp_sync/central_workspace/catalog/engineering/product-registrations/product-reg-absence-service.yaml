@@ -1,0 +1,15 @@
+schemaVersion: '1.0'
+uid: 01M7SYNC03-PR01
+type: product_registration
+name: Absence Service
+catalogStatus: complete
+owner:
+  team: absence
+  contact: absence@example.com
+repository:
+  provider: github
+  url: https://github.com/example-org/absence-service
+  defaultBranch: main
+sdpManifest:
+  mode: git
+  path: .draft/sdp.yaml

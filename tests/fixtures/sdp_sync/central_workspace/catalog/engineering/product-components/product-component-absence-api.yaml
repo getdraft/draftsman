@@ -1,0 +1,10 @@
+schemaVersion: '1.0'
+uid: 01M7SYNC02-PC01
+type: product_component
+name: Absence API
+repoUrl: https://github.com/example-org/absence-service
+owner:
+  team: absence
+classification: api-service
+catalogStatus: stub
+lifecycleStatus: candidate

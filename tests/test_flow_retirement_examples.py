@@ -80,9 +80,11 @@ class ExampleTargetModelTests(unittest.TestCase):
 class AdoptionNoteTests(unittest.TestCase):
     def test_changelog_documents_the_adoption_path(self) -> None:
         text = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-        heading = re.search(r"(?m)^## Unreleased\s*$", text)
-        newest = re.search(r"(?m)^## \d+\.\d+\.\d+", text)
-        section = text[heading.start():newest.start()] if heading and heading.start() < newest.start() else text[newest.start():]
+        # The note stays in whichever release section carries it (Unreleased until promoted, then its version).
+        start = text.index("Adoption path for the relationship deprecations (#368)")
+        begin = text.rfind("\n## ", 0, start)
+        following = re.search(r"(?m)^## ", text[start:])
+        section = text[begin: start + following.start()] if following else text[begin:]
         for phrase in ("--write-baseline", "/draft migrate", "relationship-flow-deprecated", "relationship-external-target-freetext",
                        "relationship-source-is-listener-side", "on touch"):
             self.assertIn(phrase, section, phrase)

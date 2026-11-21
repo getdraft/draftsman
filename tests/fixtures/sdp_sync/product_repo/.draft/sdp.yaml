@@ -1,0 +1,15 @@
+schemaVersion: '1.0'
+uid: 01M7SYNC01-SDP1
+type: software_deployment_pattern
+name: Absence Service Production Deployment
+description: >-
+  Fixture SDP kept in the product repository and synced to the central workspace. It's quoted with an
+  apostrophe on purpose: the old receiver wrote the payload with echo '...', which breaks on a single quote.
+catalogStatus: incomplete
+lifecycleStatus: candidate
+serviceGroups:
+- name: Application Services
+  deploymentTarget: aws-us-east-1
+  deployableObjects:
+  - ref: 01M7SYNC02-PC01
+    diagramTier: application
