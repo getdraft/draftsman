@@ -1,3 +1,29 @@
+## Unreleased
+
+### Compatibility Impact
+
+- Ratcheted only, so a framework refresh stays clean: after `validate.py --write-baseline`, existing relationships with `flow: inbound`, `flow: bidirectional` or free-text `externalTarget` are `baseline:` warnings. A new relationship, or an edited one, that still uses them fails validation. Workspaces that skip `--write-baseline` after refreshing see these as errors, as with every ratcheted rule. The repo's example and diagram-fixture baselines are refreshed in this release (12 and 56 new entries; no existing entry changes).
+
+### Added
+
+- Ratcheted rule `relationship-flow-deprecated`: an authored relationship with `flow: inbound` or `flow: bidirectional`, with the fix for each (#368).
+- Ratcheted rule `relationship-external-target-freetext`: an authored relationship with free-text `externalTarget`; the fix is a `system` object with a listener, then `target` and `targetListener`.
+- Ratcheted rule `relationship-source-is-listener-side`: a heuristic on `flow: inbound` only, when the source owns a listener or the other end is an outside party, so it never fails content the flow rule does not already flag.
+- `tests/test_relationship_deprecation_rules.py`.
+
+### Changed
+
+- `examples/.draft/validation-baseline.yaml` and `tests/fixtures/diagram_workspace/.draft/validation-baseline.yaml` record the existing deprecated uses.
+- `framework/docs/draftsman.md` (Deprecated Relationship Fields) and the relationship schema `aiHint` name the three rules.
+
+### Fixed
+
+- None.
+
+### Migration Notes
+
+- After refreshing the framework, run `python3 .draft/framework/tools/validate.py --write-baseline` and commit `.draft/validation-baseline.yaml` (the documented Framework Updates steps). Fix a baselined relationship when you next edit it.
+
 ## 1.19.0 - 2026-11-21
 
 ### Compatibility Impact
