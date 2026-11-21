@@ -34,6 +34,12 @@ ACTIONS = ("upsert", "delete")
 _REPOSITORY = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})/[A-Za-z0-9._-]{1,100}$")
 _COMMIT = re.compile(r"^[0-9a-f]{7,64}$")
 _CORRELATION = re.compile(r"^[A-Za-z0-9._-]{1,80}$")
+_GITHUB_URL = re.compile(
+    r"^(?:https?://(?:www\.)?github\.com/|ssh://git@github\.com/|git@github\.com:)([^/\s]+)/([^/\s]+?)(?:\.git)?/?$", re.IGNORECASE
+)
+# Object types a product team owns and may sync. Everything else (systems, shared services, registrations,
+# requirement groups, configurations) is central content and is never accepted from a product repository.
+PRODUCT_OWNED_TYPES = ("software_deployment_pattern", "product_component", "data_component", "listener", "relationship", "decision_record")
 
 
 class SyncError(Exception):
@@ -90,13 +96,14 @@ class Result:
     action: str = ""
     correlation_id: str = ""
     commit: str = ""
+    registration: str = ""
     written: list[str] = field(default_factory=list)
     removed: list[str] = field(default_factory=list)
 
     def as_json(self) -> dict[str, Any]:
         return {"status": self.status, "message": self.message, "repository": self.repository, "product": self.product,
-                "action": self.action, "correlationId": self.correlation_id, "commit": self.commit,
-                "written": self.written, "removed": self.removed}
+                "registration": self.registration, "action": self.action, "correlationId": self.correlation_id,
+                "commit": self.commit, "written": self.written, "removed": self.removed}
 
 
 def product_slug(repository: str) -> str:
@@ -171,27 +178,125 @@ def parse_object(path: str, text: str) -> dict[str, Any]:
     return data
 
 
+# --------------------------------------------------------------------------- acceptance
+
+
+def normalize_github_url(url: Any) -> str | None:
+    """owner/name (lowercase) for a GitHub repository URL in any common form, else None."""
+    match = _GITHUB_URL.match(str(url or "").strip())
+    return f"{match.group(1)}/{match.group(2)}".lower() if match else None
+
+
+def _read_objects(root: Path) -> list[tuple[Path, dict[str, Any]]]:
+    found = []
+    if not root.exists():
+        return found
+    for path in sorted(root.rglob("*")):
+        if path.suffix not in (".yaml", ".yml") or not path.is_file():
+            continue
+        try:
+            data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeDecodeError, yaml.YAMLError):
+            continue  # validate.py reports unreadable files; they cannot own a UID here
+        for doc in data if isinstance(data, list) else [data]:
+            if isinstance(doc, dict):
+                found.append((path, doc))
+    return found
+
+
+def find_registration(workspace: Path, repository: str) -> dict[str, Any]:
+    """The one ProductRegistration in the central catalog whose repository.url is this repository."""
+    wanted = repository.lower()
+    matches = []
+    for _, obj in _read_objects(workspace / "catalog"):
+        if obj.get("type") != "product_registration":
+            continue
+        repo = obj.get("repository") if isinstance(obj.get("repository"), dict) else {}
+        if str(repo.get("provider") or "github").lower() != "github":
+            continue
+        if normalize_github_url(repo.get("url")) == wanted:
+            matches.append(obj)
+    if not matches:
+        raise SyncError(f"no ProductRegistration in catalog/ has repository.url https://github.com/{repository}; "
+                        "a Draft Admin registers the product before it can sync")
+    if len(matches) > 1:
+        uids = ", ".join(sorted(str(m.get("uid")) for m in matches))
+        raise SyncError(f"several ProductRegistrations name https://github.com/{repository} ({uids}); a Draft Admin must keep one")
+    return matches[0]
+
+
+def uid_owners(workspace: Path, own_slug: str, own_legacy: Path) -> dict[str, str]:
+    """UID -> who owns it: 'the central catalog' or another product's cache folder. The product's own cache is skipped."""
+    owners: dict[str, str] = {}
+    for _, obj in _read_objects(workspace / "catalog"):
+        if obj.get("uid"):
+            owners.setdefault(str(obj["uid"]), "the central catalog")
+    cache = workspace / CACHE_ROOT
+    for path, obj in _read_objects(cache):
+        relative = path.relative_to(cache)
+        if relative.parts[0] == own_slug or path == own_legacy:
+            continue
+        if obj.get("uid"):
+            owners.setdefault(str(obj["uid"]), f"another product ({relative.parts[0].removesuffix('.yaml')})")
+    return owners
+
+
+def check_ownership(workspace: Path, repository: str, objects: dict[str, dict[str, Any]]) -> None:
+    """Only product-owned types, each with a UID nobody else owns, speaking only for the product's own objects."""
+    owners = uid_owners(workspace, product_slug(repository), legacy_flat_file(workspace, repository))
+    seen: dict[str, str] = {}
+    for path, obj in objects.items():
+        kind = obj.get("type")
+        if kind not in PRODUCT_OWNED_TYPES:
+            raise SyncError(f"{path}: a product repository cannot sync a {kind!r} object; allowed types are {', '.join(PRODUCT_OWNED_TYPES)}")
+        uid = str(obj.get("uid") or "")
+        if not uid:
+            raise SyncError(f"{path}: every synced object needs a uid")
+        if uid in seen:
+            raise SyncError(f"{path}: uid {uid} is also used by {seen[uid]}")
+        seen[uid] = path
+        if uid in owners:
+            raise SyncError(f"{path}: uid {uid} is already owned by {owners[uid]}; a product may only sync objects it owns")
+    own = set(seen)
+    for path, obj in objects.items():
+        claims = {
+            "relationship": ("source", obj.get("source")),
+            "listener": ("owner.ref", (obj.get("owner") or {}).get("ref") if isinstance(obj.get("owner"), dict) else None),
+            "decision_record": ("linkedObject", obj.get("linkedObject")),
+        }.get(str(obj.get("type")))
+        if claims and claims[1] and str(claims[1]) not in own:
+            raise SyncError(f"{path}: {claims[0]} {claims[1]} is not an object this product syncs; "
+                            "a product may only record relationships, listeners and decisions for its own objects")
+
+
+# --------------------------------------------------------------------------- receive
+
+
 def receive(workspace: Path, payload: dict[str, Any]) -> Result:
-    """Store a payload in the product's cache folder. The folder is replaced as a whole: a sync is a snapshot."""
+    """Accept a payload from a registered product and store it in its cache folder, replaced as a snapshot."""
+    registration: dict[str, Any] = {}
     try:
         check_payload(payload)
         repository = payload["repository"]
         slug = product_slug(repository)
+        registration = find_registration(workspace, repository)
         targets: dict[PurePosixPath, str] = {}
+        objects: dict[str, dict[str, Any]] = {}
         for source_path, text in sorted(payload["files"].items()):
             target = cache_path(source_path)
             if target in targets:
                 raise SyncError(f"two files map to {target}")
-            parse_object(source_path, text)
+            objects[source_path] = parse_object(source_path, text)
             targets[target] = text
+        check_ownership(workspace, repository, objects)
     except SyncError as exc:
         return Result("rejected", str(exc), repository=str(payload.get("repository") or ""),
                       action=str(payload.get("action") or ""), correlation_id=str(payload.get("correlationId") or ""),
-                      commit=str(payload.get("commit") or ""))
+                      commit=str(payload.get("commit") or ""), registration=str(registration.get("uid") or ""))
 
     folder = workspace / CACHE_ROOT / slug
     result = Result("accepted", "", repository=repository, product=slug, action=payload["action"],
-                    correlation_id=payload["correlationId"], commit=payload["commit"])
+                    correlation_id=payload["correlationId"], commit=payload["commit"], registration=str(registration.get("uid") or ""))
     if folder.exists():
         result.removed = sorted(rel(workspace, p) for p in folder.rglob("*") if p.is_file())
         shutil.rmtree(folder)

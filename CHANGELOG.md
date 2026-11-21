@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- The SDP receiver now rejects a sync unless exactly one ProductRegistration under the central `catalog/` has `repository.url` for the sending repository (GitHub, any common URL form, case-insensitive). Products that sync today without a registration must be registered first. Synced objects must be product-owned types, use UIDs that neither the central catalog nor another product owns, and only describe the product's own objects. Existing cached files are not changed until that product syncs again.
+
+### Added
+
+- `sdp_sync.py receive` acceptance checks (#195 gap 3): ProductRegistration match (`find_registration`, `normalize_github_url`), a type allowlist (`software_deployment_pattern`, `product_component`, `data_component`, `listener`, `relationship`, `decision_record`), UID ownership against the central catalog and every other product's cache (including old flat files), and a rule that a synced relationship's `source`, listener's `owner.ref` and decision record's `linkedObject` must be objects in the same sync. Every rejection names its reason, and the result file records the registration UID.
+- `tests/test_sdp_sync_acceptance.py`.
+
+### Changed
+
+- None.
+
+### Fixed
+
+- A repository that is not registered, or registered to a different product, can no longer overwrite or delete another product's cached SDP.
+
+### Migration Notes
+
+- Before updating the receiver, make sure every syncing product has a ProductRegistration whose `repository.url` is its GitHub repository, and that no product syncs a copy of an object the central catalog already holds (move such objects to the product repository or out of the sync).
+
 ## 1.20.7 - 2026-11-21
 
 ### Compatibility Impact
