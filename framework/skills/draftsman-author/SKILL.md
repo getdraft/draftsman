@@ -34,6 +34,8 @@ Every relationship sets `targetListener` to the UID of the listener it calls, in
 
 A stub owned by an external system needs a company-internal caller. A pattern cannot be completed while it calls an internally owned stub (`sdp-internal-stub-listener`). `authenticationModel: none` needs a committed DecisionRecord keyed `interface_unprotected`. When you can run Python, use `draft_table.catalog` (`link_or_stub_listener`, `record_authored_listener`) instead of matching by hand. A port or endpoint you did not read is not recorded: leave the listener a stub and list the gap (rule R6).
 
+The caller is always the relationship's `source`. Omit `flow` (`outbound` is the default). Never write `flow: inbound`, `flow: bidirectional` or free-text `externalTarget` in a new or edited relationship: they are deprecated (still accepted on existing content). Make the caller the source instead of `inbound`, use `direction: synchronous` for request/response instead of `bidirectional`, and target the external party's `system` object instead of `externalTarget` (Deprecated Relationship Fields in `.draft/framework/docs/draftsman.md`).
+
 ## Scanning a code repository
 
 Read only what the harness already lets you read; never ask the user for credentials or tokens. Map what you find to DRAFT objects and mark every mapping inferred until the user confirms it. The mapping table and the full conversational flow are in `references/guide.md`.

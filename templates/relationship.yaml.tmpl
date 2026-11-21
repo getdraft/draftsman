@@ -5,12 +5,15 @@ name: <Relationship Name (e.g. Service A → Service B)>
 description: <Description of the communication path or dependency.>
 catalogStatus: stub
 source: <source-deployable-object-uid>
-target: <target-deployable-object-uid-if-internal>
-externalTarget: <external-target-name-if-external>
+# source is always the caller; target owns the listener the call lands on.
+# For an external party use its system object as target (externalTarget is deprecated).
+target: <target-object-uid-that-owns-the-listener>
+targetListener: <listener-uid>
 label: <calls|reads from|writes to|sends events to>
 technology: <protocol-or-technology (e.g. HTTPS, gRPC, AMQP, JDBC)>
 direction: <synchronous|asynchronous|event>
-flow: <outbound|inbound|bidirectional>
+# flow is deprecated except for its default; inbound and bidirectional are deprecated.
+flow: outbound
 capabilities: []
 tags: []
 notes: <Any additional notes or architectural rationale.>

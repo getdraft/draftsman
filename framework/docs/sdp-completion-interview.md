@@ -171,9 +171,11 @@ For each **yes**, the target is an external service: search the catalog for an
 instance of that platform owned elsewhere (not a service definition under the
 shared-services folder, and not an object with `serviceRole: definition`). If
 found, create a relationship object with `source` set to the calling component
-and `target` set to that instance's UID. If there is no catalog instance, set
-`externalTarget` to the platform name. Never target a service definition and do
-not draft a service object just to have a target.
+and `target` set to that instance's UID. If there is no catalog instance, record
+the platform as a `system` object and target it (free-text `externalTarget` is
+deprecated). Either way set `targetListener` with Listener Lookup Before Create.
+Never target a service definition and do not draft a service object just to have
+a target.
 
 Record each confirmed external dependency as a relationship object in the catalog.
 
@@ -188,8 +190,9 @@ Ask:
 For each **yes**, ask the user to name the vendor or service. Check whether a
 TechnologyComponent or NetworkService already models it. If yes, create
 a relationship object with `source` set to the calling service and `target` set
-to the catalog UID. If not, create a relationship object using `externalTarget`
-with the vendor name, and note that a catalog object should be created later.
+to the catalog UID. If not, record the vendor as a `system` object, target it, and
+set `targetListener` (a stub listener when the endpoint is not known yet). Do not
+use free-text `externalTarget`, which is deprecated.
 
 Stop after three external dependency questions per round. If more may exist,
 record in the DraftingSession that external-dependency elicitation is

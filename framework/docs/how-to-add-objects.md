@@ -59,8 +59,11 @@ matches an applicable requirement's `canBeSatisfiedBy` mechanism, or a valid
 
 External dependencies (outbound calls, data reads, platform integrations) are
 modeled as standalone `relationship` objects in the catalog (see [templates/relationship.yaml.tmpl](../../templates/relationship.yaml.tmpl) for a starting point). Set `source` to
-the calling object's UID and `target` to the receiving object's UID (or
-`externalTarget` for systems with no catalog representation).
+the calling object's UID, `target` to the object that owns the listener the call
+lands on, and `targetListener` to that listener. For an external party, `target`
+is its `system` object. Free-text `externalTarget` and `flow: inbound` or
+`flow: bidirectional` are deprecated but still accepted (see Deprecated
+Relationship Fields in the Draftsman docs).
 
 When an internal component is present for a reason outside the applicable
 requirements, document the reason under:

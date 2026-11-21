@@ -47,8 +47,9 @@ fieldTypes:
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$
 aiHint: >
   A Relationship records a directed inter-object communication edge — the structured replacement for externalInteractions.
-  Use source and target for catalog UIDs; use externalTarget (free string) when the dependency is an external system with no catalog object.
-  The direction field captures the communication pattern (synchronous/asynchronous/event); flow captures traffic direction (outbound/inbound/bidirectional).
+  A relationship is always a call from caller to listener: source is the caller, target is the object that owns the listener, and targetListener names the listener.
+  Use source and target for catalog UIDs. externalTarget (free string) is deprecated: model the external party as a system object, give it a listener, and set target and targetListener; existing externalTarget values still load, validate and render.
+  The direction field captures the communication pattern (synchronous/asynchronous/event). flow is deprecated except for its default, outbound: flow inbound and flow bidirectional still load, validate and render, but a response is already covered by direction synchronous and an inbound caller is recorded by making it the source. Removal is deferred to a later major version.
   Use capabilities to list capability UIDs that this relationship enables or satisfies.
   Record a flow on the component or instance that makes the call, never on a service definition: a service definition (an object under the shared-services catalog folder, or serviceRole: definition) is consumed through substrate and runsOn and carries no flows, so it is never a source or target. The ratcheted rule relationship-definition-endpoint is enforced and reports a relationship whose source or target is a definition (paths.serviceDefinitionsFolder in workspace.yaml overrides the definitions folder). An external service that lives in the definitions folder takes serviceRole: instance so it can be an endpoint. An external service (identity provider, secrets manager, SaaS) is a legitimate target: use its catalog UID or externalTarget, and it is drawn as an External interaction.
 fieldDescriptions:
@@ -58,7 +59,7 @@ fieldDescriptions:
   name: Use a short human-readable name describing this relationship (e.g. "Auth Service → User DB").
   source: UID of the catalog object initiating the relationship (the caller or producer).
   target: UID of the catalog object receiving the relationship (the callee or consumer). Required when externalTarget is not set.
-  externalTarget: Name of an external system or service not represented as a catalog object (e.g. "LDAP Directory", "Stripe Payment API"). Use when the dependency target has no catalog UID.
+  externalTarget: Deprecated. Free-text name of an external system with no catalog object (e.g. "LDAP Directory"). Still accepted, but one system gets many spellings and its listeners collapse into one name; record the external party as a system object with listeners and set target and targetListener instead.
   targetInterface: >
     Name of the target's interface this relationship enters through: an entry of the target's interfaces, or data
     for a data component without an interfaces list. Rule relationship-target-interface reports an error when the
@@ -68,7 +69,7 @@ fieldDescriptions:
   label: Short verb phrase describing the interaction — e.g. "calls", "reads from", "writes to", "sends events to".
   technology: Protocol or technology used — e.g. "HTTPS", "gRPC", "AMQP", "PostgreSQL wire protocol".
   direction: Communication pattern — synchronous for request/response, asynchronous for fire-and-forget, event for event-driven.
-  flow: Traffic flow direction from the source object's perspective — outbound, inbound, or bidirectional.
+  flow: Deprecated except for outbound, the default. A relationship is always caller (source) to listener, so omit flow or use outbound. inbound (swap source and target so the caller is the source) and bidirectional (a request/response is direction synchronous) are deprecated but still accepted.
   capabilities: List of capability UIDs that this relationship enables or satisfies.
   catalogStatus: Use stub, incomplete, or complete to describe catalog maturity, not company adoption disposition.
   notes: Any additional context about why this relationship exists or how it is governed.
