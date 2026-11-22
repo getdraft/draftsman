@@ -2,25 +2,28 @@
 
 ### Compatibility Impact
 
-- None. The generated catalog browser no longer embeds per-object `editorSchema` payloads or loads `js-yaml`. The inline YAML editor and requirement importer were already unreachable, so catalog objects, validation, and live browser views are unchanged. Company workspaces that refresh the browser shell drop unused editor assets only.
+- No schema, validation, or catalog-contract change. The inline YAML editor was already unreachable, and removing it does not change how objects validate.
+- The published `docs/` browser does change. `--refresh-shell` brings `docs/` up to the catalog and shell that have been in the tree since 2026-11-21, and drops `editorSchema` at the same time. `browser-data.js` goes from 324 objects to 339. The new objects are three listeners, the Billing Export and Image Import product components, their two decision records, seven relationships, and the PagerDuty system. The payload gains a `listener` filter value, `ownedListeners` (populated for Billing Export Service and Image Import Service), and `targetListener` on SDP connections. The Security and Security Compliance RequirementGroup requirement count goes from 16 to 18. Per-object `referencedBy` is regenerated with that catalog: two existing objects gain references, and five of the new objects have inbound references. The docs copies of `draft-browser.js` and `draft-browser-sdp.css` gain the Listener column and the Owned Listeners section that were already in the framework shell. The OpenStack IaaS diagram footer moves from framework version 1.6.0 to 1.21.1.
 
 ### Added
 
-- Nothing.
+- The published browser now includes those 15 example-catalog objects, the `listener` filter, `ownedListeners`, `targetListener`, and the Listener column and Owned Listeners section in the generated shell.
 
 ### Changed
 
 - Removed the unused `js-yaml@4.1.0` script and the empty `#editor-overlay` container from the browser shell.
 - Removed the dead inline YAML editor and requirement-importer JavaScript, including the listener that called the nonexistent `openEditor()`, and the unused `.editor-*`, `.import-card*`, and `.structured-preview` CSS.
 - `generate_browser.py` no longer loads schemas to build `editorSchema` entries in `browser-data.js`. `repository_web_url()` is unchanged. Schema selection in `validate.py` is unchanged.
+- Regenerated `docs/` with `generate_browser.py --refresh-shell` on framework 1.21.1 so the browser data, shell copies, and OpenStack diagram page match the generator. The daily date in `docs/company-vocabulary.html` is left as it was.
 
 ### Fixed
 
-- The generated browser no longer ships an unused CDN dependency, an empty editor overlay, or unused schema payloads on every catalog object.
+- The generated browser no longer ships an unused CDN dependency, an empty editor overlay, or unused `editorSchema` payloads.
+- The published browser and the OpenStack IaaS diagram page are no longer stuck on the pre-2026-11-21 snapshot and the 1.6.0 framework stamp.
 
 ### Migration Notes
 
-- No catalog migration is required. Refresh an existing browser install with `python3 framework/tools/generate_browser.py --refresh-shell` so `docs/index.html`, the shell assets, and `browser-data.js` drop the editor code and `editorSchema` fields.
+- No catalog migration is required. Company workspaces do not need new object types. Refreshing an install with `python3 framework/tools/generate_browser.py --refresh-shell` drops `editorSchema` and publishes the listener shell that is already in the framework source. The 15 additional browser objects are example-catalog content in this repository.
 
 ## 1.21.4 - 2026-11-22
 
