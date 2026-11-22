@@ -52,7 +52,6 @@ Copy the DRAFT framework files into your repository. The framework files belong 
 
 ### Step 3: Seed Root Workspace Templates
 Copy the workspace bootstrap templates from `.draft/framework/templates/workspace/` into your repository root. Remove the `.tmpl` suffix from all files:
-* `.gitignore`
 * `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` (AI Bootstrap contracts)
 * `CODEOWNERS`
 * `README.md`
