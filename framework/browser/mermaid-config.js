@@ -440,7 +440,6 @@
   function renderEnhancedDiagramsView() {
     currentMode = 'diagrams';
     currentDetailId = null;
-    executiveDrilldown = null;
     if (typeof setHashState === 'function') setHashState({ view: 'diagrams' });
     if (typeof destroyDetailCy === 'function') destroyDetailCy();
     if (typeof destroySdpGraphCy === 'function') destroySdpGraphCy();

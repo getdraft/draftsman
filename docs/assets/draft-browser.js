@@ -252,7 +252,6 @@ let activeCategory = 'architecture';
 let activeFilter = 'all';
 let currentDetailId = null;
 let currentMode = 'executive';
-let executiveDrilldown = null;
 let acceptableUseDomainId = null;
 let acceptableUseCapabilityId = null;
 let currentSubViewId = null;
@@ -420,8 +419,7 @@ function formatListFilterLabel(filterId) {
 
 function syncHashForExecutiveView() {
   setHashState({
-    view: 'executive',
-    drill: executiveDrilldown || null
+    view: 'executive'
   });
 }
 
@@ -511,7 +509,6 @@ function applyRouteFromHash() {
   const params = currentHashState();
   const view = params.get('view');
   if (view === 'executive' || (!view && !params.get('category') && !params.get('filter') && !params.get('q'))) {
-    executiveDrilldown = params.get('drill') || null;
     currentDetailId = null;
     renderExecutiveView();
     return;
@@ -613,7 +610,6 @@ function applyRouteFromHash() {
     renderSdpsByPillarView();
     return;
   }
-  executiveDrilldown = null;
   const category = params.get('category');
   activeCategory = CATEGORY_CONFIG.some(item => item.id === category) ? category : 'architecture';
   const requestedFilter = params.get('filter');
@@ -693,7 +689,6 @@ function attachTopNavHandlers() {
       const nav = button.dataset.nav;
       if (nav === 'executive') {
         destroyImpactCy();
-        executiveDrilldown = null;
         renderExecutiveView();
         return;
       }
@@ -1971,18 +1966,6 @@ function executiveStats() {
   };
 }
 
-function executiveMetricTile({ target, value, label, description, size = 'medium', accent = 'cyan', big = false }) {
-  return `
-    <article class="executive-tile ${size} executive-accent-${accent}" role="button" tabindex="0" data-executive-target="${escapeHtml(target)}">
-      <div class="executive-tile-title">
-        <p class="executive-number ${big ? 'big' : ''}">${formatNumber(value)}</p>
-        <h3>${escapeHtml(label)}</h3>
-      </div>
-      <p>${escapeHtml(description)}</p>
-    </article>
-  `;
-}
-
 function executiveSidebarMarkup(stats) {
   return `
     <div class="sidebar-block">
@@ -1991,152 +1974,6 @@ function executiveSidebarMarkup(stats) {
       <div class="current-filter"><span class="dot" style="background:#22c55e"></span><span>${pluralize(stats.acceptableUseTechnologyCount, 'mapped Technology Component')}</span></div>
       <div class="current-filter"><span class="dot" style="background:#f59e0b"></span><span>${pluralize(stats.controlEvidenceCount, 'control answer')}</span></div>
     </div>
-  `;
-}
-
-function executiveLifecyclePanelMarkup(stats) {
-  const orderedStatuses = ['preferred', 'existing-only', 'candidate', 'deprecated', 'retired', 'unknown'];
-  const rows = orderedStatuses
-    .filter(status => stats.lifecycleCounts[status])
-    .map(status => ({ status, count: stats.lifecycleCounts[status] }));
-  const maxCount = Math.max(...rows.map(row => row.count), 1);
-  return `
-    <section class="executive-panel wide">
-      <h3>Technology Lifecycle Mix</h3>
-      <div class="executive-bars">
-        ${rows.map(row => {
-          const color = '#' + (lifecycleColors[row.status] || lifecycleColors.unknown);
-          const width = Math.max(6, Math.round((row.count / maxCount) * 100));
-          return `
-            <div class="executive-bar-row">
-              <span>${escapeHtml(row.status)}</span>
-              <span class="executive-bar-track"><span class="executive-bar-fill" style="width:${width}%;background:${color};"></span></span>
-              <strong>${formatNumber(row.count)}</strong>
-            </div>
-          `;
-        }).join('') || '<div class="empty-card">No lifecycle mappings are available.</div>'}
-      </div>
-    </section>
-  `;
-}
-
-function executiveDomainPanelMarkup(stats) {
-  return `
-    <section class="executive-panel wide">
-      <h3>Capability Domains</h3>
-      <div class="executive-bars">
-        ${stats.domainStats.slice(0, 6).map(item => `
-          <div class="executive-snapshot-row">
-            <span>${escapeHtml(item.domain.name || item.domain.id)}</span>
-            <strong>${pluralize(item.technologyCount, 'tech')}</strong>
-          </div>
-          <div class="object-id">${pluralize(item.capabilityCount, 'capability', 'capabilities')}</div>
-        `).join('') || '<div class="empty-card">No mapped capability domains are available.</div>'}
-      </div>
-    </section>
-  `;
-}
-
-function executiveArchitecturePanelMarkup(stats) {
-  const rows = [
-    ['Software Deployment Patterns', stats.objectTypes.softwareDeploymentPatterns],
-    ['Reference Architectures', stats.objectTypes.referenceArchitectures],
-    ['Hosts', stats.objectTypes.hosts],
-    ['Runtime Services', stats.objectTypes.runtimeServices],
-    ['DataStoreServices', stats.objectTypes.dataAtRestServices],
-    ['Network Services', stats.objectTypes.networkServices],
-    ['ProductComponents', stats.objectTypes.productServices]
-  ];
-  const maxCount = Math.max(...rows.map(row => row[1]), 1);
-  return `
-    <section class="executive-panel wide">
-      <h3>Architecture Inventory Mix</h3>
-      <div class="executive-bars">
-        ${rows.map(([label, count]) => {
-          const width = Math.max(5, Math.round((count / maxCount) * 100));
-          return `
-            <div class="executive-bar-row">
-              <span>${escapeHtml(label)}</span>
-              <span class="executive-bar-track"><span class="executive-bar-fill" style="width:${width}%;"></span></span>
-              <strong>${formatNumber(count)}</strong>
-            </div>
-          `;
-        }).join('')}
-      </div>
-    </section>
-  `;
-}
-
-function executiveControlDrilldownMarkup(stats) {
-  if (executiveDrilldown !== 'controls') {
-    return '';
-  }
-  const grouped = new Map();
-  stats.requirementEvidence.forEach(row => {
-    const existing = grouped.get(row.object.id) || {
-      object: row.object,
-      count: 0,
-      groups: new Set(),
-      requirements: new Set(),
-      statuses: {}
-    };
-    existing.count += 1;
-    if (row.implementation.requirementGroup) {
-      existing.groups.add(requirementGroupName(row.requirementGroup));
-    }
-    existing.requirements.add(row.label);
-    const status = row.implementation.status || 'unknown';
-    existing.statuses[status] = (existing.statuses[status] || 0) + 1;
-    grouped.set(row.object.id, existing);
-  });
-  const rows = Array.from(grouped.values())
-    .sort((a, b) => b.count - a.count || a.object.name.localeCompare(b.object.name));
-  const requirementGroups = browserData.requirements?.groups || [];
-  return `
-    <section class="executive-panel full executive-drilldown">
-      <div class="header-top">
-        <div>
-          <h3>Control Evidence Drill-Down</h3>
-          <div class="object-id">${pluralize(stats.controlEvidenceCount, 'requirement evidence record')} across ${pluralize(stats.controlEvidenceObjectCount, 'catalog object')}</div>
-        </div>
-        <button class="action-button secondary" data-executive-target="clear-drilldown">Close</button>
-      </div>
-      ${rows.length ? `
-        <div class="table-scroll">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Artifact</th>
-                <th>Type</th>
-                <th>Requirement Groups</th>
-                <th>Requirements</th>
-                <th>Evidence</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows.map(row => `
-                <tr>
-                  <td>
-                    <span class="ard-link" data-object-link="${escapeHtml(row.object.id)}">${escapeHtml(row.object.name)}</span>
-                    <div class="object-id">${escapeHtml(row.object.id)}</div>
-                  </td>
-                  <td>${escapeHtml(row.object.typeLabel)}</td>
-                  <td>${Array.from(row.groups).map(groupName => `<span class="badge">${escapeHtml(groupName)}</span>`).join('')}</td>
-                  <td>${Array.from(row.requirements).slice(0, 4).map(label => `<span class="badge">${escapeHtml(label)}</span>`).join('')}${row.requirements.size > 4 ? `<div class="object-id">+${formatNumber(row.requirements.size - 4)} more</div>` : ''}</td>
-                  <td>${formatNumber(row.count)}</td>
-                  <td>${Object.entries(row.statuses).map(([status, count]) => `<span class="badge">${escapeHtml(status)}: ${formatNumber(count)}</span>`).join('')}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      ` : `
-        <div class="empty-card">
-          No object-level requirement evidence has been recorded yet. ${pluralize(stats.requirementDefinitionCount, 'requirement')} are available across ${pluralize(requirementGroups.length, 'Requirement Group')}.
-        </div>
-      `}
-    </section>
   `;
 }
 
@@ -3529,7 +3366,6 @@ function renderPillarSdpsView(pillarId) {
 function renderExecutiveView() {
   currentMode = 'executive';
   currentDetailId = null;
-  executiveDrilldown = null;
   currentSubViewId = null;
   destroyDetailCy();
   destroySdpGraphCy();
@@ -3878,7 +3714,6 @@ function navigateExecutiveTarget(target) {
     activeCategory = 'architecture';
     activeFilter = 'all';
     listSearchTerm = '';
-    executiveDrilldown = null;
     renderListView();
     return;
   }
@@ -3927,7 +3762,6 @@ function navigateExecutiveTarget(target) {
     activeCategory = 'framework';
     activeFilter = 'capability';
     listSearchTerm = '';
-    executiveDrilldown = null;
     renderListView();
     return;
   }
@@ -3943,28 +3777,16 @@ function navigateExecutiveTarget(target) {
     activeCategory = 'framework';
     activeFilter = 'requirement_group';
     listSearchTerm = '';
-    executiveDrilldown = null;
     renderListView();
     return;
   }
   if (target === 'acceptable-use') {
-    executiveDrilldown = null;
     renderAcceptableUseView();
     return;
   }
   if (target.startsWith('acceptable-domain:')) {
-    executiveDrilldown = null;
     renderAcceptableUseView({ domainId: target.slice('acceptable-domain:'.length) });
     return;
-  }
-  if (target === 'controls') {
-    executiveDrilldown = 'controls';
-    renderExecutiveView();
-    return;
-  }
-  if (target === 'clear-drilldown') {
-    executiveDrilldown = null;
-    renderExecutiveView();
   }
 }
 
@@ -4259,7 +4081,6 @@ function attachAcceptableUseHandlers() {
 function renderDiagramsView() {
   currentMode = 'diagrams';
   currentDetailId = null;
-  executiveDrilldown = null;
   destroyDetailCy();
   destroySdpGraphCy();
   destroyImpactCy();
@@ -4413,7 +4234,6 @@ function renderDiagramsView() {
 function renderTopologyView() {
   currentMode = 'topology';
   currentDetailId = null;
-  executiveDrilldown = null;
   destroyDetailCy();
   destroySdpGraphCy();
   destroyImpactCy();
@@ -4482,7 +4302,6 @@ function renderTopologyView() {
 function renderAcceptableUseView({ domainId = null, capabilityId = null } = {}) {
   currentMode = 'acceptable-use';
   currentDetailId = null;
-  executiveDrilldown = null;
   destroyDetailCy();
   destroySdpGraphCy();
   destroyImpactCy();
@@ -4605,7 +4424,6 @@ function renderAcceptableUseView({ domainId = null, capabilityId = null } = {}) 
 function renderListView() {
   currentMode = 'list';
   currentDetailId = null;
-  executiveDrilldown = null;
   destroyDetailCy();
   destroySdpGraphCy();
   destroyImpactCy();
@@ -6615,7 +6433,6 @@ function _sdpAttachHandlers(object, vm) {
 
 function renderDetailView() {
   currentMode = 'detail';
-  executiveDrilldown = null;
   const object = objectLookup[currentDetailId];
   if (!object) {
     renderListView();
@@ -7065,7 +6882,7 @@ function initSidebarNav() {
   nav.querySelectorAll('.sidebar-nav-btn[data-nav]').forEach(btn => {
     btn.addEventListener('click', () => {
       const navId = btn.dataset.nav;
-      if (navId === 'executive') { destroyImpactCy(); executiveDrilldown = null; renderExecutiveView(); }
+      if (navId === 'executive') { destroyImpactCy(); renderExecutiveView(); }
       else if (navId === 'list') { destroyImpactCy(); renderListView(); }
       else if (navId === 'object-types') { destroyImpactCy(); renderObjectTypesView(); }
       else if (navId === 'onboarding') { destroyImpactCy(); renderCompanyOnboardingView(); }
