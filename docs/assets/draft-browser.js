@@ -14,10 +14,8 @@ const objectAliasLookup = (() => {
   });
   return lookup;
 })();
-const referencedByIndex = browserData.referencedBy || {};
 const catalogIndexes = browserData.indexes || {};
 const domainCapabilitiesIndex = catalogIndexes.domainCapabilities || {};
-const repoUrl = browserData.repoUrl || '';
 const businessTaxonomy = browserData.businessTaxonomy || { pillars: [] };
 const businessPillarLookup = Object.fromEntries((businessTaxonomy.pillars || []).map(pillar => [pillar.id, pillar]));
 const businessHierarchyNodeLookup = new Map();
@@ -161,17 +159,6 @@ const DT_MAP_PRESETS = {
 };
 // ───────────────────────────────────────────────────────────────────────────
 
-const DEPLOYABLE_OBJECT_TYPES = [
-  'technology_component',
-  'host',
-  'runtime_service',
-  'data_store_service',
-  'network_service',
-  'product_component',
-  'data_component',
-  'product_component',
-  'software_deployment_pattern'
-];
 const SERVICE_OBJECT_TYPES = ['runtime_service', 'data_store_service', 'network_service'];
 const DEPLOYABLE_STANDARD_TYPES = ['host', 'runtime_service', 'data_store_service', 'network_service', 'product_component', 'data_component', 'product_component'];
 const CATEGORY_CONFIG = [
@@ -236,18 +223,6 @@ const CATEGORY_CONFIG = [
     ]
   }
 ];
-const lifecycleValues = browserData.lifecycleValues || [];
-const deployableTypes = new Set([
-  'software_deployment_pattern',
-  'reference_architecture',
-  'host',
-  'runtime_service',
-  'data_store_service',
-  'network_service',
-  'product_component',
-  'data_component',
-  'product_component'
-]);
 let activeCategory = 'architecture';
 let activeFilter = 'all';
 let currentDetailId = null;
@@ -306,16 +281,6 @@ function formatTypeLabel(typeValue) {
   if (normalized === 'software_deployment_pattern') return 'Software Deployment Pattern';
   if (normalized === 'reference_architecture') return 'Reference Architecture';
   return formatTitleCase(normalized.replace(/[._-]/g, ' '));
-}
-
-function capabilityClass(capability) {
-  return ({
-    'authentication': 'cap-authentication',
-    'logging': 'cap-logging',
-    'security': 'cap-security',
-    'monitoring': 'cap-monitoring',
-    'patch-management': 'cap-patch-management'
-  }[capability] || 'cap-default');
 }
 
 function catalogStatusClass(status) {
@@ -434,10 +399,6 @@ function syncHashForListView() {
 
 function syncHashForDetailView(id) {
   setHashState({ view: 'detail', id });
-}
-
-function syncHashForImpactView() {
-  setHashState({ view: 'impact', id: impactSelectedId, q: impactSearchTerm || null });
 }
 
 function syncHashForAcceptableUseView() {
@@ -644,41 +605,6 @@ function currentFilterMarkup() {
 
 function sidebarMarkup(extraMarkup = '') {
   return `${currentFilterMarkup()}${extraMarkup}`;
-}
-
-function rerenderCurrentView() {
-  if (currentMode === 'executive') {
-    renderExecutiveView();
-    return;
-  }
-  if (currentMode === 'detail') {
-    renderDetailView();
-    return;
-  }
-  if (currentMode === 'acceptable-use') {
-    renderAcceptableUseView({
-      domainId: acceptableUseDomainId,
-      capabilityId: acceptableUseCapabilityId
-    });
-    return;
-  }
-  if (currentMode === 'topology') {
-    renderTopologyView();
-    return;
-  }
-  if (currentMode === 'diagrams') {
-    renderDiagramsView();
-    return;
-  }
-  if (currentMode === 'object-types') {
-    renderObjectTypesView();
-    return;
-  }
-  if (currentMode === 'onboarding') {
-    renderCompanyOnboardingView();
-    return;
-  }
-  renderListView();
 }
 
 function attachSidebarHandlers() {}
@@ -1450,30 +1376,6 @@ function applicableRequirementEntries(object) {
     });
   });
   return entries;
-}
-
-function interactionCapabilities(interaction) {
-  return Array.isArray(interaction?.capabilities) ? interaction.capabilities.filter(Boolean).map(String) : [];
-}
-
-function referencedTechnologyComponents(object) {
-  const refs = [];
-  ['operatingSystemComponent', 'computePlatformComponent', 'primaryTechnologyComponent'].forEach(field => {
-    if (object?.[field]) {
-      refs.push(object[field]);
-    }
-  });
-  (object?.internalComponents || []).forEach(component => {
-    if (component?.ref) {
-      refs.push(component.ref);
-    }
-  });
-  if (object?.type === 'technology_component' && object.id) {
-    refs.unshift(object.id);
-  }
-  return Array.from(new Set(refs))
-    .map(ref => objectLookup[ref])
-    .filter(target => target?.type === 'technology_component');
 }
 
 function technologyRefSatisfiesCriteria(ref, criteria) {
@@ -4574,78 +4476,6 @@ function decisionMarkup(object, excludedRootKeys = []) {
   `;
 }
 
-function businessContextMarkup(object) {
-  if (object.type !== 'software_deployment_pattern') {
-    return '';
-  }
-  const context = object.businessContext || {};
-  if (!context.pillar && !context.productFamily && !context.notes) {
-    return '';
-  }
-  const pillar = businessPillarForObject(object);
-  const additional = Array.isArray(context.additionalPillars)
-    ? context.additionalPillars.map(id => businessPillarLookup[id]?.name || formatTitleCase(String(id).replace(/^business-pillar\./, '').replace(/-/g, ' ')))
-    : [];
-  return `
-    <section class="section-card">
-      <h3>Business Context</h3>
-      <dl class="definition-list">
-        <dt>Primary Pillar</dt>
-        <dd>${escapeHtml(pillar.name)}</dd>
-        ${additional.length ? `<dt>Additional Pillars</dt><dd>${escapeHtml(additional.join(', '))}</dd>` : ''}
-        ${context.productFamily ? `<dt>Product Family</dt><dd>${escapeHtml(context.productFamily)}</dd>` : ''}
-        ${context.notes ? `<dt>Notes</dt><dd>${escapeHtml(context.notes)}</dd>` : ''}
-      </dl>
-    </section>
-  `;
-}
-
-function sourceRepositoryMarkup(object) {
-  const repos = object.notes?.sourceRepositories || [];
-  if (!Array.isArray(repos) || !repos.length) {
-    return '';
-  }
-  return `
-    <section class="section-card">
-      <h3>Source Repositories</h3>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Repository</th>
-              <th>ProductComponent</th>
-              <th>Language</th>
-              <th>Signals</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${repos.map(repo => {
-              const productService = repo.productService || '';
-              const service = productService ? objectLookup[productService] : null;
-              const repoName = repo.repositoryName || repo.sourceRepository || 'Unknown repository';
-              const repoUrl = repo.sourceRepository || '';
-              return `
-                <tr>
-                  <td>
-                    ${repoUrl ? `<a href="${escapeHtml(repoUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(repoName)}</a>` : escapeHtml(repoName)}
-                    ${repoUrl && repoUrl !== repoName ? `<div class="object-id">${escapeHtml(repoUrl)}</div>` : ''}
-                  </td>
-                  <td>
-                    ${service ? `<span class="ard-link" data-object-link="${escapeHtml(productService)}">${escapeHtml(service.name)}</span>` : escapeHtml(productService || 'Not linked')}
-                    ${productService ? `<div class="object-id">${escapeHtml(productService)}</div>` : ''}
-                  </td>
-                  <td>${escapeHtml(repo.repositoryPrimaryLanguage || '')}</td>
-                  <td>${escapeHtml(repo.observedRuntimeSignals || '')}</td>
-                </tr>
-              `;
-            }).join('')}
-          </tbody>
-        </table>
-      </div>
-    </section>
-  `;
-}
-
 function interactionMarkup(object) {
   const outbound = object.outboundRelationships || [];
   const inbound = object.inboundRelationships || [];
@@ -4818,31 +4648,6 @@ function requirementEvidenceMarkup(object) {
 
 function requirementGroupByName(name) {
   return allObjects.find(object => object.type === 'requirement_group' && object.name === name) || null;
-}
-
-function sdmRisksMarkup(object) {
-  const references = object.decisionRecords || [];
-  if (!references.length) {
-    return '';
-  }
-  return `
-    <section class="section-card">
-      <h3>Decision Records</h3>
-      <div class="section-stack">
-        ${references.map(entry => {
-          const ard = objectLookup[entry.ref];
-          return `
-            <article class="odc-card">
-              <div class="odc-name">
-                ${ard ? `<span class="ard-link" data-object-link="${ard.id}">${escapeHtml(ard.name)}</span>` : escapeHtml(entry.ref || 'Unknown Decision Record')}
-              </div>
-              <div class="object-id">${escapeHtml(entry.ref || '')}</div>
-            </article>
-          `;
-        }).join('')}
-      </div>
-    </section>
-  `;
 }
 
 function sdmServiceGroupsMarkup(object) {
@@ -5171,16 +4976,6 @@ function instanceLabel(value) {
   return formatTitleCase(String(value || 'unnamed').replace(/\./g, ' ').replace(/_/g, ' '));
 }
 
-function shortRefLabel(ref) {
-  const object = objectLookup[ref];
-  if (!object) {
-    return formatTitleCase((ref || '').split('.').slice(-1)[0] || 'service');
-  }
-  return object.name
-    .replace(/\s+(Web Service|Application Service|Database Service|Service)$/i, '')
-    .replace(/\s+Standard$/i, '');
-}
-
 const SOFTWARE_DEPLOYMENT_PATTERN_TIERS = ['frontend', 'application', 'data'];
 const SOFTWARE_DEPLOYMENT_PATTERN_TIER_LABELS = {
   frontend: 'Frontend Services',
@@ -5253,17 +5048,6 @@ function topologyNodeIcon(entry, objectType = 'host', options = {}) {
   return { icon: objectIconSvg('gear'), cls: 'runtime' };
 }
 
-function deploymentTargetPresentation(location) {
-  const text = String(location || 'Unspecified');
-  if (/AWS/i.test(text)) {
-    return { cls: 'aws', badge: 'AWS', icon: objectIconSvg('cloud') };
-  }
-  if (/Datacenter|\bDC\b/i.test(text)) {
-    return { cls: 'datacenter', badge: 'DC', icon: objectIconSvg('cloud') };
-  }
-  return { cls: 'generic', badge: 'Host', icon: objectIconSvg('monitor') };
-}
-
 function detailNodeVisual(object) {
   const icon = topologyNodeIcon({ref: object.id});
   return {
@@ -5287,19 +5071,6 @@ function entryDiagramTier(entry) {
   // Legacy helper for reference_architecture topology view — reads networkZone tier from lookup
   const zoneTier = entry?._zoneTier;
   return SOFTWARE_DEPLOYMENT_PATTERN_TIERS.includes(zoneTier) ? zoneTier : 'application';
-}
-
-function supportEntryTier(entry, objectType) {
-  const object = objectLookup[entry?.ref];
-  const capability = object?.capability || '';
-  if (objectType === 'appliance') {
-    if (capability === 'load-balancing') return 'presentation';
-    if (['file-storage', 'data-persistence'].includes(capability)) return 'data';
-    return 'utility';
-  }
-  if (object?.type === 'data_store_service') return 'data';
-  if (object?.type === 'network_service') return 'presentation';
-  return 'utility';
 }
 
 function entryLabel(entry) {
@@ -6809,40 +6580,6 @@ function renderInternalDiagram(object) {
   });
   detailCy.resize();
   detailCy.fit(detailCy.elements(), 28);
-}
-
-function outboundCatalogRefs(object) {
-  return (object?.outboundRefs || [])
-    .map(reference => objectLookup[reference.target])
-    .filter(Boolean);
-}
-
-function inboundCatalogRefs(object) {
-  return (referencedByIndex[object?.id] || [])
-    .map(reference => objectLookup[reference.source])
-    .filter(Boolean);
-}
-
-function traverseDown(object, visited, collector) {
-  outboundCatalogRefs(object).forEach(target => {
-    if (visited.has(target.id) || !deployableTypes.has(target.type)) {
-      return;
-    }
-    visited.add(target.id);
-    collector.add(target.id);
-    traverseDown(target, visited, collector);
-  });
-}
-
-function traverseUp(object, visited, collector) {
-  inboundCatalogRefs(object).forEach(source => {
-    if (visited.has(source.id) || !deployableTypes.has(source.type)) {
-      return;
-    }
-    visited.add(source.id);
-    collector.add(source.id);
-    traverseUp(source, visited, collector);
-  });
 }
 
 // ── Sidebar navigation ──────────────────────────────────────────────────

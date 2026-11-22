@@ -49,44 +49,6 @@ COMPANY_VOCABULARY_OUTPUT_NAME = "company-vocabulary.html"
 DEFAULT_WORKSPACE_ROOT = WORKSPACE_ROOT if REPO_ROOT.name == ".draft" else REPO_ROOT / "examples"
 LOGO_PATH = REPO_ROOT / "draft-logo.png"
 LEGACY_LOGO_PATH = REPO_ROOT / "draftlogo.png"
-CATALOG_FOLDERS = [
-    "capabilities",
-    "requirement-groups",
-    "object-patches",
-    "technology-components",
-    "network-services",
-    "hosts",
-    "runtime-services",
-    "data-store-services",
-    "product-components",
-    "data-components",
-    "decision-records",
-    "objects",
-    "object-types",
-    "automation-targets",
-    "sessions",
-    "software-deployment-patterns",
-    "reference-architectures",
-    "domains",
-    "relationships",
-    "systems",
-    "business-unit-hierarchies",
-    # Nested catalog folders by content role
-    "engineering/product-components",
-    "engineering/data-components",
-    "engineering/software-deployment-patterns",
-    "shared-services/hosts",
-    "shared-services/runtime-services",
-    "shared-services/data-store-services",
-    "shared-services/network-services",
-    "shared-services/technology-components",
-    "governance/decision-records",
-    "governance/sessions",
-    "governance/relationships",
-    "governance/systems",
-    "governance/reference-architectures",
-    "governance/business-unit-hierarchies",
-]
 LIFECYCLE_COLORS = {
     "preferred": "1f8a5b",
     "existing-only": "2a6fdb",
@@ -117,22 +79,6 @@ REF_CONTAINER_KEYS = {
     "source",
 }
 UID_PATTERN = re.compile(r"^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$")
-
-
-def is_saas_service_classification(obj: dict[str, Any]) -> bool:
-    return obj.get("type") in {"runtime_service", "data_store_service", "network_service"} and obj.get("deliveryModel") == "saas"
-
-
-def is_paas_service_classification(obj: dict[str, Any]) -> bool:
-    return obj.get("type") in {"runtime_service", "data_store_service", "network_service"} and obj.get("deliveryModel") == "paas"
-
-
-def is_database_service(obj: dict[str, Any]) -> bool:
-    return obj.get("type") == "data_store_service"
-
-
-def is_general_service(obj: dict[str, Any]) -> bool:
-    return obj.get("type") == "runtime_service"
 
 
 def load_workspace_catalog_folders(workspace_root: Path) -> list[str] | None:
@@ -1048,22 +994,6 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
 
     browser_lookup = {obj["uid"]: obj for obj in browser_objects}
     filter_values = sorted({obj["type"] for obj in objects})
-    impact_lifecycle_types = {
-        "reference_architecture",
-        "software_deployment_pattern",
-        "host",
-        "runtime_service",
-        "data_store_service",
-        "network_service",
-        "product_component",
-        "data_component",
-    }
-    lifecycle_values = sorted(
-        {obj.get("lifecycleStatus", "unknown") for obj in objects if obj.get("type") in impact_lifecycle_types},
-        key=lambda value: ["preferred", "existing-only", "candidate", "deprecated", "retired", "unknown"].index(value)
-        if value in {"preferred", "existing-only", "candidate", "deprecated", "retired", "unknown"}
-        else 999,
-    )
     topology_edges = [
         {
             "id": obj["uid"],
@@ -1085,15 +1015,12 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
         "lookup": browser_lookup,
         "lifecycleColors": LIFECYCLE_COLORS,
         "filterValues": filter_values,
-        "lifecycleValues": lifecycle_values,
-        "referencedBy": referenced_by,
         "indexes": catalog_indexes,
         "warnings": warnings,
         "requirements": build_requirement_payload(registry, workspace_root),
         "vocabulary": load_workspace_vocabulary(workspace_root),
         "businessTaxonomy": load_workspace_business_taxonomy(workspace_root),
         "browserConfig": load_workspace_browser_config(workspace_root),
-        "repoUrl": repository_web_url(workspace_root) or repository_web_url(REPO_ROOT),
         "catalogName": workspace_repository_name(workspace_root),
         "logoDataUri": logo_data_uri(),
         "topologyEdges": topology_edges,
