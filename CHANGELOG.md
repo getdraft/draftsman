@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. This removes an accidentally tracked empty gitlink from the framework repository. Schemas, validation, tools, templates, and company workspace behavior are unchanged.
+
+### Added
+
+- `.gitignore` ignores `.claude/worktrees/` so a local Claude Code worktree cannot be staged again.
+
+### Changed
+
+- The repository index no longer records `.claude/worktrees/agent-a699b6c2`. `.claude/commands/draft.md` is unchanged.
+
+### Fixed
+
+- Removed the bare gitlink `.claude/worktrees/agent-a699b6c2` (mode 160000, commit `5a6ede2d`) that was committed in `637dfd9` with no `.gitmodules` entry and no references in the tree.
+
+### Migration Notes
+
+- No action is required. Company workspaces do not vendor this path. After pulling, Git drops the gitlink; anything under `.claude/worktrees/` stays untracked.
+
 ## 1.20.14 - 2026-11-22
 
 ### Compatibility Impact
