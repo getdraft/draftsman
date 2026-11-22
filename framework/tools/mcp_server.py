@@ -18,10 +18,6 @@ from typing import Any
 
 TOOLS_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = TOOLS_ROOT.parent.parent
-if str(TOOLS_ROOT) not in sys.path:
-    sys.path.insert(0, str(TOOLS_ROOT))
-
-from indexes import build_catalog_indexes, sorted_objects
 
 
 def token_allowed_for(url: str) -> bool:

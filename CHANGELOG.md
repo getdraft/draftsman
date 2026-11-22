@@ -1,3 +1,29 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No workspace migration. The removed symbols were never called, so catalog validation, CLI subcommands, MCP server tools, ASVS import, UID repair, decentralized SDP export, and the 0.10.0 taxonomy migration CLI keep the same behavior.
+
+### Added
+
+- No new framework objects, commands, or configuration fields.
+
+### Changed
+
+- Removed the unused `sys.path` insertion and the unused `indexes` import (`build_catalog_indexes`, `sorted_objects`) from `framework/tools/mcp_server.py`. `TOOLS_ROOT` and `REPO_ROOT` stay.
+- Removed the unused `dump_yaml` helper from `framework/tools/repair_uids.py`. UID repair still writes YAML with `yaml.safe_dump`.
+- Removed the unused `FRAMEWORK_ROOT` constant from `framework/tools/import_asvs.py`.
+- Removed the unused `typing.Any` import from `framework/tools/decentralize_sdp.py`. The script itself stays.
+- Removed the unused `shutil` import and the unused `is_mapping` helper from `framework/tools/migrations/0.10.0/migrate_object_taxonomy.py`. The historical migration CLI stays.
+
+### Fixed
+
+- No user-facing defect. These imports and helpers had no callers inside their scripts or elsewhere in the repository.
+
+### Migration Notes
+
+- No action is required. Company workspaces do not need to refresh catalogs or rerun a migration because of this cleanup.
+
 ## 1.21.0 - 2026-11-22
 
 ### Compatibility Impact
