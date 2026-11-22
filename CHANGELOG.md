@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No change to validation results, object contracts, schemas, or workspace behavior. `RELATIONSHIP_ENDPOINT_TYPES` and `interaction_capabilities` in `framework/tools/validate.py` were unused and are removed. Existing catalogs validate the same way.
+
+### Added
+
+- No new framework capability. This release only deletes validator symbols that nothing in the repository called.
+
+### Changed
+
+- Removed `RELATIONSHIP_ENDPOINT_TYPES` and `interaction_capabilities` from `framework/tools/validate.py`. Neither symbol was referenced by the validator, other tools, tests, skills, or string lookups.
+
+### Fixed
+
+- No defect in validation output. The deletion removes dead definitions so they cannot be mistaken for an active relationship or interaction rule.
+
+### Migration Notes
+
+- No action is required. Company workspaces do not reference these symbols, and refreshing the framework does not change catalog validation.
+
 ## 1.20.15 - 2026-11-22
 
 ### Compatibility Impact

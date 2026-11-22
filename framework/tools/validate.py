@@ -82,7 +82,6 @@ STANDARD_TYPES = {
     "data_component",
 }
 SERVICE_TYPES = {"runtime_service", "data_store_service", "network_service", "ai_gateway"}
-RELATIONSHIP_ENDPOINT_TYPES = STANDARD_TYPES | {"runtime_service", "data_store_service", "network_service", "ai_gateway", "software_deployment_pattern", "reference_architecture", "technology_component", "host", "product_registration"}
 BUSINESS_PILLAR_ID_PATTERN = re.compile(r"^business-pillar\.[a-z0-9-]+$")
 UID_PATTERN = re.compile(UID_PATTERN_TEXT)
 WORKSPACE_DOCUMENT_TYPES = {"vocabulary", "vocabulary_proposal"}
@@ -2391,11 +2390,6 @@ def applicable_requirements_for_object(
             if isinstance(requirement, dict) and requirement_applies_to_object(requirement, obj):
                 requirements.append((group_id, group, requirement))
     return requirements
-
-
-def interaction_capabilities(interaction: dict[str, Any]) -> list[str]:
-    capabilities = interaction.get("capabilities", [])
-    return [str(capability) for capability in capabilities] if isinstance(capabilities, list) else []
 
 
 def technology_ref_satisfies_criteria(
