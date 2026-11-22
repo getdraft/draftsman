@@ -3,7 +3,7 @@
 ### Compatibility Impact
 
 - No schema, validation, or catalog-contract change. The inline YAML editor was already unreachable, and removing it does not change how objects validate.
-- The published `docs/` browser does change. `--refresh-shell` brings `docs/` up to the catalog and shell that have been in the tree since 2026-11-21, and drops `editorSchema` at the same time. `browser-data.js` goes from 324 objects to 339. The new objects are three listeners, the Billing Export and Image Import product components, their two decision records, seven relationships, and the PagerDuty system. The payload gains a `listener` filter value, `ownedListeners` (populated for Billing Export Service and Image Import Service), and `targetListener` on SDP connections. The Security and Security Compliance RequirementGroup requirement count goes from 16 to 18. Per-object `referencedBy` is regenerated with that catalog: two existing objects gain references, and five of the new objects have inbound references. The docs copies of `draft-browser.js` and `draft-browser-sdp.css` gain the Listener column and the Owned Listeners section that were already in the framework shell. The OpenStack IaaS diagram footer moves from framework version 1.6.0 to 1.21.1.
+- The published `docs/` browser does change. `--refresh-shell` brings `docs/` up to the catalog and shell that have been in the tree since 2026-11-21, and drops `editorSchema` at the same time. `browser-data.js` goes from 324 objects to 339. The new objects are three listeners, the Billing Export and Image Import product components, their two decision records, seven relationships, and the PagerDuty system. The payload gains a `listener` filter value, `ownedListeners` (populated for Billing Export Service and Image Import Service), and `targetListener` on SDP connections. The Security and Security Compliance RequirementGroup requirement count goes from 16 to 18. Per-object `referencedBy` is regenerated with that catalog: two existing objects gain references, and five of the new objects have inbound references. The docs copies of `draft-browser.js` and `draft-browser-sdp.css` gain the Listener column and the Owned Listeners section that were already in the framework shell. The OpenStack IaaS diagram footer moves from framework version 1.6.0 to 1.21.4.
 
 ### Added
 
@@ -14,7 +14,7 @@
 - Removed the unused `js-yaml@4.1.0` script and the empty `#editor-overlay` container from the browser shell.
 - Removed the dead inline YAML editor and requirement-importer JavaScript, including the listener that called the nonexistent `openEditor()`, and the unused `.editor-*`, `.import-card*`, and `.structured-preview` CSS.
 - `generate_browser.py` no longer loads schemas to build `editorSchema` entries in `browser-data.js`. `repository_web_url()` is unchanged. Schema selection in `validate.py` is unchanged.
-- Regenerated `docs/` with `generate_browser.py --refresh-shell` on framework 1.21.1 so the browser data, shell copies, and OpenStack diagram page match the generator. The daily date in `docs/company-vocabulary.html` is left as it was.
+- Regenerated `docs/` with `generate_browser.py --refresh-shell` on framework 1.21.4 so the browser data, shell copies, and OpenStack diagram page match the generator. The daily date in `docs/company-vocabulary.html` is left as it was.
 
 ### Fixed
 
