@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No workspace migration. The removed files were not copied by workspace bootstrap. New workspaces still receive `.draft/framework.lock` from `framework_lock_data()`, and workspace creation, validation, CLI commands, and the browser are unchanged.
+
+### Added
+
+- No new objects, commands, schemas, or templates.
+
+### Changed
+
+- Removed the unused workspace templates `templates/workspace/.draft/framework.lock.tmpl` and `templates/workspace/.gitignore.tmpl`. The lock template still named the pre-rename framework URL and was never read. The gitignore template was not installed into new workspaces.
+- The Draft Admins onboarding guide no longer tells administrators to copy a `.gitignore` from the workspace templates.
+
+### Fixed
+
+- `AI_INDEX.md` no longer lists the two removed templates.
+
+### Migration Notes
+
+- No action is required. Company workspaces that already have a `.gitignore` or `.draft/framework.lock` keep those files. Refreshing the vendored framework does not delete or rewrite them from these templates.
+
 ## 1.21.3 - 2026-11-22
 
 ### Compatibility Impact
