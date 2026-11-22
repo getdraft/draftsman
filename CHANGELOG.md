@@ -1,3 +1,39 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No schema, validation, or catalog-contract change. The inline YAML editor was already unreachable, and removing it does not change how objects validate.
+- The published `docs/` browser does change. `--refresh-shell` brings `docs/` up to the catalog and shell that have been in the tree since 2026-11-21, and drops `editorSchema` at the same time. `browser-data.js` goes from 324 objects to 339. The new objects are three listeners, the Billing Export and Image Import product components, their two decision records, seven relationships, and the PagerDuty system. The payload gains a `listener` filter value, `ownedListeners` (populated for Billing Export Service and Image Import Service), and `targetListener` on SDP connections. The Security and Security Compliance RequirementGroup requirement count goes from 16 to 18. Per-object `referencedBy` is regenerated with that catalog: two existing objects gain references, and five of the new objects have inbound references. The docs copies of `draft-browser.js` and `draft-browser-sdp.css` gain the Listener column and the Owned Listeners section that were already in the framework shell. The OpenStack IaaS diagram footer moves from framework version 1.6.0 to 1.21.4.
+- No compatibility impact from removing the unreachable Cytoscape SDP graph. SDP diagrams stay on Mermaid and the standalone SVG pages. The cytoscape script remains for the detail relationship graph (`detailCy`). `sdpConnections` is unchanged.
+- No compatibility impact from removing the legacy Executive View panels. The live Overview uses the home tiles and `executiveSidebarMarkup`. The `executiveDrilldown` state was write-only after those panels stopped rendering.
+- No compatibility impact from removing the remaining unreachable browser helpers. The per-object `referencedBy` field stays in each object. The unused top-level `lifecycleValues`, `referencedBy`, and `repoUrl` keys are removed. `repository_web_url()` stays.
+
+### Added
+
+- The published browser now includes those 15 example-catalog objects, the `listener` filter, `ownedListeners`, `targetListener`, and the Listener column and Owned Listeners section in the generated shell.
+
+### Changed
+
+- Removed the unused `js-yaml@4.1.0` script and the empty `#editor-overlay` container from the browser shell.
+- Removed the dead inline YAML editor and requirement-importer JavaScript, including the listener that called the nonexistent `openEditor()`, and the unused `.editor-*`, `.import-card*`, and `.structured-preview` CSS.
+- `generate_browser.py` no longer loads schemas to build `editorSchema` entries in `browser-data.js`. `repository_web_url()` is unchanged. Schema selection in `validate.py` is unchanged.
+- Regenerated `docs/` with `generate_browser.py --refresh-shell` on framework 1.21.4 so the browser data, shell copies, and OpenStack diagram page match the generator. The daily date in `docs/company-vocabulary.html` is left as it was.
+- Removed the unreachable Cytoscape SDP graph from `draft-browser.js`: `SDP_GRAPH_PROTOCOL_COLORS`, `SDP_GRAPH_TIER_COLORS`, `buildSdpGraphElements`, `sdpGraphCy`, and `renderSdpGraph`. `destroySdpGraphCy()` still calls `_sdpTeardown()` so Mermaid embed cleanup keeps working.
+- Removed the unused Executive View builders `executiveMetricTile`, `executiveLifecyclePanelMarkup`, `executiveDomainPanelMarkup`, `executiveArchitecturePanelMarkup`, and `executiveControlDrilldownMarkup`, their CSS, the write-only `executiveDrilldown` state, its `drill` hash parameter, and the `controls` / `clear-drilldown` navigation branches. `executiveSidebarMarkup` stays.
+- Removed unreachable helpers from `draft-browser.js` (`referencedByIndex`, `repoUrl`, `DEPLOYABLE_OBJECT_TYPES`, `lifecycleValues`, `deployableTypes`, `capabilityClass`, `syncHashForImpactView`, `rerenderCurrentView`, `interactionCapabilities`, `referencedTechnologyComponents`, `businessContextMarkup`, `sourceRepositoryMarkup`, `sdmRisksMarkup`, `shortRefLabel`, `deploymentTargetPresentation`, `supportEntryTier`, `outboundCatalogRefs`, `inboundCatalogRefs`, `traverseDown`, `traverseUp`) and from `generate_browser.py` (`CATALOG_FOLDERS`, the unused service-classification predicates, and the unused top-level `lifecycleValues`, `referencedBy`, and `repoUrl` payload keys). The per-object `referencedBy` field and `repository_web_url()` stay.
+
+### Fixed
+
+- The generated browser no longer ships an unused CDN dependency, an empty editor overlay, or unused `editorSchema` payloads.
+- The published browser and the OpenStack IaaS diagram page are no longer stuck on the pre-2026-11-21 snapshot and the 1.6.0 framework stamp.
+- The catalog browser no longer carries an unreachable Cytoscape builder for `#sdp-graph-cy` and `#sdp-graph-legend`, which are not in the page.
+- The Overview hash no longer writes a `drill` parameter that nothing rendered.
+- `browser-data.js` no longer carries top-level `lifecycleValues`, `referencedBy`, or `repoUrl` fields that the live browser did not read.
+
+### Migration Notes
+
+- No catalog migration is required. Company workspaces do not need new object types. Refreshing an install with `python3 framework/tools/generate_browser.py --refresh-shell` drops `editorSchema`, publishes the listener shell that is already in the framework source, drops the unused Cytoscape SDP graph and the legacy Executive View panels, and drops the unused top-level `lifecycleValues`, `referencedBy`, and `repoUrl` keys. The 15 additional browser objects are example-catalog content in this repository. Bookmarks that included `drill=controls` still open the Overview. The per-object `referencedBy` field remains, with the references produced by this refresh.
+
 ## 1.21.4 - 2026-11-22
 
 ### Compatibility Impact

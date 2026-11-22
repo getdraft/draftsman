@@ -14,10 +14,8 @@ const objectAliasLookup = (() => {
   });
   return lookup;
 })();
-const referencedByIndex = browserData.referencedBy || {};
 const catalogIndexes = browserData.indexes || {};
 const domainCapabilitiesIndex = catalogIndexes.domainCapabilities || {};
-const repoUrl = browserData.repoUrl || '';
 const businessTaxonomy = browserData.businessTaxonomy || { pillars: [] };
 const businessPillarLookup = Object.fromEntries((businessTaxonomy.pillars || []).map(pillar => [pillar.id, pillar]));
 const businessHierarchyNodeLookup = new Map();
@@ -31,12 +29,9 @@ indexHierarchyNodes(businessTaxonomy.hierarchy);
 const pageRoot = document.getElementById('page-root');
 const sidebarContent = document.getElementById('sidebar-content');
 const legend = document.getElementById('legend');
-const editorOverlay = document.getElementById('editor-overlay');
 document.getElementById('draft-logo').src = browserData.logoDataUri || 'draftlogo.png';
 document.getElementById('catalog-name').textContent = browserData.catalogName || 'Catalog';
 document.getElementById('browser-mode').textContent = 'GitHub Pages';
-let editorState = null;
-let requirementImportState = null;
 
 // ── Deployment Targets view ─────────────────────────────────────────────────
 const DT_PROVIDERS = [
@@ -164,17 +159,6 @@ const DT_MAP_PRESETS = {
 };
 // ───────────────────────────────────────────────────────────────────────────
 
-const DEPLOYABLE_OBJECT_TYPES = [
-  'technology_component',
-  'host',
-  'runtime_service',
-  'data_store_service',
-  'network_service',
-  'product_component',
-  'data_component',
-  'product_component',
-  'software_deployment_pattern'
-];
 const SERVICE_OBJECT_TYPES = ['runtime_service', 'data_store_service', 'network_service'];
 const DEPLOYABLE_STANDARD_TYPES = ['host', 'runtime_service', 'data_store_service', 'network_service', 'product_component', 'data_component', 'product_component'];
 const CATEGORY_CONFIG = [
@@ -239,23 +223,10 @@ const CATEGORY_CONFIG = [
     ]
   }
 ];
-const lifecycleValues = browserData.lifecycleValues || [];
-const deployableTypes = new Set([
-  'software_deployment_pattern',
-  'reference_architecture',
-  'host',
-  'runtime_service',
-  'data_store_service',
-  'network_service',
-  'product_component',
-  'data_component',
-  'product_component'
-]);
 let activeCategory = 'architecture';
 let activeFilter = 'all';
 let currentDetailId = null;
 let currentMode = 'executive';
-let executiveDrilldown = null;
 let acceptableUseDomainId = null;
 let acceptableUseCapabilityId = null;
 let currentSubViewId = null;
@@ -289,30 +260,12 @@ function formatTitleCase(value) {
     .join(' ');
 }
 
-function formatKeyLabel(value) {
-  return formatTitleCase(String(value || '').replace(/\./g, '-'));
-}
-
 function formatNumber(value) {
   return Number(value || 0).toLocaleString();
 }
 
 function pluralize(count, singular, plural = `${singular}s`) {
   return `${formatNumber(count)} ${count === 1 ? singular : plural}`;
-}
-
-function relatedCapabilityOptions() {
-  const values = new Set();
-  allObjects
-    .filter(object => object.type === 'requirement_group')
-    .forEach(object => {
-      (object.requirements || []).forEach(requirement => {
-        if (requirement?.id) {
-          values.add(String(requirement.id));
-        }
-      });
-    });
-  return Array.from(values).sort((a, b) => a.localeCompare(b));
 }
 
 function formatTypeLabel(typeValue) {
@@ -328,16 +281,6 @@ function formatTypeLabel(typeValue) {
   if (normalized === 'software_deployment_pattern') return 'Software Deployment Pattern';
   if (normalized === 'reference_architecture') return 'Reference Architecture';
   return formatTitleCase(normalized.replace(/[._-]/g, ' '));
-}
-
-function capabilityClass(capability) {
-  return ({
-    'authentication': 'cap-authentication',
-    'logging': 'cap-logging',
-    'security': 'cap-security',
-    'monitoring': 'cap-monitoring',
-    'patch-management': 'cap-patch-management'
-  }[capability] || 'cap-default');
 }
 
 function catalogStatusClass(status) {
@@ -441,8 +384,7 @@ function formatListFilterLabel(filterId) {
 
 function syncHashForExecutiveView() {
   setHashState({
-    view: 'executive',
-    drill: executiveDrilldown || null
+    view: 'executive'
   });
 }
 
@@ -457,10 +399,6 @@ function syncHashForListView() {
 
 function syncHashForDetailView(id) {
   setHashState({ view: 'detail', id });
-}
-
-function syncHashForImpactView() {
-  setHashState({ view: 'impact', id: impactSelectedId, q: impactSearchTerm || null });
 }
 
 function syncHashForAcceptableUseView() {
@@ -532,7 +470,6 @@ function applyRouteFromHash() {
   const params = currentHashState();
   const view = params.get('view');
   if (view === 'executive' || (!view && !params.get('category') && !params.get('filter') && !params.get('q'))) {
-    executiveDrilldown = params.get('drill') || null;
     currentDetailId = null;
     renderExecutiveView();
     return;
@@ -634,7 +571,6 @@ function applyRouteFromHash() {
     renderSdpsByPillarView();
     return;
   }
-  executiveDrilldown = null;
   const category = params.get('category');
   activeCategory = CATEGORY_CONFIG.some(item => item.id === category) ? category : 'architecture';
   const requestedFilter = params.get('filter');
@@ -671,41 +607,6 @@ function sidebarMarkup(extraMarkup = '') {
   return `${currentFilterMarkup()}${extraMarkup}`;
 }
 
-function rerenderCurrentView() {
-  if (currentMode === 'executive') {
-    renderExecutiveView();
-    return;
-  }
-  if (currentMode === 'detail') {
-    renderDetailView();
-    return;
-  }
-  if (currentMode === 'acceptable-use') {
-    renderAcceptableUseView({
-      domainId: acceptableUseDomainId,
-      capabilityId: acceptableUseCapabilityId
-    });
-    return;
-  }
-  if (currentMode === 'topology') {
-    renderTopologyView();
-    return;
-  }
-  if (currentMode === 'diagrams') {
-    renderDiagramsView();
-    return;
-  }
-  if (currentMode === 'object-types') {
-    renderObjectTypesView();
-    return;
-  }
-  if (currentMode === 'onboarding') {
-    renderCompanyOnboardingView();
-    return;
-  }
-  renderListView();
-}
-
 function attachSidebarHandlers() {}
 
 function attachTopNavHandlers() {
@@ -714,7 +615,6 @@ function attachTopNavHandlers() {
       const nav = button.dataset.nav;
       if (nav === 'executive') {
         destroyImpactCy();
-        executiveDrilldown = null;
         renderExecutiveView();
         return;
       }
@@ -1478,30 +1378,6 @@ function applicableRequirementEntries(object) {
   return entries;
 }
 
-function interactionCapabilities(interaction) {
-  return Array.isArray(interaction?.capabilities) ? interaction.capabilities.filter(Boolean).map(String) : [];
-}
-
-function referencedTechnologyComponents(object) {
-  const refs = [];
-  ['operatingSystemComponent', 'computePlatformComponent', 'primaryTechnologyComponent'].forEach(field => {
-    if (object?.[field]) {
-      refs.push(object[field]);
-    }
-  });
-  (object?.internalComponents || []).forEach(component => {
-    if (component?.ref) {
-      refs.push(component.ref);
-    }
-  });
-  if (object?.type === 'technology_component' && object.id) {
-    refs.unshift(object.id);
-  }
-  return Array.from(new Set(refs))
-    .map(ref => objectLookup[ref])
-    .filter(target => target?.type === 'technology_component');
-}
-
 function technologyRefSatisfiesCriteria(ref, criteria) {
   const target = objectLookup[ref];
   if (!target || target.type !== 'technology_component') {
@@ -1992,18 +1868,6 @@ function executiveStats() {
   };
 }
 
-function executiveMetricTile({ target, value, label, description, size = 'medium', accent = 'cyan', big = false }) {
-  return `
-    <article class="executive-tile ${size} executive-accent-${accent}" role="button" tabindex="0" data-executive-target="${escapeHtml(target)}">
-      <div class="executive-tile-title">
-        <p class="executive-number ${big ? 'big' : ''}">${formatNumber(value)}</p>
-        <h3>${escapeHtml(label)}</h3>
-      </div>
-      <p>${escapeHtml(description)}</p>
-    </article>
-  `;
-}
-
 function executiveSidebarMarkup(stats) {
   return `
     <div class="sidebar-block">
@@ -2012,152 +1876,6 @@ function executiveSidebarMarkup(stats) {
       <div class="current-filter"><span class="dot" style="background:#22c55e"></span><span>${pluralize(stats.acceptableUseTechnologyCount, 'mapped Technology Component')}</span></div>
       <div class="current-filter"><span class="dot" style="background:#f59e0b"></span><span>${pluralize(stats.controlEvidenceCount, 'control answer')}</span></div>
     </div>
-  `;
-}
-
-function executiveLifecyclePanelMarkup(stats) {
-  const orderedStatuses = ['preferred', 'existing-only', 'candidate', 'deprecated', 'retired', 'unknown'];
-  const rows = orderedStatuses
-    .filter(status => stats.lifecycleCounts[status])
-    .map(status => ({ status, count: stats.lifecycleCounts[status] }));
-  const maxCount = Math.max(...rows.map(row => row.count), 1);
-  return `
-    <section class="executive-panel wide">
-      <h3>Technology Lifecycle Mix</h3>
-      <div class="executive-bars">
-        ${rows.map(row => {
-          const color = '#' + (lifecycleColors[row.status] || lifecycleColors.unknown);
-          const width = Math.max(6, Math.round((row.count / maxCount) * 100));
-          return `
-            <div class="executive-bar-row">
-              <span>${escapeHtml(row.status)}</span>
-              <span class="executive-bar-track"><span class="executive-bar-fill" style="width:${width}%;background:${color};"></span></span>
-              <strong>${formatNumber(row.count)}</strong>
-            </div>
-          `;
-        }).join('') || '<div class="empty-card">No lifecycle mappings are available.</div>'}
-      </div>
-    </section>
-  `;
-}
-
-function executiveDomainPanelMarkup(stats) {
-  return `
-    <section class="executive-panel wide">
-      <h3>Capability Domains</h3>
-      <div class="executive-bars">
-        ${stats.domainStats.slice(0, 6).map(item => `
-          <div class="executive-snapshot-row">
-            <span>${escapeHtml(item.domain.name || item.domain.id)}</span>
-            <strong>${pluralize(item.technologyCount, 'tech')}</strong>
-          </div>
-          <div class="object-id">${pluralize(item.capabilityCount, 'capability', 'capabilities')}</div>
-        `).join('') || '<div class="empty-card">No mapped capability domains are available.</div>'}
-      </div>
-    </section>
-  `;
-}
-
-function executiveArchitecturePanelMarkup(stats) {
-  const rows = [
-    ['Software Deployment Patterns', stats.objectTypes.softwareDeploymentPatterns],
-    ['Reference Architectures', stats.objectTypes.referenceArchitectures],
-    ['Hosts', stats.objectTypes.hosts],
-    ['Runtime Services', stats.objectTypes.runtimeServices],
-    ['DataStoreServices', stats.objectTypes.dataAtRestServices],
-    ['Network Services', stats.objectTypes.networkServices],
-    ['ProductComponents', stats.objectTypes.productServices]
-  ];
-  const maxCount = Math.max(...rows.map(row => row[1]), 1);
-  return `
-    <section class="executive-panel wide">
-      <h3>Architecture Inventory Mix</h3>
-      <div class="executive-bars">
-        ${rows.map(([label, count]) => {
-          const width = Math.max(5, Math.round((count / maxCount) * 100));
-          return `
-            <div class="executive-bar-row">
-              <span>${escapeHtml(label)}</span>
-              <span class="executive-bar-track"><span class="executive-bar-fill" style="width:${width}%;"></span></span>
-              <strong>${formatNumber(count)}</strong>
-            </div>
-          `;
-        }).join('')}
-      </div>
-    </section>
-  `;
-}
-
-function executiveControlDrilldownMarkup(stats) {
-  if (executiveDrilldown !== 'controls') {
-    return '';
-  }
-  const grouped = new Map();
-  stats.requirementEvidence.forEach(row => {
-    const existing = grouped.get(row.object.id) || {
-      object: row.object,
-      count: 0,
-      groups: new Set(),
-      requirements: new Set(),
-      statuses: {}
-    };
-    existing.count += 1;
-    if (row.implementation.requirementGroup) {
-      existing.groups.add(requirementGroupName(row.requirementGroup));
-    }
-    existing.requirements.add(row.label);
-    const status = row.implementation.status || 'unknown';
-    existing.statuses[status] = (existing.statuses[status] || 0) + 1;
-    grouped.set(row.object.id, existing);
-  });
-  const rows = Array.from(grouped.values())
-    .sort((a, b) => b.count - a.count || a.object.name.localeCompare(b.object.name));
-  const requirementGroups = browserData.requirements?.groups || [];
-  return `
-    <section class="executive-panel full executive-drilldown">
-      <div class="header-top">
-        <div>
-          <h3>Control Evidence Drill-Down</h3>
-          <div class="object-id">${pluralize(stats.controlEvidenceCount, 'requirement evidence record')} across ${pluralize(stats.controlEvidenceObjectCount, 'catalog object')}</div>
-        </div>
-        <button class="action-button secondary" data-executive-target="clear-drilldown">Close</button>
-      </div>
-      ${rows.length ? `
-        <div class="table-scroll">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Artifact</th>
-                <th>Type</th>
-                <th>Requirement Groups</th>
-                <th>Requirements</th>
-                <th>Evidence</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rows.map(row => `
-                <tr>
-                  <td>
-                    <span class="ard-link" data-object-link="${escapeHtml(row.object.id)}">${escapeHtml(row.object.name)}</span>
-                    <div class="object-id">${escapeHtml(row.object.id)}</div>
-                  </td>
-                  <td>${escapeHtml(row.object.typeLabel)}</td>
-                  <td>${Array.from(row.groups).map(groupName => `<span class="badge">${escapeHtml(groupName)}</span>`).join('')}</td>
-                  <td>${Array.from(row.requirements).slice(0, 4).map(label => `<span class="badge">${escapeHtml(label)}</span>`).join('')}${row.requirements.size > 4 ? `<div class="object-id">+${formatNumber(row.requirements.size - 4)} more</div>` : ''}</td>
-                  <td>${formatNumber(row.count)}</td>
-                  <td>${Object.entries(row.statuses).map(([status, count]) => `<span class="badge">${escapeHtml(status)}: ${formatNumber(count)}</span>`).join('')}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-      ` : `
-        <div class="empty-card">
-          No object-level requirement evidence has been recorded yet. ${pluralize(stats.requirementDefinitionCount, 'requirement')} are available across ${pluralize(requirementGroups.length, 'Requirement Group')}.
-        </div>
-      `}
-    </section>
   `;
 }
 
@@ -3550,7 +3268,6 @@ function renderPillarSdpsView(pillarId) {
 function renderExecutiveView() {
   currentMode = 'executive';
   currentDetailId = null;
-  executiveDrilldown = null;
   currentSubViewId = null;
   destroyDetailCy();
   destroySdpGraphCy();
@@ -3899,7 +3616,6 @@ function navigateExecutiveTarget(target) {
     activeCategory = 'architecture';
     activeFilter = 'all';
     listSearchTerm = '';
-    executiveDrilldown = null;
     renderListView();
     return;
   }
@@ -3948,7 +3664,6 @@ function navigateExecutiveTarget(target) {
     activeCategory = 'framework';
     activeFilter = 'capability';
     listSearchTerm = '';
-    executiveDrilldown = null;
     renderListView();
     return;
   }
@@ -3964,28 +3679,16 @@ function navigateExecutiveTarget(target) {
     activeCategory = 'framework';
     activeFilter = 'requirement_group';
     listSearchTerm = '';
-    executiveDrilldown = null;
     renderListView();
     return;
   }
   if (target === 'acceptable-use') {
-    executiveDrilldown = null;
     renderAcceptableUseView();
     return;
   }
   if (target.startsWith('acceptable-domain:')) {
-    executiveDrilldown = null;
     renderAcceptableUseView({ domainId: target.slice('acceptable-domain:'.length) });
     return;
-  }
-  if (target === 'controls') {
-    executiveDrilldown = 'controls';
-    renderExecutiveView();
-    return;
-  }
-  if (target === 'clear-drilldown') {
-    executiveDrilldown = null;
-    renderExecutiveView();
   }
 }
 
@@ -4280,7 +3983,6 @@ function attachAcceptableUseHandlers() {
 function renderDiagramsView() {
   currentMode = 'diagrams';
   currentDetailId = null;
-  executiveDrilldown = null;
   destroyDetailCy();
   destroySdpGraphCy();
   destroyImpactCy();
@@ -4434,7 +4136,6 @@ function renderDiagramsView() {
 function renderTopologyView() {
   currentMode = 'topology';
   currentDetailId = null;
-  executiveDrilldown = null;
   destroyDetailCy();
   destroySdpGraphCy();
   destroyImpactCy();
@@ -4503,7 +4204,6 @@ function renderTopologyView() {
 function renderAcceptableUseView({ domainId = null, capabilityId = null } = {}) {
   currentMode = 'acceptable-use';
   currentDetailId = null;
-  executiveDrilldown = null;
   destroyDetailCy();
   destroySdpGraphCy();
   destroyImpactCy();
@@ -4626,7 +4326,6 @@ function renderAcceptableUseView({ domainId = null, capabilityId = null } = {}) 
 function renderListView() {
   currentMode = 'list';
   currentDetailId = null;
-  executiveDrilldown = null;
   destroyDetailCy();
   destroySdpGraphCy();
   destroyImpactCy();
@@ -4774,78 +4473,6 @@ function decisionMarkup(object, excludedRootKeys = []) {
         </dl>
       </section>
     </div>
-  `;
-}
-
-function businessContextMarkup(object) {
-  if (object.type !== 'software_deployment_pattern') {
-    return '';
-  }
-  const context = object.businessContext || {};
-  if (!context.pillar && !context.productFamily && !context.notes) {
-    return '';
-  }
-  const pillar = businessPillarForObject(object);
-  const additional = Array.isArray(context.additionalPillars)
-    ? context.additionalPillars.map(id => businessPillarLookup[id]?.name || formatTitleCase(String(id).replace(/^business-pillar\./, '').replace(/-/g, ' ')))
-    : [];
-  return `
-    <section class="section-card">
-      <h3>Business Context</h3>
-      <dl class="definition-list">
-        <dt>Primary Pillar</dt>
-        <dd>${escapeHtml(pillar.name)}</dd>
-        ${additional.length ? `<dt>Additional Pillars</dt><dd>${escapeHtml(additional.join(', '))}</dd>` : ''}
-        ${context.productFamily ? `<dt>Product Family</dt><dd>${escapeHtml(context.productFamily)}</dd>` : ''}
-        ${context.notes ? `<dt>Notes</dt><dd>${escapeHtml(context.notes)}</dd>` : ''}
-      </dl>
-    </section>
-  `;
-}
-
-function sourceRepositoryMarkup(object) {
-  const repos = object.notes?.sourceRepositories || [];
-  if (!Array.isArray(repos) || !repos.length) {
-    return '';
-  }
-  return `
-    <section class="section-card">
-      <h3>Source Repositories</h3>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Repository</th>
-              <th>ProductComponent</th>
-              <th>Language</th>
-              <th>Signals</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${repos.map(repo => {
-              const productService = repo.productService || '';
-              const service = productService ? objectLookup[productService] : null;
-              const repoName = repo.repositoryName || repo.sourceRepository || 'Unknown repository';
-              const repoUrl = repo.sourceRepository || '';
-              return `
-                <tr>
-                  <td>
-                    ${repoUrl ? `<a href="${escapeHtml(repoUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(repoName)}</a>` : escapeHtml(repoName)}
-                    ${repoUrl && repoUrl !== repoName ? `<div class="object-id">${escapeHtml(repoUrl)}</div>` : ''}
-                  </td>
-                  <td>
-                    ${service ? `<span class="ard-link" data-object-link="${escapeHtml(productService)}">${escapeHtml(service.name)}</span>` : escapeHtml(productService || 'Not linked')}
-                    ${productService ? `<div class="object-id">${escapeHtml(productService)}</div>` : ''}
-                  </td>
-                  <td>${escapeHtml(repo.repositoryPrimaryLanguage || '')}</td>
-                  <td>${escapeHtml(repo.observedRuntimeSignals || '')}</td>
-                </tr>
-              `;
-            }).join('')}
-          </tbody>
-        </table>
-      </div>
-    </section>
   `;
 }
 
@@ -5021,31 +4648,6 @@ function requirementEvidenceMarkup(object) {
 
 function requirementGroupByName(name) {
   return allObjects.find(object => object.type === 'requirement_group' && object.name === name) || null;
-}
-
-function sdmRisksMarkup(object) {
-  const references = object.decisionRecords || [];
-  if (!references.length) {
-    return '';
-  }
-  return `
-    <section class="section-card">
-      <h3>Decision Records</h3>
-      <div class="section-stack">
-        ${references.map(entry => {
-          const ard = objectLookup[entry.ref];
-          return `
-            <article class="odc-card">
-              <div class="odc-name">
-                ${ard ? `<span class="ard-link" data-object-link="${ard.id}">${escapeHtml(ard.name)}</span>` : escapeHtml(entry.ref || 'Unknown Decision Record')}
-              </div>
-              <div class="object-id">${escapeHtml(entry.ref || '')}</div>
-            </article>
-          `;
-        }).join('')}
-      </div>
-    </section>
-  `;
 }
 
 function sdmServiceGroupsMarkup(object) {
@@ -5374,16 +4976,6 @@ function instanceLabel(value) {
   return formatTitleCase(String(value || 'unnamed').replace(/\./g, ' ').replace(/_/g, ' '));
 }
 
-function shortRefLabel(ref) {
-  const object = objectLookup[ref];
-  if (!object) {
-    return formatTitleCase((ref || '').split('.').slice(-1)[0] || 'service');
-  }
-  return object.name
-    .replace(/\s+(Web Service|Application Service|Database Service|Service)$/i, '')
-    .replace(/\s+Standard$/i, '');
-}
-
 const SOFTWARE_DEPLOYMENT_PATTERN_TIERS = ['frontend', 'application', 'data'];
 const SOFTWARE_DEPLOYMENT_PATTERN_TIER_LABELS = {
   frontend: 'Frontend Services',
@@ -5456,17 +5048,6 @@ function topologyNodeIcon(entry, objectType = 'host', options = {}) {
   return { icon: objectIconSvg('gear'), cls: 'runtime' };
 }
 
-function deploymentTargetPresentation(location) {
-  const text = String(location || 'Unspecified');
-  if (/AWS/i.test(text)) {
-    return { cls: 'aws', badge: 'AWS', icon: objectIconSvg('cloud') };
-  }
-  if (/Datacenter|\bDC\b/i.test(text)) {
-    return { cls: 'datacenter', badge: 'DC', icon: objectIconSvg('cloud') };
-  }
-  return { cls: 'generic', badge: 'Host', icon: objectIconSvg('monitor') };
-}
-
 function detailNodeVisual(object) {
   const icon = topologyNodeIcon({ref: object.id});
   return {
@@ -5490,19 +5071,6 @@ function entryDiagramTier(entry) {
   // Legacy helper for reference_architecture topology view — reads networkZone tier from lookup
   const zoneTier = entry?._zoneTier;
   return SOFTWARE_DEPLOYMENT_PATTERN_TIERS.includes(zoneTier) ? zoneTier : 'application';
-}
-
-function supportEntryTier(entry, objectType) {
-  const object = objectLookup[entry?.ref];
-  const capability = object?.capability || '';
-  if (objectType === 'appliance') {
-    if (capability === 'load-balancing') return 'presentation';
-    if (['file-storage', 'data-persistence'].includes(capability)) return 'data';
-    return 'utility';
-  }
-  if (object?.type === 'data_store_service') return 'data';
-  if (object?.type === 'network_service') return 'presentation';
-  return 'utility';
 }
 
 function entryLabel(entry) {
@@ -5653,317 +5221,8 @@ function tierColumnsMarkup(groups) {
   `;
 }
 
-const SDP_GRAPH_PROTOCOL_COLORS = {
-  REST:      '#2a6fdb',
-  gRPC:      '#7c3a6b',
-  AMQP:      '#c47a14',
-  JDBC:      '#1f8a5b',
-  SQL:       '#1f8a5b',
-  WebSocket: '#0e6b62',
-  HTTPS:     '#2a6fdb',
-  GraphQL:   '#b93a3a',
-  other:     '#7a6e60',
-};
-
-const SDP_GRAPH_TIER_COLORS = {
-  presentation: '#f97316',
-  application:  '#14b8a6',
-  data:         '#3b82f6',
-  utility:      '#a855f7',
-  unknown:      '#64748b',
-};
-
-function buildSdpGraphElements(object) {
-  const connections = object.sdpConnections || [];
-  const zones = object.networkZones || [];
-  const zoneIds = new Set(zones.map(z => z.id));
-
-  // Build substrate maps: which deployable objects belong to a substrate,
-  // and which zone to place each substrate compound node in.
-  const uidToSubstrate = {};
-  const substrateToZone = {};
-  const substrateUids = new Set();
-  (object.serviceGroups || []).forEach(group => {
-    if (!group.substrate) return;
-    substrateUids.add(group.substrate);
-    (group.deployableObjects || []).forEach(entry => {
-      if (entry.ref) {
-        uidToSubstrate[entry.ref] = group.substrate;
-        if (entry.networkZone && !substrateToZone[group.substrate]) {
-          substrateToZone[group.substrate] = entry.networkZone;
-        }
-      }
-    });
-  });
-
-  // Collect all UIDs that appear in connections
-  const referencedUids = new Set();
-  connections.forEach(conn => {
-    referencedUids.add(conn.from);
-    referencedUids.add(conn.to);
-  });
-
-  // Fall back to all deployable objects if no connections recorded
-  const allDeployableUids = new Set();
-  (object.serviceGroups || []).forEach(group => {
-    (group.deployableObjects || []).forEach(entry => {
-      if (entry.ref) allDeployableUids.add(entry.ref);
-    });
-  });
-  const nodeUids = referencedUids.size > 0 ? referencedUids : allDeployableUids;
-
-  // Build a zone membership map from deployableObjectEntry.networkZone
-  const uidToZone = {};
-  (object.serviceGroups || []).forEach(group => {
-    (group.deployableObjects || []).forEach(entry => {
-      if (entry.ref && entry.networkZone) {
-        uidToZone[entry.ref] = entry.networkZone;
-      }
-    });
-  });
-
-  // Build a tier map
-  const uidToTier = {};
-  (object.serviceGroups || []).forEach(group => {
-    (group.deployableObjects || []).forEach(entry => {
-      if (entry.ref && entry.diagramTier) {
-        uidToTier[entry.ref] = entry.diagramTier;
-      }
-    });
-  });
-
-  const elements = [];
-
-  // Compound zone parent nodes
-  if (zones.length) {
-    zones.forEach(zone => {
-      elements.push({
-        data: { id: `zone::${zone.id}`, label: zone.name || zone.id, isZone: true },
-        classes: 'zone-compound'
-      });
-    });
-  }
-
-  // Substrate compound nodes — rendered inside their zone when one is known.
-  // ProductComponents in the group will be children of these nodes.
-  substrateUids.forEach(substrateUid => {
-    const substrateObj = objectLookup[substrateUid];
-    const substData = {
-      id: `substrate::${substrateUid}`,
-      label: substrateObj ? substrateObj.name : substrateUid,
-      isSubstrate: true,
-      substrateRef: substrateUid,
-    };
-    const zoneId = substrateToZone[substrateUid];
-    if (zoneId && zoneIds.has(zoneId)) {
-      substData.parent = `zone::${zoneId}`;
-    }
-    elements.push({ data: substData, classes: 'substrate-compound' });
-  });
-
-  // Service nodes — substrates are rendered as compound nodes above, not as service nodes.
-  nodeUids.forEach(uid => {
-    if (substrateUids.has(uid)) return;
-    const obj = objectLookup[uid];
-    const tier = uidToTier[uid] || (obj ? (obj.diagramTier || 'unknown') : 'unknown');
-    const substrateUid = uidToSubstrate[uid];
-    const zoneMembership = uidToZone[uid];
-    const nodeData = {
-      id: uid,
-      label: obj ? obj.name : uid,
-      tier,
-      nodeColor: SDP_GRAPH_TIER_COLORS[tier] || SDP_GRAPH_TIER_COLORS.unknown,
-    };
-    // Prefer substrate containment over zone containment for substrate-group members.
-    if (substrateUid && substrateUids.has(substrateUid)) {
-      nodeData.parent = `substrate::${substrateUid}`;
-    } else if (zoneMembership && zoneIds.has(zoneMembership)) {
-      nodeData.parent = `zone::${zoneMembership}`;
-    }
-    elements.push({ data: nodeData, classes: `tier-${tier}` });
-  });
-
-  // Edge elements
-  connections.forEach((conn, index) => {
-    const edgeColor = SDP_GRAPH_PROTOCOL_COLORS[conn.protocol] || SDP_GRAPH_PROTOCOL_COLORS.other;
-    const edgeLabel = conn.protocol || '';
-    elements.push({
-      data: {
-        id: `edge-${index}-${conn.from}-${conn.to}`,
-        source: conn.from,
-        target: conn.to,
-        label: edgeLabel,
-        protocol: conn.protocol,
-        direction: conn.direction || 'outbound',
-        edgeColor,
-      },
-      classes: `protocol-${(conn.protocol || 'other').toLowerCase()}`
-    });
-  });
-
-  return elements;
-}
-
-let sdpGraphCy = null;
-
 function destroySdpGraphCy() {
-  if (sdpGraphCy) {
-    sdpGraphCy.destroy();
-    sdpGraphCy = null;
-  }
   _sdpTeardown();
-}
-
-function renderSdpGraph(object) {
-  const container = document.getElementById('sdp-graph-cy');
-  if (!container || sdpGraphCy) return;
-
-  const elements = buildSdpGraphElements(object);
-  if (!elements.length) return;
-
-  const protocolsPresent = [...new Set(
-    (object.sdpConnections || []).map(c => c.protocol).filter(Boolean)
-  )];
-
-  // Build legend
-  const legendEl = document.getElementById('sdp-graph-legend');
-  if (legendEl) {
-    const tierItems = Object.entries(SDP_GRAPH_TIER_COLORS)
-      .filter(([tier]) => tier !== 'unknown')
-      .map(([tier, color]) => `
-        <span class="sdp-graph-legend-item">
-          <span class="sdp-graph-legend-swatch" style="background:${color}"></span>
-          ${escapeHtml(tier)}
-        </span>
-      `).join('');
-    const protocolItems = protocolsPresent.map(protocol => {
-      const color = SDP_GRAPH_PROTOCOL_COLORS[protocol] || SDP_GRAPH_PROTOCOL_COLORS.other;
-      return `
-        <span class="sdp-graph-legend-item">
-          <span class="sdp-graph-legend-swatch" style="background:${color}"></span>
-          ${escapeHtml(protocol)}
-        </span>
-      `;
-    }).join('');
-    legendEl.innerHTML = `<strong style="color:var(--subtle);margin-right:4px">Tiers:</strong>${tierItems}` +
-      (protocolItems ? `<strong style="color:var(--subtle);margin-left:12px;margin-right:4px">Protocols:</strong>${protocolItems}` : '');
-  }
-
-  sdpGraphCy = cytoscape({
-    container,
-    elements,
-    style: [
-      {
-        selector: 'node[!isZone]',
-        style: {
-          'background-color': 'data(nodeColor)',
-          'label': 'data(label)',
-          'color': '#1f1a14',
-          'text-valign': 'center',
-          'text-halign': 'center',
-          'font-size': '11px',
-          'font-family': '"SF Pro Display","Segoe UI",sans-serif',
-          'text-wrap': 'wrap',
-          'text-max-width': '110px',
-          'width': '120px',
-          'height': '44px',
-          'shape': 'round-rectangle',
-          'border-width': 1,
-          'border-color': 'rgba(31,26,20,0.18)',
-          'padding': '8px',
-        }
-      },
-      {
-        selector: 'node.zone-compound',
-        style: {
-          'background-color': 'rgba(231,225,214,0.35)',
-          'background-opacity': 1,
-          'border-style': 'dashed',
-          'border-width': 2,
-          'border-color': 'rgba(122,110,96,0.5)',
-          'label': 'data(label)',
-          'color': '#7a6e60',
-          'text-valign': 'top',
-          'text-halign': 'center',
-          'font-size': '12px',
-          'font-weight': '700',
-          'text-margin-y': '10px',
-          'padding': '24px',
-        }
-      },
-      {
-        selector: 'node.substrate-compound',
-        style: {
-          'background-color': 'rgba(94,234,212,0.12)',
-          'background-opacity': 1,
-          'border-style': 'solid',
-          'border-width': 1.5,
-          'border-color': 'rgba(94,234,212,0.55)',
-          'label': 'data(label)',
-          'color': '#0e6b62',
-          'text-valign': 'top',
-          'text-halign': 'center',
-          'font-size': '11px',
-          'font-weight': '600',
-          'text-margin-y': '8px',
-          'padding': '20px',
-        }
-      },
-      {
-        selector: 'edge',
-        style: {
-          'width': 2,
-          'line-color': 'data(edgeColor)',
-          'target-arrow-color': 'data(edgeColor)',
-          'target-arrow-shape': 'triangle',
-          'curve-style': 'bezier',
-          'label': 'data(label)',
-          'font-size': '10px',
-          'color': '#7a6e60',
-          'text-background-color': '#ffffff',
-          'text-background-opacity': 0.85,
-          'text-background-padding': '2px',
-          'edge-text-rotation': 'autorotate',
-        }
-      },
-      {
-        selector: 'node:selected',
-        style: {
-          'border-width': 3,
-          'border-color': '#7c3a6b',
-        }
-      },
-      {
-        selector: 'edge:selected',
-        style: {
-          'width': 3,
-          'line-color': '#7c3a6b',
-          'target-arrow-color': '#7c3a6b',
-        }
-      }
-    ],
-    layout: {
-      name: 'cose',
-      animate: false,
-      randomize: false,
-      nodeRepulsion: () => 8000,
-      idealEdgeLength: () => 120,
-      edgeElasticity: () => 100,
-      gravity: 0.5,
-      numIter: 1000,
-      fit: true,
-      padding: 30,
-    }
-  });
-
-  // Click node to navigate to object detail
-  sdpGraphCy.on('tap', 'node[!isZone]', event => {
-    const uid = event.target.id();
-    if (objectLookup[uid]) {
-      destroySdpGraphCy();
-      showDetailView(uid);
-    }
-  });
 }
 
 function renderDeploymentTopology(object) {
@@ -6252,189 +5511,6 @@ function attachObjectLinkHandlers(root = document) {
       showDetailView(link.dataset.objectLink);
     });
   });
-}
-
-function sanitizeDetailObject(object) {
-  const raw = JSON.parse(object.detail || '{}');
-  const cleaned = {};
-  Object.entries(raw).forEach(([key, value]) => {
-    if (!key.startsWith('_')) {
-      cleaned[key] = value;
-    }
-  });
-  return cleaned;
-}
-
-function repoSourceUrl(object) {
-  return repoUrl && object.source ? `${repoUrl}/blob/main/${object.source}` : '';
-}
-
-function orderedEditorFields(object) {
-  const schema = object.editorSchema || {};
-  const required = schema.requiredFields || [];
-  const optional = schema.optionalFields || [];
-  const priority = ['schemaVersion', 'uid', 'type', 'name', 'aliases', 'description', 'version', 'catalogStatus', 'lifecycleStatus', 'definitionOwner', 'owner', 'tags'];
-  const ordered = [];
-  const seen = new Set();
-  [...priority, ...required, ...optional, ...Object.keys(sanitizeDetailObject(object))].forEach(field => {
-    if (!field || field.startsWith('_') || seen.has(field)) return;
-    seen.add(field);
-    ordered.push(field);
-  });
-  return ordered;
-}
-
-function yamlFieldValue(value) {
-  if (value === undefined || value === null) return '';
-  if (typeof value === 'string') return value;
-  return jsyaml.dump(value, { lineWidth: 100 }).trim();
-}
-
-function fieldInputMarkup(object, field, value) {
-  const schema = object.editorSchema || {};
-  const required = new Set(schema.requiredFields || []);
-  const fieldTypes = schema.fieldTypes || {};
-  const enumFields = schema.enumFields || {};
-  const enumListFields = schema.enumListFields || {};
-  const expectedType = fieldTypes[field] || '';
-  const label = formatKeyLabel(field);
-  const requiredText = required.has(field) ? '<span class="editor-required">*</span>' : '';
-
-  if (expectedType === 'bool' || typeof value === 'boolean') {
-    return `
-      <div class="editor-field">
-        <label>${escapeHtml(label)}${requiredText}</label>
-        <label class="editor-checkbox">
-          <input type="checkbox" data-editor-field="${escapeHtml(field)}" ${value ? 'checked' : ''}>
-          <span>${escapeHtml(label)}</span>
-        </label>
-      </div>
-    `;
-  }
-
-  if (enumFields[field]) {
-    const options = ['<option value=""></option>']
-      .concat(enumFields[field].map(option => `<option value="${escapeHtml(option)}" ${value === option ? 'selected' : ''}>${escapeHtml(option)}</option>`));
-    return `
-      <div class="editor-field">
-        <label for="editor-${escapeHtml(field)}">${escapeHtml(label)}${requiredText}</label>
-        <select id="editor-${escapeHtml(field)}" data-editor-field="${escapeHtml(field)}">
-          ${options.join('')}
-        </select>
-      </div>
-    `;
-  }
-
-  if (expectedType === 'dict' || expectedType === 'list' || enumListFields[field] || Array.isArray(value) || (value && typeof value === 'object')) {
-    return `
-      <div class="editor-field">
-        <label for="editor-${escapeHtml(field)}">${escapeHtml(label)}${requiredText}</label>
-        <textarea id="editor-${escapeHtml(field)}" data-editor-field="${escapeHtml(field)}" data-editor-complex="true">${escapeHtml(yamlFieldValue(value))}</textarea>
-        <div class="editor-help">Edit structured values carefully.</div>
-      </div>
-    `;
-  }
-
-  const stringValue = value === undefined || value === null ? '' : String(value);
-  const multiline = stringValue.length > 120 || stringValue.includes('\\n') || field === 'description' || field === 'notes';
-  return multiline ? `
-    <div class="editor-field">
-      <label for="editor-${escapeHtml(field)}">${escapeHtml(label)}${requiredText}</label>
-      <textarea id="editor-${escapeHtml(field)}" data-editor-field="${escapeHtml(field)}">${escapeHtml(stringValue)}</textarea>
-    </div>
-  ` : `
-    <div class="editor-field">
-      <label for="editor-${escapeHtml(field)}">${escapeHtml(label)}${requiredText}</label>
-      <input id="editor-${escapeHtml(field)}" type="text" value="${escapeHtml(stringValue)}" data-editor-field="${escapeHtml(field)}">
-    </div>
-  `;
-}
-
-function serializeEditorObject(object, fieldValues) {
-  const schema = object.editorSchema || {};
-  const fieldTypes = schema.fieldTypes || {};
-  const enumListFields = schema.enumListFields || {};
-  const result = {};
-  orderedEditorFields(object).forEach(field => {
-    let value = fieldValues[field];
-    const expectedType = fieldTypes[field] || '';
-    if (value === undefined) return;
-    if (typeof value === 'string') {
-      if (expectedType === 'dict' || expectedType === 'list' || enumListFields[field]) {
-        const trimmed = value.trim();
-        if (!trimmed) return;
-        result[field] = jsyaml.load(trimmed);
-        return;
-      }
-      const trimmed = value.trim();
-      if (!trimmed && field !== 'description') return;
-      result[field] = value;
-      return;
-    }
-    if (value === null) return;
-    result[field] = value;
-  });
-  return result;
-}
-
-function updateEditorPreview(object) {
-  const errorNode = editorOverlay.querySelector('#editor-error');
-  const previewNode = editorOverlay.querySelector('#editor-structured-preview');
-  if (!editorState || !errorNode || !previewNode) return;
-  try {
-    const serialized = serializeEditorObject(object, editorState.fieldValues);
-    editorState.serialized = serialized;
-    previewNode.textContent = jsyaml.dump(serialized, { lineWidth: 100, noRefs: true });
-    errorNode.textContent = '';
-  } catch (error) {
-    editorState.serialized = null;
-    previewNode.textContent = '';
-    errorNode.textContent = error instanceof Error ? error.message : String(error);
-  }
-}
-
-function blankApplicabilityClause() {
-  return { field: '', operator: 'equals', value: '', valuesText: '', truthy: 'true' };
-}
-
-function normalizeApplicabilityClause(clause) {
-  if (!clause || typeof clause !== 'object') {
-    return blankApplicabilityClause();
-  }
-  if (Object.prototype.hasOwnProperty.call(clause, 'truthy')) {
-    return {
-      field: String(clause.field || ''),
-      operator: 'truthy',
-      value: '',
-      valuesText: '',
-      truthy: clause.truthy === false ? 'false' : 'true'
-    };
-  }
-  if (Array.isArray(clause.in)) {
-    return {
-      field: String(clause.field || ''),
-      operator: 'in',
-      value: '',
-      valuesText: clause.in.map(value => String(value)).join(', '),
-      truthy: 'true'
-    };
-  }
-  if (Object.prototype.hasOwnProperty.call(clause, 'contains')) {
-    return {
-      field: String(clause.field || ''),
-      operator: 'contains',
-      value: String(clause.contains || ''),
-      valuesText: '',
-      truthy: 'true'
-    };
-  }
-  return {
-    field: String(clause.field || ''),
-    operator: 'equals',
-    value: String(clause.equals || ''),
-    valuesText: '',
-    truthy: 'true'
-  };
 }
 
 function showDetailView(id, pushHistory = true) {
@@ -7128,7 +6204,6 @@ function _sdpAttachHandlers(object, vm) {
 
 function renderDetailView() {
   currentMode = 'detail';
-  executiveDrilldown = null;
   const object = objectLookup[currentDetailId];
   if (!object) {
     renderListView();
@@ -7300,10 +6375,6 @@ function renderDetailView() {
     currentDetailId = null;
     renderListView();
   });
-  const openEditorButton = document.getElementById('open-editor-button');
-  if (openEditorButton) {
-    openEditorButton.addEventListener('click', () => openEditor(object));
-  }
 
   attachTopNavHandlers();
   attachSidebarHandlers();
@@ -7511,40 +6582,6 @@ function renderInternalDiagram(object) {
   detailCy.fit(detailCy.elements(), 28);
 }
 
-function outboundCatalogRefs(object) {
-  return (object?.outboundRefs || [])
-    .map(reference => objectLookup[reference.target])
-    .filter(Boolean);
-}
-
-function inboundCatalogRefs(object) {
-  return (referencedByIndex[object?.id] || [])
-    .map(reference => objectLookup[reference.source])
-    .filter(Boolean);
-}
-
-function traverseDown(object, visited, collector) {
-  outboundCatalogRefs(object).forEach(target => {
-    if (visited.has(target.id) || !deployableTypes.has(target.type)) {
-      return;
-    }
-    visited.add(target.id);
-    collector.add(target.id);
-    traverseDown(target, visited, collector);
-  });
-}
-
-function traverseUp(object, visited, collector) {
-  inboundCatalogRefs(object).forEach(source => {
-    if (visited.has(source.id) || !deployableTypes.has(source.type)) {
-      return;
-    }
-    visited.add(source.id);
-    collector.add(source.id);
-    traverseUp(source, visited, collector);
-  });
-}
-
 // ── Sidebar navigation ──────────────────────────────────────────────────
 const SIDEBAR_NAV_ITEMS = [
   { id: 'executive',      label: 'Overview',        icon: '⊞' },
@@ -7582,7 +6619,7 @@ function initSidebarNav() {
   nav.querySelectorAll('.sidebar-nav-btn[data-nav]').forEach(btn => {
     btn.addEventListener('click', () => {
       const navId = btn.dataset.nav;
-      if (navId === 'executive') { destroyImpactCy(); executiveDrilldown = null; renderExecutiveView(); }
+      if (navId === 'executive') { destroyImpactCy(); renderExecutiveView(); }
       else if (navId === 'list') { destroyImpactCy(); renderListView(); }
       else if (navId === 'object-types') { destroyImpactCy(); renderObjectTypesView(); }
       else if (navId === 'onboarding') { destroyImpactCy(); renderCompanyOnboardingView(); }
