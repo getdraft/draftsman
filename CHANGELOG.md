@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No workspace, schema, or CLI behavior change. `draft_table/cli.py` no longer defines the unused `run_command` helper or imports `subprocess` and `sys`. Every existing subcommand, argument, and printed result stays the same.
+
+### Added
+
+- No new commands, options, or public helpers. This release only records the removal of dead code from the DRAFT Table CLI module.
+
+### Changed
+
+- `draft_table/cli.py` drops `run_command` and the `subprocess` and `sys` imports that existed only to support that helper.
+
+### Fixed
+
+- The DRAFT Table CLI module no longer carries an unused helper and unused imports that nothing in the package or tests called.
+
+### Migration Notes
+
+- No action is required. `run_command` was not a CLI subcommand and had no callers in this repository.
+
 ## 1.20.13 - 2026-11-21
 
 ### Compatibility Impact

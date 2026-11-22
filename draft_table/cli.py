@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import argparse
 import socket
-import subprocess
-import sys
 from pathlib import Path
 
 from .config import load_config, redacted_yaml
@@ -250,10 +248,6 @@ def server_urls(host: str, port: int) -> list[tuple[str, str]]:
             ("Local URL", f"http://127.0.0.1:{port}"),
         ]
     return [("URL", f"http://{host}:{port}")]
-
-
-def run_command(command: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(command, cwd=str(cwd), text=True, capture_output=True, check=False)
 
 
 if __name__ == "__main__":
