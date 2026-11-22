@@ -38,7 +38,6 @@ import argparse
 import hashlib
 import html
 import itertools
-import math
 import re
 import sys
 from dataclasses import dataclass, field, replace
@@ -57,10 +56,6 @@ from protocol_families import family  # noqa: E402
 import exposure  # noqa: E402
 
 E = html.escape
-
-CHIP_W = 190
-CHIP_H = 46
-
 
 # --------------------------------------------------------------------------- model
 def sdps(catalog: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
@@ -1174,18 +1169,6 @@ def wrap(text: str, width: int) -> list[str]:
     lines.append(current)
     return lines
 
-
-def border_point(
-    c: tuple[float, float], toward: tuple[float, float], w: float = CHIP_W, h: float = CHIP_H
-) -> tuple[float, float]:
-    """Point where the line from centre c toward another point leaves a w by h rectangle centred on c."""
-    dx, dy = toward[0] - c[0], toward[1] - c[1]
-    if dx == 0 and dy == 0:
-        return c
-    t = min((w / 2) / abs(dx) if dx else math.inf, (h / 2) / abs(dy) if dy else math.inf)
-    return c[0] + dx * t, c[1] + dy * t
-
-
 # --------------------------------------------------------------------------- html parts
 # A vendored copy keeps draft-framework.yaml beside its tools/ inside the framework directory; the source repo keeps it at the root.
 FRAMEWORK_MANIFESTS = (TOOLS_ROOT.parent / "draft-framework.yaml", TOOLS_ROOT.parents[1] / "draft-framework.yaml")
@@ -1792,7 +1775,6 @@ LOGICAL_ROW_GAP = 30
 LOGICAL_BAND_GAP = 20  # free space between two band rectangles; tracks run in the bands' own pads
 LOGICAL_BAND_PAD = 10
 LOGICAL_LABEL_W = 110
-LOGICAL_LANE_GAP = 90
 LOGICAL_LANE_HEAD = 40
 LOGICAL_MARGIN = 20
 LOGICAL_TITLE = "Logical application diagram"
@@ -2712,11 +2694,6 @@ def _callout_tech(edge: DiagramEdge) -> str:
 def _callout_len(edge: DiagramEdge) -> int:
     tech = _callout_tech(edge)
     return len(clean(edge.label)) + (len(tech) + 3 if tech else 0)
-
-
-def _max_chars(width: float) -> int:
-    """Characters that fit a label under a box of ``width`` px: the text is clipped to the box width minus 10 px."""
-    return max(4, int((width - 10 - 4) / LABEL_CHAR_W))
 
 
 def _label_parts(edge: DiagramEdge, limit: Any = None) -> tuple:
