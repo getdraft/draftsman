@@ -1,3 +1,27 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No migration is required. `framework/personalities/` was already removed, and vendoring only copied that directory when it existed. Dropping the leftover directory name, path rewrites, and workspace documentation does not change validation, Draftsman behavior, or any live catalog object.
+
+### Added
+
+- No new framework objects, commands, or configuration. This change only removes references to the deleted Personality Packs directory.
+
+### Changed
+
+- Removed `personalities` from `FRAMEWORK_VENDOR_DIRS` and from the `framework/personalities` path rewrites in `draft_table/repo.py`.
+- Removed the same directory name and path rewrites from `framework/templates/github/draft-framework-update.yml` and `templates/workspace/.github/workflows/draft-framework-update.yml.tmpl`.
+- Removed the Personality Packs section from `framework/docs/workspaces.md`, including its broken link to `framework/personalities/README.md`.
+
+### Fixed
+
+- Framework update and workspace vendoring no longer list a directory that is not in the framework tree, and workspace docs no longer tell companies to activate a pack the framework does not ship.
+
+### Migration Notes
+
+- No action is required. A later framework refresh stops copying or documenting Personality Packs. Historical changelog entries that mention the removed directory are unchanged.
+
 ## 1.21.1 - 2026-11-22
 
 ### Compatibility Impact
