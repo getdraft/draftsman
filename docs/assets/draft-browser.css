@@ -1956,6 +1956,7 @@ html, body {
   .middle-grid { grid-template-columns: 1fr; }
   .deployment-target-columns { grid-template-columns: 1fr; }
   .executive-hero { grid-template-columns: 1fr; }
+}
 /* ── Sidebar sticky scroll ── */
 .sidebar {
   position: sticky;
