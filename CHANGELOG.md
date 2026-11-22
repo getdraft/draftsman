@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No migration is required. Diagram HTML, SVG, and CLI behavior are unchanged. The helpers tests call (`layout_ordinals`, `export_layout_document`, `build_diagram_model`, `DEPLOY_BORDER_CLEAR`, and `Model.warning_count_line`) stay in place.
+
+### Added
+
+- No new diagram behavior or public API.
+
+### Changed
+
+- Removed unreachable symbols from `framework/tools/generate_diagram.py`: `CHIP_W`, `CHIP_H`, `border_point`, `LOGICAL_LANE_GAP`, and `_max_chars`. `CHIP_W` and `CHIP_H` were only the default size arguments of `border_point`. The `math` import is removed with them because `border_point` was its only use.
+
+### Fixed
+
+- No diagram defect is corrected. This change only deletes code with no callers.
+
+### Migration Notes
+
+- No action is required after refreshing the framework. Company workspaces do not call these symbols, and rendered diagram pages stay the same.
+
 ## 1.21.2 - 2026-11-22
 
 ### Compatibility Impact
