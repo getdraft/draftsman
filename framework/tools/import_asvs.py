@@ -18,7 +18,6 @@ def str_presenter(dumper, data):
 yaml.add_representer(str, str_presenter)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-FRAMEWORK_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_JSON_URL = "https://raw.githubusercontent.com/ibuildingsnl/owasp-asvs/master/src/asvs.json"
 DEFAULT_OUTPUT_DIR = REPO_ROOT / "providers" / "owasp-asvs" / "configurations" / "requirement-groups"
 

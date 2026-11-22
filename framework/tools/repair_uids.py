@@ -110,11 +110,6 @@ def load_yaml(path: Path) -> Any:
         return yaml.safe_load(handle) or {}
 
 
-def dump_yaml(path: Path, data: Any) -> None:
-    with path.open("w", encoding="utf-8") as handle:
-        yaml.safe_dump(data, handle, sort_keys=False, allow_unicode=True, width=1000)
-
-
 def is_first_class_object(data: Any) -> bool:
     return isinstance(data, dict) and isinstance(data.get("type"), str) and bool(data.get("type").strip())
 

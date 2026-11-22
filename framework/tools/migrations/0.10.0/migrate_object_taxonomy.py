@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import argparse
-import shutil
 from pathlib import Path
 from typing import Any
 
@@ -98,10 +97,6 @@ def yaml_files(root: Path) -> list[Path]:
             continue
         files.append(path)
     return files
-
-
-def is_mapping(value: Any) -> bool:
-    return isinstance(value, dict)
 
 
 def classify_service_family(path: Path, obj: dict[str, Any]) -> str:
