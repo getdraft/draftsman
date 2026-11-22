@@ -31,12 +31,9 @@ indexHierarchyNodes(businessTaxonomy.hierarchy);
 const pageRoot = document.getElementById('page-root');
 const sidebarContent = document.getElementById('sidebar-content');
 const legend = document.getElementById('legend');
-const editorOverlay = document.getElementById('editor-overlay');
 document.getElementById('draft-logo').src = browserData.logoDataUri || 'draftlogo.png';
 document.getElementById('catalog-name').textContent = browserData.catalogName || 'Catalog';
 document.getElementById('browser-mode').textContent = 'GitHub Pages';
-let editorState = null;
-let requirementImportState = null;
 
 // ── Deployment Targets view ─────────────────────────────────────────────────
 const DT_PROVIDERS = [
@@ -289,30 +286,12 @@ function formatTitleCase(value) {
     .join(' ');
 }
 
-function formatKeyLabel(value) {
-  return formatTitleCase(String(value || '').replace(/\./g, '-'));
-}
-
 function formatNumber(value) {
   return Number(value || 0).toLocaleString();
 }
 
 function pluralize(count, singular, plural = `${singular}s`) {
   return `${formatNumber(count)} ${count === 1 ? singular : plural}`;
-}
-
-function relatedCapabilityOptions() {
-  const values = new Set();
-  allObjects
-    .filter(object => object.type === 'requirement_group')
-    .forEach(object => {
-      (object.requirements || []).forEach(requirement => {
-        if (requirement?.id) {
-          values.add(String(requirement.id));
-        }
-      });
-    });
-  return Array.from(values).sort((a, b) => a.localeCompare(b));
 }
 
 function formatTypeLabel(typeValue) {
@@ -5215,6 +5194,23 @@ function interfacesListenersMarkup(object) {
   `;
 }
 
+// The listener objects a product component, data component or external system owns (owner.ref), in the
+// renderer's listener order; blank when it owns none.
+function ownedListenersMarkup(object) {
+  const listeners = Array.isArray(object.ownedListeners) ? object.ownedListeners.filter(l => l && typeof l === 'object') : [];
+  if (!listeners.length) return '';
+  const cell = value => `<td>${escapeHtml(value === undefined || value === null ? '' : value)}</td>`;
+  const rows = listeners.map(l => `<tr><td><span class="ard-link" data-object-link="${escapeHtml(l.uid || '')}">${escapeHtml(l.name || l.uid || '')}</span></td>${
+    [l.protocol, l.port, l.endpoint, l.authenticationModel, l.catalogStatus].map(cell).join('')}</tr>`).join('');
+  return `
+    <section class="section-card">
+      <h3>Owned Listeners</h3>
+      <table class="conn-table"><thead><tr><th>Name</th><th>Protocol</th><th>Port</th><th>Endpoint</th><th>Authentication</th><th>Catalog Status</th></tr></thead>
+        <tbody>${rows}</tbody></table>
+    </section>
+  `;
+}
+
 function deliveryModelDetailMarkup(object) {
   if (!SERVICE_OBJECT_TYPES.includes(object.type)) {
     return '';
@@ -6237,189 +6233,6 @@ function attachObjectLinkHandlers(root = document) {
   });
 }
 
-function sanitizeDetailObject(object) {
-  const raw = JSON.parse(object.detail || '{}');
-  const cleaned = {};
-  Object.entries(raw).forEach(([key, value]) => {
-    if (!key.startsWith('_')) {
-      cleaned[key] = value;
-    }
-  });
-  return cleaned;
-}
-
-function repoSourceUrl(object) {
-  return repoUrl && object.source ? `${repoUrl}/blob/main/${object.source}` : '';
-}
-
-function orderedEditorFields(object) {
-  const schema = object.editorSchema || {};
-  const required = schema.requiredFields || [];
-  const optional = schema.optionalFields || [];
-  const priority = ['schemaVersion', 'uid', 'type', 'name', 'aliases', 'description', 'version', 'catalogStatus', 'lifecycleStatus', 'definitionOwner', 'owner', 'tags'];
-  const ordered = [];
-  const seen = new Set();
-  [...priority, ...required, ...optional, ...Object.keys(sanitizeDetailObject(object))].forEach(field => {
-    if (!field || field.startsWith('_') || seen.has(field)) return;
-    seen.add(field);
-    ordered.push(field);
-  });
-  return ordered;
-}
-
-function yamlFieldValue(value) {
-  if (value === undefined || value === null) return '';
-  if (typeof value === 'string') return value;
-  return jsyaml.dump(value, { lineWidth: 100 }).trim();
-}
-
-function fieldInputMarkup(object, field, value) {
-  const schema = object.editorSchema || {};
-  const required = new Set(schema.requiredFields || []);
-  const fieldTypes = schema.fieldTypes || {};
-  const enumFields = schema.enumFields || {};
-  const enumListFields = schema.enumListFields || {};
-  const expectedType = fieldTypes[field] || '';
-  const label = formatKeyLabel(field);
-  const requiredText = required.has(field) ? '<span class="editor-required">*</span>' : '';
-
-  if (expectedType === 'bool' || typeof value === 'boolean') {
-    return `
-      <div class="editor-field">
-        <label>${escapeHtml(label)}${requiredText}</label>
-        <label class="editor-checkbox">
-          <input type="checkbox" data-editor-field="${escapeHtml(field)}" ${value ? 'checked' : ''}>
-          <span>${escapeHtml(label)}</span>
-        </label>
-      </div>
-    `;
-  }
-
-  if (enumFields[field]) {
-    const options = ['<option value=""></option>']
-      .concat(enumFields[field].map(option => `<option value="${escapeHtml(option)}" ${value === option ? 'selected' : ''}>${escapeHtml(option)}</option>`));
-    return `
-      <div class="editor-field">
-        <label for="editor-${escapeHtml(field)}">${escapeHtml(label)}${requiredText}</label>
-        <select id="editor-${escapeHtml(field)}" data-editor-field="${escapeHtml(field)}">
-          ${options.join('')}
-        </select>
-      </div>
-    `;
-  }
-
-  if (expectedType === 'dict' || expectedType === 'list' || enumListFields[field] || Array.isArray(value) || (value && typeof value === 'object')) {
-    return `
-      <div class="editor-field">
-        <label for="editor-${escapeHtml(field)}">${escapeHtml(label)}${requiredText}</label>
-        <textarea id="editor-${escapeHtml(field)}" data-editor-field="${escapeHtml(field)}" data-editor-complex="true">${escapeHtml(yamlFieldValue(value))}</textarea>
-        <div class="editor-help">Edit structured values carefully.</div>
-      </div>
-    `;
-  }
-
-  const stringValue = value === undefined || value === null ? '' : String(value);
-  const multiline = stringValue.length > 120 || stringValue.includes('\\n') || field === 'description' || field === 'notes';
-  return multiline ? `
-    <div class="editor-field">
-      <label for="editor-${escapeHtml(field)}">${escapeHtml(label)}${requiredText}</label>
-      <textarea id="editor-${escapeHtml(field)}" data-editor-field="${escapeHtml(field)}">${escapeHtml(stringValue)}</textarea>
-    </div>
-  ` : `
-    <div class="editor-field">
-      <label for="editor-${escapeHtml(field)}">${escapeHtml(label)}${requiredText}</label>
-      <input id="editor-${escapeHtml(field)}" type="text" value="${escapeHtml(stringValue)}" data-editor-field="${escapeHtml(field)}">
-    </div>
-  `;
-}
-
-function serializeEditorObject(object, fieldValues) {
-  const schema = object.editorSchema || {};
-  const fieldTypes = schema.fieldTypes || {};
-  const enumListFields = schema.enumListFields || {};
-  const result = {};
-  orderedEditorFields(object).forEach(field => {
-    let value = fieldValues[field];
-    const expectedType = fieldTypes[field] || '';
-    if (value === undefined) return;
-    if (typeof value === 'string') {
-      if (expectedType === 'dict' || expectedType === 'list' || enumListFields[field]) {
-        const trimmed = value.trim();
-        if (!trimmed) return;
-        result[field] = jsyaml.load(trimmed);
-        return;
-      }
-      const trimmed = value.trim();
-      if (!trimmed && field !== 'description') return;
-      result[field] = value;
-      return;
-    }
-    if (value === null) return;
-    result[field] = value;
-  });
-  return result;
-}
-
-function updateEditorPreview(object) {
-  const errorNode = editorOverlay.querySelector('#editor-error');
-  const previewNode = editorOverlay.querySelector('#editor-structured-preview');
-  if (!editorState || !errorNode || !previewNode) return;
-  try {
-    const serialized = serializeEditorObject(object, editorState.fieldValues);
-    editorState.serialized = serialized;
-    previewNode.textContent = jsyaml.dump(serialized, { lineWidth: 100, noRefs: true });
-    errorNode.textContent = '';
-  } catch (error) {
-    editorState.serialized = null;
-    previewNode.textContent = '';
-    errorNode.textContent = error instanceof Error ? error.message : String(error);
-  }
-}
-
-function blankApplicabilityClause() {
-  return { field: '', operator: 'equals', value: '', valuesText: '', truthy: 'true' };
-}
-
-function normalizeApplicabilityClause(clause) {
-  if (!clause || typeof clause !== 'object') {
-    return blankApplicabilityClause();
-  }
-  if (Object.prototype.hasOwnProperty.call(clause, 'truthy')) {
-    return {
-      field: String(clause.field || ''),
-      operator: 'truthy',
-      value: '',
-      valuesText: '',
-      truthy: clause.truthy === false ? 'false' : 'true'
-    };
-  }
-  if (Array.isArray(clause.in)) {
-    return {
-      field: String(clause.field || ''),
-      operator: 'in',
-      value: '',
-      valuesText: clause.in.map(value => String(value)).join(', '),
-      truthy: 'true'
-    };
-  }
-  if (Object.prototype.hasOwnProperty.call(clause, 'contains')) {
-    return {
-      field: String(clause.field || ''),
-      operator: 'contains',
-      value: String(clause.contains || ''),
-      valuesText: '',
-      truthy: 'true'
-    };
-  }
-  return {
-    field: String(clause.field || ''),
-    operator: 'equals',
-    value: String(clause.equals || ''),
-    valuesText: '',
-    truthy: 'true'
-  };
-}
-
 function showDetailView(id, pushHistory = true) {
   if (pushHistory && currentDetailId) {
     navHistory.push(currentDetailId);
@@ -6926,6 +6739,7 @@ function _sdpConnectionsTableMarkup(vm) {
       </span></td>
       <td><span class="proto ${proto}">${escapeHtml(c.protocol || '')}</span></td>
       <td class="iface-cell">${escapeHtml(c.targetInterface || '')}</td>
+      <td class="listener-cell">${escapeHtml(c.targetListener || '')}</td>
       <td class="label-cell">${escapeHtml(c.label || '')}</td>
     </tr>`;
   }).join('');
@@ -6937,7 +6751,7 @@ function _sdpConnectionsTableMarkup(vm) {
     <div class="conn-table-wrap">
       <table class="conn-table">
         <thead><tr>
-          <th>From</th><th>To</th><th>Protocol</th><th>Interface</th><th>Label</th>
+          <th>From</th><th>To</th><th>Protocol</th><th>Interface</th><th>Listener</th><th>Label</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
@@ -7195,6 +7009,7 @@ function renderDetailView() {
       ${secondaryDetailMarkup([
         { title: 'ProductComponent Classification', body: productServiceDetailMarkup(object) },
         { title: 'Interfaces and Listeners', body: interfacesListenersMarkup(object) },
+        { title: 'Owned Listeners', body: ownedListenersMarkup(object) },
         { title: 'Requirement Evidence', body: requirementEvidenceMarkup(object) },
         { title: 'References', body: usedByMarkup(object) }
       ])}
@@ -7241,6 +7056,7 @@ function renderDetailView() {
       ${secondaryDetailMarkup([
         { title: 'Delivery Details', body: deliveryModelDetailMarkup(object) },
         { title: 'Interfaces and Listeners', body: interfacesListenersMarkup(object) },
+        { title: 'Owned Listeners', body: ownedListenersMarkup(object) },
         { title: 'Requirement Evidence', body: requirementEvidenceMarkup(object) },
         { title: 'Deployment Configurations', body: deploymentConfigurationsMarkup(object) },
         { title: 'References', body: usedByMarkup(object) }
@@ -7250,6 +7066,7 @@ function renderDetailView() {
     detailBody = `
       ${headerMarkup}
       ${genericObjectMarkup(object)}
+      ${ownedListenersMarkup(object)}
       ${referencesMarkup(object)}
     `;
   }
@@ -7279,10 +7096,6 @@ function renderDetailView() {
     currentDetailId = null;
     renderListView();
   });
-  const openEditorButton = document.getElementById('open-editor-button');
-  if (openEditorButton) {
-    openEditorButton.addEventListener('click', () => openEditor(object));
-  }
 
   attachTopNavHandlers();
   attachSidebarHandlers();

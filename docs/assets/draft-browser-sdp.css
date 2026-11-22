@@ -267,7 +267,8 @@
   color: var(--muted);
   padding: 6px 0;
 }
-.sdp-detail .conn-table .iface-cell {
+.sdp-detail .conn-table .iface-cell,
+.sdp-detail .conn-table .listener-cell {
   color: var(--muted);
 }
 .sdp-detail .group-meta {

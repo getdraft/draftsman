@@ -1,3 +1,27 @@
+## Unreleased
+
+### Compatibility Impact
+
+- None. The generated catalog browser no longer embeds per-object `editorSchema` payloads or loads `js-yaml`. The inline YAML editor and requirement importer were already unreachable, so catalog objects, validation, and live browser views are unchanged. Company workspaces that refresh the browser shell drop unused editor assets only.
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Removed the unused `js-yaml@4.1.0` script and the empty `#editor-overlay` container from the browser shell.
+- Removed the dead inline YAML editor and requirement-importer JavaScript, including the listener that called the nonexistent `openEditor()`, and the unused `.editor-*`, `.import-card*`, and `.structured-preview` CSS.
+- `generate_browser.py` no longer loads schemas to build `editorSchema` entries in `browser-data.js`. `repository_web_url()` is unchanged. Schema selection in `validate.py` is unchanged.
+
+### Fixed
+
+- The generated browser no longer ships an unused CDN dependency, an empty editor overlay, or unused schema payloads on every catalog object.
+
+### Migration Notes
+
+- No catalog migration is required. Refresh an existing browser install with `python3 framework/tools/generate_browser.py --refresh-shell` so `docs/index.html`, the shell assets, and `browser-data.js` drop the editor code and `editorSchema` fields.
+
 ## 1.21.4 - 2026-11-22
 
 ### Compatibility Impact

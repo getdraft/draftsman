@@ -41,7 +41,6 @@ FRAMEWORK_ROOT = Path(__file__).resolve().parent.parent
 REPO_ROOT = FRAMEWORK_ROOT.parent
 WORKSPACE_ROOT = REPO_ROOT.parent if REPO_ROOT.name == ".draft" else REPO_ROOT
 OUTPUT_PATH = WORKSPACE_ROOT / "docs" / "index.html"
-SCHEMA_ROOT = FRAMEWORK_ROOT / "schemas"
 BASE_CONFIGURATION_ROOT = FRAMEWORK_ROOT / "configurations"
 USER_MANUAL_SOURCE_PATH = FRAMEWORK_ROOT / "docs" / "user-manual.md"
 USER_MANUAL_OUTPUT_NAME = "user-manual.html"
@@ -495,48 +494,6 @@ def apply_object_patches(objects: dict[str, dict[str, Any]]) -> dict[str, dict[s
     return patched
 
 
-def load_schemas(root: Path) -> list[dict[str, Any]]:
-    schemas: list[dict[str, Any]] = []
-    for path in sorted(root.glob("*.yaml")):
-        with path.open("r", encoding="utf-8") as handle:
-            data = yaml.safe_load(handle) or {}
-        if isinstance(data, dict):
-            data["_schema_path"] = display_path(path)
-            schemas.append(data)
-    return schemas
-
-
-def is_non_empty(value: Any) -> bool:
-    if value is None:
-        return False
-    if isinstance(value, str):
-        return bool(value.strip())
-    if isinstance(value, (list, dict, tuple, set)):
-        return len(value) > 0
-    return True
-
-
-def schema_specificity(schema: dict[str, Any]) -> int:
-    return sum(1 for key in ("subtype", "category", "deliveryModel") if is_non_empty(schema.get(key)))
-
-
-def select_schema(obj: dict[str, Any], schemas: list[dict[str, Any]]) -> dict[str, Any] | None:
-    candidates: list[dict[str, Any]] = []
-    for schema in schemas:
-        if schema.get("type") != obj.get("type"):
-            continue
-        if is_non_empty(schema.get("subtype")) and schema.get("subtype") != obj.get("subtype"):
-            continue
-        if is_non_empty(schema.get("category")) and schema.get("category") != obj.get("category"):
-            continue
-        if is_non_empty(schema.get("deliveryModel")) and schema.get("deliveryModel") != obj.get("deliveryModel"):
-            continue
-        candidates.append(schema)
-    if not candidates:
-        return None
-    return sorted(candidates, key=schema_specificity, reverse=True)[0]
-
-
 def repository_web_url(root: Path) -> str:
     try:
         remote = subprocess.check_output(
@@ -932,7 +889,6 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
     workspace_vocabulary = load_workspace_vocabulary(workspace_root)
     team_contacts = team_contact_by_id(workspace_vocabulary)
     catalog_indexes = build_catalog_indexes(registry)
-    schemas = load_schemas(SCHEMA_ROOT)
     outbound_refs, referenced_by, warnings = build_reference_index(registry)
     if not registry:
         warnings.append("Warning: The catalog is empty. No objects were loaded.")
@@ -967,17 +923,7 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
     for obj in objects:
         obj = strip_legacy_intent(obj)
         object_id = obj["uid"]
-        schema = select_schema(obj, schemas) or {}
         lifecycle_status = browser_lifecycle_status(obj)
-        schema_meta = {
-            "requiredFields": schema.get("requiredFields", []),
-            "optionalFields": schema.get("optionalFields", []),
-            "fieldTypes": schema.get("fieldTypes", {}),
-            "enumFields": schema.get("enumFields", {}),
-            "enumListFields": schema.get("enumListFields", {}),
-            "collectionSchemas": schema.get("collectionSchemas", {}),
-            "schemaPath": schema.get("_schema_path", ""),
-        }
         browser_objects.append(
             {
                 "id": object_id,
@@ -1064,7 +1010,6 @@ def build_browser_payload(registry: dict[str, dict[str, Any]], workspace_root: P
                 "hasRiskRef": object_id in risk_marked_rbb_ids,
                 "outboundRefs": outbound_refs.get(object_id, []),
                 "referencedBy": referenced_by.get(object_id, []),
-                "editorSchema": schema_meta,
                 "detail": to_json(obj),
                 "existsInCatalog": True,
             }
