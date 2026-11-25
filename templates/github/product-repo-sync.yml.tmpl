@@ -30,7 +30,8 @@ jobs:
 
       - name: Generate Ephemeral App Token for Central Workspace
         id: generate_token
-        uses: actions/create-github-app-token@v1
+        # v1.12.0. Pinned to a commit because this step receives the App private key.
+        uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547
         with:
           app-id: ${{ secrets.DRAFT_APP_ID }}
           private-key: ${{ secrets.DRAFT_APP_PRIVATE_KEY }}

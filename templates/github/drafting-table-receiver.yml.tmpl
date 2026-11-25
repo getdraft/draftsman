@@ -15,7 +15,8 @@
 # The force-push then authenticates as the App, so pull_request runs are not held for approval.
 # GitHub auto-merge does not honor a ruleset bypass, so this workflow does not arm --auto in that case.
 # templates/github/drafting-table-sync-merge.yml.tmpl merges the pull request after validate succeeds.
-# When the secrets are absent, or minting fails, checkout still runs with GITHUB_TOKEN so the report can write.
+# When the secrets are absent, or minting fails, checkout, Python setup, and the PyYAML install still run
+# (if: always()) with GITHUB_TOKEN so the report can import PyYAML and write the job summary.
 name: DRAFT Decentralized SDP Receiver
 
 on:
@@ -57,7 +58,8 @@ jobs:
       - name: Mint Receiver App Token
         id: receiver_token
         if: steps.receiver_app.outputs.present == 'true'
-        uses: actions/create-github-app-token@v1
+        # v1.12.0. Pinned to a commit because this step receives the App private key.
+        uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547
         with:
           app-id: ${{ secrets.DRAFT_RECEIVER_APP_ID }}
           private-key: ${{ secrets.DRAFT_RECEIVER_APP_PRIVATE_KEY }}
@@ -78,11 +80,13 @@ jobs:
           persist-credentials: true
 
       - name: Set up Python
+        if: always()
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install Dependencies
+        if: always()
         run: |
           python -m pip install --upgrade pip
           pip install pyyaml

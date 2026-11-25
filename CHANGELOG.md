@@ -1,3 +1,27 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No schema, validation, or catalog-contract change. A receiver that does not copy the updated workflow templates keeps its current behavior. After the templates are copied, a sync pull request opened by an account other than the receiver App is skipped instead of failing the merge job, and an updated head whose shared index files do not match the trusted generators is not merged. Product repositories that copy the dispatch template mint the App token from the same pinned action commit. Ruleset C on `draft-sync/**` is still required.
+
+### Added
+
+- On a publish mismatch, `sdp_sync.py publish` comments on the sync pull request, closes it, and tries to cancel in-progress and queued `Validate Catalog` runs for the other commit before it force-pushes the receiver commit again and fails. The cancel uses the token already passed to publish. That token has contents write and pull-requests write, so GitHub may refuse it. A refusal is included in the failure and does not by itself decide the job. Closing the pull request is what stops the merge workflow from accepting that commit. It does not stop another token from pushing, and it does not cover a merge that already completed.
+
+### Changed
+
+- `templates/github/drafting-table-receiver.yml.tmpl`, `templates/github/drafting-table-sync-merge.yml.tmpl`, and `templates/github/product-repo-sync.yml.tmpl` pin `actions/create-github-app-token` to commit `d72941d797fd3113feb6b93fd0dec494b13a2547` (`v1.12.0`). In the receiver workflow, Python setup and the PyYAML install now use `if: always()`, as checkout already does, so a failed App-token mint still leaves `sdp_sync.py report` able to import PyYAML.
+- `sdp_sync.py merge` treats a pull request author other than the receiver App, including an existing sync pull request from `github-actions[bot]`, as a logged skip. The job stays green. The pusher check is unchanged and still fails the job when `workflow_run.actor` is not the receiver App.
+- Before merging a head with more than one parent (the commit `update-branch` creates), `sdp_sync.py merge` regenerates `docs/assets/draft-indexes.json` and `.draft/AI_INDEX.md` with the trusted generators in a temporary worktree and compares them with that head. A difference, or a generator that cannot be run, skips the merge. The next sync rebuilds the branch from the default branch. A one-parent sync commit is merged without that comparison. The updated head is not rewritten, because that commit would not be the one `validate` passed.
+
+### Fixed
+
+- The 1.22.1 notes said a failed token mint still lets the report write the job summary, and that the publish tip check stops another Contents-write token from having the receiver App open a pull request on a replacement commit. Checkout ran after a failed mint, but Python setup and the PyYAML install did not, so the report could not import PyYAML. The tip check restored the receiver commit and failed, and it left the pull request open, so a validation of the other commit could still be merged. The report steps now run after a failed mint. The mismatch path closes the pull request and attempts the cancel described above. Ruleset C remains required for both.
+
+### Migration Notes
+
+- Copy `templates/github/drafting-table-receiver.yml.tmpl` and `templates/github/drafting-table-sync-merge.yml.tmpl` onto the central repository's default branch, and copy `templates/github/product-repo-sync.yml.tmpl` into product repositories that dispatch syncs, so the App token action stays on the pinned commit. No new GitHub App permission is required. The documented App still has Contents: Read and write and Pull requests: Read and write, and the cancel of a `Validate Catalog` run will usually be refused. Keep ruleset C on `draft-sync/**` with bypass mode **Always** for the receiver App. After enabling the receiver App, close each open `draft-sync/*` pull request once. The next sync opens a new one as the App. An updated head that the merge skips is replaced by that next sync; do not merge the blended index files by hand.
+
 ## 1.22.1 - 2026-11-25
 
 ### Compatibility Impact

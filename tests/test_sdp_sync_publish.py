@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import unittest.mock
 from pathlib import Path
 
 import yaml
@@ -38,9 +39,10 @@ class FakeRunner:
     """Records every command; answers git status and gh from a script, everything else succeeds."""
 
     def __init__(self, status: str, open_prs: list | None = None, fail: dict | None = None,
-                 remote_tip: str | None = None, pr_head: str | None = None) -> None:
+                 remote_tip: str | None = None, pr_head: str | None = None,
+                 workflow_runs: list | None = None) -> None:
         self.status, self.open_prs, self.fail, self.calls, self.bodies = status, open_prs or [], fail or {}, [], []
-        self.remote_tip, self.pr_head = remote_tip, pr_head
+        self.remote_tip, self.pr_head, self.workflow_runs = remote_tip, pr_head, workflow_runs or []
 
     def __call__(self, args: list[str]) -> subprocess.CompletedProcess:
         self.calls.append(list(args))
@@ -61,6 +63,8 @@ class FakeRunner:
             return done(json.dumps(self.open_prs))
         if args[:3] == ["gh", "pr", "create"]:
             return done("https://github.com/example-org/drafting-table/pull/42\n")
+        if args[:3] == ["gh", "run", "list"]:
+            return done(json.dumps(self.workflow_runs))
         return done()
 
     def commands(self, prefix: str) -> list[list[str]]:
@@ -86,6 +90,8 @@ class PublishTests(unittest.TestCase):
         self.assertEqual(add[:4], ["git", "add", "-A", "--"])
         self.assertNotIn(".draft/framework/tools/__pycache__/x.cpython-311.pyc", add, "bytecode is never committed")
         self.assertEqual(run.commands("git push"), [["git", "push", "--force", "origin", f"HEAD:refs/heads/{BRANCH}"]])
+        self.assertEqual(run.commands("gh pr close"), [])
+        self.assertEqual(run.commands("gh run cancel"), [])
         self.assertEqual(run.commands("git rev-parse"), [["git", "rev-parse", "HEAD"]])
         self.assertTrue(run.commands("git ls-remote"))
         self.assertEqual(run.commands("gh pr view")[0][:4], ["gh", "pr", "view", "42"])
@@ -114,17 +120,62 @@ class PublishTests(unittest.TestCase):
 
     def test_a_tip_replaced_before_the_pull_request_is_opened_is_restored_and_rejected(self) -> None:
         attacker = "d" * 40
-        for kwargs in ({"remote_tip": attacker}, {"pr_head": attacker}, {"remote_tip": attacker, "pr_head": attacker}):
+        other = "e" * 40
+        runs = [{"databaseId": 99, "status": "in_progress", "workflowName": "Validate Catalog", "headSha": attacker},
+                {"databaseId": 100, "status": "completed", "workflowName": "Validate Catalog", "headSha": attacker},
+                {"databaseId": 101, "status": "queued", "workflowName": "Other", "headSha": attacker}]
+        cases = (
+            {"remote_tip": attacker},
+            {"pr_head": attacker},
+            {"remote_tip": attacker, "pr_head": attacker},
+            {"remote_tip": attacker, "pr_head": other},
+        )
+        for kwargs in cases:
             with self.subTest(kwargs):
-                run = FakeRunner(CACHE_ONLY, **kwargs)
+                run = FakeRunner(CACHE_ONLY, workflow_runs=runs, **kwargs)
                 with self.assertRaises(sdp_sync.SyncError) as caught:
                     sdp_sync.publish(RESULT, "main", run)
-                self.assertIn("moved during publish", str(caught.exception))
-                self.assertIn(OUR, str(caught.exception))
-                self.assertIn(attacker, str(caught.exception))
+                message = str(caught.exception)
+                self.assertIn("moved during publish", message)
+                self.assertIn(OUR, message)
+                self.assertIn(attacker, message)
+                self.assertIn("closed pull request 42", message)
+                self.assertIn("cancelled Validate Catalog run 99", message)
+                self.assertNotIn("run 100", message)
+                self.assertNotIn("run 101", message)
                 pushes = run.commands("git push")
                 self.assertEqual(len(pushes), 2, "the receiver's commit is force-pushed again after the mismatch")
                 self.assertTrue(all(push[-1] == f"HEAD:refs/heads/{BRANCH}" for push in pushes))
+                close_at = next(i for i, call in enumerate(run.calls) if call[:3] == ["gh", "pr", "close"])
+                second_push = next(i for i, call in enumerate(run.calls) if call[:2] == ["git", "push"] and i > close_at)
+                self.assertLess(close_at, second_push)
+                comment = next(call for call in run.calls if call[:3] == ["gh", "pr", "comment"])
+                self.assertIn(attacker, comment[comment.index("--body") + 1])
+                self.assertIn("Ruleset C", comment[comment.index("--body") + 1])
+                listed = [call for call in run.calls if call[:3] == ["gh", "run", "list"]]
+                self.assertTrue(listed)
+                self.assertIn("Validate Catalog", listed[0])
+                self.assertEqual(run.commands("gh run cancel"), [["gh", "run", "cancel", "99"]])
+                self.assertEqual(run.commands("gh pr close"), [["gh", "pr", "close", "42"]])
+
+    def test_a_refused_cancel_still_closes_the_pull_request_and_restores_the_commit(self) -> None:
+        attacker = "d" * 40
+        run = FakeRunner(CACHE_ONLY, remote_tip=attacker, fail={"gh run list": "HTTP 403"})
+        with self.assertRaises(sdp_sync.SyncError) as caught:
+            sdp_sync.publish(RESULT, "main", run)
+        self.assertIn("closed pull request 42", str(caught.exception))
+        self.assertIn("could not list Validate Catalog runs", str(caught.exception))
+        self.assertEqual(len(run.commands("git push")), 2)
+        self.assertEqual(run.commands("gh run cancel"), [])
+
+    def test_a_failed_close_is_reported_and_the_receiver_commit_is_still_restored(self) -> None:
+        attacker = "d" * 40
+        run = FakeRunner(CACHE_ONLY, pr_head=attacker, fail={"gh pr close": "HTTP 403"})
+        with self.assertRaises(sdp_sync.SyncError) as caught:
+            sdp_sync.publish(RESULT, "main", run)
+        self.assertIn("stayed open", str(caught.exception))
+        self.assertIn("the close failed", str(caught.exception))
+        self.assertEqual(len(run.commands("git push")), 2)
 
     def test_no_changes_publishes_nothing(self) -> None:
         run = FakeRunner(status("?? .draft/framework/tools/__pycache__/sdp_sync.cpython-311.pyc"))
@@ -348,7 +399,7 @@ def confined_replies(pulls: list | None = None, diff: str = f"M\t.draft/external
 
 
 def merge(run: ScriptedRunner, **kwargs: object) -> dict:
-    values = {"auto_merge": True, "pusher": BOT, "app_slug": APP}
+    values = {"auto_merge": True, "pusher": BOT, "app_slug": APP, "workspace": ROOT}
     values.update(kwargs)
     return sdp_sync.merge_sync_pull_request(CENTRAL, "main", SHA, HEAD, run, **values)  # type: ignore[arg-type]
 
@@ -423,15 +474,22 @@ class MergeTests(unittest.TestCase):
         with self.assertRaisesRegex(sdp_sync.SyncError, "more than one"):
             merge(both)
 
-    def test_the_pusher_and_the_pull_request_author_must_be_the_receiver_app(self) -> None:
+    def test_the_pusher_must_be_the_receiver_app(self) -> None:
         quiet = ScriptedRunner([])
         with self.assertRaisesRegex(sdp_sync.SyncError, "not draft-receiver\\[bot\\]"):
             merge(quiet, pusher="dispatch-app[bot]")
         self.assertEqual(quiet.calls, [])
-        stranger = ScriptedRunner(confined_replies(pulls=[pull(9, author="octocat")]))
-        with self.assertRaisesRegex(sdp_sync.SyncError, "opened by octocat"):
-            merge(stranger)
-        self.assertFalse([c for c in stranger.calls if "--method" in c])
+
+    def test_a_pull_request_opened_by_someone_else_is_skipped(self) -> None:
+        for author in ("octocat", "github-actions[bot]"):
+            with self.subTest(author=author):
+                stranger = ScriptedRunner(confined_replies(pulls=[pull(9, author=author)]))
+                outcome = merge(stranger)
+                self.assertEqual(outcome["status"], "skipped")
+                self.assertIn(f"opened by {author}", outcome["message"])
+                self.assertIn("close it once", outcome["message"])
+                self.assertFalse([c for c in stranger.calls if "--method" in c])
+                self.assertFalse(any(call[:2] == ["git", "rev-parse"] and call[-1].endswith("^@") for call in stranger.calls))
 
     def test_a_pull_request_behind_its_base_is_updated_instead_of_merged(self) -> None:
         run = ScriptedRunner(confined_replies(behind=3))
@@ -453,6 +511,159 @@ class MergeTests(unittest.TestCase):
         self.assertEqual(merge(deleted)["status"], "merged")
         added = ScriptedRunner(confined_replies(diff=f"M\t{cache}\nA\t{legacy}\n"))
         self.assertEqual(merge(added)["status"], "left-open")
+
+    def test_an_updated_head_with_blended_indexes_is_not_merged(self) -> None:
+        run = ScriptedRunner(confined_replies() + [
+            (f"git rev-parse {SHA}^@", f"{'b' * 40}\n{'c' * 40}\n", 0, ""),
+            ("git -C", " M docs/assets/draft-indexes.json\n", 0, ""),
+        ])
+        outcome = merge(run)
+        self.assertEqual(outcome["status"], "skipped")
+        self.assertIn("not what the trusted generators write", outcome["message"])
+        self.assertIn("docs/assets/draft-indexes.json", outcome["message"])
+        self.assertIn(".draft/AI_INDEX.md", outcome["message"])
+        self.assertFalse(any("merge_method=squash" in " ".join(call) for call in run.calls))
+        self.assertTrue(any("generate_indexes.py" in " ".join(call) for call in run.calls))
+
+    def test_an_updated_head_whose_indexes_match_is_merged(self) -> None:
+        run = ScriptedRunner(confined_replies() + [
+            (f"git rev-parse {SHA}^@", f"{'b' * 40}\n{'c' * 40}\n", 0, ""),
+        ])
+        self.assertEqual(merge(run)["status"], "merged")
+        self.assertTrue(any(call[:3] == ["git", "worktree", "add"] for call in run.calls))
+        self.assertTrue(any("generate_ai_index.py" in " ".join(call) for call in run.calls))
+
+    def test_an_updated_head_is_skipped_when_the_generators_fail(self) -> None:
+        run = ScriptedRunner(confined_replies() + [
+            (f"git rev-parse {SHA}^@", f"{'b' * 40}\n{'c' * 40}\n", 0, ""),
+            (sys.executable, "", 1, "boom"),
+        ])
+        outcome = merge(run)
+        self.assertEqual(outcome["status"], "skipped")
+        self.assertIn("generators failed", outcome["message"])
+        self.assertFalse(any("merge_method=squash" in " ".join(call) for call in run.calls))
+
+    def test_an_updated_head_is_skipped_when_the_generators_are_missing(self) -> None:
+        empty = Path(tempfile.mkdtemp())
+        self.addCleanup(lambda: shutil.rmtree(empty, ignore_errors=True))
+        run = ScriptedRunner(confined_replies() + [
+            (f"git rev-parse {SHA}^@", f"{'b' * 40}\n{'c' * 40}\n", 0, ""),
+        ])
+        outcome = merge(run, workspace=empty)
+        self.assertEqual(outcome["status"], "skipped")
+        self.assertIn("generators failed", outcome["message"])
+        self.assertFalse(any(sys.executable in " ".join(call) for call in run.calls))
+
+    def test_publish_cancels_the_workflow_the_merge_template_listens_for(self) -> None:
+        merge_template = yaml.safe_load((ROOT / "templates" / "github" / "drafting-table-sync-merge.yml.tmpl").read_text(encoding="utf-8"))
+        trigger = merge_template.get("on", merge_template.get(True))
+        self.assertEqual(trigger["workflow_run"]["workflows"], [sdp_sync.VALIDATE_WORKFLOW_NAME])
+
+    def test_a_one_parent_head_is_merged_without_regenerating_indexes(self) -> None:
+        run = ScriptedRunner(confined_replies())
+        self.assertEqual(merge(run)["status"], "merged")
+        self.assertFalse(any("generate_indexes.py" in " ".join(call) for call in run.calls))
+        self.assertTrue(any(call[-1] == f"{SHA}^@" for call in run.calls))
+
+
+class SharedIndexRegenerationTests(unittest.TestCase):
+    def test_company_layout_retargets_the_ai_index_into_the_worktree(self) -> None:
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(lambda: shutil.rmtree(tmp, ignore_errors=True))
+        tools = tmp / ".draft" / "framework" / "tools"
+        tools.mkdir(parents=True)
+        (tools / "generate_indexes.py").write_text("raise SystemExit(0)\n", encoding="utf-8")
+        (tools / "generate_ai_index.py").write_text("raise SystemExit(0)\n", encoding="utf-8")
+        worktree = tmp / "head"
+        recorded: list[list[str]] = []
+
+        def run(args: list[str]) -> subprocess.CompletedProcess:
+            recorded.append(args)
+            return done()
+
+        self.assertTrue(sdp_sync._regenerate_shared_indexes(run, tmp, worktree))
+        indexes, retarget = recorded
+        self.assertEqual(indexes[:2], [sys.executable, str(tools / "generate_indexes.py")])
+        self.assertEqual(indexes[indexes.index("--workspace") + 1], str(worktree))
+        self.assertEqual(indexes[indexes.index("--output") + 1], str(worktree / "docs" / "assets" / "draft-indexes.json"))
+        self.assertEqual(retarget[:2], [sys.executable, "-c"])
+        self.assertEqual(retarget[3:], [str(tools / "generate_ai_index.py"), str(worktree / ".draft"), str(worktree / ".draft" / "AI_INDEX.md")])
+
+    def test_retarget_writes_the_worktree_copy_and_leaves_this_repo_alone(self) -> None:
+        original = (ROOT / "AI_INDEX.md").read_bytes()
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(lambda: shutil.rmtree(tmp, ignore_errors=True))
+        root = tmp / ".draft"
+        (root / "framework" / "docs").mkdir(parents=True)
+        output = root / "AI_INDEX.md"
+        proc = subprocess.run([sys.executable, "-c", sdp_sync._RETARGET_AI_INDEX,
+                                str(ROOT / "framework" / "tools" / "generate_ai_index.py"), str(root), str(output)],
+                               capture_output=True, text=True, check=False)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertTrue(output.is_file())
+        self.assertIn("AI Framework Index", output.read_text(encoding="utf-8"))
+        self.assertEqual((ROOT / "AI_INDEX.md").read_bytes(), original)
+
+
+@unittest.skipUnless(shutil.which("git"), "git is not installed")
+class UpdatedHeadIndexTests(unittest.TestCase):
+    def git(self, *args: str, cwd: Path) -> str:
+        return subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, check=True).stdout
+
+    def setUp(self) -> None:
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.repo = Path(tmp.name) / "repo"
+        self.repo.mkdir()
+        self.git("init", "-q", "-b", "main", cwd=self.repo)
+        for key, value in (("user.name", "t"), ("user.email", "t@example.com"), ("commit.gpgsign", "false")):
+            self.git("config", key, value, cwd=self.repo)
+        indexes = self.repo / "docs" / "assets"
+        indexes.mkdir(parents=True)
+        (indexes / "draft-indexes.json").write_text("{}\n", encoding="utf-8")
+        (self.repo / ".draft").mkdir()
+        (self.repo / ".draft" / "AI_INDEX.md").write_text("base\n", encoding="utf-8")
+        (self.repo / "left.txt").write_text("l\n", encoding="utf-8")
+        (self.repo / "right.txt").write_text("r\n", encoding="utf-8")
+        self.git("add", "-A", cwd=self.repo)
+        self.git("commit", "-q", "-m", "base", cwd=self.repo)
+        self.base = self.git("rev-parse", "HEAD", cwd=self.repo).strip()
+        self.git("checkout", "-q", "-b", "other", cwd=self.repo)
+        (self.repo / "left.txt").write_text("L\n", encoding="utf-8")
+        self.git("commit", "-q", "-am", "left", cwd=self.repo)
+        self.git("checkout", "-q", "main", cwd=self.repo)
+        (self.repo / "right.txt").write_text("R\n", encoding="utf-8")
+        self.git("commit", "-q", "-am", "right", cwd=self.repo)
+        self.git("merge", "-q", "--no-ff", "other", "-m", "merge", cwd=self.repo)
+        self.merge_sha = self.git("rev-parse", "HEAD", cwd=self.repo).strip()
+
+    def test_a_merge_commit_with_rewritten_indexes_is_drift(self) -> None:
+        def rewrite(run: sdp_sync.Runner, workspace: Path, worktree: Path) -> bool:
+            (worktree / "docs" / "assets" / "draft-indexes.json").write_text('{"blended": true}\n', encoding="utf-8")
+            return True
+
+        with unittest.mock.patch.object(sdp_sync, "_regenerate_shared_indexes", side_effect=rewrite):
+            message = sdp_sync._updated_head_index_drift(sdp_sync.subprocess_runner(self.repo), self.repo, self.merge_sha)
+        self.assertIsNotNone(message)
+        self.assertIn("not what the trusted generators write", message or "")
+
+    def test_a_merge_commit_whose_indexes_match_is_clean(self) -> None:
+        def keep(run: sdp_sync.Runner, workspace: Path, worktree: Path) -> bool:
+            return True
+
+        with unittest.mock.patch.object(sdp_sync, "_regenerate_shared_indexes", side_effect=keep):
+            self.assertIsNone(sdp_sync._updated_head_index_drift(sdp_sync.subprocess_runner(self.repo), self.repo, self.merge_sha))
+
+    def test_a_single_parent_commit_does_not_regenerate(self) -> None:
+        called: list[str] = []
+
+        def boom(run: sdp_sync.Runner, workspace: Path, worktree: Path) -> bool:
+            called.append("called")
+            return False
+
+        with unittest.mock.patch.object(sdp_sync, "_regenerate_shared_indexes", side_effect=boom):
+            self.assertIsNone(sdp_sync._updated_head_index_drift(sdp_sync.subprocess_runner(self.repo), self.repo, self.base))
+        self.assertEqual(called, [])
 
 
 if __name__ == "__main__":

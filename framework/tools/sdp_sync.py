@@ -820,7 +820,7 @@ def publish(result: Mapping[str, Any], base: str, run: Runner, auto_merge: bool 
         Path(body_file).unlink(missing_ok=True)
     # For a pull_request opened run, workflow_run.actor is whoever opened the pull request, not who pushed
     # the tip. Anything that replaced the branch between the push and gh pr create would be opened by this
-    # App. Put our commit back and fail so that tip is not what the opened run validates.
+    # App. Close that pull request, try to cancel validation of the other commit, put our commit back, and fail.
     _require_published_head(run, branch, number, ours)
     outcome["pullRequest"] = {"number": number, "url": url}
     outcome["head"] = ours
@@ -934,17 +934,110 @@ def _push_sync_branch(run: Runner, branch: str) -> None:
     _ok(run, ["git", "push", "--force", "origin", f"HEAD:refs/heads/{branch}"], "git push")
 
 
+# The merge workflow listens for this workflow name. Cancel looks for the same name.
+VALIDATE_WORKFLOW_NAME = "Validate Catalog"
+_CANCEL_RUN_STATUSES = frozenset({"in_progress", "queued", "waiting", "requested", "pending"})
+
+
+def _command_detail(proc: subprocess.CompletedProcess[str]) -> str:
+    text = f"{proc.stderr or ''}\n{proc.stdout or ''}".strip()
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    return lines[-1] if lines else f"exit {proc.returncode}"
+
+
+def _close_replaced_pull_request(run: Runner, number: int, ours: str, tip: str, pr_head: str) -> str:
+    """Comment on and close the pull request that was opened on a commit this publish did not push."""
+    comment = (
+        "Closing this pull request. The sync branch moved while the receiver was publishing "
+        f"(receiver commit `{ours}`, branch tip `{tip or 'unknown'}`, pull request head `{pr_head or 'unknown'}`). "
+        "The receiver is putting its own commit back on the branch. A validation of the other commit must not be merged. "
+        "Ruleset C on `draft-sync/**` is still required."
+    )
+    noted = run(["gh", "pr", "comment", str(number), "--body", comment])
+    closed = run(["gh", "pr", "close", str(number)])
+    problems = []
+    if noted.returncode != 0:
+        problems.append(f"the comment failed ({_command_detail(noted)})")
+    if closed.returncode != 0:
+        problems.append(f"the close failed ({_command_detail(closed)})")
+    if problems:
+        return f"pull request {number} stayed open: " + "; ".join(problems)
+    return f"closed pull request {number}"
+
+
+def _cancel_validate_runs(run: Runner, shas: list[str]) -> str:
+    """Cancel in-progress Validate Catalog runs for these commits, when the token in use is allowed to.
+
+    Publish's token has contents write and pull-requests write. It often cannot call the Actions API.
+    A refusal is recorded and does not replace the publish failure. Ruleset C is still required.
+    """
+    notes: list[str] = []
+    for sha in shas:
+        proc = run(["gh", "run", "list", "--commit", sha, "--workflow", VALIDATE_WORKFLOW_NAME,
+                    "--json", "databaseId,status,workflowName,headSha", "--limit", "20"])
+        if proc.returncode != 0:
+            notes.append(f"could not list {VALIDATE_WORKFLOW_NAME} runs for {sha} ({_command_detail(proc)})")
+            continue
+        try:
+            listed = json.loads(proc.stdout or "[]")
+        except ValueError:
+            notes.append(f"could not read {VALIDATE_WORKFLOW_NAME} runs for {sha}")
+            continue
+        if not isinstance(listed, list):
+            notes.append(f"could not read {VALIDATE_WORKFLOW_NAME} runs for {sha}")
+            continue
+        found = False
+        for item in listed:
+            if not isinstance(item, dict):
+                continue
+            workflow = str(item.get("workflowName") or VALIDATE_WORKFLOW_NAME)
+            if workflow != VALIDATE_WORKFLOW_NAME:
+                continue
+            head = str(item.get("headSha") or "").lower()
+            if head and head != sha:
+                continue
+            if str(item.get("status") or "") not in _CANCEL_RUN_STATUSES:
+                continue
+            run_id = item.get("databaseId")
+            if isinstance(run_id, str) and run_id.isdigit():
+                run_id = int(run_id)
+            if not isinstance(run_id, int):
+                continue
+            found = True
+            cancel = run(["gh", "run", "cancel", str(run_id)])
+            if cancel.returncode != 0:
+                notes.append(f"could not cancel {VALIDATE_WORKFLOW_NAME} run {run_id} for {sha} ({_command_detail(cancel)})")
+            else:
+                notes.append(f"cancelled {VALIDATE_WORKFLOW_NAME} run {run_id} for {sha}")
+        if not found:
+            notes.append(f"no in-progress {VALIDATE_WORKFLOW_NAME} run for {sha}")
+    return "; ".join(notes)
+
+
 def _require_published_head(run: Runner, branch: str, number: int, ours: str) -> None:
-    """The remote tip and the pull request head must still be the commit this publish pushed."""
+    """The remote tip and the pull request head must still be the commit this publish pushed.
+
+    A mismatch closes the pull request and, when the token can, cancels Validate Catalog runs for the
+    other commit, then force-pushes this publish's commit again. That stops the merge workflow from
+    accepting a pull request the receiver App opened on someone else's commit. It does not stop the
+    other push itself, and the token may not be allowed to cancel workflow runs. Ruleset C is still required.
+    """
     tip = _sha_or_blank(_ok(run, ["git", "ls-remote", "origin", f"refs/heads/{branch}"], "git ls-remote"))
     pr_head = _sha_or_blank(_ok(run, ["gh", "pr", "view", str(number), "--json", "headRefOid", "--jq", ".headRefOid"],
                                 "gh pr view"))
     if tip == ours and pr_head == ours:
         return
+    foreign: list[str] = []
+    for candidate in (tip, pr_head):
+        if candidate and candidate != ours and candidate not in foreign:
+            foreign.append(candidate)
+    close_note = _close_replaced_pull_request(run, number, ours, tip, pr_head)
+    cancel_note = _cancel_validate_runs(run, foreign)
     _push_sync_branch(run, branch)
     raise SyncError(
-        f"the sync branch {branch} moved during publish (pushed {ours}, branch tip {tip}, pull request head {pr_head}); "
-        f"restored {ours} and refused to publish"
+        f"the sync branch {branch} moved during publish (pushed {ours}, branch tip {tip or 'unknown'}, "
+        f"pull request head {pr_head or 'unknown'}); {close_note}; restored {ours} and refused to publish"
+        + (f"; {cancel_note}" if cancel_note else "")
     )
 
 
@@ -980,8 +1073,96 @@ def _json_body(stdout: str) -> Any:
     return json.loads(body or "null")
 
 
+# generate_ai_index.py writes next to its own framework checkout. Point that module at the worktree
+# and run the copy of the tool from the default-branch checkout, which is the trusted one.
+_RETARGET_AI_INDEX = """
+import importlib.util
+import sys
+from pathlib import Path
+
+script, root, output = sys.argv[1:]
+spec = importlib.util.spec_from_file_location("draft_generate_ai_index_retarget", script)
+if spec is None or spec.loader is None:
+    raise SystemExit("cannot load generate_ai_index")
+module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = module
+spec.loader.exec_module(module)
+module.REPO_ROOT = Path(root)
+module.FRAMEWORK_ROOT = Path(root) / "framework"
+module.OUTPUT_PATH = Path(output)
+module.main()
+"""
+
+
+def _trusted_generator_paths(workspace: Path) -> tuple[Path, Path] | None:
+    """`generate_indexes.py` and `generate_ai_index.py` from this checkout, company layout first."""
+    for tools in (workspace / ".draft" / "framework" / "tools", workspace / "framework" / "tools"):
+        indexes, ai_index = tools / "generate_indexes.py", tools / "generate_ai_index.py"
+        if indexes.is_file() and ai_index.is_file():
+            return indexes, ai_index
+    return None
+
+
+def _ai_index_target(worktree: Path, tools: Path) -> tuple[Path, Path]:
+    """The `REPO_ROOT` and output path that copy of `generate_ai_index.py` uses in a workspace."""
+    if tools.parent.parent.name == ".draft":
+        root = worktree / ".draft"
+        return root, root / "AI_INDEX.md"
+    return worktree, worktree / "AI_INDEX.md"
+
+
+def _regenerate_shared_indexes(run: Runner, workspace: Path, worktree: Path) -> bool:
+    """Rewrite the worktree's shared index files with the trusted generators. False when that cannot be done."""
+    found = _trusted_generator_paths(workspace)
+    if found is None:
+        return False
+    indexes, ai_index = found
+    output = worktree / "docs" / "assets" / "draft-indexes.json"
+    generated = run([sys.executable, str(indexes), "--workspace", str(worktree), "--output", str(output)])
+    if generated.returncode != 0:
+        return False
+    root, ai_output = _ai_index_target(worktree, indexes.parent)
+    retargeted = run([sys.executable, "-c", _RETARGET_AI_INDEX, str(ai_index), str(root), str(ai_output)])
+    return retargeted.returncode == 0
+
+
+def _updated_head_index_drift(run: Runner, workspace: Path, sha: str) -> str | None:
+    """Why an updated head must not be merged, or None when this head may be merged.
+
+    ``update-branch`` merges the default branch into the sync branch. The new head has two parents, and
+    ``docs/assets/draft-indexes.json`` and ``.draft/AI_INDEX.md`` can be a blend of the two sides. A head
+    with one parent is the receiver's own sync commit: the receiver already ran these generators, and this
+    check does not run again. A blend is not merged and is not rewritten here, because a rewritten commit
+    would not be the commit ``validate`` just passed. The next sync rebuilds the branch from the default branch.
+    """
+    proc = run(["git", "rev-parse", f"{sha}^@"])
+    if proc.returncode != 0:
+        return "could not read the parents of the validated head, so it was not merged"
+    parents = [token.lower() for token in (proc.stdout or "").split() if _FULL_SHA.match(token.lower())]
+    if len(parents) < 2:
+        return None
+    worktree = Path(tempfile.mkdtemp(prefix="sdp-index-"))
+    try:
+        added = run(["git", "worktree", "add", "--detach", str(worktree), sha])
+        if added.returncode != 0:
+            return "could not check out the updated head to regenerate the shared index files, so it was not merged"
+        if not _regenerate_shared_indexes(run, workspace, worktree):
+            return "the trusted index generators failed on the updated head, so it was not merged; the next sync rebuilds the branch"
+        status = run(["git", "-C", str(worktree), "status", "--porcelain", "--", *DERIVED_PATHS])
+        if status.returncode != 0:
+            return "could not compare the shared index files on the updated head, so it was not merged"
+        if (status.stdout or "").strip():
+            listed = ", ".join(DERIVED_PATHS)
+            return (f"the shared index files on the updated head are not what the trusted generators write ({listed}); "
+                    "the next sync rebuilds the branch")
+        return None
+    finally:
+        run(["git", "worktree", "remove", "--force", str(worktree)])
+        shutil.rmtree(worktree, ignore_errors=True)
+
+
 def merge_sync_pull_request(central: str, base: str, sha: str, head: str, run: Runner, auto_merge: bool = False,
-                            pusher: str = "", app_slug: str = "") -> dict[str, Any]:
+                            pusher: str = "", app_slug: str = "", workspace: Path | None = None) -> dict[str, Any]:
     """Squash-merge the receiver App's confined sync pull request at this exact head SHA.
 
     The pusher is `workflow_run.actor` of the validating run (the account that triggered it initially).
@@ -989,7 +1170,11 @@ def merge_sync_pull_request(central: str, base: str, sha: str, head: str, run: R
     which is why `publish` checks the branch tip after it opens the pull request.
     `triggering_actor` is whoever started the latest attempt and changes on re-run, so it is not used.
     GitHub auto-merge ignores a ruleset bypass actor, so this calls the merge API and passes ``sha``.
-    A pull request that is behind its base is updated instead of merged, and the next green validation merges it.
+    A pull request opened by another account, including an older sync pull request from ``github-actions[bot]``,
+    is skipped. Close it once so the next sync opens a new one as the receiver App.
+    A pull request that is behind its base is updated instead of merged. The next green validation merges
+    that head only when it is still one parent, or when its shared index files match a fresh run of the
+    trusted generators. A blend is left for the next sync.
     """
     central = check_repository(central)
     if not auto_merge:
@@ -1036,10 +1221,14 @@ def merge_sync_pull_request(central: str, base: str, sha: str, head: str, run: R
     if len(matches) != 1:
         raise SyncError("more than one open pull request matches this head SHA")
     author = str((matches[0].get("user") or {}).get("login") or "")
-    if author.lower() != bot.lower():
-        raise SyncError(f"the pull request was opened by {author or 'unknown'}, not {bot}")
     number = int(matches[0]["number"])
     url = str(matches[0].get("html_url") or f"https://github.com/{central}/pull/{number}")
+    if author.lower() != bot.lower():
+        # Pre-existing sync pull requests were opened by github-actions[bot]. Failing the job on every
+        # green validate would block later syncs. Close that pull request once; the next publish opens a new one.
+        return {"status": "skipped", "message": f"the pull request was opened by {author or 'unknown'}, not {bot}; "
+                "close it once so the receiver App can open a new one",
+                "pullRequest": {"number": number, "url": url}}
     compare_status, compare_body = _api(run, [f"repos/{central}/compare/{base}...{sha}"])
     if compare_status != 200:
         raise SyncError(f"comparing the pull request with {base} failed (HTTP {compare_status})")
@@ -1056,6 +1245,9 @@ def merge_sync_pull_request(central: str, base: str, sha: str, head: str, run: R
             raise SyncError(f"updating the pull request branch failed (HTTP {update_status})" + (f": {last}" if last else ""))
         return {"status": "updated", "message": f"updated {url} onto {base}; waiting for validate on the new head",
                 "pullRequest": {"number": number, "url": url}, "sha": sha}
+    drift = _updated_head_index_drift(run, Path(workspace) if workspace is not None else Path("."), sha)
+    if drift:
+        return {"status": "skipped", "message": drift, "pullRequest": {"number": number, "url": url}, "sha": sha}
     merge_status, merge_body = _api(run, ["--method", "PUT", f"repos/{central}/pulls/{number}/merge",
                                           "-f", "merge_method=squash", "-f", f"sha={sha}"])
     if _head_moved(merge_status, merge_body):
@@ -1309,7 +1501,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "merge":
         try:
             outcome = merge_sync_pull_request(args.repository, args.base, args.sha, args.head, subprocess_runner(args.workspace),
-                                              auto_merge=args.auto_merge == "true", pusher=args.pusher, app_slug=args.app_slug)
+                                              auto_merge=args.auto_merge == "true", pusher=args.pusher, app_slug=args.app_slug,
+                                              workspace=args.workspace)
         except SyncError as exc:
             print(f"sdp_sync merge: {exc}", file=sys.stderr)
             return 1
