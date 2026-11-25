@@ -177,6 +177,52 @@ class PublishTests(unittest.TestCase):
         self.assertIn("the close failed", str(caught.exception))
         self.assertEqual(len(run.commands("git push")), 2)
 
+    def test_a_failed_comment_does_not_say_the_pull_request_stayed_open(self) -> None:
+        attacker = "d" * 40
+        run = FakeRunner(CACHE_ONLY, pr_head=attacker, fail={"gh pr comment": "HTTP 403"})
+        with self.assertRaises(sdp_sync.SyncError) as caught:
+            sdp_sync.publish(RESULT, "main", run)
+        message = str(caught.exception)
+        self.assertIn("closed pull request 42", message)
+        self.assertIn("the comment failed", message)
+        self.assertNotIn("stayed open", message)
+        self.assertEqual(run.commands("gh pr close"), [["gh", "pr", "close", "42"]])
+        self.assertEqual(len(run.commands("git push")), 2)
+
+    def test_cancel_includes_action_required_runs_of_the_named_workflow(self) -> None:
+        sha = "ab" * 20
+        runs = [
+            {"databaseId": 7, "status": "action_required", "workflowName": "Check Catalog", "headSha": sha},
+            {"databaseId": 8, "status": "completed", "workflowName": "Check Catalog", "headSha": sha},
+        ]
+
+        class Runner:
+            def __init__(self) -> None:
+                self.calls: list[list[str]] = []
+
+            def __call__(self, args: list[str]) -> subprocess.CompletedProcess:
+                self.calls.append(list(args))
+                if args[:3] == ["gh", "run", "list"]:
+                    return done(json.dumps(runs))
+                return done()
+
+        runner = Runner()
+        note = sdp_sync._cancel_validate_runs(runner, [sha], "Check Catalog")
+        self.assertIn("cancelled Check Catalog run 7", note)
+        self.assertNotIn("run 8", note)
+        self.assertIn("Check Catalog", runner.calls[0])
+        self.assertEqual(runner.calls[1], ["gh", "run", "cancel", "7"])
+
+    def test_the_validation_workflow_name_comes_from_the_argument_or_the_environment(self) -> None:
+        with unittest.mock.patch.dict(os.environ, {"DRAFT_VALIDATE_WORKFLOW": ""}):
+            self.assertEqual(sdp_sync._validation_workflow_name(None), "Validate Catalog")
+        self.assertEqual(sdp_sync._validation_workflow_name("Check Catalog"), "Check Catalog")
+        with unittest.mock.patch.dict(os.environ, {"DRAFT_VALIDATE_WORKFLOW": "Nightly Validate"}):
+            self.assertEqual(sdp_sync._validation_workflow_name(None), "Nightly Validate")
+            self.assertEqual(sdp_sync._validation_workflow_name("Check Catalog"), "Check Catalog")
+        with self.assertRaises(sdp_sync.SyncError):
+            sdp_sync._validation_workflow_name("bad\nname")
+
     def test_no_changes_publishes_nothing(self) -> None:
         run = FakeRunner(status("?? .draft/framework/tools/__pycache__/sdp_sync.cpython-311.pyc"))
         outcome = sdp_sync.publish(RESULT, "main", run)
@@ -398,6 +444,32 @@ def confined_replies(pulls: list | None = None, diff: str = f"M\t.draft/external
     ]
 
 
+def company_workspace(path: Path) -> Path:
+    tools = path / ".draft" / "framework" / "tools"
+    tools.mkdir(parents=True)
+    (tools / "generate_indexes.py").write_text("raise SystemExit(0)\n", encoding="utf-8")
+    (tools / "generate_ai_index.py").write_text("raise SystemExit(0)\n", encoding="utf-8")
+    return path
+
+
+class RememberingRunner:
+    """Scripted git and API replies, plus one stored pull-request comment."""
+
+    def __init__(self, replies: list[tuple[str, str, int, str]]) -> None:
+        self.inner = ScriptedRunner(replies)
+        self.calls: list[list[str]] = []
+        self.bodies: list[str] = []
+
+    def __call__(self, args: list[str]) -> subprocess.CompletedProcess:
+        self.calls.append(list(args))
+        if args[:3] == ["gh", "pr", "comment"] and "--repo" in args:
+            self.bodies.append(args[args.index("--body") + 1])
+            return done()
+        if args[:2] == ["gh", "api"] and any(str(arg).endswith("/comments") for arg in args):
+            return done("\n".join(self.bodies))
+        return self.inner(args)
+
+
 def merge(run: ScriptedRunner, **kwargs: object) -> dict:
     values = {"auto_merge": True, "pusher": BOT, "app_slug": APP, "workspace": ROOT}
     values.update(kwargs)
@@ -488,6 +560,12 @@ class MergeTests(unittest.TestCase):
                 self.assertEqual(outcome["status"], "skipped")
                 self.assertIn(f"opened by {author}", outcome["message"])
                 self.assertIn("close it once", outcome["message"])
+                self.assertIn("commented that this head was not auto-merged", outcome["message"])
+                comment = next(call for call in stranger.calls if call[:3] == ["gh", "pr", "comment"])
+                body = comment[comment.index("--body") + 1]
+                self.assertIn("was not auto-merged", body)
+                self.assertIn("must not be merged by hand without a new sync", body)
+                self.assertIn(sdp_sync._NOT_MERGED_MARKER, body)
                 self.assertFalse([c for c in stranger.calls if "--method" in c])
                 self.assertFalse(any(call[:2] == ["git", "rev-parse"] and call[-1].endswith("^@") for call in stranger.calls))
 
@@ -495,7 +573,8 @@ class MergeTests(unittest.TestCase):
         run = ScriptedRunner(confined_replies(behind=3))
         outcome = merge(run)
         self.assertEqual(outcome["status"], "updated")
-        self.assertIn(["gh", "api", "-i", "--method", "PUT", f"repos/{CENTRAL}/pulls/9/update-branch", "-f", f"expected_head_sha={SHA}"], run.calls)
+        self.assertIn(["gh", "api", "-i", "--method", "PUT", f"repos/{CENTRAL}/pulls/9/update-branch",
+                       "-f", f"expected_head_sha={SHA}", "-f", "update_method=merge"], run.calls)
         self.assertFalse([c for c in run.calls if c[-4:] == ["-f", "merge_method=squash", "-f", f"sha={SHA}"]])
 
     def test_the_legacy_flat_file_may_only_be_deleted_on_the_merge_path(self) -> None:
@@ -512,16 +591,28 @@ class MergeTests(unittest.TestCase):
         added = ScriptedRunner(confined_replies(diff=f"M\t{cache}\nA\t{legacy}\n"))
         self.assertEqual(merge(added)["status"], "left-open")
 
+    def _company(self) -> Path:
+        path = Path(tempfile.mkdtemp())
+        self.addCleanup(lambda: shutil.rmtree(path, ignore_errors=True))
+        return company_workspace(path)
+
     def test_an_updated_head_with_blended_indexes_is_not_merged(self) -> None:
-        run = ScriptedRunner(confined_replies() + [
+        replies = confined_replies() + [
             (f"git rev-parse {SHA}^@", f"{'b' * 40}\n{'c' * 40}\n", 0, ""),
             ("git -C", " M docs/assets/draft-indexes.json\n", 0, ""),
-        ])
-        outcome = merge(run)
+        ]
+        run = RememberingRunner(replies)
+        outcome = merge(run, workspace=self._company())
+        again = merge(run, workspace=self._company())
         self.assertEqual(outcome["status"], "skipped")
+        self.assertEqual(again["status"], "skipped")
         self.assertIn("not what the trusted generators write", outcome["message"])
         self.assertIn("docs/assets/draft-indexes.json", outcome["message"])
         self.assertIn(".draft/AI_INDEX.md", outcome["message"])
+        self.assertIn("commented that this head was not auto-merged", outcome["message"])
+        self.assertIn("already notes", again["message"])
+        self.assertEqual(len(run.bodies), 1)
+        self.assertIn("must not be merged by hand without a new sync", run.bodies[0])
         self.assertFalse(any("merge_method=squash" in " ".join(call) for call in run.calls))
         self.assertTrue(any("generate_indexes.py" in " ".join(call) for call in run.calls))
 
@@ -529,7 +620,7 @@ class MergeTests(unittest.TestCase):
         run = ScriptedRunner(confined_replies() + [
             (f"git rev-parse {SHA}^@", f"{'b' * 40}\n{'c' * 40}\n", 0, ""),
         ])
-        self.assertEqual(merge(run)["status"], "merged")
+        self.assertEqual(merge(run, workspace=self._company())["status"], "merged")
         self.assertTrue(any(call[:3] == ["git", "worktree", "add"] for call in run.calls))
         self.assertTrue(any("generate_ai_index.py" in " ".join(call) for call in run.calls))
 
@@ -538,10 +629,22 @@ class MergeTests(unittest.TestCase):
             (f"git rev-parse {SHA}^@", f"{'b' * 40}\n{'c' * 40}\n", 0, ""),
             (sys.executable, "", 1, "boom"),
         ])
-        outcome = merge(run)
+        outcome = merge(run, workspace=self._company())
         self.assertEqual(outcome["status"], "skipped")
         self.assertIn("generators failed", outcome["message"])
         self.assertFalse(any("merge_method=squash" in " ".join(call) for call in run.calls))
+
+    def test_a_framework_checkout_does_not_make_a_blended_ai_index_look_clean(self) -> None:
+        run = ScriptedRunner(confined_replies() + [
+            (f"git rev-parse {SHA}^@", f"{'b' * 40}\n{'c' * 40}\n", 0, ""),
+        ])
+        outcome = merge(run, workspace=ROOT)
+        self.assertEqual(outcome["status"], "skipped")
+        self.assertIn("do not write the shared index files", outcome["message"])
+        self.assertIn(".draft/AI_INDEX.md", outcome["message"])
+        self.assertFalse(any("generate_indexes.py" in " ".join(call) for call in run.calls))
+        self.assertFalse(any("merge_method=squash" in " ".join(call) for call in run.calls))
+        self.assertFalse(sdp_sync._writes_derived_indexes(Path("/tmp/sdp-head"), (ROOT / "framework" / "tools")))
 
     def test_an_updated_head_is_skipped_when_the_generators_are_missing(self) -> None:
         empty = Path(tempfile.mkdtemp())
@@ -588,6 +691,18 @@ class SharedIndexRegenerationTests(unittest.TestCase):
         self.assertEqual(indexes[indexes.index("--output") + 1], str(worktree / "docs" / "assets" / "draft-indexes.json"))
         self.assertEqual(retarget[:2], [sys.executable, "-c"])
         self.assertEqual(retarget[3:], [str(tools / "generate_ai_index.py"), str(worktree / ".draft"), str(worktree / ".draft" / "AI_INDEX.md")])
+
+    def test_the_framework_tools_fallback_refuses_to_regenerate(self) -> None:
+        worktree = Path(tempfile.mkdtemp())
+        self.addCleanup(lambda: shutil.rmtree(worktree, ignore_errors=True))
+        calls: list[list[str]] = []
+
+        def run(args: list[str]) -> subprocess.CompletedProcess:
+            calls.append(args)
+            return done()
+
+        self.assertFalse(sdp_sync._regenerate_shared_indexes(run, ROOT, worktree))
+        self.assertEqual(calls, [])
 
     def test_retarget_writes_the_worktree_copy_and_leaves_this_repo_alone(self) -> None:
         original = (ROOT / "AI_INDEX.md").read_bytes()

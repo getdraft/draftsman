@@ -4,7 +4,8 @@
 # succeeds, and passes the head SHA so a newer push cannot be merged on the previous check.
 # It is a separate workflow so the receiver's draft-sdp-sync concurrency group is not held while CI runs.
 # The workflows: name must be the name: of the workflow that reports the required validate check.
-# On this framework repository that workflow is "Validate Catalog". Change the list if yours has another name.
+# On this framework repository that workflow is "Validate Catalog". Change that list and VALIDATE_WORKFLOW
+# below together if yours has another name. The receiver's publish step uses the same name when it cancels runs.
 # Copy this file to .github/workflows/ on the central repository's default branch. It runs only from there.
 # Repository variable DRAFT_SYNC_AUTO_MERGE=true and both receiver App secrets are required; otherwise it no-ops.
 # The merge API requires Contents: write on an App token, in addition to Pull requests: write.
@@ -106,6 +107,8 @@ jobs:
           AUTO_MERGE: ${{ vars.DRAFT_SYNC_AUTO_MERGE }}
           PUSHER: ${{ github.event.workflow_run.actor.login }}
           APP_SLUG: ${{ steps.receiver_token.outputs.app-slug }}
+          # Same name as workflows: above. Change both together if the validation workflow was renamed.
+          VALIDATE_WORKFLOW: Validate Catalog
         run: |
           python3 .draft/framework/tools/sdp_sync.py merge \
             --workspace . \
@@ -115,4 +118,5 @@ jobs:
             --head "$HEAD_BRANCH" \
             --pusher "$PUSHER" \
             --app-slug "$APP_SLUG" \
-            --auto-merge "${AUTO_MERGE:-false}"
+            --auto-merge "${AUTO_MERGE:-false}" \
+            --validate-workflow "${VALIDATE_WORKFLOW:-Validate Catalog}"

@@ -1,3 +1,28 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No schema, validation, or catalog-contract change. `update-branch` now sends `update_method=merge`. A sync pull request that the merge skips because of its author, or because the shared index files are not a fresh generation, gets one comment saying that head was not auto-merged and must not be merged by hand without a new sync. Later runs do not repeat the comment. Cancel looks for the workflow named by `--validate-workflow` or `DRAFT_VALIDATE_WORKFLOW`, default `Validate Catalog`, and also cancels runs in `action_required`.
+
+### Added
+
+- `sdp_sync.py publish` and `sdp_sync.py merge` take `--validate-workflow`. When the flag is omitted, `DRAFT_VALIDATE_WORKFLOW` is used, and otherwise the name is `Validate Catalog`. The receiver publish step and **DRAFT Sync Pull Request Merge** both pass `VALIDATE_WORKFLOW`, which must stay the same string as the merge workflow's `workflows:` list.
+
+### Changed
+
+- A publish mismatch says the pull request stayed open only when `gh pr close` fails. A failed comment on a pull request that did close is reported as closed.
+- Cancelling validation runs includes status `action_required`.
+- An author mismatch and an index check that skips the merge each leave the pull request comment described above.
+- `update-branch` is called with `update_method=merge`.
+
+### Fixed
+
+- Comparing shared index files fails closed unless the trusted generators write exactly `docs/assets/draft-indexes.json` and `.draft/AI_INDEX.md`. The `framework/tools` copy of `generate_ai_index.py` writes `AI_INDEX.md` beside the framework, so that fallback no longer makes a blended `.draft/AI_INDEX.md` look clean.
+
+### Migration Notes
+
+- Copy the updated receiver and merge workflow templates onto the central repository. If the validation workflow is not named `Validate Catalog`, set `workflows:` and `VALIDATE_WORKFLOW` in `drafting-table-sync-merge.yml` to that name, and set `VALIDATE_WORKFLOW` on the receiver's publish step to the same name. No new GitHub App permission is required.
+
 ## 1.22.2 - 2026-11-25
 
 ### Compatibility Impact
