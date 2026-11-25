@@ -31,7 +31,7 @@ All of the logic lives in one tested tool, `framework/tools/sdp_sync.py`. The tw
 2. `sdp_sync.py pack` collects `.draft/sdp.yaml` and every YAML file under `.draft/catalog/`, checks them, and attaches a GitHub Actions OIDC token addressed to the central workspace.
 3. The workflow sends the payload to the central repository as a `repository_dispatch` event (`sdp_updated`), using a short-lived GitHub App token.
 4. In `drafting-table`, **DRAFT Decentralized SDP Receiver** (`templates/github/drafting-table-receiver.yml.tmpl`) runs `sdp_sync.py receive`, which verifies the token and the payload and stores the files in the product's cache folder.
-5. The receiver runs `validate.py`, regenerates the indexes, and `sdp_sync.py publish` opens or updates the product's pull request.
+5. The receiver runs `validate.py`, regenerates the indexes, and `sdp_sync.py publish` opens or updates the product's pull request. By default that uses `GITHUB_TOKEN`. When the central repository has set the receiver App secrets, the checkout, the force-push, and `GH_TOKEN` use that App instead ([Fully automatic merge](#fully-automatic-merge)).
 6. `sdp_sync.py report` records the outcome. Back in the product repository, `sdp_sync.py await-result` waits for that outcome and fails the product's run with the receiver's message if the sync was rejected or did not validate.
 
 No step puts a payload value into shell text: values reach scripts only through environment variables and files, and template tests enforce it.
@@ -41,16 +41,18 @@ No step puts a payload value into shell text: values reach scripts only through 
 ### 1. Central workspace (`drafting-table`)
 
 1. Copy `templates/github/drafting-table-receiver.yml.tmpl` to `.github/workflows/draft-sdp-receiver.yml`. The workspace must have the framework vendored at `.draft/framework/` (the receiver runs the tools from there).
-2. In **Settings → Actions → General**, enable **Allow GitHub Actions to create and approve pull requests**. Without it, the publish step fails and the product run reports the failure.
-3. Optional: to let syncs that only touch a product's cache merge themselves, enable **Allow auto-merge** (Settings → General) and set the repository variable `DRAFT_SYNC_AUTO_MERGE` to `true`. See [Pull requests and required checks](#pull-requests-and-required-checks) first.
+2. In **Settings → Actions → General**, enable **Allow GitHub Actions to create and approve pull requests**. Without it, a publish that uses `GITHUB_TOKEN` fails and the product run reports the failure. The receiver App path uses the App's own pull-request permission; leave the setting on so the `GITHUB_TOKEN` path still works.
+3. Optional: to let a sync that only touches a product's cache merge itself, enable **Allow auto-merge** (Settings → General) and set the repository variable `DRAFT_SYNC_AUTO_MERGE` to `true`. A required status check still has to run on the pull request. With only `GITHUB_TOKEN` it does not; see [Pull requests and required checks](#pull-requests-and-required-checks). To merge with no human review once that check is green, follow [Fully automatic merge](#fully-automatic-merge).
 
-### 2. GitHub App
+### 2. Dispatch GitHub App
 
-Create (or reuse) one GitHub App for DRAFT sync:
+Create (or reuse) one GitHub App for product repositories to send syncs. This is the dispatch App. Fully automatic merge uses a different App, and this one must not be a ruleset bypass actor.
 
 * **Repository permissions:** *Contents: Read and write*. Nothing else. Contents write is what `repository_dispatch` requires; the same access lets the product run read its result from the central repository.
 * **Install it on the central repository only.** It needs no access to any product repository.
 * In each product repository (or once at the organization level), store the App's ID as the secret `DRAFT_APP_ID`, its private key as `DRAFT_APP_PRIVATE_KEY`, and the central repository's name (without the owner) as `DRAFT_CENTRAL_REPO_NAME`. The central repository must have the same owner as the product repository.
+
+Those secrets are often organization secrets, visible to many repositories. That is appropriate for dispatch. Do not let this App bypass review on the central repository: a product repository that can read the secrets could then merge into the drafting table without a reviewer. See [Fully automatic merge](#fully-automatic-merge).
 
 ### 3. Product registration
 
@@ -114,9 +116,10 @@ serviceGroups:
 
 | Credential | Where | Permissions | Used for |
 | --- | --- | --- | --- |
-| GitHub App installation token | Product run | Contents: read and write, central repository only, about 60 minutes | Sending the `repository_dispatch` event; reading the result file |
+| Dispatch App installation token | Product run. Secrets `DRAFT_APP_ID` and `DRAFT_APP_PRIVATE_KEY`, often organization secrets | Contents: read and write, central repository only, about 60 minutes. No other permission | Sending the `repository_dispatch` event; reading the result file |
 | GitHub Actions OIDC token | Product run (`id-token: write`) | None: it is a signed statement of who is sending | Proving the sync comes from the registered repository's default branch |
-| `GITHUB_TOKEN` | Central receiver run | `contents: write`, `pull-requests: write` | Pushing the `draft-sync/<product>` branch, opening its pull request, writing the result file |
+| `GITHUB_TOKEN` | Central receiver run, when `DRAFT_RECEIVER_APP_ID` and `DRAFT_RECEIVER_APP_PRIVATE_KEY` are not both set | `contents: write`, `pull-requests: write` | Pushing the `draft-sync/<product>` branch, opening its pull request, writing the result file. Events it causes do not start other workflows |
+| Receiver App installation token | Central receiver run only. Repository secrets `DRAFT_RECEIVER_APP_ID` and `DRAFT_RECEIVER_APP_PRIVATE_KEY` on the central repository, not on product repositories | Contents: Read and write, Pull requests: Read and write, this repository only, about 60 minutes | The same publish and report calls, including the `git push`. Events it causes do start workflows, so a required status check can run |
 
 **OIDC audience.** The sender asks for a token with audience `draft-sdp-sync:<central owner>/<central name>` (lowercase), and the receiver accepts only that audience, so a token minted for one central workspace cannot be used against another. The receiver verifies the token's RS256 signature against GitHub's published keys (`https://token.actions.githubusercontent.com/.well-known/jwks`) using the Python standard library, and checks the issuer, the audience, the expiry (60 seconds of clock skew allowed), that the token's `repository` is the payload's registered repository, that its `ref` is `refs/heads/<defaultBranch>`, and that its `ref` and `sha` match the payload's. When the registration sets `repository.id` or `repository.ownerId`, the token's `repository_id` or `repository_owner_id` must be that same number (an integer or a decimal digit string). The receiver run needs outbound HTTPS to `token.actions.githubusercontent.com` (GitHub-hosted runners have it).
 
@@ -171,10 +174,53 @@ With `DRAFT_SYNC_AUTO_MERGE=true`, `publish` requests squash auto-merge **only**
 
 Receiver runs are serialized (`concurrency: draft-sdp-sync`), so two syncs never race on the indexes or a pull request.
 
-**Required status checks do not run on these pull requests.** The receiver opens them with `GITHUB_TOKEN`, and GitHub does not start other workflows for events caused by `GITHUB_TOKEN`. If the default branch requires status checks, a sync pull request waits for checks that never start, and auto-merge never completes. Choose one:
+**Required status checks do not run on these pull requests** when the receiver pushes and opens them with `GITHUB_TOKEN`. GitHub does not start other workflows for events caused by `GITHUB_TOKEN`. That includes the `pull_request` `synchronize` event from a later force-push: `sdp_sync.py publish` runs `git push --force` with the credentials `actions/checkout` saved, not with `GH_TOKEN`, so a second sync authenticated as `GITHUB_TOKEN` does not rerun a required check on the new head. If the default branch requires status checks, the pull request waits for checks that never start, and auto-merge never completes. To keep the required check and still merge without a person, use a [receiver App](#fully-automatic-merge). With only `GITHUB_TOKEN`, choose one:
 
 * Don't require status checks on the central default branch, and rely on the receiver's own validation, which already ran on exactly this content before the pull request was opened (a required review still applies); or
 * Keep the checks required and have a person start them on each sync pull request (closing and reopening it, or pushing a commit to its branch, starts `pull_request` workflows), then merge; auto-merge is then not useful.
+
+## Fully Automatic Merge
+
+Some organizations want a sync pull request to merge once the receiver has accepted it and the drafting table's required status check is green, with no human approval. That is opt-in. It needs a second GitHub App, two repository rulesets, **Allow auto-merge**, and `DRAFT_SYNC_AUTO_MERGE=true`. Leave the receiver App secrets unset and the workflow keeps today's `GITHUB_TOKEN` behavior.
+
+Product repositories change nothing. They keep the dispatch App (`DRAFT_APP_ID`, `DRAFT_APP_PRIVATE_KEY`, Contents: Read and write on the central repository only).
+
+### Why a second App
+
+The dispatch App's credentials live in product repositories, often as organization secrets that many repositories can read. A ruleset bypass actor skips every rule in that ruleset. If the dispatch App were allowed to bypass review, any repository that can read those secrets could mint a token and merge an unreviewed pull request into the drafting table. The receiver App is a different App. Its secrets stay on the central repository.
+
+Anyone with the receiver App secrets can open and merge confined sync pull requests: the workflow requests auto-merge only for a change inside that product's cache folder, and the App is the identity that bypasses review. The bypass is on the App, not on a path. A person who uses the token outside the workflow can also merge any other pull request that passes the required status checks. Store `DRAFT_RECEIVER_APP_ID` and `DRAFT_RECEIVER_APP_PRIVATE_KEY` as repository secrets of the central repository, not as organization secrets product repositories can read, and limit who can administer that repository.
+
+### Receiver App
+
+Create a GitHub App used only by the central receiver:
+
+* **Repository permissions:** *Contents: Read and write* and *Pull requests: Read and write*. Contents is what the force-push and the result-file write need. Pull requests is what opening, editing, and auto-merging the sync pull request need.
+* **Install it on the central repository only.**
+* Store the App ID as the repository secret `DRAFT_RECEIVER_APP_ID` and the private key (the whole PEM) as `DRAFT_RECEIVER_APP_PRIVATE_KEY`. Set both, or neither. If only one is set, the receiver run fails instead of falling back in silence.
+
+Copy the current `templates/github/drafting-table-receiver.yml.tmpl` over `.github/workflows/draft-sdp-receiver.yml`. When both secrets are set, before it stores the payload, the workflow:
+
+1. Mints an installation token with `actions/create-github-app-token`, scoped to this repository, with contents write and pull-requests write. The token step runs before checkout.
+2. Passes that token to `actions/checkout` as `token:` and leaves credential persistence on. `sdp_sync.py publish` force-pushes with `git push --force origin HEAD:refs/heads/draft-sync/<product>`, and git uses the credentials checkout saved. A `GITHUB_TOKEN` push does not trigger `pull_request` `synchronize`, so on the second and later syncs the required check would not rerun and auto-merge would stall.
+3. Passes the same token as `GH_TOKEN` to `sdp_sync.py publish` and `sdp_sync.py report`. `gh` uses it to open or update the pull request, request auto-merge, and write the result file on `draft-sync-results`.
+
+When the secrets are absent, checkout's `token:` and both `GH_TOKEN` values are `github.token`, which is today's behavior.
+
+### Two rulesets
+
+A bypass actor skips every rule in its ruleset, including a required status check. The check and the review bypass have to be different rulesets, or the App would skip CI as well as review. Both rulesets target the default branch and are enforced, not evaluate-only.
+
+* **Ruleset A** requires the `validate` status check (the check name the drafting table's validation workflow reports on `pull_request`). Bypass list: empty. Do not add the receiver App. If you do, the App skips the check and auto-merge no longer waits for it.
+* **Ruleset B** requires a pull request before merging, with at least one approval. Bypass list: the receiver App only. The App can merge without an approval. Everyone else still needs one. `github-actions[bot]` is not a reliable bypass actor; use the App.
+
+Also enable **Allow auto-merge** (Settings → General → Pull Requests) and set the repository variable `DRAFT_SYNC_AUTO_MERGE` to `true`.
+
+Auto-merge still fires only when every changed file is inside that product's cache folder (or its old flat file), apart from the regenerated `docs/assets/draft-indexes.json` and `.draft/AI_INDEX.md`. `publish` already enforces that. A change outside the cache folder stays open for a human. The first sync opens the pull request as the App, which starts the validation workflow. Each later sync force-pushes as the App, which sends `pull_request` `synchronize`, so `validate` runs again on the new head. Auto-merge completes after that check is green and the review bypass applies.
+
+### Registration is the main gate
+
+Once a confined sync merges with no reviewer, the registration match is the main gate on who may write the cache. Pin `repository.id` on every ProductRegistration before enabling that merge, and set `repository.ownerId` when you want the owner pin as well. GitHub never reuses `repository.id`, and it survives a rename. A registration that omits it still matches by repository name: a deleted repository recreated with the same `owner/name` would pass the identity check, and the accepted result only warns. Look the ids up with `gh api repos/OWNER/NAME --jq .id` and `--jq .owner.id`. Do not copy them from a sync warning.
 
 ## How Failures Reach the Product Team
 
@@ -184,7 +230,7 @@ The receiver's last step, `sdp_sync.py report`, runs even when an earlier step f
 * **rejected:** `receive` refused the payload; the reason is included;
 * **failed:** the workspace did not validate with the sync (the failures are listed, the product's own files first), the pull request could not be opened, or the run stopped early.
 
-Every outcome is written to the central run's job summary. When the sender's identity was verified, it is also saved as `results/<owner>__<name>/<correlationId>.json` on the `draft-sync-results` branch of the central repository (created from the default branch on first use). A pinned `repository.id` or `repository.ownerId` is checked only after that verification, so a mismatch is one of these results and the product run fails with the reason. In the product repository, **Await Central Result** polls exactly that file with the App token, then shows the outcome in its job summary. If the outcome is not *accepted*, it fails the product run with an error annotation carrying the message, the failures, and a link to the central run. An accepted sync whose registration has no `repository.id` stays accepted; the message includes the warning, and the product run does not fail for that warning.
+Every outcome is written to the central run's job summary. When the sender's identity was verified, it is also saved as `results/<owner>__<name>/<correlationId>.json` on the `draft-sync-results` branch of the central repository (created from the default branch on first use). A pinned `repository.id` or `repository.ownerId` is checked only after that verification, so a mismatch is one of these results and the product run fails with the reason. In the product repository, **Await Central Result** polls exactly that file with the dispatch App token, then shows the outcome in its job summary. If the outcome is not *accepted*, it fails the product run with an error annotation carrying the message, the failures, and a link to the central run. An accepted sync whose registration has no `repository.id` stays accepted; the message includes the warning, and the product run does not fail for that warning.
 
 Payloads rejected *before* the identity check (an old template, a malformed payload, a token that does not verify) are shown only in the central run's summary: an unverified sender must not be able to write a result where another product will read it. The product run then times out with a hint to check the central repository's Actions.
 
@@ -196,8 +242,8 @@ Deleting `.draft/sdp.yaml` from the product repository sends a `delete`. The rec
 
 ## Security Notes and Known Limits
 
-* **A live OIDC token can be resent within its lifetime.** GitHub's OIDC tokens cannot carry a hash of the payload, so the receiver binds a token to its repository, ref and commit (`sha`) only. Anyone who obtains a live token could, during its few-minute lifetime, send different files for that same commit. The token travels only inside the central repository's `repository_dispatch` event, which is visible to people and workflows with access to that repository (the event payload is available to its workflow runs); it is never written to the cache, the result file or the logs. Exploiting it therefore needs existing access to the central repository. Mitigations: keep write and Actions access to the central repository tight, keep the App installed only there, and rely on the pull-request flow so every change reaches a reviewer (do not enable auto-merge if that review is your control).
-* **Pin `repository.id`.** GitHub never reuses `repository_id`, and it survives a rename. Once a registration sets it, a deleted or transferred repository that is recreated with the same `owner/name` fails the identity check. Until a Draft Admin sets it, the receiver still matches by repository name and records a warning on the accepted result. `repository.ownerId` is a second pin, checked only when set; it does not stop a new repository in the same organization. Remove the registration when a product repository is retired. The receiver does not copy the token's id into the catalog.
+* **A live OIDC token can be resent within its lifetime.** GitHub's OIDC tokens cannot carry a hash of the payload, so the receiver binds a token to its repository, ref and commit (`sha`) only. Anyone who obtains a live token could, during its few-minute lifetime, send different files for that same commit. The token travels only inside the central repository's `repository_dispatch` event, which is visible to people and workflows with access to that repository (the event payload is available to its workflow runs); it is never written to the cache, the result file or the logs. Exploiting it therefore needs existing access to the central repository. Mitigations: keep write and Actions access to the central repository tight, install the dispatch App only there, and rely on the pull-request flow so every change reaches a reviewer (do not enable auto-merge if that review is your control). [Fully automatic merge](#fully-automatic-merge) drops that review for a confined cache update. Anyone with the receiver App secrets can open and merge those pull requests.
+* **Pin `repository.id`.** GitHub never reuses `repository_id`, and it survives a rename. Once a registration sets it, a deleted or transferred repository that is recreated with the same `owner/name` fails the identity check. Until a Draft Admin sets it, the receiver still matches by repository name and records a warning on the accepted result. `repository.ownerId` is a second pin, checked only when set; it does not stop a new repository in the same organization. Remove the registration when a product repository is retired. The receiver does not copy the token's id into the catalog. Pin `repository.id` on every registration before enabling an unattended merge: that pin is the main gate.
 * **Validation failures may include problems already in the central workspace.** The product's own files are listed first; anything else is for a Draft Admin.
 
 ## Troubleshooting
@@ -221,7 +267,8 @@ Deleting `.draft/sdp.yaml` from the product repository sends a `delete`. The rec
 | `the central workspace does not validate with this sync` | Fix the listed failures in the product repository and push again. |
 | `opening its pull request failed` | Enable "Allow GitHub Actions to create and approve pull requests" in the central repository. |
 | `no result from the central receiver after … seconds` | Check the central repository's Actions: the run may be queued, or the payload was rejected before the identity check (see its summary). Raise `DRAFT_SYNC_AWAIT_MINUTES` if syncs queue. |
-| `reading the central result failed with HTTP 403` | The App lacks Contents access to the central repository, or is not installed there. |
+| `reading the central result failed with HTTP 403` | The dispatch App lacks Contents access to the central repository, or is not installed there. |
+| `Set both DRAFT_RECEIVER_APP_ID and DRAFT_RECEIVER_APP_PRIVATE_KEY, or neither` | The central repository has only one of the receiver App secrets. Set both, or remove the one that is set. The App also needs Contents: Read and write and Pull requests: Read and write, installed only on the central repository. |
 | `the payload is … bytes; repository_dispatch accepts at most 65000` | Shorten text in `.draft/` files, or split the product. |
 
 ## Upgrading from the Original Sync

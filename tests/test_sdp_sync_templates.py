@@ -103,7 +103,8 @@ class WiringTests(unittest.TestCase):
         self.assertEqual(names[-2:], ["Publish Sync Pull Request", "Report Sync Result"])
         self.assertLess(names.index("Regenerate Machine Indexes & AI Map"), names.index("Publish Sync Pull Request"))
         publish = step(RECEIVER, "Publish Sync Pull Request")
-        self.assertEqual(publish["env"], {"GH_TOKEN": "${{ github.token }}", "BASE_BRANCH": "${{ github.event.repository.default_branch }}",
+        token = "${{ steps.receiver_token.outputs.token || github.token }}"
+        self.assertEqual(publish["env"], {"GH_TOKEN": token, "BASE_BRANCH": "${{ github.event.repository.default_branch }}",
                                           "AUTO_MERGE": "${{ vars.DRAFT_SYNC_AUTO_MERGE }}"})
         self.assertIn("sdp_sync.py publish", publish["run"])
         self.assertIn('--result "$RUNNER_TEMP/sdp-sync-result.json"', publish["run"])
@@ -114,6 +115,83 @@ class WiringTests(unittest.TestCase):
         self.assertIn('sdp_sync.py receive', receive["run"])
         self.assertIn('--payload "$GITHUB_EVENT_PATH"', receive["run"])
         self.assertLess(names.index("Store Decentralized SDP Payload"), names.index("Validate Workspace Architecture"))
+
+
+# Absent receiver secrets must keep github.token. An empty output from the skipped mint step is falsy.
+RECEIVER_TOKEN = "${{ steps.receiver_token.outputs.token || github.token }}"
+
+
+class ReceiverAppTokenTests(unittest.TestCase):
+    """Opt-in receiver App: mint before checkout, and use that token for the force-push and for gh."""
+
+    def test_the_token_step_is_conditional_and_runs_before_checkout(self) -> None:
+        names = [s.get("name") for s in steps(RECEIVER)]
+        self.assertLess(names.index("Detect Receiver App Credentials"), names.index("Mint Receiver App Token"))
+        self.assertLess(names.index("Mint Receiver App Token"), names.index("Checkout Workspace"))
+        detect = step(RECEIVER, "Detect Receiver App Credentials")
+        self.assertEqual(detect["id"], "receiver_app")
+        self.assertEqual(detect["env"], {
+            "RECEIVER_APP_ID": "${{ secrets.DRAFT_RECEIVER_APP_ID }}",
+            "RECEIVER_APP_PRIVATE_KEY": "${{ secrets.DRAFT_RECEIVER_APP_PRIVATE_KEY }}",
+        })
+        self.assertNotIn("${{", detect["run"])
+        token = step(RECEIVER, "Mint Receiver App Token")
+        self.assertEqual(token["id"], "receiver_token")
+        self.assertEqual(token["if"], "steps.receiver_app.outputs.present == 'true'")
+        self.assertEqual(token["uses"], "actions/create-github-app-token@v1")
+        self.assertEqual(token["with"], {
+            "app-id": "${{ secrets.DRAFT_RECEIVER_APP_ID }}",
+            "private-key": "${{ secrets.DRAFT_RECEIVER_APP_PRIVATE_KEY }}",
+            "repositories": "${{ github.event.repository.name }}",
+            "permission-contents": "write",
+            "permission-pull-requests": "write",
+        })
+
+    def test_checkout_publish_and_report_share_the_app_token_with_a_github_token_fallback(self) -> None:
+        checkout = step(RECEIVER, "Checkout Workspace")
+        self.assertEqual(checkout["with"]["token"], RECEIVER_TOKEN)
+        self.assertIs(checkout["with"]["persist-credentials"], True)
+        self.assertEqual(step(RECEIVER, "Publish Sync Pull Request")["env"]["GH_TOKEN"], RECEIVER_TOKEN)
+        self.assertEqual(step(RECEIVER, "Report Sync Result")["env"]["GH_TOKEN"], RECEIVER_TOKEN)
+        self.assertIn("github.token", RECEIVER_TOKEN)
+        receiver = yaml.safe_load(RECEIVER.read_text(encoding="utf-8"))
+        self.assertEqual(receiver["permissions"], {"contents": "write", "pull-requests": "write"})
+
+    def test_product_repos_keep_the_dispatch_app(self) -> None:
+        sender = SENDER.read_text(encoding="utf-8")
+        self.assertNotIn("DRAFT_RECEIVER_APP_ID", sender)
+        self.assertNotIn("DRAFT_RECEIVER_APP_PRIVATE_KEY", sender)
+        token = step(SENDER, "Generate Ephemeral App Token for Central Workspace")
+        self.assertEqual(token["with"]["app-id"], "${{ secrets.DRAFT_APP_ID }}")
+        self.assertEqual(token["with"]["private-key"], "${{ secrets.DRAFT_APP_PRIVATE_KEY }}")
+
+    def test_detect_script_reports_both_modes_and_does_not_print_the_key(self) -> None:
+        script = step(RECEIVER, "Detect Receiver App Credentials")["run"]
+        key = "receiver-key-should-not-appear"
+        cases = (
+            ({}, "present=false\n", 0),
+            ({"RECEIVER_APP_ID": "12345", "RECEIVER_APP_PRIVATE_KEY": key}, "present=true\n", 0),
+            ({"RECEIVER_APP_ID": "12345"}, None, 1),
+            ({"RECEIVER_APP_PRIVATE_KEY": key}, None, 1),
+        )
+        for env, output, code in cases:
+            with self.subTest(env=sorted(env)):
+                out_file = self._output_file()
+                proc = bash(script, Path("."), {"GITHUB_OUTPUT": str(out_file), **env})
+                self.assertEqual(proc.returncode, code, proc.stdout + proc.stderr)
+                self.assertNotIn(key, proc.stdout)
+                self.assertNotIn(key, proc.stderr)
+                if output is None:
+                    self.assertIn("Set both DRAFT_RECEIVER_APP_ID and DRAFT_RECEIVER_APP_PRIVATE_KEY", proc.stdout)
+                    self.assertEqual(out_file.read_text(encoding="utf-8"), "")
+                else:
+                    self.assertEqual(out_file.read_text(encoding="utf-8"), output)
+
+    def _output_file(self) -> Path:
+        tmp = tempfile.NamedTemporaryFile(delete=False)
+        self.addCleanup(lambda: Path(tmp.name).unlink(missing_ok=True))
+        tmp.close()
+        return Path(tmp.name)
 
 
 def bash(script: str, cwd: Path, env: dict[str, str]) -> subprocess.CompletedProcess:

@@ -9,6 +9,11 @@
 # DRAFT_SYNC_AUTO_MERGE=true requests auto-merge when a change stays inside that product's cache folder.
 # Every run ends with a report: a job summary, and (once the sender's identity is verified) a result file on the
 # draft-sync-results branch that the product repository's sync run waits for and fails on.
+# Optional fully automatic merge: repository secrets DRAFT_RECEIVER_APP_ID and DRAFT_RECEIVER_APP_PRIVATE_KEY
+# (a second GitHub App, installed only on this repository). When both are set, the workflow mints an
+# installation token before checkout, checks out with it, and passes it as GH_TOKEN to publish and report.
+# The force-push then authenticates as the App, so pull_request workflows run on the first sync and again after
+# each later force-push. When the secrets are absent, checkout and GH_TOKEN stay on GITHUB_TOKEN.
 name: DRAFT Decentralized SDP Receiver
 
 on:
@@ -30,8 +35,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Secrets are not available in an if: condition. This step prints only present=true or present=false.
+      # The private key stays on this step; it is not a job-level environment variable.
+      - name: Detect Receiver App Credentials
+        id: receiver_app
+        env:
+          RECEIVER_APP_ID: ${{ secrets.DRAFT_RECEIVER_APP_ID }}
+          RECEIVER_APP_PRIVATE_KEY: ${{ secrets.DRAFT_RECEIVER_APP_PRIVATE_KEY }}
+        run: |
+          if [ -n "$RECEIVER_APP_ID" ] && [ -n "$RECEIVER_APP_PRIVATE_KEY" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          elif [ -z "$RECEIVER_APP_ID" ] && [ -z "$RECEIVER_APP_PRIVATE_KEY" ]; then
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error title=DRAFT receiver App::Set both DRAFT_RECEIVER_APP_ID and DRAFT_RECEIVER_APP_PRIVATE_KEY, or neither. One of them is missing."
+            exit 1
+          fi
+
+      - name: Mint Receiver App Token
+        id: receiver_token
+        if: steps.receiver_app.outputs.present == 'true'
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.DRAFT_RECEIVER_APP_ID }}
+          private-key: ${{ secrets.DRAFT_RECEIVER_APP_PRIVATE_KEY }}
+          # This workflow runs in the central repository. Scope the installation token to it.
+          repositories: "${{ github.event.repository.name }}"
+          permission-contents: write
+          permission-pull-requests: write
+
       - name: Checkout Workspace
         uses: actions/checkout@v4
+        with:
+          # sdp_sync.py publish force-pushes with these credentials, not with GH_TOKEN.
+          # A GITHUB_TOKEN push does not trigger pull_request synchronize, so a later sync
+          # would not rerun a required check. An empty skipped-step output selects github.token.
+          token: ${{ steps.receiver_token.outputs.token || github.token }}
+          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -65,7 +105,7 @@ jobs:
 
       - name: Publish Sync Pull Request
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.receiver_token.outputs.token || github.token }}
           BASE_BRANCH: ${{ github.event.repository.default_branch }}
           AUTO_MERGE: ${{ vars.DRAFT_SYNC_AUTO_MERGE }}
         run: |
@@ -78,7 +118,7 @@ jobs:
       - name: Report Sync Result
         if: always()
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.receiver_token.outputs.token || github.token }}
           JOB_STATUS: ${{ job.status }}
           BASE_BRANCH: ${{ github.event.repository.default_branch }}
         run: |

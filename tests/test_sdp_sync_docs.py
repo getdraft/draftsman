@@ -27,6 +27,7 @@ class SetupGuideTests(unittest.TestCase):
     def test_every_secret_and_variable_the_templates_read_is_documented(self) -> None:
         names = template_names(r"(?:secrets|vars)\.([A-Z_]+)")
         self.assertEqual(names, {"DRAFT_APP_ID", "DRAFT_APP_PRIVATE_KEY", "DRAFT_CENTRAL_REPO_NAME", "DRAFT_FRAMEWORK_REF",
+                                 "DRAFT_RECEIVER_APP_ID", "DRAFT_RECEIVER_APP_PRIVATE_KEY",
                                  "DRAFT_SYNC_AUTO_MERGE", "DRAFT_SYNC_AWAIT_MINUTES"})
         for name in names:
             self.assertIn(f"`{name}`", GUIDE)
@@ -52,6 +53,24 @@ class SetupGuideTests(unittest.TestCase):
         self.assertIn("repository_id", GUIDE)
         self.assertIn("A renamed repository still syncs", GUIDE)
         self.assertNotIn("tracked as a follow-up (getdraft/draftsman#455)", GUIDE)
+
+    def test_fully_automatic_merge_uses_a_second_app_and_two_rulesets(self) -> None:
+        self.assertIn("## Fully Automatic Merge", GUIDE)
+        self.assertIn("`DRAFT_RECEIVER_APP_ID`", GUIDE)
+        self.assertIn("`DRAFT_RECEIVER_APP_PRIVATE_KEY`", GUIDE)
+        self.assertIn("**Ruleset A**", GUIDE)
+        self.assertIn("**Ruleset B**", GUIDE)
+        self.assertIn("skips every rule", GUIDE)
+        self.assertIn("Pull requests: Read and write", GUIDE)
+        self.assertIn("the main gate", GUIDE)
+        checks = GUIDE.split("## Pull Requests and Required Checks", 1)[1].split("## Fully Automatic Merge", 1)[0]
+        self.assertIn("Required status checks do not run on these pull requests", checks)
+        self.assertIn("(#fully-automatic-merge)", checks)
+        self.assertIn("synchronize", checks)
+        dispatch = GUIDE.split("### 2. Dispatch GitHub App", 1)[1].split("### 3.", 1)[0]
+        self.assertIn("*Contents: Read and write*. Nothing else.", dispatch)
+        self.assertNotIn("Pull requests", dispatch)
+        self.assertIn("organization secrets", dispatch)
 
     def test_the_upgrade_from_flat_files_is_described(self) -> None:
         self.assertIn("## Upgrading from the Original Sync", GUIDE)

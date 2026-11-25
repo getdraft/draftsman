@@ -1,3 +1,26 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No schema, validation, or catalog-contract change. A central receiver that does not set `DRAFT_RECEIVER_APP_ID` and `DRAFT_RECEIVER_APP_PRIVATE_KEY` still publishes and reports with `github.token`. Product repositories and the dispatch App (`DRAFT_APP_ID`, `DRAFT_APP_PRIVATE_KEY`, Contents read and write on the central repository only) are unchanged.
+
+### Added
+
+- Opt-in receiver App in `templates/github/drafting-table-receiver.yml.tmpl`. When both repository secrets are set, the workflow mints an `actions/create-github-app-token` installation token scoped to the central repository before checkout, checks out with that token (`persist-credentials` stays on), and passes it as `GH_TOKEN` to `sdp_sync.py publish` and `report`. `git push --force` then authenticates as the App, so the validation workflow runs on the sync pull request without waiting under **Approve workflows to run**. One secret without the other fails the run.
+- `framework/docs/decentralized-sdp-setup.md` section **Fully automatic merge**: a second App installed only on the central repository (Contents: Read and write, Pull requests: Read and write), two rulesets so the review bypass does not skip the `validate` check, and the existing rule that a merge is requested only for a change confined to the product's cache folder. The dispatch App must not be the bypass actor. Pin `repository.id` (and optionally `repository.ownerId`) on every registration before enabling an unattended merge; that pin is the main gate.
+
+### Changed
+
+- The setup guide's Tokens and Permissions table distinguishes `GITHUB_TOKEN` from the receiver App token. The Pull Requests and Required Checks section describes `GITHUB_TOKEN` pull request runs waiting for approval, and points that case at the receiver App. The dispatch App's permissions stay Contents read and write and nothing else.
+
+### Fixed
+
+- A later sync's force-push can run the required `validate` check without an approval prompt when the receiver App token is configured. The push uses the credentials `actions/checkout` persisted. A `GITHUB_TOKEN` push's `pull_request` run is held for **Approve workflows to run** and does not go green unattended. Repositories that leave the new secrets unset keep that behavior.
+
+### Migration Notes
+
+- No action is required to keep the current receiver. Product repositories do not need new secrets. To merge confined sync pull requests without a human review, copy the updated receiver workflow, create a second GitHub App installed only on the central repository, store `DRAFT_RECEIVER_APP_ID` and `DRAFT_RECEIVER_APP_PRIVATE_KEY` as secrets of that repository only, and follow the two-ruleset setup in `framework/docs/decentralized-sdp-setup.md`. Do not grant the dispatch App a review bypass. Pin `repository.id` before turning the unattended merge on.
+
 ## 1.22.0 - 2026-11-25
 
 ### Compatibility Impact
