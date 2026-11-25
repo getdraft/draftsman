@@ -76,7 +76,7 @@ class WiringTests(unittest.TestCase):
 
     def test_the_app_token_step_is_unchanged(self) -> None:
         token = step(SENDER, "Generate Ephemeral App Token for Central Workspace")
-        self.assertEqual(token["uses"], "actions/create-github-app-token@v1")
+        self.assertEqual(token["uses"], APP_TOKEN_ACTION)
         self.assertEqual(token["with"]["repositories"], "${{ secrets.DRAFT_CENTRAL_REPO_NAME }}")
 
     def test_sender_runs_when_the_sdp_or_the_product_catalog_changes(self) -> None:
@@ -124,6 +124,9 @@ class WiringTests(unittest.TestCase):
 # A successful mint uses the App token. A skipped or failed mint keeps github.token, and checkout still runs.
 RECEIVER_TOKEN = "${{ steps.receiver_token.outcome == 'success' && steps.receiver_token.outputs.token || github.token }}"
 MERGE = TEMPLATES / "drafting-table-sync-merge.yml.tmpl"
+# v1.12.0 of actions/create-github-app-token. The moving @v1 tag is not used: the step receives the App private key.
+APP_TOKEN_ACTION = "actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547"
+APP_TOKEN_VERSION = "v1.12.0"
 
 
 class ReceiverAppTokenTests(unittest.TestCase):
@@ -143,7 +146,7 @@ class ReceiverAppTokenTests(unittest.TestCase):
         token = step(RECEIVER, "Mint Receiver App Token")
         self.assertEqual(token["id"], "receiver_token")
         self.assertEqual(token["if"], "steps.receiver_app.outputs.present == 'true'")
-        self.assertEqual(token["uses"], "actions/create-github-app-token@v1")
+        self.assertEqual(token["uses"], APP_TOKEN_ACTION)
         self.assertEqual(token["with"], {
             "app-id": "${{ secrets.DRAFT_RECEIVER_APP_ID }}",
             "private-key": "${{ secrets.DRAFT_RECEIVER_APP_PRIVATE_KEY }}",
@@ -151,6 +154,31 @@ class ReceiverAppTokenTests(unittest.TestCase):
             "permission-contents": "write",
             "permission-pull-requests": "write",
         })
+
+    def test_python_setup_and_pyyaml_still_run_after_a_failed_token_mint(self) -> None:
+        setup = step(RECEIVER, "Set up Python")
+        install = step(RECEIVER, "Install Dependencies")
+        self.assertEqual(setup["if"], "always()")
+        self.assertEqual(install["if"], "always()")
+        self.assertIn("pyyaml", install["run"].lower())
+        names = [s.get("name") for s in steps(RECEIVER)]
+        self.assertLess(names.index("Checkout Workspace"), names.index("Set up Python"))
+        self.assertLess(names.index("Install Dependencies"), names.index("Report Sync Result"))
+        self.assertEqual(step(RECEIVER, "Report Sync Result")["if"], "always()")
+
+    def test_the_app_token_action_is_pinned_in_the_receiver_and_the_dispatch_templates(self) -> None:
+        for path, step_name in (
+            (RECEIVER, "Mint Receiver App Token"),
+            (MERGE, "Mint Receiver App Token"),
+            (SENDER, "Generate Ephemeral App Token for Central Workspace"),
+        ):
+            with self.subTest(template=path.name):
+                self.assertEqual(step(path, step_name)["uses"], APP_TOKEN_ACTION)
+                self.assertNotIn("actions/create-github-app-token@v1\n", path.read_text(encoding="utf-8"))
+                lines = path.read_text(encoding="utf-8").splitlines()
+                uses_at = [index for index, line in enumerate(lines) if line.strip() == f"uses: {APP_TOKEN_ACTION}"]
+                self.assertEqual(len(uses_at), 1)
+                self.assertIn(APP_TOKEN_VERSION, lines[uses_at[0] - 1])
 
     def test_checkout_publish_and_report_share_the_app_token_with_a_github_token_fallback(self) -> None:
         checkout = step(RECEIVER, "Checkout Workspace")
@@ -228,7 +256,7 @@ class SyncMergeWorkflowTests(unittest.TestCase):
         self.assertEqual(step(MERGE, "Detect Receiver App Credentials")["run"], step(RECEIVER, "Detect Receiver App Credentials")["run"])
         token = step(MERGE, "Mint Receiver App Token")
         self.assertEqual(token["if"], "steps.receiver_app.outputs.present == 'true'")
-        self.assertEqual(token["uses"], "actions/create-github-app-token@v1")
+        self.assertEqual(token["uses"], APP_TOKEN_ACTION)
         self.assertEqual(token["with"]["permission-contents"], "write")
         self.assertEqual(token["with"]["permission-pull-requests"], "write")
         self.assertEqual(token["with"]["repositories"], "${{ github.event.repository.name }}")
