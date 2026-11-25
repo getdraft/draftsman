@@ -835,21 +835,27 @@ def publish(result: Mapping[str, Any], base: str, run: Runner, auto_merge: bool 
 _FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 
 
-def paths_from_name_status(text: str) -> list[str]:
-    """Every path in `git diff --name-status`, including both sides of a rename or copy."""
-    paths: list[str] = []
+def changes_from_name_status(text: str) -> list[tuple[str, str]]:
+    """`(status, path)` pairs from `git diff --name-status`, both sides of a rename or copy."""
+    changes: list[tuple[str, str]] = []
     for line in text.splitlines():
         if not line.strip():
             continue
         parts = line.split("\t")
         status = parts[0]
         if status[:1] in "RC" and len(parts) >= 3:
-            paths.extend(parts[1:3])
+            changes.append((status, parts[1]))
+            changes.append((status, parts[2]))
         elif len(parts) >= 2:
-            paths.append(parts[1])
+            changes.append((status, parts[1]))
         else:
-            paths.append(line.strip())  # unparsed output is not a cache path, so confinement fails closed
-    return sorted(set(paths))
+            changes.append(("?", line.strip()))  # unparsed output is not a cache path, so confinement fails closed
+    return changes
+
+
+def paths_from_name_status(text: str) -> list[str]:
+    """Every path in `git diff --name-status`, including both sides of a rename or copy."""
+    return sorted({path for _, path in changes_from_name_status(text)})
 
 
 def _sync_branch(head: str) -> tuple[str, str] | None:
@@ -869,21 +875,89 @@ def _sync_branch(head: str) -> tuple[str, str] | None:
     return product, repository
 
 
-def _merge_refusal(detail: str) -> bool:
-    """True when the merge API lost a race with a newer push or the pull request is already merged."""
+_APP_SLUG = re.compile(r"^[a-z0-9][a-z0-9-]{0,99}$")
+_HTTP_STATUS = re.compile(r"HTTP/\d+(?:\.\d+)?\s+(\d{3})\b")
+
+
+def app_bot_login(slug: str) -> str:
+    """The GitHub user login of an App, `<slug>[bot]`."""
+    normalized = str(slug or "").strip().lower()
+    if not _APP_SLUG.match(normalized):
+        raise SyncError("the receiver App slug is not a GitHub App slug")
+    return f"{normalized}[bot]"
+
+
+def _require_receiver_pusher(pusher: str, slug: str) -> str:
+    """The validating run's original pusher must be the receiver App. `triggering_actor` changes on re-run."""
+    bot = app_bot_login(slug)
+    if str(pusher or "").strip().lower() != bot.lower():
+        raise SyncError(f"the validated commit was pushed by {pusher or 'unknown'}, not {bot}")
+    return bot
+
+
+def merge_confined(changes: list[tuple[str, str]], product: str, repository: str) -> bool:
+    """`is_confined` for an unattended merge. The legacy flat file counts only when it is deleted.
+
+    `owner_name.yaml` is the same path for `owner/name` and for some other `owner_name` repositories
+    (`foo/bar_baz` and `foo_bar/baz`). Adding or editing that file must not count as this product's cache.
+    """
+    legacy = f"{CACHE_ROOT.as_posix()}/{repository.replace('/', '_')}.yaml"
+    paths: list[str] = []
+    for status, path in changes:
+        if path == legacy:
+            if not status.startswith("D"):
+                return False
+            continue
+        paths.append(path)
+    return is_confined(paths, product, repository)
+
+
+def _head_moved(status: int, detail: str) -> bool:
+    """True only for the merge API's HTTP 409 when the head moved. Other 'must match' errors stay failures."""
+    if status != 409:
+        return False
     text = detail.lower()
-    return "must match" in text or "head branch was modified" in text or "already been merged" in text
+    if "head branch was modified" in text:
+        return True
+    return "sha" in text and "head" in text and "must match" in text
 
 
-def merge_sync_pull_request(central: str, base: str, sha: str, head: str, run: Runner, auto_merge: bool = False) -> dict[str, Any]:
-    """Squash-merge the open same-repository sync pull request for this exact head SHA, when the diff is confined.
+def _http_status(text: str) -> int | None:
+    match = _HTTP_STATUS.search(text)
+    return int(match.group(1)) if match else None
 
-    GitHub auto-merge ignores a ruleset bypass actor, so the receiver App calls the merge API directly and passes
-    ``sha`` to refuse a head that moved after validation. A skipped outcome is not a failure.
+
+def _api(run: Runner, args: list[str]) -> tuple[int, str]:
+    """Call `gh api -i`. Returns the HTTP status and the combined output. Status 0 means the call failed without one."""
+    proc = run(["gh", "api", "-i", *args])
+    blob = f"{proc.stdout or ''}\n{proc.stderr or ''}"
+    status = _http_status(blob)
+    if proc.returncode != 0:
+        return status or 0, blob.strip()
+    return status or 200, proc.stdout or ""
+
+
+def _json_body(stdout: str) -> Any:
+    body = stdout
+    if body.lstrip().startswith("HTTP/"):
+        pieces = re.split(r"\r?\n\r?\n", body, maxsplit=1)
+        body = pieces[1] if len(pieces) > 1 else ""
+    return json.loads(body or "null")
+
+
+def merge_sync_pull_request(central: str, base: str, sha: str, head: str, run: Runner, auto_merge: bool = False,
+                            pusher: str = "", app_slug: str = "") -> dict[str, Any]:
+    """Squash-merge the receiver App's confined sync pull request at this exact head SHA.
+
+    The pusher is `workflow_run.actor` of the validating run (the account that triggered it initially).
+    `triggering_actor` is whoever started the latest attempt and changes on re-run, so it is not used.
+    GitHub auto-merge ignores a ruleset bypass actor, so this calls the merge API and passes ``sha``.
+    A pull request that is behind its base is updated instead of merged, and the next green validation merges it.
     """
     central = check_repository(central)
     if not auto_merge:
         return {"status": "skipped", "message": "DRAFT_SYNC_AUTO_MERGE is not true"}
+    bot = _require_receiver_pusher(pusher, app_slug)
     sha = str(sha).lower()
     if not _FULL_SHA.match(sha):
         raise SyncError("the head SHA is not a full git commit SHA")
@@ -900,10 +974,14 @@ def merge_sync_pull_request(central: str, base: str, sha: str, head: str, run: R
         return {"status": "skipped", "message": "the branch head moved after this validation run"}
     diff = _ok(run, ["git", "diff", "--name-status", "--find-renames",
                      f"refs/remotes/origin/{base}...refs/remotes/origin/{head}"], "git diff")
-    paths = paths_from_name_status(diff)
-    if not is_confined(paths, product, repository):
-        return {"status": "left-open", "message": "the change reaches outside the product's cache folder", "changed": paths}
-    listed = json.loads(_ok(run, ["gh", "api", f"repos/{central}/commits/{sha}/pulls"], "listing pull requests for the commit") or "[]")
+    changes = changes_from_name_status(diff)
+    if not merge_confined(changes, product, repository):
+        return {"status": "left-open", "message": "the change reaches outside the product's cache folder",
+                "changed": sorted({path for _, path in changes})}
+    status, body = _api(run, [f"repos/{central}/commits/{sha}/pulls"])
+    if status != 200:
+        raise SyncError(f"listing pull requests for the commit failed (HTTP {status})")
+    listed = _json_body(body)
     if not isinstance(listed, list):
         raise SyncError("the pull request list was not a JSON array")
     matches = []
@@ -920,16 +998,34 @@ def merge_sync_pull_request(central: str, base: str, sha: str, head: str, run: R
         return {"status": "skipped", "message": "no open same-repository pull request for this head SHA"}
     if len(matches) != 1:
         raise SyncError("more than one open pull request matches this head SHA")
+    author = str((matches[0].get("user") or {}).get("login") or "")
+    if author.lower() != bot.lower():
+        raise SyncError(f"the pull request was opened by {author or 'unknown'}, not {bot}")
     number = int(matches[0]["number"])
-    proc = run(["gh", "api", "--method", "PUT", f"repos/{central}/pulls/{number}/merge",
-                "-f", "merge_method=squash", "-f", f"sha={sha}"])
-    if proc.returncode != 0:
-        detail = (proc.stderr or proc.stdout or "").strip()
-        if _merge_refusal(detail):
-            return {"status": "skipped", "message": "the head SHA moved before merge"}
-        last = detail.splitlines()[-1] if detail else ""
-        raise SyncError(f"merge failed (exit {proc.returncode})" + (f": {last}" if last else ""))
     url = str(matches[0].get("html_url") or f"https://github.com/{central}/pull/{number}")
+    compare_status, compare_body = _api(run, [f"repos/{central}/compare/{base}...{sha}"])
+    if compare_status != 200:
+        raise SyncError(f"comparing the pull request with {base} failed (HTTP {compare_status})")
+    compare = _json_body(compare_body)
+    behind = int(compare.get("behind_by") or 0) if isinstance(compare, dict) else 0
+    if behind > 0:
+        # An App update-branch push retriggers validate. The next workflow_run's actor is still this App.
+        update_status, update_body = _api(run, ["--method", "PUT", f"repos/{central}/pulls/{number}/update-branch",
+                                                "-f", f"expected_head_sha={sha}"])
+        if update_status != 200 and _head_moved(update_status, update_body):
+            return {"status": "skipped", "message": "the head SHA moved before the branch update"}
+        if not 200 <= update_status < 300:
+            last = update_body.splitlines()[-1] if update_body else ""
+            raise SyncError(f"updating the pull request branch failed (HTTP {update_status})" + (f": {last}" if last else ""))
+        return {"status": "updated", "message": f"updated {url} onto {base}; waiting for validate on the new head",
+                "pullRequest": {"number": number, "url": url}, "sha": sha}
+    merge_status, merge_body = _api(run, ["--method", "PUT", f"repos/{central}/pulls/{number}/merge",
+                                          "-f", "merge_method=squash", "-f", f"sha={sha}"])
+    if _head_moved(merge_status, merge_body):
+        return {"status": "skipped", "message": "the head SHA moved before merge"}
+    if not 200 <= merge_status < 300:
+        last = merge_body.splitlines()[-1] if merge_body else ""
+        raise SyncError(f"merge failed (HTTP {merge_status})" + (f": {last}" if last else ""))
     return {"status": "merged", "message": f"merged {url} at {sha}", "pullRequest": {"number": number, "url": url}, "sha": sha}
 
 
@@ -1153,6 +1249,8 @@ def main(argv: list[str] | None = None) -> int:
     m.add_argument("--head", required=True, help="the pull request head branch, draft-sync/<owner>__<name>")
     m.add_argument("--auto-merge", type=str.lower, choices=("true", "false", ""), default="false",
                    help="merge only when this is true (repository variable DRAFT_SYNC_AUTO_MERGE)")
+    m.add_argument("--pusher", required=True, help="workflow_run.actor.login of the validating run (not triggering_actor)")
+    m.add_argument("--app-slug", required=True, help="receiver App slug; the pusher and the pull request author must be <slug>[bot]")
     t = sub.add_parser("report", help="Record the receiver run's outcome (job summary and the results branch). Run with if: always().")
     t.add_argument("--workspace", type=Path, default=Path("."))
     t.add_argument("--payload", type=Path, help="the event file, to name the sync when receive never ran")
@@ -1174,7 +1272,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "merge":
         try:
             outcome = merge_sync_pull_request(args.repository, args.base, args.sha, args.head, subprocess_runner(args.workspace),
-                                              auto_merge=args.auto_merge == "true")
+                                              auto_merge=args.auto_merge == "true", pusher=args.pusher, app_slug=args.app_slug)
         except SyncError as exc:
             print(f"sdp_sync merge: {exc}", file=sys.stderr)
             return 1

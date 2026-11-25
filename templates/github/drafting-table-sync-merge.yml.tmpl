@@ -7,6 +7,8 @@
 # On this framework repository that workflow is "Validate Catalog". Change the list if yours has another name.
 # Copy this file to .github/workflows/ on the central repository's default branch. It runs only from there.
 # Repository variable DRAFT_SYNC_AUTO_MERGE=true and both receiver App secrets are required; otherwise it no-ops.
+# The merge API requires Contents: write on an App token, in addition to Pull requests: write.
+# workflow_run.actor is the account that triggered the validating run initially. triggering_actor changes on re-run.
 name: DRAFT Sync Pull Request Merge
 
 on:
@@ -14,9 +16,14 @@ on:
     workflows: ["Validate Catalog"]
     types: [completed]
 
-# GITHUB_TOKEN can read the repository. Only the receiver App token is allowed to merge.
+# GITHUB_TOKEN can read the repository. Only the receiver App token merges or updates the branch.
+# One merge at a time, so two syncs cannot land regenerated indexes over each other.
 permissions:
   contents: read
+
+concurrency:
+  group: draft-sdp-merge
+  cancel-in-progress: false
 
 jobs:
   merge_sync:
@@ -49,30 +56,46 @@ jobs:
           app-id: ${{ secrets.DRAFT_RECEIVER_APP_ID }}
           private-key: ${{ secrets.DRAFT_RECEIVER_APP_PRIVATE_KEY }}
           repositories: "${{ github.event.repository.name }}"
-          permission-contents: read
+          permission-contents: write
           permission-pull-requests: write
 
-      - name: Checkout Workspace
+      # actor, not triggering_actor: a re-run keeps the original pusher in actor.
+      - name: Require Receiver App Push
+        id: receiver_pusher
         if: steps.receiver_token.outcome == 'success'
+        env:
+          PUSHER: ${{ github.event.workflow_run.actor.login }}
+          APP_SLUG: ${{ steps.receiver_token.outputs.app-slug }}
+        run: |
+          expected="${APP_SLUG}[bot]"
+          if [ -z "$APP_SLUG" ] || [ "$PUSHER" != "$expected" ]; then
+            echo "::error title=DRAFT sync merge::the validated commit was pushed by ${PUSHER:-unknown}, not the receiver App"
+            exit 1
+          fi
+
+      - name: Checkout Workspace
+        if: success() && steps.receiver_token.outcome == 'success'
         uses: actions/checkout@v4
         with:
+          # The default branch only. Do not check out workflow_run.head_sha or head_branch:
+          # those are the pull request, and this job must run the trusted tools from the default branch.
           fetch-depth: 0
           persist-credentials: true
 
       - name: Set up Python
-        if: steps.receiver_token.outcome == 'success'
+        if: success() && steps.receiver_token.outcome == 'success'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install Dependencies
-        if: steps.receiver_token.outcome == 'success'
+        if: success() && steps.receiver_token.outcome == 'success'
         run: |
           python -m pip install --upgrade pip
           pip install pyyaml
 
       - name: Merge Confined Sync Pull Request
-        if: steps.receiver_token.outcome == 'success'
+        if: success() && steps.receiver_token.outcome == 'success'
         env:
           GH_TOKEN: ${{ steps.receiver_token.outputs.token }}
           CENTRAL_REPOSITORY: ${{ github.repository }}
@@ -80,6 +103,8 @@ jobs:
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
           HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
           AUTO_MERGE: ${{ vars.DRAFT_SYNC_AUTO_MERGE }}
+          PUSHER: ${{ github.event.workflow_run.actor.login }}
+          APP_SLUG: ${{ steps.receiver_token.outputs.app-slug }}
         run: |
           python3 .draft/framework/tools/sdp_sync.py merge \
             --workspace . \
@@ -87,4 +112,6 @@ jobs:
             --base "$BASE_BRANCH" \
             --sha "$HEAD_SHA" \
             --head "$HEAD_BRANCH" \
+            --pusher "$PUSHER" \
+            --app-slug "$APP_SLUG" \
             --auto-merge "${AUTO_MERGE:-false}"
