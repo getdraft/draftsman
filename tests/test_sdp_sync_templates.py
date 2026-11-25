@@ -109,8 +109,10 @@ class WiringTests(unittest.TestCase):
         publish = step(RECEIVER, "Publish Sync Pull Request")
         token = "${{ steps.receiver_token.outcome == 'success' && steps.receiver_token.outputs.token || github.token }}"
         self.assertEqual(publish["env"], {"GH_TOKEN": token, "BASE_BRANCH": "${{ github.event.repository.default_branch }}",
-                                          "AUTO_MERGE": "${{ steps.receiver_token.outcome == 'success' && 'false' || vars.DRAFT_SYNC_AUTO_MERGE }}"})
+                                          "AUTO_MERGE": "${{ steps.receiver_token.outcome == 'success' && 'false' || vars.DRAFT_SYNC_AUTO_MERGE }}",
+                                          "VALIDATE_WORKFLOW": "Validate Catalog"})
         self.assertIn("sdp_sync.py publish", publish["run"])
+        self.assertIn('--validate-workflow "${VALIDATE_WORKFLOW:-Validate Catalog}"', publish["run"])
         self.assertIn('--result "$RUNNER_TEMP/sdp-sync-result.json"', publish["run"])
 
     def test_receiver_receives_from_the_event_file_then_validates(self) -> None:
@@ -282,6 +284,13 @@ class SyncMergeWorkflowTests(unittest.TestCase):
         self.assertIn('--pusher "$PUSHER"', merge["run"])
         self.assertIn('--app-slug "$APP_SLUG"', merge["run"])
         self.assertIn('--auto-merge "${AUTO_MERGE:-false}"', merge["run"])
+        self.assertEqual(merge["env"]["VALIDATE_WORKFLOW"], "Validate Catalog")
+        listened = yaml.safe_load(MERGE.read_text(encoding="utf-8"))
+        listened_on = listened.get("on", listened.get(True))
+        self.assertEqual([merge["env"]["VALIDATE_WORKFLOW"]], listened_on["workflow_run"]["workflows"])
+        receiver_publish = step(RECEIVER, "Publish Sync Pull Request")
+        self.assertEqual(receiver_publish["env"]["VALIDATE_WORKFLOW"], merge["env"]["VALIDATE_WORKFLOW"])
+        self.assertIn('--validate-workflow "${VALIDATE_WORKFLOW:-Validate Catalog}"', merge["run"])
         self.assertNotIn("gh pr merge", MERGE.read_text(encoding="utf-8"))
         self.assertIn("def _require_receiver_pusher", (ROOT / "framework" / "tools" / "sdp_sync.py").read_text(encoding="utf-8"))
         self.assertIn("workflow_run.actor", (ROOT / "framework" / "tools" / "sdp_sync.py").read_text(encoding="utf-8"))

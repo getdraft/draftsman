@@ -83,6 +83,10 @@ class SetupGuideTests(unittest.TestCase):
         self.assertIn("not what the trusted generators write", GUIDE)
         self.assertIn("do not replace ruleset C", GUIDE)
         self.assertIn("PyYAML", GUIDE)
+        self.assertIn("update_method=merge", GUIDE)
+        self.assertIn("DRAFT_VALIDATE_WORKFLOW", GUIDE)
+        self.assertIn("action_required", GUIDE)
+        self.assertIn("must not be merged by hand without a new sync", GUIDE)
         checks = GUIDE.split("## Pull Requests and Required Checks", 1)[1].split("## Fully Automatic Merge", 1)[0]
         self.assertIn("Approve workflows to run", checks)
         self.assertIn("(#fully-automatic-merge)", checks)
