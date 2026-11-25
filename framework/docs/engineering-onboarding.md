@@ -97,7 +97,7 @@ DRAFT uses **Pattern 2 Least-Privilege Sync**: your product repository pushes it
 ```
 
 ### 3-Step Local Developer Onboarding:
-1. **Register Product**: Point your IDE assistant to `drafting-table` and run `@Draftsman register my product [Name]`. It creates a `product_registration` file linking your repo URL to the central catalog.
+1. **Register Product**: Point your IDE assistant to `drafting-table` and run `@Draftsman register my product [Name]`. It creates a `product_registration` file linking your repo URL to the central catalog. When the repository is on GitHub, also pin `repository.id` and `repository.ownerId` from `gh api repos/OWNER/NAME --jq .id` and `--jq .owner.id`.
 2. **Initialize Local Repo**: Open your product repo in your IDE and run `/draft init`. Your IDE assistant inspects your `Dockerfile`, `docker-compose.yml`, or `main.tf` to scaffold `.draft/sdp.yaml` and `.github/workflows/draft-sync.yml`.
 3. **Validate & Merge**: Validate locally (`python3 .draft/framework/tools/validate.py --workspace .`). On PR merge, the GitHub Action automatically syncs `.draft/sdp.yaml` to `drafting-table`.
 

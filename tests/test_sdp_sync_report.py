@@ -49,6 +49,14 @@ def done(stdout: str = "", returncode: int = 0) -> subprocess.CompletedProcess:
 
 
 class OutcomeTests(unittest.TestCase):
+    def test_an_unpinned_registration_warning_stays_with_the_accepted_outcome(self) -> None:
+        warning = "repository.id is not pinned on ProductRegistration 01M7SYNC03-PR01"
+        outcome = sdp_sync.final_outcome({**ACCEPTED, "warnings": [warning], "publish": PUBLISHED}, None, "success")
+        self.assertEqual(outcome["status"], "accepted")
+        self.assertTrue(outcome["message"].startswith("opened pull request https://github.com/example-org/drafting-table/pull/5"))
+        self.assertIn(warning, outcome["message"])
+        self.assertEqual(outcome["warnings"], [warning])
+
     def test_an_accepted_and_published_sync_reports_its_pull_request(self) -> None:
         outcome = sdp_sync.final_outcome({**ACCEPTED, "publish": PUBLISHED}, None, "success")
         self.assertEqual(outcome["status"], "accepted")

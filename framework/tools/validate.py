@@ -3788,6 +3788,30 @@ def validate_ra(
                                 )
 
 
+# Keep this in step with sdp_sync.parse_github_id (#455). GitHub's repository and owner ids
+# are positive integers. The OIDC claims are decimal strings; `gh api` prints integers.
+# A leading zero is rejected so the pinned form is the decimal GitHub publishes.
+_MAX_GITHUB_ID = 2**63 - 1
+
+
+def _parse_github_id(value: Any) -> int | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value if 0 < value <= _MAX_GITHUB_ID else None
+    if isinstance(value, str):
+        text = value.strip()
+        if not text.isascii() or not text.isdigit() or (len(text) > 1 and text[0] == "0"):
+            return None
+        try:
+            number = int(text)
+        except ValueError:
+            return None
+        if 0 < number <= _MAX_GITHUB_ID:
+            return number
+    return None
+
+
 def validate_product_registration(
     obj: dict[str, Any],
     path: Path,
@@ -3799,6 +3823,16 @@ def validate_product_registration(
     repo = obj.get("repository")
     if not isinstance(repo, dict) or not is_non_empty(repo.get("url")):
         failures.append(f"{path}: ProductRegistration must declare repository.url")
+    if isinstance(repo, dict):
+        for field, claim in (("id", "repository_id"), ("ownerId", "repository_owner_id")):
+            if field not in repo or repo.get(field) is None:
+                continue
+            if _parse_github_id(repo.get(field)) is None:
+                failures.append(
+                    f"{path}: repository.{field} must be GitHub's permanent numeric id "
+                    f"(a positive integer, or a decimal digit string with no leading zeros, "
+                    f"matching the OIDC {claim} claim); got {repo.get(field)!r}"
+                )
     sdp_manifest = obj.get("sdpManifest")
     if isinstance(sdp_manifest, dict):
         mode = sdp_manifest.get("mode")

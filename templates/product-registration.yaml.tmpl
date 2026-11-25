@@ -13,6 +13,10 @@ repository:
   provider: github
   url: ${REPO_URL}
   defaultBranch: main
+  # Pin GitHub's permanent ids when you can look them up. Leave the lines out when you cannot;
+  # receive then matches by repository name and warns on every sync. It never writes these itself.
+  # id: ${REPO_ID}          # gh api repos/OWNER/NAME --jq .id
+  # ownerId: ${OWNER_ID}    # gh api repos/OWNER/NAME --jq .owner.id
 sdpManifest:
   mode: git
   path: .draft/sdp.yaml

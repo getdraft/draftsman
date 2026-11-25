@@ -8,7 +8,9 @@ only ever travel through files; nothing here builds shell text.
 The sender proves who it is with a GitHub Actions OIDC token whose audience names the central workspace
 (``draft-sdp-sync:<central owner>/<central name>``). ``receive`` verifies the RS256 signature against GitHub's
 published key set with the standard library, then checks the issuer, audience, expiry, that the token's repository
-is the registered one and that its ref is the registered default branch.
+is the registered one and that its ref is the registered default branch. When the ProductRegistration pins
+``repository.id`` or ``repository.ownerId``, the token's ``repository_id`` or ``repository_owner_id`` must be
+that same number. A registration that omits ``repository.id`` still matches by name, and the result warns.
 
 Usage:
     python3 sdp_sync.py pack --repo-root . --repository OWNER/NAME --commit SHA --ref refs/heads/main \
@@ -201,11 +203,13 @@ class Result:
     written: list[str] = field(default_factory=list)
     removed: list[str] = field(default_factory=list)
     identity_verified: bool = False
+    warnings: list[str] = field(default_factory=list)
 
     def as_json(self) -> dict[str, Any]:
         return {"status": self.status, "message": self.message, "repository": self.repository, "product": self.product,
                 "registration": self.registration, "action": self.action, "correlationId": self.correlation_id,
-                "commit": self.commit, "written": self.written, "removed": self.removed, "identityVerified": self.identity_verified}
+                "commit": self.commit, "written": self.written, "removed": self.removed,
+                "identityVerified": self.identity_verified, "warnings": self.warnings}
 
 
 def product_slug(repository: str) -> str:
@@ -368,12 +372,100 @@ def verify_oidc_token(token: str, audience: str, keys: KeySource, now: float | N
     return claims
 
 
+# Keep this in step with validate.py _parse_github_id (#455).
+_MAX_GITHUB_ID = 2**63 - 1
+
+
+def parse_github_id(value: Any) -> int | None:
+    """A positive GitHub numeric id, from an int or a decimal digit string. None otherwise.
+
+    Booleans are rejected (``bool`` is a subclass of ``int``). Leading zeros are rejected so the
+    pinned form is the decimal GitHub publishes. The OIDC claims are strings; ``gh api`` prints integers.
+    """
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value if 0 < value <= _MAX_GITHUB_ID else None
+    if isinstance(value, str):
+        text = value.strip()
+        if not text.isascii() or not text.isdigit() or (len(text) > 1 and text[0] == "0"):
+            return None
+        try:
+            number = int(text)
+        except ValueError:
+            return None
+        if 0 < number <= _MAX_GITHUB_ID:
+            return number
+    return None
+
+
+def _registration_repo(registration: Mapping[str, Any]) -> Mapping[str, Any]:
+    repo = registration.get("repository")
+    return repo if isinstance(repo, Mapping) else {}
+
+
+def _pinned_github_id(registration: Mapping[str, Any], field: str, claim_name: str) -> int | None:
+    """The pinned id, or None when the field is absent. A present but unusable value fails closed."""
+    repo = _registration_repo(registration)
+    if field not in repo or repo.get(field) is None:
+        return None
+    parsed = parse_github_id(repo.get(field))
+    if parsed is None:
+        raise SyncError(
+            f"ProductRegistration {registration.get('uid')} repository.{field} {repo.get(field)!r} "
+            f"is not a GitHub id; a Draft Admin must set it to the permanent numeric {claim_name} "
+            "from `gh api repos/OWNER/NAME --jq .id` (repository.id) or `--jq .owner.id` (repository.ownerId)"
+        )
+    return parsed
+
+
+def _require_pinned_claim(claims: Mapping[str, Any], registration: Mapping[str, Any], pinned: int, field: str, claim_name: str) -> None:
+    raw = claims.get(claim_name)
+    if parse_github_id(raw) != pinned:
+        shown = "missing" if raw in (None, "") else repr(raw)
+        raise SyncError(
+            f"the OIDC token's {claim_name} is {shown}, not {pinned} pinned on "
+            f"ProductRegistration {registration.get('uid')} (repository.{field}). "
+            "A renamed repository still syncs when this id matches; a deleted and recreated repository does not."
+        )
+
+
+def check_repository_pin(claims: Mapping[str, Any], payload: Mapping[str, Any], registration: Mapping[str, Any]) -> list[str]:
+    """Enforce repository.id and repository.ownerId when the registration pins them.
+
+    ``repository.id`` is the check that stops a deleted and recreated repository: GitHub never
+    reuses ``repository_id``. ``repository.ownerId`` is checked only when set, because a new
+    repository in the same organization keeps the owner id. When ``repository.id`` is omitted the
+    name match from ``check_identity`` stands, and the returned warning asks a Draft Admin to pin
+    the ids. This function does not write the id back; the first sync of a recreated repository
+    must not be able to pin itself.
+    """
+    pinned_id = _pinned_github_id(registration, "id", "repository_id")
+    pinned_owner = _pinned_github_id(registration, "ownerId", "repository_owner_id")
+    warnings: list[str] = []
+    if pinned_id is None:
+        repository = str(payload.get("repository") or "")
+        warnings.append(
+            f"repository.id is not pinned on ProductRegistration {registration.get('uid')}; "
+            f"this sync matched {repository} by repository name only. "
+            "A Draft Admin should set repository.id to GitHub's permanent repository id "
+            f"(`gh api repos/{repository} --jq .id`) and repository.ownerId "
+            f"(`gh api repos/{repository} --jq .owner.id`) so a deleted and recreated repository cannot sync as this product. "
+            "The receiver does not record the id itself."
+        )
+    else:
+        _require_pinned_claim(claims, registration, pinned_id, "id", "repository_id")
+    if pinned_owner is not None:
+        _require_pinned_claim(claims, registration, pinned_owner, "ownerId", "repository_owner_id")
+    return warnings
+
+
 def check_identity(claims: Mapping[str, Any], payload: Mapping[str, Any], registration: Mapping[str, Any]) -> None:
     """The token must come from the registered repository's default branch, for this very commit and ref."""
     repository = str(payload["repository"]).lower()
     if str(claims.get("repository") or "").lower() != repository:
         raise SyncError(f"the OIDC token was issued to {claims.get('repository')!r}, not {payload['repository']}")
-    repo = registration.get("repository") if isinstance(registration.get("repository"), dict) else {}
+    repo = _registration_repo(registration)
     branch = repo.get("defaultBranch")
     if not isinstance(branch, str) or not branch:
         raise SyncError(f"ProductRegistration {registration.get('uid')} has no repository.defaultBranch; a Draft Admin must set it")
@@ -542,6 +634,7 @@ def receive(workspace: Path, payload: dict[str, Any], *, central_repository: str
     """
     registration: dict[str, Any] = {}
     verified = False
+    identity_warnings: list[str] = []
     try:
         audience = audience_for(central_repository)
         check_payload(payload)
@@ -550,7 +643,10 @@ def receive(workspace: Path, payload: dict[str, Any], *, central_repository: str
         claims = verify_oidc_token(payload["oidcToken"], audience, fetch_github_jwks if keys is None else keys, now)
         registration = find_registration(workspace, repository)
         check_identity(claims, payload, registration)
+        # The token is signed for this repository name. A pin mismatch is a registration
+        # constraint on that verified sender, so the product run is told the reason.
         verified = True
+        identity_warnings = check_repository_pin(claims, payload, registration)
         targets: dict[PurePosixPath, str] = {}
         objects: dict[str, dict[str, Any]] = {}
         for source_path, text in sorted(payload["files"].items()):
@@ -570,7 +666,7 @@ def receive(workspace: Path, payload: dict[str, Any], *, central_repository: str
     folder = workspace / CACHE_ROOT / slug
     result = Result("accepted", "", repository=repository, product=slug, action=payload["action"],
                     correlation_id=payload["correlationId"], commit=payload["commit"], registration=str(registration.get("uid") or ""),
-                    identity_verified=True)
+                    identity_verified=True, warnings=identity_warnings)
     if folder.exists():
         result.removed = sorted(rel(workspace, p) for p in folder.rglob("*") if p.is_file())
         shutil.rmtree(folder)
@@ -588,6 +684,8 @@ def receive(workspace: Path, payload: dict[str, Any], *, central_repository: str
         result.message = f"removed the cached SDP for {repository}" if result.removed else f"nothing cached for {repository}"
     else:
         result.message = f"stored {len(result.written)} file(s) for {repository} at {result.commit[:12]}"
+    if result.warnings:
+        result.message += " Warning: " + " ".join(result.warnings)
     return result
 
 
@@ -800,8 +898,22 @@ def final_outcome(result: Mapping[str, Any] | None, payload: Mapping[str, Any] |
         else:
             outcome.update(status="failed", message=f"the sync was accepted but a later receiver step did not finish (job {job_status or 'unknown'}); "
                                                     "see the receiver run")
-    outcome["message"] = outcome["message"][:MAX_MESSAGE_CHARS]
+    outcome["message"] = _with_receive_warnings(outcome["message"], result)[:MAX_MESSAGE_CHARS]
+    if isinstance(result, Mapping) and isinstance(result.get("warnings"), list):
+        listed = [str(item) for item in result["warnings"] if item]
+        if listed:
+            outcome["warnings"] = listed
     return outcome
+
+
+def _with_receive_warnings(message: str, result: Mapping[str, Any] | None) -> str:
+    """Append receive's registration warnings so the product run sees an unpinned repository.id."""
+    if not isinstance(result, Mapping) or not isinstance(result.get("warnings"), list):
+        return message
+    text = " ".join(str(item) for item in result["warnings"] if item)
+    if not text:
+        return message
+    return f"{message} Warning: {text}"
 
 
 def summary_markdown(outcome: Mapping[str, Any], heading: str = "DRAFT SDP sync") -> str:

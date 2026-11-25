@@ -68,6 +68,8 @@ productRepository:
   - owner
   - name
   - defaultBranch
+  - id
+  - ownerId
   enumFields:
     provider:
     - github
@@ -87,6 +89,18 @@ productRepository:
     owner: Organization or account owner of the repository.
     name: Repository name.
     defaultBranch: Default git branch (e.g. main, master).
+    id: >
+      GitHub's permanent numeric repository id, the same value as the Actions OIDC
+      repository_id claim. Optional. When set, sdp_sync receive rejects a token whose
+      repository_id differs, so a renamed repository still matches and a deleted and
+      recreated one does not. Write a positive integer or a decimal digit string with no
+      leading zeros, from `gh api repos/OWNER/NAME --jq .id`. When omitted, receive still
+      matches repository.url by name and warns. The receiver does not write this field.
+    ownerId: >
+      GitHub's permanent numeric owner id, the same value as the Actions OIDC
+      repository_owner_id claim. Optional, and checked only when set. Look it up with
+      `gh api repos/OWNER/NAME --jq .owner.id`. A new repository in the same organization
+      keeps this id and gets a new repository id, so ownerId does not replace id.
 sdpManifest:
   optionalFields:
   - mode
@@ -130,7 +144,8 @@ requirementImplementation:
 aiHint: >
   A ProductRegistration advertises the central registration contract for an engineering product.
   It links a named product owned by an engineering team to its source repository and its
-  decentralized SoftwareDeploymentPattern manifest (.draft/sdp.yaml).
+  decentralized SoftwareDeploymentPattern manifest (.draft/sdp.yaml). Optional repository.id
+  and repository.ownerId pin GitHub's permanent numeric repository and owner ids.
 fieldDescriptions:
   schemaVersion: Use the schema version string supported by this framework release, normally "1.0".
   type: Use product_registration.
@@ -139,6 +154,6 @@ fieldDescriptions:
   owner: Team and contact responsible for this registered product.
   catalogStatus: Use stub, incomplete, or complete to describe registration maturity.
   businessContext: Workspace business taxonomy mapping for portfolio and pillar grouping.
-  repository: Source repository details including web URL and default branch.
+  repository: Source repository details including web URL, default branch, and optional permanent GitHub ids.
   sdpManifest: Location and linkage mode of the product's decentralized SDP manifest (.draft/sdp.yaml).
 uidPattern: ^[0-9A-HJKMNP-TV-Z]{10}-[0-9A-HJKMNP-TV-Z]{4}$

@@ -48,10 +48,35 @@ class Central:
         self.test.assertIn(expected, result.message)
         self.test.assertFalse((self.root / ".draft" / "external_sdps").exists(), "nothing is written on rejection")
 
+    def registration_path(self) -> Path:
+        return self.root / REGISTRATION.relative_to(FIXTURES / "central_workspace")
+
     def set_default_branch(self, branch: str | None) -> None:
-        path = self.root / REGISTRATION.relative_to(FIXTURES / "central_workspace")
+        path = self.registration_path()
         text = path.read_text(encoding="utf-8").replace("  defaultBranch: main\n", f"  defaultBranch: {branch}\n" if branch else "")
         path.write_text(text, encoding="utf-8")
+
+    def pin_repository(self, repo_id: str | None = None, owner_id: str | None = None) -> None:
+        """Insert repository.id / repository.ownerId as raw YAML tokens, such as 424242 or '\"424242\"'."""
+        path = self.registration_path()
+        text = path.read_text(encoding="utf-8")
+        block = ""
+        if repo_id is not None:
+            block += f"  id: {repo_id}\n"
+        if owner_id is not None:
+            block += f"  ownerId: {owner_id}\n"
+        needle = "  defaultBranch: main\n"
+        if needle not in text:
+            raise AssertionError("registration fixture has no defaultBranch line to anchor the pin")
+        path.write_text(text.replace(needle, needle + block, 1), encoding="utf-8")
+
+    def set_repository_url(self, url: str) -> None:
+        path = self.registration_path()
+        old = "  url: https://github.com/example-org/absence-service\n"
+        text = path.read_text(encoding="utf-8")
+        if old not in text:
+            raise AssertionError(text)
+        path.write_text(text.replace(old, f"  url: {url}\n", 1), encoding="utf-8")
 
 
 def signed(**claims: object) -> dict:
@@ -256,6 +281,117 @@ class SenderTests(unittest.TestCase):
         self.assertNotIn(body["oidcToken"], stored + json.dumps(result.as_json()))
         rejected = central.receive({**body, "commit": "f" * 40})
         self.assertNotIn(body["oidcToken"], json.dumps(rejected.as_json()))
+
+
+REPO_ID = 424242
+OWNER_ID = 1001
+
+
+class RepositoryIdTests(unittest.TestCase):
+    def test_parse_github_id_accepts_the_forms_github_and_yaml_produce(self) -> None:
+        self.assertEqual(sdp_sync.parse_github_id(REPO_ID), REPO_ID)
+        self.assertEqual(sdp_sync.parse_github_id(str(REPO_ID)), REPO_ID)
+        self.assertEqual(sdp_sync.parse_github_id(f"  {REPO_ID}\n"), REPO_ID)
+        for value in (None, "", "0", "042", "-1", 0, -1, True, False, 1.5, "abc", 2**63, [], {}):
+            with self.subTest(value):
+                self.assertIsNone(sdp_sync.parse_github_id(value))
+
+    def test_a_pinned_id_matches_a_string_or_integer_claim(self) -> None:
+        central = Central(self)
+        central.pin_repository(str(REPO_ID), str(OWNER_ID))
+        result = central.receive(signed(repository_id=str(REPO_ID), repository_owner_id=str(OWNER_ID)))
+        self.assertEqual(result.status, "accepted", result.message)
+        self.assertEqual(result.warnings, [])
+        self.assertNotIn("not pinned", result.message)
+        self.assertTrue(result.identity_verified)
+
+        quoted = Central(self)
+        quoted.pin_repository(f'"{REPO_ID}"', f'"{OWNER_ID}"')
+        result = quoted.receive(signed(repository_id=REPO_ID, repository_owner_id=OWNER_ID))
+        self.assertEqual(result.status, "accepted", result.message)
+        self.assertEqual(result.warnings, [])
+
+    def test_a_recreated_repository_with_the_same_name_is_refused(self) -> None:
+        central = Central(self)
+        central.pin_repository(str(REPO_ID), str(OWNER_ID))
+        result = central.receive(signed(repository_id="999999", repository_owner_id=str(OWNER_ID)))
+        self.assertEqual(result.status, "rejected", result.message)
+        self.assertIn("repository_id is '999999', not 424242 pinned on ProductRegistration 01M7SYNC03-PR01", result.message)
+        self.assertIn("deleted and recreated repository does not", result.message)
+        self.assertTrue(result.identity_verified, "the token already matched the registered name, so the product run is told")
+        self.assertFalse((central.root / ".draft" / "external_sdps").exists())
+
+    def test_a_pinned_registration_rejects_a_token_with_no_repository_id(self) -> None:
+        central = Central(self)
+        central.pin_repository(str(REPO_ID))
+        central.rejects(signed(), "repository_id is missing, not 424242 pinned")
+        result = central.receive(signed())
+        self.assertTrue(result.identity_verified)
+
+    def test_a_rename_keeps_working_when_the_permanent_id_matches(self) -> None:
+        central = Central(self)
+        central.pin_repository(str(REPO_ID), str(OWNER_ID))
+        central.set_repository_url("https://github.com/example-org/absence-renamed")
+        body = identity.sign(payload(repository="example-org/absence-renamed"), repository_id=str(REPO_ID), repository_owner_id=str(OWNER_ID))
+        result = central.receive(body)
+        self.assertEqual(result.status, "accepted", result.message)
+        self.assertEqual(result.warnings, [])
+        self.assertEqual(result.product, "example-org__absence-renamed")
+
+    def test_an_owner_id_mismatch_is_refused_when_the_repository_id_matches(self) -> None:
+        central = Central(self)
+        central.pin_repository(str(REPO_ID), str(OWNER_ID))
+        central.rejects(signed(repository_id=str(REPO_ID), repository_owner_id="8888"), "repository_owner_id is '8888', not 1001 pinned")
+
+    def test_owner_id_is_not_required_when_the_repository_id_is_pinned(self) -> None:
+        central = Central(self)
+        central.pin_repository(str(REPO_ID))
+        result = central.receive(signed(repository_id=str(REPO_ID), repository_owner_id="8888"))
+        self.assertEqual(result.status, "accepted", result.message)
+        self.assertEqual(result.warnings, [])
+
+    def test_an_unpinned_registration_accepts_any_repository_id_and_warns(self) -> None:
+        result = Central(self).receive(signed(repository_id="999999", repository_owner_id="8888"))
+        self.assertEqual(result.status, "accepted", result.message)
+        self.assertEqual(len(result.warnings), 1)
+        self.assertIn("repository.id is not pinned on ProductRegistration 01M7SYNC03-PR01", result.warnings[0])
+        self.assertIn("matched example-org/absence-service by repository name only", result.warnings[0])
+        self.assertIn("does not record the id itself", result.warnings[0])
+        self.assertIn(result.warnings[0], result.message)
+        self.assertEqual(result.as_json()["warnings"], result.warnings)
+        outcome = sdp_sync.final_outcome({**result.as_json(), "publish": {"status": "published", "pullRequestAction": "opened",
+                                            "pullRequest": {"number": 5, "url": "https://github.com/example-org/drafting-table/pull/5"}}},
+                                          None, "success")
+        self.assertEqual(outcome["status"], "accepted")
+        self.assertTrue(outcome["message"].startswith("opened pull request https://github.com/example-org/drafting-table/pull/5"))
+        self.assertIn("repository.id is not pinned", outcome["message"])
+        self.assertEqual(outcome["warnings"], result.warnings)
+
+    def test_a_missing_repository_id_still_warns_when_only_the_owner_id_is_pinned(self) -> None:
+        central = Central(self)
+        central.pin_repository(owner_id=str(OWNER_ID))
+        refused = central.receive(signed(repository_owner_id="8888"))
+        self.assertEqual(refused.status, "rejected", refused.message)
+        self.assertIn("repository_owner_id is '8888', not 1001 pinned", refused.message)
+        accepted = central.receive(signed(repository_id="999999", repository_owner_id=str(OWNER_ID)))
+        self.assertEqual(accepted.status, "accepted", accepted.message)
+        self.assertIn("repository.id is not pinned", accepted.message)
+
+    def test_a_malformed_pin_fails_closed(self) -> None:
+        central = Central(self)
+        central.pin_repository("not-an-id", str(OWNER_ID))
+        central.rejects(signed(repository_id=str(REPO_ID), repository_owner_id=str(OWNER_ID)), "repository.id 'not-an-id' is not a GitHub id")
+        central = Central(self)
+        central.pin_repository(str(REPO_ID), '"0"')
+        central.rejects(signed(repository_id=str(REPO_ID), repository_owner_id=str(OWNER_ID)), "repository.ownerId '0' is not a GitHub id")
+
+    def test_a_delete_needs_the_same_repository_id(self) -> None:
+        central = Central(self)
+        central.pin_repository(str(REPO_ID))
+        central.rejects(identity.sign(payload(action="delete", files={}), repository_id="999999"), "repository_id is '999999'")
+        result = central.receive(identity.sign(payload(action="delete", files={}), repository_id=str(REPO_ID)))
+        self.assertEqual(result.status, "accepted", result.message)
+        self.assertEqual(result.warnings, [])
 
 
 if __name__ == "__main__":

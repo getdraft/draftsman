@@ -12,7 +12,7 @@ In your IDE, ask your AI assistant:
 
 > `@Draftsman register my product [Product Name]`
 
-The assistant scaffolds a `product_registration` file under `catalog/engineering/product-registrations/product-reg-[name].yaml` linking your product source repo URL (for example `https://github.com/company/absence-service`) and its `.draft/sdp.yaml` manifest path.
+The assistant scaffolds a `product_registration` file under `catalog/engineering/product-registrations/product-reg-[name].yaml` linking your product source repo URL (for example `https://github.com/company/absence-service`) and its `.draft/sdp.yaml` manifest path. When the repository is on GitHub, it also pins `repository.id` and `repository.ownerId` from `gh api repos/OWNER/NAME --jq .id` and `--jq .owner.id` if that lookup succeeds.
 
 ## Step 3: Initialize DRAFT in your product repository (`/draft init`)
 

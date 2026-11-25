@@ -6,7 +6,7 @@ tags:
   - draft
   - documentation
   - object_types
-timestamp: 2026-06-12T21:06:02-07:00
+timestamp: 2026-11-25T00:00:00-07:00
 ---
 # DRAFT Object Types
 
@@ -37,7 +37,7 @@ by the engineering team and deployed inside or on top of Shared Services Objects
 | DataComponent | `data_component` | A first-party data schema, dataset, or storage unit that lives inside a DataStoreService. | Uses `runsOn` to reference the DataStoreService it is deployed on. |
 | SoftwareDeploymentPattern | `software_deployment_pattern` | The intended assembly of deployable objects for a product or product capability. | Defines the deployable package shape that automation can target. |
 | Listener | `listener` | The exact endpoint a call lands on: owner, `protocol`, `port`, `endpoint` (path only) and `authenticationModel`, with `catalogStatus` `stub`, `incomplete` or `complete`. | Owned by a ProductComponent, DataComponent or external system (`owner.kind` and `owner.ref`); relationships reference it through `targetListener`. |
-| ProductRegistration | `product_registration` | Advertises the formal registration contract linking a product engineering repository to the central `drafting-table` catalog. | Points to the product source repo URL and its decentralized `.draft/sdp.yaml` manifest. |
+| ProductRegistration | `product_registration` | Advertises the formal registration contract linking a product engineering repository to the central `drafting-table` catalog. | Points to the product source repo URL and its decentralized `.draft/sdp.yaml` manifest. Optional `repository.id` and `repository.ownerId` pin GitHub's permanent numeric repository and owner ids. |
 
 A Listener object is the endpoint a call lands on, and every relationship names
 one in `targetListener`. Product teams own their components' listeners; find or

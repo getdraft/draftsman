@@ -8,7 +8,7 @@ tags:
   - sdp
   - decentralization
   - product_registration
-timestamp: 2026-11-21T00:00:00-07:00
+timestamp: 2026-11-25T00:00:00-07:00
 ---
 
 # Decentralized SoftwareDeploymentPatterns & Product Registration
@@ -72,6 +72,8 @@ repository:
   provider: github
   url: https://github.com/company/absence-service
   defaultBranch: main
+  id: 123456789
+  ownerId: 1234567
 sdpManifest:
   mode: git
   path: .draft/sdp.yaml
@@ -79,6 +81,8 @@ sdpManifest:
 
 * `repository.url` decides which repository may sync this product. Any common GitHub form works (`https://…`, `.git`, `git@github.com:…`); names compare case-insensitively. Exactly one registration may name a repository.
 * `repository.defaultBranch` is **required**: only pushes to that branch can sync.
+* `repository.id` is GitHub's permanent numeric repository id (the OIDC `repository_id` claim). It is optional. When it is set, `receive` rejects a token whose `repository_id` is missing or different, so a repository that was deleted and recreated with the same name cannot sync as this product. A renamed repository still syncs: update `repository.url` to the new name and leave `repository.id` as it was. When it is omitted, `receive` still accepts the name match and the accepted result carries a warning asking a Draft Admin to pin it. Write a positive integer or a decimal digit string with no leading zeros. Look it up with `gh api repos/OWNER/NAME --jq .id`. The receiver never writes this field. Copying the id out of a sync warning would trust whoever sent that sync, so look the id up for the repository you mean to register.
+* `repository.ownerId` is GitHub's permanent numeric owner id (the OIDC `repository_owner_id` claim), from `gh api repos/OWNER/NAME --jq .owner.id`. It is optional and is checked only when set. It does not replace `repository.id`: a new repository in the same organization has a new repository id and the same owner id. The example numbers above are placeholders; replace them with the values GitHub returns, or omit both lines.
 
 ### 4. Product repository
 
@@ -114,7 +118,7 @@ serviceGroups:
 | GitHub Actions OIDC token | Product run (`id-token: write`) | None: it is a signed statement of who is sending | Proving the sync comes from the registered repository's default branch |
 | `GITHUB_TOKEN` | Central receiver run | `contents: write`, `pull-requests: write` | Pushing the `draft-sync/<product>` branch, opening its pull request, writing the result file |
 
-**OIDC audience.** The sender asks for a token with audience `draft-sdp-sync:<central owner>/<central name>` (lowercase), and the receiver accepts only that audience, so a token minted for one central workspace cannot be used against another. The receiver verifies the token's RS256 signature against GitHub's published keys (`https://token.actions.githubusercontent.com/.well-known/jwks`) using the Python standard library, and checks the issuer, the audience, the expiry (60 seconds of clock skew allowed), that the token's `repository` is the payload's registered repository, that its `ref` is `refs/heads/<defaultBranch>`, and that its `ref` and `sha` match the payload's. The receiver run needs outbound HTTPS to `token.actions.githubusercontent.com` (GitHub-hosted runners have it).
+**OIDC audience.** The sender asks for a token with audience `draft-sdp-sync:<central owner>/<central name>` (lowercase), and the receiver accepts only that audience, so a token minted for one central workspace cannot be used against another. The receiver verifies the token's RS256 signature against GitHub's published keys (`https://token.actions.githubusercontent.com/.well-known/jwks`) using the Python standard library, and checks the issuer, the audience, the expiry (60 seconds of clock skew allowed), that the token's `repository` is the payload's registered repository, that its `ref` is `refs/heads/<defaultBranch>`, and that its `ref` and `sha` match the payload's. When the registration sets `repository.id` or `repository.ownerId`, the token's `repository_id` or `repository_owner_id` must be that same number (an integer or a decimal digit string). The receiver run needs outbound HTTPS to `token.actions.githubusercontent.com` (GitHub-hosted runners have it).
 
 ## Payload Format
 
@@ -140,7 +144,7 @@ GitHub limits `client_payload` to 10 top-level properties and 64 KB. `pack` refu
 `receive` checks, in order, and on the first failure writes nothing and names the reason:
 
 1. **Payload shape:** format, repository name, commit SHA, ref, action, correlation id, files, and the token's presence. A payload in the old `sdp_content` shape is refused with a request to update the template.
-2. **Sender identity:** the OIDC checks above.
+2. **Sender identity:** the OIDC checks above. After the token verifies for the registered repository name, a pinned `repository.id` or `repository.ownerId` must match. A mismatch is reported back to the product run. Omitting `repository.id` keeps the name match and adds a warning.
 3. **Registration:** exactly one `product_registration` under the central `catalog/` names the repository.
 4. **Paths:** only `.draft/sdp.yaml` and YAML under `.draft/catalog/`, stored only inside the product's cache folder.
 5. **Types:** only `software_deployment_pattern`, `product_component`, `data_component`, `listener`, `relationship` and `decision_record`. Systems, shared services, hosts, registrations, requirement groups and other central content are never accepted from a product.
@@ -180,7 +184,7 @@ The receiver's last step, `sdp_sync.py report`, runs even when an earlier step f
 * **rejected:** `receive` refused the payload; the reason is included;
 * **failed:** the workspace did not validate with the sync (the failures are listed, the product's own files first), the pull request could not be opened, or the run stopped early.
 
-Every outcome is written to the central run's job summary. When the sender's identity was verified, it is also saved as `results/<owner>__<name>/<correlationId>.json` on the `draft-sync-results` branch of the central repository (created from the default branch on first use). In the product repository, **Await Central Result** polls exactly that file with the App token, then shows the outcome in its job summary. If the outcome is not *accepted*, it fails the product run with an error annotation carrying the message, the failures, and a link to the central run.
+Every outcome is written to the central run's job summary. When the sender's identity was verified, it is also saved as `results/<owner>__<name>/<correlationId>.json` on the `draft-sync-results` branch of the central repository (created from the default branch on first use). A pinned `repository.id` or `repository.ownerId` is checked only after that verification, so a mismatch is one of these results and the product run fails with the reason. In the product repository, **Await Central Result** polls exactly that file with the App token, then shows the outcome in its job summary. If the outcome is not *accepted*, it fails the product run with an error annotation carrying the message, the failures, and a link to the central run. An accepted sync whose registration has no `repository.id` stays accepted; the message includes the warning, and the product run does not fail for that warning.
 
 Payloads rejected *before* the identity check (an old template, a malformed payload, a token that does not verify) are shown only in the central run's summary: an unverified sender must not be able to write a result where another product will read it. The product run then times out with a hint to check the central repository's Actions.
 
@@ -193,7 +197,7 @@ Deleting `.draft/sdp.yaml` from the product repository sends a `delete`. The rec
 ## Security Notes and Known Limits
 
 * **A live OIDC token can be resent within its lifetime.** GitHub's OIDC tokens cannot carry a hash of the payload, so the receiver binds a token to its repository, ref and commit (`sha`) only. Anyone who obtains a live token could, during its few-minute lifetime, send different files for that same commit. The token travels only inside the central repository's `repository_dispatch` event, which is visible to people and workflows with access to that repository (the event payload is available to its workflow runs); it is never written to the cache, the result file or the logs. Exploiting it therefore needs existing access to the central repository. Mitigations: keep write and Actions access to the central repository tight, keep the App installed only there, and rely on the pull-request flow so every change reaches a reviewer (do not enable auto-merge if that review is your control).
-* **Registrations match by repository name, not GitHub's permanent repository ID.** If a registered repository is deleted or transferred and someone re-creates one with the same `owner/name`, its default-branch workflow would pass the identity check. Remove the registration when a product repository is retired. Pinning registrations to the permanent ID is tracked as a follow-up (getdraft/draftsman#455).
+* **Pin `repository.id`.** GitHub never reuses `repository_id`, and it survives a rename. Once a registration sets it, a deleted or transferred repository that is recreated with the same `owner/name` fails the identity check. Until a Draft Admin sets it, the receiver still matches by repository name and records a warning on the accepted result. `repository.ownerId` is a second pin, checked only when set; it does not stop a new repository in the same organization. Remove the registration when a product repository is retired. The receiver does not copy the token's id into the catalog.
 * **Validation failures may include problems already in the central workspace.** The product's own files are listed first; anything else is for a Draft Admin.
 
 ## Troubleshooting
@@ -203,6 +207,10 @@ Deleting `.draft/sdp.yaml` from the product repository sends a `delete`. The rec
 | `no ProductRegistration in catalog/ has repository.url …` | A Draft Admin adds or fixes the product's registration. |
 | `… has no repository.defaultBranch` | Set `repository.defaultBranch` on the registration. |
 | `only the registered default branch (refs/heads/…) can sync` | Sync from the registered branch, or correct `defaultBranch`. |
+| `the OIDC token's repository_id is …, not … pinned` | The sending repository is not the pinned GitHub repository. A recreated repository cannot sync as this product. After a rename, update `repository.url` and keep `repository.id`. |
+| `the OIDC token's repository_owner_id is …, not … pinned` | `repository.ownerId` does not match the token. Update it when the repository's owner changed, and keep `repository.id`. |
+| `repository.id … is not a GitHub id` / `repository.ownerId … is not a GitHub id` | Set the field to the positive integer from `gh api`, or remove it. |
+| `repository.id is not pinned` | Warning only; the sync was accepted. Pin `repository.id` and `repository.ownerId` on the registration. |
 | `the payload carries no OIDC token` / `old sdp_content format` | Update the product's sync workflow from the current template. |
 | `the OIDC token is for audience …, not this central workspace` | `DRAFT_CENTRAL_REPO_NAME` names a different central repository. |
 | `the OIDC token has expired` | The receiver was queued too long; re-run the product's sync workflow. |
@@ -220,7 +228,7 @@ Deleting `.draft/sdp.yaml` from the product repository sends a `delete`. The rec
 
 The original templates sent only `.draft/sdp.yaml` as a JSON string, wrote it to a flat file `.draft/external_sdps/<owner>_<name>.yaml`, and committed straight to the central default branch. To upgrade:
 
-1. **Register every syncing product** with `repository.url` and `repository.defaultBranch` (above). Unregistered products are rejected.
+1. **Register every syncing product** with `repository.url` and `repository.defaultBranch` (above). Unregistered products are rejected. Set `repository.id` and `repository.ownerId` from `gh api repos/OWNER/NAME` when you can. Until `repository.id` is set, syncs are accepted with a warning and still match by name.
 2. **Check content ownership.** Products must not sync copies of objects the central catalog already holds; reference them instead. Every UID a product's files mention must resolve.
 3. **Update the central receiver first** from the current template, and enable the pull-request setting. From then on, products on the old template are rejected with a request to update.
 4. **Update each product repository's workflow** from the current template. No new secrets are needed.

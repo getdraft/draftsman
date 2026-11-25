@@ -117,6 +117,8 @@ def main(argv: list[str] | None = None) -> int:
     print(f"1. Commit {reg_file} to your central drafting-table repo.")
     print(f"2. Copy {export_sdp_file} to .draft/sdp.yaml in the {repo_url} repository.")
     print("3. Run 'python3 framework/tools/validate.py' to verify catalog status.")
+    print("4. Set repository.id and repository.ownerId from `gh api repos/OWNER/NAME --jq .id` and `--jq .owner.id`.")
+    print("   Until repository.id is set, syncs match by repository name and warn.")
     return 0
 
 
