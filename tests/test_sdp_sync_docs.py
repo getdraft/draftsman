@@ -27,6 +27,7 @@ class SetupGuideTests(unittest.TestCase):
     def test_every_secret_and_variable_the_templates_read_is_documented(self) -> None:
         names = template_names(r"(?:secrets|vars)\.([A-Z_]+)")
         self.assertEqual(names, {"DRAFT_APP_ID", "DRAFT_APP_PRIVATE_KEY", "DRAFT_CENTRAL_REPO_NAME", "DRAFT_FRAMEWORK_REF",
+                                 "DRAFT_RECEIVER_APP_ID", "DRAFT_RECEIVER_APP_PRIVATE_KEY",
                                  "DRAFT_SYNC_AUTO_MERGE", "DRAFT_SYNC_AWAIT_MINUTES"})
         for name in names:
             self.assertIn(f"`{name}`", GUIDE)
@@ -45,13 +46,44 @@ class SetupGuideTests(unittest.TestCase):
 
     def test_the_required_known_limits_are_documented(self) -> None:
         self.assertIn("A live OIDC token can be resent within its lifetime", GUIDE)
-        self.assertIn("Required status checks do not run on these pull requests", GUIDE)
+        self.assertIn("Approve workflows to run", GUIDE)
         self.assertIn("Allow GitHub Actions to create and approve pull requests", GUIDE)
         self.assertIn("Allow auto-merge", GUIDE)
+        self.assertIn("For pull requests only", GUIDE)
         self.assertIn("repository.id", GUIDE)
         self.assertIn("repository_id", GUIDE)
         self.assertIn("A renamed repository still syncs", GUIDE)
         self.assertNotIn("tracked as a follow-up (getdraft/draftsman#455)", GUIDE)
+
+    def test_fully_automatic_merge_uses_a_second_app_and_two_rulesets(self) -> None:
+        self.assertIn("## Fully Automatic Merge", GUIDE)
+        self.assertIn("`DRAFT_RECEIVER_APP_ID`", GUIDE)
+        self.assertIn("`DRAFT_RECEIVER_APP_PRIVATE_KEY`", GUIDE)
+        self.assertIn("**Ruleset A**", GUIDE)
+        self.assertIn("**Ruleset B**", GUIDE)
+        self.assertIn("**Ruleset C**", GUIDE)
+        self.assertIn("must be **Always**", GUIDE)
+        self.assertIn("For an `opened` run, `workflow_run.actor` is the account that opened the pull request", GUIDE)
+        self.assertIn("draft-sdp-merge", GUIDE)
+        self.assertIn("workflow_run.actor", GUIDE)
+        self.assertIn("triggering_actor", GUIDE)
+        self.assertIn("up to date", GUIDE)
+        self.assertIn("contents write and pull-requests write", GUIDE)
+        self.assertIn("skips every rule", GUIDE)
+        self.assertIn("Pull requests: Read and write", GUIDE)
+        self.assertIn("For pull requests only", GUIDE)
+        self.assertIn("**DRAFT Sync Pull Request Merge**", GUIDE)
+        self.assertIn("the main gate", GUIDE)
+        self.assertIn("repository.id", GUIDE)
+        checks = GUIDE.split("## Pull Requests and Required Checks", 1)[1].split("## Fully Automatic Merge", 1)[0]
+        self.assertIn("Approve workflows to run", checks)
+        self.assertIn("(#fully-automatic-merge)", checks)
+        self.assertIn("synchronize", checks)
+        self.assertNotIn("does not start other workflows", checks)
+        dispatch = GUIDE.split("### 2. Dispatch GitHub App", 1)[1].split("### 3.", 1)[0]
+        self.assertIn("*Contents: Read and write*. Nothing else.", dispatch)
+        self.assertNotIn("Pull requests", dispatch)
+        self.assertIn("organization secrets", dispatch)
 
     def test_the_upgrade_from_flat_files_is_described(self) -> None:
         self.assertIn("## Upgrading from the Original Sync", GUIDE)

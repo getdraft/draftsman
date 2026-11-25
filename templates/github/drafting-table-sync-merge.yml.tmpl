@@ -1,0 +1,117 @@
+# DRAFT Framework 1.0 — Merge a confined sync pull request after validation
+# GitHub auto-merge does not honor a ruleset bypass actor, so a required review stays blocked even when the
+# receiver App armed auto-merge. This workflow calls the merge API as that App once the validation workflow
+# succeeds, and passes the head SHA so a newer push cannot be merged on the previous check.
+# It is a separate workflow so the receiver's draft-sdp-sync concurrency group is not held while CI runs.
+# The workflows: name must be the name: of the workflow that reports the required validate check.
+# On this framework repository that workflow is "Validate Catalog". Change the list if yours has another name.
+# Copy this file to .github/workflows/ on the central repository's default branch. It runs only from there.
+# Repository variable DRAFT_SYNC_AUTO_MERGE=true and both receiver App secrets are required; otherwise it no-ops.
+# The merge API requires Contents: write on an App token, in addition to Pull requests: write.
+# workflow_run.actor is the account that triggered the validating run initially. triggering_actor changes on re-run.
+name: DRAFT Sync Pull Request Merge
+
+on:
+  workflow_run:
+    workflows: ["Validate Catalog"]
+    types: [completed]
+
+# GITHUB_TOKEN can read the repository. Only the receiver App token merges or updates the branch.
+# One merge at a time, so two syncs cannot land regenerated indexes over each other.
+permissions:
+  contents: read
+
+concurrency:
+  group: draft-sdp-merge
+  cancel-in-progress: false
+
+jobs:
+  merge_sync:
+    name: Merge Confined Sync Pull Request
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request' && startsWith(github.event.workflow_run.head_branch, 'draft-sync/') && github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+
+    steps:
+      # Secrets are not available in an if: condition. This step prints only present=true or present=false.
+      - name: Detect Receiver App Credentials
+        id: receiver_app
+        env:
+          RECEIVER_APP_ID: ${{ secrets.DRAFT_RECEIVER_APP_ID }}
+          RECEIVER_APP_PRIVATE_KEY: ${{ secrets.DRAFT_RECEIVER_APP_PRIVATE_KEY }}
+        run: |
+          if [ -n "$RECEIVER_APP_ID" ] && [ -n "$RECEIVER_APP_PRIVATE_KEY" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          elif [ -z "$RECEIVER_APP_ID" ] && [ -z "$RECEIVER_APP_PRIVATE_KEY" ]; then
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error title=DRAFT receiver App::Set both DRAFT_RECEIVER_APP_ID and DRAFT_RECEIVER_APP_PRIVATE_KEY, or neither. One of them is missing."
+            exit 1
+          fi
+
+      - name: Mint Receiver App Token
+        id: receiver_token
+        if: steps.receiver_app.outputs.present == 'true'
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.DRAFT_RECEIVER_APP_ID }}
+          private-key: ${{ secrets.DRAFT_RECEIVER_APP_PRIVATE_KEY }}
+          repositories: "${{ github.event.repository.name }}"
+          permission-contents: write
+          permission-pull-requests: write
+
+      # actor, not triggering_actor: a re-run keeps the original pusher in actor.
+      - name: Require Receiver App Push
+        id: receiver_pusher
+        if: steps.receiver_token.outcome == 'success'
+        env:
+          PUSHER: ${{ github.event.workflow_run.actor.login }}
+          APP_SLUG: ${{ steps.receiver_token.outputs.app-slug }}
+        run: |
+          expected="${APP_SLUG}[bot]"
+          if [ -z "$APP_SLUG" ] || [ "$PUSHER" != "$expected" ]; then
+            echo "::error title=DRAFT sync merge::the validated commit was pushed by ${PUSHER:-unknown}, not the receiver App"
+            exit 1
+          fi
+
+      - name: Checkout Workspace
+        if: success() && steps.receiver_token.outcome == 'success'
+        uses: actions/checkout@v4
+        with:
+          # The default branch only. Do not check out workflow_run.head_sha or head_branch:
+          # those are the pull request, and this job must run the trusted tools from the default branch.
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up Python
+        if: success() && steps.receiver_token.outcome == 'success'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        if: success() && steps.receiver_token.outcome == 'success'
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+
+      - name: Merge Confined Sync Pull Request
+        if: success() && steps.receiver_token.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ steps.receiver_token.outputs.token }}
+          CENTRAL_REPOSITORY: ${{ github.repository }}
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          AUTO_MERGE: ${{ vars.DRAFT_SYNC_AUTO_MERGE }}
+          PUSHER: ${{ github.event.workflow_run.actor.login }}
+          APP_SLUG: ${{ steps.receiver_token.outputs.app-slug }}
+        run: |
+          python3 .draft/framework/tools/sdp_sync.py merge \
+            --workspace . \
+            --repository "$CENTRAL_REPOSITORY" \
+            --base "$BASE_BRANCH" \
+            --sha "$HEAD_SHA" \
+            --head "$HEAD_BRANCH" \
+            --pusher "$PUSHER" \
+            --app-slug "$APP_SLUG" \
+            --auto-merge "${AUTO_MERGE:-false}"
