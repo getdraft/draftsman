@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- `product_registration` gains two optional fields, `repository.id` and `repository.ownerId`. Registrations that omit them stay valid. `sdp_sync.py receive` still matches those by repository name, and an accepted result now includes a warning asking a Draft Admin to pin the ids. A registration that sets either field is rejected when the GitHub Actions OIDC token does not carry the same numeric id. The receive result JSON always includes a `warnings` list, and the reported outcome (`draft-sdp-sync-result/1`) includes that list and appends it to the message when it is not empty. The product run stays successful for the warning. No catalog migration is required.
+
+### Added
+
+- `repository.id` and `repository.ownerId` on ProductRegistration, GitHub's permanent repository and owner ids (OIDC claims `repository_id` and `repository_owner_id`). When `repository.id` is set, `receive` requires the token's `repository_id` to match, so a deleted and recreated repository cannot sync as the registered product and a rename still can after `repository.url` is updated. `repository.ownerId` is checked only when set. When `repository.id` is omitted, the name match stands and the result warns. The receiver does not write the id into the catalog.
+
+### Changed
+
+- The product-registration schema, validator, template, object-type doc, decentralized SDP setup guide, and the Draftsman registration protocol describe the pins and how to look them up with `gh api repos/OWNER/NAME --jq .id` and `--jq .owner.id`. The setup guide no longer lists name-only matching as an open follow-up.
+
+### Fixed
+
+- A repository that was deleted and recreated with the same `owner/name` no longer passes the receiver when its ProductRegistration pins `repository.id`.
+
+### Migration Notes
+
+- No immediate change is required. To close the recreate gap, set `repository.id` from `gh api repos/OWNER/NAME --jq .id` and `repository.ownerId` from `gh api repos/OWNER/NAME --jq .owner.id` on each ProductRegistration. Write a positive integer or a decimal digit string with no leading zeros. Look the ids up for the repository you intend to register; do not copy them from a sync warning. Until `repository.id` is set, each accepted sync warns in the receive result and in the outcome reported to the product run. Existing sync workflows do not need a template change for this check.
+
 ## 1.21.5 - 2026-11-22
 
 ### Compatibility Impact

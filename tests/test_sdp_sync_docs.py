@@ -48,7 +48,10 @@ class SetupGuideTests(unittest.TestCase):
         self.assertIn("Required status checks do not run on these pull requests", GUIDE)
         self.assertIn("Allow GitHub Actions to create and approve pull requests", GUIDE)
         self.assertIn("Allow auto-merge", GUIDE)
-        self.assertIn("getdraft/draftsman#455", GUIDE)
+        self.assertIn("repository.id", GUIDE)
+        self.assertIn("repository_id", GUIDE)
+        self.assertIn("A renamed repository still syncs", GUIDE)
+        self.assertNotIn("tracked as a follow-up (getdraft/draftsman#455)", GUIDE)
 
     def test_the_upgrade_from_flat_files_is_described(self) -> None:
         self.assertIn("## Upgrading from the Original Sync", GUIDE)

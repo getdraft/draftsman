@@ -5,7 +5,8 @@ These protocols apply to any harness. Where a step needs a capability, the profi
 ## Product registration (Author profile)
 
 - Scaffold `catalog/engineering/product-registrations/product-reg-<name>.yaml` against `product-registration.schema.yaml`.
-- Set `repoUrl`, `sdpPath` (`.draft/sdp.yaml`) and `owner.team`.
+- Set `repository.url`, `repository.defaultBranch`, `sdpManifest.path` (`.draft/sdp.yaml`) and `owner.team`.
+- When the product repository is on GitHub and `gh api repos/OWNER/NAME` succeeds, set `repository.id` from `--jq .id` and `repository.ownerId` from `--jq .owner.id`. Leave both unset when that lookup cannot be run; the receiver then matches by repository name and warns on every sync. Do not copy an id out of a sync warning.
 - Search the catalog first. Do not create a second registration for a product that already has one.
 
 ## Local repository initialisation (Author profile)
