@@ -62,6 +62,8 @@ class SetupGuideTests(unittest.TestCase):
         self.assertIn("**Ruleset A**", GUIDE)
         self.assertIn("**Ruleset B**", GUIDE)
         self.assertIn("**Ruleset C**", GUIDE)
+        self.assertIn("must be **Always**", GUIDE)
+        self.assertIn("For an `opened` run, `workflow_run.actor` is the account that opened the pull request", GUIDE)
         self.assertIn("draft-sdp-merge", GUIDE)
         self.assertIn("workflow_run.actor", GUIDE)
         self.assertIn("triggering_actor", GUIDE)

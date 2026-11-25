@@ -796,7 +796,8 @@ def publish(result: Mapping[str, Any], base: str, run: Runner, auto_merge: bool 
     _ok(run, ["git", "-c", f"user.name={BOT_NAME}", "-c", f"user.email={BOT_EMAIL}", "commit", "--no-verify", "-m", title,
               "-m", f"correlation id {result.get('correlationId')}"], "git commit")
     # The branch is the receiver's own: each sync is a fresh snapshot on top of the default branch.
-    _ok(run, ["git", "push", "--force", "origin", f"HEAD:refs/heads/{branch}"], "git push")
+    ours = _commit_sha(_ok(run, ["git", "rev-parse", "HEAD"], "git rev-parse"), "the commit that was just created")
+    _push_sync_branch(run, branch)
     with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False, encoding="utf-8") as handle:
         handle.write(_pr_body(result, paths, confined))
         body_file = handle.name
@@ -817,7 +818,12 @@ def publish(result: Mapping[str, Any], base: str, run: Runner, auto_merge: bool 
             outcome["pullRequestAction"] = "opened"
     finally:
         Path(body_file).unlink(missing_ok=True)
+    # For a pull_request opened run, workflow_run.actor is whoever opened the pull request, not who pushed
+    # the tip. Anything that replaced the branch between the push and gh pr create would be opened by this
+    # App. Put our commit back and fail so that tip is not what the opened run validates.
+    _require_published_head(run, branch, number, ours)
     outcome["pullRequest"] = {"number": number, "url": url}
+    outcome["head"] = ours
     if auto_merge and confined:
         # Arms GitHub auto-merge for a later approval. Auto-merge does not honor a ruleset bypass actor, so a
         # required review stays unsatisfied until a person approves. The receiver App calls `merge` instead.
@@ -912,14 +918,43 @@ def merge_confined(changes: list[tuple[str, str]], product: str, repository: str
     return is_confined(paths, product, repository)
 
 
+def _commit_sha(text: str, what: str) -> str:
+    token = text.strip().split()[0].lower() if text.strip() else ""
+    if not _FULL_SHA.match(token):
+        raise SyncError(f"{what} is not a full git commit SHA")
+    return token
+
+
+def _sha_or_blank(text: str) -> str:
+    token = text.strip().split()[0].lower() if text.strip() else ""
+    return token if _FULL_SHA.match(token) else ""
+
+
+def _push_sync_branch(run: Runner, branch: str) -> None:
+    _ok(run, ["git", "push", "--force", "origin", f"HEAD:refs/heads/{branch}"], "git push")
+
+
+def _require_published_head(run: Runner, branch: str, number: int, ours: str) -> None:
+    """The remote tip and the pull request head must still be the commit this publish pushed."""
+    tip = _sha_or_blank(_ok(run, ["git", "ls-remote", "origin", f"refs/heads/{branch}"], "git ls-remote"))
+    pr_head = _sha_or_blank(_ok(run, ["gh", "pr", "view", str(number), "--json", "headRefOid", "--jq", ".headRefOid"],
+                                "gh pr view"))
+    if tip == ours and pr_head == ours:
+        return
+    _push_sync_branch(run, branch)
+    raise SyncError(
+        f"the sync branch {branch} moved during publish (pushed {ours}, branch tip {tip}, pull request head {pr_head}); "
+        f"restored {ours} and refused to publish"
+    )
+
+
 def _head_moved(status: int, detail: str) -> bool:
-    """True only for the merge API's HTTP 409 when the head moved. Other 'must match' errors stay failures."""
-    if status != 409:
-        return False
+    """A moved head is a skip. Merge reports that as HTTP 409; update-branch reports expected_head_sha as HTTP 422."""
     text = detail.lower()
-    if "head branch was modified" in text:
+    if status == 409 and ("head branch was modified" in text or ("sha" in text and "head" in text and "must match" in text)):
         return True
-    return "sha" in text and "head" in text and "must match" in text
+    # update-branch: {"message":"expected_head_sha ..."} with HTTP 422. Other 422s still fail the job.
+    return status == 422 and ("expected_head_sha" in text or "expected head sha" in text)
 
 
 def _http_status(text: str) -> int | None:
@@ -950,6 +985,8 @@ def merge_sync_pull_request(central: str, base: str, sha: str, head: str, run: R
     """Squash-merge the receiver App's confined sync pull request at this exact head SHA.
 
     The pusher is `workflow_run.actor` of the validating run (the account that triggered it initially).
+    For a `synchronize` run that is the pusher; for an `opened` run it is whoever opened the pull request,
+    which is why `publish` checks the branch tip after it opens the pull request.
     `triggering_actor` is whoever started the latest attempt and changes on re-run, so it is not used.
     GitHub auto-merge ignores a ruleset bypass actor, so this calls the merge API and passes ``sha``.
     A pull request that is behind its base is updated instead of merged, and the next green validation merges it.

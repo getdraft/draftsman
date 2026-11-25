@@ -31,11 +31,16 @@ def done(stdout: str = "", returncode: int = 0, stderr: str = "") -> subprocess.
     return subprocess.CompletedProcess([], returncode, stdout, stderr)
 
 
+OUR = "c" * 40
+
+
 class FakeRunner:
     """Records every command; answers git status and gh from a script, everything else succeeds."""
 
-    def __init__(self, status: str, open_prs: list | None = None, fail: dict | None = None) -> None:
+    def __init__(self, status: str, open_prs: list | None = None, fail: dict | None = None,
+                 remote_tip: str | None = None, pr_head: str | None = None) -> None:
         self.status, self.open_prs, self.fail, self.calls, self.bodies = status, open_prs or [], fail or {}, [], []
+        self.remote_tip, self.pr_head = remote_tip, pr_head
 
     def __call__(self, args: list[str]) -> subprocess.CompletedProcess:
         self.calls.append(list(args))
@@ -46,6 +51,12 @@ class FakeRunner:
             self.bodies.append(Path(args[args.index("--body-file") + 1]).read_text(encoding="utf-8"))
         if args[:2] == ["git", "status"]:
             return done(self.status)
+        if args[:3] == ["git", "rev-parse", "HEAD"]:
+            return done(OUR + "\n")
+        if args[:2] == ["git", "ls-remote"]:
+            return done(f"{OUR if self.remote_tip is None else self.remote_tip}\t{args[-1]}\n")
+        if args[:3] == ["gh", "pr", "view"]:
+            return done((OUR if self.pr_head is None else self.pr_head) + "\n")
         if args[:3] == ["gh", "pr", "list"]:
             return done(json.dumps(self.open_prs))
         if args[:3] == ["gh", "pr", "create"]:
@@ -75,6 +86,9 @@ class PublishTests(unittest.TestCase):
         self.assertEqual(add[:4], ["git", "add", "-A", "--"])
         self.assertNotIn(".draft/framework/tools/__pycache__/x.cpython-311.pyc", add, "bytecode is never committed")
         self.assertEqual(run.commands("git push"), [["git", "push", "--force", "origin", f"HEAD:refs/heads/{BRANCH}"]])
+        self.assertEqual(run.commands("git rev-parse"), [["git", "rev-parse", "HEAD"]])
+        self.assertTrue(run.commands("git ls-remote"))
+        self.assertEqual(run.commands("gh pr view")[0][:4], ["gh", "pr", "view", "42"])
         (create,) = run.commands("gh pr create")
         self.assertEqual(create[3:7], ["--base", "main", "--head", BRANCH])
         self.assertIn(f"DRAFT sync: {REPOSITORY} at {COMMIT[:12]}", create)
@@ -97,6 +111,20 @@ class PublishTests(unittest.TestCase):
         self.assertEqual(edit[:4], ["gh", "pr", "edit", "7"])
         (listing,) = run.commands("gh pr list")
         self.assertEqual(listing[3:9], ["--head", BRANCH, "--base", "main", "--state", "open"])
+
+    def test_a_tip_replaced_before_the_pull_request_is_opened_is_restored_and_rejected(self) -> None:
+        attacker = "d" * 40
+        for kwargs in ({"remote_tip": attacker}, {"pr_head": attacker}, {"remote_tip": attacker, "pr_head": attacker}):
+            with self.subTest(kwargs):
+                run = FakeRunner(CACHE_ONLY, **kwargs)
+                with self.assertRaises(sdp_sync.SyncError) as caught:
+                    sdp_sync.publish(RESULT, "main", run)
+                self.assertIn("moved during publish", str(caught.exception))
+                self.assertIn(OUR, str(caught.exception))
+                self.assertIn(attacker, str(caught.exception))
+                pushes = run.commands("git push")
+                self.assertEqual(len(pushes), 2, "the receiver's commit is force-pushed again after the mismatch")
+                self.assertTrue(all(push[-1] == f"HEAD:refs/heads/{BRANCH}" for push in pushes))
 
     def test_no_changes_publishes_nothing(self) -> None:
         run = FakeRunner(status("?? .draft/framework/tools/__pycache__/sdp_sync.cpython-311.pyc"))
@@ -223,6 +251,7 @@ class RealGitTests(unittest.TestCase):
             'case "$1 $2" in\n'
             '  "pr list") echo "[]" ;;\n'
             '  "pr create") echo "https://github.com/example-org/drafting-table/pull/5" ;;\n'
+            '  "pr view") git rev-parse HEAD ;;\n'
             "esac\n", encoding="utf-8")
         (bin_dir / "gh").chmod(0o755)
         self.env = {**os.environ, "PATH": f"{bin_dir}:{Path(sys.executable).parent}:{os.environ.get('PATH', '')}",
@@ -248,7 +277,7 @@ class RealGitTests(unittest.TestCase):
         self.assertEqual(files, [f".draft/external_sdps/{PRODUCT}/sdp.yaml"])
         self.assertIn(f"DRAFT sync: {REPOSITORY} at {COMMIT[:12]}", self.git("log", "-1", "--format=%s", f"refs/heads/{BRANCH}", cwd=self.origin))
         gh_calls = self.gh_log.read_text(encoding="utf-8").splitlines()
-        self.assertEqual([c.split()[:3] for c in gh_calls], [["pr", "list", "--head"], ["pr", "create", "--base"], ["pr", "merge", "5"]])
+        self.assertEqual([c.split()[:3] for c in gh_calls], [["pr", "list", "--head"], ["pr", "create", "--base"], ["pr", "view", "5"], ["pr", "merge", "5"]])
         result = json.loads((self.tmp / "sdp-sync-result.json").read_text())
         self.assertEqual((result["status"], result["publish"]["status"], result["publish"]["pullRequest"]["number"]), ("accepted", "published", 5))
 
@@ -306,14 +335,14 @@ class ScriptedRunner:
 
 def confined_replies(pulls: list | None = None, diff: str = f"M\t.draft/external_sdps/{PRODUCT}/sdp.yaml\n",
                      sha: str = SHA, merge_code: int = 0, merge_stderr: str = "",
-                     behind: int = 0) -> list[tuple[str, str, int, str]]:
+                     behind: int = 0, update_code: int = 0, update_stderr: str = "") -> list[tuple[str, str, int, str]]:
     return [
         ("git fetch", "", 0, ""),
         ("git rev-parse", sha + "\n", 0, ""),
         ("git diff", diff, 0, ""),
         (f"gh api -i repos/{CENTRAL}/commits/", json.dumps(pulls if pulls is not None else [pull(9)]), 0, ""),
         (f"gh api -i repos/{CENTRAL}/compare/", json.dumps({"behind_by": behind, "status": "behind" if behind else "ahead"}), 0, ""),
-        (f"gh api -i --method PUT repos/{CENTRAL}/pulls/9/update-branch", "", 0, ""),
+        (f"gh api -i --method PUT repos/{CENTRAL}/pulls/9/update-branch", "", update_code, update_stderr),
         (f"gh api -i --method PUT repos/{CENTRAL}/pulls/9/merge", "{\"merged\":true}\n", merge_code, merge_stderr),
     ]
 
@@ -375,6 +404,17 @@ class MergeTests(unittest.TestCase):
             merge(blocked)
         self.assertFalse(sdp_sync._head_moved(405, "SHA of the pull request's head must match"))
         self.assertTrue(sdp_sync._head_moved(409, "Head branch was modified"))
+        self.assertFalse(sdp_sync._head_moved(422, "Validation Failed"))
+
+    def test_update_branch_422_for_a_moved_head_is_skipped(self) -> None:
+        self.assertTrue(sdp_sync._head_moved(422, "expected_head_sha did not match the current head"))
+        moved = ScriptedRunner(confined_replies(
+            behind=2, update_code=1,
+            update_stderr="HTTP/2.0 422 Unprocessable Entity\nexpected_head_sha did not match the current head"))
+        self.assertEqual(merge(moved)["status"], "skipped")
+        other = ScriptedRunner(confined_replies(behind=2, update_code=1, update_stderr="HTTP/2.0 422 Unprocessable Entity\nValidation Failed"))
+        with self.assertRaisesRegex(sdp_sync.SyncError, "Validation Failed"):
+            merge(other)
 
     def test_a_bad_sha_or_two_pull_requests_are_refused(self) -> None:
         with self.assertRaisesRegex(sdp_sync.SyncError, "not a full git commit SHA"):
