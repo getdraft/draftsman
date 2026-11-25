@@ -275,5 +275,92 @@ class RealGitTests(unittest.TestCase):
         self.assertFalse(self.gh_log.exists())
 
 
+SHA = "a" * 40
+HEAD = "draft-sync/" + PRODUCT
+CENTRAL = "example-org/drafting-table"
+
+
+def pull(number: int, sha: str = SHA, head: str = HEAD, repo: str = CENTRAL, base: str = "main", state: str = "open") -> dict:
+    return {"number": number, "state": state, "html_url": f"https://github.com/{CENTRAL}/pull/{number}",
+            "head": {"ref": head, "sha": sha, "repo": {"full_name": repo}}, "base": {"ref": base}}
+
+
+class ScriptedRunner:
+    def __init__(self, replies: list[tuple[str, str, int, str]]) -> None:
+        self.replies, self.calls = replies, []
+
+    def __call__(self, args: list[str]) -> subprocess.CompletedProcess:
+        self.calls.append(list(args))
+        text = " ".join(args)
+        for prefix, stdout, code, stderr in self.replies:
+            if text.startswith(prefix):
+                return done(stdout, code, stderr)
+        return done()
+
+
+def confined_replies(pulls: list | None = None, diff: str = f"M\t.draft/external_sdps/{PRODUCT}/sdp.yaml\n",
+                     sha: str = SHA, merge_code: int = 0, merge_stderr: str = "") -> list[tuple[str, str, int, str]]:
+    return [
+        ("git fetch", "", 0, ""),
+        ("git rev-parse", sha + "\n", 0, ""),
+        ("git diff", diff, 0, ""),
+        ("gh api repos/" + CENTRAL + "/commits/", json.dumps(pulls if pulls is not None else [pull(9)]), 0, ""),
+        ("gh api --method PUT", "{\"merged\":true}\n", merge_code, merge_stderr),
+    ]
+
+
+class MergeTests(unittest.TestCase):
+    def test_a_confined_same_repository_pull_request_is_squash_merged_at_that_sha(self) -> None:
+        run = ScriptedRunner(confined_replies())
+        outcome = sdp_sync.merge_sync_pull_request(CENTRAL, "main", SHA, HEAD, run, auto_merge=True)
+        self.assertEqual(outcome["status"], "merged")
+        self.assertEqual(outcome["pullRequest"]["number"], 9)
+        self.assertIn(["gh", "api", "--method", "PUT", f"repos/{CENTRAL}/pulls/9/merge", "-f", "merge_method=squash", "-f", f"sha={SHA}"], run.calls)
+        fetch = run.calls[0]
+        self.assertEqual(fetch[:4], ["git", "fetch", "--no-tags", "origin"])
+        self.assertIn(f"+refs/heads/{HEAD}:refs/remotes/origin/{HEAD}", fetch)
+
+    def test_auto_merge_off_does_not_touch_git_or_the_api(self) -> None:
+        run = ScriptedRunner([])
+        outcome = sdp_sync.merge_sync_pull_request(CENTRAL, "main", SHA, HEAD, run, auto_merge=False)
+        self.assertEqual(outcome["status"], "skipped")
+        self.assertEqual(run.calls, [])
+
+    def test_a_change_outside_the_cache_is_left_open(self) -> None:
+        diff = f"M\t.draft/external_sdps/{PRODUCT}/sdp.yaml\nM\tcatalog/x.yaml\n"
+        run = ScriptedRunner(confined_replies(diff=diff))
+        outcome = sdp_sync.merge_sync_pull_request(CENTRAL, "main", SHA, HEAD, run, auto_merge=True)
+        self.assertEqual(outcome["status"], "left-open")
+        self.assertFalse([c for c in run.calls if c[:3] == ["gh", "api", "--method"]])
+
+    def test_a_rename_out_of_the_cache_is_left_open(self) -> None:
+        diff = f"R100\t.draft/external_sdps/{PRODUCT}/sdp.yaml\tcatalog/stolen.yaml\n"
+        self.assertEqual(sdp_sync.paths_from_name_status(diff),
+                         [f".draft/external_sdps/{PRODUCT}/sdp.yaml", "catalog/stolen.yaml"])
+        run = ScriptedRunner(confined_replies(diff=diff))
+        self.assertEqual(sdp_sync.merge_sync_pull_request(CENTRAL, "main", SHA, HEAD, run, auto_merge=True)["status"], "left-open")
+
+    def test_a_fork_and_a_moved_head_are_not_merged(self) -> None:
+        fork = ScriptedRunner(confined_replies(pulls=[pull(9, repo="attacker/drafting-table")]))
+        self.assertEqual(sdp_sync.merge_sync_pull_request(CENTRAL, "main", SHA, HEAD, fork, auto_merge=True)["status"], "skipped")
+        moved = ScriptedRunner(confined_replies(sha="b" * 40))
+        self.assertEqual(sdp_sync.merge_sync_pull_request(CENTRAL, "main", SHA, HEAD, moved, auto_merge=True)["status"], "skipped")
+        self.assertFalse([c for c in moved.calls if c[0] == "gh"])
+
+    def test_a_sha_race_is_skipped_and_another_merge_error_fails(self) -> None:
+        raced = ScriptedRunner(confined_replies(merge_code=1, merge_stderr="SHA of the pull request's head must match"))
+        self.assertEqual(sdp_sync.merge_sync_pull_request(CENTRAL, "main", SHA, HEAD, raced, auto_merge=True)["status"], "skipped")
+        blocked = ScriptedRunner(confined_replies(merge_code=1, merge_stderr="At least 1 approving review is required"))
+        with self.assertRaisesRegex(sdp_sync.SyncError, "approving review"):
+            sdp_sync.merge_sync_pull_request(CENTRAL, "main", SHA, HEAD, blocked, auto_merge=True)
+
+    def test_a_bad_sha_or_two_pull_requests_are_refused(self) -> None:
+        with self.assertRaisesRegex(sdp_sync.SyncError, "not a full git commit SHA"):
+            sdp_sync.merge_sync_pull_request(CENTRAL, "main", "abc", HEAD, ScriptedRunner([]), auto_merge=True)
+        both = ScriptedRunner(confined_replies(pulls=[pull(9), pull(10)]))
+        with self.assertRaisesRegex(sdp_sync.SyncError, "more than one"):
+            sdp_sync.merge_sync_pull_request(CENTRAL, "main", SHA, HEAD, both, auto_merge=True)
+
+
 if __name__ == "__main__":
     unittest.main()

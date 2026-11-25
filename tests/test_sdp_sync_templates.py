@@ -26,6 +26,10 @@ sys.path.insert(0, str(ROOT))
 from tests import sdp_sync_identity as identity  # noqa: E402
 
 
+def names_index(path: Path, name: str) -> int:
+    return [s.get("name") for s in steps(path)].index(name)
+
+
 def steps(path: Path) -> list[dict]:
     workflow = yaml.safe_load(path.read_text(encoding="utf-8"))
     return [step for job in workflow["jobs"].values() for step in job["steps"]]
@@ -38,14 +42,14 @@ def step(path: Path, name: str) -> dict:
 
 class NoExpressionsInScriptsTests(unittest.TestCase):
     def test_no_run_step_contains_an_expression(self) -> None:
-        for path in (SENDER, RECEIVER):
+        for path in (SENDER, RECEIVER, MERGE):
             for s in steps(path):
                 if "run" in s:
                     with self.subTest(template=path.name, step=s.get("name")):
                         self.assertIsNone(EXPRESSION.search(s["run"]), "pass values through env: or files, not ${{ }} in run:")
 
     def test_no_template_reads_the_payload_through_an_expression(self) -> None:
-        for path in (SENDER, RECEIVER):
+        for path in (SENDER, RECEIVER, MERGE):
             with self.subTest(path.name):
                 self.assertNotIn("client_payload", "".join(EXPRESSION.findall(path.read_text(encoding="utf-8"))))
 
@@ -103,9 +107,9 @@ class WiringTests(unittest.TestCase):
         self.assertEqual(names[-2:], ["Publish Sync Pull Request", "Report Sync Result"])
         self.assertLess(names.index("Regenerate Machine Indexes & AI Map"), names.index("Publish Sync Pull Request"))
         publish = step(RECEIVER, "Publish Sync Pull Request")
-        token = "${{ steps.receiver_token.outputs.token || github.token }}"
+        token = "${{ steps.receiver_token.outcome == 'success' && steps.receiver_token.outputs.token || github.token }}"
         self.assertEqual(publish["env"], {"GH_TOKEN": token, "BASE_BRANCH": "${{ github.event.repository.default_branch }}",
-                                          "AUTO_MERGE": "${{ vars.DRAFT_SYNC_AUTO_MERGE }}"})
+                                          "AUTO_MERGE": "${{ steps.receiver_token.outcome == 'success' && 'false' || vars.DRAFT_SYNC_AUTO_MERGE }}"})
         self.assertIn("sdp_sync.py publish", publish["run"])
         self.assertIn('--result "$RUNNER_TEMP/sdp-sync-result.json"', publish["run"])
 
@@ -117,8 +121,9 @@ class WiringTests(unittest.TestCase):
         self.assertLess(names.index("Store Decentralized SDP Payload"), names.index("Validate Workspace Architecture"))
 
 
-# Absent receiver secrets must keep github.token. An empty output from the skipped mint step is falsy.
-RECEIVER_TOKEN = "${{ steps.receiver_token.outputs.token || github.token }}"
+# A successful mint uses the App token. A skipped or failed mint keeps github.token, and checkout still runs.
+RECEIVER_TOKEN = "${{ steps.receiver_token.outcome == 'success' && steps.receiver_token.outputs.token || github.token }}"
+MERGE = TEMPLATES / "drafting-table-sync-merge.yml.tmpl"
 
 
 class ReceiverAppTokenTests(unittest.TestCase):
@@ -149,8 +154,10 @@ class ReceiverAppTokenTests(unittest.TestCase):
 
     def test_checkout_publish_and_report_share_the_app_token_with_a_github_token_fallback(self) -> None:
         checkout = step(RECEIVER, "Checkout Workspace")
+        self.assertEqual(checkout["if"], "always()")
         self.assertEqual(checkout["with"]["token"], RECEIVER_TOKEN)
         self.assertIs(checkout["with"]["persist-credentials"], True)
+        self.assertLess(names_index(RECEIVER, "Mint Receiver App Token"), names_index(RECEIVER, "Checkout Workspace"))
         self.assertEqual(step(RECEIVER, "Publish Sync Pull Request")["env"]["GH_TOKEN"], RECEIVER_TOKEN)
         self.assertEqual(step(RECEIVER, "Report Sync Result")["env"]["GH_TOKEN"], RECEIVER_TOKEN)
         self.assertIn("github.token", RECEIVER_TOKEN)
@@ -192,6 +199,44 @@ class ReceiverAppTokenTests(unittest.TestCase):
         self.addCleanup(lambda: Path(tmp.name).unlink(missing_ok=True))
         tmp.close()
         return Path(tmp.name)
+
+
+class SyncMergeWorkflowTests(unittest.TestCase):
+    """After validate succeeds, the receiver App merges the confined pull request at that exact SHA."""
+
+    def test_it_follows_a_successful_validation_of_a_same_repository_sync_branch(self) -> None:
+        workflow = yaml.safe_load(MERGE.read_text(encoding="utf-8"))
+        trigger = workflow.get("on", workflow.get(True))
+        self.assertEqual(trigger["workflow_run"]["workflows"], ["Validate Catalog"])
+        self.assertEqual(trigger["workflow_run"]["types"], ["completed"])
+        self.assertEqual(workflow["permissions"], {"contents": "read"})
+        job = workflow["jobs"]["merge_sync"]
+        self.assertIn("github.event.workflow_run.conclusion == 'success'", job["if"])
+        self.assertIn("github.event.workflow_run.event == 'pull_request'", job["if"])
+        self.assertIn("startsWith(github.event.workflow_run.head_branch, 'draft-sync/')", job["if"])
+        self.assertIn("github.event.workflow_run.head_repository.full_name == github.repository", job["if"])
+        self.assertNotIn("concurrency", workflow)
+
+    def test_it_mints_the_receiver_app_token_and_merges_that_sha(self) -> None:
+        self.assertLess(names_index(MERGE, "Mint Receiver App Token"), names_index(MERGE, "Checkout Workspace"))
+        self.assertLess(names_index(MERGE, "Checkout Workspace"), names_index(MERGE, "Merge Confined Sync Pull Request"))
+        self.assertEqual(step(MERGE, "Detect Receiver App Credentials")["run"], step(RECEIVER, "Detect Receiver App Credentials")["run"])
+        token = step(MERGE, "Mint Receiver App Token")
+        self.assertEqual(token["if"], "steps.receiver_app.outputs.present == 'true'")
+        self.assertEqual(token["uses"], "actions/create-github-app-token@v1")
+        self.assertEqual(token["with"]["permission-contents"], "read")
+        self.assertEqual(token["with"]["permission-pull-requests"], "write")
+        self.assertEqual(token["with"]["repositories"], "${{ github.event.repository.name }}")
+        merge = step(MERGE, "Merge Confined Sync Pull Request")
+        self.assertEqual(merge["if"], "steps.receiver_token.outcome == 'success'")
+        self.assertEqual(merge["env"]["GH_TOKEN"], "${{ steps.receiver_token.outputs.token }}")
+        self.assertEqual(merge["env"]["HEAD_SHA"], "${{ github.event.workflow_run.head_sha }}")
+        self.assertEqual(merge["env"]["HEAD_BRANCH"], "${{ github.event.workflow_run.head_branch }}")
+        self.assertEqual(merge["env"]["AUTO_MERGE"], "${{ vars.DRAFT_SYNC_AUTO_MERGE }}")
+        self.assertIn("sdp_sync.py merge", merge["run"])
+        self.assertIn('--sha "$HEAD_SHA"', merge["run"])
+        self.assertIn('--auto-merge "${AUTO_MERGE:-false}"', merge["run"])
+        self.assertNotIn("gh pr merge", MERGE.read_text(encoding="utf-8"))
 
 
 def bash(script: str, cwd: Path, env: dict[str, str]) -> subprocess.CompletedProcess:

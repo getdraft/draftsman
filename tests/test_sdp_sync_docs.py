@@ -46,9 +46,10 @@ class SetupGuideTests(unittest.TestCase):
 
     def test_the_required_known_limits_are_documented(self) -> None:
         self.assertIn("A live OIDC token can be resent within its lifetime", GUIDE)
-        self.assertIn("Required status checks do not run on these pull requests", GUIDE)
+        self.assertIn("Approve workflows to run", GUIDE)
         self.assertIn("Allow GitHub Actions to create and approve pull requests", GUIDE)
         self.assertIn("Allow auto-merge", GUIDE)
+        self.assertIn("For pull requests only", GUIDE)
         self.assertIn("repository.id", GUIDE)
         self.assertIn("repository_id", GUIDE)
         self.assertIn("A renamed repository still syncs", GUIDE)
@@ -62,11 +63,15 @@ class SetupGuideTests(unittest.TestCase):
         self.assertIn("**Ruleset B**", GUIDE)
         self.assertIn("skips every rule", GUIDE)
         self.assertIn("Pull requests: Read and write", GUIDE)
+        self.assertIn("For pull requests only", GUIDE)
+        self.assertIn("**DRAFT Sync Pull Request Merge**", GUIDE)
         self.assertIn("the main gate", GUIDE)
+        self.assertIn("repository.id", GUIDE)
         checks = GUIDE.split("## Pull Requests and Required Checks", 1)[1].split("## Fully Automatic Merge", 1)[0]
-        self.assertIn("Required status checks do not run on these pull requests", checks)
+        self.assertIn("Approve workflows to run", checks)
         self.assertIn("(#fully-automatic-merge)", checks)
         self.assertIn("synchronize", checks)
+        self.assertNotIn("does not start other workflows", checks)
         dispatch = GUIDE.split("### 2. Dispatch GitHub App", 1)[1].split("### 3.", 1)[0]
         self.assertIn("*Contents: Read and write*. Nothing else.", dispatch)
         self.assertNotIn("Pull requests", dispatch)

@@ -9,11 +9,13 @@
 # DRAFT_SYNC_AUTO_MERGE=true requests auto-merge when a change stays inside that product's cache folder.
 # Every run ends with a report: a job summary, and (once the sender's identity is verified) a result file on the
 # draft-sync-results branch that the product repository's sync run waits for and fails on.
-# Optional fully automatic merge: repository secrets DRAFT_RECEIVER_APP_ID and DRAFT_RECEIVER_APP_PRIVATE_KEY
+# Optional unattended merge: repository secrets DRAFT_RECEIVER_APP_ID and DRAFT_RECEIVER_APP_PRIVATE_KEY
 # (a second GitHub App, installed only on this repository). When both are set, the workflow mints an
 # installation token before checkout, checks out with it, and passes it as GH_TOKEN to publish and report.
-# The force-push then authenticates as the App, so pull_request workflows run on the first sync and again after
-# each later force-push. When the secrets are absent, checkout and GH_TOKEN stay on GITHUB_TOKEN.
+# The force-push then authenticates as the App, so pull_request runs are not held for approval.
+# GitHub auto-merge does not honor a ruleset bypass, so this workflow does not arm --auto in that case.
+# templates/github/drafting-table-sync-merge.yml.tmpl merges the pull request after validate succeeds.
+# When the secrets are absent, or minting fails, checkout still runs with GITHUB_TOKEN so the report can write.
 name: DRAFT Decentralized SDP Receiver
 
 on:
@@ -65,12 +67,14 @@ jobs:
           permission-pull-requests: write
 
       - name: Checkout Workspace
+        if: always()
         uses: actions/checkout@v4
         with:
-          # sdp_sync.py publish force-pushes with these credentials, not with GH_TOKEN.
-          # A GITHUB_TOKEN push does not trigger pull_request synchronize, so a later sync
-          # would not rerun a required check. An empty skipped-step output selects github.token.
-          token: ${{ steps.receiver_token.outputs.token || github.token }}
+          # publish force-pushes with these credentials, not with GH_TOKEN.
+          # A GITHUB_TOKEN push still creates pull_request synchronize, and GitHub holds that run
+          # for "Approve workflows to run"; it does not go green unattended. The App token does.
+          # A failed or skipped mint selects github.token, and this step still runs so report can write.
+          token: ${{ steps.receiver_token.outcome == 'success' && steps.receiver_token.outputs.token || github.token }}
           persist-credentials: true
 
       - name: Set up Python
@@ -105,9 +109,10 @@ jobs:
 
       - name: Publish Sync Pull Request
         env:
-          GH_TOKEN: ${{ steps.receiver_token.outputs.token || github.token }}
+          GH_TOKEN: ${{ steps.receiver_token.outcome == 'success' && steps.receiver_token.outputs.token || github.token }}
           BASE_BRANCH: ${{ github.event.repository.default_branch }}
-          AUTO_MERGE: ${{ vars.DRAFT_SYNC_AUTO_MERGE }}
+          # The App path merges from drafting-table-sync-merge.yml.tmpl. --auto cannot finish a required review.
+          AUTO_MERGE: ${{ steps.receiver_token.outcome == 'success' && 'false' || vars.DRAFT_SYNC_AUTO_MERGE }}
         run: |
           python3 .draft/framework/tools/sdp_sync.py publish \
             --workspace . \
@@ -118,7 +123,7 @@ jobs:
       - name: Report Sync Result
         if: always()
         env:
-          GH_TOKEN: ${{ steps.receiver_token.outputs.token || github.token }}
+          GH_TOKEN: ${{ steps.receiver_token.outcome == 'success' && steps.receiver_token.outputs.token || github.token }}
           JOB_STATUS: ${{ job.status }}
           BASE_BRANCH: ${{ github.event.repository.default_branch }}
         run: |

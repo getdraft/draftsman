@@ -493,6 +493,7 @@ These are sample catalog objects used to validate and demonstrate the framework.
 | templates/deployment-target.yaml.tmpl | Reusable YAML authoring template. |
 | templates/drafting-session.yaml.tmpl | Reusable YAML authoring template. |
 | templates/github/drafting-table-receiver.yml.tmpl | DRAFT Framework 1.0 — Central Receiver GitHub Action |
+| templates/github/drafting-table-sync-merge.yml.tmpl | DRAFT Framework 1.0 — Merge a confined sync pull request after validation |
 | templates/github/product-repo-sync.yml.tmpl | DRAFT Framework 1.0 — Product Repo Sync GitHub Action |
 | templates/host.yaml.tmpl | Reusable YAML authoring template. |
 | templates/network-service.yaml.tmpl | Reusable YAML authoring template. |
