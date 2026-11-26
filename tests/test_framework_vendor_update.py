@@ -97,7 +97,32 @@ class FrameworkVendorUpdateTests(unittest.TestCase):
         self.assertIn("vendor_framework", step)
         self.assertNotIn("cp -r", step)
         self.assertNotIn("rm -rf .draft/framework", step)
+        self.assertNotIn("pip install pyyaml", step)
         self.assertIn('vendor_framework(Path("."), Path("/tmp/draft-framework-update"), overwrite=True)', step)
+        clone = step.find("git clone --depth 1 --branch <target-ref>")
+        cleanup = step.find("rm -rf /tmp/draft-framework-update")
+        self.assertGreaterEqual(cleanup, 0)
+        self.assertLess(cleanup, clone)
+
+    def test_documented_vendor_command_runs_without_site_packages(self) -> None:
+        probe_env = os.environ.copy()
+        probe_env.pop("PYTHONPATH", None)
+        probe = subprocess.run(
+            [sys.executable, "-S", "-c", "import yaml"],
+            env=probe_env,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertNotEqual(probe.returncode, 0, "python3 -S can import PyYAML, so this test would not prove a stdlib-only import")
+        self.assertIn("No module named", probe.stderr)
+
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory) / "company-draft"
+            workspace.mkdir()
+            seed_workspace(workspace)
+            self.run_documented_step(workspace, isolated=True)
+            self.assert_vendor_contract(workspace)
 
     def test_documented_replace_matches_vendor_framework(self) -> None:
         reference = self.vendored_workspace(vendor_framework)
@@ -123,16 +148,23 @@ class FrameworkVendorUpdateTests(unittest.TestCase):
             self.assert_vendor_contract(workspace)
             return snapshot(workspace)
 
-    def run_documented_step(self, workspace: Path) -> None:
+    def run_documented_step(self, workspace: Path, *, isolated: bool = False) -> None:
         step = STEPS.read_text(encoding="utf-8").split("## Step 5:", 1)[1].split("## Step 6:", 1)[0]
         match = re.search(r"python3 - <<'PY'\n(.*)\nPY\n", step, re.S)
         self.assertIsNotNone(match, "step 5 is missing its vendor_framework command")
         code = match.group(1).replace('"/tmp/draft-framework-update"', repr(str(ROOT)))
         env = os.environ.copy()
         env["PYTHONDONTWRITEBYTECODE"] = "1"
-        env["PYTHONPATH"] = str(ROOT) + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else "")
+        if isolated:
+            env["PYTHONPATH"] = str(ROOT)
+        else:
+            env["PYTHONPATH"] = str(ROOT) + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else "")
+        command = [sys.executable]
+        if isolated:
+            command.append("-S")
+        command.extend(["-c", code])
         result = subprocess.run(
-            [sys.executable, "-c", code],
+            command,
             cwd=workspace,
             env=env,
             text=True,

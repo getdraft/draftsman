@@ -95,7 +95,12 @@ Upstream `templates/` lands in `.draft/framework/templates/`. The function
 leaves `.draft/framework.lock`, `.draft/templates`, and the rest of the
 workspace unchanged. Step 6 writes the lock.
 
+`vendor_framework` uses the Python standard library only. Remove any previous
+temporary clone first, so running this step again replaces that directory
+instead of stopping at `git clone`.
+
 ```bash
+rm -rf /tmp/draft-framework-update
 git clone --depth 1 --branch <target-ref> <framework.source> /tmp/draft-framework-update
 
 PYTHONPATH=/tmp/draft-framework-update python3 - <<'PY'
@@ -104,13 +109,6 @@ from draft_table.repo import vendor_framework
 
 vendor_framework(Path("."), Path("/tmp/draft-framework-update"), overwrite=True)
 PY
-```
-
-If that Python command fails because `yaml` is missing, install PyYAML and run
-the same command again:
-
-```bash
-python3 -m pip install pyyaml
 ```
 
 Resolve the exact commit SHA of the selected ref:
