@@ -322,7 +322,12 @@ The normal refresh flow is:
 
 1. Choose a reviewed upstream tag, commit, or internal framework mirror.
 2. Open a branch in the company repo.
-3. Replace `.draft/framework/` with that reviewed framework version.
+3. Replace `.draft/framework/` with that reviewed framework version by running
+   `vendor_framework()` from the upstream checkout (`draft_table.repo`). It
+   copies `FRAMEWORK_VENDOR_DIRS`, `FRAMEWORK_VENDOR_OPTIONAL_DIRS`, and
+   `FRAMEWORK_VENDOR_FILES` into `.draft/framework/`, including root files
+   such as `AGENTS.md` and `draft-framework.yaml`. Upstream `templates/`
+   lands in `.draft/framework/templates/`.
 4. Update `.draft/framework.lock` with the synced source, commit, and version.
 5. Run `python3 .draft/framework/tools/validate.py --workspace . --write-baseline`
    so objects that already break a newly ratcheted rule are recorded in

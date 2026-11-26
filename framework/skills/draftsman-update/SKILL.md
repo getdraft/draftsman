@@ -13,7 +13,7 @@ The verbatim procedure for every step below is in `references/steps.md`. Follow 
 - **Step 2, read current state:** read `.draft/framework.lock` and report the current version, commit and source.
 - **Step 3, check for updates:** list upstream tags, compare with the lock, show the changelog link, and stop if there is nothing newer or the user declines.
 - **Step 4, create an update branch:** create `draft/framework-update-<version>` and confirm it exists.
-- **Step 5, replace the vendored framework:** fetch the target ref into a temporary clone, replace `.draft/framework`, record the commit, and remove the clone.
+- **Step 5, replace the vendored framework:** fetch the target ref into a temporary clone and replace `.draft/framework` by calling `vendor_framework` from that clone. Record the commit, then remove the clone. Leave `.draft/framework.lock` for step 6.
 - **Step 6, update the lock file:** write the new version, ref and commit to `.draft/framework.lock`.
 - **Step 7, run validation:** first run `python3 .draft/framework/tools/validate.py --workspace . --write-baseline` and commit `.draft/validation-baseline.yaml` with the update; then run the validator; the clean, new-errors and abandon paths are each spelled out in `references/steps.md`.
 - **Step 8, post-update notes:** after the PR merges, remind Draft Admins about the one-time `/draft` command link and to review the CHANGELOG for new setup steps.

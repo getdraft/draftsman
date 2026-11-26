@@ -18,8 +18,9 @@
 #    main's draft-framework.yaml as a fallback when tags are missing or stale
 #    (or uses the tag/branch/commit you supply as target_ref).
 # 3. If the workspace is already current, exits cleanly with no changes.
-# 4. Otherwise, does a full replace of .draft/framework with the new version,
-#    updates framework.lock, runs validate.py against the workspace, refreshes
+# 4. Otherwise, replaces .draft/framework by calling vendor_framework() from
+#    the cloned ref (the same copier as draft_table/repo.py), updates
+#    framework.lock, runs validate.py against the workspace, refreshes
 #    the browser shell assets, commits everything to a branch, and opens (or
 #    updates) a pull request.
 # 5. If validation fails the PR title is prefixed "Blocked:" and the workflow
@@ -172,33 +173,6 @@ jobs:
                   run(["git", "checkout", "FETCH_HEAD"], cwd=temp_dir)
               return temp_dir
 
-          def vendored_text(text: str) -> str:
-              replacements = {
-                  "framework/browser/": "browser/",
-                  "framework/commands/": "commands/",
-                  "framework/configurations/": "configurations/",
-                  "framework/docs/": "docs/",
-                  "framework/draft-actions/": "draft-actions/",
-                  "framework/integrations/": "integrations/",
-                  "framework/reviews/": "reviews/",
-                  "framework/schemas/": "schemas/",
-                  "framework/templates/": "templates/",
-                  "framework/tools/": "tools/",
-                  "framework/browser": "browser",
-                  "framework/commands": "commands",
-                  "framework/configurations": "configurations",
-                  "framework/docs": "docs",
-                  "framework/draft-actions": "draft-actions",
-                  "framework/integrations": "integrations",
-                  "framework/reviews": "reviews",
-                  "framework/schemas": "schemas",
-                  "framework/templates": "templates",
-                  "framework/tools": "tools",
-              }
-              for old, new in replacements.items():
-                  text = text.replace(old, new)
-              return text
-
           def release_url_for(source_url: str, version: str, target_ref: str) -> str:
               cleaned = source_url.strip().removesuffix(".git")
               if cleaned.startswith("git@github.com:"):
@@ -210,53 +184,14 @@ jobs:
               return cleaned
 
           def copy_framework(source_repo: Path) -> None:
-              destination = workspace / ".draft" / "framework"
-              if destination.exists():
-                  shutil.rmtree(destination)
-              destination.mkdir(parents=True, exist_ok=True)
-              framework_root = source_repo / "framework"
-              for relative in (
-                  "browser",
-                  "commands",
-                  "configurations",
-                  "docs",
-                  "draft-actions",
-                  "integrations",
-                  "reviews",
-                  "schemas",
-                  "templates",
-                  "tools",
-              ):
-                  source_dir = framework_root / relative
-                  if source_dir.exists():
-                      shutil.copytree(source_dir, destination / relative, dirs_exist_ok=True, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
-              for relative in ("templates", "examples"):
-                  source_dir = source_repo / relative
-                  if source_dir.exists():
-                      shutil.copytree(source_dir, destination / relative, dirs_exist_ok=True, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
-              for filename in (
-                  "AGENTS.md",
-                  "AI_INDEX.md",
-                  "CLAUDE.md",
-                  "CHANGELOG.md",
-                  "draft-framework.yaml",
-                  "draft-logo.png",
-                  "draftlogo.png",
-                  "GEMINI.md",
-                  "README.md",
-                  "RELEASE.md",
-                  "VERSIONING.md",
-                  "llms.txt",
-                  "security.md",
-              ):
-                  source_file = source_repo / filename
-                  if not source_file.exists():
-                      continue
-                  target_file = destination / filename
-                  if filename.endswith(".md") or filename in {"AI_INDEX.md", "CLAUDE.md", "GEMINI.md", "llms.txt"}:
-                      target_file.write_text(vendored_text(source_file.read_text(encoding="utf-8")), encoding="utf-8")
-                  else:
-                      shutil.copy2(source_file, target_file)
+              # Call the cloned release's vendor_framework so directory and root-file
+              # lists stay aligned with FRAMEWORK_VENDOR_DIRS and FRAMEWORK_VENDOR_FILES.
+              import sys
+              source_path = str(source_repo)
+              if source_path not in sys.path:
+                  sys.path.insert(0, source_path)
+              from draft_table.repo import vendor_framework
+              vendor_framework(workspace, source_repo, overwrite=True)
 
           lock = read_yaml(lock_path)
           framework_lock = lock.get("framework") if isinstance(lock.get("framework"), dict) else {}
