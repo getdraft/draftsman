@@ -6,8 +6,6 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-import yaml
-
 from .paths import DEFAULT_WORKSPACE_PARENT, REPO_ROOT, resolve_framework_root, workspace_framework_root
 
 
@@ -181,6 +179,8 @@ def framework_manifest_path(framework_repo: Path = REPO_ROOT) -> Path | None:
 
 
 def current_framework_version(framework_repo: Path = REPO_ROOT) -> str:
+    import yaml
+
     manifest_path = framework_manifest_path(framework_repo)
     if not manifest_path:
         return ""
@@ -259,6 +259,8 @@ def humanize_workspace_name(value: str) -> str:
 
 
 def workspace_metadata(workspace: Path) -> dict[str, Any]:
+    import yaml
+
     config_path = workspace / ".draft" / "workspace.yaml"
     if not config_path.exists():
         return {}
@@ -443,6 +445,8 @@ def refresh_vendored_framework(
     framework_repo: Path = REPO_ROOT,
     source_label: str | None = None,
 ) -> list[Path]:
+    import yaml
+
     workspace = workspace.expanduser()
     copied = vendor_framework(workspace, framework_repo, overwrite=True)
     copied.extend(copy_workspace_templates(workspace, framework_repo, overwrite=False))
@@ -456,6 +460,8 @@ def refresh_vendored_framework(
 
 
 def framework_status(workspace: Path, framework_repo: Path = REPO_ROOT) -> dict[str, Any]:
+    import yaml
+
     workspace = workspace.expanduser()
     vendor_root = workspace_framework_root(workspace)
     lock_path = workspace / ".draft" / "framework.lock"
@@ -478,6 +484,8 @@ def framework_status(workspace: Path, framework_repo: Path = REPO_ROOT) -> dict[
 
 
 def ensure_workspace_layout(workspace: Path, framework_repo: Path = REPO_ROOT) -> list[Path]:
+    import yaml
+
     workspace = workspace.expanduser()
     created: list[Path] = []
     for relative in WORKSPACE_DIRS:

@@ -81,18 +81,34 @@ Confirm the branch was created before continuing.
 
 ## Step 5: Replace the Vendored Framework
 
-Download the selected framework ref and replace the vendored copy. DRAFT
-release tags use the `vA.B.C` form. If a user supplies a bare semantic version
-such as `A.B.C`, resolve it to `vA.B.C` when that tag exists.
+Download the selected framework ref and replace `.draft/framework` with the
+tree `vendor_framework()` produces. Run the commands from the workspace root,
+the directory that contains `.draft/`. DRAFT release tags use the `vA.B.C`
+form. If a user supplies a bare semantic version such as `A.B.C`, resolve it
+to `vA.B.C` when that tag exists.
+
+`vendor_framework()` in the cloned `draft_table/repo.py` copies
+`FRAMEWORK_VENDOR_DIRS`, `FRAMEWORK_VENDOR_OPTIONAL_DIRS`, and
+`FRAMEWORK_VENDOR_FILES` into `.draft/framework/`. That set includes root
+files such as `AGENTS.md`, `CHANGELOG.md`, and `draft-framework.yaml`.
+Upstream `templates/` lands in `.draft/framework/templates/`. The function
+leaves `.draft/framework.lock`, `.draft/templates`, and the rest of the
+workspace unchanged. Step 6 writes the lock.
+
+`vendor_framework` uses the Python standard library only. Remove any previous
+temporary clone first, so running this step again replaces that directory
+instead of stopping at `git clone`.
 
 ```bash
-# Fetch the new version into a temporary location
+rm -rf /tmp/draft-framework-update
 git clone --depth 1 --branch <target-ref> <framework.source> /tmp/draft-framework-update
 
-# Replace the vendored copy
-rm -rf .draft/framework
-cp -r /tmp/draft-framework-update/framework .draft/framework
-cp -r /tmp/draft-framework-update/templates .draft/framework/../templates 2>/dev/null || true
+PYTHONPATH=/tmp/draft-framework-update python3 - <<'PY'
+from pathlib import Path
+from draft_table.repo import vendor_framework
+
+vendor_framework(Path("."), Path("/tmp/draft-framework-update"), overwrite=True)
+PY
 ```
 
 Resolve the exact commit SHA of the selected ref:

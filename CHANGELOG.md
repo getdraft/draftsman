@@ -1,3 +1,29 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No schema, validation, or catalog-contract change. `/draft update` and the framework update workflow replace `.draft/framework` through `vendor_framework()`, so the vendored tree includes every root file in `FRAMEWORK_VENDOR_FILES` and every directory in `FRAMEWORK_VENDOR_DIRS`. Importing `vendor_framework` from `draft_table.repo` needs only the Python standard library. PyYAML is imported inside the functions that read or write YAML.
+
+### Added
+
+- Added `tests/test_framework_vendor_update.py`. It runs the `/draft update` step 5 command and each update workflow's `copy_framework` on a workspace that already has `.draft/templates/` and a stale `.draft/framework/`, then compares that tree with `vendor_framework()`. The step 5 command is also run with `python3 -S`, which does not load site-packages or PyYAML.
+
+### Changed
+
+- `/draft update` step 5 in `framework/skills/draftsman-update/references/steps.md` clones the selected ref and calls `vendor_framework()` from that clone. `framework/docs/workspaces.md` describes the same replacement.
+- `framework/templates/github/draft-framework-update.yml` and `templates/workspace/.github/workflows/draft-framework-update.yml.tmpl` call `vendor_framework()` from the cloned ref. They no longer keep a second copy of the directory and root-file lists.
+
+### Fixed
+
+- `/draft update` step 5 copied only the upstream `framework/` directory, then copied upstream `templates/` onto `.draft/templates`. That removed vendored root files (`AGENTS.md`, `CHANGELOG.md`, `draft-framework.yaml`, and the rest of `FRAMEWORK_VENDOR_FILES`) and created `.draft/templates/templates/` when `.draft/templates/` already existed. The scheduled update workflow also skipped `framework/skills/` and the `framework/skills` path rewrite. Both update paths now follow `vendor_framework()`. Fixes #495.
+- `draft_table/repo.py` imported PyYAML at module load, so the step 5 command failed on a Python that has no PyYAML. `import yaml` now runs only in `current_framework_version`, `workspace_metadata`, `refresh_vendored_framework`, `framework_status`, and `ensure_workspace_layout`. Step 5 deletes `/tmp/draft-framework-update` before cloning, so a second run replaces a leftover clone.
+
+### Migration Notes
+
+- After this version is vendored, the next `/draft update` keeps root files in `.draft/framework/` and writes upstream templates under `.draft/framework/templates/`.
+- If an earlier update removed those root files or left a nested `.draft/templates/templates/` directory, delete that nested directory and run step 5 again, or call `vendor_framework()` on the upstream checkout, so `.draft/framework` matches the upstream copier.
+- Workspaces that run the scheduled update should copy `templates/workspace/.github/workflows/draft-framework-update.yml.tmpl` onto `.github/workflows/draft-framework-update.yml`. The workflow leaves an existing workflow file in place, and the previous copy skipped `skills/`.
+
 ## 1.22.3 - 2026-11-25
 
 ### Compatibility Impact
