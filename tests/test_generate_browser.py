@@ -365,7 +365,14 @@ class DetailDiagramSectionsTests(unittest.TestCase):
             for gone in ("sdp-s-topology", "sdp-s-diagrams", "data-tier-filter", "hero-diagrams", "_sdpTopologyMarkup", "_sdpDiagramsMarkup"):
                 self.assertNotIn(gone, src, f"{gone} in {name}")
 
+    def test_embed_skips_standalone_fit_toggle_and_actual_size_uses_natural_width(self) -> None:
+        extract = self.fn("_sdpExtractFigureParts")
+        self.assertIn("fig-fit-toggle", extract)
+        self.assertIn("sdp-diagram-embed:not(.fit) svg { width: var(--natural-width, auto); min-width: var(--natural-width, unset); max-width: none; height: auto; }", self.sdp)
+        self.assertIn("sdp-diagram-embed.fit svg { width: 100% !important; height: auto !important; min-width: 0 !important; max-width: 100%; }", self.sdp)
+
     def test_embed_static_contract(self) -> None:
+
         load = self.fn("_sdpLoadDiagramEmbeds")
         self.assertEqual(load.count("fetch("), 1)
         self.assertIn("_sdpExtractFigureParts", load)

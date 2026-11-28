@@ -3677,14 +3677,33 @@ class SameContainerRoutingTests(unittest.TestCase):
         self.assertEqual(generate_diagram.LOGICAL_COLUMNS, 5)
         self.assertEqual(generate_diagram.DEPLOY_COLUMNS, 4)
         self.assertEqual(generate_diagram.LOGICAL_BOX_W, 200)
+        self.assertEqual(generate_diagram.FIGURE_MIN_WIDTH, 760)
         page, _ = generate_diagram.build(FIXTURE, "FX Large Synthetic Pattern")
+        css = page.split("<style>")[1].split("</style>")[0]
+        self.assertIn(f"min-width:{generate_diagram.FIGURE_MIN_WIDTH}px", css)
+        self.assertIn("svg.actual-size{width:var(--natural-width);min-width:var(--natural-width);max-width:none}", css)
+        self.assertRegex(page, r"\.scroll,\.tw\{overflow-x:auto")
+        script = page.split("<script>")[1].split("</script>")[0]
+        self.assertIn("data-fig-fit", script)
+        self.assertIn("actual-size", script)
         for fid in ("fig-logical", "fig-deployment"):
             fig = figure_of(page, fid)
             width = int(re.search(r'<svg [^>]*?width="(\d+)"', fig).group(1))
-            minimum = int(re.search(r'style="min-width:(\d+)px"', fig).group(1))
-            self.assertGreaterEqual(minimum, min(width, 760))
-            self.assertEqual(minimum, max(760, width))
-        self.assertRegex(page, r"\.scroll,\.tw\{overflow-x:auto")
+            self.assertGreater(width, generate_diagram.FIGURE_MIN_WIDTH)
+            self.assertIsNone(re.search(r'min-width:\d+px', fig), fig[:200])
+            self.assertEqual(int(re.search(r'data-natural-width="(\d+)"', fig).group(1)), width)
+            self.assertIn(f'style="--natural-width:{width}px"', fig)
+            self.assertIn(f'data-fig-fit="{fid}"', page)
+            self.assertIn(f'aria-pressed="true" title="Scale the figure to the page width, or show it at actual size and scroll">Fit width</button>', page)
+
+    def test_default_figures_emit_no_inline_min_width_wider_than_the_floor(self) -> None:
+        page, _ = generate_diagram.build(FIXTURE, "FX Large Synthetic Pattern")
+        floor = generate_diagram.FIGURE_MIN_WIDTH
+        for fid in ("fig-logical", "fig-deployment"):
+            fig = figure_of(page, fid)
+            for match in re.finditer(r'min-width:(\d+)px', fig):
+                self.assertLessEqual(int(match.group(1)), floor, fid)
+            self.assertNotIn('style="min-width:', fig)
 
     def test_examples_workspace_deterministic(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
