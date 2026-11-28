@@ -5805,6 +5805,7 @@ function _sdpExtractFigureParts(doc, sectionId) {
   wrap.className = 'sec';
   Array.from(sec.children).forEach(child => {
     if (/^H[1-6]$/.test(child.tagName)) return; // the browser section supplies the heading
+    if (child.classList && child.classList.contains('fig-fit-toggle')) return; // standalone page control; the detail page has its own
     wrap.appendChild(document.importNode(child, true));
   });
   return wrap;

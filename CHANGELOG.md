@@ -1,3 +1,25 @@
+## Unreleased
+
+### Compatibility Impact
+
+- No schema, validation, or catalog-contract change. Generated diagram pages scale to the content column by default. Company workspaces pick this up the next time they regenerate diagram pages, or refresh the framework and regenerate the browser.
+
+### Added
+
+- Standalone diagram pages have a Fit width / Actual size control above each figure, matching the pattern detail page. Actual size restores the drawn width inside the scroll box so labels stay readable on wide diagrams.
+
+### Changed
+
+- `generate_diagram.py` no longer pins each inline SVG to its drawn width with an inline `min-width`. The stylesheet floor of 760px remains, so viewports narrower than that still scroll. The drawn width is stored as `data-natural-width` and `--natural-width`. The browser's Actual size mode reads that custom property, and still honors an older page's inline `min-width` until the page is regenerated.
+
+### Fixed
+
+- Generated diagram pages forced horizontal scrolling on a normal desktop window because each SVG's inline `min-width` was set to its drawn width, which is often wider than the 1280px content column. Diagrams now fit the column and scale through their `viewBox`. Fixes #497.
+
+### Migration Notes
+
+- After refreshing the framework, regenerate diagram pages (`generate_browser.py`, or `generate_diagram.py --all`) so published standalone pages drop the inline `min-width` and gain the Fit width control. Until those pages are regenerated, the browser's Fit width control still overrides the old inline style, and Actual size still uses that inline `min-width`.
+
 ## 1.22.4 - 2026-11-26
 
 ### Compatibility Impact

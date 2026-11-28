@@ -1173,6 +1173,7 @@ def wrap(text: str, width: int) -> list[str]:
 # A vendored copy keeps draft-framework.yaml beside its tools/ inside the framework directory; the source repo keeps it at the root.
 FRAMEWORK_MANIFESTS = (TOOLS_ROOT.parent / "draft-framework.yaml", TOOLS_ROOT.parents[1] / "draft-framework.yaml")
 FIGURE_IDS = ("fig-logical", "fig-deployment")  # D19: the pin script finds both figures by these ids
+FIGURE_MIN_WIDTH = 760  # stylesheet floor; pages narrower than this still scroll horizontally
 
 
 def framework_version() -> str:
@@ -1364,11 +1365,25 @@ def questions_html(model: Model) -> str:
 def figure_html(svg: str, fig_id: str) -> str:
     """The figure SVG with its element id added to the inline copy only; the standalone SVG files are unchanged.
 
-    The inline copy never draws narrower than its own width, so a figure wider than the page column scrolls
-    horizontally inside its wrapper instead of shrinking its boxes and text."""
+    By default the inline copy scales to the content column through its viewBox. A stylesheet floor of
+    FIGURE_MIN_WIDTH keeps a readable size on small screens (those narrower than the floor still scroll).
+    The drawn width is stored as ``data-natural-width`` and ``--natural-width`` so the Fit width / Actual
+    size control can restore it inside the scroll box, without an inline min-width that would override
+    the stylesheet and force horizontal scrolling on a normal desktop window."""
     found = re.search(r'<svg [^>]*?width="(\d+)"', svg)
-    style = f' style="min-width:{max(760, int(found.group(1)))}px"' if found else ""
-    return '<div class="scroll">' + svg.replace("<svg ", '<svg id="' + fig_id + '"' + style + " ", 1) + "</div>"
+    attrs = f' id="{fig_id}"'
+    if found:
+        width = int(found.group(1))
+        attrs += f' data-natural-width="{width}" style="--natural-width:{width}px"'
+    return '<div class="scroll">' + svg.replace("<svg ", "<svg" + attrs + " ", 1) + "</div>"
+
+
+def figure_size_toggle(fig_id: str) -> str:
+    """Fit width / Actual size control for one figure; default is fit (aria-pressed true)."""
+    return (
+        f'<button type="button" class="fig-fit-toggle" data-fig-fit="{fig_id}" aria-pressed="true" '
+        'title="Scale the figure to the page width, or show it at actual size and scroll">Fit width</button>'
+    )
 
 
 CSS = """
@@ -1384,8 +1399,8 @@ h1{font-size:26px;line-height:1.2;margin:0;font-weight:600}h2{font-size:17px;mar
 .meta{display:flex;flex-wrap:wrap;gap:4px 22px;font-size:13.5px;color:var(--muted)}.meta b{color:var(--fg);font-weight:600}
 .counts{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:13.5px}.counts b{font-variant-numeric:tabular-nums}
 .scroll,.tw{overflow-x:auto;border:1px solid var(--zone-line);border-radius:6px;background:var(--surface)}
-svg{display:block;width:100%;min-width:760px;height:auto;color:var(--fg)}svg text{fill:currentColor;font-family:inherit}
-svg.quiet .edge:not(.on){display:none}svg.focus:not(.quiet) .edge:not(.on){opacity:.15}svg .edge.on .fl{display:inline}svg .edge.on .ln{stroke:var(--hi-edge);stroke-width:3}svg .edge.on text{fill:var(--hi-edge)}svg .mk{fill:context-stroke}svg .edge.on.out .ln{stroke:var(--hi-out)}svg .edge.on.out text{fill:var(--hi-out)}svg .edge.on.in .ln{stroke:var(--hi-in)}svg .edge.on.in text{fill:var(--hi-in)}.tog{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);margin:0 0 10px}.tog input{margin:0}.key{display:inline-flex;gap:14px;font-size:13px;color:var(--muted);margin-left:14px}.key i{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:middle;margin-right:5px}.key .o i{border-color:var(--hi-out)}.key .i i{border-color:var(--hi-in)}
+svg{display:block;width:100%;min-width:760px;height:auto;max-width:100%;color:var(--fg)}svg.actual-size{width:var(--natural-width);min-width:var(--natural-width);max-width:none}svg text{fill:currentColor;font-family:inherit}
+svg.quiet .edge:not(.on){display:none}svg.focus:not(.quiet) .edge:not(.on){opacity:.15}svg .edge.on .fl{display:inline}svg .edge.on .ln{stroke:var(--hi-edge);stroke-width:3}svg .edge.on text{fill:var(--hi-edge)}svg .mk{fill:context-stroke}svg .edge.on.out .ln{stroke:var(--hi-out)}svg .edge.on.out text{fill:var(--hi-out)}svg .edge.on.in .ln{stroke:var(--hi-in)}svg .edge.on.in text{fill:var(--hi-in)}.tog{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);margin:0 0 10px}.fig-fit-toggle{font:inherit;font-size:13px;padding:4px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--muted);cursor:pointer;margin:0 0 10px 14px;vertical-align:middle}.fig-fit-toggle[aria-pressed="true"]{color:var(--fg)}.tog input{margin:0}.key{display:inline-flex;gap:14px;font-size:13px;color:var(--muted);margin-left:14px}.key i{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:middle;margin-right:5px}.key .o i{border-color:var(--hi-out)}.key .i i{border-color:var(--hi-in)}
 svg .node.on .box{stroke:var(--hi-node);stroke-width:2.6;fill:var(--hi-node-bg)}svg .group.on>.grp{stroke:var(--hi-node);stroke-width:2.6}
 svg [data-id]:focus{outline:none}svg [data-id]:focus>rect,svg .node.on:focus>.box,svg .group.on:focus>.grp{stroke:var(--accent);stroke-width:2.6}
 table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--zone-line)}
@@ -1430,6 +1445,16 @@ JS = """
   svg.addEventListener('focusout',function(){hover=null;paint()});
   svg.addEventListener('click',function(e){var id=uidOf(e.target);pinned=id&&pinned!==id?id:null;paint()});
   svg.addEventListener('keydown',function(e){var id=uidOf(e.target);if(id&&(e.key==='Enter'||e.key===' ')){e.preventDefault();pinned=pinned===id?null:id;paint()}});
+ });
+ document.querySelectorAll('[data-fig-fit]').forEach(function(btn){
+  btn.addEventListener('click',function(){
+   var svg=document.getElementById(btn.getAttribute('data-fig-fit'));
+   if(!svg)return;
+   var fit=btn.getAttribute('aria-pressed')!=='true';
+   svg.classList.toggle('actual-size',!fit);
+   btn.setAttribute('aria-pressed',fit?'true':'false');
+   btn.textContent=fit?'Fit width':'Actual size';
+  });
  });
  var q=document.getElementById('q'),lf=document.getElementById('lf'),pf=document.getElementById('pf'),cnt=document.getElementById('cnt');
  if(!q)return;
@@ -1674,7 +1699,8 @@ def render_page(model: Model, dm: DiagramModel, back_link: str | None = None, ed
         edit_panel_html(model) if editable else "",
         f'<section class="sec" id="logical"><h2>{E(LOGICAL_TITLE)}</h2>'
         '<label class="tog"><input type="checkbox" data-all="fig-logical" checked> Show all connections</label><span class="key"><span class="o"><i></i>calls it makes</span><span class="i"><i></i>calls it receives</span></span>'
-        "<p>Components and data components in bands by diagram tier; placed infrastructure (network, runtime, host, AI gateway and data store services) is drawn in the deployment diagram only. Dependencies that this pattern does not place sit in the right-hand lane, captioned with the pattern that places them. "
+        + ("" if logical_empty else figure_size_toggle(FIGURE_IDS[0]))
+        + "<p>Components and data components in bands by diagram tier; placed infrastructure (network, runtime, host, AI gateway and data store services) is drawn in the deployment diagram only. Dependencies that this pattern does not place sit in the right-hand lane, captioned with the pattern that places them. "
         "All connections are shown; hover over, focus or click a box to bring its own connections forward, purple for calls it makes and orange for calls it receives, while the others fade. "
         "Clear the checkbox to hide them until a box is selected. "
         "Click to pin. A dashed box has a derived tier.</p>"
@@ -1682,7 +1708,8 @@ def render_page(model: Model, dm: DiagramModel, back_link: str | None = None, ed
         + "</section>",
         f'<section class="sec" id="deployment"><h2>{E(DEPLOYMENT_TITLE)}</h2>'
         '<label class="tog"><input type="checkbox" data-all="fig-deployment" checked> Show all connections</label><span class="key"><span class="o"><i></i>calls it makes</span><span class="i"><i></i>calls it receives</span></span>'
-        "<p>Deployment targets hold service groups, each drawn as a container around its boxes, including the infrastructure the logical diagram leaves out. Data components sit inside a container named for the data store service they run on. All connections are shown and a selected box's own connections come forward while the others fade; pinning an object in one figure highlights it in the other.</p>"
+        + figure_size_toggle(FIGURE_IDS[1])
+        + "<p>Deployment targets hold service groups, each drawn as a container around its boxes, including the infrastructure the logical diagram leaves out. Data components sit inside a container named for the data store service they run on. All connections are shown and a selected box's own connections come forward while the others fade; pinning an object in one figure highlights it in the other.</p>"
         + figure_html(
             annotate_containers(render_deployment_svg(dm), marks["deployment"], "d", _deployment_store_uids(dm)) if editable else render_deployment_svg(dm),
             FIGURE_IDS[1],

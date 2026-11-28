@@ -534,9 +534,12 @@
 .detail-layout > * { min-width: 0; }
 .sdp-detail .sdp-diagram-embed .scroll { max-width: 100%; overflow-x: auto; }
 
-/* Embedded figure: fit to the page width by default; "Actual size" restores the natural width and scrolls. */
+/* Embedded figure: fit to the page width by default; "Actual size" restores the natural width and scrolls.
+   Prefer --natural-width from the inline SVG (set by generate_diagram.py). The unset fallback leaves an
+   older page's inline min-width in place until that page is regenerated. */
 .sdp-detail .sdp-head-tools { display: flex; gap: 8px; align-items: center; }
 .sdp-detail .sdp-fit-toggle { font: inherit; font-size: 12px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--muted); cursor: pointer; }
 .sdp-detail .sdp-fit-toggle[aria-pressed="true"] { color: var(--ink); border-color: var(--line-strong); }
+.sdp-detail .sdp-diagram-embed:not(.fit) svg { width: var(--natural-width, auto); min-width: var(--natural-width, unset); max-width: none; height: auto; }
 .sdp-detail .sdp-diagram-embed.fit svg { width: 100% !important; height: auto !important; min-width: 0 !important; max-width: 100%; }
 .sdp-detail .sdp-diagram-embed.fit .scroll { overflow-x: hidden; }
